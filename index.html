@@ -1215,7 +1215,8 @@ OMK:{
     3:{label:"Week 3",weekNum:3},
     4:{label:"Week 4",weekNum:4},
     5:{label:"Week 5",weekNum:5},
-    6:{label:"Week 6",weekNum:6}
+    6:{label:"Week 6",weekNum:6},
+    7:{label:"Disease Index",weekNum:7}
   }
 },
 OCS:{
@@ -1233,7 +1234,7 @@ OCS:{
 
 var SYSTEM_CONFIG={
 
-OMK:{name:"Neurology/Neuroanatomy",weeks:[1,2,3,4,5,6]},
+OMK:{name:"Neurology/Neuroanatomy",weeks:[1,2,3,4,5,6,7]},
 OCS:{name:"Neurology/Neuroanatomy",weeks:[1,2,3,4,5,6]}
 };
 
@@ -1344,6 +1345,18 @@ function getVisibleLinks(links){
 function getSystemMeta(category){
   return SYSTEM_CONFIG[category]||SYSTEM_CONFIG.OMK;
 }
+function getWeekMeta(category,week){
+  if(!isValidCategory(category))return null;
+  return DATA[category].weeks[String(week)]||null;
+}
+function getWeekLabel(category,week){
+  var wkMeta=getWeekMeta(category,week);
+  return wkMeta&&wkMeta.label?wkMeta.label:'Week '+week;
+}
+function getWeekBadge(category,week){
+  var label=getWeekLabel(category,week);
+  return /^Week\s+\d+$/i.test(label)?padWeekNumber(week):'DI';
+}
 function padWeekNumber(num){
   return String(num).padStart(2,'0');
 }
@@ -1371,7 +1384,7 @@ var userMeta=AUTH_STATE.user?'<div class="sb-user-actions"><div class="sb-user-l
 var h='<div class="sb-hd"><div class="sb-brand"><img src="'+LOGO+'" alt="UNE"><div class="sb-brand-txt"><h1>2nd <em>Year</em></h1><small>UNE COM Study Hub</small></div></div>'+userMeta+'</div><div class="sb-tabs"><button class="sb-tab'+(CC==='OMK'?' on':'')+'" onclick="swC(\'OMK\')">OMK</button><button class="sb-tab'+(CC==='OCS'?' on':'')+'" onclick="swC(\'OCS\')">OCS</button></div><div class="sb-list">';
 h+='<div class="wk on'+(EW[0]?' ex':'')+'" data-system="'+sys.name+'"><div class="wk-hd" onclick="toggleSystemGroup()"><span class="wk-n">🧠</span><span class="wk-l">'+sys.name+'</span><span class="wk-dots"><span class="wk-d da"></span></span><span class="wk-ch">▾</span></div><div class="wk-sub">';
 sys.weeks.forEach(function(week){
-  h+='<div class="si'+(week===CW?' on':'')+'" data-week="'+week+'" data-view="overview" onclick="go('+week+',\'overview\')"><span class="sii">'+padWeekNumber(week)+'</span>Week '+week+'</div>';
+  h+='<div class="si'+(week===CW?' on':'')+'" data-week="'+week+'" data-view="overview" onclick="go('+week+',\'overview\')"><span class="sii">'+getWeekBadge(CC,week)+'</span>'+getWeekLabel(CC,week)+'</div>';
 });
 h+='</div></div>';
 document.getElementById('sb').innerHTML=h;var newList=document.querySelector('#sb .sb-list');if(newList)newList.scrollTop=prevScroll}
@@ -1401,10 +1414,10 @@ return h+'</div></section>';
 }
 
 function rMN(){var wk=DATA[CC].weeks[CW],cn=DATA[CC].fullName,sys=getSystemMeta(CC);
-document.getElementById('hd').innerHTML='<div><h2>'+sys.name+' \u2014 Week '+CW+'</h2><div class="bc">'+cn+' \u203A '+sys.name+'</div><div class="hd-hint">Fresh systems shell for the new year. Notes, quizzes, and embedded materials have been cleared from this view.</div></div>';
 var title=wk&&wk.label?wk.label:'Week '+CW;
+document.getElementById('hd').innerHTML='<div><h2>'+sys.name+' \u2014 '+title+'</h2><div class="bc">'+cn+' \u203A '+sys.name+'</div><div class="hd-hint">Fresh systems shell for the new year. Notes, quizzes, and embedded materials have been cleared from this view.</div></div>';
 var resourceBlock=renderWeekItems(wk);
-var b='<div class="system-shell"><section class="system-hero"><div class="system-hero-top"><div class="system-hero-kicker"><span>🧠</span><span>'+cn+'</span></div><div class="system-hero-week">Week '+CW+'</div></div><div class="system-hero-title">'+sys.name+'</div><div class="system-hero-copy">'+(resourceBlock?'Week '+CW+' is live with your first Neuroanatomy case. Use the notes to map the lesion pattern, then jump into the quiz for reinforcement.':'Week '+CW+' is ready for new Neurology/Neuroanatomy materials. Add cases, notes, and quizzes here as the new year content comes together.')+'</div><div class="system-hero-meta"><div class="system-pill"><span>🗂️</span><span>'+title+'</span></div><div class="system-pill"><span>📚</span><span>'+((wk&&wk.items&&wk.items.length)||0)+' active resource'+(((wk&&wk.items&&wk.items.length)||0)===1?'':'s')+'</span></div></div></section>'+resourceBlock+'</div>';
+var b='<div class="system-shell"><section class="system-hero"><div class="system-hero-top"><div class="system-hero-kicker"><span>🧠</span><span>'+cn+'</span></div><div class="system-hero-week">'+title+'</div></div><div class="system-hero-title">'+sys.name+'</div><div class="system-hero-copy">'+(resourceBlock?title+' is live with active Neuroanatomy resources. Open the material first, then use follow-up study tools to reinforce it.':title+' is ready for new Neurology/Neuroanatomy materials. Add cases, notes, and quizzes here as the new year content comes together.')+'</div><div class="system-hero-meta"><div class="system-pill"><span>🗂️</span><span>'+title+'</span></div><div class="system-pill"><span>📚</span><span>'+((wk&&wk.items&&wk.items.length)||0)+' active resource'+(((wk&&wk.items&&wk.items.length)||0)===1?'':'s')+'</span></div></div></section>'+resourceBlock+'</div>';
 document.getElementById('bd').innerHTML=b}
 function rMNpt(i){var p=PTESTS[i];
 document.getElementById('hd').innerHTML='<div><h2>'+p.name+'</h2><div class="bc">'+DATA[CC].fullName+(p.date?' \u203A '+p.date:'')+'</div></div>';
