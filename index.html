@@ -226,6 +226,29 @@ body,.sb,.auth-card,.mn,.tt,.modal-card,.chip,.qbd,.cd,.r-box,.box,.panel,.auth-
   background:var(--white);border:1px solid rgba(27,42,74,.08);box-shadow:0 8px 20px rgba(18,32,60,.05);
   font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:700;color:var(--navy)
 }
+.resource-groups{display:grid;gap:26px}
+.resource-group{
+  display:grid;gap:16px;padding-top:6px
+}
+.resource-group+.resource-group{
+  padding-top:26px;border-top:1px solid rgba(27,42,74,.09)
+}
+.resource-group-hd{
+  display:flex;align-items:end;justify-content:space-between;gap:14px
+}
+.resource-group-kicker{
+  font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;
+  color:var(--mist);margin-bottom:8px
+}
+.resource-group-hd h4{
+  font-family:'Crimson Pro',serif;font-size:24px;line-height:1.05;color:var(--navy);letter-spacing:-.3px
+}
+.resource-group-hd p{font-size:14px;color:var(--slate);margin-top:6px;max-width:640px}
+.resource-group-count{
+  display:inline-flex;align-items:center;justify-content:center;min-width:42px;height:42px;padding:0 12px;border-radius:999px;
+  background:var(--white);border:1px solid rgba(27,42,74,.08);font-family:'IBM Plex Mono',monospace;
+  font-size:12px;font-weight:700;color:var(--navy);box-shadow:0 8px 20px rgba(18,32,60,.05)
+}
 .resource-grid{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
 .resource-card{
   position:relative;overflow:hidden;padding:26px;background:linear-gradient(180deg, rgba(255,255,255,.96), rgba(251,248,243,.98));
@@ -263,6 +286,7 @@ body,.sb,.auth-card,.mn,.tt,.modal-card,.chip,.qbd,.cd,.r-box,.box,.panel,.auth-
   .system-hero{padding:24px 22px}
   .system-hero-top{flex-direction:column;align-items:flex-start}
   .system-hero-title{font-size:32px}
+  .resource-group-hd{align-items:flex-start;flex-direction:column}
   .resource-title{font-size:28px}
 }
 @media (max-width:560px){
@@ -1203,11 +1227,14 @@ OMK:{
   fullName:"Osteopathic Medical Knowledge",
   weeks:{
     1:{label:"Week 1",weekNum:1,items:[
-      {title:"Case1-1_Functional_Localization",icon:"🧠",links:[
+      {title:"Case1-1_Functional_Localization",icon:"🧠",group:"cases",typeLabel:"Learning Case",links:[
         {label:"Notes",href:"week1/OMK/Willard_Case1-1_Functional_Localization.html",style:"open"},
         {label:"Quiz",href:"week1/OMK/Case1-1_Functional_Localization_Quiz.html",style:"dl"}
       ]},
-      {title:"Primary Muscle Diseases - Disease Indexes",icon:"💪",links:[
+      {title:"Case 2-1 CMT1A Annotated",icon:"🧬",group:"cases",typeLabel:"Annotated Case",links:[
+        {label:"Open",href:"week1/OMK/case_2-1_CMT1A_annotated.html",style:"open"}
+      ]},
+      {title:"Primary Muscle Diseases - Disease Indexes",icon:"💪",group:"disease-indexes",typeLabel:"Disease Index",links:[
         {label:"Open",href:"week1/OMK/week1_DIs.html",style:"open"}
       ]}
     ]},
@@ -1370,6 +1397,22 @@ function getResourceTypeLabel(item){
   if(item&&item.typeLabel)return item.typeLabel;
   return 'Learning Case';
 }
+function getResourceGroupMeta(groupKey){
+  var meta={
+    'cases':{
+      label:'Cases',
+      copy:'Work through the clinical story first, then use the linked study tools to lock in localization and pattern recognition.'
+    },
+    'disease-indexes':{
+      label:'Disease Indexes',
+      copy:'Use these broader review pages to compare disease patterns, mechanisms, and high-yield distinctions side by side.'
+    }
+  };
+  return meta[groupKey]||{
+    label:"This Week's Resources",
+    copy:'Open the material first, then use follow-up study tools to reinforce it.'
+  };
+}
 function getLinkTone(link){
   return link&&link.style==='open'?'primary':'secondary';
 }
@@ -1401,14 +1444,29 @@ function goPT(i){CW=1;CV='overview';EW={0:true};persistLastHubView();syncSB();rM
 function renderWeekItems(wk){
 var items=(wk&&wk.items)||[];
 if(!items.length)return '';
-var h='<section class="system-section"><div class="system-section-hd"><div class="system-section-copy"><h3>This Week\'s Resources</h3><p>Open the notes first, then use the quiz to lock in the localization patterns.</p></div><div class="system-count">'+items.length+'</div></div><div class="resource-grid">';
+var grouped={},groupOrder=[];
 items.forEach(function(item){
-  var links=item.links||[];
-  var btns='';
-  links.forEach(function(link){
-    btns+='<a class="resource-btn '+getLinkTone(link)+'" href="'+link.href+'" target="_blank"><span>'+getLinkIcon(link)+'</span><span>'+link.label+'</span></a>';
+  var groupKey=(item&&item.group)||'resources';
+  if(!grouped[groupKey]){
+    grouped[groupKey]=[];
+    groupOrder.push(groupKey);
+  }
+  grouped[groupKey].push(item);
+});
+var h='<section class="system-section"><div class="system-section-hd"><div class="system-section-copy"><h3>This Week\'s Resources</h3><p>Week 1 is split into cases and disease indexes so you can jump straight to the kind of review you want.</p></div><div class="system-count">'+items.length+'</div></div><div class="resource-groups">';
+groupOrder.forEach(function(groupKey){
+  var meta=getResourceGroupMeta(groupKey);
+  var groupItems=grouped[groupKey]||[];
+  h+='<div class="resource-group"><div class="resource-group-hd"><div><div class="resource-group-kicker">Section</div><h4>'+meta.label+'</h4><p>'+meta.copy+'</p></div><div class="resource-group-count">'+groupItems.length+'</div></div><div class="resource-grid">';
+  groupItems.forEach(function(item){
+    var links=item.links||[];
+    var btns='';
+    links.forEach(function(link){
+      btns+='<a class="resource-btn '+getLinkTone(link)+'" href="'+link.href+'" target="_blank"><span>'+getLinkIcon(link)+'</span><span>'+link.label+'</span></a>';
+    });
+    h+='<article class="resource-card"><div class="resource-card-top"><span class="resource-icon">'+(item.icon||'📘')+'</span><div><div class="resource-eyebrow">'+getResourceTypeLabel(item)+'</div><h4 class="resource-title">'+formatResourceTitle(item.title)+'</h4><div class="resource-sub">'+DATA[CC].fullName+'</div></div></div><div class="resource-actions">'+btns+'</div></article>';
   });
-  h+='<article class="resource-card"><div class="resource-card-top"><span class="resource-icon">'+(item.icon||'📘')+'</span><div><div class="resource-eyebrow">'+getResourceTypeLabel(item)+'</div><h4 class="resource-title">'+formatResourceTitle(item.title)+'</h4><div class="resource-sub">'+DATA[CC].fullName+'</div></div></div><div class="resource-actions">'+btns+'</div></article>';
+  h+='</div></div>';
 });
 return h+'</div></section>';
 }
