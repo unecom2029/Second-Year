@@ -253,7 +253,7 @@
   .dd-svg-io{font-family:'IBM Plex Mono',monospace;font-size:9px;fill:var(--ink-soft);}
   .dd-note{font-size:13.3px;line-height:1.55;color:var(--ink-soft);margin:0;}
 
-  .dd-photo{width:100%;display:block;border-radius:7px;border:1px solid var(--line);margin-bottom:8px;background:#fff;}
+  .dd-photo{width:100%;display:block;border-radius:7px;border:1px solid var(--line);margin-bottom:8px;background:#fff;cursor:zoom-in;transition:opacity .12s ease;}
   .dd-caption{
     font-size:11.6px;line-height:1.45;color:var(--ink-faint);font-style:italic;
     margin:0 0 12px;padding-left:8px;border-left:2px solid var(--line);
@@ -268,6 +268,30 @@
     text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;
   }
   .dd-note b{color:var(--ink);}
+
+  .lightbox{
+    position:fixed;inset:0;background:rgba(22,18,14,.82);
+    display:flex;align-items:center;justify-content:center;
+    padding:28px;z-index:120;opacity:0;pointer-events:none;transition:opacity .18s ease;
+  }
+  .lightbox.show{opacity:1;pointer-events:auto;}
+  .lightbox img{
+    max-width:min(96vw,1200px);max-height:86vh;border-radius:10px;
+    box-shadow:0 18px 48px rgba(0,0,0,.32);transform:scale(.97);transition:transform .18s ease;
+    cursor:zoom-out;
+  }
+  .lightbox.show img{transform:scale(1);}
+  .lightbox-close{
+    position:absolute;top:18px;right:18px;width:42px;height:42px;border:none;border-radius:999px;
+    background:rgba(255,255,255,.92);color:var(--ink);font-size:28px;line-height:1;cursor:pointer;
+    box-shadow:0 6px 20px rgba(0,0,0,.14);
+  }
+  .lightbox-close:hover{background:#fff;}
+  .lightbox-hint{
+    position:absolute;bottom:18px;left:50%;transform:translateX(-50%);
+    font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.05em;color:#f5efe7;
+    opacity:.86;text-transform:uppercase;
+  }
 
   .fiber-table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:12px;}
   .fiber-table th{text-align:left;font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-faint);padding:6px 8px;border-bottom:1px solid var(--line);}
@@ -890,6 +914,12 @@
   <p class="spotlight-body" id="spotlightBody">Tap any highlighted phrase in the case to see the note — it appears right here, no scrolling required.</p>
 </aside>
 
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightboxClose" aria-label="Close">×</button>
+  <img id="lightboxImg" src="" alt="">
+  <div class="lightbox-hint">Click anywhere to close</div>
+</div>
+
 <script>
 (function(){
 
@@ -1026,6 +1056,35 @@
       openSpotlight(a, m);
     });
   });
+
+  var lightbox = document.getElementById("lightbox");
+  var lightboxImg = document.getElementById("lightboxImg");
+  var lightboxClose = document.getElementById("lightboxClose");
+
+  function openLightbox(src, alt){
+    lightboxImg.src = src;
+    lightboxImg.alt = alt || "";
+    lightbox.classList.add("show");
+  }
+
+  function closeLightbox(){
+    lightbox.classList.remove("show");
+    lightboxImg.src = "";
+  }
+
+  Array.prototype.slice.call(document.querySelectorAll(".dd-photo")).forEach(function(img){
+    img.addEventListener("click", function(e){
+      e.stopPropagation();
+      openLightbox(img.src, img.alt);
+    });
+  });
+
+  lightbox.addEventListener("click", closeLightbox);
+  lightboxClose.addEventListener("click", function(e){
+    e.stopPropagation();
+    closeLightbox();
+  });
+  document.addEventListener("keydown", function(e){ if(e.key === "Escape") closeLightbox(); });
 
 })();
 </script>

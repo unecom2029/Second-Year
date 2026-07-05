@@ -83,7 +83,7 @@
 
 /* ============================= BASE ============================= */
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;font-size:calc(16px * var(--font-scale, 1))}
 body{
   margin:0; background:var(--bg); color:var(--text);
   font-family:'Nunito',sans-serif; line-height:1.6;
@@ -113,6 +113,17 @@ h1,h2,h3{font-family:'Crimson Pro',serif; margin:0; font-weight:600}
   padding:5px 10px; cursor:pointer; transition:all .15s;
 }
 .print-btn:hover{border-color:var(--accent); color:var(--accent)}
+.font-size-controls{
+  display:flex; align-items:center; gap:4px; padding:3px 4px; background:var(--bg-card);
+  border:1px solid var(--border); border-radius:999px;
+}
+.font-size-btn{
+  font-family:'IBM Plex Mono',monospace; font-size:.68rem; line-height:1; background:transparent;
+  border:1px solid transparent; border-radius:999px; color:var(--text-dim);
+  padding:6px 10px; cursor:pointer; transition:all .15s;
+}
+.font-size-btn:hover:not(:disabled){background:var(--bg-hover); color:var(--text)}
+.font-size-btn:disabled{opacity:.45; cursor:default}
 
 .header-link-btn{
   font-family:'IBM Plex Mono',monospace; font-size:.66rem; text-decoration:none;
@@ -289,9 +300,10 @@ tr:last-child td{border-bottom:none}
 
 /* ============================= PRINT ============================= */
 @media print {
+  html { font-size: 16px !important; }
   .panel { display: block !important; page-break-after: always; }
   .panel:last-of-type { page-break-after: auto; }
-  .site-header, .sidebar-nav, .sidebar-toggle-btn, .sidebar-backdrop, .print-btn, .theme-switcher,
+  .site-header, .sidebar-nav, .sidebar-toggle-btn, .sidebar-backdrop, .print-btn, .font-size-controls, .theme-switcher,
   .mcq-section, .video-card { display: none !important; }
   .layout-shell { display: block !important; }
   .content-area { padding: 24px !important; }
@@ -475,6 +487,10 @@ tr:last-child td{border-bottom:none}
     <button class="sidebar-toggle-btn" id="sidebarToggleBtn">☰ Diseases</button>
     <a class="header-link-btn" href="DI_inflammatory_pns_5W.html" title="Open Inflammatory Diseases of the PNS">🔥 Inflammatory PNS DI</a>
     <button class="print-btn" id="printTextBtn" title="Print all text as PDF">🖨️ Print Text</button>
+    <div class="font-size-controls" aria-label="Text size controls">
+      <button class="font-size-btn" id="fontDownBtn" type="button" title="Decrease text size" aria-label="Decrease text size">A-</button>
+      <button class="font-size-btn" id="fontUpBtn" type="button" title="Increase text size" aria-label="Increase text size">A+</button>
+    </div>
     <div class="theme-switcher">
       <button class="theme-btn t-cream active" data-theme="cream" title="Cream"></button>
       <button class="theme-btn t-dark" data-theme="dark" title="Dark"></button>
@@ -1401,6 +1417,65 @@ tr:last-child td{border-bottom:none}
 })();
 
 (function(){ const t = localStorage.getItem('pns-degen-theme'); setTheme(t || 'cream'); })();
+
+const FONT_SCALE_KEY = 'omk-di-font-scale';
+const FONT_SCALE_MIN = 0.9;
+const FONT_SCALE_MAX = 1.3;
+const FONT_SCALE_STEP = 0.1;
+const fontDownBtn = document.getElementById('fontDownBtn');
+const fontUpBtn = document.getElementById('fontUpBtn');
+
+function clampFontScale(value){
+  const numeric = Number(value);
+  if(!Number.isFinite(numeric)) return 1;
+  return Math.min(FONT_SCALE_MAX, Math.max(FONT_SCALE_MIN, Math.round(numeric * 100) / 100));
+}
+
+function readStoredFontScale(){
+  try{
+    return clampFontScale(parseFloat(localStorage.getItem(FONT_SCALE_KEY)));
+  }catch(err){
+    return 1;
+  }
+}
+
+function persistFontScale(scale){
+  try{
+    localStorage.setItem(FONT_SCALE_KEY, String(scale));
+  }catch(err){}
+}
+
+function updateFontButtons(scale){
+  if(fontDownBtn) fontDownBtn.disabled = scale <= FONT_SCALE_MIN + 0.001;
+  if(fontUpBtn) fontUpBtn.disabled = scale >= FONT_SCALE_MAX - 0.001;
+}
+
+function applyFontScale(scale){
+  const safeScale = clampFontScale(scale);
+  document.documentElement.style.setProperty('--font-scale', safeScale);
+  persistFontScale(safeScale);
+  updateFontButtons(safeScale);
+  if(typeof syncHeaderHeight === 'function'){
+    requestAnimationFrame(syncHeaderHeight);
+  }
+}
+
+let currentFontScale = readStoredFontScale();
+applyFontScale(currentFontScale);
+
+if(fontDownBtn){
+  fontDownBtn.addEventListener('click', function(){
+    currentFontScale = clampFontScale(currentFontScale - FONT_SCALE_STEP);
+    applyFontScale(currentFontScale);
+  });
+}
+
+if(fontUpBtn){
+  fontUpBtn.addEventListener('click', function(){
+    currentFontScale = clampFontScale(currentFontScale + FONT_SCALE_STEP);
+    applyFontScale(currentFontScale);
+  });
+}
 
 function setTheme(theme){
   document.documentElement.setAttribute('data-theme', theme);

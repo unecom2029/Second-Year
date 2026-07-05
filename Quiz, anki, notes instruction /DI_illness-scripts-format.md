@@ -1,4 +1,4 @@
-# Illness Scripts — Tabbed Comparison Note Format
+,.# Illness Scripts — Tabbed Comparison Note Format
 **Build guide & design system spec**
 *Reference file: `illness_scripts_42K.html` (Ocular Pathology — Conjunctivitis / AMD / Glaucoma / Cataract)*
 *Quiz shell reference: `quiz_format_instructions.md` (launch screen + full-screen overlay quiz), reskinned per §11*
