@@ -1249,7 +1249,26 @@ OMK:{
     4:{label:"Week 4",weekNum:4},
     5:{label:"Week 5",weekNum:5},
     6:{label:"Week 6",weekNum:6},
-    7:{label:"Disease Index",weekNum:7}
+    7:{label:"Disease Index",weekNum:7,items:[
+      {title:"Primary Muscle Diseases - Disease Indexes",icon:"💪",group:"disease-indexes",typeLabel:"Disease Index",links:[
+        {label:"Open",href:"week1/OMK/week1_DIs.html",style:"open"}
+      ]},
+      {title:"Inherited & Congenital Neuropathies - Disease Indexes",icon:"🧬",group:"disease-indexes",typeLabel:"Disease Index",links:[
+        {label:"Open",href:"week1/OMK/DI_Inherited & Congenital Neuropathies.html",style:"open"}
+      ]}
+    ]},
+    8:{label:"Cases",weekNum:8,items:[
+      {title:"Case1-1_Functional_Localization",icon:"🧠",group:"cases",typeLabel:"Learning Case",links:[
+        {label:"Notes",href:"week1/OMK/Willard_Case1-1_Functional_Localization.html",style:"open"},
+        {label:"Quiz",href:"week1/OMK/Case1-1_Functional_Localization_Quiz.html",style:"dl"}
+      ]},
+      {title:"Case 2-1 CMT1A Annotated",icon:"🧬",group:"cases",typeLabel:"Annotated Case",links:[
+        {label:"Open",href:"week1/OMK/case_2-1_CMT1A_annotated.html",style:"open"}
+      ]},
+      {title:"Case 2-2 L5-S1 Radiculopathy Annotated",icon:"🦴",group:"cases",typeLabel:"Annotated Case",links:[
+        {label:"Open",href:"week1/OMK/case_2-2_L5-S1-radiculopathy_annotated.html",style:"open"}
+      ]}
+    ]}
   }
 },
 OCS:{
@@ -1267,7 +1286,7 @@ OCS:{
 
 var SYSTEM_CONFIG={
 
-OMK:{name:"Neurology/Neuroanatomy",weeks:[1,2,3,4,5,6,7]},
+OMK:{name:"Neurology/Neuroanatomy",weeks:[1,2,3,4,5,6,7,8]},
 OCS:{name:"Neurology/Neuroanatomy",weeks:[1,2,3,4,5,6]}
 };
 
@@ -1388,7 +1407,10 @@ function getWeekLabel(category,week){
 }
 function getWeekBadge(category,week){
   var label=getWeekLabel(category,week);
-  return /^Week\s+\d+$/i.test(label)?padWeekNumber(week):'DI';
+  if(/^Week\s+\d+$/i.test(label))return padWeekNumber(week);
+  if(/^Disease\s+Index$/i.test(label))return 'DI';
+  if(/^Cases$/i.test(label))return 'CS';
+  return 'WK';
 }
 function padWeekNumber(num){
   return String(num).padStart(2,'0');
