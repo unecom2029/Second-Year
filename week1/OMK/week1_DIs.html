@@ -160,8 +160,14 @@ tr:hover td{background:var(--bg-hover)}
 .chain-arrow{color:var(--accent);font-size:.95rem}
 
 .fig-card{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:10px;margin:9px 0}
-.fig-card img{width:100%;border-radius:5px;display:block}
+.fig-card img{width:100%;border-radius:5px;display:block;cursor:zoom-in}
 .fig-caption{font-family:'IBM Plex Mono',monospace;font-size:.66rem;text-transform:uppercase;letter-spacing:.08em;opacity:.6;margin-top:6px}
+.zoom-modal{display:none;position:fixed;inset:0;z-index:500;background:rgba(8,10,14,.88);padding:24px;align-items:center;justify-content:center}
+.zoom-modal.open{display:flex}
+.zoom-modal-inner{position:relative;max-width:min(96vw,1400px);max-height:92vh;display:flex;align-items:center;justify-content:center}
+.zoom-modal img{display:block;max-width:100%;max-height:92vh;width:auto;height:auto;border-radius:10px;box-shadow:0 18px 48px rgba(0,0,0,.45)}
+.zoom-close{position:absolute;top:-12px;right:-12px;width:38px;height:38px;border:1px solid rgba(255,255,255,.35);border-radius:999px;background:rgba(0,0,0,.7);color:#fff;font-size:1.2rem;line-height:1;cursor:pointer}
+.zoom-hint{position:absolute;left:50%;bottom:-18px;transform:translateX(-50%);font-family:'IBM Plex Mono',monospace;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.72);white-space:nowrap}
 
 .video-card{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:10px;margin:9px 0}
 .video-link{display:block;text-decoration:none}
@@ -219,6 +225,7 @@ p{margin:5px 0}
     margin: 0 auto !important; page-break-inside: avoid; break-inside: avoid;
   }
   .fig-card { page-break-inside: avoid; break-inside: avoid; }
+  .zoom-modal { display:none !important; }
 
   a { text-decoration: none; color: #000 !important; }
 }
@@ -2762,6 +2769,13 @@ body.print-review-active #printReviewRoot{display:block;padding:28px;background:
 </div>
 
 <div id="printReviewRoot" aria-hidden="true"></div>
+<div class="zoom-modal" id="zoomModal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Image zoom viewer">
+  <div class="zoom-modal-inner">
+    <button class="zoom-close" id="zoomCloseBtn" type="button" aria-label="Close zoomed image">×</button>
+    <img id="zoomModalImg" src="" alt="">
+    <div class="zoom-hint">Click outside or press Escape to close</div>
+  </div>
+</div>
 
 
 <script>
@@ -3126,12 +3140,30 @@ function buildPrintReviewMarkup(){
   });
   return `<div class="print-shell"><h2>${escapeHTML((data && data.title) || 'Practice Questions')} — Answer Review</h2>${cards}</div>`;
 }
+let printCleanupTimer = null;
+function clearPrintReviewMode(){
+  document.body.classList.remove('print-review-active');
+  if(printCleanupTimer){
+    clearTimeout(printCleanupTimer);
+    printCleanupTimer = null;
+  }
+}
+function beginPrintReviewMode(){
+  clearPrintReviewMode();
+  document.body.classList.add('print-review-active');
+  /* Some print-preview flows don't reliably fire afterprint, so keep a fallback
+     cleanup path to prevent the main page from staying hidden. */
+  printCleanupTimer = setTimeout(clearPrintReviewMode, 1500);
+}
 function printQuizReview(){
   document.getElementById('printReviewRoot').innerHTML = buildPrintReviewMarkup();
-  document.body.classList.add('print-review-active');
+  beginPrintReviewMode();
   setTimeout(() => window.print(), 50);
 }
-window.addEventListener('afterprint', () => { document.body.classList.remove('print-review-active'); });
+window.addEventListener('afterprint', clearPrintReviewMode);
+window.addEventListener('focus', () => {
+  if(document.body.classList.contains('print-review-active')) clearPrintReviewMode();
+});
 document.getElementById('printQuiz').addEventListener('click', printQuizReview);
 
 QUIZ_DATA['duchenne'] = {
@@ -4345,7 +4377,56 @@ document.getElementById('sidebarToggleBtn').addEventListener('click', () => {
   document.getElementById('sidebarNav').classList.toggle('open');
 });
 
-document.getElementById('printTextBtn').addEventListener('click', () => window.print());
+const zoomModal = document.getElementById('zoomModal');
+const zoomModalImg = document.getElementById('zoomModalImg');
+const zoomCloseBtn = document.getElementById('zoomCloseBtn');
+
+function openZoomModal(img){
+  if(!img || !zoomModal || !zoomModalImg) return;
+  zoomModalImg.src = img.currentSrc || img.src;
+  zoomModalImg.alt = img.alt || '';
+  zoomModal.classList.add('open');
+  zoomModal.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeZoomModal(){
+  if(!zoomModal || !zoomModalImg) return;
+  zoomModal.classList.remove('open');
+  zoomModal.setAttribute('aria-hidden', 'true');
+  zoomModalImg.src = '';
+  zoomModalImg.alt = '';
+  document.body.style.overflow = '';
+}
+
+document.querySelectorAll('.fig-card img').forEach(img => {
+  img.setAttribute('tabindex', '0');
+  img.setAttribute('role', 'button');
+  img.setAttribute('aria-label', (img.alt ? `${img.alt}. ` : '') + 'Click to zoom');
+  img.addEventListener('click', () => openZoomModal(img));
+  img.addEventListener('keydown', e => {
+    if(e.key === 'Enter' || e.key === ' '){
+      e.preventDefault();
+      openZoomModal(img);
+    }
+  });
+});
+
+if(zoomCloseBtn) zoomCloseBtn.addEventListener('click', closeZoomModal);
+if(zoomModal){
+  zoomModal.addEventListener('click', e => {
+    if(e.target === zoomModal) closeZoomModal();
+  });
+}
+window.addEventListener('keydown', e => {
+  if(e.key === 'Escape' && zoomModal && zoomModal.classList.contains('open')) closeZoomModal();
+});
+
+document.getElementById('printTextBtn').addEventListener('click', () => {
+  closeZoomModal();
+  clearPrintReviewMode();
+  window.print();
+});
 </script>
 </body>
 </html>
