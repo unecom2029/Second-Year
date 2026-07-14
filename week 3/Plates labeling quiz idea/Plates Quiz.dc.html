@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<script src="./plates-data.js"></script>
+<script src="./plate-descriptions.js"></script>
+<style>
+  body { margin: 0; }
+  * { box-sizing: border-box; }
+  ::selection { background: rgba(100,180,255,0.35); }
+</style>
+</helmet>
+<sc-if value="{{ loading }}" hint-placeholder-val="{{ true }}">
+  <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:oklch(0.97 0.006 90);color:oklch(0.4 0.01 90);font:15px system-ui,sans-serif">Loading plates…</div>
+</sc-if>
+<sc-if value="{{ notLoading }}" hint-placeholder-val="{{ false }}">
+<div style="min-height:100vh;display:flex;flex-direction:column;background:{{ bg }};color:{{ fg }};font-family:system-ui,-apple-system,sans-serif;transition:background .2s,color .2s">
+
+  <!-- Header -->
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 22px;border-bottom:1px solid {{ border }};flex-wrap:wrap">
+    <div style="display:flex;align-items:baseline;gap:12px">
+      <div style="font-family:Georgia,'Iowan Old Style',serif;font-size:21px;font-weight:700;letter-spacing:.2px">Neuroanatomy Plate Quiz</div>
+      <div style="font-size:12.5px;color:{{ muted }}">{{ plateTitle }} · {{ progressLabel }}</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+      <button onClick="{{ prevPlate }}" disabled="{{ prevDisabled }}" style="{{ navBtnStyle }}">&larr; Prev</button>
+      <button onClick="{{ nextPlate }}" disabled="{{ nextDisabled }}" style="{{ navBtnStyle }}">Next &rarr;</button>
+      <div style="width:1px;height:22px;background:{{ border }};margin:0 4px"></div>
+      <button onClick="{{ revealAll }}" style="{{ actionBtnStyle }}">Reveal all</button>
+      <button onClick="{{ hideAll }}" style="{{ actionBtnStyle }}">Hide all</button>
+      <div style="width:1px;height:22px;background:{{ border }};margin:0 4px"></div>
+      <button onClick="{{ toggleTheme }}" style="{{ themeBtnStyle }}">{{ themeBtnLabel }}</button>
+    </div>
+  </div>
+
+  <!-- Body -->
+  <div style="display:flex;flex:1;min-height:0">
+
+    <!-- Sidebar -->
+    <div style="width:200px;flex:none;border-right:1px solid {{ border }};overflow-y:auto;padding:10px">
+      <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:{{ muted }};padding:6px 8px 10px">Plates</div>
+      <sc-for list="{{ sidebarItems }}" as="p" hint-placeholder-count="18">
+        <div onClick="{{ p.onClick }}" style="{{ p.rowStyle }}">
+          <span>{{ p.label }}</span>
+          <span style="font-size:11px;color:{{ p.progressColor }}">{{ p.progress }}</span>
+        </div>
+      </sc-for>
+    </div>
+
+    <!-- Main -->
+    <div style="flex:1;overflow-y:auto;padding:22px;display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start">
+
+      <!-- Image stage -->
+      <div style="flex:2 1 480px;min-width:340px">
+        <div style="position:relative;width:100%;padding-top:{{ aspectPct }}%;background:{{ card }};border-radius:10px;overflow:hidden;border:1px solid {{ border }};box-shadow:0 1px 8px rgba(0,0,0,.08)">
+          <div role="img" aria-label="{{ plateTitle }}" style="position:absolute;inset:0;width:100%;height:100%;background-image:url({{ mainImage }});background-size:100% 100%;background-repeat:no-repeat;"></div>
+          <svg style="position:absolute;inset:0;width:100%;height:100%" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <sc-for list="{{ svgPathsView }}" as="it" hint-placeholder-count="20">
+              <path d="{{ it.path }}" fill="{{ it.pathFill }}" stroke="{{ it.pathStroke }}" stroke-width="{{ it.pathStrokeWidth }}" vector-effect="non-scaling-stroke" style="{{ it.pathElStyle }}" onClick="{{ it.toggle }}" onMouseEnter="{{ it.onEnter }}" onMouseLeave="{{ it.onLeave }}"></path>
+            </sc-for>
+          </svg>
+          <div style="position:absolute;inset:0;pointer-events:none">
+            <sc-for list="{{ itemsView }}" as="it" hint-placeholder-count="20">
+              <sc-if value="{{ it.showDot }}" hint-placeholder-val="{{ false }}">
+                <div onClick="{{ it.toggle }}" onMouseEnter="{{ it.onEnter }}" onMouseLeave="{{ it.onLeave }}" title="{{ it.pinTitle }}" style="{{ it.dotStyle }}"></div>
+              </sc-if>
+            </sc-for>
+          </div>
+          <sc-if value="{{ hasSectionLabel }}" hint-placeholder-val="{{ false }}">
+            <div style="{{ sectionLabelStyle }}">{{ sectionLabel }}</div>
+          </sc-if>
+          <div style="position:absolute;inset:0;pointer-events:none">
+            <sc-for list="{{ staticLabelsView }}" as="sl" hint-placeholder-count="3">
+              <div style="{{ sl.style }}">{{ sl.text }}</div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="margin-top:10px;font-size:12.5px;color:{{ muted }};line-height:1.5">Click a colored region (or its swatch in the list) to reveal the structure name. Dotted markers are labels without a precise outline in the source file — their position is approximate.</div>
+      </div>
+
+      <!-- Legend -->
+      <div style="flex:1 1 280px;min-width:260px;background:{{ card }};border:1px solid {{ border }};border-radius:10px;overflow:hidden;align-self:flex-start">
+        <div style="padding:12px 14px;border-bottom:1px solid {{ border }};font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:{{ muted }}">Answer key — {{ plateTitle }}</div>
+        <div style="max-height:640px;overflow-y:auto" ref="{{ legendContainerRef }}">
+          <sc-for list="{{ itemsView }}" as="it" hint-placeholder-count="20">
+            <div ref="{{ it.rowRef }}" onClick="{{ it.toggle }}" onMouseEnter="{{ it.onEnter }}" onMouseLeave="{{ it.onLeave }}" style="{{ it.rowStyle }}">
+              <span style="{{ it.swatchStyle }}"></span>
+              <div style="flex:1;min-width:0">
+                <div style="{{ it.rowLabelStyle }}">{{ it.rowLabelText }}</div>
+                <sc-if value="{{ it.showDesc }}" hint-placeholder-val="{{ false }}">
+                  <div style="{{ it.rowDescStyle }}">{{ it.descText }}</div>
+                </sc-if>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</sc-if>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 1400, &quot;height&quot;: 900}, &quot;defaultTheme&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;default&quot;: &quot;light&quot;, &quot;options&quot;: [&quot;light&quot;, &quot;dark&quot;], &quot;tsType&quot;: &quot;string&quot;}, &quot;accentColor&quot;: {&quot;editor&quot;: &quot;color&quot;, &quot;default&quot;: &quot;oklch(0.55 0.14 200)&quot;, &quot;options&quot;: [&quot;oklch(0.55 0.14 200)&quot;, &quot;oklch(0.55 0.15 25)&quot;, &quot;oklch(0.55 0.14 145)&quot;, &quot;oklch(0.55 0.14 300)&quot;], &quot;tsType&quot;: &quot;string&quot;}, &quot;startPlate&quot;: {&quot;editor&quot;: &quot;int&quot;, &quot;default&quot;: 1, &quot;min&quot;: 1, &quot;max&quot;: 18, &quot;tsType&quot;: &quot;number&quot;}}">
+function pathBBoxArea(d) {
+  if (!d) return 0;
+  const nums = (d.match(/-?\d+\.?\d*/g) || []).map(Number);
+  if (nums.length < 4) return 0;
+  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+  for (let i = 0; i < nums.length; i += 2) {
+    const x = nums[i], y = nums[i + 1];
+    if (x < minX) minX = x; if (x > maxX) maxX = x;
+    if (y < minY) minY = y; if (y > maxY) maxY = y;
+  }
+  return Math.max(0, maxX - minX) * Math.max(0, maxY - minY);
+}
+
+class Component extends DCLogic {
+  state = {
+    plates: (typeof window !== 'undefined' && window.PLATES) || null,
+    theme: (this.props && this.props.defaultTheme) || 'light',
+    currentIdx: 0,
+    revealed: {},
+    hoverKey: null,
+    selectedKey: null,
+  };
+
+  rowRefs = {};
+  legendEl = null;
+
+  legendContainerRef = (el) => { this.legendEl = el; };
+
+  setRowRef(key) {
+    return (el) => { this.rowRefs[key] = el; };
+  }
+
+  scrollLegendTo(key) {
+    const el = this.rowRefs[key];
+    const container = this.legendEl;
+    if (!el || !container) return;
+    const elRect = el.getBoundingClientRect();
+    const containerRect = container.getBoundingClientRect();
+    const elTop = (elRect.top - containerRect.top) + container.scrollTop;
+    const elHeight = elRect.height;
+    const target = elTop - (container.clientHeight - elHeight) / 2;
+    const maxScroll = Math.max(0, container.scrollHeight - container.clientHeight);
+    container.scrollTop = Math.max(0, Math.min(maxScroll, target));
+  }
+
+  componentDidMount() {
+    let saved = null;
+    try { saved = JSON.parse(localStorage.getItem('plates-quiz-state-v1') || 'null'); } catch (e) {}
+    const start = Math.max(1, Math.min(18, (this.props && this.props.startPlate) || 1)) - 1;
+    this.setState({
+      theme: (saved && saved.theme) || this.state.theme,
+      currentIdx: (saved && typeof saved.currentIdx === 'number') ? saved.currentIdx : start,
+      revealed: (saved && saved.revealed) || {},
+    });
+    if (!this.state.plates && typeof window !== 'undefined') {
+      // helmet script may still be loading; poll briefly as a fallback
+      let tries = 0;
+      const poll = () => {
+        if (window.PLATES) { this.setState({ plates: window.PLATES }); return; }
+        if (++tries < 50) setTimeout(poll, 40);
+      };
+      poll();
+    }
+    this._onKey = (e) => {
+      if (e.key === 'ArrowRight') this.selectPlate(Math.min(this.state.currentIdx + 1, (this.state.plates || []).length - 1));
+      if (e.key === 'ArrowLeft') this.selectPlate(Math.max(this.state.currentIdx - 1, 0));
+    };
+    window.addEventListener('keydown', this._onKey);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this._onKey);
+  }
+
+  persist(extra) {
+    const payload = { theme: this.state.theme, currentIdx: this.state.currentIdx, revealed: this.state.revealed, ...extra };
+    try { localStorage.setItem('plates-quiz-state-v1', JSON.stringify(payload)); } catch (e) {}
+  }
+
+  selectPlate(i) {
+    if (i < 0 || !this.state.plates || i >= this.state.plates.length) return;
+    this.setState({ currentIdx: i, hoverKey: null, selectedKey: null });
+    this.persist({ currentIdx: i });
+  }
+
+  isShown(key) {
+    return this.state.revealed[key] !== false;
+  }
+
+  toggleItem(key) {
+    const revealed = { ...this.state.revealed, [key]: !this.isShown(key) };
+    this.setState({ revealed, selectedKey: null });
+    this.persist({ revealed });
+  }
+
+  selectItem(key) {
+    this.setState({ selectedKey: key });
+    if (typeof window !== 'undefined' && window.requestAnimationFrame) {
+      window.requestAnimationFrame(() => {
+        this.scrollLegendTo(key);
+        setTimeout(() => this.scrollLegendTo(key), 60);
+      });
+    }
+  }
+
+  revealAll(plate) {
+    const revealed = { ...this.state.revealed };
+    plate.items.forEach((_, i) => { delete revealed[`${plate.slide}-${i}`]; });
+    this.setState({ revealed, selectedKey: null });
+    this.persist({ revealed });
+  }
+
+  hideAll(plate) {
+    const revealed = { ...this.state.revealed };
+    plate.items.forEach((_, i) => { revealed[`${plate.slide}-${i}`] = false; });
+    this.setState({ revealed, selectedKey: null });
+    this.persist({ revealed });
+  }
+
+  toggleTheme() {
+    const theme = this.state.theme === 'dark' ? 'light' : 'dark';
+    this.setState({ theme });
+    this.persist({ theme });
+  }
+
+  renderVals() {
+    const st = this.state;
+    if (!st.plates) return { loading: true, notLoading: false };
+
+    const dark = st.theme === 'dark';
+    const accent = (this.props && this.props.accentColor) || (dark ? 'oklch(0.72 0.13 200)' : 'oklch(0.55 0.14 200)');
+    const bg = dark ? 'oklch(0.19 0.012 250)' : 'oklch(0.97 0.006 90)';
+    const fg = dark ? 'oklch(0.93 0.01 90)' : 'oklch(0.20 0.01 90)';
+    const card = dark ? 'oklch(0.24 0.015 250)' : 'oklch(1 0 0)';
+    const border = dark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.09)';
+    const muted = dark ? 'oklch(0.68 0.02 90)' : 'oklch(0.50 0.01 90)';
+    const hoverBg = dark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)';
+
+    const currentIdx = Math.min(st.currentIdx, st.plates.length - 1);
+    const currentPlate = st.plates[currentIdx];
+    const totalItems = currentPlate.items.length;
+    const revealedCount = currentPlate.items.filter((_, i) => this.isShown(`${currentPlate.slide}-${i}`)).length;
+    const allRevealed = totalItems > 0 && revealedCount === totalItems;
+
+    const n = currentPlate.items.length;
+    const colorL = dark ? 0.72 : 0.60;
+    const colorC = dark ? 0.13 : 0.14;
+    const colorFor = (i) => `oklch(${colorL} ${colorC} ${(i * 137.508) % 360})`;
+
+    const itemsView = currentPlate.items.map((it, i) => {
+      const key = `${currentPlate.slide}-${i}`;
+      const revealed = this.isShown(key);
+      const isHover = st.hoverKey === key;
+      const isSelected = st.selectedKey === key;
+      const color = colorFor(i);
+      const onRegionClick = allRevealed ? (() => this.selectItem(key)) : (() => this.toggleItem(key));
+
+      const fillAlpha = revealed ? 0.55 : (isHover ? 0.28 : 0.12);
+      const strokeAlpha = revealed ? 1 : (isHover ? 0.9 : 0.6);
+      const pathFill = color.replace(')', ` / ${fillAlpha})`);
+      const pathStroke = color.replace(')', ` / ${strokeAlpha})`);
+      const pathStrokeWidth = revealed ? 0.45 : (isHover ? 0.4 : 0.28);
+      const glowColor = color.replace(')', ' / 0.85)');
+      const pathElStyle = `cursor:pointer;pointer-events:all;transition:fill .15s,stroke-width .15s,transform .15s,filter .15s;transform-box:fill-box;transform-origin:center;transform:${isHover ? 'scale(1.035)' : 'scale(1)'};filter:${isHover ? `drop-shadow(0 0 4px ${glowColor})` : 'none'};`;
+
+      const dotStyle = `position:absolute;left:${it.pin[0]}%;top:${it.pin[1]}%;transform:translate(-50%,-50%) scale(${isHover ? 1.25 : 1});width:16px;height:16px;border-radius:50%;cursor:pointer;pointer-events:auto;transition:transform .12s;border:2px dotted ${color};background:${revealed ? color : 'transparent'};box-shadow:${isHover ? '0 3px 8px rgba(0,0,0,.3)' : '0 1px 3px rgba(0,0,0,.18)'};z-index:${isHover ? 5 : 1};`;
+
+      const rowBg = isSelected ? accent.replace(')', ' / 0.16)') : (isHover ? color.replace(')', ' / 0.12)') : 'transparent');
+      const rowStyle = `display:flex;align-items:flex-start;gap:10px;padding:9px 14px;cursor:pointer;border-bottom:1px solid ${border};background:${rowBg};box-shadow:${isSelected ? `inset 3px 0 0 ${accent}` : (isHover ? `inset 3px 0 0 ${color}` : 'none')};transition:background .12s,box-shadow .12s;`;
+      const swatchStyle = `flex:none;margin-top:2px;width:16px;height:16px;border-radius:5px;background:${color};box-shadow:inset 0 0 0 1px rgba(0,0,0,.15);`;
+      const rowLabelStyle = `font-size:13.5px;color:${revealed ? fg : muted};font-style:${revealed ? 'normal' : 'italic'};line-height:1.35;`;
+      const rowDescStyle = `font-size:12px;color:${muted};line-height:1.4;margin-top:3px;`;
+      const descText = (typeof window !== 'undefined' && window.PlateDescriptions) ? window.PlateDescriptions.describe(it.label) : null;
+
+      return {
+        num: i + 1,
+        pin: it.pin,
+        path: it.path || '',
+        pathFill,
+        pathStroke,
+        pathStrokeWidth,
+        pathElStyle,
+        hasHighlight: it.hasHighlight,
+        showDot: !it.hasHighlight,
+        pinTitle: it.hasHighlight ? 'Click to reveal' : 'Click to reveal (approximate position)',
+        dotStyle,
+        rowRef: this.setRowRef(key),
+        rowStyle,
+        swatchStyle,
+        rowLabelStyle,
+        rowDescStyle,
+        showDesc: revealed && !!descText,
+        descText: descText || '',
+        rowLabelText: revealed ? it.label + (it.hasHighlight ? '' : '  (approx.)') : '· · · · · ·',
+        toggle: onRegionClick,
+        onEnter: () => { this.setState({ hoverKey: key }); if (typeof window !== 'undefined' && window.requestAnimationFrame) window.requestAnimationFrame(() => { this.scrollLegendTo(key); setTimeout(() => this.scrollLegendTo(key), 60); }); },
+        onLeave: () => this.setState((s) => (s.hoverKey === key ? { hoverKey: null } : null)),
+      };
+    });
+
+    const sidebarItems = st.plates.map((p, i) => {
+      const cnt = p.items.filter((_, j) => this.isShown(`${p.slide}-${j}`)).length;
+      const active = i === currentIdx;
+      return {
+        slide: p.slide,
+        label: 'Plate ' + String(p.slide).padStart(2, '0'),
+        progress: `${cnt}/${p.items.length}`,
+        progressColor: cnt === p.items.length && p.items.length > 0 ? accent : muted,
+        rowStyle: `display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 10px;border-radius:7px;cursor:pointer;margin-bottom:2px;font-size:13.5px;background:${active ? accent.replace(')', ' / 0.13)') : 'transparent'};color:${active ? fg : muted};font-weight:${active ? 700 : 500};`,
+        onClick: () => this.selectPlate(i),
+      };
+    });
+
+    const navBtnStyle = (enabled) => `padding:7px 13px;border-radius:7px;border:1px solid ${border};background:${card};color:${enabled ? fg : muted};font-size:13px;cursor:${enabled ? 'pointer' : 'not-allowed'};opacity:${enabled ? 1 : 0.5};`;
+
+    return {
+      loading: false,
+      notLoading: true,
+      bg, fg, card, border, muted,
+      plateTitle: 'Plate ' + String(currentPlate.slide).padStart(2, '0'),
+      sectionLabel: currentPlate.sectionLabel || '',
+      hasSectionLabel: !!currentPlate.sectionLabel,
+      sectionLabelStyle: `position:absolute;top:10px;right:12px;font-family:Georgia,serif;font-size:15px;font-weight:700;color:${fg};background:${card.replace(')', ' / 0.88)')};padding:3px 10px;border-radius:5px;border:1px solid ${border};pointer-events:none;`,
+      staticLabelsView: (currentPlate.staticLabels || []).map((sl) => ({
+        text: sl.text,
+        style: `position:absolute;left:${sl.pin[0]}%;top:${sl.pin[1]}%;transform:translate(-50%,-50%);font-size:11.5px;font-weight:700;color:${muted};background:${card.replace(')', ' / 0.8)')};padding:2px 7px;border-radius:5px;border:1px dashed ${border};white-space:nowrap;pointer-events:none;`,
+      })),
+      progressLabel: `${revealedCount} / ${totalItems} revealed`,
+      mainImage: 'plates/' + currentPlate.mainImage,
+      aspectPct: (currentPlate.h / currentPlate.w * 100).toFixed(2),
+      sidebarItems,
+      itemsView,
+      svgPathsView: itemsView
+        .filter((it) => it.hasHighlight)
+        .map((it) => ({ it, area: pathBBoxArea(it.path) }))
+        .sort((a, b) => b.area - a.area)
+        .map((x) => x.it),
+      legendContainerRef: this.legendContainerRef,
+      prevDisabled: currentIdx === 0,
+      nextDisabled: currentIdx === st.plates.length - 1,
+      navBtnStyle: navBtnStyle(true),
+      prevPlate: () => this.selectPlate(currentIdx - 1),
+      nextPlate: () => this.selectPlate(currentIdx + 1),
+      revealAll: () => this.revealAll(currentPlate),
+      hideAll: () => this.hideAll(currentPlate),
+      toggleTheme: () => this.toggleTheme(),
+      themeBtnLabel: dark ? 'Light mode' : 'Dark mode',
+      themeBtnStyle: `padding:7px 13px;border-radius:7px;border:1px solid ${border};background:${card};color:${fg};font-size:13px;cursor:pointer;`,
+      actionBtnStyle: `padding:7px 13px;border-radius:7px;border:1px solid ${border};background:${card};color:${fg};font-size:13px;cursor:pointer;`,
+    };
+  }
+}
+
+</script>
+</body>
+</html>
