@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Headache Pharmacology — Ochs-Style Question Bank</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;500;600;700;800&family=Nunito:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+
+:root {
+  --teal: #1A7A6D; --teal-deep: #125E54; --teal-light: #E3F5F2; --teal-mid: #2BA393; --teal-glow: #3EC4B2;
+  --navy: #1B2A4A; --navy2: #12203C;
+  --coral: #E07A5F; --coral-bg: #FEF0EB;
+  --gold: #D4A843; --gold-bg: #FDF6E3; --gold-warm: #E8C76A;
+  --plum: #7B5EA7; --plum-bg: #F3EEF9;
+  --sky: #4A9AE8; --sky-bg: #EAF2FC;
+  --warm: #FBF8F3; --cream: #F6F3EC; --white: #FFFFFF;
+  --ink: #1E1E20; --ink2: #3E4555; --slate: #6B7689; --mist: #A0AAB8;
+  --rule: #DBD5C9; --rule2: #E9E4DA;
+  --green: #2D8659; --green-bg: #E8F5EE; --red: #C44040; --red-bg: #FDF0F0;
+  --amber: #C07B1A; --amber-bg: #FEF5E6;
+  --r: 14px; --rs: 8px;
+  --sh: 0 1px 4px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.03);
+  --sh2: 0 8px 32px rgba(0,0,0,0.08);
+  --sh3: 0 12px 48px rgba(0,0,0,0.10);
+  --tr: 0.25s cubic-bezier(.4,0,.2,1);
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--warm); color: var(--ink);
+  font-family: 'Nunito', sans-serif; line-height: 1.5;
+}
+h1, h2, .qstem, .sv { font-family: 'Crimson Pro', serif; }
+
+/* ===== Launch Screen ===== */
+.launch-wrap {
+  min-height: 100vh; display: grid; place-items: center; padding: 32px;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(62,196,178,.16), transparent 28%),
+    radial-gradient(circle at 82% 20%, rgba(123,94,167,.12), transparent 30%),
+    linear-gradient(180deg, var(--warm) 0%, var(--cream) 100%);
+}
+.launch-card {
+  max-width: 760px; width: 100%; background: rgba(255,255,255,.86); backdrop-filter: blur(10px);
+  border-radius: 28px; border: 1px solid rgba(18,32,60,.08);
+  box-shadow: 0 24px 80px rgba(18,32,60,.12); padding: 40px;
+}
+.launch-eyebrow {
+  font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--teal-deep); font-weight: 600; margin-bottom: 10px;
+}
+.launch-card h1 {
+  font-size: 2.1rem; font-weight: 800; color: var(--navy); margin: 0 0 10px; line-height: 1.15;
+}
+.launch-card p.sub { color: var(--slate); font-size: 1.02rem; margin: 0 0 22px; max-width: 600px; }
+.launch-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 28px; }
+.chip {
+  display: inline-flex; align-items: center; gap: 6px; padding: 8px 13px; border-radius: 999px;
+  background: var(--white); border: 1px solid var(--rule2);
+  font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--ink2);
+}
+.launch-btn {
+  border: none; cursor: pointer; padding: 15px 28px; border-radius: 12px; font-family: 'Nunito', sans-serif;
+  font-weight: 800; font-size: 1rem; color: #fff;
+  background: linear-gradient(135deg, var(--teal), var(--teal-mid));
+  box-shadow: 0 10px 28px rgba(26,122,109,.28); transition: transform var(--tr), box-shadow var(--tr);
+}
+.launch-btn:hover { transform: translateY(-1px); box-shadow: 0 14px 34px rgba(26,122,109,.36); }
+
+/* ===== Quiz Overlay ===== */
+.qo {
+  display: none; position: fixed; inset: 0; z-index: 200; overflow-y: auto;
+  background:
+    radial-gradient(circle at 10% 0%, color-mix(in srgb, var(--teal-glow) 18%, transparent), transparent 24%),
+    radial-gradient(circle at 92% 8%, color-mix(in srgb, var(--plum) 16%, transparent), transparent 22%),
+    linear-gradient(180deg, var(--warm) 0%, var(--cream) 100%);
+}
+.qo.open { display: block; animation: fi .35s cubic-bezier(.4,0,.2,1); }
+.qo.closing { display: block; pointer-events: none; animation: fo .34s cubic-bezier(.4,0,.2,1) forwards; }
+@keyframes fi { from { opacity: 0; transform: scale(0.985);} to { opacity: 1; transform: none; } }
+@keyframes fo { from { opacity: 1; } to { opacity: 0; } }
+
+.qt-bar {
+  position: sticky; top: 0; z-index: 12; padding: 16px 26px;
+  display: flex; align-items: center; justify-content: space-between; gap: 14px; color: #fff;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--navy2) 94%, transparent), color-mix(in srgb, var(--navy) 92%, transparent));
+  border-bottom: 1px solid rgba(255,255,255,.08); backdrop-filter: blur(16px);
+  box-shadow: 0 10px 28px rgba(18,32,60,.16);
+}
+.qt-bar h2 { margin: 0; font-size: 1.15rem; font-weight: 700; color: #fff; }
+.qt-btns { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.fs-ctrl { display: flex; align-items: center; gap: 4px; background: rgba(255,255,255,.06); border-radius: 10px; padding: 4px; }
+.fs-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: rgba(255,255,255,.5); padding: 0 6px; }
+.fs-btn {
+  border: none; background: transparent; color: rgba(255,255,255,.75); font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; padding: 6px 9px; border-radius: 7px; cursor: pointer; transition: background var(--tr);
+}
+.fs-btn:hover, .fs-btn.active { background: rgba(255,255,255,.14); color: #fff; }
+.qt-btn {
+  border: none; cursor: pointer; padding: 9px 15px; border-radius: 9px; font-family: 'Nunito', sans-serif;
+  font-size: 13px; font-weight: 700;
+}
+.qt-btn.reset, .qt-btn.close { background: rgba(255,255,255,.07); color: rgba(255,255,255,.78); border: 1px solid rgba(255,255,255,.1); }
+.qt-btn.reset:hover, .qt-btn.close:hover { background: rgba(255,255,255,.14); }
+.qt-btn.print { background: linear-gradient(135deg, var(--gold-warm), var(--gold)); color: var(--navy2); font-weight: 900; }
+
+.qin {
+  max-width: 1380px; margin: 0 auto; padding: 28px 28px 84px; display: grid;
+  grid-template-columns: 360px minmax(0, 1fr); gap: 18px 24px; align-items: start;
+}
+@media (max-width: 920px) {
+  .qin { grid-template-columns: 1fr; padding: 22px 18px 72px; gap: 16px; }
+  .timer-panel { grid-template-columns: 1fr 1fr; }
+  .tool-panel { grid-template-columns: 1fr 1fr 1fr; }
+}
+@media (max-width: 700px) {
+  .qt-bar { flex-direction: column; align-items: flex-start; }
+  .qin { padding: 18px 14px 64px; }
+  .timer-panel, .tool-panel { grid-template-columns: 1fr; }
+  .qnv { flex-direction: column; align-items: stretch; }
+  .qdots { order: 3; }
+  .nb { width: 100%; }
+  .qstem { font-size: 21px !important; }
+}
+
+@keyframes slideUp { from { opacity: 0; transform: translateY(12px);} to { opacity: 1; transform: none; } }
+@keyframes cardIn { from { opacity: 0; transform: translateY(16px) scale(.99);} to { opacity: 1; transform: none; } }
+
+.q-left > * { animation: slideUp .4s cubic-bezier(.4,0,.2,1) both; }
+.score-panel { animation-delay: 0s; }
+.mode-toggle { animation-delay: .04s; }
+.timer-panel { animation-delay: .08s; }
+.tool-panel { animation-delay: .14s; }
+
+.panel-card {
+  background: var(--white); border: 1px solid var(--rule2); border-radius: var(--r); box-shadow: var(--sh);
+  padding: 16px; margin-bottom: 16px; position: relative; overflow: hidden;
+}
+
+.score-panel { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+.score-box { position: relative; background: var(--white); border: 1px solid var(--rule2); border-radius: var(--rs); box-shadow: var(--sh); padding: 14px 8px; text-align: center; overflow: hidden; }
+.score-box::before { content: ''; position: absolute; left: 16px; right: 16px; top: 0; height: 4px; border-radius: 0 0 999px 999px; background: linear-gradient(90deg, rgba(26,122,109,.16), rgba(62,196,178,.5)); }
+.score-box .sv { font-size: 30px; font-weight: 800; color: var(--navy); }
+.score-box.correct .sv { color: var(--green); }
+.score-box.incorrect .sv { color: var(--red); }
+.score-box .sl { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: var(--mist); margin-top: 3px; }
+
+.mode-toggle { display: flex; background: var(--cream); border-radius: 12px; padding: 4px; gap: 4px; }
+.mode-btn {
+  flex: 1; border: none; background: transparent; padding: 11px 8px; border-radius: 9px; cursor: pointer;
+  font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 12.5px; color: var(--ink2); display: flex; align-items: center; justify-content: center; gap: 6px;
+  transition: all var(--tr);
+}
+.mode-btn.active { background: linear-gradient(135deg, var(--navy2), var(--navy)); color: #fff; box-shadow: var(--sh2); }
+.mode-icon { font-size: 14px; }
+
+.timer-panel { display: grid; grid-template-columns: 1fr; gap: 10px; }
+.timer-card, .cd-card { background: var(--white); border: 1px solid var(--rule2); border-radius: var(--rs); padding: 12px 14px; box-shadow: var(--sh); }
+.timer-lbl { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: var(--mist); margin-bottom: 4px; }
+.timer-time, .cd-time { font-family: 'IBM Plex Mono', monospace; font-size: 22px; font-weight: 600; color: var(--navy); margin-bottom: 8px; }
+.tbtn { border: 1px solid var(--rule2); background: var(--cream); color: var(--ink2); border-radius: 7px; padding: 6px 11px; cursor: pointer; font-size: 13px; margin-right: 4px; }
+.tbtn:hover { background: var(--teal-light); }
+.cd-controls { display: flex; align-items: center; gap: 8px; }
+.cd-pm { border: 1px solid var(--rule2); background: var(--cream); border-radius: 7px; width: 28px; height: 28px; cursor: pointer; font-size: 14px; }
+.cd-val { font-family: 'IBM Plex Mono', monospace; font-weight: 700; min-width: 16px; text-align: center; }
+.cd-unit { font-size: 11px; color: var(--mist); }
+.cd-go { margin-left: auto; border: none; background: var(--teal); color: #fff; font-weight: 700; padding: 7px 13px; border-radius: 7px; cursor: pointer; font-size: 12.5px; }
+
+.tool-panel { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+.q-tool {
+  border: 1px solid var(--rule2); background: var(--white); color: var(--ink2); border-radius: var(--rs);
+  padding: 10px 6px; font-family: 'Nunito', sans-serif; font-size: 11.5px; font-weight: 700; cursor: pointer; transition: all var(--tr);
+}
+.q-tool:hover { background: var(--cream); }
+.q-tool.active.hl-tool { background: #FFF8B8; border-color: #D3AF2B; color: #6B5C00; }
+.q-tool.active.st-tool { background: var(--red-bg); border-color: rgba(196,64,64,.44); color: var(--red); }
+.tool-status { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: var(--mist); text-align: center; }
+.tool-status.active-highlight { color: #8a6a00; }
+.tool-status.active-strike { color: var(--red); }
+
+.exam-submit-row { background: var(--white); border: 1px solid var(--rule2); border-radius: var(--r); box-shadow: var(--sh); padding: 14px; display: none; }
+.exam-submit-row.show { display: block; }
+.exam-progress { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--slate); margin-bottom: 8px; text-align: center; }
+.exam-submit-btn {
+  width: 100%; border: none; padding: 12px; border-radius: 10px; font-weight: 800; cursor: pointer;
+  background: linear-gradient(135deg, var(--coral), #d76a4d); color: #fff; font-family: 'Nunito', sans-serif;
+}
+.exam-submit-row.exam-live { box-shadow: 0 0 0 3px rgba(224,122,95,.10), 0 14px 34px rgba(18,32,60,.08); }
+.exam-submit-row.exam-done .exam-submit-btn { background: linear-gradient(135deg, var(--green), #3aa56f); }
+.exam-submit-btn:disabled { opacity: .45; cursor: not-allowed; }
+
+.qcd { background: var(--white); border: 1px solid var(--rule2); border-radius: 18px; box-shadow: var(--sh3); overflow: hidden; animation: cardIn .4s .06s cubic-bezier(.4,0,.2,1) both; }
+.qpg { height: 6px; background: var(--rule2); }
+.qpf { height: 100%; background: linear-gradient(90deg, var(--teal), var(--teal-glow)); transition: width .3s; }
+.qbd { padding: 28px 30px 10px; }
+.qnum { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--teal-deep); font-weight: 700; margin-bottom: 12px; }
+.qstem { font-size: 25px; font-weight: 600; color: var(--navy); line-height: 1.4; margin-bottom: 26px; cursor: default; border-radius: 10px; padding: 4px 2px; }
+#qo[data-fs="sm"] .qstem { font-size: 20px; }
+#qo[data-fs="md"] .qstem { font-size: 25px; }
+#qo[data-fs="lg"] .qstem { font-size: 28px; }
+#qo[data-fs="xl"] .qstem { font-size: 31px; }
+
+.qstem .stem-hl { background: #FFF1A6; border-radius: 6px; padding: 0 .12em; box-shadow: 0 0 0 1px rgba(212,168,67,.18); }
+.qstem .stem-st { text-decoration: line-through; text-decoration-color: var(--red); color: #8B2C2C !important; }
+.qstem.hl-applied { background: linear-gradient(180deg, #FFF4A8, #FFF7C9) !important; box-shadow: inset 0 0 0 2px rgba(212,168,67,.34); }
+.qstem.st-applied { background: linear-gradient(180deg, #FFF3F3, #FFF8F8) !important; box-shadow: inset 0 0 0 2px rgba(196,64,64,.22); }
+.qstem.tool-hover { box-shadow: inset 0 0 0 2px rgba(26,122,109,.16); background: rgba(26,122,109,.04); }
+
+.ach { display: flex; flex-direction: column; gap: 11px; margin-bottom: 22px; }
+.ac { display: flex; align-items: flex-start; gap: 13px; padding: 14px 16px; border-radius: 12px; background: var(--cream); border: 1.5px solid var(--rule2); cursor: pointer; transition: all var(--tr); }
+.ac:hover { border-color: var(--teal); background: var(--teal-light); }
+.ac.dis { cursor: default; }
+.ac.dis:hover { border-color: var(--rule2); background: var(--cream); }
+.cl { flex-shrink: 0; width: 30px; height: 30px; border-radius: 50%; background: var(--white); border: 1.5px solid var(--rule2); display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-weight: 700; font-size: 13px; color: var(--ink2); }
+#o[data-fs] .ctx {}
+.ctx { font-size: 16px; color: var(--ink); padding-top: 4px; line-height: 1.5; }
+#qo[data-fs="sm"] .ctx { font-size: 13px; }
+#qo[data-fs="md"] .ctx { font-size: 16px; }
+#qo[data-fs="lg"] .ctx { font-size: 19px; }
+#qo[data-fs="xl"] .ctx { font-size: 22px; }
+
+.ac.sel { border-color: var(--teal); background: var(--teal-light); }
+.ac.sel .cl { background: var(--teal); border-color: var(--teal); color: #fff; }
+.ac.cor, .ac.shc { border-color: var(--green); background: var(--green-bg); }
+.ac.cor .cl, .ac.shc .cl { background: var(--green); border-color: var(--green); color: #fff; }
+.ac.inc { border-color: var(--red); background: var(--red-bg); }
+.ac.inc .cl { background: var(--red); border-color: var(--red); color: #fff; }
+.ac.hl-applied { background: #FFF8B8 !important; border-color: #D3AF2B !important; }
+.ac.hl-applied .cl { background: #D3AF2B; border-color: #D3AF2B; color: #fff; }
+.ac.st-applied { background: var(--red-bg) !important; }
+.ac.st-applied .ctx { text-decoration: line-through; color: #8B2C2C; }
+
+.submit-row { margin-bottom: 22px; }
+.submit-btn { width: 100%; border: none; padding: 14px; border-radius: 12px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 15px; cursor: pointer; background: linear-gradient(135deg, var(--teal), var(--teal-mid)); color: #fff; box-shadow: var(--sh2); transition: all var(--tr); }
+.submit-btn:disabled { opacity: .4; cursor: not-allowed; box-shadow: none; }
+.submit-btn:not(:disabled):hover { transform: translateY(-1px); }
+
+.exb { display: none; margin-bottom: 6px; flex-direction: column; gap: 12px; animation: fi .35s cubic-bezier(.4,0,.2,1); }
+.exb.vis { display: flex; }
+.exs { border-radius: 12px; padding: 15px 17px; border-left: 4px solid; }
+.exs.exc { border-color: var(--green); background: var(--green-bg); }
+.exs.exe { border-color: var(--teal); background: var(--teal-light); }
+.exs.exw { border-color: var(--red); background: var(--red-bg); }
+.exl { font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; margin-bottom: 6px; opacity: .85; }
+.exs.exc .exl { color: var(--green); } .exs.exe .exl { color: var(--teal-deep); } .exs.exw .exl { color: var(--red); }
+.ext { font-size: 15px; line-height: 1.55; color: var(--ink); }
+.wce { margin-bottom: 8px; } .wce:last-child { margin-bottom: 0; }
+.wce strong { color: var(--red); }
+
+.qnv { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 18px 30px 26px; border-top: 1px solid var(--rule2); }
+.nb { border: 1px solid var(--rule2); background: var(--white); color: var(--ink2); font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 13.5px; padding: 11px 18px; border-radius: 10px; cursor: pointer; transition: all var(--tr); }
+.nb:hover:not(:disabled) { background: var(--cream); }
+.nb:disabled { opacity: .35; cursor: not-allowed; }
+.nb.pr { background: linear-gradient(135deg, var(--navy2), var(--navy)); color: #fff; border: none; }
+.qdots { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; max-width: 480px; }
+.qd { width: 11px; height: 11px; border-radius: 50%; border: 1.5px solid var(--rule2); background: var(--white); cursor: pointer; padding: 0; }
+.qd.cur { background: var(--teal); border-color: var(--teal); box-shadow: 0 0 0 3px rgba(26,122,109,.18); }
+.qd.acor { background: var(--green); border-color: var(--green); }
+.qd.ainc { background: var(--red); border-color: var(--red); }
+.qd.asel { background: var(--gold); border-color: var(--gold); }
+
+/* Print review */
+#printReviewRoot { display: none; }
+body.print-review-active .launch-wrap, body.print-review-active .qo { display: none !important; }
+body.print-review-active #printReviewRoot { display: block; padding: 32px; background: #fff; }
+.print-shell { max-width: 980px; margin: 0 auto; font-family: 'Nunito', sans-serif; }
+.print-shell h1 { font-family: 'Crimson Pro', serif; font-size: 22px; margin-bottom: 4px; }
+.print-shell .print-sub { color: #666; font-size: 12px; margin-bottom: 20px; }
+.print-card { break-inside: avoid; border: 1px solid #ddd; border-radius: 16px; padding: 20px; margin-bottom: 18px; }
+.print-card .pq-num { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #1A7A6D; font-weight: 700; margin-bottom: 6px; }
+.print-card .pq-stem { font-weight: 700; margin-bottom: 12px; font-size: 15px; }
+.print-choice { border: 1px solid #ddd; border-radius: 10px; padding: 8px 12px; margin-bottom: 6px; font-size: 13.5px; }
+.print-choice.correct { border-color: #2D8659; background: #E8F5EE; }
+.print-choice.incorrect { border-color: #C44040; background: #FDF0F0; }
+.print-explainer { border-radius: 10px; padding: 10px 13px; margin-top: 10px; font-size: 13px; }
+.print-explainer.correct-box { background: #E8F5EE; border-left: 4px solid #2D8659; }
+.print-explainer.teach-box { background: #E3F5F2; border-left: 4px solid #1A7A6D; }
+.print-explainer.wrong-box { background: #FDF0F0; border-left: 4px solid #C44040; }
+@media print {
+  body.print-review-active .launch-wrap, body.print-review-active .qo { display: none !important; }
+  body.print-review-active #printReviewRoot { display: block !important; padding: 0; }
+}
+
+.finish-card { background: var(--white); border: 1px solid var(--rule2); border-radius: 18px; box-shadow: var(--sh3); padding: 40px; text-align: center; animation: cardIn .4s .06s cubic-bezier(.4,0,.2,1) both; }
+.finish-card h3 { font-family: 'Crimson Pro', serif; font-size: 28px; color: var(--navy); margin: 0 0 8px; }
+.finish-card p { color: var(--slate); margin: 0 0 22px; }
+.finish-score { font-family: 'Crimson Pro', serif; font-size: 52px; font-weight: 800; color: var(--teal); margin-bottom: 6px; }
+.finish-btn { border: none; background: linear-gradient(135deg, var(--navy2), var(--navy)); color: #fff; font-weight: 800; padding: 12px 22px; border-radius: 10px; cursor: pointer; font-family: 'Nunito', sans-serif; }
+
+</style>
+</head>
+<body>
+
+<div class="launch-wrap" id="launchWrap">
+  <div class="launch-card">
+    <div class="launch-eyebrow">UNE COM · Pharmacology · Dr. Ochs Question Style</div>
+    <h1>Headache Pharmacology — Question Bank</h1>
+    <p class="sub">28 questions built in Dr. Ochs's pattern from the Headache Pharmacology lecture: mechanism over effect, exact drug/receptor specificity, numeric thresholds, and partially-true distractors. Learn Mode gives immediate per-question feedback; Exam Mode holds feedback until you submit.</p>
+    <div class="launch-meta">
+      <span class="chip">🧠 28 Questions</span>
+      <span class="chip">💊 Migraine · Cluster · Tension · MOH</span>
+      <span class="chip">🎯 5 Choices Each</span>
+      <span class="chip">📝 Learn + Exam Modes</span>
+    </div>
+    <button class="launch-btn" id="openDemo">Open Quiz →</button>
+  </div>
+</div>
+
+<div class="qo" id="qo" data-fs="md">
+  <div class="qt-bar">
+    <h2>Headache Pharmacology — Ochs Style</h2>
+    <div class="qt-btns">
+      <div class="fs-ctrl">
+        <span class="fs-label">Text</span>
+        <button class="fs-btn" data-fs-btn="sm">A-</button>
+        <button class="fs-btn active" data-fs-btn="md">A</button>
+        <button class="fs-btn" data-fs-btn="lg">A+</button>
+        <button class="fs-btn" data-fs-btn="xl">A++</button>
+      </div>
+      <button class="qt-btn print" id="printQuiz">Print</button>
+      <button class="qt-btn reset" id="resetQuiz">Reset</button>
+      <button class="qt-btn close" id="closeQuiz">Close</button>
+    </div>
+  </div>
+
+  <div class="qin">
+    <div class="q-left">
+      <div class="score-panel panel-card" style="padding:14px;">
+        <div class="score-box"><div class="sv" id="svCurrent">1</div><div class="sl">Current</div></div>
+        <div class="score-box correct"><div class="sv" id="svCorrect">0</div><div class="sl">Correct</div></div>
+        <div class="score-box incorrect"><div class="sv" id="svIncorrect">0</div><div class="sl">Incorrect</div></div>
+      </div>
+
+      <div class="mode-toggle panel-card" id="modeToggle" style="padding:4px; margin-bottom:16px;">
+        <button class="mode-btn active" id="modeLearn"><span class="mode-icon">🧠</span>Learn Mode</button>
+        <button class="mode-btn" id="modeExam"><span class="mode-icon">📝</span>Exam Mode</button>
+      </div>
+
+      <div class="timer-panel panel-card" style="padding:12px;">
+        <div class="timer-card">
+          <div class="timer-lbl">Timer</div>
+          <div class="timer-time" id="timerTime">00:00</div>
+          <button class="tbtn" id="timerStart">▶ Start</button>
+          <button class="tbtn" id="timerPause">⏸ Pause</button>
+          <button class="tbtn" id="timerReset">↺ Reset</button>
+        </div>
+        <div class="cd-card">
+          <div class="timer-lbl">Countdown</div>
+          <div class="cd-time" id="cdTime">05:00</div>
+          <div class="cd-controls">
+            <button class="cd-pm" id="cdMinus">−</button>
+            <div class="cd-val" id="cdVal">5</div>
+            <div class="cd-unit">min</div>
+            <button class="cd-pm" id="cdPlus">+</button>
+            <button class="cd-go" id="cdGo">Start</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-card" style="padding:12px;">
+        <div class="tool-panel">
+          <button class="q-tool" id="toolHighlight">🖍 Highlight</button>
+          <button class="q-tool" id="toolStrike">✂ Strikeout</button>
+          <button class="q-tool" id="toolReveal">👁 Reveal</button>
+        </div>
+        <div class="tool-status" id="toolStatus">Tool mode: none</div>
+      </div>
+
+      <div class="exam-submit-row" id="examSubmitRow">
+        <div class="exam-progress" id="examProgress">0 of 28 answered</div>
+        <button class="exam-submit-btn" id="submitExam" disabled>Submit Exam</button>
+      </div>
+    </div>
+
+    <div class="q-right" id="qRight">
+      <div class="qcd" id="qcdWrap">
+        <div class="qpg"><div class="qpf" id="qpf" style="width:3.5%;"></div></div>
+        <div class="qbd">
+          <div class="qnum" id="qNum">Question 1 of 28</div>
+          <div class="qstem" id="qStem"><span class="stem-text" id="stemText">Loading…</span></div>
+          <div class="ach" id="achWrap"></div>
+          <div class="submit-row"><button class="submit-btn" id="submitOne" disabled>Submit Answer</button></div>
+          <div class="exb" id="exBlock">
+            <div class="exs exc"><div class="exl">Correct Answer</div><div class="ext" id="exCorrectText"></div></div>
+            <div class="exs exe"><div class="exl">Teaching Point</div><div class="ext" id="exTeachText"></div></div>
+            <div class="exs exw"><div class="exl">Why the Others Are Wrong</div><div class="ext" id="exWrongText"></div></div>
+          </div>
+        </div>
+        <div class="qnv">
+          <button class="nb" id="prevBtn">← Previous</button>
+          <div class="qdots" id="qDots"></div>
+          <button class="nb pr" id="nextBtn">Next →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="printReviewRoot" aria-hidden="true"></div>
+
+<script>
+const QUESTIONS_RAW = [
+  {
+    "stem": "A 52-year-old woman with a well-documented 15-year history of episodic migraine presents for a routine visit. Her current headache is, in her words, “exactly like all the others” in location, intensity, and quality. Which of the following would NOT by itself be considered a red flag warranting evaluation for a secondary headache?",
+    "choices": [
+      "The headache is unchanged in character, location, and severity from her established pattern",
+      "The headache woke her from sleep last night, which has never happened before for her",
+      "She describes this as the worst headache of her life, with an unusually abrupt onset",
+      "The pain is now markedly worse whenever she lies down flat",
+      "She has a new focal neurologic deficit that has persisted for two days after the headache resolved"
+    ],
+    "correct": 0,
+    "explanation": {
+      "correct": "A headache that is stable in character, location, and severity relative to a patient's established pattern is the hallmark of a primary headache disorder. Primary headaches are repeatable and predictable — it is a change from that baseline pattern that should raise concern, not the pattern's continuation.",
+      "teaching": "Red flags for secondary headache are fundamentally about deviation from an established baseline — new features, new triggers, new timing, or new severity in a patient with a prior headache history, or any headache at all in a patient without one. A textbook-identical recurrence of a known primary headache is reassuring, not concerning.",
+      "wrongs": [
+        "B — A headache newly waking the patient from sleep is a red flag — with the specific exception of cluster headache, which does this routinely as part of its normal pattern. In a migraine patient for whom this is new, it is concerning.",
+        "C — “Worst headache of my life” with sudden, unusually severe onset is one of the classic red flags prompting evaluation for conditions like subarachnoid hemorrhage.",
+        "D — Headache that worsens with recumbency (as opposed to activity) suggests a possible intracranial pressure process and is a recognized red flag.",
+        "E — A focal neurologic deficit that persists after the headache resolves is a red flag; migraine aura should resolve with or before the headache itself."
+      ]
+    }
+  },
+  {
+    "stem": "A 29-year-old woman describes six headache episodes over the past year. Each lasts about 6 hours if untreated, is strictly unilateral and throbbing, worsens when she climbs stairs, and is accompanied by nausea but no photophobia or phonophobia. Using the diagnostic framework discussed in lecture, which criterion is she missing to formally meet the definition of migraine?",
+    "choices": [
+      "The attack-frequency criterion — she needs more than six lifetime episodes to qualify",
+      "The duration criterion, since her episodes are too short to count",
+      "The pain-feature criterion — she needs at least two of unilateral, throbbing, moderate-severe, or activity-worsened pain",
+      "The associated-symptom criterion — she needs both nausea/vomiting and photophobia/phonophobia together",
+      "None of the above — she already meets every listed criterion"
+    ],
+    "correct": 4,
+    "explanation": {
+      "correct": "She has ≥5 attacks (6), each lasting within the 4-hour-to-3-day window (6 hours), with at least two of the required pain features (unilateral, throbbing, and activity-worsened — she has all three), plus one associated symptom (nausea). Every element of the 5-4-3-2-1 framework is satisfied.",
+      "teaching": "This is the trap of the ‘5-4-3-2-1’ rule: students often stop checking once they've confirmed one or two criteria and either invent a missing element or misremember a threshold. When a vignette is constructed to satisfy every criterion, the correct answer is that nothing is missing — you have to check all five parts, not just the ones that jump out.",
+      "wrongs": [
+        "A — The frequency threshold is ≥5 attacks; she reports six, so this criterion is met.",
+        "B — The duration window is 4 hours to 3 days, untreated; 6 hours falls within that range.",
+        "C — She needs ≥2 of unilateral, throbbing/pounding, moderate-severe, or activity-worsened. She has unilateral, throbbing, and activity-worsening — three of the four, well above the minimum of two.",
+        "D — She needs one of nausea/vomiting or photo-/phonophobia, not both together. Nausea alone satisfies this criterion."
+      ]
+    }
+  },
+  {
+    "stem": "By what mechanism do triptans abort an acute migraine attack?",
+    "choices": [
+      "Antagonism of CGRP receptors specifically on trigeminal ganglion neurons, preventing neurogenic inflammatory signaling",
+      "Selective 5-HT1B/1D agonism causing cranial vasoconstriction and inhibiting trigeminal peptide release",
+      "Nonselective serotonin agonism combined with partial agonism at alpha-adrenergic receptors",
+      "Cleavage of SNARE proteins at the presynaptic terminal, blocking vesicular acetylcholine release",
+      "Blockade of voltage-gated sodium channels on trigeminal afferents, reducing ectopic pain signaling"
+    ],
+    "correct": 1,
+    "explanation": {
+      "correct": "Triptans are selective 5-HT1B/1D agonists. Agonism at cranial vascular 5-HT1B receptors produces vasoconstriction, reversing the hypothesized hyper-vasodilation of migraine, while agonism at trigeminal 5-HT1D receptors inhibits release of vasoactive neuropeptides from trigeminal afferents.",
+      "teaching": "Ochs-style questions on migraine drugs will ask for the mechanism, not just ‘triptans treat migraine.’ The two-part mechanism — vasoconstriction plus inhibition of trigeminal peptide release — is the detail to know cold, and the specific receptor subtypes (5-HT1B/1D) are what separate triptans from the other serotonergic option, ergots.",
+      "wrongs": [
+        "A — This describes gepants (CGRP receptor antagonists), a separate and newer drug class with a non-vasoconstrictive mechanism.",
+        "C — This describes ergot alkaloids, which are nonselective serotonin agonists with additional partial α-adrenergic agonism — a less selective mechanism than triptans.",
+        "D — This describes onabotulinumtoxinA, used for chronic migraine prevention, not acute abortive therapy.",
+        "E — This describes the mechanism of carbamazepine, used for trigeminal neuralgia, not migraine."
+      ]
+    }
+  },
+  {
+    "stem": "A 58-year-old man with known coronary artery disease develops a moderate-severe migraine. Why is a triptan not the preferred abortive agent in this patient?",
+    "choices": [
+      "Triptans are extensively metabolized by CYP3A4, which risks interactions with his statin",
+      "Triptans produce 5-HT1B/1D-mediated vasoconstriction that also occurs in coronary vasculature",
+      "Triptans are known to lower the seizure threshold in patients with underlying vascular disease",
+      "Triptans are cleared renally and can accumulate in patients with reduced cardiac output",
+      "Triptans potentiate hyperkalemia in patients taking ACE inhibitors, which are common in this population"
+    ],
+    "correct": 1,
+    "explanation": {
+      "correct": "The vasoconstriction that makes triptans effective on cranial vasculature is not tissue-selective — it can also occur in coronary vessels, which is why triptans (along with ergots) are contraindicated in patients with cardiovascular disease, including coronary artery disease and vasospastic angina.",
+      "teaching": "The ‘why’ matters more than the ‘what’ here. It's not enough to know triptans are contraindicated in CVD — you need to know it's because the same 5-HT1B-mediated vasoconstriction that treats the migraine can also constrict coronary vessels, producing the chest discomfort/pressure listed as a key adverse effect and, in vulnerable patients, provoking ischemia.",
+      "wrongs": [
+        "A — CYP3A4 metabolism is a real consideration for specific triptans (eletriptan, almotriptan), but it is a pharmacokinetic drug-interaction issue, not the reason triptans are avoided in cardiovascular disease.",
+        "C — Triptans are not associated with lowered seizure threshold; this is not a recognized concern for this drug class.",
+        "D — Most triptans have short half-lives and are not primarily a concern for renal accumulation in reduced cardiac output.",
+        "E — Triptans do not have a recognized interaction with ACE inhibitors around hyperkalemia."
+      ]
+    }
+  },
+  {
+    "stem": "A patient with a history of vasospastic (Prinzmetal) angina needs an abortive medication for a moderate-severe migraine. Which class is the most appropriate choice, and why?",
+    "choices": [
+      "Ergotamine, since its α-adrenergic partial agonism is weaker than a full triptan effect",
+      "A CGRP receptor antagonist (gepant), since it isn't a vasoconstrictor and is safe here",
+      "Naratriptan, because its long half-life produces a gentler vasoconstrictive effect overall",
+      "Dihydroergotamine, since parenteral administration avoids first-pass vasoconstriction",
+      "Sumatriptan, because its short half-life limits how long coronary vasoconstriction can last"
+    ],
+    "correct": 1,
+    "explanation": {
+      "correct": "CGRP receptor antagonists (gepants) work by a fundamentally different, non-vasoconstrictive mechanism than triptans and ergots, making them safe for abortive use in patients with cardiovascular disease, including vasospastic angina.",
+      "teaching": "This is the single most important clinical differentiator between gepants and the older abortive classes: triptans and ergots are both vasoconstrictors and both carry the same cardiovascular contraindication, while gepants block CGRP signaling without constricting vessels at all.",
+      "wrongs": [
+        "A — Ergotamine is still a vasoconstrictor via 5-HT and partial α-adrenergic agonism and carries the same cardiovascular contraindication as triptans — ‘weaker’ does not make it safe.",
+        "C — All triptans, regardless of half-life, share the same 5-HT1B/1D-mediated vasoconstrictive mechanism and the same cardiovascular contraindication; half-life affects duration and recurrence, not safety in vascular disease.",
+        "D — Dihydroergotamine is still an ergot alkaloid with the same vasoconstrictive, contraindicated mechanism regardless of route of administration.",
+        "E — A shorter half-life shortens the duration of vasoconstriction but does not eliminate the risk; sumatriptan remains contraindicated in cardiovascular disease."
+      ]
+    }
+  },
+  {
+    "stem": "Among the triptans, frovatriptan has the longest half-life (~26 hours) and the slowest onset. What is the expected clinical trade-off of this pharmacokinetic profile compared to a fast-onset, short-half-life triptan like sumatriptan?",
+    "choices": [
+      "Frovatriptan works faster but wears off sooner, requiring more frequent redosing",
+      "Frovatriptan has a slower onset of relief but the lowest recurrence rate of the triptans",
+      "Frovatriptan and sumatriptan have identical clinical profiles since all triptans share equal efficacy",
+      "Frovatriptan's long half-life makes it preferred for cluster headache due to a faster peak effect",
+      "Frovatriptan's long half-life increases its risk of chest discomfort compared to sumatriptan"
+    ],
+    "correct": 1,
+    "explanation": {
+      "correct": "A longer half-life means the drug stays in the system longer, which slows onset of relief but also means the drug is less likely to fully clear before the underlying migraine process resolves — producing the lowest recurrence rate among triptans. This is the general PK principle: longer half-life → slower onset but longer duration/lower recurrence, and vice versa.",
+      "teaching": "All triptans share essentially the same efficacy and mechanism; what differentiates them is pharmacokinetics. Know the general relationship (long half-life = slow onset, low recurrence; short half-life = fast onset, higher recurrence) rather than memorizing exact numbers for each drug.",
+      "wrongs": [
+        "A — This describes the opposite relationship — a long half-life means slower onset, not faster, and less frequent redosing, not more.",
+        "C — While all triptans share similar mechanism and comparable efficacy in head-to-head trials, they differ meaningfully in pharmacokinetic profile, which is clinically relevant for choosing among them.",
+        "D — Sumatriptan and zolmitriptan (fast-onset agents) are the triptans specifically used for cluster headache, not the slow-onset, long-half-life frovatriptan.",
+        "E — Chest discomfort/pressure is a class effect related to the vasoconstrictive mechanism shared by all triptans, not specifically tied to half-life."
+      ]
+    }
+  },
+  {
+    "stem": "Which two triptans require the most caution when co-administered with strong CYP3A4 inhibitors?",
+    "choices": [
+      "Sumatriptan and rizatriptan, the two fastest-onset agents",
+      "Naratriptan and frovatriptan, the two longest-acting agents",
+      "Zolmitriptan and sumatriptan, the two intranasal options",
+      "Eletriptan and almotriptan",
+      "Rizatriptan and zolmitriptan, the two orally disintegrating options"
+    ],
+    "correct": 3,
+    "explanation": {
+      "correct": "Eletriptan is metabolized via CYP3A4, and almotriptan is partly metabolized via CYP3A4 and MAO — both require caution or avoidance with strong CYP3A4 inhibitors, since accumulation would potentiate the vasoconstrictive adverse effects.",
+      "teaching": "When a triptan question mentions a drug interaction, eletriptan and almotriptan are the two to check first — they're the CYP3A4-metabolized outliers in a class where most other members clear by other routes.",
+      "wrongs": [
+        "A — Sumatriptan and rizatriptan are known for fast onset and short half-life, not specifically for CYP3A4 metabolism.",
+        "B — Naratriptan and frovatriptan are the long-half-life, slow-onset triptans; their PK profile is defined by duration, not CYP3A4 interaction risk.",
+        "C — Zolmitriptan and sumatriptan are both available intranasally and are the two used for cluster headache; CYP3A4 interaction is not their defining feature.",
+        "E — Rizatriptan and zolmitriptan are both fast-onset, short-half-life agents; neither is highlighted for CYP3A4 metabolism in this material."
+      ]
+    }
+  },
+  {
+    "stem": "What is the mechanism of ergot alkaloids (ergotamine, dihydroergotamine) in aborting migraine, and how does it differ from triptans?",
+    "choices": [
+      "Selective 5-HT1B/1D agonism identical to triptans, just with a longer duration of action",
+      "Nonselective serotonin agonism with partial α-adrenergic agonism, unlike triptans",
+      "CGRP receptor antagonism, with no vasoconstrictive activity at all",
+      "Pure α-adrenergic antagonism, producing vasodilation rather than vasoconstriction",
+      "Selective blockade of trigeminal 5-HT1F receptors, without any action on vascular tone at all"
+    ],
+    "correct": 1,
+    "explanation": {
+      "correct": "Ergots act on 5-HT receptors to vasoconstrict, similar in effect to triptans, but they are nonselective serotonin agonists and also act as partial agonists at α-adrenergic receptors — a broader, less selective receptor profile than the triptans' selective 5-HT1B/1D agonism.",
+      "teaching": "The distractors here are exactly the kind of ‘similar family, wrong specifics’ trap to expect: ergots are related to triptans by producing vasoconstriction through serotonin receptors, but the mechanism is nonselective and adds α-adrenergic activity, which is precisely what makes ergots less tolerable and more restricted in modern use.",
+      "wrongs": [
+        "A — Ergots are not selective 5-HT1B/1D agonists; that describes triptans specifically. Ergots' nonselective receptor activity is what distinguishes them.",
+        "C — This describes gepants, a mechanistically distinct and non-vasoconstrictive class.",
+        "D — Ergots are vasoconstrictors, not vasodilators, and act as partial agonists (not antagonists) at α-adrenergic receptors.",
+        "E — 5-HT1F receptor agonism describes lasmiditan's mechanism, not ergots."
+      ]
+    }
+  },
+  {
+    "stem": "A patient being started on ergotamine for migraine needs an antiemetic for the prominent nausea/vomiting associated with this drug class. Which agent is preferred, and why?",
+    "choices": [
+      "Ondansetron, since it targets the same serotonergic pathway responsible for the nausea",
+      "Metoclopramide, a dopaminergic antiemetic, to avoid a second serotonergic agent",
+      "Promethazine, since its anticholinergic activity can further potentiate ergot's vasoconstrictive effect",
+      "Sumatriptan, since triptans have intrinsic antiemetic properties",
+      "No antiemetic pretreatment is typically needed, since nausea is rare with this particular class"
+    ],
+    "correct": 1,
+    "explanation": {
+      "correct": "Metoclopramide, a dopaminergic (D2) antagonist, is preferred for pretreating ergot-associated nausea because it avoids adding to the serotonergic burden. Ergots are already serotonin receptor agonists, so layering on a serotonergic antiemetic like ondansetron would theoretically compound serotonin syndrome risk.",
+      "teaching": "This is a mechanism-chaining question: the correct answer requires connecting two facts — ergots are serotonergic drugs, and serotonergic antiemetics are also serotonergic — to see why a dopaminergic antiemetic is the safer pairing.",
+      "wrongs": [
+        "A — Ondansetron is a serotonergic (5-HT3) antiemetic; pairing it with a serotonergic drug like ergotamine is the combination to avoid, not choose.",
+        "C — Promethazine's anticholinergic activity is not a recognized reason to pair it with ergotamine, and potentiating vasoconstriction would not be a therapeutic goal.",
+        "D — Triptans are not antiemetics, and co-administering a triptan with an ergot is not standard practice.",
+        "E — Prominent nausea/vomiting is specifically listed as an adverse effect of ergots, beyond what is typically seen with triptans — pretreatment is a real consideration."
+      ]
+    }
+  },
+  {
+    "stem": "Gepants (CGRP receptor antagonists) reduce migraine symptoms primarily by which mechanism?",
+    "choices": [
+      "Vasoconstricting cranial vessels directly through 5-HT1B receptor agonism, much like triptans do",
+      "Blocking CGRP from binding its receptor, decreasing neurogenic pain signaling",
+      "Inhibiting COX-1 and COX-2 to reduce prostaglandin-mediated inflammation",
+      "Antagonizing dopamine D2 receptors in the chemoreceptor trigger zone",
+      "Cleaving SNARE proteins to prevent neurotransmitter vesicle fusion"
+    ],
+    "correct": 1,
+    "explanation": {
+      "correct": "Gepants block CGRP from binding its receptor. CGRP is a potent vasodilator on cranial vasculature and the trigeminal ganglion; blocking its action reduces neurogenic pain signaling and inflammation, including decreased release of neurokinin A and substance P.",
+      "teaching": "Note the mechanism is antagonism of a vasodilator's receptor, not vasoconstriction — this is exactly why gepants don't carry the cardiovascular contraindication that triptans and ergots do.",
+      "wrongs": [
+        "A — This describes triptans, a mechanistically and structurally distinct class.",
+        "C — This describes NSAIDs, used for milder migraine and other headache types, not gepants.",
+        "D — This describes dopamine antagonist antiemetics like metoclopramide, not gepants.",
+        "E — This describes onabotulinumtoxinA's mechanism, used for chronic migraine prevention."
+      ]
+    }
+  },
+  {
+    "stem": "A patient started on a gepant for migraine prevention reports new numbness and color change in her fingers with cold exposure. What adverse effect is this, and is it a recognized concern with this drug class?",
+    "choices": [
+      "Serotonin syndrome; yes, this is the classic presentation seen with gepants",
+      "New or worsened Raynaud's phenomenon — a recognized adverse effect",
+      "Peripheral neuropathy, which is unrelated to gepant therapy",
+      "Digital ischemia from ergotism, which only occurs with ergot alkaloids",
+      "This is an expected finding and does not need any clinical follow-up"
+    ],
+    "correct": 1,
+    "explanation": {
+      "correct": "Gepants have been associated with new-onset or exacerbated Raynaud's phenomenon; in one cited study of Raynaud's patients on a CGRP antagonist, a subset developed microvascular complications, including severe cases with digital autonecrosis. Patients should be counseled to report new cold sensitivity or tingling.",
+      "teaching": "This is a case of an ostensibly ‘safe, non-vasoconstrictive’ drug class still carrying a vascular adverse effect — worth knowing precisely because it's counterintuitive given gepants' selling point of avoiding vasoconstriction.",
+      "wrongs": [
+        "A — Serotonin syndrome is not a described concern for gepants; it is a theoretical risk more associated with serotonergic drugs like triptans and ergots.",
+        "C — This presentation (color change with cold exposure) is classic for Raynaud's phenomenon, not peripheral neuropathy.",
+        "D — Digital autonecrosis has been described with CGRP antagonists specifically in the context of Raynaud's exacerbation, not exclusively with ergots.",
+        "E — This finding warrants clinical attention — it should be reported and monitored, not dismissed."
+      ]
+    }
+  },
+  {
+    "stem": "A patient with episodic migraine that interferes with daily activities four times a month has never been on preventive therapy. Beta blockers and CGRP antibodies are both considered first-line preventives. What is the PRIMARY reason beta blockers, specifically propranolol, are typically tried before a CGRP antibody in practice?",
+    "choices": [
+      "Propranolol simply has a superior efficacy profile compared to CGRP antibodies overall",
+      "CGRP antibodies are considered fully contraindicated in episodic migraine and reserved for chronic disease only",
+      "Propranolol is inexpensive and effective; CGRP antibodies are reserved mainly for cost reasons",
+      "Propranolol has a notably faster onset of preventive effect than CGRP antibodies",
+      "CGRP antibodies require inpatient administration, limiting outpatient access to them"
+    ],
+    "correct": 2,
+    "explanation": {
+      "correct": "Propranolol is cheap and effective in most patients, making it the default starting point before escalating to more expensive options. CGRP antibodies are highly effective and equally first-line in principle, but they're reserved for escalation in practice mainly due to cost (roughly $10,000–$20,000/year), not because of any efficacy concern.",
+      "teaching": "This is a ‘primary reason’ question in the Ochs style — several statements about the two drug classes could be true in isolation, but the question demands identifying the actual driving factor (cost-driven practice pattern), not a plausible-sounding but unsupported claim like superior efficacy.",
+      "wrongs": [
+        "A — The material does not indicate propranolol is more effective than CGRP antibodies — both are described as first-line and effective; the distinguishing factor is cost, not efficacy.",
+        "B — CGRP antibodies are indicated for migraine prevention broadly, not restricted to chronic migraine only — that distinction applies to onabotulinumtoxinA, not the CGRP antibody class.",
+        "D — Onset speed is not the stated rationale for the treatment order; cost and practice pattern are.",
+        "E — CGRP antibodies (erenumab, eptinezumab, fremanezumab, galcanezumab) are administered subcutaneously, and this class is used in outpatient practice."
+      ]
+    }
+  },
+  {
+    "stem": "Erenumab differs mechanistically from eptinezumab, fremanezumab, and galcanezumab in which specific way?",
+    "choices": [
+      "Erenumab targets the CGRP receptor itself; the other three bind CGRP, the peptide",
+      "Erenumab is administered orally, while the other three are given by injection",
+      "Erenumab is indicated only for chronic migraine, unlike the other three antibodies",
+      "Erenumab has no cardiovascular safety data, unlike the other three antibodies",
+      "Erenumab is a small-molecule gepant, while the other three are antibodies"
+    ],
+    "correct": 0,
+    "explanation": {
+      "correct": "Erenumab is unique among the CGRP antibodies in that it targets the extracellular domain of the CGRP receptor itself, blocking the receptor directly. Eptinezumab, fremanezumab, and galcanezumab all instead bind CGRP — the signaling peptide — before it reaches the receptor.",
+      "teaching": "This is a Pattern-5-style question: all four are real, related CGRP-targeting antibodies, and the distractors would be easy to confuse without knowing the one that binds the receptor versus the three that bind the ligand. Know the receptor-vs-ligand distinction, not just that all four are ‘CGRP antibodies.’",
+      "wrongs": [
+        "B — All four CGRP antibodies — erenumab included — are administered subcutaneously, not orally.",
+        "C — All four are indicated for migraine prevention broadly; the chronic-migraine-only restriction applies to onabotulinumtoxinA, not this antibody class.",
+        "D — None of the four CGRP antibodies is singled out as lacking a cardiovascular safety profile in this material; all four share the class's overall favorable safety and tolerability profile.",
+        "E — All four listed drugs — erenumab, eptinezumab, fremanezumab, and galcanezumab — are monoclonal antibodies. Small-molecule CGRP receptor antagonists are the gepants (ubrogepant, rimegepant, atogepant), a separate class."
+      ]
+    }
+  },
+  {
+    "stem": "Before prescribing erenumab, which specific patient history detail should prompt additional caution?",
+    "choices": [
+      "History of asthma, due to a bronchospasm risk with the injection device",
+      "Latex allergy, since the autoinjector contains dry natural rubber",
+      "Egg allergy, due to a culture medium used during manufacturing",
+      "Sulfa allergy, due to a preservative in the injectable formulation",
+      "Shellfish allergy, due to a crustacean-derived formulation component"
+    ],
+    "correct": 1,
+    "explanation": {
+      "correct": "The erenumab autoinjector device contains dry natural rubber, so a history of latex allergy is a specific caution to screen for before prescribing.",
+      "teaching": "This is a small, easily-missed device-level detail rather than a pharmacologic one — Ochs-style questions frequently test details like this precisely because they're the kind of thing a student would gloss over while focused on mechanism.",
+      "wrongs": [
+        "A — Bronchospasm with the injection device is not a described concern for erenumab.",
+        "C — Egg allergy and culture-medium concerns are not associated with erenumab manufacturing in this material.",
+        "D — Sulfa allergy is not a listed caution for erenumab.",
+        "E — Shellfish/crustacean-derived components are not a described concern for erenumab; the specific caution is natural rubber latex in the autoinjector."
+      ]
+    }
+  },
+  {
+    "stem": "OnabotulinumtoxinA reduces chronic migraine symptoms through which mechanism?",
+    "choices": [
+      "Antagonism of CGRP receptors located on peripheral trigeminal nerve afferents",
+      "Selective 5-HT1B/1D receptor agonism, causing localized vasoconstriction",
+      "Cleavage of SNARE proteins, blocking vesicle fusion and paralysis of the muscle",
+      "Blockade of voltage-gated calcium channels specifically at the neuromuscular junction",
+      "Nonselective serotonin agonism combined with partial α-adrenergic agonism"
+    ],
+    "correct": 2,
+    "explanation": {
+      "correct": "OnabotulinumtoxinA cleaves SNARE proteins, which prevents vesicular fusion of acetylcholine-containing vesicles to the presynaptic terminal membrane. This blocks ACh release and produces localized muscle paralysis, which is the basis for its chronic migraine benefit.",
+      "teaching": "This mechanism should be immediately recognizable from general pharmacology (it's the same SNARE-cleavage mechanism used cosmetically and for other spasticity indications) — the exam-relevant addition here is the specific migraine indication it's tied to.",
+      "wrongs": [
+        "A — This describes gepants, a distinct drug class with a receptor-antagonist mechanism, not a toxin-based one.",
+        "B — This describes triptans; onabotulinumtoxinA has no serotonergic receptor activity.",
+        "D — Calcium channel blockade at the NMJ is not onabotulinumtoxinA's mechanism; its action is on SNARE-mediated vesicle fusion, upstream of channel-dependent release.",
+        "E — This describes ergots; onabotulinumtoxinA has no serotonergic or adrenergic receptor activity."
+      ]
+    }
+  },
+  {
+    "stem": "A patient reports 9 migraine days per month for the past 4 months, despite an adequate trial of a first-line preventive agent. She is being considered for onabotulinumtoxinA. Does she meet the indicated threshold for this therapy?",
+    "choices": [
+      "No, since onabotulinumtoxinA requires at least 15 migraine days per month",
+      "Yes — ≥8 migraine days per month for ≥3 months meets the threshold",
+      "No, since onabotulinumtoxinA is only indicated for episodic migraine",
+      "Yes, since any patient failing one preventive agent automatically qualifies",
+      "No, since the required duration is 6 months of symptoms, not 3"
+    ],
+    "correct": 1,
+    "explanation": {
+      "correct": "Chronic migraine, the indication for onabotulinumtoxinA, is defined as ≥8 migraine days per month for ≥3 months. She has 9 days/month for 4 months, meeting both parts of the threshold.",
+      "teaching": "This numeric threshold — 8 days/month, 3 months — is the kind of specific detail that's easy to blur with the tension headache chronicity threshold (>15 headache days/month) or general failed-preventive logic. They are separate criteria and should not be conflated.",
+      "wrongs": [
+        "A — ≥15 headache days/month is the threshold for chronic tension-type headache, not the onabotulinumtoxinA indication threshold for chronic migraine, which is ≥8 days/month.",
+        "C — OnabotulinumtoxinA is indicated specifically for chronic migraine (high frequency), not episodic migraine — the opposite of what this option states.",
+        "D — Failing a preventive agent alone does not define the indication; the frequency/duration threshold (≥8 days/month for ≥3 months) is what defines chronic migraine and qualifies a patient.",
+        "E — The duration requirement is ≥3 months, not 6."
+      ]
+    }
+  },
+  {
+    "stem": "A patient reports nightly episodes of severe, boring/stabbing periorbital pain, each lasting about 45 minutes, unresponsive to NSAIDs. Another patient has a similar-sounding boring periorbital pain pattern but reports excellent relief with indomethacin. What does the indomethacin response in the second patient suggest?",
+    "choices": [
+      "Both patients have cluster headache; indomethacin is just a second-line drug for that",
+      "The second patient more likely has paroxysmal hemicrania, which responds to NSAIDs",
+      "The diagnosis cannot be determined without imaging, regardless of drug response",
+      "Indomethacin response points to tension headache rather than a periorbital syndrome",
+      "Both presentations are consistent with migraine with brainstem aura"
+    ],
+    "correct": 1,
+    "explanation": {
+      "correct": "NSAID non-response is the single biggest distinguishing feature of cluster headache from other similarly-presenting boring/stabbing periorbital headaches. Paroxysmal hemicrania looks similar but is classically NSAID-responsive (indomethacin is the classic responsive agent), which is the clue that separates the two entities.",
+      "teaching": "This is a Pattern-9-style trap: two clinical pictures that sound almost identical are separated by a single pharmacologic clue (drug response), not by pain location or quality alone. Whenever a periorbital, boring/stabbing headache responds well to indomethacin, think paroxysmal hemicrania rather than cluster headache.",
+      "wrongs": [
+        "A — Cluster headache does not respond to NSAIDs at all, including indomethacin; an NSAID-responsive presentation argues against cluster headache, not toward it as a ‘second-line’ response.",
+        "C — This is a clinical, history-and-response-based diagnosis in this material — imaging is not presented as the distinguishing step between these two entities.",
+        "D — Tension headache is bilateral and band-like, not periorbital and stabbing; indomethacin response is not the distinguishing feature described for tension headache.",
+        "E — Nothing in either vignette suggests brainstem aura or other migraine features; the presentation described is classic periorbital stabbing pain, not migrainous."
+      ]
+    }
+  },
+  {
+    "stem": "What is the correct first-line acute intervention for a cluster headache attack, including the specific technique?",
+    "choices": [
+      "50% oxygen, 4–6 L/min via nasal cannula, for at least 30 minutes",
+      "100% oxygen, 8–10 L/min via non-rebreather mask, for 10–15 minutes",
+      "100% oxygen via non-rebreather, continued for at least 1 hour",
+      "Sumatriptan should be tried first, before oxygen is attempted at all",
+      "100% oxygen, 2–4 L/min via nasal cannula, for 10–15 minutes"
+    ],
+    "correct": 1,
+    "explanation": {
+      "correct": "First-line acute treatment for cluster headache is 100% oxygen at 8–10 L/min via non-rebreather mask for 10–15 minutes. Outcomes are not improved by extending oxygen delivery beyond 15 minutes.",
+      "teaching": "This is a numeric-threshold question in the Ochs style — the concentration, flow rate, delivery device, and duration are all specific, testable details, and getting any one wrong (wrong flow rate, wrong device, or extending duration unnecessarily) changes the answer.",
+      "wrongs": [
+        "A — 50% oxygen via nasal cannula is neither the correct concentration nor delivery device; cluster headache treatment specifically requires 100% oxygen via non-rebreather mask.",
+        "C — Extending oxygen delivery beyond 15 minutes does not improve outcomes; the correct duration is 10–15 minutes, not an hour.",
+        "D — Oxygen is first-line and should be tried before triptans, not the reverse.",
+        "E — 2–4 L/min via nasal cannula is far below the required 8–10 L/min flow rate, and a non-rebreather mask (not nasal cannula) is the correct delivery device."
+      ]
+    }
+  },
+  {
+    "stem": "A patient with a predictable, seasonal cluster headache period is started on verapamil. Which statement about this choice is most accurate?",
+    "choices": [
+      "Verapamil is a dihydropyridine calcium channel blocker with a well-characterized mechanism here",
+      "Verapamil is non-dihydropyridine, effective, and can be dosed just for the cluster period",
+      "Verapamil is only useful for acute abortive treatment, with no role in prevention at all",
+      "Verapamil is the second-line preventive option, tried only after lithium fails",
+      "Verapamil requires continuous year-round dosing regardless of the cluster pattern"
+    ],
+    "correct": 1,
+    "explanation": {
+      "correct": "Verapamil, a non-dihydropyridine calcium channel blocker, is the drug of choice for cluster headache prevention. Its mechanism is not fully understood, but it is effective, and for patients with a predictable (e.g., seasonal) cluster period, it is often dosed only for the duration of that period rather than continuously.",
+      "teaching": "Two details often get flipped in error: (1) verapamil is non-dihydropyridine, not dihydropyridine — the class distinction matters pharmacologically, and (2) verapamil is drug-of-choice, with lithium as the alternative, not the reverse.",
+      "wrongs": [
+        "A — Verapamil is a non-dihydropyridine CCB, not a dihydropyridine — and its cluster headache mechanism is specifically described as not fully understood, despite being effective.",
+        "C — Verapamil has a dual role — it can be used both for acute abortive treatment and for prevention in cluster headache.",
+        "D — Verapamil is the drug of choice; lithium is the second-line alternative, not the reverse.",
+        "E — For patients with a predictable, seasonal cluster period, verapamil is often dosed only for the duration of that period rather than continuously year-round."
+      ]
+    }
+  },
+  {
+    "stem": "A patient reports excruciating unilateral periorbital pain and, during the attack, cannot sit still — pacing around the room and rocking back and forth. How does this behavior help distinguish the diagnosis from migraine?",
+    "choices": [
+      "It doesn't — both migraine and cluster headache patients are equally restless during attacks",
+      "Migraine patients want to lie still in the dark; cluster patients are restless",
+      "Restlessness during an attack is specific to tension headache, not cluster headache",
+      "This behavior suggests a psychiatric cause rather than a primary headache disorder",
+      "Restlessness only occurs in secondary headaches and should prompt urgent imaging"
+    ],
+    "correct": 1,
+    "explanation": {
+      "correct": "This behavioral contrast — migraine patients wanting to lie still in a dark room versus cluster headache patients being restless, pacing, or rocking — is a genuine bedside differentiator, on top of the difference in pain quality and location (unilateral throbbing vs. periorbital stabbing).",
+      "teaching": "Not every distinguishing feature in headache diagnosis is about pain quality or associated autonomic signs — patient behavior during the attack itself is a testable clue, and it points in the opposite direction from what many students assume.",
+      "wrongs": [
+        "A — This is the opposite of the correct relationship — migraine and cluster headache have contrasting, not identical, behavioral patterns during attacks.",
+        "C — Restlessness/pacing is specifically described as a cluster headache feature in contrast to migraine, not a tension headache feature.",
+        "D — This behavior is a recognized physiologic feature of cluster headache itself, not evidence of an underlying psychiatric process.",
+        "E — Restlessness during cluster headache is a normal feature of this primary headache disorder, not a marker requiring urgent imaging by itself."
+      ]
+    }
+  },
+  {
+    "stem": "Which of the following is LEAST likely to precipitate a cluster headache attack in a susceptible patient?",
+    "choices": [
+      "Alcohol",
+      "Histamine",
+      "Nitroglycerin",
+      "Caffeine withdrawal",
+      "All of the above are recognized precipitants"
+    ],
+    "correct": 3,
+    "explanation": {
+      "correct": "Caffeine withdrawal is not among the precipitants listed for cluster headache in this material. The recognized precipitants are alcohol, histamine, and nitroglycerin.",
+      "teaching": "This is a negative/LEAST question — the trap is that caffeine is a recognized migraine trigger, so it's tempting to assume it applies broadly to headache in general. Precipitant lists are disease-specific, and cluster headache's list (alcohol, histamine, nitroglycerin) is distinct from migraine's (caffeine, excessive sleep, alcohol, certain foods, emotional stress, menstrual cycle).",
+      "wrongs": [
+        "A — Alcohol is explicitly listed as a precipitant of cluster headache attacks.",
+        "B — Histamine is explicitly listed as a precipitant of cluster headache attacks.",
+        "C — Nitroglycerin is explicitly listed as a precipitant of cluster headache attacks.",
+        "E — Since caffeine withdrawal is not among the listed cluster headache precipitants, this option is incorrect."
+      ]
+    }
+  },
+  {
+    "stem": "A patient describes bilateral, band-like head pressure lasting several hours, with photophobia but no phonophobia, and denies any nausea or aura. Which finding most strongly supports tension headache over migraine in this presentation?",
+    "choices": [
+      "The presence of photophobia at all, which by itself rules out tension headache",
+      "Bilateral, non-pulsatile pain with only one of photophobia/phonophobia, never both",
+      "The several-hour duration, which is unique to tension headache and excludes migraine",
+      "Photophobia without phonophobia, a migraine-specific finding not seen in tension headache",
+      "Any headache lasting more than 4 hours must automatically be classified as migraine"
+    ],
+    "correct": 1,
+    "explanation": {
+      "correct": "Tension headache is bilateral and band-like with steady, non-pulsatile quality, and can present with photophobia or phonophobia but never both together — this is precisely what separates it from migraine, which more classically involves both symptoms together along with nausea and possible aura.",
+      "teaching": "The ‘or, never both’ detail is the specific, testable distinguishing feature here — a student who knows only ‘tension headache can have photophobia’ without the ‘never both together’ qualifier will miss questions built around this exact contrast with migraine.",
+      "wrongs": [
+        "A — Photophobia alone does not rule out tension headache — it is compatible with tension headache as long as phonophobia is not also present.",
+        "C — Duration ranges overlap between tension headache (4–6 hours, can be constant) and migraine (4 hours–3 days); duration alone does not distinguish the two.",
+        "D — Photophobia without phonophobia is consistent with tension headache specifically because tension headache never has both together — this pattern does not point to migraine.",
+        "E — Duration alone, without other diagnostic features, does not determine headache type; both tension headache and migraine can last several hours."
+      ]
+    }
+  },
+  {
+    "stem": "Amitriptyline is used for both migraine prevention and chronic tension headache prevention. What underlies its broad utility across these (and other, like neuropathic pain) indications?",
+    "choices": [
+      "It selectively blocks CGRP receptors, the shared final pathway in all headache types",
+      "Its broad receptor activity, including SERT/NET inhibition among other targets",
+      "It is a selective 5-HT1B/1D agonist with additional analgesic properties added on",
+      "It selectively blocks voltage-gated sodium channels on trigeminal afferents",
+      "It works exclusively through β-adrenergic receptor blockade, like propranolol"
+    ],
+    "correct": 1,
+    "explanation": {
+      "correct": "Amitriptyline's broad receptor activity — serotonin and norepinephrine transporter (SERT/NET) inhibition plus multiple other receptor targets — accounts for its utility across migraine prevention, tension headache prevention, and neuropathic pain, rather than a single narrow, headache-specific mechanism.",
+      "teaching": "When a single drug shows up across multiple, mechanistically distinct indications, the explanation is almost always a broad or multi-target mechanism rather than a single elegant one — amitriptyline is the example to remember for this pattern in the headache unit.",
+      "wrongs": [
+        "A — CGRP receptor blockade is the mechanism of gepants, not amitriptyline, which has no described CGRP activity.",
+        "C — Amitriptyline is not a serotonin receptor agonist in the triptan sense; its relevant activity is transporter inhibition (SERT/NET) plus additional receptor effects, not 5-HT1B/1D agonism.",
+        "D — Sodium channel blockade describes carbamazepine's mechanism (used for trigeminal neuralgia), not amitriptyline's.",
+        "E — β-adrenergic blockade describes propranolol's mechanism; amitriptyline's broad activity is distinct from and unrelated to β-blockade."
+      ]
+    }
+  },
+  {
+    "stem": "A patient with migraine takes sumatriptan for nearly every headache. Explain the mechanistic sequence by which this pattern of use can itself worsen her headache frequency.",
+    "choices": [
+      "Sumatriptan directly damages trigeminal afferents with repeated exposure, causing permanent hypersensitivity",
+      "Withdrawal after each dose triggers a rebound headache, which is retreated, and each cycle tends to worsen",
+      "Sumatriptan accumulates in cranial tissue, producing a fixed vasoconstriction that itself becomes painful",
+      "Chronic use downregulates CGRP receptors, paradoxically increasing CGRP-mediated pain signaling",
+      "Sumatriptan induces its own metabolism, leading to supratherapeutic levels that directly cause headache"
+    ],
+    "correct": 1,
+    "explanation": {
+      "correct": "Medication overuse headache develops through a specific vicious cycle: the abortive drug relieves the current headache, wears off, a rebound headache develops as the drug is withdrawn from the system, the patient treats the rebound with another dose, and each subsequent cycle tends to worsen — a self-sustaining pattern comparable to rebound congestion with nasal decongestants.",
+      "teaching": "This is a full-mechanistic-chain question in the Ochs style — the correct answer traces the entire cycle (relief → withdrawal → rebound → retreatment → escalation) rather than stopping at a single-step explanation. A comparison worth keeping in mind: this is the same rebound principle as decongestant nasal spray overuse, just applied to headache.",
+      "wrongs": [
+        "A — Direct, permanent afferent damage from triptan exposure is not the described mechanism of medication overuse headache.",
+        "C — Fixed tissue accumulation and constant vasoconstriction is not how medication overuse headache is described to develop; the mechanism is a withdrawal-rebound cycle, not tissue accumulation.",
+        "D — CGRP receptor downregulation from triptan use is not the described mechanism in this material.",
+        "E — Auto-induction of triptan metabolism causing supratherapeutic levels is not the described mechanism; the cycle is driven by withdrawal-induced rebound headache, not drug accumulation."
+      ]
+    }
+  },
+  {
+    "stem": "Which of the following abortive drug classes is LEAST likely to be associated with the development of medication overuse headache?",
+    "choices": [
+      "Butalbital-combination drugs",
+      "Opioid analgesics",
+      "Triptan agents",
+      "CGRP antagonists (gepants)",
+      "NSAID analgesics"
+    ],
+    "correct": 3,
+    "explanation": {
+      "correct": "CGRP receptor antagonists have not been associated with development of medication overuse headache, unlike triptans, NSAIDs, ergots, opioids, and butalbital. This is why they are often the preferred switch target when tapering a patient off an overused abortive drug.",
+      "teaching": "This is a negative/LEAST question layered on a drug-class list — butalbital and opioids are specifically flagged as the biggest offenders, but the correct answer requires recognizing which class on the list is the exception, not just picking the ‘safest-sounding’ option.",
+      "wrongs": [
+        "A — Butalbital is specifically named, alongside opioids, as an especially strong driver of medication overuse headache.",
+        "B — Opioids are specifically named, alongside butalbital, as an especially strong driver of medication overuse headache.",
+        "C — Triptans are explicitly listed among the drugs associated with medication overuse headache, despite being the abortive gold standard for migraine.",
+        "E — NSAIDs are explicitly listed among the drugs associated with medication overuse headache; frequent analgesic use, including NSAIDs, is a recognized trigger for this cycle."
+      ]
+    }
+  },
+  {
+    "stem": "A patient with migraine has been using an abortive triptan almost daily for six months and now has near-daily headache. What is the BEST next step in management?",
+    "choices": [
+      "Immediately and completely stop the triptan today to break the cycle as fast as possible",
+      "Taper the triptan gradually, considering a switch to a CGRP antagonist plus prevention",
+      "Continue the current triptan dose and simply add a preventive agent on top of it",
+      "Temporarily increase the triptan dose to suppress rebound before starting a taper",
+      "Switch to daily scheduled opioid dosing to more reliably control the pain"
+    ],
+    "correct": 1,
+    "explanation": {
+      "correct": "The correct approach to medication overuse headache is to taper the overused drug gradually — abrupt cessation can provoke severe rebound and may even require hospitalization — while considering a switch to a CGRP antagonist, which is not associated with medication overuse headache, and starting preventive treatment for the underlying disorder.",
+      "teaching": "This is a ‘best next step’ hierarchy question: several options sound plausible (stop now, add prevention only, increase dose first), but only the taper-plus-transition approach matches the specific goal stated in the source material — going straight from daily use to infrequent use is described as unrealistic and likely to provoke severe rebound.",
+      "wrongs": [
+        "A — Abrupt withdrawal may require hospitalization and provoke severe rebound; going straight from daily use to abrupt cessation is described as unrealistic.",
+        "C — Continuing unchanged abortive overuse while only adding prevention does not address the core driver of the cycle — the overused drug itself needs to be tapered.",
+        "D — Increasing the triptan dose would worsen, not resolve, the overuse cycle.",
+        "E — Opioids are themselves one of the drug classes most strongly associated with causing medication overuse headache; switching to daily opioid dosing would trade one overuse problem for a worse one."
+      ]
+    }
+  },
+  {
+    "stem": "A 61-year-old reports sudden, severe, electric-shock-like stabbing pain in the right cheek and jaw lasting only seconds, repeatedly triggered by brushing her teeth. Neurologic exam is normal. What is the mechanism of the first-line pharmacologic treatment for this condition?",
+    "choices": [
+      "Selective 5-HT1B/1D receptor agonism, essentially the same mechanism used to treat migraine",
+      "Voltage-gated sodium channel blockade, which also acts as a CYP3A4 inducer",
+      "CGRP receptor antagonism, which blocks a vasodilator peptide's action",
+      "Non-dihydropyridine calcium channel blockade",
+      "SNARE protein cleavage, preventing acetylcholine vesicle fusion"
+    ],
+    "correct": 1,
+    "explanation": {
+      "correct": "This presentation is trigeminal neuralgia — brief, trigger-evoked, electric/stabbing facial pain. First-line treatment is carbamazepine, a voltage-gated sodium channel blocker that also functions as a CYP3A4 inducer — an important detail for drug interactions.",
+      "teaching": "Trigeminal neuralgia isn't technically one of the three primary headache types covered in this unit, but it shares the trigeminal-nerve theme and is fair game — carbamazepine's dual identity (sodium channel blocker AND CYP3A4 inducer, rather than substrate) is the kind of detail worth knowing precisely rather than just ‘it's an anticonvulsant.’",
+      "wrongs": [
+        "A — 5-HT1B/1D agonism describes triptans, used for migraine, not trigeminal neuralgia.",
+        "C — CGRP receptor antagonism describes gepants, used for migraine, not the first-line trigeminal neuralgia agent.",
+        "D — Non-dihydropyridine calcium channel blockade describes verapamil, used for cluster headache, not trigeminal neuralgia.",
+        "E — SNARE protein cleavage describes onabotulinumtoxinA, used for chronic migraine, not trigeminal neuralgia."
+      ]
+    }
+  },
+  {
+    "stem": "A 26-year-old woman has recurrent headaches for three years, about twice monthly. Each begins with flashing zigzag lights in her left visual field, and roughly 20 minutes later she develops severe right-sided throbbing pain lasting about 12 hours with nausea, photophobia, and phonophobia. She has no cardiovascular history. She is having an attack right now. What is the single most appropriate medication to give, and what would change that answer?",
+    "choices": [
+      "A triptan now; a documented cardiovascular contraindication would change this to a gepant",
+      "100% oxygen now, regardless of her cardiovascular history one way or the other",
+      "Verapamil now, switching to a triptan only if cardiovascular disease is present",
+      "A gepant now regardless of history, since gepants are considered always preferred over triptans",
+      "Amitriptyline now, since this fits tension headache better than migraine"
+    ],
+    "correct": 0,
+    "explanation": {
+      "correct": "This is migraine with aura (visual aura preceding unilateral throbbing pain with nausea and photo-/phonophobia). With no cardiovascular history given, a triptan is the appropriate abortive answer as written — you shouldn't assume a contraindication that isn't stated. If she did have a cardiovascular history such as coronary artery disease or vasospastic angina, a CGRP receptor antagonist (gepant) would become the safer choice instead, since it avoids the vasoconstrictive mechanism that makes triptans risky in that population.",
+      "teaching": "This question tests two things at once: correctly classifying the headache from vignette clues (unilateral throbbing, aura, nausea, photo-/phonophobia → migraine with aura, not tension or cluster), and correctly applying the conditional logic of triptan-vs-gepant selection based on cardiovascular history rather than defaulting to one drug regardless of context.",
+      "wrongs": [
+        "B — 100% oxygen is first-line for cluster headache, not migraine; this vignette's unilateral throbbing pain with aura, nausea, and photo-/phonophobia describes migraine, not cluster headache.",
+        "C — Verapamil is used for cluster headache prevention/abortive coverage, not as an acute migraine abortive; it does not fit this presentation or this drug-selection logic.",
+        "D — Gepants are not universally preferred over triptans — cost and access make triptans the practical first choice absent a specific contraindication; gepants become preferred specifically when a cardiovascular contraindication is present.",
+        "E — This presentation — unilateral throbbing pain with aura, nausea, and both photophobia and phonophobia together — is classic migraine, not tension headache, which is bilateral, band-like, and never has both photophobia and phonophobia together."
+      ]
+    }
+  }
+];
+</script>
+
+<script>
+/* ---------- Fisher–Yates shuffle ---------- */
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function escapeHTML(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+/* ---------- Build shuffled question set (questions + choices within each) ---------- */
+let QUESTIONS = shuffle(QUESTIONS_RAW).map(q => {
+  const order = shuffle(q.choices.map((_, i) => i));
+  const newChoices = order.map(i => q.choices[i]);
+  const newCorrect = order.indexOf(q.correct);
+  // Remap wrong explanations (originally labeled with OLD letters) to align with NEW letters
+  // We stored wrongs as "OLDLETTER — text"; rebuild mapping old index -> text
+  const oldLetters = q.choices.map((_, i) => String.fromCharCode(65 + i));
+  const wrongMap = {};
+  q.explanation.wrongs.forEach(w => {
+    const letter = w.slice(0, 1);
+    const oldIdx = oldLetters.indexOf(letter);
+    const text = w.slice(w.indexOf('—') + 1).trim();
+    wrongMap[oldIdx] = text;
+  });
+  const newWrongs = order
+    .map((oldIdx, newIdx) => ({ oldIdx, newIdx }))
+    .filter(o => o.oldIdx !== q.correct)
+    .map(o => `${String.fromCharCode(65 + o.newIdx)} — ${wrongMap[o.oldIdx]}`);
+
+  return {
+    stem: q.stem,
+    choices: newChoices,
+    correct: newCorrect,
+    explanation: {
+      correct: q.explanation.correct,
+      teaching: q.explanation.teaching,
+      wrongs: newWrongs
+    }
+  };
+});
+
+const TOTAL = QUESTIONS.length;
+const answers = new Array(TOTAL).fill(null);   // selected choice index per question
+const graded = new Array(TOTAL).fill(false);   // whether graded (learn mode immediate, or exam mode after submit)
+let curIndex = 0;
+let selectedChoice = null;
+let quizMode = 'learn';
+let examSubmitted = false;
+let correctCount = 0, incorrectCount = 0;
+let toolMode = null;
+const stemMarks = new Array(TOTAL).fill(null);   // {type:'whole'|'span', html} persisted per question for stem tool marks — simplified: whole only
+const choiceMarks = new Array(TOTAL).fill(null).map(() => ({})); // per-question {choiceIdx: 'hl'|'st'}
+const stemWhole = new Array(TOTAL).fill(null); // 'hl' | 'st' | null
+
+/* ---------- Elements ---------- */
+const qo = document.getElementById('qo');
+const openDemo = document.getElementById('openDemo');
+const closeQuiz = document.getElementById('closeQuiz');
+const resetQuiz = document.getElementById('resetQuiz');
+const printQuizBtn = document.getElementById('printQuiz');
+const qNum = document.getElementById('qNum');
+const qStem = document.getElementById('qStem');
+const stemText = document.getElementById('stemText');
+const achWrap = document.getElementById('achWrap');
+const submitOne = document.getElementById('submitOne');
+const exBlock = document.getElementById('exBlock');
+const exCorrectText = document.getElementById('exCorrectText');
+const exTeachText = document.getElementById('exTeachText');
+const exWrongText = document.getElementById('exWrongText');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const qDots = document.getElementById('qDots');
+const qpf = document.getElementById('qpf');
+const svCurrent = document.getElementById('svCurrent');
+const svCorrect = document.getElementById('svCorrect');
+const svIncorrect = document.getElementById('svIncorrect');
+const modeLearn = document.getElementById('modeLearn');
+const modeExam = document.getElementById('modeExam');
+const examSubmitRow = document.getElementById('examSubmitRow');
+const examProgress = document.getElementById('examProgress');
+const submitExamBtn = document.getElementById('submitExam');
+const toolHighlight = document.getElementById('toolHighlight');
+const toolStrike = document.getElementById('toolStrike');
+const toolReveal = document.getElementById('toolReveal');
+const toolStatus = document.getElementById('toolStatus');
+const qRight = document.getElementById('qRight');
+
+/* ---------- Open / close ---------- */
+openDemo.addEventListener('click', () => { qo.classList.add('open'); renderQuestion(0); buildDots(); });
+closeQuiz.addEventListener('click', () => {
+  qo.classList.add('closing');
+  setTimeout(() => qo.classList.remove('open', 'closing'), 320);
+});
+
+/* ---------- Font size ---------- */
+document.querySelectorAll('[data-fs-btn]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    qo.dataset.fs = btn.dataset.fsBtn;
+    document.querySelectorAll('[data-fs-btn]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+
+/* ---------- Mode toggle ---------- */
+function setMode(mode) {
+  quizMode = mode;
+  modeLearn.classList.toggle('active', mode === 'learn');
+  modeExam.classList.toggle('active', mode === 'exam');
+  examSubmitRow.classList.toggle('show', mode === 'exam');
+  updateExamButton();
+  renderQuestion(curIndex);
+}
+modeLearn.addEventListener('click', () => setMode('learn'));
+modeExam.addEventListener('click', () => setMode('exam'));
+
+function updateExamButton() {
+  const inExam = quizMode === 'exam';
+  const answeredCount = answers.filter(a => a !== null).length;
+  examProgress.textContent = `${answeredCount} of ${TOTAL} answered`;
+  submitExamBtn.disabled = !inExam || examSubmitted || answeredCount < TOTAL;
+  examSubmitRow.classList.toggle('exam-live', inExam && !examSubmitted);
+  examSubmitRow.classList.toggle('exam-done', examSubmitted);
+  submitExamBtn.textContent = examSubmitted ? 'Exam Submitted — See Score' : 'Submit Exam';
+}
+
+submitExamBtn.addEventListener('click', () => {
+  if (quizMode !== 'exam' || examSubmitted) return;
+  correctCount = 0; incorrectCount = 0;
+  for (let i = 0; i < TOTAL; i++) {
+    graded[i] = true;
+    if (answers[i] === QUESTIONS[i].correct) correctCount++; else incorrectCount++;
+  }
+  examSubmitted = true;
+  svCorrect.textContent = correctCount;
+  svIncorrect.textContent = incorrectCount;
+  updateExamButton();
+  renderQuestion(curIndex);
+});
+
+/* ---------- Timer (stopwatch) ---------- */
+let timerInt = null, timerSec = 0;
+function renderTimer() {
+  const m = String(Math.floor(timerSec / 60)).padStart(2, '0');
+  const s = String(timerSec % 60).padStart(2, '0');
+  document.getElementById('timerTime').textContent = `${m}:${s}`;
+}
+document.getElementById('timerStart').addEventListener('click', () => {
+  if (timerInt) return;
+  timerInt = setInterval(() => { timerSec += 1; renderTimer(); }, 1000);
+});
+document.getElementById('timerPause').addEventListener('click', () => { clearInterval(timerInt); timerInt = null; });
+document.getElementById('timerReset').addEventListener('click', () => {
+  clearInterval(timerInt); timerInt = null; timerSec = 0; renderTimer();
+});
+
+/* ---------- Countdown ---------- */
+let cdMinutes = 5, cdInt = null, cdSec = cdMinutes * 60;
+function renderCountdown() {
+  const m = String(Math.floor(cdSec / 60)).padStart(2, '0');
+  const s = String(cdSec % 60).padStart(2, '0');
+  document.getElementById('cdTime').textContent = `${m}:${s}`;
+  document.getElementById('cdVal').textContent = cdMinutes;
+}
+document.getElementById('cdMinus').addEventListener('click', () => {
+  if (cdInt) return;
+  cdMinutes = Math.max(1, cdMinutes - 1); cdSec = cdMinutes * 60; renderCountdown();
+});
+document.getElementById('cdPlus').addEventListener('click', () => {
+  if (cdInt) return;
+  cdMinutes = Math.min(99, cdMinutes + 1); cdSec = cdMinutes * 60; renderCountdown();
+});
+document.getElementById('cdGo').addEventListener('click', function() {
+  if (cdInt) { clearInterval(cdInt); cdInt = null; this.textContent = 'Start'; return; }
+  this.textContent = 'Pause';
+  cdInt = setInterval(() => {
+    if (cdSec <= 0) { clearInterval(cdInt); cdInt = null; document.getElementById('cdGo').textContent = 'Start'; return; }
+    cdSec -= 1; renderCountdown();
+  }, 1000);
+});
+renderCountdown();
+
+/* ---------- Tools ---------- */
+function setToolMode(mode) {
+  toolMode = toolMode === mode ? null : mode;
+  updateToolUI();
+}
+function updateToolUI() {
+  toolHighlight.classList.toggle('active', toolMode === 'highlight');
+  toolHighlight.classList.toggle('hl-tool', toolMode === 'highlight');
+  toolStrike.classList.toggle('active', toolMode === 'strike');
+  toolStrike.classList.toggle('st-tool', toolMode === 'strike');
+  toolStatus.textContent = toolMode ? `Tool mode: ${toolMode}` : 'Tool mode: none';
+  toolStatus.classList.toggle('active-highlight', toolMode === 'highlight');
+  toolStatus.classList.toggle('active-strike', toolMode === 'strike');
+}
+toolHighlight.addEventListener('click', () => setToolMode('highlight'));
+toolStrike.addEventListener('click', () => setToolMode('strike'));
+toolReveal.addEventListener('click', () => { if (exBlock.classList.contains('vis') || graded[curIndex]) exBlock.classList.toggle('vis'); });
+
+function applyStemMarkup(type) {
+  const sel = window.getSelection();
+  if (!sel || sel.rangeCount === 0 || sel.isCollapsed) return false;
+  const range = sel.getRangeAt(0);
+  if (!qStem.contains(range.commonAncestorContainer)) return false;
+  const wrapper = document.createElement('span');
+  wrapper.className = type === 'highlight' ? 'stem-hl' : 'stem-st';
+  try { range.surroundContents(wrapper); }
+  catch (e) { const frag = range.extractContents(); wrapper.appendChild(frag); range.insertNode(wrapper); }
+  sel.removeAllRanges();
+  return true;
+}
+function toggleWholeStem(type) {
+  if (type === 'highlight') {
+    qStem.classList.toggle('hl-applied'); qStem.classList.remove('st-applied');
+    stemWhole[curIndex] = qStem.classList.contains('hl-applied') ? 'hl' : null;
+  } else {
+    qStem.classList.toggle('st-applied'); qStem.classList.remove('hl-applied');
+    stemWhole[curIndex] = qStem.classList.contains('st-applied') ? 'st' : null;
+  }
+}
+qStem.addEventListener('click', e => {
+  if (!toolMode) return;
+  const didApply = applyStemMarkup(toolMode);
+  if (!didApply) toggleWholeStem(toolMode);
+  e.preventDefault();
+});
+
+/* ---------- Rendering ---------- */
+function buildDots() {
+  qDots.innerHTML = '';
+  for (let i = 0; i < TOTAL; i++) {
+    const b = document.createElement('button');
+    b.className = 'qd';
+    b.addEventListener('click', () => { curIndex = i; renderQuestion(i); });
+    qDots.appendChild(b);
+  }
+  updateDots();
+}
+function updateDots() {
+  const dots = qDots.querySelectorAll('.qd');
+  dots.forEach((d, i) => {
+    d.classList.remove('cur', 'acor', 'ainc', 'asel');
+    if (i === curIndex) d.classList.add('cur');
+    else if (graded[i]) {
+      d.classList.add(answers[i] === QUESTIONS[i].correct ? 'acor' : 'ainc');
+    } else if (answers[i] !== null) {
+      d.classList.add('asel');
+    }
+  });
+}
+
+function renderQuestion(idx) {
+  curIndex = idx;
+  const q = QUESTIONS[idx];
+  selectedChoice = answers[idx];
+  qNum.textContent = `Question ${idx + 1} of ${TOTAL}`;
+  svCurrent.textContent = idx + 1;
+  qpf.style.width = (((idx + 1) / TOTAL) * 100) + '%';
+
+  qStem.classList.remove('hl-applied', 'st-applied');
+  if (stemWhole[idx] === 'hl') qStem.classList.add('hl-applied');
+  if (stemWhole[idx] === 'st') qStem.classList.add('st-applied');
+  stemText.innerHTML = escapeHTML(q.stem);
+
+  achWrap.innerHTML = '';
+  const letters = ['A','B','C','D','E'];
+  q.choices.forEach((choiceText, i) => {
+    const ac = document.createElement('div');
+    ac.className = 'ac';
+    ac.dataset.choice = i;
+    const mark = choiceMarks[idx][i];
+    if (mark === 'hl') ac.classList.add('hl-applied');
+    if (mark === 'st') ac.classList.add('st-applied');
+
+    const cl = document.createElement('div');
+    cl.className = 'cl';
+    cl.textContent = letters[i];
+    const ctx = document.createElement('div');
+    ctx.className = 'ctx';
+    ctx.textContent = choiceText;
+    ac.appendChild(cl); ac.appendChild(ctx);
+
+    const isGraded = graded[idx];
+    if (isGraded) {
+      ac.classList.add('dis');
+      if (i === q.correct) ac.classList.add('cor');
+      if (answers[idx] === i && i !== q.correct) ac.classList.add('inc');
+    } else if (answers[idx] === i) {
+      ac.classList.add('sel');
+    }
+
+    ac.addEventListener('click', () => onChoiceClick(idx, i, ac));
+    achWrap.appendChild(ac);
+  });
+
+  // Submit button visibility/state
+  const isGraded = graded[idx];
+  if (quizMode === 'exam') {
+    document.querySelector('.submit-row').style.display = 'none';
+  } else {
+    document.querySelector('.submit-row').style.display = '';
+    submitOne.disabled = isGraded || answers[idx] === null;
+    submitOne.textContent = isGraded ? 'Answered' : 'Submit Answer';
+  }
+
+  if (isGraded) {
+    renderExplanation(q);
+    exBlock.classList.add('vis');
+  } else {
+    exBlock.classList.remove('vis');
+  }
+
+  prevBtn.disabled = idx === 0;
+  nextBtn.disabled = idx === TOTAL - 1;
+  updateDots();
+  updateExamButton();
+}
+
+function renderExplanation(q) {
+  exCorrectText.textContent = q.explanation.correct;
+  exTeachText.textContent = q.explanation.teaching;
+  exWrongText.innerHTML = '';
+  q.explanation.wrongs.forEach(w => {
+    const dash = w.indexOf('—');
+    const letter = w.slice(0, dash).trim();
+    const rest = w.slice(dash + 1).trim();
+    const div = document.createElement('div');
+    div.className = 'wce';
+    const strong = document.createElement('strong');
+    strong.textContent = letter;
+    div.appendChild(strong);
+    div.appendChild(document.createTextNode(' — ' + rest));
+    exWrongText.appendChild(div);
+  });
+}
+
+function onChoiceClick(idx, choiceIdx, el) {
+  if (toolMode === 'highlight') {
+    const cur = choiceMarks[idx][choiceIdx];
+    choiceMarks[idx][choiceIdx] = cur === 'hl' ? null : 'hl';
+    el.classList.toggle('hl-applied');
+    el.classList.remove('st-applied');
+    return;
+  }
+  if (toolMode === 'strike') {
+    const cur = choiceMarks[idx][choiceIdx];
+    choiceMarks[idx][choiceIdx] = cur === 'st' ? null : 'st';
+    el.classList.toggle('st-applied');
+    el.classList.remove('hl-applied');
+    return;
+  }
+  if (graded[idx]) return; // locked after grading
+  answers[idx] = choiceIdx;
+  renderQuestion(idx);
+}
+
+submitOne.addEventListener('click', () => { gradeCurrentQuestion(); });
+
+function gradeCurrentQuestion() {
+  const idx = curIndex;
+  if (answers[idx] === null) return false;
+  const q = QUESTIONS[idx];
+  graded[idx] = true;
+  if (answers[idx] === q.correct) { correctCount++; svCorrect.textContent = correctCount; }
+  else { incorrectCount++; svIncorrect.textContent = incorrectCount; }
+  renderQuestion(idx);
+  return true;
+}
+
+prevBtn.addEventListener('click', () => { if (curIndex > 0) renderQuestion(curIndex - 1); });
+nextBtn.addEventListener('click', () => { if (curIndex < TOTAL - 1) renderQuestion(curIndex + 1); });
+
+/* ---------- Reset ---------- */
+resetQuiz.addEventListener('click', () => {
+  if (!confirm('Reset all progress on this quiz?')) return;
+  for (let i = 0; i < TOTAL; i++) { answers[i] = null; graded[i] = false; stemWhole[i] = null; choiceMarks[i] = {}; }
+  correctCount = 0; incorrectCount = 0;
+  svCorrect.textContent = 0; svIncorrect.textContent = 0;
+  examSubmitted = false;
+  updateExamButton();
+  renderQuestion(0);
+});
+
+/* ---------- Print Review ---------- */
+function buildPrintReviewMarkup() {
+  const letters = ['A','B','C','D','E'];
+  let cards = '';
+  for (let i = 0; i < TOTAL; i++) {
+    const q = QUESTIONS[i];
+    const answered = answers[i] !== null;
+    const wasGraded = graded[i];
+    let choicesHtml = '';
+    q.choices.forEach((c, ci) => {
+      let cls = 'print-choice';
+      if (wasGraded && ci === q.correct) cls += ' correct';
+      else if (wasGraded && answers[i] === ci && ci !== q.correct) cls += ' incorrect';
+      choicesHtml += `<div class="${cls}"><strong>${letters[ci]}.</strong> ${escapeHTML(c)}</div>`;
+    });
+    let explainHtml = '';
+    if (wasGraded) {
+      let wrongsHtml = q.explanation.wrongs.map(w => `<div>${escapeHTML(w)}</div>`).join('');
+      explainHtml = `
+        <div class="print-explainer correct-box"><strong>Correct Answer:</strong> ${escapeHTML(q.explanation.correct)}</div>
+        <div class="print-explainer teach-box"><strong>Teaching Point:</strong> ${escapeHTML(q.explanation.teaching)}</div>
+        <div class="print-explainer wrong-box"><strong>Why the Others Are Wrong:</strong>${wrongsHtml}</div>`;
+    }
+    cards += `<div class="print-card">
+      <div class="pq-num">Question ${i + 1} of ${TOTAL}${answered ? (wasGraded ? (answers[i] === q.correct ? ' — Correct' : ' — Incorrect') : ' — Answered, not graded') : ' — Not answered'}</div>
+      <div class="pq-stem">${escapeHTML(q.stem)}</div>
+      ${choicesHtml}
+      ${explainHtml}
+    </div>`;
+  }
+  return `<div class="print-shell">
+    <h1>Headache Pharmacology — Ochs-Style Question Bank</h1>
+    <div class="print-sub">Answer Review — ${correctCount} correct / ${incorrectCount} incorrect / ${TOTAL} total</div>
+    ${cards}
+  </div>`;
+}
+function printQuizReview() {
+  document.getElementById('printReviewRoot').innerHTML = buildPrintReviewMarkup();
+  document.body.classList.add('print-review-active');
+  setTimeout(() => window.print(), 50);
+}
+window.addEventListener('afterprint', () => { document.body.classList.remove('print-review-active'); });
+printQuizBtn.addEventListener('click', printQuizReview);
+</script>
+</body>
+</html>
