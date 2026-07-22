@@ -1,4 +1,4 @@
-,.# Illness Scripts — Tabbed Comparison Note Format
+# Illness Scripts — Tabbed Comparison Note Format
 **Build guide & design system spec**
 *Reference file: `illness_scripts_42K.html` (Ocular Pathology — Conjunctivitis / AMD / Glaucoma / Cataract)*
 *Quiz shell reference: `quiz_format_instructions.md` (launch screen + full-screen overlay quiz), reskinned per §11*
@@ -235,6 +235,8 @@ Typography: `Crimson Pro` (serif — headings, MCQ/quiz stems), `Nunito` (sans �
 | Table | plain `<table>` | Diagnostic workup — "what will the question show me" section |
 | Pill | `.pill.pill-{variant}` | Small inline tag, one per condition color plus `accent`/`purple`/`orange`, the LO-range pill, and quiz launch-screen chips (§11.4) |
 | Chain | `.chain` / `.chain-step` / `.chain-arrow` | Horizontal pathophys flow (A → B → C), mono font, arrow in accent color |
+| Board vignette | `.boards-vignette` / `.vignette-box` / `.vignette-text` / `.vignette-answer` / `.vignette-explain` | Full USMLE-style clinical stem with key findings highlighted in the condition's color, an Answer line, and a concise "What to look for" explanation — see §16 |
+| Lightbox (click-to-zoom) | `.lightbox` / `.lightbox img` / `.lightbox-close` | Full-screen zoom overlay triggered by clicking any `.fig-card` image — see §9.8 |
 | Video card | `.video-card`, `.video-thumb` | Clickable YouTube thumbnail that opens the video in a new tab — see §10 |
 | Quiz launch card | `.mcq-section` → `.quiz-launch-btn` | Per-condition button that opens the shared full-screen quiz overlay — see §11 |
 | Quiz overlay | `.qo`, `.qt-bar`, `.qin`, etc. | Full-screen launch + question experience, ported and reskinned from `quiz_format_instructions.md` — see §11 |
@@ -248,6 +250,7 @@ Build only through the objective number given for that disease (§2). Order is a
 | LO | Section | How to build it | Required when |
 |---|---|---|---|
 | — | Condition title | Emoji + LO-range pill + quick-fact pills + h2 in condition color | always |
+| — | Board vignette | `.boards-vignette` — full clinical stem + Answer line + "What to look for" — see §16 | recommended, any range |
 | 1 | Natural history | `section-head` + `callout.epi` (etiology/epidemiology/risk factors) → `callout.path` + `.chain` flow diagrams (pathophysiology, split into `.grid-2` mini-cards if the condition has subtypes) → short prognosis-if-untreated line, folded into the epi callout or its own line | range ≥ 1-2 |
 | 2 | Clinical presentation | `callout.clin`, `.grid-3` subtype mini-cards if relevant, `callout.warn` for red flags/referral triggers | range ≥ 1-2 |
 | 3 | Diagnostic workup | Plain table — history/PE findings + labs/imaging | range ≥ 1-3 |
@@ -288,7 +291,7 @@ Print stylesheet — forces every panel to render (normally `display:none` unles
   /* Chrome/nav/interactive elements never belong on paper */
   .site-header, .tab-nav, .sidebar-nav, .sidebar-toggle-btn, .print-btn, .theme-switcher,
   .mcq-reset, .qo, .launch-wrap, .quiz-launch-btn,
-  .video-card { display: none !important; }
+  .video-card, .lightbox { display: none !important; }
 
   .layout-shell { display: block !important; }
   .content-area { padding: 24px !important; }
@@ -302,10 +305,10 @@ Print stylesheet — forces every panel to render (normally `display:none` unles
   .grid-2 > *, .grid-3 > * { margin-bottom: 10px !important; }
 
   /* Keep these from splitting awkwardly across a page boundary */
-  .callout, .mini-card, table, .fig-card, tr {
+  .callout, .mini-card, table, .fig-card, .vignette-box, tr {
     page-break-inside: avoid; break-inside: avoid;
   }
-  .callout, .mini-card, table, .pill, .fig-card, .mcq-card { border: 1px solid #000 !important; }
+  .callout, .mini-card, table, .pill, .fig-card, .mcq-card, .vignette-box { border: 1px solid #000 !important; }
 
   /* Images print — sized sensibly rather than stretched to full page width */
   img { display: block !important; }
@@ -333,13 +336,56 @@ Apply this step whenever the lecture slides, PDF, or notes contain histology, fu
 4. **Component.** Add a `.fig-card` matching the existing system (new class — build to match):
    ```css
    .fig-card{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:10px;margin:9px 0}
-   .fig-card img{width:100%;border-radius:5px;display:block}
+   .fig-card img{width:100%;border-radius:5px;display:block;cursor:zoom-in}
    .fig-caption{font-family:'IBM Plex Mono',monospace;font-size:.66rem;text-transform:uppercase;letter-spacing:.08em;opacity:.6;margin-top:6px}
    ```
    Give the card a top border in the condition's accent color, matching `.mini-card` convention.
 5. **Placement.** Place each image next to the content it illustrates, not batched at the end — e.g. a fundoscopy photo goes in "Diagnostic Workup" (LO 3), a histology slide goes in "Pathophysiology" (LO 1).
 6. **Caption.** One line, mono font, stating what the image is and what to notice (e.g. "Fundoscopy — drusen with RPE atrophy, dry AMD").
 7. Images now print too (§8) — sized to fit the page rather than stretched, and prevented from splitting across a page break.
+8. **Click-to-zoom is required, not optional** — every `.fig-card img` opens full-screen on click. See §9.8.
+
+### 9.8 Click-to-zoom (lightbox)
+
+One shared lightbox for the whole file (not one per image), matching the same pattern as the quiz overlay (§11) — build it once, wire every `.fig-card img` to it.
+
+**Markup** (place once, just before the closing `</body>`, after the quiz overlay if present):
+```html
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightboxClose">&times;</button>
+  <img id="lightboxImg" src="" alt="Zoomed figure">
+</div>
+```
+
+**CSS:**
+```css
+.lightbox{position:fixed;inset:0;z-index:300;background:rgba(10,8,6,.86);display:none;align-items:center;justify-content:center;padding:30px;cursor:zoom-out}
+.lightbox.open{display:flex}
+.lightbox img{max-width:100%;max-height:100%;border-radius:6px;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+.lightbox-close{position:absolute;top:18px;right:22px;color:#fff;font-size:1.6rem;background:none;border:none;cursor:pointer}
+```
+
+**JS** (runs once at the bottom of the script block, after all panels exist in the DOM):
+```js
+var lb = document.getElementById('lightbox');
+var lbImg = document.getElementById('lightboxImg');
+document.querySelectorAll('.fig-card img').forEach(function(img){
+  img.addEventListener('click', function(){
+    lbImg.src = img.src;
+    lb.classList.add('open');
+  });
+});
+function closeLightbox(){ lb.classList.remove('open'); lbImg.src=''; }
+lb.addEventListener('click', function(){ closeLightbox(); });
+document.getElementById('lightboxClose').addEventListener('click', function(e){
+  e.stopPropagation(); closeLightbox();
+});
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape') closeLightbox();
+});
+```
+
+Click anywhere on the dimmed backdrop, click the `×`, or press `Escape` to close. The lightbox is excluded from the Print Text output (§8) — same treatment as `.video-card`, since a zoomed overlay has no meaning on paper and the underlying `.fig-card img` already prints.
 
 ---
 
@@ -379,7 +425,7 @@ Whatever the person pastes — a plain URL (`https://youtube.com/watch?v=VIDEO_I
 ```
 
 ### 10.4 Placement
-One video per topic is typical; place it as its own `.video-card` near the top of the panel (after the quick-compare table if there is one, before Natural History) as an orientation resource. For a condition with multiple videos, wrap them in `.grid-2` or `.grid-3` (each card `style="margin:0"` to avoid doubled spacing) rather than stacking several full-width cards in a row — three stacked video cards push all the actual content below the fold.
+One video per topic is typical; place it as its own `.video-card` near the top of the panel — after the board vignette (§16) and quick-compare table if there is one, before Natural History — as an orientation resource. Top-of-panel order is: condition title → board vignette → video card → LO1. For a condition with multiple videos, wrap them in `.grid-2` or `.grid-3` (each card `style="margin:0"` to avoid doubled spacing) rather than stacking several full-width cards in a row — three stacked video cards push all the actual content below the fold.
 
 ### 10.5 Print
 `.video-card` is hidden entirely in the Print Text output (§8) — a thumbnail isn't clickable on paper and doesn't carry information on its own, unlike a `.fig-card` image.
@@ -464,16 +510,69 @@ Use `quiz_format_instructions.md`'s own §11 shape — `stem`, `choices`, `corre
 3. Scan source material for embeddable images (§9) — note which conditions will get one, and which LO section they belong in
 4. Pick the condition palette + accent, define all three theme blocks including `--tx`/`--monitor`/`--prevent` and `--success`/`--danger`/`--highlight` (§5). Confirm `cream` is the default theme.
 5. Build header (cream active by default, includes the print-text button) and the chosen nav (§4.2 tab-nav or §4.3 sidebar-nav)
-6. For each condition, build the panel in the §7 order, stopping at the LO given by its range, using the components from §6
+6. For each condition, build the panel in the §7 order, stopping at the LO given by its range, using the components from §6 — write the board vignette (§16) right after the condition title before anything else
 7. Add the LO-range pill to each condition title (and sidebar badge, if using §4.3)
 8. Add the `@media print` stylesheet and wire the Print Text button (§8)
 9. Build the shared quiz overlay once (§11), write each condition's question bank in the §11.6 shape, wire each condition's launch button to open it with that condition's color and questions
-10. `node --check` the script, fix any syntax issues
-11. Sanity-check in a browser: cream loads by default, theme switching, nav switching (tabs or sidebar categories), each panel stops at the correct LO, Print Text produces all panels in plain text, and the quiz overlay opens/grades/resets correctly from each condition
-12. Save with the naming convention in §12
+10. Build the shared lightbox once (§9.8) and confirm every `.fig-card img` opens it on click
+11. `node --check` the script, fix any syntax issues
+12. Sanity-check in a browser: cream loads by default, theme switching, nav switching (tabs or sidebar categories), each panel stops at the correct LO, every image zooms on click, Print Text produces all panels in plain text, and the quiz overlay opens/grades/resets correctly from each condition
+13. Save with the naming convention in §13
 
 ---
 
 ## 15. Quick-paste prompt for future sessions
 
-> "Build a new Disease Index note in this format (see `illness-scripts-format.md`) for [conditions], based on [source material]. Each disease has its LO range marked in the source — build only through that range per §2/§7. Use [tab nav / sidebar nav] per §4. Default theme is cream, with a Print Text button (§8), video embeds per §10, and a quiz overlay per §11. Insert images per §9 if the source has usable figures."
+> "Build a new Disease Index note in this format (see `illness-scripts-format.md`) for [conditions], based on [source material]. Each disease has its LO range marked in the source — build only through that range per §2/§7. Use [tab nav / sidebar nav] per §4. Default theme is cream, with a Print Text button (§8), video embeds per §10, a board vignette per §16, click-to-zoom on every figure per §9.8, and a quiz overlay per §11. Insert images per §9 if the source has usable figures."
+
+---
+
+## 16. Board vignette ("How Boards Would Word It")
+
+Every panel opens with a full clinical-vignette version of "how boards would word it" — not a short paraphrased pattern description. This is the single highest-value piece of pattern-recognition content in the panel, so it gets full USMLE-stem treatment: a realistic case, key findings visually called out, a stated answer, and a short explanation of which findings actually did the work.
+
+### 16.1 Structure
+
+```html
+<div class="boards-vignette">
+  <div class="boards-label">How boards would word it</div>
+  <div class="vignette-box">
+    <p class="vignette-text">"A <span class="hl">68-year-old man</span> presents with... <span class="hl">bumping into furniture on his left side</span>... Intraocular pressure is <span class="hl">26 mmHg</span>... Which of the following is the most likely diagnosis?"</p>
+  </div>
+  <div class="vignette-answer"><span class="ans-label">Answer:</span> <span class="ans">Primary open-angle glaucoma</span></div>
+  <div class="vignette-explain"><b>What to look for:</b> concise sentence or two naming the specific findings that point to the diagnosis, and (if useful) what a distractor finding is doing in the stem.</div>
+</div>
+```
+
+### 16.2 CSS
+
+```css
+.boards-vignette{margin:16px 0 22px}
+.boards-label{font-family:'IBM Plex Mono',monospace;font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim);margin-bottom:8px}
+.vignette-box{background:var(--bg-card);border:1px solid var(--border-strong);border-radius:12px;padding:18px 22px;box-shadow:var(--shadow)}
+.vignette-text{font-family:'Crimson Pro',serif;font-style:italic;font-size:1.05rem;line-height:1.65;color:var(--text);margin:0}
+.vignette-text .hl{font-style:normal;font-weight:700}
+.vignette-answer{margin-top:12px;font-family:'IBM Plex Mono',monospace;font-size:.85rem}
+.vignette-answer .ans-label{font-weight:700;color:var(--text-dim);margin-right:6px}
+.vignette-answer .ans{font-weight:700}
+.vignette-explain{margin-top:8px;font-size:.88rem;color:var(--text-dim);line-height:1.55}
+.vignette-explain b{color:var(--text)}
+```
+
+Then, per condition, scope the highlight/answer color to that condition's own accent — one rule pair per condition, same pattern as `.mini-card`'s top-border scoping:
+```css
+.panel.{condition} .vignette-text .hl, .panel.{condition} .vignette-answer .ans{color:var(--{condition})}
+```
+
+### 16.3 Writing the vignette — what makes this work
+
+- **Write a real stem, not a summary.** Full sentences, first person clinical framing ("A 34-year-old man presents with..."), plausible incidental detail alongside the load-bearing findings — the same density and pacing as an actual exam question, ending in "Which of the following is the most likely diagnosis?" (or the equivalent question for that LO, e.g. "...most appropriate next step in management?" for a treatment-focused stem).
+- **Highlight the findings that do the diagnostic work**, wrapping each in `<span class="hl">` — demographics when relevant (age, sex, risk factors), key symptoms, exam findings, and any measurements/values that are the actual signal. Don't highlight connective tissue of the sentence, and don't highlight so much that nothing stands out — the reference density is roughly one highlighted phrase per sentence.
+- **Include true negatives/normal findings when the diagnosis depends on them** (e.g. "denies eye pain, redness, or headache," "neurological examination is normal") — what's absent is often as diagnostic as what's present, and boards routinely test that.
+- **The Answer line states the diagnosis (or management step) plainly** — no hedging, no "likely," matching how an answer key would read.
+- **"What to look for" is the teaching moment**, not a restatement of the vignette: name the specific combination of findings that clinches it, and if the stem contains a classic distractor (a finding that sounds like a different condition), call that out too.
+- One vignette per condition panel — don't build a second one for a sub-scenario unless that sub-scenario is genuinely a different presentation worth its own pattern-recognition drill.
+
+### 16.4 Placement
+
+Right after the condition title, before everything else — including the video card (§10.4) and LO1. It's the first thing a reader sees after the title, by design: orient on the pattern before the detail.
