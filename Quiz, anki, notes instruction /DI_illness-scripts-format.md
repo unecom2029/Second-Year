@@ -237,7 +237,7 @@ Typography: `Crimson Pro` (serif — headings, MCQ/quiz stems), `Nunito` (sans �
 | Chain | `.chain` / `.chain-step` / `.chain-arrow` | Horizontal pathophys flow (A → B → C), mono font, arrow in accent color |
 | Board vignette | `.boards-vignette` / `.vignette-box` / `.vignette-text` / `.vignette-answer` / `.vignette-explain` | Full USMLE-style clinical stem with key findings highlighted in the condition's color, an Answer line, and a concise "What to look for" explanation — see §16 |
 | Lightbox (click-to-zoom) | `.lightbox` / `.lightbox img` / `.lightbox-close` | Full-screen zoom overlay triggered by clicking any `.fig-card` image — see §9.8 |
-| Video card | `.video-card`, `.video-thumb` | Clickable YouTube thumbnail that opens the video in a new tab — see §10 |
+| Video card | `.video-card`, `.video-thumb` | Clickable YouTube thumbnail that plays inline on the page using a click-to-load embed — see §10 |
 | Quiz launch card | `.mcq-section` → `.quiz-launch-btn` | Per-condition button that opens the shared full-screen quiz overlay — see §11 |
 | Quiz overlay | `.qo`, `.qt-bar`, `.qin`, etc. | Full-screen launch + question experience, ported and reskinned from `quiz_format_instructions.md` — see §11 |
 
@@ -389,11 +389,13 @@ Click anywhere on the dimmed backdrop, click the `×`, or press `Escape` to clos
 
 ---
 
-## 10. Video embeds (thumbnail-link, not iframe)
+## 10. Video embeds (click-to-play inline YouTube)
 
-Practice videos (YouTube walkthroughs, mechanism explainers) get embedded as a **clickable thumbnail card that opens the video on YouTube in a new tab** — not a live `<iframe>` player.
+Practice videos (YouTube walkthroughs, mechanism explainers) get added as **clickable thumbnail cards near the top of the condition panel**. On click, the thumbnail is replaced with an inline YouTube player so the learner stays inside the note instead of being kicked out to YouTube.
 
-**Why not `<iframe>`:** these notes are meant to be downloaded and opened locally (`file://`), not served from a website. YouTube's embedded player validates the page's origin before it'll play, and a local file has no real origin — so an `<iframe src="youtube.com/embed/...">` fails with a player error even for videos that allow embedding everywhere else. A thumbnail image + link has no such restriction; it works identically whether the file is local or hosted.
+**Build rule:** do **not** replace the thumbnail with a permanent iframe on page load. Keep the regular YouTube link in the HTML and create the `youtube-nocookie.com/embed/...` iframe only after the user clicks the card. Add `referrerPolicy="strict-origin-when-cross-origin"` on the generated iframe to avoid YouTube Error 153 / player configuration errors in browsers that require a usable referrer.
+
+**Fallback behavior:** keep `href="https://www.youtube.com/watch?v=VIDEO_ID"` plus `target="_blank" rel="noopener noreferrer"` on the `<a>` tag. If JavaScript is disabled or the video cannot embed, the card still works as a normal YouTube link.
 
 ### 10.1 Getting the video ID
 Whatever the person pastes — a plain URL (`https://youtube.com/watch?v=VIDEO_ID`) or a full `<iframe src="https://www.youtube.com/embed/VIDEO_ID" title="...">` embed snippet — pull the 11-character video ID out of it. The title attribute (if given) becomes the caption/overlay text; otherwise use the video's own title if known.
@@ -419,16 +421,66 @@ Whatever the person pastes — a plain URL (`https://youtube.com/watch?v=VIDEO_I
 .video-link{display:block;text-decoration:none}
 .video-thumb{position:relative;width:100%;padding-bottom:56.25%;height:0;border-radius:5px;overflow:hidden;background:#000}
 .video-thumb img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;opacity:.82;transition:opacity .15s}
+.video-thumb iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
 .video-link:hover .video-thumb img{opacity:1}
 .play-btn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:60px;height:60px;background:rgba(0,0,0,.7);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;border:2px solid rgba(255,255,255,.85);pointer-events:none}
 .video-title-overlay{position:absolute;bottom:0;left:0;right:0;padding:8px 10px 7px;background:linear-gradient(transparent,rgba(0,0,0,.78));color:#fff;font-family:'Nunito',sans-serif;font-size:.78rem;font-weight:700;line-height:1.3}
 ```
 
-### 10.4 Placement
+### 10.4 JavaScript
+Add this once near the bottom of the page script, after navigation/theme handlers and before the lightbox code. It converts every `.video-link` into a click-to-play inline embed and stops any other playing embed when a new one starts.
+
+```js
+// Keep YouTube videos embedded in the page instead of opening a new tab.
+(function(){
+  function getYouTubeId(url){
+    var match = url.match(/[?&]v=([^&]+)/) || url.match(/youtu\.be\/([^?&]+)/);
+    return match ? match[1] : '';
+  }
+
+  function stopInlineVideos(activeCard){
+    document.querySelectorAll('.video-card.playing').forEach(function(card){
+      if(card === activeCard) return;
+      var iframe = card.querySelector('iframe');
+      if(iframe) iframe.remove();
+      card.classList.remove('playing');
+    });
+  }
+
+  document.querySelectorAll('.video-link').forEach(function(link){
+    link.addEventListener('click', function(event){
+      var card = link.closest('.video-card');
+      var thumb = link.querySelector('.video-thumb');
+      var id = getYouTubeId(link.href);
+      if (!card || !thumb || !id) return;
+
+      event.preventDefault();
+      if (card.classList.contains('playing')) return;
+
+      stopInlineVideos(card);
+
+      var titleNode = link.querySelector('.video-title-overlay');
+      var title = titleNode ? titleNode.textContent.replace(/^▶\s*/, '') : 'YouTube video';
+      var iframe = document.createElement('iframe');
+      iframe.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0';
+      iframe.title = title;
+      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+      iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+      iframe.allowFullscreen = true;
+      thumb.appendChild(iframe);
+      card.classList.add('playing');
+    });
+  });
+})();
+```
+
+### 10.5 Placement
 One video per topic is typical; place it as its own `.video-card` near the top of the panel — after the board vignette (§16) and quick-compare table if there is one, before Natural History — as an orientation resource. Top-of-panel order is: condition title → board vignette → video card → LO1. For a condition with multiple videos, wrap them in `.grid-2` or `.grid-3` (each card `style="margin:0"` to avoid doubled spacing) rather than stacking several full-width cards in a row — three stacked video cards push all the actual content below the fold.
 
-### 10.5 Print
-`.video-card` is hidden entirely in the Print Text output (§8) — a thumbnail isn't clickable on paper and doesn't carry information on its own, unlike a `.fig-card` image.
+**Important placement note:** keep videos close to the top of the page/panel. They should orient the learner before the dense LO content, not live at the bottom where they are easy to miss.
+
+### 10.6 Print
+`.video-card` is hidden entirely in the Print Text output (§8) — an inline video is not useful on paper and the thumbnail does not carry enough information on its own, unlike a `.fig-card` image.
 
 ---
 
@@ -575,4 +627,4 @@ Then, per condition, scope the highlight/answer color to that condition's own ac
 
 ### 16.4 Placement
 
-Right after the condition title, before everything else — including the video card (§10.4) and LO1. It's the first thing a reader sees after the title, by design: orient on the pattern before the detail.
+Right after the condition title, before everything else — including the video card (§10.5) and LO1. It's the first thing a reader sees after the title, by design: orient on the pattern before the detail.
