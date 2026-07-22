@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Nunito:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box}
+html{font-size:calc(16px * var(--text-scale,1))}
 html,body{margin:0;padding:0}
 body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);transition:background .2s,color .2s;-webkit-font-smoothing:antialiased}
 
@@ -102,6 +103,9 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);tran
 .sidebar-toggle-btn{display:none;font-family:'Nunito',sans-serif;font-weight:800;font-size:.82rem;background:var(--bg-card);border:1px solid var(--border);border-radius:7px;color:var(--text);padding:7px 12px;cursor:pointer}
 .print-btn{font-family:'IBM Plex Mono',monospace;font-size:.66rem;background:transparent;border:1px solid var(--border);border-radius:5px;color:var(--text-dim);padding:5px 10px;cursor:pointer;transition:var(--tr)}
 .print-btn:hover{border-color:var(--accent);color:var(--accent)}
+.text-size-control{display:flex;align-items:center;gap:2px;background:var(--bg-card);border:1px solid var(--border);border-radius:7px;overflow:hidden}
+.text-size-control button{font-family:'IBM Plex Mono',monospace;font-size:.66rem;font-weight:700;background:transparent;border:0;color:var(--text-dim);padding:5px 9px;cursor:pointer;transition:var(--tr)}
+.text-size-control button:hover{background:var(--bg-hover);color:var(--accent)}
 .theme-switcher{display:flex;gap:6px;align-items:center;background:var(--bg-card);border:1px solid var(--border);border-radius:20px;padding:4px}
 .theme-btn{width:20px;height:20px;border-radius:50%;border:2px solid transparent;cursor:pointer;padding:0}
 .theme-btn.t-dark{background:#20272d}
@@ -379,6 +383,10 @@ td.hicell{color:var(--danger);font-weight:700}
   </div>
   <div class="header-right">
     <button class="print-btn" id="printTextBtn" title="Print all text as PDF">🖨️ Print Text</button>
+    <div class="text-size-control" id="textSizeCtrl" aria-label="Text size controls">
+      <button type="button" data-text-size="decrease" title="Decrease text size">A-</button>
+      <button type="button" data-text-size="increase" title="Increase text size">A+</button>
+    </div>
     <div class="theme-switcher" role="group" aria-label="Theme switcher">
       <button class="theme-btn t-dark" data-theme-btn="dark" title="Dark"></button>
       <button class="theme-btn t-cream active" data-theme-btn="cream" title="Cream"></button>
@@ -2187,6 +2195,24 @@ function setTheme(t){
 document.querySelectorAll('.theme-btn').forEach(function(b){
   b.addEventListener('click', function(){ setTheme(b.dataset.themeBtn); });
 });
+
+(function(){
+  var key = 'neoplastic-cns-text-scale';
+  var scale = parseFloat(localStorage.getItem(key)) || 1;
+  function applyScale(){
+    scale = Math.max(0.85, Math.min(1.3, scale));
+    document.documentElement.style.setProperty('--text-scale', scale);
+    localStorage.setItem(key, scale.toFixed(2));
+    updateHeaderHeight();
+  }
+  applyScale();
+  document.querySelectorAll('#textSizeCtrl button').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      scale += btn.dataset.textSize === 'increase' ? 0.1 : -0.1;
+      applyScale();
+    });
+  });
+})();
 
 /* ===================== SIDEBAR NAV ===================== */
 function toggleCategory(catId){
