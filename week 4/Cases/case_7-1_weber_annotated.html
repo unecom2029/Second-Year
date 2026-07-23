@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Case 7-1 — Right Oculomotor Palsy with Crossed Corticospinal Signs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Nunito:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#F6F1E6;
+  --paper:#FCFAF3;
+  --ink:#2A241C;
+  --ink-soft:#6B6152;
+  --ink-faint:#9A8F7B;
+  --line:#DED2B6;
+  --line-soft:#EAE0C9;
+
+  --coral:#C85A3E;   --coral-bg:#F7E4DB;
+  --teal:#256B63;    --teal-bg:#DFEDE8;
+  --gold:#A47A1F;    --gold-bg:#F3E7C6;
+  --violet:#6B5390;  --violet-bg:#E9E2F1;
+  --sky:#2F6485;     --sky-bg:#DEE9EF;
+
+  --radius:10px;
+  --shadow:0 1px 2px rgba(42,36,28,.06), 0 8px 24px -12px rgba(42,36,28,.18);
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--cream);
+  color:var(--ink);
+  font-family:'Nunito',sans-serif;
+  line-height:1.5;
+  padding-bottom:80px;
+}
+
+.wrap{max-width:800px;margin:0 auto;padding:0 20px;}
+
+/* ---------- header ---------- */
+header.top{
+  padding:48px 0 28px;
+  border-bottom:1px solid var(--line);
+  margin-bottom:36px;
+}
+.eyebrow{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--ink-faint);
+  margin:0 0 10px;
+}
+h1.case-title{
+  font-family:'Crimson Pro',serif;
+  font-weight:700;
+  font-size:38px;
+  margin:0 0 8px;
+  color:var(--ink);
+}
+p.case-sub{
+  font-family:'Nunito',sans-serif;
+  font-size:15px;
+  color:var(--ink-soft);
+  margin:0;
+  max-width:620px;
+}
+.legend{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px 14px;
+  margin-top:18px;
+}
+.legend-item{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  color:var(--ink-soft);
+  text-transform:uppercase;
+  letter-spacing:.03em;
+}
+.legend-dot{width:9px;height:9px;border-radius:50%;display:inline-block;}
+
+/* ---------- case column ---------- */
+main.case{
+  max-width:800px;
+  margin:0 auto;
+  padding:0 20px;
+}
+.case-section{margin-bottom:34px;}
+.case-section h2{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:13px;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  color:var(--ink-faint);
+  border-bottom:1px solid var(--line-soft);
+  padding-bottom:8px;
+  margin:0 0 14px;
+}
+.case-section h3{
+  font-family:'Nunito',sans-serif;
+  font-weight:700;
+  font-size:14px;
+  color:var(--ink-soft);
+  margin:18px 0 8px;
+}
+.case-section p{
+  font-family:'Crimson Pro',serif;
+  font-size:19px;
+  color:var(--ink);
+  margin:0 0 14px;
+}
+
+/* ---------- highlight marks ---------- */
+mark.hl{
+  cursor:pointer;
+  padding:0.02em 0.15em;
+  border-radius:4px;
+  background-image:none;
+  transition:filter .12s ease;
+}
+mark.hl:hover{filter:brightness(0.96);}
+mark.hl[data-cat="localization"]{background:var(--teal-bg); color:var(--teal); box-shadow:inset 0 -1.5px 0 var(--teal);}
+mark.hl[data-cat="finding"]{background:var(--coral-bg); color:var(--coral); box-shadow:inset 0 -1.5px 0 var(--coral);}
+mark.hl[data-cat="term"]{background:var(--gold-bg); color:var(--gold); box-shadow:inset 0 -1.5px 0 var(--gold);}
+mark.hl[data-cat="pattern"]{background:var(--violet-bg); color:var(--violet); box-shadow:inset 0 -1.5px 0 var(--violet);}
+mark.hl[data-cat="genetics"]{background:var(--sky-bg); color:var(--sky); box-shadow:inset 0 -1.5px 0 var(--sky);}
+
+sup.hlnum{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;
+  color:var(--ink-faint);
+  margin-left:1px;
+  font-style:normal;
+}
+
+/* ---------- hover tooltip ---------- */
+#tooltip{
+  position:fixed;
+  max-width:280px;
+  background:var(--ink);
+  color:var(--paper);
+  padding:10px 12px;
+  border-radius:8px;
+  font-family:'Nunito',sans-serif;
+  font-size:13px;
+  line-height:1.4;
+  box-shadow:var(--shadow);
+  z-index:500;
+  display:none;
+  pointer-events:none;
+}
+#tooltip .tt-eyebrow{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;
+  letter-spacing:.05em;
+  text-transform:uppercase;
+  opacity:.75;
+  display:block;
+  margin-bottom:3px;
+}
+#tooltip .tt-title{font-weight:700; display:block; margin-bottom:2px;}
+
+/* ---------- docked spotlight panel ---------- */
+#panel{
+  position:fixed;
+  z-index:600;
+  background:var(--paper);
+  box-shadow:var(--shadow);
+  display:none;
+  flex-direction:column;
+}
+#panel.open{display:flex;}
+#panel .panel-inner{padding:26px 26px 30px;overflow-y:auto;}
+#panel .panel-close{
+  position:absolute;
+  top:14px;right:14px;
+  width:30px;height:30px;
+  border:none;background:var(--line-soft);
+  border-radius:50%;
+  color:var(--ink-soft);
+  font-size:16px;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+}
+#panel .panel-close:hover{background:var(--line);}
+#panel .p-eyebrow{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  margin:0 0 8px;
+  padding:4px 9px;
+  border-radius:20px;
+  display:inline-block;
+}
+#panel .p-title{
+  font-family:'Crimson Pro',serif;
+  font-weight:700;
+  font-size:23px;
+  margin:6px 0 14px;
+  color:var(--ink);
+}
+#panel .p-body{
+  font-family:'Nunito',sans-serif;
+  font-size:15px;
+  color:var(--ink-soft);
+  line-height:1.6;
+}
+
+@media (min-width:1000px){
+  #panel{
+    top:0; right:0; bottom:0;
+    width:380px;
+    border-left:1px solid var(--line);
+  }
+}
+@media (max-width:999px){
+  #panel{
+    left:0; right:0; bottom:0;
+    max-height:70vh;
+    border-top:1px solid var(--line);
+    border-radius:16px 16px 0 0;
+  }
+}
+
+/* ---------- reasoning + deepdive shared ---------- */
+section.block{
+  max-width:800px;
+  margin:0 auto;
+  padding:0 20px;
+}
+section.block > h2.block-title{
+  font-family:'Crimson Pro',serif;
+  font-weight:700;
+  font-size:26px;
+  margin:56px 0 6px;
+}
+section.block > p.block-lead{
+  font-family:'Nunito',sans-serif;
+  font-size:14px;
+  color:var(--ink-soft);
+  margin:0 0 22px;
+}
+
+.grid3{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+}
+@media (max-width:1000px){.grid3{grid-template-columns:repeat(2,1fr);}}
+@media (max-width:640px){.grid3{grid-template-columns:1fr;}}
+.span-full{grid-column:1 / -1;}
+
+.card{
+  background:var(--paper);
+  border:1px solid var(--line-soft);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:20px;
+}
+.card .tag{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  padding:3px 9px;
+  border-radius:20px;
+  display:inline-block;
+  margin-bottom:10px;
+}
+.card h4{
+  font-family:'Nunito',sans-serif;
+  font-weight:800;
+  font-size:15px;
+  margin:0 0 8px;
+  color:var(--ink);
+}
+.card p{
+  font-family:'Nunito',sans-serif;
+  font-size:14px;
+  color:var(--ink-soft);
+  margin:0 0 8px;
+}
+.card p:last-child{margin-bottom:0;}
+
+.tag-localization{background:var(--teal-bg); color:var(--teal);}
+.tag-finding{background:var(--coral-bg); color:var(--coral);}
+.tag-term{background:var(--gold-bg); color:var(--gold);}
+.tag-pattern{background:var(--violet-bg); color:var(--violet);}
+.tag-genetics{background:var(--sky-bg); color:var(--sky);}
+
+/* differential table */
+table.ddx{
+  width:100%;
+  border-collapse:collapse;
+  font-family:'Nunito',sans-serif;
+  font-size:13.5px;
+}
+table.ddx th{
+  text-align:left;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+  color:var(--ink-faint);
+  padding:8px 10px;
+  border-bottom:1px solid var(--line);
+}
+table.ddx td{
+  padding:10px 10px;
+  border-bottom:1px solid var(--line-soft);
+  color:var(--ink-soft);
+  vertical-align:top;
+}
+table.ddx tr.lead td{background:var(--teal-bg);}
+table.ddx tr.lead td:first-child{color:var(--teal); font-weight:800; position:relative;}
+.tag-most-likely{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:9.5px;
+  background:var(--teal);
+  color:var(--paper);
+  padding:2px 7px;
+  border-radius:10px;
+  margin-left:6px;
+  letter-spacing:.03em;
+}
+
+/* workup flow */
+.workflow{display:flex; flex-direction:column; gap:12px;}
+.workstep{display:flex; gap:14px;}
+.worknum{
+  flex:0 0 30px;
+  height:30px;
+  border-radius:50%;
+  background:var(--sky-bg);
+  color:var(--sky);
+  font-family:'IBM Plex Mono',monospace;
+  font-weight:600;
+  font-size:13px;
+  display:flex;align-items:center;justify-content:center;
+}
+.workstep .wlead{font-weight:800; color:var(--ink); font-size:14.5px; font-family:'Nunito',sans-serif;}
+.workstep .wsub{color:var(--ink-soft); font-size:13.5px; margin-top:2px;}
+
+.checklist{list-style:none; margin:0; padding:0;}
+.checklist li{
+  padding:8px 0 8px 26px;
+  position:relative;
+  font-size:14px;
+  color:var(--ink-soft);
+  border-bottom:1px solid var(--line-soft);
+}
+.checklist li:last-child{border-bottom:none;}
+.checklist li::before{
+  content:"";
+  position:absolute;left:0;top:12px;
+  width:12px;height:12px;
+  border:1.5px solid var(--teal);
+  border-radius:3px;
+}
+
+/* deep-dive */
+.grid2{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:16px;
+}
+@media (max-width:1000px){.grid2{grid-template-columns:1fr;}}
+
+.dd-card svg{width:100%; height:auto; display:block; margin:10px 0 12px;}
+.dd-card .takeaway{
+  font-size:13.5px;
+  color:var(--ink-soft);
+  border-top:1px solid var(--line-soft);
+  padding-top:10px;
+  margin-top:4px;
+}
+
+footer.end{
+  max-width:800px;margin:60px auto 0;padding:20px 20px 0;
+  border-top:1px solid var(--line);
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  color:var(--ink-faint);
+  text-align:center;
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <p class="eyebrow">Block 5 · Medical Neuroanatomy · Chapter 07 · Case Study 7-1</p>
+    <h1 class="case-title">Case 7-1</h1>
+    <p class="case-sub">57-year-old woman with acute right ptosis and diplopia — a right oculomotor (CN III) palsy with pupil sparing, plus contralateral corticospinal signs. Working localization: right midbrain (crus cerebri / oculomotor fascicles) — Weber's syndrome.</p>
+    <div class="legend">
+      <span class="legend-item"><span class="legend-dot" style="background:var(--teal)"></span>Localization</span>
+      <span class="legend-item"><span class="legend-dot" style="background:var(--coral)"></span>Finding</span>
+      <span class="legend-item"><span class="legend-dot" style="background:var(--gold)"></span>Term</span>
+      <span class="legend-item"><span class="legend-dot" style="background:var(--violet)"></span>Pattern</span>
+      <span class="legend-item"><span class="legend-dot" style="background:var(--sky)"></span>Genetics / Workup / Trajectory</span>
+    </div>
+  </div>
+</header>
+
+<main class="case">
+
+  <div class="case-section">
+    <h2>Chief Complaint</h2>
+    <p>This 57-year-old, right-handed woman is presenting with <mark class="hl" data-cat="finding" id="hl1">a marked weakness of her right eyelid and double vision when her eye is forced open</mark><sup class="hlnum">1</sup>.</p>
+  </div>
+
+  <div class="case-section">
+    <h2>History of Chief Complaint</h2>
+    <p><mark class="hl" data-cat="pattern" id="hl2">She had experienced two episodes of blurred vision and headache on the day prior to admission</mark><sup class="hlnum">2</sup>. That evening she went to bed early. <mark class="hl" data-cat="term" id="hl3">She awoke with an inability to open the right eyelid</mark><sup class="hlnum">3</sup>. When she held the eyelid open with her finger, she noted marked double vision.</p>
+  </div>
+
+  <div class="case-section">
+    <h2>Medical History</h2>
+    <p>This patient had had <mark class="hl" data-cat="genetics" id="hl4">moderate hypertension for 30 years</mark><sup class="hlnum">4</sup>. The hypertension was managed using beta-blockers.</p>
+  </div>
+
+  <div class="case-section">
+    <h2>Family History</h2>
+    <p>The patient has been married for 35 years and has three children in college. Both parents are living; <mark class="hl" data-cat="genetics" id="hl5">her father has had a long history of hypertension</mark><sup class="hlnum">5</sup>. She has <mark class="hl" data-cat="genetics" id="hl6">a 25-pack-year history of smoking</mark><sup class="hlnum">6</sup> and claims to consume a moderate amount of alcohol each week.</p>
+  </div>
+
+  <div class="case-section">
+    <h2>Physical Examination</h2>
+    <p>On examination she was stable, awake, oriented, and of anxious demeanor. The patient was well nourished, well hydrated, obese, and in poor physical condition; she appeared slightly older than her stated age. <mark class="hl" data-cat="finding" id="hl8">Optic discs had sharp edges</mark><sup class="hlnum">8</sup>. Her chest was clear to auscultation and percussion. <mark class="hl" data-cat="finding" id="hl7">Her blood pressure was 160/100</mark><sup class="hlnum">7</sup>; pulse, temperature, and respirations were physiologic. Abdomen was difficult to palpate because of her obesity; however, no tenderness was observed. Peripheral pulses were difficult to access; mild edema was present at the ankles but not at the wrists.</p>
+  </div>
+
+  <div class="case-section">
+    <h2>Neurologic Examination</h2>
+
+    <h3>Mental Status</h3>
+    <p><mark class="hl" data-cat="localization" id="hl9">The patient was alert and oriented to time and place. Speech was articulate and content was meaningful</mark><sup class="hlnum">9</sup>. Memory and knowledge were appropriate for her background. She could follow two- and three-step commands and was an adequate historian.</p>
+
+    <h3>Cranial Nerves</h3>
+    <p><mark class="hl" data-cat="finding" id="hl10">Visual fields were full to confrontation</mark><sup class="hlnum">10</sup>. If asked to open her eyes, the right eyelid did not elevate beyond 2 mm; the left opened 10 to 12 mm. When the right eyelid was elevated by an external force, <mark class="hl" data-cat="pattern" id="hl11">the right eye was deviated to the right and down</mark><sup class="hlnum">11</sup>; <mark class="hl" data-cat="localization" id="hl12">she could effect no volitional medial or upward movement of the right eye</mark><sup class="hlnum">12</sup>. <mark class="hl" data-cat="localization" id="hl13">The right eye did not respond to caloric testing, nor did it respond during attempted convergence</mark><sup class="hlnum">13</sup>. A full range of motion was present with the left eye. <mark class="hl" data-cat="finding" id="hl15">Pupillary responses were intact bilaterally</mark><sup class="hlnum">15</sup>. Although it did not move, <mark class="hl" data-cat="pattern" id="hl14">the right eye would constrict with the left eye on attempted convergence</mark><sup class="hlnum">14</sup>. Hearing was normal in both ears. <mark class="hl" data-cat="localization" id="hl16">A minor weakness was noted in the left corner of her mouth when she attempted to grimace</mark><sup class="hlnum">16</sup>. Her palate elevated symmetrically, and <mark class="hl" data-cat="finding" id="hl17">corneal, jaw-jerk, and gag reflexes were intact</mark><sup class="hlnum">17</sup>. Her tongue protruded on the midline and her shoulder shrug was symmetric and of physiologic strength.</p>
+
+    <h3>Motor Exam</h3>
+    <p>Strength was intact in all limbs. Deep tendon reflexes were physiologic and symmetric in the upper extremities and <mark class="hl" data-cat="localization" id="hl18">slightly increased in the left lower extremity compared to the right</mark><sup class="hlnum">18</sup>. <mark class="hl" data-cat="term" id="hl19">There was a left Babinski response</mark><sup class="hlnum">19</sup>.</p>
+
+    <h3>Sensory Exam</h3>
+    <p><mark class="hl" data-cat="finding" id="hl20">Pinprick, two-point discrimination, vibratory sense, and proprioception were present throughout face and body</mark><sup class="hlnum">20</sup>.</p>
+  </div>
+
+  <div class="case-section">
+    <h2>Follow up</h2>
+    <p>Follow up at four months post discharge reveals a <mark class="hl" data-cat="term" id="hl21">persistent ophthalmoplegia involving the right eye and paralysis of the right eyelid</mark><sup class="hlnum">21</sup>. Tendon reflexes are bilaterally symmetrical in all four limbs and <mark class="hl" data-cat="genetics" id="hl22">there is no residual Babinski response on either side</mark><sup class="hlnum">22</sup>.</p>
+  </div>
+
+</main>
+
+<!-- ============ CLINICAL REASONING WALKTHROUGH ============ -->
+<section class="block">
+  <h2 class="block-title">Clinical Reasoning Walkthrough</h2>
+  <p class="block-lead">Localization → distribution → time course → differential → workup → prognosis → management</p>
+
+  <div class="grid3">
+
+    <div class="card">
+      <span class="tag tag-localization">Localization</span>
+      <h4>Right midbrain — crus cerebri / oculomotor fascicles</h4>
+      <p>The right eye shows a complete CN III (oculomotor) deficit — ptosis, "down and out" positioning, and loss of medial/upward movement that persists even with caloric (vestibulo-ocular) stimulation, which localizes the problem to the nucleus/fascicle itself rather than a supranuclear gaze pathway. At the same time, the left corner of the mouth, left leg reflexes, and left Babinski sign point to a contralateral corticospinal (upper motor neuron) deficit. An ipsilateral CN III palsy plus a contralateral body deficit is the signature "crossed" pattern of a single lesion in the midbrain, where the exiting third nerve fascicles pass directly through the corticospinal fibers of the crus cerebri.</p>
+    </div>
+
+    <div class="card">
+      <span class="tag tag-finding">Distribution</span>
+      <h4>Focal</h4>
+      <p>Vision, hearing, sensation, and every other cranial nerve tested are intact, and mental status is entirely normal. The deficits cluster tightly around one anatomic neighborhood — the right oculomotor complex and the adjacent corticospinal tract — rather than scattering across multiple unrelated pathways. This is a single, discrete lesion, not a multifocal or diffuse process.</p>
+    </div>
+
+    <div class="card">
+      <span class="tag tag-pattern">Time Course</span>
+      <h4>Acute, with a possible warning sign</h4>
+      <p>The deficit was fully present on waking, after two transient episodes of blurred vision and headache the day before — a pattern that fits an acute ischemic event, possibly with a preceding warning (TIA-like) episode. There is no gradual, weeks-to-months progression that would suggest a mass lesion.</p>
+    </div>
+
+    <div class="card span-full">
+      <span class="tag tag-genetics">Differential Diagnosis</span>
+      <h4>Working differential for a pupil-sparing CN III palsy with contralateral corticospinal signs</h4>
+      <table class="ddx">
+        <tr><th>Diagnosis</th><th>Fits</th><th>Argues against</th></tr>
+        <tr class="lead">
+          <td>Ischemic stroke — Weber's syndrome<span class="tag-most-likely">Most likely</span></td>
+          <td>Acute onset; pupil sparing (ischemia preferentially injures the central fascicular fibers, sparing the peripheral parasympathetic fibers); crossed CN III + contralateral UMN pattern precisely localizes to the crus cerebri; heavy vascular risk load (30-yr HTN, uncontrolled at 160/100, family history of HTN, 25-pack-year smoking)</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td>Compressive lesion (e.g., posterior communicating artery aneurysm)</td>
+          <td>Can cause an isolated CN III palsy</td>
+          <td>Compression typically involves the pupil early, since the parasympathetic fibers sit peripherally in the nerve trunk; doesn't explain the contralateral corticospinal findings</td>
+        </tr>
+        <tr>
+          <td>Diabetic / microvascular CN III mononeuropathy</td>
+          <td>Classically pupil-sparing</td>
+          <td>A peripheral nerve infarct cannot produce a contralateral (crossed) corticospinal deficit — that requires a lesion inside the brainstem itself</td>
+        </tr>
+        <tr>
+          <td>Midbrain tumor or mass</td>
+          <td>Can produce a similar crossed syndrome</td>
+          <td>Onset over hours, not weeks; sharp (non-swollen) optic discs argue against any process raising intracranial pressure</td>
+        </tr>
+        <tr>
+          <td>Demyelinating lesion (e.g., MS)</td>
+          <td>Can affect brainstem pathways</td>
+          <td>Atypical age/pattern for a first demyelinating event presenting this acutely and focally; would need supporting imaging</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="card span-full">
+      <span class="tag tag-localization">Diagnostic Workup</span>
+      <h4>Sequenced from "rule out the emergency" to "confirm and characterize"</h4>
+      <div class="workflow">
+        <div class="workstep"><div class="worknum">1</div><div><div class="wlead">Non-contrast CT head, emergently</div><div class="wsub">Rules out hemorrhage first — the step that determines whether anything else (like antiplatelet therapy) is safe to start.</div></div></div>
+        <div class="workstep"><div class="worknum">2</div><div><div class="wlead">MRI brain with diffusion-weighted imaging</div><div class="wsub">Confirms and precisely localizes an acute midbrain infarct; DWI is far more sensitive than CT for a small brainstem lesion like this.</div></div></div>
+        <div class="workstep"><div class="worknum">3</div><div><div class="wlead">MRA/CTA head and neck</div><div class="wsub">Any new CN III palsy gets vascular imaging to exclude a compressive aneurysm — even though pupil sparing makes this less likely here, it's not excluded by exam alone.</div></div></div>
+        <div class="workstep"><div class="worknum">4</div><div><div class="wlead">Fasting glucose / HbA1c, lipid panel</div><div class="wsub">Screens for diabetic microvascular disease and other modifiable atherosclerotic risk factors contributing to the event.</div></div></div>
+        <div class="workstep"><div class="worknum">5</div><div><div class="wlead">Cardiac workup (ECG ± echocardiogram)</div><div class="wsub">Evaluates for an embolic source if the stroke mechanism isn't clearly a small penetrating-artery (lacunar) infarct.</div></div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="tag tag-term">Prognosis</span>
+      <h4>Split recovery, as seen at 4-month follow-up</h4>
+      <p>Small penetrating-artery infarcts of the crus cerebri often show meaningful recovery of the corticospinal (contralateral) component over weeks to months — exactly what happened here, with the left Babinski and hyperreflexia resolving by four months. The oculomotor deficit, however, tends to be less forgiving: injury to the nucleus or fascicles themselves is more likely to leave a persistent ptosis and ophthalmoplegia, as this patient experienced.</p>
+    </div>
+
+    <div class="card">
+      <span class="tag tag-pattern">Management</span>
+      <h4>Checklist</h4>
+      <ul class="checklist">
+        <li>Acute stroke pathway: blood pressure and glucose control; assess thrombolysis/thrombectomy eligibility (wake-up stroke protocols rely on MRI mismatch criteria) once hemorrhage is excluded</li>
+        <li>Antiplatelet therapy for secondary prevention once imaging supports it</li>
+        <li>Strict long-term blood pressure control and statin therapy</li>
+        <li>Smoking cessation counseling</li>
+        <li>Supportive care for the eye: lid taping or a ptosis crutch for the eyelid, prism lenses or patching for diplopia</li>
+        <li>Neuro-ophthalmology follow-up to track any recovery of extraocular function</li>
+        <li>Physical/occupational therapy if any residual left-sided weakness or coordination deficit remains</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ CONCEPT DEEP-DIVE ============ -->
+<section class="block">
+  <h2 class="block-title">Concept Deep-Dive</h2>
+  <p class="block-lead">The neuroanatomy underneath this case's findings</p>
+
+  <div class="grid2">
+
+    <div class="card dd-card">
+      <span class="tag tag-localization">Localization</span>
+      <h4>The oculomotor nucleus and "down and out"</h4>
+      <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="160" cy="110" r="62" fill="var(--paper)" stroke="var(--ink)" stroke-width="2"/>
+        <circle cx="160" cy="110" r="26" fill="var(--ink)"/>
+        <!-- paralyzed forces (grey, dashed) -->
+        <line x1="160" y1="110" x2="120" y2="72" stroke="var(--ink-faint)" stroke-width="2" stroke-dasharray="4,3"/>
+        <line x1="160" y1="110" x2="118" y2="110" stroke="var(--ink-faint)" stroke-width="2" stroke-dasharray="4,3"/>
+        <line x1="160" y1="110" x2="140" y2="148" stroke="var(--ink-faint)" stroke-width="2" stroke-dasharray="4,3"/>
+        <!-- unopposed active forces (teal/coral, solid) -->
+        <line x1="160" y1="110" x2="222" y2="110" stroke="var(--coral)" stroke-width="3"/>
+        <line x1="160" y1="110" x2="192" y2="150" stroke="var(--teal)" stroke-width="3"/>
+        <text x="228" y="106" font-family="IBM Plex Mono" font-size="10" fill="var(--coral)">CN VI</text>
+        <text x="196" y="168" font-family="IBM Plex Mono" font-size="10" fill="var(--teal)">CN IV</text>
+        <text x="60" y="70" font-family="IBM Plex Mono" font-size="10" fill="var(--ink-faint)">CN III (out)</text>
+        <text x="90" y="210" font-family="Nunito" font-size="12" fill="var(--ink-soft)">Right globe, viewed from the front</text>
+      </svg>
+      <p class="takeaway">With every CN III–innervated muscle (medial rectus, superior rectus, inferior rectus, inferior oblique, plus the levator palpebrae) out of action, only the lateral rectus (CN VI) and superior oblique (CN IV) keep working — pulling the eye laterally and slightly downward. That is exactly the "deviated to the right and down" position this patient showed.</p>
+    </div>
+
+    <div class="card dd-card">
+      <span class="tag tag-pattern">Pattern Recognition</span>
+      <h4>Pupil-sparing vs. pupil-involving CN III palsy</h4>
+      <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="160" cy="100" r="80" fill="none" stroke="var(--sky)" stroke-width="14"/>
+        <circle cx="160" cy="100" r="55" fill="var(--teal-bg)" stroke="var(--teal)" stroke-width="2"/>
+        <text x="160" y="98" text-anchor="middle" font-family="Nunito" font-weight="800" font-size="12" fill="var(--teal)">Somatic motor</text>
+        <text x="160" y="112" text-anchor="middle" font-family="Nunito" font-size="10" fill="var(--teal)">(central, ischemia-prone)</text>
+        <text x="160" y="16" text-anchor="middle" font-family="Nunito" font-weight="800" font-size="11" fill="var(--sky)">Parasympathetic</text>
+        <text x="160" y="188" text-anchor="middle" font-family="Nunito" font-size="10" fill="var(--sky)">(peripheral rim, compression-prone)</text>
+      </svg>
+      <p class="takeaway">Parasympathetic (pupillary) fibers ride along the outer surface of the CN III trunk, so a compressive lesion — like an aneurysm — squeezes them first and blows the pupil early. Ischemic lesions tend to damage the core somatic-motor fibers preferentially, sparing the pupil, exactly as seen in this patient.</p>
+    </div>
+
+    <div class="card dd-card">
+      <span class="tag tag-genetics">Vasculature</span>
+      <h4>Midbrain perfusion zones</h4>
+      <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="160" cy="110" r="90" fill="var(--paper)" stroke="var(--line)" stroke-width="2"/>
+        <path d="M160,110 L160,20 A90,90 0 0,1 235,68 Z" fill="var(--sky-bg)" stroke="var(--sky)" stroke-width="1"/>
+        <path d="M160,110 L235,68 A90,90 0 0,1 250,110 Z" fill="var(--teal-bg)" stroke="var(--teal)" stroke-width="1"/>
+        <path d="M160,110 L250,110 A90,90 0 0,1 160,200 Z" fill="var(--coral-bg)" stroke="var(--coral)" stroke-width="1"/>
+        <path d="M160,110 L160,200 A90,90 0 0,1 70,68 A90,90 0 0,1 160,20 Z" fill="var(--gold-bg)" stroke="var(--gold)" stroke-width="1"/>
+        <text x="205" y="55" font-family="IBM Plex Mono" font-size="9.5" fill="var(--sky)">Paramedian</text>
+        <text x="216" y="95" font-family="IBM Plex Mono" font-size="9.5" fill="var(--teal)">Weber's zone</text>
+        <text x="185" y="165" font-family="IBM Plex Mono" font-size="9.5" fill="var(--coral)">Lateral (Benedict's)</text>
+        <text x="60" y="45" font-family="IBM Plex Mono" font-size="9.5" fill="var(--gold)">Posterior</text>
+      </svg>
+      <p class="takeaway">This patient's lesion sits in the anterolateral penetrating-artery territory (basilar, posterior cerebral, collicular, or anterior choroidal branches) — the zone that supplies the oculomotor fascicles and crus cerebri together, which is exactly why one small infarct produces both deficits at once.</p>
+    </div>
+
+    <div class="card dd-card">
+      <span class="tag tag-genetics">Comparison</span>
+      <h4>Midbrain lesion syndromes</h4>
+      <table class="ddx" style="font-size:12px;">
+        <tr><th>Syndrome</th><th>CN III palsy</th><th>Other signs</th></tr>
+        <tr class="lead"><td>Weber's</td><td>Yes</td><td>Contralateral spastic paresis (crus cerebri)</td></tr>
+        <tr><td>Benedict's</td><td>Yes</td><td>Contralateral tremor / dyskinesia (red nucleus)</td></tr>
+        <tr><td>Paramedian</td><td>Yes</td><td>Bilateral limb ataxia, vertical gaze palsy</td></tr>
+        <tr><td>Parinaud's</td><td>No</td><td>Upgaze palsy (superior colliculus / preoculomotor system)</td></tr>
+      </table>
+      <p class="takeaway">This patient's ipsilateral CN III palsy plus contralateral spastic-pattern signs (hyperreflexia, Babinski) — with sensation and the rest of cranial nerve function fully intact — maps directly onto Weber's syndrome rather than the ataxia-predominant paramedian syndrome or the tremor-predominant Benedict's syndrome.</p>
+    </div>
+
+    <div class="card dd-card">
+      <span class="tag tag-localization">Localization Logic</span>
+      <h4>Why a "crossed" pattern means the brainstem</h4>
+      <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg">
+        <rect x="110" y="20" width="100" height="140" rx="16" fill="var(--paper)" stroke="var(--line)" stroke-width="2"/>
+        <circle cx="140" cy="55" r="7" fill="var(--teal)"/>
+        <text x="230" y="58" font-family="Nunito" font-size="11" fill="var(--teal)">CN III nucleus (right) —</text>
+        <text x="230" y="72" font-family="Nunito" font-size="11" fill="var(--teal)">exits before crossing</text>
+        <path d="M140,55 L60,55" stroke="var(--teal)" stroke-width="2" fill="none"/>
+        <text x="20" y="50" font-family="IBM Plex Mono" font-size="9.5" fill="var(--teal)">R eye</text>
+        <path d="M150,140 C 190,150 210,170 230,178" stroke="var(--coral)" stroke-width="2" fill="none"/>
+        <text x="235" y="182" font-family="IBM Plex Mono" font-size="9.5" fill="var(--coral)">L limbs / face</text>
+        <path d="M150,25 C 150,60 150,110 150,140" stroke="var(--coral)" stroke-width="2" fill="none" stroke-dasharray="3,3"/>
+        <text x="120" y="18" font-family="Nunito" font-size="10" fill="var(--coral)">Corticospinal fibers</text>
+        <text x="120" y="185" font-family="Nunito" font-size="10" fill="var(--ink-faint)">(already crossed higher up)</text>
+      </svg>
+      <p class="takeaway">Cranial nerve nuclei give rise to nerves that exit at their own level, before any crossing happens — so a CN III deficit shows up on the same side as the lesion. Corticospinal fibers, by contrast, have already crossed in the medulla by the time they reach the limbs — so a lesion in the right crus cerebri produces weakness on the left. One lesion, two sides — that mismatch is the tell.</p>
+    </div>
+
+    <div class="card dd-card">
+      <span class="tag tag-term">Framework</span>
+      <h4>Segmental vs. suprasegmental, applied to this patient</h4>
+      <table class="ddx" style="font-size:12.5px;">
+        <tr><th>Finding</th><th>Level</th></tr>
+        <tr><td>Ptosis, "down and out," failed caloric/convergence testing</td><td>Segmental (CN III nucleus/fascicle)</td></tr>
+        <tr><td>Pupil sparing</td><td>Segmental (peripheral fiber location)</td></tr>
+        <tr><td>Left facial weakness, hyperreflexia, Babinski</td><td>Suprasegmental (corticospinal/corticobulbar)</td></tr>
+        <tr><td>Intact mental status, sensation, other cranial nerves</td><td>Neither — spared pathways</td></tr>
+      </table>
+      <p class="takeaway">Sorting each finding into segmental vs. suprasegmental is what turns a long list of exam findings into a single anatomic story: one small lesion, hitting a segmental (cranial nerve) structure and a suprasegmental (motor tract) structure that happen to sit side by side.</p>
+    </div>
+
+  </div>
+</section>
+
+<footer class="end">Case 7-1 · Highlight → Explain format · tap or hover any highlighted phrase in the case</footer>
+
+<div id="tooltip"></div>
+<div id="panel">
+  <button class="panel-close" id="panelClose" aria-label="Close">&times;</button>
+  <div class="panel-inner">
+    <span class="p-eyebrow" id="pEyebrow"></span>
+    <h3 class="p-title" id="pTitle"></h3>
+    <p class="p-body" id="pBody"></p>
+  </div>
+</div>
+
+<script>
+(function(){
+  var CAT_LABEL = {
+    localization: "Localization",
+    finding: "Finding",
+    term: "Term",
+    pattern: "Pattern",
+    genetics: "Genetics / Workup / Trajectory"
+  };
+
+  var annotations = [
+    {target:"hl1", cat:"finding", number:1, title:"Ptosis + diplopia on forced opening", teaser:"The two hallmark symptoms of a CN III (oculomotor) palsy.", body:"Ptosis (eyelid weakness) comes from loss of the levator palpebrae muscle, and diplopia on forced eye opening appears because the eye can no longer move normally once uncovered. Both point straight at the oculomotor nerve or nucleus before any other exam finding is even collected."},
+    {target:"hl2", cat:"pattern", number:2, title:"Transient blurred vision and headache", teaser:"Possible warning episodes the day before.", body:"Brief, self-resolving visual and headache symptoms the day before a fixed deficit can represent a warning (TIA-like) event preceding a completed ischemic stroke. In a patient with heavy vascular risk factors, this raises suspicion for an evolving posterior-circulation process rather than an isolated, one-time event."},
+    {target:"hl3", cat:"term", number:3, title:"Acute onset", teaser:"Present immediately on waking, not gradually.", body:"A deficit that is fully present the moment the patient wakes up (a \"wake-up\" presentation) is classified as acute, even though the exact minute of onset is unknown. This matters because acute, maximal-at-onset deficits favor a vascular event, whereas insidious, slowly worsening deficits favor a mass lesion or neurodegenerative process."},
+    {target:"hl4", cat:"genetics", number:4, title:"30-year history of hypertension", teaser:"Chronic vascular risk factor.", body:"Long-standing hypertension damages small penetrating arteries over time, making them prone to the kind of lacunar (small-vessel) infarcts that can selectively knock out a discrete midbrain territory like the one producing this patient's findings."},
+    {target:"hl5", cat:"genetics", number:5, title:"Family history of hypertension", teaser:"Adds to the vascular risk picture.", body:"A hypertensive father adds a hereditary component to this patient's own vascular risk, compounding the 30-year history of hypertension she already carries and supporting a vascular mechanism for her acute presentation."},
+    {target:"hl6", cat:"genetics", number:6, title:"25-pack-year smoking history", teaser:"Another modifiable vascular risk factor.", body:"Smoking accelerates atherosclerosis and small-vessel disease. Combined with her hypertension, it stacks another modifiable risk factor onto the case for an ischemic, vascular etiology."},
+    {target:"hl7", cat:"finding", number:7, title:"Blood pressure 160/100 at presentation", teaser:"Uncontrolled hypertension despite beta-blocker therapy.", body:"An elevated blood pressure at the time of an acute neurologic event is common — it can be a reactive response to the stroke itself, or a sign that her chronic hypertension isn't well controlled despite treatment. Either way, it reinforces the vascular risk profile."},
+    {target:"hl8", cat:"finding", number:8, title:"Sharp optic disc edges", teaser:"No papilledema.", body:"Sharp, well-defined optic disc margins mean there's no papilledema, which argues against a process raising intracranial pressure, such as a mass lesion, tumor, or obstructive hydrocephalus. This supports a more acute, non-mass explanation for her symptoms."},
+    {target:"hl9", cat:"localization", number:9, title:"Fully intact mental status", teaser:"No cortical or diffuse process.", body:"Normal alertness, orientation, speech, and memory tell you the cerebral cortex and its major connections are working normally. This argues against a large or diffuse hemispheric process and supports a small, focal lesion below the level of the cortex — consistent with a discrete brainstem lesion."},
+    {target:"hl10", cat:"finding", number:10, title:"Full visual fields", teaser:"Rules out the optic pathway.", body:"An intact visual field to confrontation means the optic nerve, chiasm, optic tract, and visual cortex are not involved. Her deficit is a problem of eye movement and lid position, not of vision itself."},
+    {target:"hl11", cat:"pattern", number:11, title:"\"Down and out\" eye position", teaser:"The classic sign of a complete CN III palsy.", body:"When every muscle CN III controls is paralyzed, the only extraocular muscles left working are the lateral rectus (CN VI) and superior oblique (CN IV). Unopposed, they pull the eye outward and slightly downward — the textbook \"down and out\" position that is essentially diagnostic of a complete oculomotor palsy."},
+    {target:"hl12", cat:"localization", number:12, title:"Loss of medial and upward movement", teaser:"Every CN III-innervated muscle is out.", body:"Medial rectus, superior rectus, and inferior oblique are all innervated by CN III. Losing volitional movement in all of these directions confirms that the entire oculomotor nerve's motor output to the globe is disrupted, not just one isolated muscle."},
+    {target:"hl13", cat:"localization", number:13, title:"No response to caloric testing or convergence", teaser:"Localizes to the nucleus/fascicle, not a supranuclear pathway.", body:"Caloric testing drives eye movement through the vestibulo-ocular reflex, a brainstem circuit that bypasses cortical, volitional control entirely. If the eye still can't move even when driven by this reflex pathway, the problem has to be at or below the level of the nucleus and nerve itself — not in a higher-level (supranuclear) gaze center that caloric stimulation could otherwise override."},
+    {target:"hl14", cat:"pattern", number:14, title:"Pupil constricts with the other eye on convergence", teaser:"Pupil sparing, demonstrated directly.", body:"Even though the globe itself won't move, the pupil still constricts through the consensual near-reflex — proof that the parasympathetic (pupillary) fibers of CN III are functioning normally even while the somatic motor fibers to the extraocular muscles are not. This dissociation is the hallmark of a pupil-sparing CN III palsy."},
+    {target:"hl15", cat:"finding", number:15, title:"Bilaterally intact pupillary responses", teaser:"Confirms pupil sparing.", body:"Pupil sparing in a CN III palsy is a major localizing and etiologic clue: the parasympathetic fibers run along the outer surface of the nerve, so they're the first to be affected by external compression (like an aneurysm) but are relatively protected in an ischemic lesion, which tends to damage the more centrally located somatic motor fibers first."},
+    {target:"hl16", cat:"localization", number:16, title:"Contralateral lower facial weakness", teaser:"An upper motor neuron sign on the opposite side.", body:"Weakness limited to the lower face, sparing the forehead, is the signature of an upper motor neuron (corticobulbar) lesion rather than a peripheral facial nerve problem. Because it's on the left while the CN III findings are on the right, this is the piece that completes the \"crossed\" pattern pointing to a single lesion in the brainstem."},
+    {target:"hl17", cat:"finding", number:17, title:"Other cranial nerves intact", teaser:"Argues against a diffuse or lower brainstem process.", body:"Normal corneal, jaw-jerk, and gag reflexes confirm CN V, VII (upper), IX, and X are functioning normally, which argues against a larger or more diffuse brainstem process and supports a lesion confined to the midbrain level."},
+    {target:"hl18", cat:"localization", number:18, title:"Mildly increased left-sided reflexes", teaser:"An upper motor neuron sign.", body:"Hyperreflexia on the left is consistent with a corticospinal tract lesion affecting the right crus cerebri — the fibers have already crossed by the time they influence the spinal reflex arcs, so a right-sided lesion produces a left-sided sign."},
+    {target:"hl19", cat:"term", number:19, title:"Babinski response", teaser:"An extensor plantar response — a classic UMN sign.", body:"A Babinski response is an upgoing (extensor) great toe with fanning of the other toes on plantar stimulation, rather than the normal downward (flexor) response. It is one of the most specific bedside signs of upper motor neuron (corticospinal tract) dysfunction."},
+    {target:"hl20", cat:"finding", number:20, title:"Fully intact sensory exam", teaser:"The sensory pathways through the midbrain are spared.", body:"Normal pinprick, two-point discrimination, vibration, and proprioception throughout the body mean the medial lemniscus and anterolateral system — the major ascending sensory pathways that also pass through the midbrain — are not involved by this lesion, helping to further narrow its location to the motor and oculomotor structures specifically."},
+    {target:"hl21", cat:"term", number:21, title:"Persistent ophthalmoplegia", teaser:"\"Ophthalmoplegia\" = paralysis of the eye muscles.", body:"Ophthalmoplegia simply means paralysis of one or more of the extraocular muscles. Its persistence at four months indicates that the injury to the oculomotor nucleus or fascicles themselves did not recover, in contrast to the corticospinal findings, which did."},
+    {target:"hl22", cat:"genetics", number:22, title:"Resolution of the Babinski sign", teaser:"The corticospinal component recovered.", body:"By four months, the contralateral upper motor neuron signs (hyperreflexia, Babinski) have fully resolved, even though the oculomotor deficit has not. This split trajectory is typical of small penetrating-artery midbrain infarcts, where the corticospinal fibers have more capacity to functionally recover than a directly injured cranial nerve nucleus."}
+  ];
+
+  var annByTarget = {};
+  annotations.forEach(function(a){ annByTarget[a.target] = a; });
+
+  var tooltip = document.getElementById("tooltip");
+  var panel = document.getElementById("panel");
+  var pEyebrow = document.getElementById("pEyebrow");
+  var pTitle = document.getElementById("pTitle");
+  var pBody = document.getElementById("pBody");
+  var panelClose = document.getElementById("panelClose");
+
+  var CAT_TAG_CLASS = {
+    localization: "tag-localization",
+    finding: "tag-finding",
+    term: "tag-term",
+    pattern: "tag-pattern",
+    genetics: "tag-genetics"
+  };
+
+  function openPanel(ann){
+    pEyebrow.textContent = ann.number + " · " + CAT_LABEL[ann.cat];
+    pEyebrow.className = "p-eyebrow " + CAT_TAG_CLASS[ann.cat];
+    pTitle.textContent = ann.title;
+    pBody.textContent = ann.body;
+    panel.classList.add("open");
+  }
+
+  function closePanel(){
+    panel.classList.remove("open");
+  }
+
+  function showTooltip(mark, ann){
+    tooltip.innerHTML = '<span class="tt-eyebrow">' + ann.number + " · " + CAT_LABEL[ann.cat] + '</span>' +
+                         '<span class="tt-title">' + ann.title + '</span>' +
+                         ann.teaser;
+    tooltip.style.display = "block";
+    var rect = mark.getBoundingClientRect();
+    var ttRect = tooltip.getBoundingClientRect();
+    var top = rect.bottom + 8;
+    if(top + ttRect.height > window.innerHeight - 10){
+      top = rect.top - ttRect.height - 8;
+    }
+    var left = rect.left;
+    if(left + ttRect.width > window.innerWidth - 10){
+      left = window.innerWidth - ttRect.width - 10;
+    }
+    if(left < 10) left = 10;
+    tooltip.style.top = top + "px";
+    tooltip.style.left = left + "px";
+  }
+
+  function hideTooltip(){
+    tooltip.style.display = "none";
+  }
+
+  var canHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+  var marks = document.querySelectorAll("mark.hl");
+  marks.forEach(function(mark){
+    var ann = annByTarget[mark.id];
+    if(!ann) return;
+
+    if(canHover){
+      mark.addEventListener("mouseenter", function(){ showTooltip(mark, ann); });
+      mark.addEventListener("mouseleave", hideTooltip);
+    }
+
+    mark.addEventListener("click", function(e){
+      e.stopPropagation();
+      hideTooltip();
+      openPanel(ann);
+    });
+  });
+
+  panelClose.addEventListener("click", closePanel);
+
+  document.addEventListener("keydown", function(e){
+    if(e.key === "Escape") closePanel();
+  });
+
+  document.addEventListener("click", function(e){
+    if(panel.classList.contains("open") && !panel.contains(e.target) && !e.target.closest("mark.hl")){
+      closePanel();
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

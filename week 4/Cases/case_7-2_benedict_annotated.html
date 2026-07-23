@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Case 7-2 — Right Partial Oculomotor Palsy with Contralateral Ataxic Tremor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Nunito:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#F6F1E6;
+  --paper:#FCFAF3;
+  --ink:#2A241C;
+  --ink-soft:#6B6152;
+  --ink-faint:#9A8F7B;
+  --line:#DED2B6;
+  --line-soft:#EAE0C9;
+
+  --coral:#C85A3E;   --coral-bg:#F7E4DB;
+  --teal:#256B63;    --teal-bg:#DFEDE8;
+  --gold:#A47A1F;    --gold-bg:#F3E7C6;
+  --violet:#6B5390;  --violet-bg:#E9E2F1;
+  --sky:#2F6485;     --sky-bg:#DEE9EF;
+
+  --radius:10px;
+  --shadow:0 1px 2px rgba(42,36,28,.06), 0 8px 24px -12px rgba(42,36,28,.18);
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--cream);
+  color:var(--ink);
+  font-family:'Nunito',sans-serif;
+  line-height:1.5;
+  padding-bottom:80px;
+}
+
+.wrap{max-width:800px;margin:0 auto;padding:0 20px;}
+
+/* ---------- header ---------- */
+header.top{
+  padding:48px 0 28px;
+  border-bottom:1px solid var(--line);
+  margin-bottom:36px;
+}
+.eyebrow{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--ink-faint);
+  margin:0 0 10px;
+}
+h1.case-title{
+  font-family:'Crimson Pro',serif;
+  font-weight:700;
+  font-size:38px;
+  margin:0 0 8px;
+  color:var(--ink);
+}
+p.case-sub{
+  font-family:'Nunito',sans-serif;
+  font-size:15px;
+  color:var(--ink-soft);
+  margin:0;
+  max-width:620px;
+}
+.legend{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px 14px;
+  margin-top:18px;
+}
+.legend-item{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  color:var(--ink-soft);
+  text-transform:uppercase;
+  letter-spacing:.03em;
+}
+.legend-dot{width:9px;height:9px;border-radius:50%;display:inline-block;}
+
+/* ---------- case column ---------- */
+main.case{
+  max-width:800px;
+  margin:0 auto;
+  padding:0 20px;
+}
+.case-section{margin-bottom:34px;}
+.case-section h2{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:13px;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  color:var(--ink-faint);
+  border-bottom:1px solid var(--line-soft);
+  padding-bottom:8px;
+  margin:0 0 14px;
+}
+.case-section h3{
+  font-family:'Nunito',sans-serif;
+  font-weight:700;
+  font-size:14px;
+  color:var(--ink-soft);
+  margin:18px 0 8px;
+}
+.case-section p{
+  font-family:'Crimson Pro',serif;
+  font-size:19px;
+  color:var(--ink);
+  margin:0 0 14px;
+}
+
+/* ---------- highlight marks ---------- */
+mark.hl{
+  cursor:pointer;
+  padding:0.02em 0.15em;
+  border-radius:4px;
+  background-image:none;
+  transition:filter .12s ease;
+}
+mark.hl:hover{filter:brightness(0.96);}
+mark.hl[data-cat="localization"]{background:var(--teal-bg); color:var(--teal); box-shadow:inset 0 -1.5px 0 var(--teal);}
+mark.hl[data-cat="finding"]{background:var(--coral-bg); color:var(--coral); box-shadow:inset 0 -1.5px 0 var(--coral);}
+mark.hl[data-cat="term"]{background:var(--gold-bg); color:var(--gold); box-shadow:inset 0 -1.5px 0 var(--gold);}
+mark.hl[data-cat="pattern"]{background:var(--violet-bg); color:var(--violet); box-shadow:inset 0 -1.5px 0 var(--violet);}
+mark.hl[data-cat="genetics"]{background:var(--sky-bg); color:var(--sky); box-shadow:inset 0 -1.5px 0 var(--sky);}
+
+sup.hlnum{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;
+  color:var(--ink-faint);
+  margin-left:1px;
+  font-style:normal;
+}
+
+/* ---------- hover tooltip ---------- */
+#tooltip{
+  position:fixed;
+  max-width:280px;
+  background:var(--ink);
+  color:var(--paper);
+  padding:10px 12px;
+  border-radius:8px;
+  font-family:'Nunito',sans-serif;
+  font-size:13px;
+  line-height:1.4;
+  box-shadow:var(--shadow);
+  z-index:500;
+  display:none;
+  pointer-events:none;
+}
+#tooltip .tt-eyebrow{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;
+  letter-spacing:.05em;
+  text-transform:uppercase;
+  opacity:.75;
+  display:block;
+  margin-bottom:3px;
+}
+#tooltip .tt-title{font-weight:700; display:block; margin-bottom:2px;}
+
+/* ---------- docked spotlight panel ---------- */
+#panel{
+  position:fixed;
+  z-index:600;
+  background:var(--paper);
+  box-shadow:var(--shadow);
+  display:none;
+  flex-direction:column;
+}
+#panel.open{display:flex;}
+#panel .panel-inner{padding:26px 26px 30px;overflow-y:auto;}
+#panel .panel-close{
+  position:absolute;
+  top:14px;right:14px;
+  width:30px;height:30px;
+  border:none;background:var(--line-soft);
+  border-radius:50%;
+  color:var(--ink-soft);
+  font-size:16px;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+}
+#panel .panel-close:hover{background:var(--line);}
+#panel .p-eyebrow{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  margin:0 0 8px;
+  padding:4px 9px;
+  border-radius:20px;
+  display:inline-block;
+}
+#panel .p-title{
+  font-family:'Crimson Pro',serif;
+  font-weight:700;
+  font-size:23px;
+  margin:6px 0 14px;
+  color:var(--ink);
+}
+#panel .p-body{
+  font-family:'Nunito',sans-serif;
+  font-size:15px;
+  color:var(--ink-soft);
+  line-height:1.6;
+}
+
+@media (min-width:1000px){
+  #panel{
+    top:0; right:0; bottom:0;
+    width:380px;
+    border-left:1px solid var(--line);
+  }
+}
+@media (max-width:999px){
+  #panel{
+    left:0; right:0; bottom:0;
+    max-height:70vh;
+    border-top:1px solid var(--line);
+    border-radius:16px 16px 0 0;
+  }
+}
+
+/* ---------- reasoning + deepdive shared ---------- */
+section.block{
+  max-width:800px;
+  margin:0 auto;
+  padding:0 20px;
+}
+section.block > h2.block-title{
+  font-family:'Crimson Pro',serif;
+  font-weight:700;
+  font-size:26px;
+  margin:56px 0 6px;
+}
+section.block > p.block-lead{
+  font-family:'Nunito',sans-serif;
+  font-size:14px;
+  color:var(--ink-soft);
+  margin:0 0 22px;
+}
+
+.grid3{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+}
+@media (max-width:1000px){.grid3{grid-template-columns:repeat(2,1fr);}}
+@media (max-width:640px){.grid3{grid-template-columns:1fr;}}
+.span-full{grid-column:1 / -1;}
+
+.card{
+  background:var(--paper);
+  border:1px solid var(--line-soft);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:20px;
+}
+.card .tag{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  padding:3px 9px;
+  border-radius:20px;
+  display:inline-block;
+  margin-bottom:10px;
+}
+.card h4{
+  font-family:'Nunito',sans-serif;
+  font-weight:800;
+  font-size:15px;
+  margin:0 0 8px;
+  color:var(--ink);
+}
+.card p{
+  font-family:'Nunito',sans-serif;
+  font-size:14px;
+  color:var(--ink-soft);
+  margin:0 0 8px;
+}
+.card p:last-child{margin-bottom:0;}
+
+.tag-localization{background:var(--teal-bg); color:var(--teal);}
+.tag-finding{background:var(--coral-bg); color:var(--coral);}
+.tag-term{background:var(--gold-bg); color:var(--gold);}
+.tag-pattern{background:var(--violet-bg); color:var(--violet);}
+.tag-genetics{background:var(--sky-bg); color:var(--sky);}
+
+/* differential table */
+table.ddx{
+  width:100%;
+  border-collapse:collapse;
+  font-family:'Nunito',sans-serif;
+  font-size:13.5px;
+}
+table.ddx th{
+  text-align:left;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+  color:var(--ink-faint);
+  padding:8px 10px;
+  border-bottom:1px solid var(--line);
+}
+table.ddx td{
+  padding:10px 10px;
+  border-bottom:1px solid var(--line-soft);
+  color:var(--ink-soft);
+  vertical-align:top;
+}
+table.ddx tr.lead td{background:var(--teal-bg);}
+table.ddx tr.lead td:first-child{color:var(--teal); font-weight:800; position:relative;}
+.tag-most-likely{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:9.5px;
+  background:var(--teal);
+  color:var(--paper);
+  padding:2px 7px;
+  border-radius:10px;
+  margin-left:6px;
+  letter-spacing:.03em;
+}
+
+/* workup flow */
+.workflow{display:flex; flex-direction:column; gap:12px;}
+.workstep{display:flex; gap:14px;}
+.worknum{
+  flex:0 0 30px;
+  height:30px;
+  border-radius:50%;
+  background:var(--sky-bg);
+  color:var(--sky);
+  font-family:'IBM Plex Mono',monospace;
+  font-weight:600;
+  font-size:13px;
+  display:flex;align-items:center;justify-content:center;
+}
+.workstep .wlead{font-weight:800; color:var(--ink); font-size:14.5px; font-family:'Nunito',sans-serif;}
+.workstep .wsub{color:var(--ink-soft); font-size:13.5px; margin-top:2px;}
+
+.checklist{list-style:none; margin:0; padding:0;}
+.checklist li{
+  padding:8px 0 8px 26px;
+  position:relative;
+  font-size:14px;
+  color:var(--ink-soft);
+  border-bottom:1px solid var(--line-soft);
+}
+.checklist li:last-child{border-bottom:none;}
+.checklist li::before{
+  content:"";
+  position:absolute;left:0;top:12px;
+  width:12px;height:12px;
+  border:1.5px solid var(--teal);
+  border-radius:3px;
+}
+
+/* deep-dive */
+.grid2{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:16px;
+}
+@media (max-width:1000px){.grid2{grid-template-columns:1fr;}}
+
+.dd-card svg{width:100%; height:auto; display:block; margin:10px 0 12px;}
+.dd-card .takeaway{
+  font-size:13.5px;
+  color:var(--ink-soft);
+  border-top:1px solid var(--line-soft);
+  padding-top:10px;
+  margin-top:4px;
+}
+
+footer.end{
+  max-width:800px;margin:60px auto 0;padding:20px 20px 0;
+  border-top:1px solid var(--line);
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  color:var(--ink-faint);
+  text-align:center;
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <p class="eyebrow">Block 5 · Medical Neuroanatomy · Chapter 07 · Case Study 7-2</p>
+    <h1 class="case-title">Case 7-2</h1>
+    <p class="case-sub">79-year-old man with transient loss of consciousness, a partial pupil-involving right CN III palsy, and contralateral intention tremor / ataxia — a right midbrain lesion touching the oculomotor root, red nucleus, and dentothalamic tract. Working localization: Benedict's syndrome, most likely cardioembolic (atrial fibrillation).</p>
+    <div class="legend">
+      <span class="legend-item"><span class="legend-dot" style="background:var(--teal)"></span>Localization</span>
+      <span class="legend-item"><span class="legend-dot" style="background:var(--coral)"></span>Finding</span>
+      <span class="legend-item"><span class="legend-dot" style="background:var(--gold)"></span>Term</span>
+      <span class="legend-item"><span class="legend-dot" style="background:var(--violet)"></span>Pattern</span>
+      <span class="legend-item"><span class="legend-dot" style="background:var(--sky)"></span>Genetics / Workup / Trajectory</span>
+    </div>
+  </div>
+</header>
+
+<main class="case">
+
+  <div class="case-section">
+    <h2>Chief Complaint</h2>
+    <p>A 79-year-old, right-handed, retired business executive was brought to his general practitioner's office by his son after suffering <mark class="hl" data-cat="pattern" id="hl1">a momentary loss of consciousness</mark><sup class="hlnum">1</sup> followed by the onset of <mark class="hl" data-cat="finding" id="hl2">double vision and a tremor in his left arm</mark><sup class="hlnum">2</sup>.</p>
+  </div>
+
+  <div class="case-section">
+    <h2>History of Chief Complaint</h2>
+    <p>He complained of <mark class="hl" data-cat="pattern" id="hl3">frequent dizzy periods over the last 5 days</mark><sup class="hlnum">3</sup>.</p>
+  </div>
+
+  <div class="case-section">
+    <h2>Past Medical History</h2>
+    <p>He had been married for 40 years; his wife had died 5 years earlier. He had been an executive for a large firm. After retirement he had been active socially and played sports. His past medical history was positive for <mark class="hl" data-cat="genetics" id="hl4">rheumatic fever at age 6</mark><sup class="hlnum">4</sup>. <mark class="hl" data-cat="term" id="hl5">For the past 5 months he had been experiencing periods of dizziness and fatigue</mark><sup class="hlnum">5</sup>. He had <mark class="hl" data-cat="genetics" id="hl6">a 30-pack-year history of smoking but quit completely 3 years prior</mark><sup class="hlnum">6</sup>. He drank 2 to 3 ounces of alcohol socially per week.</p>
+  </div>
+
+  <div class="case-section">
+    <h2>General Physical Examination</h2>
+    <p>He was alert and oriented, well nourished, and of average weight; he appeared his stated age. The patient <mark class="hl" data-cat="finding" id="hl7">frequently had to cover his right eye with his hand in order to move about the room</mark><sup class="hlnum">7</sup>. Optic discs were clear with sharp borders. External auditory canals were patent. His neck was supple and there were no bruits over the carotid arteries. His larynx and pharynx were non-reddened. His chest was clear to auscultation and percussion; abdomen was soft without rigidity, tenderness, or organomegaly. <mark class="hl" data-cat="pattern" id="hl8">Heart rate was irregularly irregular</mark><sup class="hlnum">8</sup>. Peripheral pulses were intact; <mark class="hl" data-cat="finding" id="hl9">a pulse deficit was present, with the auscultated apical rate exceeding the radial pulse rate</mark><sup class="hlnum">9</sup>. Blood pressure was 135/93, temperature was 37°C, and respirations were 16/min. No cervical, axillary, or inguinal lymphadenopathy was present.</p>
+  </div>
+
+  <div class="case-section">
+    <h2>Neurologic Examination</h2>
+
+    <h3>Mental Status</h3>
+    <p><mark class="hl" data-cat="localization" id="hl10">He was alert and oriented to time and place with memory and knowledge appropriate for his age</mark><sup class="hlnum">10</sup>. He was articulate in speech and had good comprehension of spoken and written language. He gave a comprehensive history.</p>
+
+    <h3>Cranial Nerves</h3>
+    <p>On forward gaze, with the lid forcibly elevated, <mark class="hl" data-cat="pattern" id="hl11">the right eye had an external strabismus</mark><sup class="hlnum">11</sup>; <mark class="hl" data-cat="localization" id="hl12">on attempted left lateral gaze, the right eye drifted toward the midline</mark><sup class="hlnum">12</sup>. <mark class="hl" data-cat="finding" id="hl13">The right pupil was larger than the left</mark><sup class="hlnum">13</sup>. <mark class="hl" data-cat="localization" id="hl14">The right pupil was unresponsive to light shined in either eye; the left pupil was responsive to direct and consensual light</mark><sup class="hlnum">14</sup>. <mark class="hl" data-cat="finding" id="hl15">The right eyelid elevated 4 mm, whereas the left elevated 13 mm on forward gaze</mark><sup class="hlnum">15</sup>. With the right eyelid forcibly elevated, its visual field was full to confrontation. The visual field in the left eye was also full. The patient noted diplopia on attempted forward gaze. <mark class="hl" data-cat="term" id="hl16">The diplopia was absent with the right eye covered and exacerbated when the right eyelid was fully elevated</mark><sup class="hlnum">16</sup>. Hearing was normal in both ears. He had a full range of facial expressions. Jaw-jerk and corneal reflexes were normal; the palate was elevated on the midline; gag reflex was normal, and tongue protruded on the midline.</p>
+
+    <h3>Motor Exam</h3>
+    <p><mark class="hl" data-cat="localization" id="hl17">Strength was slightly diminished in the left limbs; deep tendon reflexes were +2/4 on the right and +3/4 on the left</mark><sup class="hlnum">17</sup>. <mark class="hl" data-cat="term" id="hl18">Babinski response was equivocal on the left and not present on the right</mark><sup class="hlnum">18</sup>. <mark class="hl" data-cat="pattern" id="hl19">A tremor of intent was present in the left arm</mark><sup class="hlnum">19</sup>. Finger-to-nose testing was normal on the right, but <mark class="hl" data-cat="localization" id="hl20">he was slightly off target when using the left upper limb</mark><sup class="hlnum">20</sup>. <mark class="hl" data-cat="pattern" id="hl21">The left arm and hand displayed an occasional jerky movement that the patient could not suppress</mark><sup class="hlnum">21</sup>.</p>
+
+    <h3>Sensory Exam</h3>
+    <p>Pinprick and temperature sensation were normal throughout body and face; <mark class="hl" data-cat="localization" id="hl22">position sense and vibratory sensation on the left side of his body was diminished. This sensory loss was more noticeable in the upper than in the lower extremity</mark><sup class="hlnum">22</sup>.</p>
+  </div>
+
+  <div class="case-section">
+    <h2>Follow up</h2>
+    <p>Upon examination 3 months following hospital discharge, the patient had normal gross motor strength with +2/4 deep tendon reflexes about the elbow, wrist, knee and ankle bilaterally. <mark class="hl" data-cat="genetics" id="hl23">Movements of the left extremities were smooth and steady with no indication of past-pointing remaining</mark><sup class="hlnum">23</sup>. <mark class="hl" data-cat="genetics" id="hl24">Position and vibratory senses were normal in all extremities on the right and the lower extremity on the left. He continued to experience a diminution of position and vibratory senses in the left upper extremity.</mark><sup class="hlnum">24</sup> <mark class="hl" data-cat="genetics" id="hl25">He could move his right eye into all four quadrants but complained of a mild diplopia and demonstrated a slight external strabismus at rest</mark><sup class="hlnum">25</sup>.</p>
+  </div>
+
+</main>
+
+<!-- ============ CLINICAL REASONING WALKTHROUGH ============ -->
+<section class="block">
+  <h2 class="block-title">Clinical Reasoning Walkthrough</h2>
+  <p class="block-lead">Localization → distribution → time course → differential → workup → prognosis → management</p>
+
+  <div class="grid3">
+
+    <div class="card">
+      <span class="tag tag-localization">Localization</span>
+      <h4>Right midbrain — oculomotor root, red nucleus, dentothalamic tract</h4>
+      <p>The right eye shows a partial, pupil-involving CN III palsy — a dilated, fixed pupil, incomplete ptosis, and exotropia at rest, but with some medial movement still preserved on attempted gaze. At the same time, the left arm shows an intention tremor, dysmetria, and involuntary jerky movements — an ataxic, hyperkinetic pattern rather than a spastic one, with only mild, equivocal corticospinal signs alongside it. An ipsilateral (right) CN III deficit plus contralateral (left) cerebellar-outflow signs, with just a hint of corticospinal overlap, is the signature of a lesion touching the right oculomotor nerve root, red nucleus, and dentothalamic tract together — the pattern classically described as Benedict's syndrome.</p>
+    </div>
+
+    <div class="card">
+      <span class="tag tag-finding">Distribution</span>
+      <h4>Focal</h4>
+      <p>Cognition, hearing, most cranial nerves, and cortical function are entirely preserved. The deficits cluster tightly around structures that sit next to each other in the midbrain tegmentum — the oculomotor root, red nucleus/dentothalamic tract, and medial lemniscus — rather than scattering across unrelated pathways.</p>
+    </div>
+
+    <div class="card">
+      <span class="tag tag-pattern">Time Course</span>
+      <h4>Escalating, then acute</h4>
+      <p>Five months of intermittent dizziness and fatigue sharpened into more frequent spells over the final five days, then culminated in an abrupt event — momentary loss of consciousness followed by fixed focal deficits. This pattern fits a slowly building vascular/cardiac problem producing escalating transient episodes before a larger embolus lodges and causes a fixed infarct.</p>
+    </div>
+
+    <div class="card span-full">
+      <span class="tag tag-genetics">Differential Diagnosis</span>
+      <h4>Working differential for a partial, pupil-involving CN III palsy with contralateral ataxic tremor</h4>
+      <table class="ddx">
+        <tr><th>Diagnosis</th><th>Fits</th><th>Argues against</th></tr>
+        <tr class="lead">
+          <td>Cardioembolic stroke (atrial fibrillation)<span class="tag-most-likely">Most likely</span></td>
+          <td>Irregularly irregular pulse plus a pulse deficit confirm a previously unrecognized arrhythmia; transient loss of consciousness fits an embolic shower or transient hypoperfusion; sudden right CN III findings plus contralateral red-nucleus signs localize a discrete embolic infarct; childhood rheumatic fever adds a plausible valvular substrate for atrial fibrillation and clot formation</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td>Compressive lesion (posterior communicating or basilar artery aneurysm)</td>
+          <td>Pupil involvement, partial CN III motor palsy</td>
+          <td>Doesn't explain the irregular pulse, the transient loss of consciousness, or the contralateral red-nucleus signs; steady improvement over 3 months without any described intervention fits resolving ischemia better than an unresected compressive lesion</td>
+        </tr>
+        <tr>
+          <td>Vertebrobasilar atherosclerotic insufficiency / recurrent TIA</td>
+          <td>The 5-month history of dizziness and fatigue, escalating over the final 5 days, fits recurrent posterior-circulation hypoperfusion</td>
+          <td>Alone, doesn't explain the new fixed pupil, partial ptosis, and red-nucleus signs of the acute event; the cardiac findings point toward an embolic rather than a purely atherosclerotic mechanism</td>
+        </tr>
+        <tr>
+          <td>Basilar artery (embolic) occlusion — "top of the basilar" pattern</td>
+          <td>Transient loss of consciousness and oculomotor findings; embolic mechanism plausible from atrial fibrillation</td>
+          <td>Classic top-of-basilar strokes usually produce more bilateral or diffuse findings (visual field defects, behavioral change) than the unilateral, circumscribed picture seen here, though a smaller distal embolus can't be fully excluded</td>
+        </tr>
+        <tr>
+          <td>Ocular myasthenia gravis</td>
+          <td>Ptosis, diplopia</td>
+          <td>Never involves the pupil (a neuromuscular junction disorder spares autonomic fibers entirely); doesn't explain the contralateral tremor/ataxia, sensory loss, or cardiac findings</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="card span-full">
+      <span class="tag tag-localization">Diagnostic Workup</span>
+      <h4>Confirm the arrhythmia, rule out the emergency, then localize and source the clot</h4>
+      <div class="workflow">
+        <div class="workstep"><div class="worknum">1</div><div><div class="wlead">ECG</div><div class="wsub">Confirms and characterizes the arrhythmia already suggested by the pulse deficit — atrial fibrillation versus another cause of irregular rhythm.</div></div></div>
+        <div class="workstep"><div class="worknum">2</div><div><div class="wlead">Non-contrast CT head, emergently</div><div class="wsub">Excludes hemorrhage before anything else, including any anticoagulation decision.</div></div></div>
+        <div class="workstep"><div class="worknum">3</div><div><div class="wlead">MRI brain with diffusion-weighted imaging</div><div class="wsub">Confirms and precisely localizes the midbrain infarct — small brainstem lesions like this one are easy to miss on CT.</div></div></div>
+        <div class="workstep"><div class="worknum">4</div><div><div class="wlead">Transthoracic (± transesophageal) echocardiogram</div><div class="wsub">Looks for a left atrial or appendage thrombus and for valvular disease — relevant given his childhood rheumatic fever.</div></div></div>
+        <div class="workstep"><div class="worknum">5</div><div><div class="wlead">MRA/CTA head and neck</div><div class="wsub">Assesses the posterior circulation for atherosclerotic disease and excludes an aneurysm, given the pupil-involving CN III findings.</div></div></div>
+        <div class="workstep"><div class="worknum">6</div><div><div class="wlead">CHA₂DS₂-VASc risk stratification</div><div class="wsub">Once hemorrhage is excluded, guides the anticoagulation decision for secondary stroke prevention.</div></div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="tag tag-term">Prognosis</span>
+      <h4>Partial injury, partial — but real — recovery</h4>
+      <p>Because the initial CN III involvement was partial rather than complete, and the dominant findings (intention tremor, dysmetria, involuntary movement) came from a cerebellar-outflow pathway with real capacity to recover, this pattern has more room to improve than a completely destroyed nucleus or fascicle. The 3-month follow-up shows exactly that pattern: the ataxic signs and gross weakness fully resolved and extraocular movement returned in all four quadrants, while the upper-extremity proprioceptive loss and mild residual diplopia/strabismus show that recovery, while substantial, was not complete.</p>
+    </div>
+
+    <div class="card">
+      <span class="tag tag-pattern">Management</span>
+      <h4>Checklist</h4>
+      <ul class="checklist">
+        <li>Urgent cardiology evaluation for newly identified atrial fibrillation — rate or rhythm control</li>
+        <li>Anticoagulation for stroke prevention once hemorrhage is excluded and bleeding risk assessed — the highest-yield secondary-prevention step here</li>
+        <li>Acute stroke pathway: blood pressure and glucose management; assess thrombolysis/thrombectomy eligibility based on timing</li>
+        <li>Supportive care for diplopia (prism lenses or patching) and residual ptosis</li>
+        <li>Physical/occupational therapy for residual ataxia and proprioceptive loss</li>
+        <li>Fall-risk precautions, given his dizziness history and residual left-sided sensory loss</li>
+        <li>Cardiology/primary care follow-up to monitor rhythm control and anticoagulation</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ CONCEPT DEEP-DIVE ============ -->
+<section class="block">
+  <h2 class="block-title">Concept Deep-Dive</h2>
+  <p class="block-lead">The neuroanatomy underneath this case's findings</p>
+
+  <div class="grid2">
+
+    <div class="card dd-card">
+      <span class="tag tag-localization">Localization</span>
+      <h4>Red nucleus, the dentothalamic tract, and rubral tremor</h4>
+      <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="160" cy="110" r="90" fill="var(--paper)" stroke="var(--line)" stroke-width="2"/>
+        <circle cx="160" cy="110" r="34" fill="var(--coral-bg)" stroke="var(--coral)" stroke-width="2"/>
+        <text x="160" y="106" text-anchor="middle" font-family="Nunito" font-weight="800" font-size="11" fill="var(--coral)">Red</text>
+        <text x="160" y="119" text-anchor="middle" font-family="Nunito" font-weight="800" font-size="11" fill="var(--coral)">nucleus</text>
+        <path d="M235,60 C 200,80 190,95 165,100" stroke="var(--sky)" stroke-width="3" fill="none"/>
+        <text x="205" y="45" font-family="IBM Plex Mono" font-size="9.5" fill="var(--sky)">Dentothalamic tract</text>
+        <text x="205" y="57" font-family="IBM Plex Mono" font-size="9.5" fill="var(--sky)">(from cerebellum)</text>
+        <path d="M160,145 C 150,165 130,175 100,180" stroke="var(--violet)" stroke-width="3" fill="none"/>
+        <text x="60" y="198" font-family="IBM Plex Mono" font-size="9.5" fill="var(--violet)">Intention tremor,</text>
+        <text x="60" y="210" font-family="IBM Plex Mono" font-size="9.5" fill="var(--violet)">dysmetria (left arm)</text>
+      </svg>
+      <p class="takeaway">The dentothalamic tract — carrying the cerebellum's outflow to the thalamus — passes directly through and around the red nucleus. A lesion here disrupts this cerebellar feedback loop, producing an ataxic, intention-type tremor and dysmetria in the contralateral limb, rather than the spastic weakness that a corticospinal lesion would cause.</p>
+    </div>
+
+    <div class="card dd-card">
+      <span class="tag tag-pattern">Pattern Recognition</span>
+      <h4>This time, the pupil is involved</h4>
+      <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="160" cy="100" r="80" fill="none" stroke="var(--sky)" stroke-width="14"/>
+        <circle cx="160" cy="100" r="55" fill="var(--teal-bg)" stroke="var(--teal)" stroke-width="2"/>
+        <line x1="70" y1="45" x2="95" y2="65" stroke="var(--ink)" stroke-width="2.5" marker-end="url(#arrowhead2)"/>
+        <line x1="250" y1="45" x2="225" y2="65" stroke="var(--ink)" stroke-width="2.5" marker-end="url(#arrowhead2)"/>
+        <defs><marker id="arrowhead2" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="var(--ink)"/></marker></defs>
+        <text x="160" y="98" text-anchor="middle" font-family="Nunito" font-weight="800" font-size="12" fill="var(--teal)">Somatic motor</text>
+        <text x="160" y="112" text-anchor="middle" font-family="Nunito" font-size="10" fill="var(--teal)">(partially spared here)</text>
+        <text x="160" y="16" text-anchor="middle" font-family="Nunito" font-weight="800" font-size="11" fill="var(--sky)">Parasympathetic — compressed</text>
+        <text x="160" y="188" text-anchor="middle" font-family="Nunito" font-size="10" fill="var(--sky)">(peripheral rim, dilated / fixed pupil)</text>
+      </svg>
+      <p class="takeaway">In Case 7-1, ischemia hit the central somatic-motor fibers and spared the peripheral parasympathetic rim, sparing the pupil. Here, the pattern is reversed: the parasympathetic fibers are clearly affected (a dilated, fixed pupil) while some somatic motor function (partial lid elevation, partial adduction) survives — the pattern more typical of a compressive or partial-injury mechanism than a pure central infarct.</p>
+    </div>
+
+    <div class="card dd-card">
+      <span class="tag tag-genetics">Comparison</span>
+      <h4>Midbrain lesion syndromes</h4>
+      <table class="ddx" style="font-size:12px;">
+        <tr><th>Syndrome</th><th>CN III palsy</th><th>Other signs</th></tr>
+        <tr><td>Weber's</td><td>Yes</td><td>Contralateral spastic paresis (crus cerebri)</td></tr>
+        <tr class="lead"><td>Benedict's</td><td>Yes</td><td>Contralateral tremor / dyskinesia (red nucleus, dentothalamic tract)</td></tr>
+        <tr><td>Paramedian</td><td>Yes</td><td>Bilateral limb ataxia, vertical gaze palsy</td></tr>
+        <tr><td>"Top of the basilar"</td><td>Yes</td><td>Vertical gaze palsy, visual field defects, behavioral change</td></tr>
+      </table>
+      <p class="takeaway">An ipsilateral CN III palsy with contralateral hyperkinesia (tremor, dysmetria, involuntary movement) and only mild corticospinal overlap maps onto Benedict's syndrome — a step further back (more tegmental) than the pure crus cerebri involvement of Case 7-1's Weber's syndrome.</p>
+    </div>
+
+    <div class="card dd-card">
+      <span class="tag tag-genetics">Mechanism</span>
+      <h4>Atrial fibrillation and the pulse deficit</h4>
+      <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg">
+        <path d="M160,40 C 110,0 40,40 40,90 C 40,140 100,175 160,190 C 220,175 280,140 280,90 C 280,40 210,0 160,40 Z" fill="var(--coral-bg)" stroke="var(--coral)" stroke-width="2"/>
+        <path d="M60,90 L90,90 L100,60 L115,120 L130,80 L145,100 L160,90 L260,90" stroke="var(--ink)" stroke-width="2" fill="none"/>
+        <text x="160" y="14" text-anchor="middle" font-family="Nunito" font-weight="800" font-size="12" fill="var(--coral)">Irregular atrial rhythm</text>
+        <path d="M160,190 L160,215" stroke="var(--sky)" stroke-width="2.5" marker-end="url(#arrowhead3)"/>
+        <defs><marker id="arrowhead3" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="var(--sky)"/></marker></defs>
+        <text x="160" y="235" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="var(--sky)" transform="translate(0,-30)">Clot → embolus → midbrain</text>
+      </svg>
+      <p class="takeaway">In atrial fibrillation, the atria quiver instead of contracting in a coordinated way, so blood can stagnate and clot — especially in the left atrial appendage. Fragments of that clot can travel through the posterior circulation to lodge in a small midbrain artery. The pulse deficit itself (apical rate exceeding radial rate) is simply the bedside sign that some of those irregular beats are too weak to produce a felt peripheral pulse.</p>
+    </div>
+
+    <div class="card dd-card">
+      <span class="tag tag-localization">Localization</span>
+      <h4>Why the arm, and not the leg</h4>
+      <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="160" cy="100" r="85" fill="var(--paper)" stroke="var(--line)" stroke-width="2"/>
+        <path d="M160,100 L160,15 A85,85 0 0,1 235,60 Z" fill="var(--coral-bg)" stroke="var(--coral)" stroke-width="1"/>
+        <path d="M160,100 L235,60 A85,85 0 0,1 160,185 Z" fill="var(--gold-bg)" stroke="var(--gold)" stroke-width="1"/>
+        <text x="195" y="55" font-family="IBM Plex Mono" font-size="10" fill="var(--coral)">Face / arm</text>
+        <text x="205" y="140" font-family="IBM Plex Mono" font-size="10" fill="var(--gold)">Leg</text>
+        <text x="90" y="105" font-family="Nunito" font-size="10" fill="var(--ink-faint)">Medial lemniscus</text>
+        <text x="90" y="118" font-family="Nunito" font-size="10" fill="var(--ink-faint)">(rotates as it ascends)</text>
+      </svg>
+      <p class="takeaway">The medial lemniscus carries a rough somatotopic map that rotates as it climbs the brainstem. By the midbrain, the arm/face fibers sit closer to the medial, tegmental region while the leg fibers lie more laterally — so a medially-placed partial lesion like this one can knock out arm proprioception while sparing the leg, exactly the gradient this patient showed.</p>
+    </div>
+
+    <div class="card dd-card">
+      <span class="tag tag-term">Framework</span>
+      <h4>Pyramidal vs. cerebellar-outflow signs, applied to this patient</h4>
+      <table class="ddx" style="font-size:12.5px;">
+        <tr><th>Sign type</th><th>Findings here</th></tr>
+        <tr><td>Pyramidal (corticospinal / UMN)</td><td>Mild left weakness, +3/4 vs +2/4 reflexes, equivocal Babinski — present, but faint</td></tr>
+        <tr class="lead"><td>Cerebellar-outflow (rubral)</td><td>Intention tremor, dysmetria, involuntary jerky movement — clearly present, dominant</td></tr>
+      </table>
+      <p class="takeaway">Sorting the findings this way makes the diagnosis almost write itself: the cerebellar-outflow column is loud and the pyramidal column is barely whispering, which is exactly why Benedict's syndrome — not Weber's — is the better fit here, even though the two territories are close enough in the midbrain to overlap a little.</p>
+    </div>
+
+  </div>
+</section>
+
+<footer class="end">Case 7-2 · Highlight → Explain format · tap or hover any highlighted phrase in the case</footer>
+
+<div id="tooltip"></div>
+<div id="panel">
+  <button class="panel-close" id="panelClose" aria-label="Close">&times;</button>
+  <div class="panel-inner">
+    <span class="p-eyebrow" id="pEyebrow"></span>
+    <h3 class="p-title" id="pTitle"></h3>
+    <p class="p-body" id="pBody"></p>
+  </div>
+</div>
+
+<script>
+(function(){
+  var CAT_LABEL = {
+    localization: "Localization",
+    finding: "Finding",
+    term: "Term",
+    pattern: "Pattern",
+    genetics: "Genetics / Workup / Trajectory"
+  };
+
+  var annotations = [
+    {target:"hl1", cat:"pattern", number:1, title:"Transient loss of consciousness", teaser:"A possible sign of brainstem hypoperfusion or an embolic shower.", body:"A brief loss of consciousness can occur when blood flow is transiently disrupted through the ascending reticular activating system, which runs through the midline brainstem including the midbrain. In a patient with an irregular heart rhythm, this raises suspicion for a transient embolic or hypoperfusion event preceding the more fixed focal deficits that followed."},
+    {target:"hl2", cat:"finding", number:2, title:"Diplopia plus left arm tremor", teaser:"A cranial nerve finding and a limb finding, on opposite sides.", body:"Double vision points to an oculomotor problem, almost certainly on one side, while a tremor in the opposite limb suggests a second, contralateral pathway is also involved. Together, before any exam has even been done, these two symptoms already hint at a single lesion affecting more than one type of pathway — most likely in the brainstem, where cranial nerve nuclei and long tracts run close together."},
+    {target:"hl3", cat:"pattern", number:3, title:"Escalating dizzy spells", teaser:"A short-term acceleration on top of a longer-standing pattern.", body:"An increase in the frequency of dizzy spells over just the last few days, layered on top of several months of intermittent dizziness, suggests a slowly worsening vascular or cardiac problem beginning to produce more frequent transient ischemic episodes — often a warning sign that precedes a larger, fixed event."},
+    {target:"hl4", cat:"genetics", number:4, title:"Childhood rheumatic fever", teaser:"A risk factor for valvular heart disease and, later, atrial fibrillation.", body:"Rheumatic fever can scar the heart valves (especially the mitral valve) over decades, and valvular disease is itself a risk factor for developing atrial fibrillation and forming clots that can embolize. This detail connects directly to the cardiac exam findings described later in the case."},
+    {target:"hl5", cat:"term", number:5, title:"Insidious background symptoms", teaser:"A slow-building component underneath the acute event.", body:"Symptoms that build gradually over months, rather than appearing suddenly, are described as insidious. Here, an insidious five-month background of dizziness and fatigue set the stage for the acute event — a reminder that a single case can have both an insidious component and an acute one layered on top of each other."},
+    {target:"hl6", cat:"genetics", number:6, title:"Smoking history (now former)", teaser:"Cumulative vascular damage remains even after quitting.", body:"Even though he quit three years ago, three decades of smoking leaves lasting damage to blood vessels, adding to his overall atherosclerotic and cardiovascular risk profile alongside whatever cardiac rhythm problem is uncovered on exam."},
+    {target:"hl7", cat:"finding", number:7, title:"Covering the eye to relieve diplopia", teaser:"A behavioral clue that the diplopia is significant and binocular.", body:"Covering one eye is a classic way patients spontaneously manage double vision that comes from misalignment between the two eyes — it eliminates diplopia instantly because it removes one of the two conflicting images, confirming that the problem is binocular (from eye movement/alignment) rather than something wrong within a single eye."},
+    {target:"hl8", cat:"pattern", number:8, title:"Irregularly irregular rhythm", teaser:"The classic description of atrial fibrillation.", body:"\"Irregularly irregular\" — no discernible pattern to the irregularity at all — is the textbook description of atrial fibrillation, as opposed to rhythms that are regularly irregular (like some heart blocks) or simply fast or slow but regular."},
+    {target:"hl9", cat:"finding", number:9, title:"Pulse deficit", teaser:"Confirms the arrhythmia is hemodynamically significant.", body:"In atrial fibrillation, some heartbeats are too weak or too closely spaced to generate a palpable peripheral pulse, even though they're audible at the chest. The apical (heart) rate running higher than the radial (wrist) rate is a bedside way to confirm this and adds further support to atrial fibrillation as the underlying rhythm."},
+    {target:"hl10", cat:"localization", number:10, title:"Intact cognition", teaser:"Argues against a large or diffuse cortical process.", body:"Fully normal alertness, orientation, and memory indicate that the cerebral cortex and its major connections are unaffected, supporting a small, focal lesion rather than a large hemispheric stroke or a diffuse encephalopathic process."},
+    {target:"hl11", cat:"pattern", number:11, title:"Exotropia at rest", teaser:"The eye drifts outward when not actively directed.", body:"An eye that sits deviated outward at rest, when the other extraocular muscles aren't actively holding it in primary position, suggests an imbalance favoring the outward-pulling muscles (lateral rectus) over the inward-pulling ones — consistent with reduced medial rectus (CN III) tone, though notably less complete than the total \"down and out\" deviation seen with a full CN III palsy."},
+    {target:"hl12", cat:"localization", number:12, title:"Partial adduction is preserved", teaser:"The medial rectus still has some function.", body:"During an attempt to look left, the right eye should adduct (move toward the nose) via the medial rectus, a CN III-innervated muscle. That this still happens, even partially, tells you the oculomotor palsy here is incomplete — a meaningful contrast to a complete CN III palsy where no medial movement would be possible at all."},
+    {target:"hl13", cat:"finding", number:13, title:"Anisocoria", teaser:"The right pupil is dilated relative to the left.", body:"A larger pupil on the affected side, combined with the light-reflex findings that follow, points toward involvement of the parasympathetic (pupilloconstrictor) fibers traveling with the right CN III — the opposite pattern from a pupil-sparing palsy."},
+    {target:"hl14", cat:"localization", number:14, title:"An efferent, not afferent, pupillary defect", teaser:"The right eye's motor output to the pupil is broken, not its light-detecting input.", body:"Because the right pupil fails to constrict no matter which eye the light is shined into, while the left pupil responds normally to light from either side, the problem lies in the right eye's efferent (parasympathetic, CN III) pathway to the iris sphincter — not in either eye's ability to detect light. This localizes squarely to the right oculomotor nerve's autonomic fibers, the exact opposite pattern from a pupil-sparing palsy."},
+    {target:"hl15", cat:"finding", number:15, title:"Partial ptosis", teaser:"Weak, but not completely paralyzed, eyelid elevation.", body:"Some eyelid elevation (4 mm) is still present, unlike a complete CN III palsy where the lid often can't rise at all. This is another sign that the palsy here is partial rather than total."},
+    {target:"hl16", cat:"term", number:16, title:"Binocular diplopia", teaser:"Diplopia that disappears with one eye covered is, by definition, binocular.", body:"Diplopia is called binocular when it resolves as soon as either eye is covered, because it comes from the two eyes being misaligned with each other rather than from a problem inside a single eye (like a cataract, which would cause diplopia that persists even with one eye covered — monocular diplopia). Here, exposing the misaligned right eye by forcibly opening it worsens the double vision, confirming an extraocular muscle/nerve problem."},
+    {target:"hl17", cat:"localization", number:17, title:"Subtle contralateral upper motor neuron signs", teaser:"A hint of corticospinal (Weber's-type) overlap.", body:"Mild left-sided weakness with slightly brisker reflexes on the left is a subtle upper motor neuron pattern, contralateral to the right-sided cranial nerve findings. It's much less pronounced than a full Weber's syndrome, suggesting this lesion touches the edge of the corticospinal fibers in the crus cerebri without heavily damaging them."},
+    {target:"hl18", cat:"term", number:18, title:"Equivocal Babinski", teaser:"Neither clearly present nor clearly absent.", body:"An equivocal Babinski response — not a clean upgoing toe, but not a normal downgoing one either — suggests a mild or early corticospinal tract disturbance rather than a robust, well-established one, fitting the overall pattern of only mild pyramidal involvement in this case."},
+    {target:"hl19", cat:"pattern", number:19, title:"Intention tremor", teaser:"Worsens as the limb approaches its target — a cerebellar-outflow sign.", body:"An intention tremor gets worse the closer a limb gets to its target during a purposeful movement, and it classically points to disruption of cerebellar-outflow pathways — the dentothalamic tract or the red nucleus it passes through — rather than to the basal ganglia (which more often produce a resting tremor) or the corticospinal tract."},
+    {target:"hl20", cat:"localization", number:20, title:"Dysmetria", teaser:"Overshooting or undershooting a target — another cerebellar-outflow sign.", body:"Missing the intended target on finger-to-nose testing (dysmetria) is, like the intention tremor, a sign of disrupted cerebellar-outflow circuitry rather than a corticospinal problem. Its presence on the left, contralateral to the right-sided oculomotor findings, is a key piece of the crossed pattern pointing to the red nucleus/dentothalamic tract."},
+    {target:"hl21", cat:"pattern", number:21, title:"Involuntary jerky movement", teaser:"A hyperkinetic, cerebellar-outflow (rubral) sign.", body:"An involuntary movement the patient cannot suppress, together with the intention tremor and dysmetria, rounds out a hyperkinetic, ataxic picture rather than a spastic (corticospinal) one. This combination is the clinical signature of red nucleus/dentothalamic tract involvement — the core of what's classically called Benedict's syndrome."},
+    {target:"hl22", cat:"localization", number:22, title:"Dorsal-column-type sensory loss, arm more than leg", teaser:"Points to the medial lemniscus, with a body-region gradient.", body:"Position and vibratory sense are carried by the medial lemniscus as it ascends through the midbrain, so a lesion touching this tract on the right produces a contralateral (left) deficit. The medial lemniscus also carries a rough somatotopic map that rotates as it ascends the brainstem, so a partial lesion can affect one body region more than another — here, the arm more than the leg — depending on exactly which part of that map the lesion reaches."},
+    {target:"hl23", cat:"genetics", number:23, title:"Resolution of the ataxic signs", teaser:"The dentothalamic/red-nucleus component recovered well.", body:"By three months, the intention tremor and dysmetria (past-pointing) have fully resolved — a favorable trajectory that's common for embolic infarcts once the initial ischemic injury and any surrounding edema settle down."},
+    {target:"hl24", cat:"genetics", number:24, title:"Partial sensory recovery", teaser:"The leg recovered; the arm did not.", body:"The sensory loss resolved everywhere except the left arm, fitting with the idea that only part of the medial lemniscus's somatotopic map was ever destroyed — the fibers serving the leg recovered (or were never as severely affected), while the fibers serving the arm sustained more lasting injury."},
+    {target:"hl25", cat:"genetics", number:25, title:"Partial oculomotor recovery", teaser:"Motor function returned; alignment did not fully normalize.", body:"Regaining movement in all four quadrants is a substantial recovery from the initial partial CN III palsy, but the persistent mild diplopia and resting exotropia show that recovery from a midbrain lesion is often incomplete even when the most dramatic findings improve — mirroring, in a milder form, the permanent ptosis and ophthalmoplegia seen with a more severe, complete palsy."}
+  ];
+
+  var annByTarget = {};
+  annotations.forEach(function(a){ annByTarget[a.target] = a; });
+
+  var tooltip = document.getElementById("tooltip");
+  var panel = document.getElementById("panel");
+  var pEyebrow = document.getElementById("pEyebrow");
+  var pTitle = document.getElementById("pTitle");
+  var pBody = document.getElementById("pBody");
+  var panelClose = document.getElementById("panelClose");
+
+  var CAT_TAG_CLASS = {
+    localization: "tag-localization",
+    finding: "tag-finding",
+    term: "tag-term",
+    pattern: "tag-pattern",
+    genetics: "tag-genetics"
+  };
+
+  function openPanel(ann){
+    pEyebrow.textContent = ann.number + " · " + CAT_LABEL[ann.cat];
+    pEyebrow.className = "p-eyebrow " + CAT_TAG_CLASS[ann.cat];
+    pTitle.textContent = ann.title;
+    pBody.textContent = ann.body;
+    panel.classList.add("open");
+  }
+
+  function closePanel(){
+    panel.classList.remove("open");
+  }
+
+  function showTooltip(mark, ann){
+    tooltip.innerHTML = '<span class="tt-eyebrow">' + ann.number + " · " + CAT_LABEL[ann.cat] + '</span>' +
+                         '<span class="tt-title">' + ann.title + '</span>' +
+                         ann.teaser;
+    tooltip.style.display = "block";
+    var rect = mark.getBoundingClientRect();
+    var ttRect = tooltip.getBoundingClientRect();
+    var top = rect.bottom + 8;
+    if(top + ttRect.height > window.innerHeight - 10){
+      top = rect.top - ttRect.height - 8;
+    }
+    var left = rect.left;
+    if(left + ttRect.width > window.innerWidth - 10){
+      left = window.innerWidth - ttRect.width - 10;
+    }
+    if(left < 10) left = 10;
+    tooltip.style.top = top + "px";
+    tooltip.style.left = left + "px";
+  }
+
+  function hideTooltip(){
+    tooltip.style.display = "none";
+  }
+
+  var canHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+  var marks = document.querySelectorAll("mark.hl");
+  marks.forEach(function(mark){
+    var ann = annByTarget[mark.id];
+    if(!ann) return;
+
+    if(canHover){
+      mark.addEventListener("mouseenter", function(){ showTooltip(mark, ann); });
+      mark.addEventListener("mouseleave", hideTooltip);
+    }
+
+    mark.addEventListener("click", function(e){
+      e.stopPropagation();
+      hideTooltip();
+      openPanel(ann);
+    });
+  });
+
+  panelClose.addEventListener("click", closePanel);
+
+  document.addEventListener("keydown", function(e){
+    if(e.key === "Escape") closePanel();
+  });
+
+  document.addEventListener("click", function(e){
+    if(panel.classList.contains("open") && !panel.contains(e.target) && !e.target.closest("mark.hl")){
+      closePanel();
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
