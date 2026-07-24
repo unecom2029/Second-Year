@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Case 8-1 — Thalamic Infarct | Annotated Case Note</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Nunito:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#F6F1E6;
+  --paper:#FCFAF3;
+  --ink:#2A241C;
+  --ink-soft:#6B6152;
+  --ink-faint:#9A8F7B;
+  --line:#DED2B6;
+  --line-soft:#EAE0C9;
+
+  --coral:#C85A3E;   --coral-bg:#F7E4DB;
+  --teal:#256B63;    --teal-bg:#DFEDE8;
+  --gold:#A47A1F;    --gold-bg:#F3E7C6;
+  --violet:#6B5390;  --violet-bg:#E9E2F1;
+  --sky:#2F6485;     --sky-bg:#DEE9EF;
+
+  --radius:10px;
+  --shadow:0 1px 2px rgba(42,36,28,.06), 0 8px 24px -12px rgba(42,36,28,.18);
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--cream);
+  color:var(--ink);
+  font-family:'Nunito',sans-serif;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+
+.page{max-width:800px;margin:0 auto;padding:32px 20px 120px;}
+
+/* ---------- Header ---------- */
+.masthead{margin-bottom:36px;}
+.eyebrow{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--ink-faint);
+  margin:0 0 6px;
+}
+.masthead h1{
+  font-family:'Crimson Pro',serif;
+  font-weight:600;
+  font-size:34px;
+  margin:0 0 10px;
+  line-height:1.15;
+}
+.masthead .subtitle{
+  font-family:'Crimson Pro',serif;
+  font-style:italic;
+  font-size:18px;
+  color:var(--ink-soft);
+  margin:0 0 16px;
+}
+.meta-row{
+  display:flex;flex-wrap:wrap;gap:8px;
+}
+.meta-pill{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11.5px;
+  padding:4px 10px;
+  border-radius:20px;
+  background:var(--paper);
+  border:1px solid var(--line);
+  color:var(--ink-soft);
+}
+.legend{
+  display:flex;flex-wrap:wrap;gap:10px;
+  margin-top:20px;padding-top:18px;
+  border-top:1px solid var(--line-soft);
+}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink-soft);}
+.legend-dot{width:10px;height:10px;border-radius:50%;display:inline-block;}
+
+/* ---------- Case sections ---------- */
+.section{margin-bottom:38px;}
+.section-label{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--coral);
+  border-bottom:1px solid var(--line);
+  padding-bottom:8px;
+  margin-bottom:14px;
+}
+.case-text p{
+  font-family:'Crimson Pro',serif;
+  font-size:18px;
+  line-height:1.75;
+  color:var(--ink);
+  margin:0 0 14px;
+}
+.case-text p:last-child{margin-bottom:0;}
+.case-text .lbl{font-weight:600;font-style:italic;color:var(--ink-soft);}
+
+/* ---------- Highlights ---------- */
+mark.hl{
+  background:var(--hl-bg,var(--gold-bg));
+  color:var(--ink);
+  padding:0.02em 0.15em;
+  border-radius:4px;
+  cursor:pointer;
+  text-decoration:none;
+  box-shadow:inset 0 -1.5px 0 0 var(--hl-color,var(--gold));
+  transition:filter .15s ease;
+}
+mark.hl:hover{filter:brightness(0.96);}
+mark.hl[data-cat="localization"]{--hl-bg:var(--teal-bg);--hl-color:var(--teal);}
+mark.hl[data-cat="finding"]{--hl-bg:var(--coral-bg);--hl-color:var(--coral);}
+mark.hl[data-cat="term"]{--hl-bg:var(--gold-bg);--hl-color:var(--gold);}
+mark.hl[data-cat="pattern"]{--hl-bg:var(--violet-bg);--hl-color:var(--violet);}
+mark.hl[data-cat="vascular"]{--hl-bg:var(--sky-bg);--hl-color:var(--sky);}
+
+sup.hlnum{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;
+  color:var(--ink-faint);
+  margin-left:1px;
+  user-select:none;
+}
+
+/* ---------- Tooltip ---------- */
+#tooltip{
+  position:fixed;
+  max-width:280px;
+  background:var(--ink);
+  color:var(--paper);
+  padding:10px 13px;
+  border-radius:8px;
+  font-size:13px;
+  line-height:1.45;
+  box-shadow:var(--shadow);
+  z-index:1200;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity .12s ease;
+}
+#tooltip.show{opacity:1;}
+#tooltip .tt-eyebrow{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  opacity:.7;
+  margin-bottom:3px;
+}
+#tooltip .tt-title{font-weight:700;margin-bottom:3px;}
+
+/* ---------- Docked panel ---------- */
+#panel{
+  position:fixed;
+  top:0;right:0;bottom:0;
+  width:380px;
+  background:var(--paper);
+  border-left:1px solid var(--line);
+  box-shadow:var(--shadow);
+  transform:translateX(100%);
+  transition:transform .22s ease;
+  z-index:1300;
+  overflow-y:auto;
+  padding:24px 22px 40px;
+}
+#panel.open{transform:translateX(0);}
+#panel .panel-close{
+  position:absolute;top:16px;right:16px;
+  width:28px;height:28px;border-radius:50%;
+  border:1px solid var(--line);background:var(--cream);
+  color:var(--ink-soft);font-size:16px;line-height:1;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+}
+#panel .panel-tag{
+  display:inline-block;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;text-transform:uppercase;letter-spacing:.06em;
+  padding:3px 9px;border-radius:20px;margin-bottom:14px;
+}
+#panel h3{
+  font-family:'Crimson Pro',serif;font-size:23px;font-weight:600;
+  margin:0 0 12px;padding-right:24px;
+}
+#panel p{font-size:15px;color:var(--ink-soft);line-height:1.6;}
+#overlay{
+  position:fixed;inset:0;background:rgba(42,36,28,.15);
+  z-index:1250;opacity:0;pointer-events:none;transition:opacity .2s ease;
+}
+#overlay.show{opacity:1;pointer-events:auto;}
+
+@media (max-width:1000px){
+  #panel{
+    left:0;right:0;top:auto;bottom:0;width:auto;
+    height:72vh;border-left:none;border-top:1px solid var(--line);
+    border-radius:16px 16px 0 0;
+    transform:translateY(100%);
+  }
+  #panel.open{transform:translateY(0);}
+}
+
+/* ---------- Reasoning walkthrough ---------- */
+.reasoning-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+}
+.r-card{
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:18px 20px;
+  box-shadow:var(--shadow);
+}
+.r-card.span-3{grid-column:1 / -1;}
+.r-card h4{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;text-transform:uppercase;letter-spacing:.06em;
+  color:var(--ink-faint);margin:0 0 10px;
+}
+.r-card p{font-size:14.5px;color:var(--ink-soft);line-height:1.6;margin:0;}
+.r-card p + p{margin-top:8px;}
+
+table.diff-table{width:100%;border-collapse:collapse;font-size:14px;}
+table.diff-table th{
+  text-align:left;font-family:'IBM Plex Mono',monospace;font-size:11px;
+  text-transform:uppercase;letter-spacing:.04em;color:var(--ink-faint);
+  padding:6px 10px;border-bottom:2px solid var(--line);
+}
+table.diff-table td{padding:9px 10px;border-bottom:1px solid var(--line-soft);vertical-align:top;color:var(--ink-soft);}
+table.diff-table tr.lead td{background:var(--teal-bg);}
+table.diff-table tr.lead td:first-child{font-weight:700;color:var(--teal);}
+.tag-likely{
+  display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:10px;
+  background:var(--teal);color:#fff;padding:2px 7px;border-radius:20px;margin-left:6px;
+}
+
+.workup-flow{list-style:none;margin:0;padding:0;counter-reset:step;}
+.workup-flow li{
+  position:relative;padding-left:38px;margin-bottom:14px;counter-increment:step;
+}
+.workup-flow li::before{
+  content:counter(step);
+  position:absolute;left:0;top:0;
+  width:26px;height:26px;border-radius:50%;
+  background:var(--sky-bg);color:var(--sky);
+  font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:13px;
+  display:flex;align-items:center;justify-content:center;
+}
+.workup-flow .step-lead{font-weight:700;color:var(--ink);font-size:14.5px;}
+.workup-flow .step-sub{display:block;font-size:13.5px;color:var(--ink-soft);margin-top:2px;}
+
+.mgmt-list{list-style:none;margin:0;padding:0;}
+.mgmt-list li{
+  display:flex;gap:10px;align-items:flex-start;
+  padding:8px 0;border-bottom:1px solid var(--line-soft);
+  font-size:14.5px;color:var(--ink-soft);
+}
+.mgmt-list li:last-child{border-bottom:none;}
+.mgmt-list .check{
+  flex:0 0 18px;width:18px;height:18px;border-radius:5px;
+  border:1.5px solid var(--gold);margin-top:2px;
+}
+
+@media (max-width:900px){
+  .reasoning-grid{grid-template-columns:repeat(2,1fr);}
+}
+@media (max-width:640px){
+  .reasoning-grid{grid-template-columns:1fr;}
+}
+
+/* ---------- Deep dive cards ---------- */
+.dive-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.d-card{
+  background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 18px 20px;box-shadow:var(--shadow);display:flex;flex-direction:column;
+}
+.d-card .cat-tag{
+  align-self:flex-start;
+  font-family:'IBM Plex Mono',monospace;font-size:10.5px;text-transform:uppercase;
+  letter-spacing:.05em;padding:3px 9px;border-radius:20px;margin-bottom:10px;
+}
+.d-card h4{font-family:'Crimson Pro',serif;font-size:19px;font-weight:600;margin:0 0 10px;}
+.d-card .visual{margin:6px 0 12px;}
+.d-card .visual svg{width:100%;height:auto;display:block;}
+.d-card .takeaway{font-size:13.5px;color:var(--ink-soft);line-height:1.55;margin:0;}
+.d-card table.mini{width:100%;font-size:12.5px;border-collapse:collapse;}
+.d-card table.mini th,.d-card table.mini td{
+  border-bottom:1px solid var(--line-soft);padding:5px 6px;text-align:left;color:var(--ink-soft);
+}
+.d-card table.mini th{font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;color:var(--ink-faint);}
+
+@media (max-width:900px){.dive-grid{grid-template-columns:repeat(2,1fr);}}
+@media (max-width:640px){.dive-grid{grid-template-columns:1fr;}}
+
+footer.note{
+  margin-top:50px;padding-top:20px;border-top:1px solid var(--line-soft);
+  font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--ink-faint);
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="masthead">
+    <p class="eyebrow">Medical Neuroanatomy · Chapter 8 · Thalamus</p>
+    <h1>Case Study 8-1</h1>
+    <p class="subtitle">65-year-old, right-handed man — right hemiparesis, homonymous hemianopsia, dysarthria, and confusion</p>
+    <div class="meta-row">
+      <span class="meta-pill">Suspected: left thalamic infarct</span>
+      <span class="meta-pill">HTN × 7y · DM × 4y</span>
+      <span class="meta-pill">Acute ("wake-up") onset</span>
+    </div>
+    <div class="legend">
+      <span class="legend-item"><span class="legend-dot" style="background:var(--teal)"></span>Localization</span>
+      <span class="legend-item"><span class="legend-dot" style="background:var(--coral)"></span>Finding</span>
+      <span class="legend-item"><span class="legend-dot" style="background:var(--gold)"></span>Term</span>
+      <span class="legend-item"><span class="legend-dot" style="background:var(--violet)"></span>Pattern</span>
+      <span class="legend-item"><span class="legend-dot" style="background:var(--sky)"></span>Vascular / workup</span>
+    </div>
+  </div>
+
+  <!-- ================= CASE TEXT ================= -->
+
+  <div class="section">
+    <p class="section-label">Chief Complaint</p>
+    <div class="case-text">
+      <p>A 65-year-old man presented with <mark class="hl" data-cat="finding" id="hl1">right-sided hemiparesis</mark><sup class="hlnum">1</sup>, <mark class="hl" data-cat="term" id="hl2">homonymous hemianopsia</mark><sup class="hlnum">2</sup>, dysarthria, and <mark class="hl" data-cat="finding" id="hl3">confusion</mark><sup class="hlnum">3</sup>.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="section-label">History of Chief Complaint</p>
+    <div class="case-text">
+      <p>This 65-year-old, right-handed man was brought to the emergency room early in the morning by his family. They complained that he was unable to move his right hand, his speech was slurred, and that he appeared to be confused. He had been that way <mark class="hl" data-cat="vascular" id="hl4">since shortly after he awoke that morning</mark><sup class="hlnum">4</sup>.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="section-label">Medical History</p>
+    <div class="case-text">
+      <p>He was in good health until 7 years prior, when he was diagnosed as having <mark class="hl" data-cat="vascular" id="hl5">hypertension</mark><sup class="hlnum">5</sup>. One year later, he was admitted to the community hospital a day after experiencing a <mark class="hl" data-cat="pattern" id="hl6">brief episode of quadriparesis, blurred vision, and nausea</mark><sup class="hlnum">6</sup>. At that time <mark class="hl" data-cat="vascular" id="hl7">Doppler studies of the carotids were normal</mark><sup class="hlnum">7</sup>, as were lumbar puncture, electroencephalogram, and a computed tomographic (CT) scan. <mark class="hl" data-cat="vascular" id="hl8">Diabetes was detected</mark><sup class="hlnum">8</sup> and he was consequently given a regimen of insulin and discharged. During the next 4 years, no known transient ischemic episodes occurred. The day prior to his most current admission, he had complained of <mark class="hl" data-cat="pattern" id="hl9">intermittent weakness in his right hand</mark><sup class="hlnum">9</sup>.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="section-label">Family History</p>
+    <div class="case-text">
+      <p>At the time of admission he was married, retired from military service, and had two children, both of whom were married. His <mark class="hl" data-cat="vascular" id="hl10">father had had hypertension and died at 55 of coronary artery disease</mark><sup class="hlnum">10</sup>; his mother was still living.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="section-label">General Physical Examination</p>
+    <div class="case-text">
+      <p>He was a stable, well-hydrated, well-nourished man in no acute distress who appeared his stated age. Funduscopic examination revealed <mark class="hl" data-cat="finding" id="hl11">arterial-venous nicking</mark><sup class="hlnum">11</sup> without hemorrhage or papilledema. His heartbeat was regular without murmurs or gallops. <mark class="hl" data-cat="vascular" id="hl12">Blood pressure was 180/100</mark><sup class="hlnum">12</sup>. Respiration and pulse were normal. Lungs were clear to auscultation. Abdomen was soft without masses. Skin was of good texture and temperature. Several small areas of actinic keratosis on the right posterior scalp were evident.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="section-label">Neurologic Examination</p>
+    <div class="case-text">
+      <p><span class="lbl">Mental Status.</span> He was awake and alert, but disoriented with respect to time, place, and personal information, relying on his family members to supply much of the history. He had <mark class="hl" data-cat="localization" id="hl13">impaired recent memory and fund of knowledge</mark><sup class="hlnum">13</sup>. (He said Kennedy was the current US President.) He <mark class="hl" data-cat="finding" id="hl14">confused the left and right sides of his body</mark><sup class="hlnum">14</sup>. His speech was <mark class="hl" data-cat="pattern" id="hl15">poorly articulated and perseverative; he used word substitutions and mispronounced words frequently; however, he had normal repetition of speech</mark><sup class="hlnum">15</sup>.</p>
+      <p><span class="lbl">Cranial Nerves.</span> He had a full range of eye movements. There was a <mark class="hl" data-cat="localization" id="hl16">right homonymous hemianopsia</mark><sup class="hlnum">16</sup> present. Pupils were symmetric and bilaterally responsive to light, both direct and consensual. Hearing was normal in both ears. Corneal, jaw-jerk, and gag reflexes were intact. His face was asymmetric on spontaneous emotional expression (e.g., smiling) but not on voluntary movement (<mark class="hl" data-cat="pattern" id="hl17">right "emotional" facial paralysis</mark><sup class="hlnum">17</sup>). <mark class="hl" data-cat="finding" id="hl18">Discriminative touch was intact across his face</mark><sup class="hlnum">18</sup>, bilaterally. The uvula was elevated on the midline; the tongue protruded on the midline. Shoulder shrug was symmetric.</p>
+      <p><span class="lbl">Motor Systems.</span> Strength in the limbs was <mark class="hl" data-cat="localization" id="hl19">+5/5 in the left arm and leg, +3/5 in the right arm, and +4/5 in the right leg</mark><sup class="hlnum">19</sup>. <mark class="hl" data-cat="finding" id="hl20">Deep tendon reflexes were elevated in the right arm more than the right leg; they were physiologic on the left. A Babinski sign was noted on the right</mark><sup class="hlnum">20</sup>.</p>
+      <p><span class="lbl">Sensation.</span> Pain, light touch, and vibration sense were normal, but <mark class="hl" data-cat="localization" id="hl21">discriminative touch and proprioception were impaired in the right hand</mark><sup class="hlnum">21</sup>.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="section-label">Follow-up</p>
+    <div class="case-text">
+      <p>Re-examination at two months after his initial presentation found an alert but very confused gentleman with poor orientation for person, place and time. He had to be continually reminded of why he was being examined. His language remained poorly articulated and perseverative; however, there was some improvement in meaning since his last visit. He could smile symmetrically on command and also smiled symmetrically with emotional stimuli. <mark class="hl" data-cat="vascular" id="hl22">The weakness in his right arm and leg had partially resolved; however, the deep tendon reflexes in these extremities remained elevated</mark><sup class="hlnum">22</sup>.</p>
+    </div>
+  </div>
+
+  <!-- ================= CLINICAL REASONING WALKTHROUGH ================= -->
+
+  <div class="section">
+    <p class="section-label">Clinical Reasoning Walkthrough</p>
+    <div class="reasoning-grid">
+
+      <div class="r-card span-3">
+        <h4>1 · Localization</h4>
+        <p>The right-sided hemiparesis with hyperreflexia and a Babinski sign, right homonymous hemianopsia, and a dominant-hemisphere-type language pattern (paraphasic, perseverative, but with preserved repetition) all point to a single lesion on the <strong>left side of the brain</strong>, at a <strong>suprasegmental</strong> level. The specific mix — sensory, motor, visual, and cognitive/language deficits appearing together from what is very likely one small vascular lesion — is the signature of a <strong>thalamic</strong> localization: the thalamus packs sensory relay (VPL/VPM), motor relay (VL/VA), visual relay (LGN/pulvinar), and limbic/cognitive nuclei (anterior, dorsomedial) into a very small volume, so a single infarct can plausibly touch several of these systems at once, exactly as it appears to have done here.</p>
+      </div>
+
+      <div class="r-card span-3">
+        <h4>2 · Distribution</h4>
+        <p>The pathology is best described as <strong>focal</strong> — a single vascular territory within the left thalamus — even though its clinical footprint looks "multifocal" on the surface (sensory + motor + visual + cognitive + language). That apparent multifocality is a direct consequence of how tightly packed and functionally diverse the thalamic nuclei and their in/out fiber tracts are, not evidence of a truly diffuse or multi-site process. There is no exam finding here (e.g., bilateral signs, diffuse encephalopathy) that would push this toward a genuinely diffuse etiology.</p>
+      </div>
+
+      <div class="r-card span-3">
+        <h4>3 · Time Course</h4>
+        <p>This is an <strong>acute</strong> presentation layered on <strong>chronic, progressive</strong> vascular disease. He woke up with the deficit already present (true onset time unknown — a "wake-up stroke"), the day after a stuttering episode of intermittent right-hand weakness, and six years after a posterior-circulation-type TIA (quadriparesis, blurred vision, nausea) that first led to his hypertension and diabetes being diagnosed and managed. At two-month follow-up the motor deficit has partially improved while the cognitive/language deficits remain prominent — a trajectory typical of ischemic (rather than destructive hemorrhagic) injury, and one that reveals differential recovery across the affected thalamic systems.</p>
+      </div>
+
+      <div class="r-card span-3">
+        <h4>4 · Differential Diagnosis</h4>
+        <table class="diff-table">
+          <tr><th>Diagnosis</th><th>Fits</th><th>Argues against</th></tr>
+          <tr class="lead">
+            <td>Thalamic ischemic infarct (small-vessel / perforator territory)<span class="tag-likely">most likely</span></td>
+            <td>Acute/wake-up onset; strong small-vessel risk factors (HTN, DM); crescendo warning TIA the day before; deficit pattern maps cleanly onto adjacent thalamic nuclei; partial recovery over 2 months</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td>Thalamic hemorrhage</td>
+            <td>Uncontrolled HTN (180/100) as a risk factor; acute onset</td>
+            <td>No headache, vomiting, or decreased consciousness reported; gradual partial improvement is more typical of ischemia than a destructive hematoma</td>
+          </tr>
+          <tr>
+            <td>Mass lesion (tumor)</td>
+            <td>Can produce focal thalamic signs</td>
+            <td>Onset was abrupt (overnight), not gradually progressive over weeks; no headache or signs of raised intracranial pressure</td>
+          </tr>
+          <tr>
+            <td>Demyelinating lesion (e.g., MS)</td>
+            <td>Can cause focal white-matter/thalamic deficits</td>
+            <td>Age 65 with no prior demyelinating history is atypical; his risk profile is entirely vascular</td>
+          </tr>
+          <tr>
+            <td>Toxic-metabolic encephalopathy</td>
+            <td>Confusion, disorientation</td>
+            <td>Clear focal, lateralizing signs (hemiparesis, hemianopsia, unilateral sensory loss) are not explained by a diffuse metabolic process</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="r-card span-3">
+        <h4>5 · Diagnostic Workup</h4>
+        <ol class="workup-flow">
+          <li><span class="step-lead">Noncontrast CT head</span><span class="step-sub">First priority — distinguishes acute ischemia from hemorrhage before any antithrombotic therapy is considered.</span></li>
+          <li><span class="step-lead">MRI brain with diffusion-weighted imaging (DWI)</span><span class="step-sub">Confirms and precisely localizes the thalamic infarct; CT is often unremarkable this early in a small lacunar stroke.</span></li>
+          <li><span class="step-lead">MRA/CTA of the head and neck</span><span class="step-sub">Evaluates the posterior circulation and thalamic perforator origins, given his history argues against a carotid source.</span></li>
+          <li><span class="step-lead">Cardiac workup — EKG, telemetry, echocardiogram</span><span class="step-sub">Screens for an embolic source (atrial fibrillation, mural thrombus) that would change secondary prevention.</span></li>
+          <li><span class="step-lead">Fasting glucose / HbA1c, lipid panel</span><span class="step-sub">Reassesses control of his two known small-vessel risk factors, diabetes and hyperlipidemia risk.</span></li>
+          <li><span class="step-lead">Repeat carotid duplex</span><span class="step-sub">Was normal 6 years ago; worth repeating given new symptoms and the years elapsed.</span></li>
+        </ol>
+      </div>
+
+      <div class="r-card span-3">
+        <h4>6 · Prognosis</h4>
+        <p>Thalamic strokes often show this same split trajectory: motor deficits driven by corticospinal fiber involvement tend to improve substantially over weeks to months (as seen here — right arm and leg strength partially recovered by two months), while cognitive, memory, and language deficits tied to the limbic and associative thalamic nuclei (anterior, dorsomedial, pulvinar/lateroposterior) are frequently more persistent. His continued disorientation and confusion at follow-up, despite motor improvement, fits this pattern and suggests durable involvement of the limbic thalamic territory.</p>
+      </div>
+
+      <div class="r-card span-3">
+        <h4>7 · Management</h4>
+        <ul class="mgmt-list">
+          <li><span class="check"></span>Acute stroke protocol on arrival; reperfusion therapy eligibility limited by unknown ("wake-up") onset time</li>
+          <li><span class="check"></span>Antiplatelet therapy (e.g., aspirin) once hemorrhage is excluded on imaging</li>
+          <li><span class="check"></span>Statin therapy for secondary vascular prevention</li>
+          <li><span class="check"></span>Tight blood pressure control — his 180/100 on presentation needs an active management plan, not just monitoring</li>
+          <li><span class="check"></span>Optimize glycemic control / review his insulin regimen</li>
+          <li><span class="check"></span>Physical and occupational therapy for residual right-sided weakness</li>
+          <li><span class="check"></span>Speech-language therapy targeting his thalamic aphasia pattern</li>
+          <li><span class="check"></span>Neuropsychological evaluation and cognitive rehabilitation for persistent memory/orientation deficits</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= CONCEPT DEEP-DIVE ================= -->
+
+  <div class="section">
+    <p class="section-label">Concept Deep-Dive</p>
+    <div class="dive-grid">
+
+      <div class="d-card">
+        <span class="cat-tag" style="background:var(--teal-bg);color:var(--teal)">Localization</span>
+        <h4>Thalamic Nuclear Map</h4>
+        <div class="visual">
+          <svg viewBox="0 0 300 210" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="150" cy="105" rx="135" ry="90" fill="none" stroke="#DED2B6" stroke-width="2"/>
+            <path d="M60,105 A90,90 0 0 1 150,15" fill="none" stroke="#DED2B6" stroke-width="1.5"/>
+            <!-- anterior/DM -->
+            <ellipse cx="95" cy="60" rx="34" ry="26" fill="#DFEDE8" stroke="#256B63"/>
+            <text x="95" y="63" font-size="10" text-anchor="middle" fill="#256B63" font-family="IBM Plex Mono">AN / DM</text>
+            <!-- VL/VA motor -->
+            <ellipse cx="150" cy="105" rx="30" ry="24" fill="#F3E7C6" stroke="#A47A1F"/>
+            <text x="150" y="103" font-size="10" text-anchor="middle" fill="#A47A1F" font-family="IBM Plex Mono">VL / VA</text>
+            <text x="150" y="115" font-size="9" text-anchor="middle" fill="#A47A1F" font-family="IBM Plex Mono">(motor)</text>
+            <!-- VPL/VPM sensory -->
+            <ellipse cx="205" cy="130" rx="30" ry="24" fill="#F7E4DB" stroke="#C85A3E"/>
+            <text x="205" y="128" font-size="10" text-anchor="middle" fill="#C85A3E" font-family="IBM Plex Mono">VPL / VPM</text>
+            <text x="205" y="140" font-size="9" text-anchor="middle" fill="#C85A3E" font-family="IBM Plex Mono">(sensory)</text>
+            <!-- pulvinar/LGN visual -->
+            <ellipse cx="240" cy="80" rx="32" ry="26" fill="#E9E2F1" stroke="#6B5390"/>
+            <text x="240" y="78" font-size="10" text-anchor="middle" fill="#6B5390" font-family="IBM Plex Mono">Pulvinar</text>
+            <text x="240" y="90" font-size="9" text-anchor="middle" fill="#6B5390" font-family="IBM Plex Mono">/ LGN</text>
+          </svg>
+        </div>
+        <p class="takeaway">This patient's findings map onto at least three adjacent nuclear groups (AN/DM for memory, VL/VA-adjacent capsule for motor, VPL for sensory, pulvinar/LGN territory for vision) — exactly the kind of multi-system picture the textbook warns a single, well-placed thalamic lesion can produce.</p>
+      </div>
+
+      <div class="d-card">
+        <span class="cat-tag" style="background:var(--teal-bg);color:var(--teal)">Localization</span>
+        <h4>The Limbic Thalamus &amp; Memory</h4>
+        <div class="visual">
+          <svg viewBox="0 0 300 170" xmlns="http://www.w3.org/2000/svg">
+            <rect x="20" y="115" width="70" height="34" rx="6" fill="#DFEDE8" stroke="#256B63"/>
+            <text x="55" y="135" font-size="10" text-anchor="middle" fill="#256B63" font-family="IBM Plex Mono">Hippocampus</text>
+            <path d="M90,132 h35" stroke="#9A8F7B" stroke-width="2" marker-end="url(#arrow1)"/>
+            <text x="107" y="125" font-size="8" text-anchor="middle" fill="#6B6152" font-family="IBM Plex Mono">fornix</text>
+            <rect x="125" y="115" width="65" height="34" rx="6" fill="#F3E7C6" stroke="#A47A1F"/>
+            <text x="157" y="135" font-size="9.5" text-anchor="middle" fill="#A47A1F" font-family="IBM Plex Mono">Mammillary body</text>
+            <path d="M157,115 v-30" stroke="#9A8F7B" stroke-width="2" marker-end="url(#arrow1)"/>
+            <text x="185" y="98" font-size="8" text-anchor="middle" fill="#6B6152" font-family="IBM Plex Mono">mammillothalamic tract</text>
+            <rect x="122" y="45" width="70" height="34" rx="6" fill="#F7E4DB" stroke="#C85A3E"/>
+            <text x="157" y="65" font-size="9.5" text-anchor="middle" fill="#C85A3E" font-family="IBM Plex Mono">Anterior nucleus</text>
+            <path d="M192,62 h40" stroke="#9A8F7B" stroke-width="2" marker-end="url(#arrow1)"/>
+            <rect x="235" y="45" width="55" height="34" rx="6" fill="#E9E2F1" stroke="#6B5390"/>
+            <text x="262" y="65" font-size="9.5" text-anchor="middle" fill="#6B5390" font-family="IBM Plex Mono">Cingulate</text>
+            <rect x="122" y="10" width="70" height="26" rx="6" fill="#DEE9EF" stroke="#2F6485"/>
+            <text x="157" y="27" font-size="9.5" text-anchor="middle" fill="#2F6485" font-family="IBM Plex Mono">Dorsomedial nu.</text>
+            <path d="M157,45 v-9" stroke="#9A8F7B" stroke-width="2"/>
+            <text x="200" y="20" font-size="8" text-anchor="middle" fill="#6B6152" font-family="IBM Plex Mono">↔ prefrontal cortex</text>
+            <defs><marker id="arrow1" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#9A8F7B"/></marker></defs>
+          </svg>
+        </div>
+        <p class="takeaway">The anterior and dorsomedial nuclei form the "limbic thalamus." Their damage explains this patient's amnesia and disorientation directly — no cortical lesion is needed to account for his confusion and poor fund of knowledge.</p>
+      </div>
+
+      <div class="d-card">
+        <span class="cat-tag" style="background:var(--violet-bg);color:var(--violet)">Visual pathway</span>
+        <h4>Post-Geniculate Hemianopsia</h4>
+        <div class="visual">
+          <svg viewBox="0 0 300 150" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="35" cy="45" r="16" fill="none" stroke="#6B6152" stroke-width="2"/>
+            <circle cx="35" cy="105" r="16" fill="none" stroke="#6B6152" stroke-width="2"/>
+            <text x="35" y="132" font-size="9" text-anchor="middle" fill="#6B6152" font-family="IBM Plex Mono">retinas</text>
+            <path d="M50,45 L120,75" stroke="#9A8F7B" stroke-width="2"/>
+            <path d="M50,105 L120,75" stroke="#9A8F7B" stroke-width="2"/>
+            <rect x="115" y="65" width="30" height="20" rx="4" fill="#F3E7C6" stroke="#A47A1F"/>
+            <text x="130" y="79" font-size="8" text-anchor="middle" fill="#A47A1F" font-family="IBM Plex Mono">chiasm</text>
+            <path d="M145,75 L200,50" stroke="#C85A3E" stroke-width="3"/>
+            <rect x="195" y="35" width="34" height="26" rx="6" fill="#F7E4DB" stroke="#C85A3E"/>
+            <text x="212" y="52" font-size="8.5" text-anchor="middle" fill="#C85A3E" font-family="IBM Plex Mono">LGN</text>
+            <path d="M229,48 L275,60" stroke="#C85A3E" stroke-width="3" stroke-dasharray="4 3"/>
+            <text x="252" y="45" font-size="8" text-anchor="middle" fill="#C85A3E" font-family="IBM Plex Mono">optic radiations</text>
+            <rect x="255" y="60" width="35" height="26" rx="6" fill="#E9E2F1" stroke="#6B5390"/>
+            <text x="272" y="77" font-size="8" text-anchor="middle" fill="#6B5390" font-family="IBM Plex Mono">visual cx</text>
+            <text x="175" y="110" font-size="9.5" fill="#C85A3E" font-family="IBM Plex Mono">✕ left-sided lesion here →</text>
+            <text x="175" y="123" font-size="9.5" fill="#C85A3E" font-family="IBM Plex Mono">right homonymous hemianopsia</text>
+          </svg>
+        </div>
+        <p class="takeaway">Because his hemianopsia is dense and complete rather than macula-sparing, the lesion most likely sits at or before the LGN — in the geniculate itself or the optic radiations just beyond it — not in the visual cortex.</p>
+      </div>
+
+      <div class="d-card">
+        <span class="cat-tag" style="background:var(--coral-bg);color:var(--coral)">Sensory pathway</span>
+        <h4>Dissociated Sensory Loss</h4>
+        <table class="mini">
+          <tr><th>Modality</th><th>Pathway</th><th>This patient</th></tr>
+          <tr><td>Discriminative touch</td><td>DCML → VPL</td><td style="color:#C85A3E;font-weight:700">Impaired</td></tr>
+          <tr><td>Proprioception</td><td>DCML → VPL</td><td style="color:#C85A3E;font-weight:700">Impaired</td></tr>
+          <tr><td>Vibration</td><td>DCML → VPL</td><td>Normal</td></tr>
+          <tr><td>Pain</td><td>Anterolateral (STT)</td><td>Normal</td></tr>
+          <tr><td>Light touch</td><td>Anterolateral / DCML</td><td>Normal</td></tr>
+        </table>
+        <p class="takeaway">The DCML/VPL modalities are the ones affected — but not all of them, which is a useful reminder that small thalamic infarcts rarely knock out an entire pathway cleanly; partial, patchy involvement of VPL or the medial lemniscus is far more common than a textbook-complete dissociation.</p>
+      </div>
+
+      <div class="d-card">
+        <span class="cat-tag" style="background:var(--violet-bg);color:var(--violet)">Pattern</span>
+        <h4>Thalamic Aphasia</h4>
+        <table class="mini">
+          <tr><th>Feature</th><th>Broca's</th><th>Wernicke's</th><th>Thalamic</th></tr>
+          <tr><td>Fluency</td><td>Non-fluent</td><td>Fluent</td><td>Reduced/fluent</td></tr>
+          <tr><td>Comprehension</td><td>Relatively spared</td><td>Impaired</td><td>Variable</td></tr>
+          <tr><td>Repetition</td><td>Impaired</td><td>Impaired</td><td style="color:#6B5390;font-weight:700">Preserved</td></tr>
+          <tr><td>Paraphasias</td><td>Uncommon</td><td>Common</td><td style="color:#6B5390;font-weight:700">Common</td></tr>
+        </table>
+        <p class="takeaway">Preserved repetition despite frequent paraphasic errors and perseveration is the key discriminator — it's why this patient's speech is best labeled thalamic aphasia rather than a cortical aphasia syndrome or simple dysarthria.</p>
+      </div>
+
+      <div class="d-card">
+        <span class="cat-tag" style="background:var(--sky-bg);color:var(--sky)">Vascular</span>
+        <h4>Thalamic Vascular Territories</h4>
+        <table class="mini">
+          <tr><th>Territory</th><th>Nuclei</th><th>Hallmark deficit</th></tr>
+          <tr><td>Paramedian / tuberothalamic</td><td>Anterior, dorsomedial</td><td>Amnesia, apathy, confusion</td></tr>
+          <tr><td>Posterolateral (thalamogeniculate)</td><td>VPL, VPM, LGN, pulvinar</td><td>Sensory loss, hemianopsia, thalamic pain</td></tr>
+          <tr><td>Lateral / internal capsule zone</td><td>VL, VA + adjacent capsule</td><td>Hemiparesis, ataxia</td></tr>
+        </table>
+        <p class="takeaway">This patient's combination — memory/cognitive deficits plus sensory loss plus hemianopsia plus hemiparesis — spans more than one classic single-territory syndrome, suggesting either a larger perforator territory or a lesion straddling the posterolateral and lateral zones, most plausibly fed by thalamoperforating branches of the left posterior cerebral artery.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <footer class="note">Built from Medical Neuroanatomy, Chapter 8 (Thalamus) — Case Study 8-1. Reasoning synthesized from the case findings and chapter discussion; no small-group transcript was used for this build.</footer>
+
+</div>
+
+<div id="tooltip"><div class="tt-eyebrow"></div><div class="tt-title"></div><div class="tt-teaser"></div></div>
+<div id="overlay"></div>
+<div id="panel">
+  <button class="panel-close" aria-label="Close">×</button>
+  <span class="panel-tag"></span>
+  <h3></h3>
+  <p></p>
+</div>
+
+<script>
+(function(){
+  var annotations = [
+    {target:"hl1",cat:"finding",eyebrow:"Finding · Motor",title:"Contralateral hemiparesis",body:"Weakness on the right side implicates a lesion on the left, since corticospinal fibers decussate below the lesion level. Combined with later exam findings of hyperreflexia and a Babinski sign, this is an upper motor neuron pattern, pointing to a suprasegmental lesion above the level of the medulla."},
+    {target:"hl2",cat:"term",eyebrow:"Term · Vocabulary",title:"Homonymous hemianopsia",body:"Loss of the same half of the visual field in both eyes — here, the right half of vision in each eye. Because the deficit is \"homonymous,\" the lesion lies posterior to the optic chiasm, on the side opposite the visual field loss (left side, matching the right hemiparesis)."},
+    {target:"hl3",cat:"finding",eyebrow:"Finding · Cognition",title:"Acute confusion",body:"Confusion alongside focal motor and visual deficits argues against a purely cortical, purely subcortical, or purely psychiatric process — it's the first clue that this lesion involves structures with both sensorimotor and cognitive/limbic connections, which narrows things toward the thalamus."},
+    {target:"hl4",cat:"vascular",eyebrow:"Vascular · Onset",title:"\"Wake-up stroke\"",body:"The family found him already deficit-laden after sleep, so the true onset time is unknown — it could have started any time between when he went to bed and when he woke up. This \"wake-up stroke\" pattern is common in ischemic stroke and historically complicated eligibility for time-sensitive therapies like IV thrombolysis."},
+    {target:"hl5",cat:"vascular",eyebrow:"Vascular · Risk factor",title:"Chronic hypertension",body:"Seven years of hypertension is the single strongest risk factor for small-vessel (lacunar) infarction, the mechanism that most often produces isolated thalamic strokes. It also explains the arterial-venous nicking found later on fundoscopic exam."},
+    {target:"hl6",cat:"pattern",eyebrow:"Pattern · Prior event",title:"Posterior circulation TIA",body:"Quadriparesis plus visual and vestibular-type symptoms (blurred vision, nausea) together, rather than a single limb or one visual field, suggests this earlier episode involved the vertebrobasilar (posterior) circulation rather than the carotid territory — a clue that his vascular disease preferentially affects posterior-circulation vessels, which include the perforators supplying the thalamus."},
+    {target:"hl7",cat:"vascular",eyebrow:"Vascular · Workup",title:"Carotids not the source",body:"A normal carotid Doppler makes an anterior-circulation embolic source less likely for his prior event and argues, by extension, for a small-vessel or posterior-circulation mechanism for his current presentation as well."},
+    {target:"hl8",cat:"vascular",eyebrow:"Vascular · Risk factor",title:"Diabetes mellitus",body:"Diabetes compounds his hypertension as a driver of small-vessel disease. Together, these two risk factors make lacunar infarction — including in thalamic perforator territories — the leading vascular mechanism to consider for his current stroke."},
+    {target:"hl9",cat:"pattern",eyebrow:"Pattern · Warning sign",title:"Crescendo warning TIAs",body:"Right-hand weakness the day before a fixed right-sided deficit is a \"capsular warning syndrome\"-type pattern — stuttering, stereotyped transient ischemic episodes in the same distribution that often precede a completed lacunar stroke within hours to days."},
+    {target:"hl10",cat:"vascular",eyebrow:"Vascular · Family history",title:"Vascular family history",body:"A father with hypertension and early fatal coronary disease adds a hereditary component to this patient's own atherosclerotic and small-vessel risk, reinforcing hypertension/diabetes as the dominant vascular story rather than an embolic or inflammatory one."},
+    {target:"hl11",cat:"finding",eyebrow:"Finding · Fundoscopic",title:"Hypertensive retinopathy",body:"AV nicking is a direct, visible sign of chronic (not acute) hypertensive vascular damage to small vessels — the same class of vessel pathology presumed to be occluding perforating branches in the thalamus."},
+    {target:"hl12",cat:"vascular",eyebrow:"Vascular · Uncontrolled",title:"Uncontrolled hypertension",body:"A pressure of 180/100 on presentation confirms his hypertension is currently poorly controlled, which both raises acute hemorrhage risk (relevant to the differential) and reinforces his long-term small-vessel stroke risk."},
+    {target:"hl13",cat:"localization",eyebrow:"Localization · Limbic thalamus",title:"Anterior / dorsomedial nuclei",body:"Memory and general-knowledge deficits — he believes Kennedy is still president — localize to the \"limbic thalamus\": the anterior and dorsomedial nuclei, which relay hippocampal (via the mammillothalamic tract) and prefrontal circuitry respectively. Damage here produces exactly this pattern of amnesia and disorientation."},
+    {target:"hl14",cat:"finding",eyebrow:"Finding · Body schema",title:"Right-left confusion",body:"Difficulty distinguishing his own left from right side is a higher-order body-schema disturbance rather than a primary sensory or motor deficit — another data point that this lesion extends into integrative/associative thalamic territory, not just a single sensorimotor relay."},
+    {target:"hl15",cat:"pattern",eyebrow:"Pattern · Thalamic aphasia",title:"Fluent aphasia, preserved repetition",body:"Paraphasic errors and word substitutions with reduced, perseverative output but intact repetition is the signature of thalamic aphasia — a mixed transcortical-type aphasia described with dominant-hemisphere lesions of the lateroposterior/pulvinar complex. It's easy to mislabel this as simple \"dysarthria,\" but the errors here are linguistic, not articulatory."},
+    {target:"hl16",cat:"localization",eyebrow:"Localization · Post-geniculate pathway",title:"LGN or optic radiations",body:"A dense, complete right homonymous hemianopsia without macular sparing points to the lateral geniculate nucleus or optic radiations rather than visual cortex — cortical lesions typically spare a central strip of macular vision because of its large, dual (MCA/PCA) blood supply, while LGN lesions do not."},
+    {target:"hl17",cat:"pattern",eyebrow:"Pattern · Dissociated facial weakness",title:"Emotional vs. volitional face",body:"Losing symmetric smiling only with genuine emotion, while voluntary smiling on command stays intact, is the reverse of typical corticobulbar (UMN) facial weakness. It implies separate pathways for volitional versus emotionally-triggered facial movement, and that this lesion selectively disrupts the latter — a distinctly thalamic/subcortical sign rather than a classic pyramidal one."},
+    {target:"hl18",cat:"finding",eyebrow:"Finding · Distribution",title:"Face spared",body:"Normal facial sensation, in contrast to the impaired discriminative touch found later in the right hand, tells you the sensory deficit is not hemibody-wide — it's restricted enough to spare the face representation, consistent with a focal lesion rather than one large enough to knock out an entire sensory relay nucleus."},
+    {target:"hl19",cat:"localization",eyebrow:"Localization · Somatotopy",title:"Arm greater than leg",body:"Weakness that's worse in the arm than the leg suggests the corticospinal fibers or motor thalamic projections serving the arm are more heavily affected than those serving the leg — consistent with a focal lesion hitting one part of a somatotopically organized pathway (e.g., the ventrolateral nucleus or adjacent internal capsule) rather than a uniform hemiplegia."},
+    {target:"hl20",cat:"finding",eyebrow:"Finding · UMN signs",title:"Confirmed corticospinal involvement",body:"Hyperreflexia and an extensor plantar response are hard signs of upper motor neuron pathology, confirming that this lesion (or its effect on adjacent fibers) involves the corticospinal system rather than being a purely sensory or cognitive thalamic syndrome."},
+    {target:"hl21",cat:"localization",eyebrow:"Localization · VPL / medial lemniscus",title:"Dissociated (lemniscal) sensory loss",body:"Discriminative touch and proprioception travel via the dorsal columns and medial lemniscus to the ventroposterolateral (VPL) nucleus, while pain travels via the separate anterolateral (spinothalamic) system. Losing the first pair while sparing pain fits a small lesion favoring the lemniscal input to VPL — though the sparing of vibration (usually lost alongside proprioception) is a reminder that small thalamic infarcts rarely produce textbook-clean, complete syndromes."},
+    {target:"hl22",cat:"vascular",eyebrow:"Vascular · Trajectory",title:"Partial recovery, persistent UMN signs",body:"Some return of strength by two months is typical after an ischemic (rather than destructive hemorrhagic) thalamic/capsular lesion, but the reflexes staying elevated shows the corticospinal tract itself was structurally damaged, not just transiently stunned — recovery is functional, not a sign the lesion has resolved."}
+  ];
+
+  var byId = {};
+  annotations.forEach(function(a){ byId[a.target] = a; });
+
+  var tooltip = document.getElementById("tooltip");
+  var panel = document.getElementById("panel");
+  var overlay = document.getElementById("overlay");
+  var panelTag = panel.querySelector(".panel-tag");
+  var panelTitle = panel.querySelector("h3");
+  var panelBody = panel.querySelector("p");
+  var panelClose = panel.querySelector(".panel-close");
+
+  var catColors = {
+    localization:{bg:"var(--teal-bg)",fg:"var(--teal)"},
+    finding:{bg:"var(--coral-bg)",fg:"var(--coral)"},
+    term:{bg:"var(--gold-bg)",fg:"var(--gold)"},
+    pattern:{bg:"var(--violet-bg)",fg:"var(--violet)"},
+    vascular:{bg:"var(--sky-bg)",fg:"var(--sky)"}
+  };
+
+  var hasHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+  function showTooltip(mark, ann){
+    tooltip.querySelector(".tt-eyebrow").textContent = ann.eyebrow;
+    tooltip.querySelector(".tt-title").textContent = ann.title;
+    tooltip.querySelector(".tt-teaser").textContent = ann.body.slice(0, 90) + (ann.body.length > 90 ? "…" : "");
+    tooltip.classList.add("show");
+    var rect = mark.getBoundingClientRect();
+    var ttRect = tooltip.getBoundingClientRect();
+    var top = rect.top - ttRect.height - 10;
+    var flipped = false;
+    if(top < 8){ top = rect.bottom + 10; flipped = true; }
+    var left = Math.min(Math.max(8, rect.left), window.innerWidth - ttRect.width - 8);
+    tooltip.style.top = top + "px";
+    tooltip.style.left = left + "px";
+  }
+  function hideTooltip(){ tooltip.classList.remove("show"); }
+
+  function openPanel(ann){
+    var c = catColors[ann.cat] || catColors.finding;
+    panelTag.textContent = ann.eyebrow;
+    panelTag.style.background = c.bg;
+    panelTag.style.color = c.fg;
+    panelTitle.textContent = ann.title;
+    panelBody.textContent = ann.body;
+    panel.classList.add("open");
+    overlay.classList.add("show");
+  }
+  function closePanel(){
+    panel.classList.remove("open");
+    overlay.classList.remove("show");
+  }
+
+  annotations.forEach(function(ann){
+    var mark = document.getElementById(ann.target);
+    if(!mark) return;
+    if(hasHover){
+      mark.addEventListener("mouseenter", function(){ showTooltip(mark, ann); });
+      mark.addEventListener("mouseleave", hideTooltip);
+    }
+    mark.addEventListener("click", function(e){
+      e.preventDefault();
+      hideTooltip();
+      openPanel(ann);
+    });
+  });
+
+  panelClose.addEventListener("click", closePanel);
+  overlay.addEventListener("click", closePanel);
+  document.addEventListener("keydown", function(e){
+    if(e.key === "Escape") closePanel();
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Case 8-2 — Hypothalamic Lesion | Annotated Case Note</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Nunito:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#F6F1E6;
+  --paper:#FCFAF3;
+  --ink:#2A241C;
+  --ink-soft:#6B6152;
+  --ink-faint:#9A8F7B;
+  --line:#DED2B6;
+  --line-soft:#EAE0C9;
+
+  --coral:#C85A3E;   --coral-bg:#F7E4DB;
+  --teal:#256B63;    --teal-bg:#DFEDE8;
+  --gold:#A47A1F;    --gold-bg:#F3E7C6;
+  --violet:#6B5390;  --violet-bg:#E9E2F1;
+  --sky:#2F6485;     --sky-bg:#DEE9EF;
+
+  --radius:10px;
+  --shadow:0 1px 2px rgba(42,36,28,.06), 0 8px 24px -12px rgba(42,36,28,.18);
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--cream);
+  color:var(--ink);
+  font-family:'Nunito',sans-serif;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+
+.page{max-width:800px;margin:0 auto;padding:32px 20px 120px;}
+
+/* ---------- Header ---------- */
+.masthead{margin-bottom:36px;}
+.eyebrow{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--ink-faint);
+  margin:0 0 6px;
+}
+.masthead h1{
+  font-family:'Crimson Pro',serif;
+  font-weight:600;
+  font-size:34px;
+  margin:0 0 10px;
+  line-height:1.15;
+}
+.masthead .subtitle{
+  font-family:'Crimson Pro',serif;
+  font-style:italic;
+  font-size:18px;
+  color:var(--ink-soft);
+  margin:0 0 16px;
+}
+.meta-row{
+  display:flex;flex-wrap:wrap;gap:8px;
+}
+.meta-pill{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11.5px;
+  padding:4px 10px;
+  border-radius:20px;
+  background:var(--paper);
+  border:1px solid var(--line);
+  color:var(--ink-soft);
+}
+.legend{
+  display:flex;flex-wrap:wrap;gap:10px;
+  margin-top:20px;padding-top:18px;
+  border-top:1px solid var(--line-soft);
+}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink-soft);}
+.legend-dot{width:10px;height:10px;border-radius:50%;display:inline-block;}
+
+/* ---------- Case sections ---------- */
+.section{margin-bottom:38px;}
+.section-label{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--coral);
+  border-bottom:1px solid var(--line);
+  padding-bottom:8px;
+  margin-bottom:14px;
+}
+.case-text p{
+  font-family:'Crimson Pro',serif;
+  font-size:18px;
+  line-height:1.75;
+  color:var(--ink);
+  margin:0 0 14px;
+}
+.case-text p:last-child{margin-bottom:0;}
+.case-text .lbl{font-weight:600;font-style:italic;color:var(--ink-soft);}
+
+/* ---------- Highlights ---------- */
+mark.hl{
+  background:var(--hl-bg,var(--gold-bg));
+  color:var(--ink);
+  padding:0.02em 0.15em;
+  border-radius:4px;
+  cursor:pointer;
+  text-decoration:none;
+  box-shadow:inset 0 -1.5px 0 0 var(--hl-color,var(--gold));
+  transition:filter .15s ease;
+}
+mark.hl:hover{filter:brightness(0.96);}
+mark.hl[data-cat="localization"]{--hl-bg:var(--teal-bg);--hl-color:var(--teal);}
+mark.hl[data-cat="finding"]{--hl-bg:var(--coral-bg);--hl-color:var(--coral);}
+mark.hl[data-cat="term"]{--hl-bg:var(--gold-bg);--hl-color:var(--gold);}
+mark.hl[data-cat="pattern"]{--hl-bg:var(--violet-bg);--hl-color:var(--violet);}
+mark.hl[data-cat="endocrine"]{--hl-bg:var(--sky-bg);--hl-color:var(--sky);}
+
+sup.hlnum{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;
+  color:var(--ink-faint);
+  margin-left:1px;
+  user-select:none;
+}
+
+/* ---------- Tooltip ---------- */
+#tooltip{
+  position:fixed;
+  max-width:280px;
+  background:var(--ink);
+  color:var(--paper);
+  padding:10px 13px;
+  border-radius:8px;
+  font-size:13px;
+  line-height:1.45;
+  box-shadow:var(--shadow);
+  z-index:1200;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity .12s ease;
+}
+#tooltip.show{opacity:1;}
+#tooltip .tt-eyebrow{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  opacity:.7;
+  margin-bottom:3px;
+}
+#tooltip .tt-title{font-weight:700;margin-bottom:3px;}
+
+/* ---------- Docked panel ---------- */
+#panel{
+  position:fixed;
+  top:0;right:0;bottom:0;
+  width:380px;
+  background:var(--paper);
+  border-left:1px solid var(--line);
+  box-shadow:var(--shadow);
+  transform:translateX(100%);
+  transition:transform .22s ease;
+  z-index:1300;
+  overflow-y:auto;
+  padding:24px 22px 40px;
+}
+#panel.open{transform:translateX(0);}
+#panel .panel-close{
+  position:absolute;top:16px;right:16px;
+  width:28px;height:28px;border-radius:50%;
+  border:1px solid var(--line);background:var(--cream);
+  color:var(--ink-soft);font-size:16px;line-height:1;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+}
+#panel .panel-tag{
+  display:inline-block;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;text-transform:uppercase;letter-spacing:.06em;
+  padding:3px 9px;border-radius:20px;margin-bottom:14px;
+}
+#panel h3{
+  font-family:'Crimson Pro',serif;font-size:23px;font-weight:600;
+  margin:0 0 12px;padding-right:24px;
+}
+#panel p{font-size:15px;color:var(--ink-soft);line-height:1.6;}
+#overlay{
+  position:fixed;inset:0;background:rgba(42,36,28,.15);
+  z-index:1250;opacity:0;pointer-events:none;transition:opacity .2s ease;
+}
+#overlay.show{opacity:1;pointer-events:auto;}
+
+@media (max-width:1000px){
+  #panel{
+    left:0;right:0;top:auto;bottom:0;width:auto;
+    height:72vh;border-left:none;border-top:1px solid var(--line);
+    border-radius:16px 16px 0 0;
+    transform:translateY(100%);
+  }
+  #panel.open{transform:translateY(0);}
+}
+
+/* ---------- Reasoning walkthrough ---------- */
+.reasoning-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+}
+.r-card{
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:18px 20px;
+  box-shadow:var(--shadow);
+}
+.r-card.span-3{grid-column:1 / -1;}
+.r-card h4{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;text-transform:uppercase;letter-spacing:.06em;
+  color:var(--ink-faint);margin:0 0 10px;
+}
+.r-card p{font-size:14.5px;color:var(--ink-soft);line-height:1.6;margin:0;}
+.r-card p + p{margin-top:8px;}
+
+table.diff-table{width:100%;border-collapse:collapse;font-size:14px;}
+table.diff-table th{
+  text-align:left;font-family:'IBM Plex Mono',monospace;font-size:11px;
+  text-transform:uppercase;letter-spacing:.04em;color:var(--ink-faint);
+  padding:6px 10px;border-bottom:2px solid var(--line);
+}
+table.diff-table td{padding:9px 10px;border-bottom:1px solid var(--line-soft);vertical-align:top;color:var(--ink-soft);}
+table.diff-table tr.lead td{background:var(--teal-bg);}
+table.diff-table tr.lead td:first-child{font-weight:700;color:var(--teal);}
+.tag-likely{
+  display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:10px;
+  background:var(--teal);color:#fff;padding:2px 7px;border-radius:20px;margin-left:6px;
+}
+
+.workup-flow{list-style:none;margin:0;padding:0;counter-reset:step;}
+.workup-flow li{
+  position:relative;padding-left:38px;margin-bottom:14px;counter-increment:step;
+}
+.workup-flow li::before{
+  content:counter(step);
+  position:absolute;left:0;top:0;
+  width:26px;height:26px;border-radius:50%;
+  background:var(--sky-bg);color:var(--sky);
+  font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:13px;
+  display:flex;align-items:center;justify-content:center;
+}
+.workup-flow .step-lead{font-weight:700;color:var(--ink);font-size:14.5px;}
+.workup-flow .step-sub{display:block;font-size:13.5px;color:var(--ink-soft);margin-top:2px;}
+
+.mgmt-list{list-style:none;margin:0;padding:0;}
+.mgmt-list li{
+  display:flex;gap:10px;align-items:flex-start;
+  padding:8px 0;border-bottom:1px solid var(--line-soft);
+  font-size:14.5px;color:var(--ink-soft);
+}
+.mgmt-list li:last-child{border-bottom:none;}
+.mgmt-list .check{
+  flex:0 0 18px;width:18px;height:18px;border-radius:5px;
+  border:1.5px solid var(--gold);margin-top:2px;
+}
+
+@media (max-width:900px){
+  .reasoning-grid{grid-template-columns:repeat(2,1fr);}
+}
+@media (max-width:640px){
+  .reasoning-grid{grid-template-columns:1fr;}
+}
+
+/* ---------- Deep dive cards ---------- */
+.dive-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.d-card{
+  background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 18px 20px;box-shadow:var(--shadow);display:flex;flex-direction:column;
+}
+.d-card .cat-tag{
+  align-self:flex-start;
+  font-family:'IBM Plex Mono',monospace;font-size:10.5px;text-transform:uppercase;
+  letter-spacing:.05em;padding:3px 9px;border-radius:20px;margin-bottom:10px;
+}
+.d-card h4{font-family:'Crimson Pro',serif;font-size:19px;font-weight:600;margin:0 0 10px;}
+.d-card .visual{margin:6px 0 12px;}
+.d-card .visual svg{width:100%;height:auto;display:block;}
+.d-card .takeaway{font-size:13.5px;color:var(--ink-soft);line-height:1.55;margin:0;}
+.d-card table.mini{width:100%;font-size:12.5px;border-collapse:collapse;}
+.d-card table.mini th,.d-card table.mini td{
+  border-bottom:1px solid var(--line-soft);padding:5px 6px;text-align:left;color:var(--ink-soft);
+}
+.d-card table.mini th{font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;color:var(--ink-faint);}
+
+@media (max-width:900px){.dive-grid{grid-template-columns:repeat(2,1fr);}}
+@media (max-width:640px){.dive-grid{grid-template-columns:1fr;}}
+
+footer.note{
+  margin-top:50px;padding-top:20px;border-top:1px solid var(--line-soft);
+  font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--ink-faint);
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="masthead">
+    <p class="eyebrow">Medical Neuroanatomy · Chapter 8 · Thalamus (Hypothalamus / Ventral Thalamus)</p>
+    <h1>Case Study 8-2</h1>
+    <p class="subtitle">47-year-old, left-handed man — chronic diabetes insipidus, bitemporal visual field loss, behavioral rage, and hypogonadism, complicated by congestive heart failure</p>
+    <div class="meta-row">
+      <span class="meta-pill">Suspected: suprasellar/hypothalamic mass (craniopharyngioma)</span>
+      <span class="meta-pill">Childhood-onset course</span>
+      <span class="meta-pill">Died of CHF, 1 month into admission</span>
+    </div>
+    <div class="legend">
+      <span class="legend-item"><span class="legend-dot" style="background:var(--teal)"></span>Localization</span>
+      <span class="legend-item"><span class="legend-dot" style="background:var(--coral)"></span>Finding</span>
+      <span class="legend-item"><span class="legend-dot" style="background:var(--gold)"></span>Term</span>
+      <span class="legend-item"><span class="legend-dot" style="background:var(--violet)"></span>Pattern</span>
+      <span class="legend-item"><span class="legend-dot" style="background:var(--sky)"></span>Endocrine / systemic</span>
+    </div>
+  </div>
+
+  <!-- ================= CASE TEXT ================= -->
+
+  <div class="section">
+    <p class="section-label">Chief Complaint</p>
+    <div class="case-text">
+      <p>A 47-year-old, left-handed man status post MI was admitted to the hospital with a primary complaint of <mark class="hl" data-cat="finding" id="hl1">chest pain and shortness of breath of 3 weeks duration</mark><sup class="hlnum">1</sup>. He also complained of a <mark class="hl" data-cat="term" id="hl2">progressive narrowing of his visual fields</mark><sup class="hlnum">2</sup>.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="section-label">History of Chief Complaint</p>
+    <div class="case-text">
+      <p>His chest pain, which had been relieved after his <mark class="hl" data-cat="endocrine" id="hl3">documented MI 6 months ago</mark><sup class="hlnum">3</sup>, had begun to return. It was accompanied by dyspnea that worsened on exertion.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="section-label">Medical History</p>
+    <div class="case-text">
+      <p><mark class="hl" data-cat="pattern" id="hl5">Since childhood he had consumed at least a gallon of water a day</mark><sup class="hlnum">4</sup> and had had <mark class="hl" data-cat="term" id="hl4">thirst, polyuria, and nocturia</mark><sup class="hlnum">5</sup>. Having grown up with these symptoms, he had considered them normal. He had a <mark class="hl" data-cat="localization" id="hl6">long history of behavioral dysfunction that included rage and anger inappropriate for the situation</mark><sup class="hlnum">6</sup>. He had a recent history of angina on exertion, and electrocardiographic analysis 6 months ago documented an acute myocardial infarct.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="section-label">Family History</p>
+    <div class="case-text">
+      <p>At the time of admission he was not married, lived alone, and admitted to having <mark class="hl" data-cat="localization" id="hl7">very little libido throughout his life</mark><sup class="hlnum">7</sup>. His mother, father, and two siblings were alive and in good health. No one else in his family had exhibited his chief complaints.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="section-label">General Physical Examination</p>
+    <div class="case-text">
+      <p>He appeared to be a well-hydrated, well-nourished man, alert but with an anxious demeanor. He appeared his stated age. <mark class="hl" data-cat="endocrine" id="hl11">He weighed 240 pounds and his height was 66 inches</mark><sup class="hlnum">8</sup>. His head was normocephalic. Fundoscopic examination revealed a normal cup-to-disc ratio; <mark class="hl" data-cat="finding" id="hl8">soft cotton wool patches were noted two disc spaces from the disc in the superior temporal retina bilaterally</mark><sup class="hlnum">9</sup>; no aneurysms, hemorrhages, or papilledema was evident. His heartbeat was regular without gallops or thrills; an S2 systolic murmur was noted at the left sternal border. The apical beat was displaced to the left. <mark class="hl" data-cat="endocrine" id="hl9">Abdominojugular reflux was noted on application of abdominal pressure</mark><sup class="hlnum">10</sup>. Respiration was labored, breath sounds were decreased; crackles and wheezes were heard at the bases of the lungs on auscultation. The abdomen was soft, without masses or tenderness. <mark class="hl" data-cat="localization" id="hl10">Temperature was elevated at 37.5°C and oscillated between 37.3°C and 37.9°C over a 24-hour period</mark><sup class="hlnum">11</sup>. Skin was moist with good texture and turgor. Pretibial edema (+2) was present in the lower extremity.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="section-label">Neurologic Examination</p>
+    <div class="case-text">
+      <p><span class="lbl">Mental Status.</span> The patient was awake and oriented for time and place; <mark class="hl" data-cat="pattern" id="hl12">memory and knowledge were appropriate for his education. His speech was articulate and meaningful</mark><sup class="hlnum">12</sup>. Although he was cooperative most of the time, he experienced <mark class="hl" data-cat="finding" id="hl13">bouts of rage, where he yelled at the attending staff and physician</mark><sup class="hlnum">13</sup>.</p>
+      <p><span class="lbl">Cranial Nerves.</span> He had a full range of eye movements. Visual acuity was normal in the center of his fields but diminished rapidly to the sides; <mark class="hl" data-cat="localization" id="hl14">vision in the temporal fields was absent altogether</mark><sup class="hlnum">14</sup>. Corneal, jaw-jerk, and gag reflexes were intact. <mark class="hl" data-cat="finding" id="hl15">His face was symmetric, with normal expression of emotion</mark><sup class="hlnum">15</sup>. <mark class="hl" data-cat="finding" id="hl16">Hearing was diminished in the right ear more than in the left</mark><sup class="hlnum">16</sup>. Uvula and palate were symmetric and elevated on the midline; the tongue protruded on the midline. Shoulder shrug was symmetric.</p>
+      <p><span class="lbl">Motor Systems.</span> <mark class="hl" data-cat="pattern" id="hl17">Gross motor strength was equal in upper and lower extremities; deep tendon reflexes were 2/4 and equal in upper and lower extremities. Babinski response was physiologic</mark><sup class="hlnum">17</sup>, with no muscular atrophy or hypertrophy. No drift or involuntary motion was detected.</p>
+      <p><span class="lbl">Sensation.</span> There was <mark class="hl" data-cat="pattern" id="hl18">no loss of vibration or proprioceptive sense, and no loss of pain or thermal sense</mark><sup class="hlnum">18</sup> was evident.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="section-label">Follow-up</p>
+    <div class="case-text">
+      <p>During his hospital admission, marked thirst and <mark class="hl" data-cat="endocrine" id="hl19">daily intake of 4000 to 17,000 mL of fluid were noted. Urine outputs of 3500 to 18,000 mL daily were recorded. The specific gravity of his urine was always below 1.005</mark><sup class="hlnum">19</sup>. <mark class="hl" data-cat="endocrine" id="hl20">One month after admission, the patient died of congestive heart failure</mark><sup class="hlnum">20</sup>.</p>
+    </div>
+  </div>
+
+  <!-- ================= CLINICAL REASONING WALKTHROUGH ================= -->
+
+  <div class="section">
+    <p class="section-label">Clinical Reasoning Walkthrough</p>
+    <div class="reasoning-grid">
+
+      <div class="r-card span-3">
+        <h4>1 · Localization</h4>
+        <p>Chronic polydipsia/polyuria (diabetes insipidus), bitemporal-pattern visual field loss, lifelong hypogonadism, inappropriate rage, severe obesity, and an unstable low-grade temperature together localize this process to the <strong>hypothalamus and adjacent optic chiasm</strong> — not the thalamus proper. Each finding maps to a specific hypothalamic region: diabetes insipidus to the supraoptic/paraventricular-neurohypophyseal system, visual loss to chiasmal compression by a mass arising near the hypothalamus/pituitary, rage to the medial hypothalamus, and hypogonadism plus temperature instability to the anterior hypothalamus. Just as important are the <em>negative</em> findings — entirely normal motor, sensory, and cognitive/language exams — which tell you the lesion has <strong>not</strong> extended into the thalamus proper or the internal capsule, in direct contrast to Case 8-1.</p>
+      </div>
+
+      <div class="r-card span-3">
+        <h4>2 · Distribution</h4>
+        <p>This is a <strong>focal</strong> process — a single lesion at the hypothalamic-pituitary-chiasmal junction — whose effects look broad only because the hypothalamus packs so many distinct regulatory systems (autonomic, endocrine, behavioral, thermoregulatory) into a very small volume. It is not diffuse (cognition is fully intact) and, unlike Case 8-1, it is not organized around a vascular territory at all.</p>
+      </div>
+
+      <div class="r-card span-3">
+        <h4>3 · Time Course</h4>
+        <p>The hypothalamic story here is <strong>chronic and insidious</strong>, dating back to childhood (lifelong polydipsia, lifelong low libido) — the opposite of Case 8-1's acute, wake-up-stroke onset. That time course alone argues strongly against a vascular mechanism and toward a slow-growing congenital/developmental mass, such as a craniopharyngioma. Layered on top of this decades-long process is a second, separate, subacute timeline: chest pain and dyspnea recurring over 3 weeks, culminating in death from congestive heart failure one month into this admission.</p>
+      </div>
+
+      <div class="r-card span-3">
+        <h4>4 · Differential Diagnosis</h4>
+        <table class="diff-table">
+          <tr><th>Diagnosis</th><th>Fits</th><th>Argues against</th></tr>
+          <tr class="lead">
+            <td>Craniopharyngioma<span class="tag-likely">most likely</span></td>
+            <td>Childhood-onset diabetes insipidus; hypogonadism from an early age; chronic, insidious course; bitemporal hemianopsia from chiasmal compression; hypothalamic obesity and behavioral change</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td>Other suprasellar tumor (germinoma, hypothalamic glioma, pituitary macroadenoma with suprasellar extension)</td>
+            <td>Can produce a similar chiasmal/hypothalamic picture</td>
+            <td>Less classically associated with the full combination of childhood-onset DI plus lifelong hypogonadism plus behavioral change plus obesity</td>
+          </tr>
+          <tr>
+            <td>Langerhans cell histiocytosis</td>
+            <td>DI with hypothalamic infiltration is a recognized presentation, especially with childhood onset</td>
+            <td>Would expect other systemic findings (bone, skin, lung involvement) not described here</td>
+          </tr>
+          <tr>
+            <td>Neurosarcoidosis</td>
+            <td>Granulomatous hypothalamic infiltration can cause DI and behavioral change</td>
+            <td>No other systemic sarcoid findings reported</td>
+          </tr>
+          <tr>
+            <td>Vascular/ischemic hypothalamic lesion</td>
+            <td>—</td>
+            <td>Wrong time course entirely — his hypothalamic symptoms predate any plausible vascular risk by decades</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="r-card span-3">
+        <h4>5 · Diagnostic Workup</h4>
+        <ol class="workup-flow">
+          <li><span class="step-lead">MRI brain with contrast, dedicated sellar/suprasellar views</span><span class="step-sub">Characterizes the mass and its relationship to the optic chiasm, hypothalamus, and pituitary stalk.</span></li>
+          <li><span class="step-lead">Formal visual field perimetry</span><span class="step-sub">Precisely maps the bitemporal defect and establishes a baseline to track treatment response.</span></li>
+          <li><span class="step-lead">Paired serum/urine osmolality ± water deprivation test</span><span class="step-sub">Confirms central diabetes insipidus and distinguishes it from primary polydipsia or nephrogenic DI.</span></li>
+          <li><span class="step-lead">Full anterior pituitary hormone panel</span><span class="step-sub">LH, FSH, testosterone, TSH/free T4, cortisol, prolactin, IGF-1 — screens for panhypopituitarism given the long-standing axis disruption.</span></li>
+          <li><span class="step-lead">Cardiac workup — echocardiogram, BNP, troponin, repeat ECG</span><span class="step-sub">Characterizes the severity of his heart failure and prior MI, since this is the immediate threat to his life.</span></li>
+          <li><span class="step-lead">Ophthalmology referral</span><span class="step-sub">Direct fundus/optic nerve exam for optic atrophy from chronic chiasmal compression.</span></li>
+        </ol>
+      </div>
+
+      <div class="r-card span-3">
+        <h4>6 · Prognosis</h4>
+        <p>His hypothalamic-pituitary disease, once identified, is often manageable for years with hormone replacement and, depending on resectability, surgery or radiation for a craniopharyngioma. His cardiac disease, however, is the immediate threat — and it proved fatal: he died of congestive heart failure one month into this admission. A fascinating central lesion does not have to be the most clinically urgent problem.</p>
+      </div>
+
+      <div class="r-card span-3">
+        <h4>7 · Management</h4>
+        <ul class="mgmt-list">
+          <li><span class="check"></span>Desmopressin (DDAVP) to control diabetes insipidus and normalize fluid balance</li>
+          <li><span class="check"></span>Hormone replacement for any confirmed anterior pituitary deficiencies (testosterone, levothyroxine, hydrocortisone as needed)</li>
+          <li><span class="check"></span>Neurosurgical/oncologic evaluation of the suprasellar mass — biopsy, resection, and/or radiation depending on characterization</li>
+          <li><span class="check"></span>Ongoing ophthalmologic monitoring of visual fields</li>
+          <li><span class="check"></span>Cardiology management of heart failure and prior MI — guideline-directed medical therapy, diuresis, afterload reduction</li>
+          <li><span class="check"></span>Structured weight-management plan, recognizing hypothalamic obesity often resists behavioral intervention alone</li>
+          <li><span class="check"></span>Behavioral/psychiatric support and safety planning around his rage episodes</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= CONCEPT DEEP-DIVE ================= -->
+
+  <div class="section">
+    <p class="section-label">Concept Deep-Dive</p>
+    <div class="dive-grid">
+
+      <div class="d-card">
+        <span class="cat-tag" style="background:var(--teal-bg);color:var(--teal)">Localization</span>
+        <h4>Optic Chiasm &amp; the Hypothalamus</h4>
+        <div class="visual">
+          <svg viewBox="0 0 300 170" xmlns="http://www.w3.org/2000/svg">
+            <rect x="90" y="20" width="120" height="34" rx="8" fill="#DFEDE8" stroke="#256B63"/>
+            <text x="150" y="41" font-size="10.5" text-anchor="middle" fill="#256B63" font-family="IBM Plex Mono">Hypothalamus</text>
+            <path d="M110,54 L60,90" stroke="#9A8F7B" stroke-width="2"/>
+            <path d="M190,54 L240,90" stroke="#9A8F7B" stroke-width="2"/>
+            <rect x="105" y="65" width="90" height="26" rx="6" fill="#F3E7C6" stroke="#A47A1F"/>
+            <text x="150" y="82" font-size="9.5" text-anchor="middle" fill="#A47A1F" font-family="IBM Plex Mono">Optic chiasm</text>
+            <circle cx="60" cy="90" r="14" fill="none" stroke="#6B6152" stroke-width="2"/>
+            <circle cx="240" cy="90" r="14" fill="none" stroke="#6B6152" stroke-width="2"/>
+            <text x="60" y="112" font-size="8.5" text-anchor="middle" fill="#6B6152" font-family="IBM Plex Mono">retina</text>
+            <text x="240" y="112" font-size="8.5" text-anchor="middle" fill="#6B6152" font-family="IBM Plex Mono">retina</text>
+            <path d="M150,91 v18" stroke="#C85A3E" stroke-width="2"/>
+            <circle cx="150" cy="125" r="20" fill="#F7E4DB" stroke="#C85A3E" stroke-width="2"/>
+            <text x="150" y="122" font-size="8" text-anchor="middle" fill="#C85A3E" font-family="IBM Plex Mono">mass</text>
+            <text x="150" y="133" font-size="8" text-anchor="middle" fill="#C85A3E" font-family="IBM Plex Mono">(pushing up)</text>
+            <path d="M150,105 l-8,-10 M150,105 l8,-10" stroke="#C85A3E" stroke-width="2"/>
+          </svg>
+        </div>
+        <p class="takeaway">A mass arising below/within the hypothalamic-pituitary region compresses the chiasm from beneath, hitting the crossing nasal retinal fibers first — the anatomic basis of this patient's bitemporal visual field loss.</p>
+      </div>
+
+      <div class="d-card">
+        <span class="cat-tag" style="background:var(--sky-bg);color:var(--sky)">Endocrine</span>
+        <h4>The Diabetes Insipidus Pathway</h4>
+        <div class="visual">
+          <svg viewBox="0 0 300 150" xmlns="http://www.w3.org/2000/svg">
+            <rect x="15" y="15" width="95" height="32" rx="6" fill="#DFEDE8" stroke="#256B63"/>
+            <text x="62" y="35" font-size="9" text-anchor="middle" fill="#256B63" font-family="IBM Plex Mono">Supraoptic /</text>
+            <text x="62" y="45" font-size="9" text-anchor="middle" fill="#256B63" font-family="IBM Plex Mono" dy="-2">paraventricular nu.</text>
+            <path d="M110,31 h35" stroke="#C85A3E" stroke-width="2" stroke-dasharray="3 3"/>
+            <text x="128" y="24" font-size="7.5" text-anchor="middle" fill="#C85A3E" font-family="IBM Plex Mono">✕ tract</text>
+            <rect x="148" y="15" width="70" height="32" rx="6" fill="#F3E7C6" stroke="#A47A1F"/>
+            <text x="183" y="35" font-size="9" text-anchor="middle" fill="#A47A1F" font-family="IBM Plex Mono">Posterior pit.</text>
+            <path d="M218,31 h35" stroke="#9A8F7B" stroke-width="2"/>
+            <rect x="255" y="15" width="35" height="32" rx="6" fill="#E9E2F1" stroke="#6B5390"/>
+            <text x="272" y="35" font-size="8.5" text-anchor="middle" fill="#6B5390" font-family="IBM Plex Mono">ADH</text>
+            <path d="M272,47 v20" stroke="#9A8F7B" stroke-width="2"/>
+            <rect x="235" y="70" width="75" height="30" rx="6" fill="#DEE9EF" stroke="#2F6485"/>
+            <text x="272" y="89" font-size="8.5" text-anchor="middle" fill="#2F6485" font-family="IBM Plex Mono">Kidney (collecting duct)</text>
+            <text x="30" y="80" font-size="9.5" fill="#C85A3E" font-family="IBM Plex Mono">Lesion here →</text>
+            <text x="30" y="93" font-size="9.5" fill="#C85A3E" font-family="IBM Plex Mono">no ADH release →</text>
+            <text x="30" y="106" font-size="9.5" fill="#C85A3E" font-family="IBM Plex Mono">dilute urine, ↑ output</text>
+          </svg>
+        </div>
+        <p class="takeaway">A lesion disrupting the supraoptic/paraventricular nuclei or their hypothalamo-neurohypophyseal tract cuts off ADH delivery to the kidney — producing exactly this patient's massive, unconcentrated urine output (specific gravity persistently below 1.005).</p>
+      </div>
+
+      <div class="d-card">
+        <span class="cat-tag" style="background:var(--coral-bg);color:var(--coral)">Behavior / appetite</span>
+        <h4>Medial vs. Lateral Hypothalamus</h4>
+        <table class="mini">
+          <tr><th>Region</th><th>Normal role</th><th>Lesion effect</th></tr>
+          <tr><td>Medial (satiety center)</td><td>Signals fullness</td><td style="color:#C85A3E;font-weight:700">Hyperphagia, obesity, rage</td></tr>
+          <tr><td>Lateral (feeding center)</td><td>Signals hunger</td><td>Anorexia, emaciation, apathy</td></tr>
+        </table>
+        <p class="takeaway">His severe obesity and inappropriate rage both point toward the medial hypothalamus, whose destruction removes the satiety signal and disrupts nearby behavioral/limbic circuitry at the same time.</p>
+      </div>
+
+      <div class="d-card">
+        <span class="cat-tag" style="background:var(--violet-bg);color:var(--violet)">Thermoregulation</span>
+        <h4>Anterior vs. Posterior Hypothalamus</h4>
+        <table class="mini">
+          <tr><th>Region</th><th>Normal role</th><th>Lesion effect</th></tr>
+          <tr><td>Anterior (heat-loss center)</td><td>Cooling / parasympathetic</td><td style="color:#6B5390;font-weight:700">Hyperthermia, cyclic fever</td></tr>
+          <tr><td>Posterior (heat-conservation center)</td><td>Warming / sympathetic</td><td>Hypothermia, poikilothermy</td></tr>
+        </table>
+        <p class="takeaway">His mild, oscillating temperature elevation over 24 hours (37.3–37.9°C) fits an anterior hypothalamic set-point disturbance far better than a sustained infectious fever.</p>
+      </div>
+
+      <div class="d-card">
+        <span class="cat-tag" style="background:var(--sky-bg);color:var(--sky)">Endocrine</span>
+        <h4>Hypothalamic Control of the Pituitary</h4>
+        <div class="visual">
+          <svg viewBox="0 0 300 140" xmlns="http://www.w3.org/2000/svg">
+            <rect x="30" y="15" width="110" height="30" rx="6" fill="#DFEDE8" stroke="#256B63"/>
+            <text x="85" y="34" font-size="9.5" text-anchor="middle" fill="#256B63" font-family="IBM Plex Mono">Hypothalamus (GnRH etc.)</text>
+            <path d="M85,45 v20" stroke="#9A8F7B" stroke-width="2"/>
+            <text x="115" y="60" font-size="8" fill="#6B6152" font-family="IBM Plex Mono">portal system</text>
+            <rect x="45" y="70" width="80" height="30" rx="6" fill="#F3E7C6" stroke="#A47A1F"/>
+            <text x="85" y="89" font-size="9.5" text-anchor="middle" fill="#A47A1F" font-family="IBM Plex Mono">Anterior pituitary</text>
+            <path d="M125,85 h60" stroke="#9A8F7B" stroke-width="2"/>
+            <rect x="190" y="70" width="90" height="30" rx="6" fill="#F7E4DB" stroke="#C85A3E"/>
+            <text x="235" y="89" font-size="9" text-anchor="middle" fill="#C85A3E" font-family="IBM Plex Mono">Gonads (LH/FSH)</text>
+          </svg>
+        </div>
+        <p class="takeaway">Hypothalamic releasing hormones (like GnRH) drive the anterior pituitary via the portal system. Disruption of this axis from childhood explains his lifelong low libido, and raises the possibility of broader panhypopituitarism worth screening for directly.</p>
+      </div>
+
+      <div class="d-card">
+        <span class="cat-tag" style="background:var(--gold-bg);color:var(--gold)">Pattern</span>
+        <h4>Craniopharyngioma — the Classic Suprasellar Mass</h4>
+        <table class="mini">
+          <tr><th>Feature</th><th>Typical</th></tr>
+          <tr><td>Origin</td><td>Rathke's pouch remnant</td></tr>
+          <tr><td>Age distribution</td><td>Bimodal — children and older adults</td></tr>
+          <tr><td>Classic triad</td><td>Endocrine dysfunction + visual field defect ± hydrocephalus</td></tr>
+          <tr><td>Imaging</td><td>Often calcified, cystic-solid, suprasellar</td></tr>
+        </table>
+        <p class="takeaway">This patient's exact combination — childhood-onset DI, lifelong hypogonadism, bitemporal hemianopsia, and hypothalamic obesity/behavioral change — is the textbook presentation this lesion is built to produce.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <footer class="note">Built from Medical Neuroanatomy, Chapter 8 (Thalamus/Hypothalamus) — Case Study 8-2. Reasoning synthesized from the case findings and chapter discussion; no small-group transcript was used for this build.</footer>
+
+</div>
+
+<div id="tooltip"><div class="tt-eyebrow"></div><div class="tt-title"></div><div class="tt-teaser"></div></div>
+<div id="overlay"></div>
+<div id="panel">
+  <button class="panel-close" aria-label="Close">×</button>
+  <span class="panel-tag"></span>
+  <h3></h3>
+  <p></p>
+</div>
+
+<script>
+(function(){
+  var annotations = [
+    {target:"hl1",cat:"finding",eyebrow:"Finding · Cardiac",title:"Recurrent cardiac symptoms",body:"The return of chest pain and dyspnea three weeks before admission, after having been symptom-free since his MI six months prior, signals a new or worsening cardiac process — this is the thread that eventually leads to his death from congestive heart failure, and it runs almost entirely independently of the neurologic/endocrine story that follows."},
+    {target:"hl2",cat:"term",eyebrow:"Term · Visual field",title:"Field constriction, not a sudden cut",body:"A visual field that narrows gradually from the periphery inward — rather than dropping out all at once in one discrete area — is the hallmark of a slowly enlarging compressive lesion, not an acute vascular event. This alone should shift your thinking away from a stroke-type process and toward a mass."},
+    {target:"hl3",cat:"endocrine",eyebrow:"Endocrine/Systemic · Cardiac history",title:"Established coronary disease",body:"A documented MI half a year earlier establishes that his cardiac disease predates this admission — the chest pain and dyspnea now are its recurrence, foreshadowing the congestive heart failure that will eventually be his cause of death."},
+    {target:"hl4",cat:"term",eyebrow:"Term · Classic triad",title:"The diabetes insipidus triad",body:"Excessive thirst, high urine output, and nighttime urination together are the classic clinical triad of diabetes insipidus — a failure to concentrate urine, either because the hypothalamus/posterior pituitary isn't making enough antidiuretic hormone (central DI) or because the kidney isn't responding to it (nephrogenic DI)."},
+    {target:"hl5",cat:"pattern",eyebrow:"Pattern · Chronicity",title:"A childhood-onset, chronic process",body:"Symptoms present since childhood point away from an acute event (like the vascular thalamic stroke in Case 8-1) and toward a slow-growing structural lesion or congenital/developmental process — the kind that can sit quietly for decades before other symptoms, like his visual field loss, bring it to medical attention."},
+    {target:"hl6",cat:"localization",eyebrow:"Localization · Medial hypothalamus",title:"Rage and the medial hypothalamus",body:"Inappropriate rage and anger are a recognized behavioral consequence of medial hypothalamic dysfunction — the same region implicated in satiety control. It's a reminder that the hypothalamus does more than regulate hormones and temperature; it's also wired into limbic circuits that shape emotional behavior."},
+    {target:"hl7",cat:"localization",eyebrow:"Localization · Anterior hypothalamus / HPG axis",title:"Lifelong hypogonadism",body:"Low libido present for his entire life — not something that developed recently — suggests a hypothalamic-pituitary-gonadal axis problem dating back to childhood or adolescence, consistent with a lesion (or its effect on GnRH-producing neurons in the anterior hypothalamus) that has been present since early life, in the same timeframe as his diabetes insipidus."},
+    {target:"hl8",cat:"finding",eyebrow:"Finding · Fundoscopic",title:"Cotton wool spots",body:"Cotton wool spots are microinfarcts of the retinal nerve fiber layer, most often from small-vessel ischemia (as in diabetes, hypertension, or other vasculopathy). Their presence here is a systemic vascular finding running alongside his cardiac disease — it's not something the hypothalamic lesion itself would produce."},
+    {target:"hl9",cat:"endocrine",eyebrow:"Endocrine/Systemic · Heart failure",title:"Sign of elevated right heart pressure",body:"A positive abdominojugular reflux, together with the displaced apical beat, basilar crackles and wheezes, and pretibial edema found on the same exam, together paint a clear picture of congestive heart failure — a systemic process running in parallel with, but mechanistically separate from, his hypothalamic findings."},
+    {target:"hl10",cat:"localization",eyebrow:"Localization · Anterior hypothalamus",title:"An unstable thermoregulatory set point",body:"The anterior hypothalamus contains the body's heat-loss circuitry and sets the thermoregulatory point; lesions here can produce cyclic, fluctuating temperature abnormalities rather than a fixed fever. His mild oscillating temperature elevation fits this pattern far better than an infectious fever, which tends to be more sustained."},
+    {target:"hl11",cat:"endocrine",eyebrow:"Endocrine/Systemic · Hypothalamic obesity",title:"Severe obesity",body:"At this height and weight, his BMI is well into the severe-obesity range. Destruction of the medial hypothalamic satiety center is a recognized cause of hyperphagia leading to obesity of exactly this severity — and this same obesity plausibly contributes to the cardiac strain that ultimately proves fatal."},
+    {target:"hl12",cat:"pattern",eyebrow:"Pattern · Important negative",title:"Cognition and language are intact",body:"Unlike Case 8-1, where memory, orientation, and language were all disrupted, this patient's cognition and speech are entirely preserved. That's a meaningful negative: it argues against involvement of the thalamus proper (anterior/dorsomedial nuclei, pulvinar/LP complex) and keeps the process localized to the hypothalamus instead."},
+    {target:"hl13",cat:"finding",eyebrow:"Finding · Behavioral",title:"Rage witnessed on exam",body:"This is the same behavioral dysfunction noted in his history, now observed directly during the hospital stay — confirming it as a persistent, reproducible feature rather than an isolated incident, and reinforcing the medial hypothalamic localization."},
+    {target:"hl14",cat:"localization",eyebrow:"Localization · Optic chiasm",title:"Bitemporal hemianopsia",body:"Loss confined to the temporal (outer) visual fields on both sides is the classic sign of a lesion compressing the optic chiasm from below or within — such as a mass arising in or near the hypothalamus/pituitary region. The crossing nasal retinal fibers (which carry temporal field information) are most vulnerable to central chiasmal compression, while the uncrossed fibers carrying nasal field information are relatively spared."},
+    {target:"hl15",cat:"finding",eyebrow:"Finding · Important negative",title:"No facial asymmetry, voluntary or emotional",body:"Case 8-1's patient had a striking dissociation between voluntary and emotional facial movement, localizing to the thalamus. This patient has neither — another negative that keeps the lesion confined to the hypothalamus and away from the thalamic/capsular pathways that carry facial motor control."},
+    {target:"hl16",cat:"finding",eyebrow:"Finding · Non-localizing",title:"An isolated, non-localizing finding",body:"Asymmetric hearing loss doesn't fit cleanly with a hypothalamic process and isn't explained by anything else in this case — it's most likely an incidental, unrelated finding (e.g., age-related or prior noise-related hearing loss) rather than a clue to the central lesion."},
+    {target:"hl17",cat:"pattern",eyebrow:"Pattern · Important negative",title:"A completely normal motor exam",body:"No weakness, no reflex asymmetry, and a normal (flexor) plantar response mean the corticospinal system is untouched. This is the clearest single piece of evidence that, unlike Case 8-1, this lesion is not affecting the thalamus proper or the adjacent internal capsule — it's confined to the hypothalamus."},
+    {target:"hl18",cat:"pattern",eyebrow:"Pattern · Important negative",title:"A completely normal sensory exam",body:"Both the lemniscal (vibration, proprioception) and anterolateral (pain, temperature) pathways are intact, meaning neither the VPL/VPM sensory relay nuclei nor their pathways are involved. Combined with the normal motor exam, this confirms the process spares the thalamus proper and its relay nuclei entirely."},
+    {target:"hl19",cat:"endocrine",eyebrow:"Endocrine/Systemic · Confirmatory",title:"Objectively confirmed diabetes insipidus",body:"These numbers move diabetes insipidus from a suspected diagnosis to a confirmed one: massive fluid intake matched by massive dilute urine output, with a specific gravity persistently below 1.005 (maximally dilute urine), is diagnostic of an inability to concentrate urine — consistent with a lack of effective antidiuretic hormone."},
+    {target:"hl20",cat:"endocrine",eyebrow:"Endocrine/Systemic · Outcome",title:"Cause of death was cardiac, not neurologic",body:"Despite the extensive hypothalamic-endocrine and visual findings, it was his heart failure — not his hypothalamic lesion — that ultimately killed him. This is an important reminder that a fascinating central lesion doesn't have to be the most clinically urgent problem; his cardiac disease needed at least equal attention."}
+  ];
+
+  var byId = {};
+  annotations.forEach(function(a){ byId[a.target] = a; });
+
+  var tooltip = document.getElementById("tooltip");
+  var panel = document.getElementById("panel");
+  var overlay = document.getElementById("overlay");
+  var panelTag = panel.querySelector(".panel-tag");
+  var panelTitle = panel.querySelector("h3");
+  var panelBody = panel.querySelector("p");
+  var panelClose = panel.querySelector(".panel-close");
+
+  var catColors = {
+    localization:{bg:"var(--teal-bg)",fg:"var(--teal)"},
+    finding:{bg:"var(--coral-bg)",fg:"var(--coral)"},
+    term:{bg:"var(--gold-bg)",fg:"var(--gold)"},
+    pattern:{bg:"var(--violet-bg)",fg:"var(--violet)"},
+    endocrine:{bg:"var(--sky-bg)",fg:"var(--sky)"}
+  };
+
+  var hasHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+  function showTooltip(mark, ann){
+    tooltip.querySelector(".tt-eyebrow").textContent = ann.eyebrow;
+    tooltip.querySelector(".tt-title").textContent = ann.title;
+    tooltip.querySelector(".tt-teaser").textContent = ann.body.slice(0, 90) + (ann.body.length > 90 ? "…" : "");
+    tooltip.classList.add("show");
+    var rect = mark.getBoundingClientRect();
+    var ttRect = tooltip.getBoundingClientRect();
+    var top = rect.top - ttRect.height - 10;
+    var flipped = false;
+    if(top < 8){ top = rect.bottom + 10; flipped = true; }
+    var left = Math.min(Math.max(8, rect.left), window.innerWidth - ttRect.width - 8);
+    tooltip.style.top = top + "px";
+    tooltip.style.left = left + "px";
+  }
+  function hideTooltip(){ tooltip.classList.remove("show"); }
+
+  function openPanel(ann){
+    var c = catColors[ann.cat] || catColors.finding;
+    panelTag.textContent = ann.eyebrow;
+    panelTag.style.background = c.bg;
+    panelTag.style.color = c.fg;
+    panelTitle.textContent = ann.title;
+    panelBody.textContent = ann.body;
+    panel.classList.add("open");
+    overlay.classList.add("show");
+  }
+  function closePanel(){
+    panel.classList.remove("open");
+    overlay.classList.remove("show");
+  }
+
+  annotations.forEach(function(ann){
+    var mark = document.getElementById(ann.target);
+    if(!mark) return;
+    if(hasHover){
+      mark.addEventListener("mouseenter", function(){ showTooltip(mark, ann); });
+      mark.addEventListener("mouseleave", hideTooltip);
+    }
+    mark.addEventListener("click", function(e){
+      e.preventDefault();
+      hideTooltip();
+      openPanel(ann);
+    });
+  });
+
+  panelClose.addEventListener("click", closePanel);
+  overlay.addEventListener("click", closePanel);
+  document.addEventListener("keydown", function(e){
+    if(e.key === "Escape") closePanel();
+  });
+})();
+</script>
+</body>
+</html>
