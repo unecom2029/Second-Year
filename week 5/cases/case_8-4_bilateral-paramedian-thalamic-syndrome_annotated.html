@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Case 8-4 — Bilateral Paramedian Thalamic Syndrome</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Nunito:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#F6F1E6;
+  --paper:#FCFAF3;
+  --ink:#2A241C;
+  --ink-soft:#6B6152;
+  --ink-faint:#9A8F7B;
+  --line:#DED2B6;
+  --line-soft:#EAE0C9;
+
+  --coral:#C85A3E;   --coral-bg:#F7E4DB;
+  --teal:#256B63;    --teal-bg:#DFEDE8;
+  --gold:#A47A1F;    --gold-bg:#F3E7C6;
+  --violet:#6B5390;  --violet-bg:#E9E2F1;
+  --sky:#2F6485;     --sky-bg:#DEE9EF;
+
+  --radius:10px;
+  --shadow:0 1px 2px rgba(42,36,28,.06), 0 8px 24px -12px rgba(42,36,28,.18);
+}
+
+*{ box-sizing:border-box; }
+html,body{ margin:0; padding:0; }
+body{
+  background:var(--cream);
+  color:var(--ink);
+  font-family:'Crimson Pro', Georgia, serif;
+  font-size:18px;
+  line-height:1.68;
+  -webkit-font-smoothing:antialiased;
+}
+
+.page{ max-width:1120px; margin:0 auto; padding:44px 24px 90px; }
+
+/* ---------- Header ---------- */
+.top-eyebrow{ font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:6px; }
+h1.case-title{ font-family:'Crimson Pro',serif; font-weight:700; font-size:clamp(28px,4vw,38px); margin:0 0 8px; color:var(--ink); letter-spacing:-0.01em; }
+.subtitle{ font-family:'Nunito',sans-serif; color:var(--ink-soft); font-size:15.5px; margin-bottom:20px; max-width:700px; }
+
+.meta-chips{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:24px; }
+.chip{ font-family:'Nunito',sans-serif; font-size:13px; font-weight:700; padding:6px 13px; border-radius:999px; background:var(--paper); border:1px solid var(--line); color:var(--ink-soft); }
+
+.legend{ display:flex; flex-wrap:wrap; gap:16px; padding:14px 18px; background:var(--paper); border:1px solid var(--line-soft); border-radius:var(--radius); margin-bottom:44px; font-family:'Nunito',sans-serif; font-size:13px; color:var(--ink-soft); box-shadow:var(--shadow); }
+.legend-title{ font-family:'IBM Plex Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-faint); width:100%; margin-bottom:2px; }
+.legend-item{ display:flex; align-items:center; gap:7px; }
+.legend-swatch{ width:12px; height:12px; border-radius:3px; flex:0 0 auto; }
+
+/* ---------- Case column ---------- */
+.case-column{ max-width:800px; margin:0 auto 40px; }
+.case-section{ margin-bottom:36px; }
+.case-section > h2{ font-family:'IBM Plex Mono',monospace; font-size:12.5px; text-transform:uppercase; letter-spacing:.09em; color:var(--ink-faint); border-bottom:1px solid var(--line-soft); padding-bottom:9px; margin:0 0 15px; font-weight:600; }
+.case-section p{ margin:0 0 14px; color:var(--ink); }
+.subhead-label{ font-weight:700; font-family:'Nunito',sans-serif; color:var(--ink); font-size:0.92em; letter-spacing:.01em; }
+
+mark.hl{ padding:0.5px 3px; border-radius:4px; cursor:pointer; font-weight:600; box-decoration-break:clone; -webkit-box-decoration-break:clone; }
+mark.hl[data-cat="localization"]{ background:var(--teal-bg); color:var(--teal); }
+mark.hl[data-cat="finding"]{ background:var(--coral-bg); color:var(--coral); }
+mark.hl[data-cat="term"]{ background:var(--gold-bg); color:var(--gold); }
+mark.hl[data-cat="pattern"]{ background:var(--violet-bg); color:var(--violet); }
+mark.hl[data-cat="genetics"]{ background:var(--sky-bg); color:var(--sky); }
+mark.hl:hover{ filter:brightness(0.94); }
+mark.hl:focus-visible{ outline:2px solid var(--ink); outline-offset:2px; }
+.hl-badge{ font-family:'IBM Plex Mono',monospace; font-size:10px; vertical-align:super; margin-left:1px; opacity:.7; font-weight:600; }
+
+.questions-list{ padding-left:24px; margin:0; }
+.questions-list li{ margin-bottom:11px; color:var(--ink-soft); font-family:'Crimson Pro',serif; }
+.questions-note{ font-family:'Nunito',sans-serif; font-size:13px; color:var(--ink-faint); font-style:italic; margin:-4px 0 18px; }
+
+/* ---------- Tooltip ---------- */
+.tooltip{ position:fixed; max-width:280px; background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:11px 13px; font-family:'Nunito',sans-serif; font-size:13px; z-index:500; opacity:0; pointer-events:none; transition:opacity .12s ease; }
+.tooltip.visible{ opacity:1; }
+.tooltip .t-eyebrow{ font-family:'IBM Plex Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:.07em; margin-bottom:4px; font-weight:700; }
+.tooltip .t-title{ font-weight:800; font-size:14px; margin-bottom:4px; color:var(--ink); font-family:'Nunito',sans-serif; }
+.tooltip .t-teaser{ color:var(--ink-soft); font-size:12.5px; line-height:1.45; }
+
+/* ---------- Docked panel ---------- */
+.scrim{ position:fixed; inset:0; background:rgba(42,36,28,.28); opacity:0; pointer-events:none; transition:opacity .18s ease; z-index:600; }
+.scrim.visible{ opacity:1; pointer-events:auto; }
+.panel{ position:fixed; background:var(--paper); box-shadow:var(--shadow); z-index:700; display:flex; flex-direction:column; }
+@media (min-width:1000px){
+  .panel{ top:0; right:0; height:100vh; width:400px; max-width:92vw; border-left:1px solid var(--line); transform:translateX(100%); transition:transform .22s ease; }
+  .panel.visible{ transform:translateX(0); }
+}
+@media (max-width:999px){
+  .panel{ left:0; right:0; bottom:0; max-height:78vh; border-radius:16px 16px 0 0; border-top:1px solid var(--line); transform:translateY(100%); transition:transform .22s ease; }
+  .panel.visible{ transform:translateY(0); }
+}
+.panel-head{ display:flex; justify-content:flex-end; align-items:flex-start; padding:14px 14px 0; }
+.panel-close{ background:none; border:none; font-size:24px; line-height:1; color:var(--ink-faint); cursor:pointer; padding:4px 10px; border-radius:6px; font-family:'Nunito',sans-serif; }
+.panel-close:hover{ background:var(--line-soft); color:var(--ink); }
+.panel-body{ padding:6px 26px 36px; overflow-y:auto; }
+.panel-eyebrow{ font-family:'IBM Plex Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:.08em; font-weight:700; margin-bottom:8px; }
+.panel-title{ font-family:'Crimson Pro',serif; font-size:23px; font-weight:700; color:var(--ink); margin:0 0 10px; line-height:1.3; }
+.panel-cat-tag{ display:inline-block; font-family:'Nunito',sans-serif; font-size:11px; font-weight:700; padding:4px 12px; border-radius:999px; margin-bottom:16px; }
+.panel-text{ font-family:'Nunito',sans-serif; font-size:15px; line-height:1.65; color:var(--ink-soft); }
+
+/* ---------- Section headings ---------- */
+.section-heading{ text-align:center; margin:70px 0 30px; }
+.section-heading .top-eyebrow{ margin-bottom:8px; }
+.section-heading h2{ font-family:'Crimson Pro',serif; font-size:clamp(24px,3vw,30px); font-weight:700; margin:0; color:var(--ink); }
+.section-heading p{ font-family:'Nunito',sans-serif; color:var(--ink-soft); font-size:14.5px; max-width:600px; margin:8px auto 0; }
+
+/* ---------- Grids / cards ---------- */
+.reasoning-grid, .deepdive-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+@media (max-width:999px){ .reasoning-grid, .deepdive-grid{ grid-template-columns:repeat(2,1fr); } }
+@media (max-width:640px){ .reasoning-grid, .deepdive-grid{ grid-template-columns:1fr; } }
+.card{ background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:22px; }
+.card.full{ grid-column:1 / -1; }
+.card h3.card-eyebrow{ font-family:'IBM Plex Mono',monospace; font-size:11.5px; text-transform:uppercase; letter-spacing:.07em; color:var(--ink-faint); margin:0 0 10px; font-weight:700; }
+.card .card-title{ font-family:'Crimson Pro',serif; font-weight:700; font-size:19px; margin:0 0 12px; color:var(--ink); }
+.card p{ font-family:'Nunito',sans-serif; font-size:14.5px; line-height:1.65; color:var(--ink-soft); margin:0 0 8px; }
+
+/* ---------- Differential table ---------- */
+table.diff-table{ width:100%; border-collapse:collapse; font-family:'Nunito',sans-serif; font-size:13.5px; }
+table.diff-table th, table.diff-table td{ text-align:left; padding:11px 13px; border-bottom:1px solid var(--line-soft); vertical-align:top; }
+table.diff-table th{ font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-faint); font-weight:700; }
+table.diff-table td{ color:var(--ink-soft); }
+tr.lead-dx{ background:var(--teal-bg); }
+tr.lead-dx td{ color:var(--ink); font-weight:600; }
+tr.lead-dx td:first-child{ color:var(--teal); }
+.tag-most-likely{ display:inline-block; background:var(--teal); color:var(--paper); font-family:'IBM Plex Mono',monospace; font-size:9.5px; font-weight:600; padding:2px 8px; border-radius:999px; margin-left:8px; vertical-align:middle; letter-spacing:.04em; }
+
+/* ---------- Workup flow ---------- */
+.workup-step{ display:flex; gap:14px; margin-bottom:17px; }
+.workup-step:last-child{ margin-bottom:0; }
+.workup-num{ flex:0 0 auto; width:28px; height:28px; border-radius:50%; background:var(--sky-bg); color:var(--sky); font-family:'IBM Plex Mono',monospace; font-weight:700; display:flex; align-items:center; justify-content:center; font-size:13px; margin-top:1px; }
+.workup-content{ font-family:'Nunito',sans-serif; font-size:14.5px; color:var(--ink-soft); line-height:1.55; }
+.workup-content b{ color:var(--ink); font-weight:700; }
+.workup-content .sub{ display:block; font-size:13px; color:var(--ink-faint); margin-top:3px; }
+
+/* ---------- Management checklist ---------- */
+.mgmt-checklist{ list-style:none; padding:0; margin:0; font-family:'Nunito',sans-serif; font-size:14.5px; color:var(--ink-soft); }
+.mgmt-checklist li{ padding-left:28px; position:relative; margin-bottom:11px; line-height:1.5; }
+.mgmt-checklist li:last-child{ margin-bottom:0; }
+.mgmt-checklist li::before{ content:"✓"; position:absolute; left:0; top:0; color:var(--teal); font-weight:700; }
+
+/* ---------- Deep dive ---------- */
+.dd-tag{ display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:10px; text-transform:uppercase; padding:3px 10px; border-radius:999px; margin-bottom:12px; font-weight:700; letter-spacing:.04em; }
+.takeaway{ margin-top:14px; padding-top:13px; border-top:1px dashed var(--line); }
+.takeaway .tk-label{ font-family:'Nunito',sans-serif; font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-faint); font-weight:800; display:block; margin-bottom:5px; }
+.dd-svg-wrap{ background:var(--cream); border:1px solid var(--line-soft); border-radius:8px; padding:10px; margin-bottom:14px; }
+.dd-svg-wrap svg{ width:100%; height:auto; display:block; }
+
+table.ref-table{ width:100%; border-collapse:collapse; font-family:'Nunito',sans-serif; font-size:12.5px; }
+table.ref-table th, table.ref-table td{ text-align:left; padding:8px 9px; border-bottom:1px solid var(--line-soft); vertical-align:top; }
+table.ref-table th{ font-size:10px; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-faint); font-weight:700; }
+table.ref-table td{ color:var(--ink-soft); }
+tr.this-pt{ background:var(--sky-bg); }
+tr.this-pt td{ color:var(--ink); font-weight:600; }
+.mini-tag{ font-family:'IBM Plex Mono',monospace; font-size:9px; background:var(--sky); color:var(--paper); padding:1px 7px; border-radius:999px; margin-left:6px; }
+
+.icon-list{ list-style:none; padding:0; margin:0 0 4px; }
+.icon-list li{ display:flex; gap:10px; padding:8px 0; border-bottom:1px solid var(--line-soft); font-family:'Nunito',sans-serif; font-size:13.5px; color:var(--ink-soft); align-items:flex-start; }
+.icon-list li:last-child{ border-bottom:none; }
+.icon-dot{ flex:0 0 auto; width:8px; height:8px; border-radius:50%; background:var(--gold); margin-top:6px; }
+.icon-list b{ color:var(--ink); }
+
+footer.build-footer{ margin-top:64px; text-align:center; font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--ink-faint); letter-spacing:.03em; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div class="top-eyebrow">Medical Neuroanatomy · Chapter 8 — Thalamus</div>
+    <h1 class="case-title">Case Study 8-4</h1>
+    <p class="subtitle">A 78-year-old woman with confusion, an amnestic-confabulatory syndrome, and a sleep-wake system that collapses from insomnia to fatal coma over five weeks — the natural history of bilateral paramedian thalamic infarction.</p>
+    <div class="meta-chips">
+      <span class="chip">78 F</span>
+      <span class="chip">Progressive, not stable</span>
+      <span class="chip">Bilateral paramedian territory</span>
+      <span class="chip">Amnestic-confabulatory syndrome</span>
+      <span class="chip">Prior anterolateral event (2 yrs ago)</span>
+    </div>
+    <div class="legend">
+      <div class="legend-title">Annotation key — click or tap any highlighted phrase</div>
+      <div class="legend-item"><span class="legend-swatch" style="background:var(--teal)"></span>Localization</div>
+      <div class="legend-item"><span class="legend-swatch" style="background:var(--coral)"></span>Exam finding</div>
+      <div class="legend-item"><span class="legend-swatch" style="background:var(--gold)"></span>Terminology</div>
+      <div class="legend-item"><span class="legend-swatch" style="background:var(--violet)"></span>Pattern clue</div>
+      <div class="legend-item"><span class="legend-swatch" style="background:var(--sky)"></span>Trajectory / workup</div>
+    </div>
+  </header>
+
+  <main class="case-column">
+
+    <section class="case-section" id="chief-complaint">
+      <h2>Chief Complaint</h2>
+      <p>A 78-year-old woman presents with <mark class="hl" data-cat="finding" id="hl1" tabindex="0">confusion, memory dysfunction, and sleep disturbances</mark><sup class="hl-badge">1</sup>.</p>
+    </section>
+
+    <section class="case-section" id="hpi">
+      <h2>History of Chief Complaint</h2>
+      <p>This 78-year-old woman was brought to the emergency room from a local nursing home after she became <mark class="hl" data-cat="pattern" id="hl2" tabindex="0">very agitated and disoriented, alarming the other residents</mark><sup class="hl-badge">2</sup>.</p>
+    </section>
+
+    <section class="case-section" id="medical-history">
+      <h2>Medical History</h2>
+      <p>At the time of admission she had been retired for 13 years from her position as an elementary schoolteacher. She had been married and her husband was deceased. She had no children. Five years previously she had moved from her house to a nursing home. Two years previously she had experienced a period of <mark class="hl" data-cat="pattern" id="hl3" tabindex="0">right facial weakness with language dysfunction, which had resolved over a 2-week period</mark><sup class="hl-badge">3</sup>. <mark class="hl" data-cat="genetics" id="hl4" tabindex="0">Until the day of admittance she had been a pleasant person, sociable with other residents of the nursing home, and with good memory</mark><sup class="hl-badge">4</sup>.</p>
+    </section>
+
+    <section class="case-section" id="general-pe">
+      <h2>General Physical Examination</h2>
+      <p>She was <mark class="hl" data-cat="finding" id="hl5" tabindex="0">in an agitated state and uncooperative, making a detailed examination difficult</mark><sup class="hl-badge">5</sup>. She was <mark class="hl" data-cat="pattern" id="hl6" tabindex="0">well nourished and well hydrated</mark><sup class="hl-badge">6</sup> and appeared her stated age. She had <mark class="hl" data-cat="finding" id="hl7" tabindex="0">increased pulse, respiration, and blood pressure (190/100 mmHg)</mark><sup class="hl-badge">7</sup>. She <mark class="hl" data-cat="pattern" id="hl8" tabindex="0">appeared flushed and her skin was moist</mark><sup class="hl-badge">8</sup>.</p>
+    </section>
+
+    <section class="case-section" id="neuro-exam">
+      <h2>Neurologic Examination</h2>
+      <p><span class="subhead-label">Mental Status.</span> She was <mark class="hl" data-cat="finding" id="hl9" tabindex="0">disoriented with respect to time and place</mark><sup class="hl-badge">9</sup>. She <mark class="hl" data-cat="term" id="hl10" tabindex="0">insisted she was going shopping and that the driver had let her out at the hospital by mistake</mark><sup class="hl-badge">10</sup>. She was aggravated and abusive with the attending personnel. She was a poor historian. At the time of admission she <mark class="hl" data-cat="genetics" id="hl11" tabindex="0">could not be tested for memory, since she refused to answer most questions</mark><sup class="hl-badge">11</sup>.</p>
+      <p><span class="subhead-label">Cranial Nerves.</span> <mark class="hl" data-cat="localization" id="hl13" tabindex="0">Visual fields appeared full to confrontation, a full range of eye movements was possible, and no nystagmus was present</mark><sup class="hl-badge">13</sup>. Facial expression was full and hearing was normal. <mark class="hl" data-cat="localization" id="hl12" tabindex="0">Jaw-jerk reflex was normal and corneal reflex was present</mark><sup class="hl-badge">12</sup>. Palate was elevated on the midline and tongue protruded midline. Shoulder shrug was bilaterally symmetric. Swallowing and voice were normal.</p>
+      <p><span class="subhead-label">Motor Systems.</span> <mark class="hl" data-cat="localization" id="hl14" tabindex="0">Movements were normal; strength and deep tendon reflexes were physiologic throughout the patient's body</mark><sup class="hl-badge">14</sup>.</p>
+      <p><span class="subhead-label">Sensation.</span> <mark class="hl" data-cat="localization" id="hl15" tabindex="0">Response to pinprick was normal; no detectable loss of proprioception was found</mark><sup class="hl-badge">15</sup>. <mark class="hl" data-cat="genetics" id="hl16" tabindex="0">Testing was complicated by her uncooperative nature</mark><sup class="hl-badge">16</sup>.</p>
+    </section>
+
+    <section class="case-section" id="follow-up">
+      <h2>Follow-up</h2>
+      <p>The patient experienced <mark class="hl" data-cat="pattern" id="hl17" tabindex="0">insomnia for 3 days while under observation</mark><sup class="hl-badge">17</sup> in the hospital. On discharge she was calm but had <mark class="hl" data-cat="pattern" id="hl18" tabindex="0">marked memory dysfunction and continued to confabulate explanations to cover the memory loss</mark><sup class="hl-badge">18</sup>. One month after returning to the nursing home she <mark class="hl" data-cat="pattern" id="hl19" tabindex="0">developed marked hypersomnia and was difficult to rouse</mark><sup class="hl-badge">19</sup>. She <mark class="hl" data-cat="genetics" id="hl20" tabindex="0">returned to the hospital where she died one week later</mark><sup class="hl-badge">20</sup>.</p>
+    </section>
+
+    <section class="case-section" id="questions">
+      <h2>Questions</h2>
+      <p class="questions-note">Answered point-by-point in the Clinical Reasoning Walkthrough below.</p>
+      <ol class="questions-list">
+        <li>Has the patient experienced any changes in consciousness or cognition, language function or spatial recognition, personality or emotional behavior, or any loss in memory?</li>
+        <li>Does the patient exhibit any loss of vision and if so, where in the visual field is the loss? Are there any visual hallucinations present in this patient?</li>
+        <li>Are there any changes in cranial nerve function and if so, are they signs of suprasegmental or segmental level defects?</li>
+        <li>Are there any changes in motor function such as reflexes, muscle tone, movement, or coordination and if so, are they signs of suprasegmental or segmental level defects?</li>
+        <li>Are there any changes in sensory function and if so, what levels of the body have experienced this change?</li>
+        <li>What is the clinical temporal profile of this patient's neurologic problem: is the onset of neurologic findings acute or insidious, is the course of the neurologic disease chronically progressive, fluctuant or stable?</li>
+        <li>Based on the presenting signs and symptoms, do you think the distribution of the neurologic pathology is focal, multifocal or diffuse?</li>
+        <li>Based on the answers to these questions develop a differential diagnosis of the patient's neurological problem?</li>
+        <li>If the origin of the pathology is vascular, what arterial supply is most likely involved with the lesion in this patient?</li>
+      </ol>
+    </section>
+
+  </main>
+
+  <!-- ================= CLINICAL REASONING WALKTHROUGH ================= -->
+  <div class="section-heading">
+    <div class="top-eyebrow">Clinical Reasoning Walkthrough</div>
+    <h2>From findings to localization</h2>
+    <p>Built from the case findings plus the chapter's thalamic vascular-territory material (no small-group transcript was provided for this case).</p>
+  </div>
+
+  <div class="reasoning-grid">
+
+    <div class="card">
+      <h3 class="card-eyebrow">01 · Localization</h3>
+      <p>This is a <b style="color:var(--ink)">diencephalic (thalamic), likely bilateral</b> syndrome localizing to the <b style="color:var(--ink)">paramedian / midline territory</b> — the dorsomedial nucleus, mammillothalamic tract, and posterior internal medullary lamina — rather than the sensory relay (VPL/VPM) or motor pathways involved in Case 8-3. Disorientation, an amnestic-confabulatory syndrome, agitation, autonomic surge, and a sleep-wake system that collapses from insomnia into unrousable hypersomnolence are the signature deficits of this territory, while intact sensation and motor function argue against the posterolateral or lateral/internal-capsule territories.</p>
+    </div>
+
+    <div class="card">
+      <h3 class="card-eyebrow">02 · Distribution</h3>
+      <p>Best described as <b style="color:var(--ink)">focal but bilateral</b> — restricted to one functional system (the paramedian thalamus) but very likely affecting both sides at once. Hypersomnolence is specifically flagged in the literature as a feature of <i>bilateral</i> paramedian lesions, and her prior, anatomically distinct anterolateral event two years ago shows this is not a single, isolated occurrence.</p>
+    </div>
+
+    <div class="card">
+      <h3 class="card-eyebrow">03 · Time Course</h3>
+      <p><b style="color:var(--ink)">Acute onset, progressive course</b> — unlike Case 8-3, this does not stabilize and improve. It moves through recognizable stages: agitation/confusion → insomnia (3 days) → an established amnestic-confabulatory state at discharge → hypersomnolence one month later → unrousable coma and death. That relentless progression, rather than the usual stroke pattern of stabilizing then improving, is itself a clue worth flagging.</p>
+    </div>
+
+    <div class="card full">
+      <h3 class="card-eyebrow">04 · Differential Diagnosis</h3>
+      <table class="diff-table">
+        <thead>
+          <tr><th>Diagnosis</th><th>Fits</th><th>Argues against</th></tr>
+        </thead>
+        <tbody>
+          <tr class="lead-dx">
+            <td>Bilateral paramedian thalamic infarct (artery of Percheron)<span class="tag-most-likely">Most likely</span></td>
+            <td>Confusion/agitation, amnestic-confabulatory syndrome, insomnia → hypersomnolence progression (a bilateral-lesion sign), autonomic surge, sparing of sensory and motor pathways, and a known second cerebrovascular territory event two years prior.</td>
+            <td>Formal vertical gaze testing — a classic paramedian sign — isn't specifically documented, likely due to her agitation.</td>
+          </tr>
+          <tr>
+            <td>Deep cerebral venous thrombosis (bilateral thalamic venous infarction)</td>
+            <td>Can produce an essentially identical bilateral thalamic clinical picture.</td>
+            <td>Typically more subacute, with headache and papilledema, none of which are documented (though not fully excluded by a limited exam).</td>
+          </tr>
+          <tr>
+            <td>Wernicke encephalopathy (thiamine deficiency)</td>
+            <td>Confusion can occur in an elderly, institutionalized patient at nutritional risk.</td>
+            <td>Documented as well nourished and well hydrated; no nystagmus, ophthalmoplegia, or ataxia described.</td>
+          </tr>
+          <tr>
+            <td>Rapidly progressive dementia (e.g. Creutzfeldt-Jakob disease)</td>
+            <td>Progressive cognitive decline ending in death.</td>
+            <td>Onset is far too abrupt on top of a fully intact baseline; CJD evolves over a more insidious course and typically features myoclonus.</td>
+          </tr>
+          <tr>
+            <td>Metabolic or infectious delirium (e.g. sepsis, electrolyte disturbance)</td>
+            <td>Can cause acute agitation and confusion in an elderly patient.</td>
+            <td>Doesn't explain the specific evolution into an amnestic-confabulatory syndrome and then hypersomnolence-to-coma; would need labs to formally exclude.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card full">
+      <h3 class="card-eyebrow">05 · Diagnostic Workup</h3>
+      <div class="workup-flow">
+        <div class="workup-step">
+          <div class="workup-num">1</div>
+          <div class="workup-content"><b>Non-contrast CT head</b> at presentation<span class="sub">Bedside triage step, though bilateral paramedian infarcts are frequently subtle or missed entirely on CT.</span></div>
+        </div>
+        <div class="workup-step">
+          <div class="workup-num">2</div>
+          <div class="workup-content"><b>MRI brain with DWI</b><span class="sub">The confirmatory study — look for bilateral paramedian thalamic (± rostral midbrain) restricted diffusion, the classic "V sign" of an artery of Percheron occlusion.</span></div>
+        </div>
+        <div class="workup-step">
+          <div class="workup-num">3</div>
+          <div class="workup-content"><b>MR venography (MRV)</b><span class="sub">To exclude deep cerebral venous thrombosis, the key mimic of bilateral thalamic infarction that changes management entirely.</span></div>
+        </div>
+        <div class="workup-step">
+          <div class="workup-num">4</div>
+          <div class="workup-content"><b>Metabolic and infectious workup</b> — electrolytes, glucose, ammonia, TSH, B12, blood cultures, urinalysis<span class="sub">To identify or exclude a contributing or mimicking delirium.</span></div>
+        </div>
+        <div class="workup-step">
+          <div class="workup-num">5</div>
+          <div class="workup-content"><b>Thiamine level, with empiric thiamine replacement</b><span class="sub">Standard practice in any confused elderly patient at nutritional risk, while Wernicke's is formally excluded.</span></div>
+        </div>
+        <div class="workup-step">
+          <div class="workup-num">6</div>
+          <div class="workup-content"><b>Vascular risk-factor workup</b> — echocardiogram, carotid/vertebral duplex, telemetry/EKG<span class="sub">Now doubly important given this appears to be her second distinct cerebrovascular event.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 class="card-eyebrow">06 · Prognosis</h3>
+      <p>Unlike Case 8-3's favorable course, <b style="color:var(--ink)">bilateral paramedian thalamic infarction carries a genuinely guarded prognosis</b>, especially once hypersomnolence and impaired arousal appear. The progression documented here — insomnia, then an amnestic-confabulatory state, then hypersomnolence, then unrousable coma and death — matches the natural history described for bilateral (as opposed to unilateral) paramedian involvement.</p>
+    </div>
+
+    <div class="card full">
+      <h3 class="card-eyebrow">07 · Management</h3>
+      <ul class="mgmt-checklist">
+        <li>Acute stroke pathway — urgent CT/MRI, though by the time bilateral paramedian infarcts are recognized, many are outside a reperfusion window</li>
+        <li>MR venography to exclude deep cerebral venous thrombosis, since anticoagulation rather than standard secondary prevention would be indicated if venous</li>
+        <li>Secondary stroke prevention — antiplatelet therapy, statin, blood pressure management — especially given a second, distinct vascular territory event</li>
+        <li>Empiric thiamine while nutritional workup is pending</li>
+        <li>Supportive care for agitation and sleep-wake disruption; caution with sedating agents given her risk of worsening arousal</li>
+        <li>Early goals-of-care discussion, given the declining level of consciousness and guarded trajectory</li>
+        <li>Ongoing neurologic monitoring for further decline or recurrent stroke, given her established cerebrovascular disease</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- ================= CONCEPT DEEP-DIVES ================= -->
+  <div class="section-heading">
+    <div class="top-eyebrow">Concept Deep-Dives</div>
+    <h2>The neuroanatomy behind this case</h2>
+    <p>Hand-built diagrams and reference tables — no lecture slides were provided for this case, so these are built to keep the format copyright-clean.</p>
+  </div>
+
+  <div class="deepdive-grid">
+
+    <!-- Card 1: Artery of Percheron -->
+    <div class="card">
+      <span class="dd-tag" style="background:var(--teal-bg);color:var(--teal)">Localization</span>
+      <div class="card-title">The Paramedian Territory &amp; the Artery of Percheron</div>
+      <div class="dd-svg-wrap">
+        <svg viewBox="0 0 320 210" xmlns="http://www.w3.org/2000/svg">
+          <line x1="160" y1="200" x2="160" y2="130" stroke="#9A8F7B" stroke-width="6" stroke-linecap="round"/>
+          <text x="160" y="195" text-anchor="middle" font-family="Nunito, sans-serif" font-size="9" fill="#FCFAF3" font-weight="700">basilar a.</text>
+          <line x1="160" y1="130" x2="160" y2="100" stroke="#2F6485" stroke-width="5" stroke-linecap="round"/>
+          <text x="185" y="118" font-family="Nunito, sans-serif" font-size="9" fill="#6B6152">single common trunk</text>
+          <path d="M160 100 Q125 75 95 55" stroke="#2F6485" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <path d="M160 100 Q195 75 225 55" stroke="#2F6485" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <ellipse cx="85" cy="45" rx="42" ry="28" fill="#DEE9EF" stroke="#2F6485" stroke-width="1.5"/>
+          <text x="85" y="42" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" font-weight="600" fill="#2F6485">L thalamus</text>
+          <text x="85" y="55" text-anchor="middle" font-family="Nunito, sans-serif" font-size="8" fill="#2F6485">paramedian zone</text>
+          <ellipse cx="235" cy="45" rx="42" ry="28" fill="#DEE9EF" stroke="#2F6485" stroke-width="1.5"/>
+          <text x="235" y="42" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" font-weight="600" fill="#2F6485">R thalamus</text>
+          <text x="235" y="55" text-anchor="middle" font-family="Nunito, sans-serif" font-size="8" fill="#2F6485">paramedian zone</text>
+          <text x="160" y="20" text-anchor="middle" font-family="Nunito, sans-serif" font-size="10" font-weight="700" fill="#6B6152">One vessel, one occlusion, two sides affected</text>
+        </svg>
+      </div>
+      <p>In most people, separate small paramedian branches supply each side of the thalamus. In a common anatomic variant, both sides share one perforating trunk off the basilar tip or proximal PCA — the artery of Percheron. A single occlusion there produces bilateral paramedian infarction from one event.</p>
+      <div class="takeaway">
+        <span class="tk-label">Tied to this patient</span>
+        <p style="margin:0">Her hypersomnolence — explicitly a bilateral-lesion sign in this territory — is hard to explain with a single unilateral infarct. A shared-trunk anatomic variant is exactly the kind of vascular lesion that produces bilateral findings from what is still, technically, one vessel going down.</p>
+      </div>
+    </div>
+
+    <!-- Card 2: Papez circuit -->
+    <div class="card">
+      <span class="dd-tag" style="background:var(--violet-bg);color:var(--violet)">Pattern clue</span>
+      <div class="card-title">Diencephalic Amnesia &amp; the Papez Circuit</div>
+      <div class="dd-svg-wrap">
+        <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="160" cy="110" rx="115" ry="88" fill="none" stroke="#DED2B6" stroke-width="1.5" stroke-dasharray="3 4"/>
+          <circle cx="80" cy="60" r="26" fill="#F7E4DB" stroke="#C85A3E" stroke-width="1.3"/>
+          <text x="80" y="63" text-anchor="middle" font-family="Nunito, sans-serif" font-size="9" font-weight="700" fill="#C85A3E">Hippocampus</text>
+          <circle cx="80" cy="160" r="24" fill="#F7E4DB" stroke="#C85A3E" stroke-width="1.3"/>
+          <text x="80" y="158" text-anchor="middle" font-family="Nunito, sans-serif" font-size="9" font-weight="700" fill="#C85A3E">Mammillary</text>
+          <text x="80" y="169" text-anchor="middle" font-family="Nunito, sans-serif" font-size="9" font-weight="700" fill="#C85A3E">body</text>
+          <circle cx="230" cy="160" r="30" fill="#DEE9EF" stroke="#2F6485" stroke-width="1.8"/>
+          <text x="230" y="157" text-anchor="middle" font-family="Nunito, sans-serif" font-size="9" font-weight="700" fill="#2F6485">Dorsomedial</text>
+          <text x="230" y="168" text-anchor="middle" font-family="Nunito, sans-serif" font-size="9" font-weight="700" fill="#2F6485">nucleus</text>
+          <circle cx="230" cy="60" r="26" fill="#F7E4DB" stroke="#C85A3E" stroke-width="1.3"/>
+          <text x="230" y="58" text-anchor="middle" font-family="Nunito, sans-serif" font-size="9" font-weight="700" fill="#C85A3E">Cingulate</text>
+          <text x="230" y="69" text-anchor="middle" font-family="Nunito, sans-serif" font-size="9" font-weight="700" fill="#C85A3E">cortex</text>
+          <path d="M80 86 L80 136" stroke="#9A8F7B" stroke-width="2" marker-end="url(#arr1)"/>
+          <text x="55" y="112" font-family="Nunito, sans-serif" font-size="8" fill="#6B6152">fornix</text>
+          <path d="M104 165 L198 162" stroke="#2F6485" stroke-width="2.5" marker-end="url(#arr2)"/>
+          <text x="120" y="185" font-family="Nunito, sans-serif" font-size="8" fill="#2F6485">mammillothalamic tract</text>
+          <path d="M230 130 L230 86" stroke="#9A8F7B" stroke-width="2" marker-end="url(#arr1)"/>
+          <path d="M204 60 L106 60" stroke="#9A8F7B" stroke-width="2" marker-end="url(#arr1)"/>
+          <defs>
+            <marker id="arr1" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#9A8F7B"/></marker>
+            <marker id="arr2" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#2F6485"/></marker>
+          </defs>
+        </svg>
+      </div>
+      <p>The Papez circuit — hippocampus → fornix → mammillary body → mammillothalamic tract → dorsomedial/anterior thalamic nuclei → cingulate cortex → back to hippocampus — is the anatomic substrate for memory consolidation. The dorsomedial nucleus and mammillothalamic tract both sit within the paramedian territory.</p>
+      <div class="takeaway">
+        <span class="tk-label">Tied to this patient</span>
+        <p style="margin:0">Damage at the thalamic node of this circuit is exactly what produces her memory dysfunction and confabulation — the same mechanism underlying the amnesia of Korsakoff's psychosis, just from a vascular rather than nutritional cause.</p>
+      </div>
+    </div>
+
+    <!-- Card 3: ARAS / sleep-wake axis -->
+    <div class="card">
+      <span class="dd-tag" style="background:var(--violet-bg);color:var(--violet)">Pattern clue</span>
+      <div class="card-title">The Sleep-Wake Axis: Insomnia to Coma</div>
+      <div class="dd-svg-wrap">
+        <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg">
+          <rect x="130" y="10" width="140" height="34" rx="8" fill="#F7E4DB" stroke="#C85A3E" stroke-width="1.3"/>
+          <text x="200" y="31" text-anchor="middle" font-family="Nunito, sans-serif" font-size="10" font-weight="700" fill="#C85A3E">Cortex — diffuse arousal</text>
+          <line x1="200" y1="44" x2="200" y2="80" stroke="#9A8F7B" stroke-width="2" marker-end="url(#arr3)"/>
+          <rect x="115" y="82" width="170" height="46" rx="8" fill="#DEE9EF" stroke="#2F6485" stroke-width="2"/>
+          <text x="200" y="102" text-anchor="middle" font-family="Nunito, sans-serif" font-size="10" font-weight="700" fill="#2F6485">Paramedian thalamus /</text>
+          <text x="200" y="116" text-anchor="middle" font-family="Nunito, sans-serif" font-size="10" font-weight="700" fill="#2F6485">intralaminar nuclei</text>
+          <text x="200" y="150" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9" fill="#C85A3E" font-weight="700">✕ signal disrupted here</text>
+          <line x1="200" y1="128" x2="200" y2="170" stroke="#9A8F7B" stroke-width="2" stroke-dasharray="3 3" marker-end="url(#arr3)"/>
+          <rect x="140" y="172" width="120" height="34" rx="8" fill="#F6F1E6" stroke="#9A8F7B" stroke-width="1.3"/>
+          <text x="200" y="193" text-anchor="middle" font-family="Nunito, sans-serif" font-size="10" font-weight="700" fill="#6B6152">Brainstem reticular formation</text>
+          <defs><marker id="arr3" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#9A8F7B"/></marker></defs>
+        </svg>
+      </div>
+      <p>Ascending arousal signals from the brainstem reticular formation relay through the intralaminar and paramedian thalamic nuclei on their way to diffusely activate the cortex. A graded lesion here produces a graded arousal deficit — not an all-or-nothing switch.</p>
+      <div class="takeaway">
+        <span class="tk-label">Tied to this patient</span>
+        <p style="margin:0">Her course traces that gradient exactly: early disruption first shows up as insomnia, then progresses to profound hypersomnolence, and finally to unrousable coma as the relay fails more completely.</p>
+      </div>
+    </div>
+
+    <!-- Card 4: Two strokes, two territories -->
+    <div class="card">
+      <span class="dd-tag" style="background:var(--teal-bg);color:var(--teal)">Localization</span>
+      <div class="card-title">Two Strokes, Two Territories</div>
+      <table class="ref-table">
+        <thead><tr><th></th><th>2 years ago</th><th>This admission</th></tr></thead>
+        <tbody>
+          <tr><td>Territory</td><td>Anterolateral (dominant side)</td><td>Paramedian, bilateral</td></tr>
+          <tr><td>Key deficits</td><td>Right facial weakness, dysphasia</td><td>Confusion, amnesia/confabulation, agitation</td></tr>
+          <tr><td>Sleep-wake</td><td>Not affected</td><td>Insomnia → hypersomnolence → coma</td></tr>
+          <tr class="this-pt"><td>Course</td><td>Fully resolved in 2 weeks</td><td>Progressive decline, death<span class="mini-tag">this admission</span></td></tr>
+        </tbody>
+      </table>
+      <div class="takeaway">
+        <span class="tk-label">Tied to this patient</span>
+        <p style="margin:0">Same patient, same vascular risk factors, two different thalamic perforator territories years apart — a clean illustration of how much the clinical picture changes depending on exactly which small vessel is involved.</p>
+      </div>
+    </div>
+
+    <!-- Card 5: Arterial vs venous mimic -->
+    <div class="card">
+      <span class="dd-tag" style="background:var(--sky-bg);color:var(--sky)">Trajectory / workup</span>
+      <div class="card-title">Bilateral Thalamic Injury: Arterial vs. Venous</div>
+      <table class="ref-table">
+        <thead><tr><th>Feature</th><th>Artery of Percheron infarct</th><th>Deep venous thrombosis</th></tr></thead>
+        <tbody>
+          <tr><td>Onset</td><td>Acute</td><td>Subacute, often with headache</td></tr>
+          <tr><td>Imaging clue</td><td>DWI-restricted bilateral paramedian ± midbrain ("V sign")</td><td>Non-filling deep veins/sinus on MRV, ± hemorrhage</td></tr>
+          <tr><td>Risk factors</td><td>Vascular risk factors, embolic source</td><td>Hypercoagulable state, dehydration, infection</td></tr>
+          <tr><td>Treatment</td><td>Standard secondary stroke prevention</td><td>Anticoagulation</td></tr>
+        </tbody>
+      </table>
+      <div class="takeaway">
+        <span class="tk-label">Why it matters</span>
+        <p style="margin:0">Both can produce this exact clinical picture, but the treatments diverge completely — which is exactly why MR venography belongs in her workup alongside standard DWI imaging.</p>
+      </div>
+    </div>
+
+    <!-- Card 6: Territory comparison, matches Case 8-3 -->
+    <div class="card full">
+      <span class="dd-tag" style="background:var(--sky-bg);color:var(--sky)">Trajectory / workup</span>
+      <div class="card-title">Thalamic Vascular Syndromes at a Glance</div>
+      <table class="ref-table">
+        <thead><tr><th>Territory</th><th>Artery</th><th>Typical deficits</th></tr></thead>
+        <tbody>
+          <tr class="this-pt">
+            <td>Midline / paramedian</td>
+            <td>Paramedian branches off the basilar apex / proximal PCA</td>
+            <td>Coma or drowsiness, confusion, amnesia, confabulation, vertical gaze palsy, apathy or agitation<span class="mini-tag">this patient</span></td>
+          </tr>
+          <tr>
+            <td>Anterolateral</td>
+            <td>Tuberothalamic (polar) branches of the posterior communicating artery</td>
+            <td>Aphasia (dominant side), neglect, abulia, language and memory deficits, transient hemiparesis</td>
+          </tr>
+          <tr>
+            <td>Posterolateral</td>
+            <td>Thalamogeniculate &amp; posterior choroidal branches of the PCA</td>
+            <td>Hemisensory loss, hemiataxia, choreiform/athetoid movements, delayed central pain risk</td>
+          </tr>
+          <tr>
+            <td>Lateral / internal capsule</td>
+            <td>Anterior choroidal artery</td>
+            <td>Hemiparesis plus diminished pinprick and light touch</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="takeaway">
+        <span class="tk-label">Boards-style sort</span>
+        <p style="margin:0">Confusion, amnesia/confabulation, and a disrupted sleep-wake cycle → paramedian. Compare this to Case 8-3, where preserved cognition plus a sharp hemisensory split pointed to the posterolateral territory instead — same organ, very different bedside pictures depending on which perforator territory is hit.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="build-footer">CASE 8-4 · MEDICAL NEUROANATOMY CH. 8 · BUILT PER CASE_NOTE_BUILD_SPEC.MD</footer>
+</div>
+
+<div id="tooltip" class="tooltip" role="tooltip"></div>
+<div id="scrim" class="scrim"></div>
+<div id="panel" class="panel" role="dialog" aria-hidden="true" aria-label="Annotation detail">
+  <div class="panel-head"><button id="panelClose" class="panel-close" aria-label="Close">&times;</button></div>
+  <div id="panelBody" class="panel-body"></div>
+</div>
+
+<script>
+(function(){
+  var annotations = [
+    { id:"hl1",  cat:"finding",     title:`The presenting triad`, body:`Confusion, memory dysfunction, and sleep disturbance together are the classic clinical triad of a diencephalic (thalamic or hypothalamic) process — not what you'd expect from a focal cortical stroke, which more typically produces a single, discrete deficit like aphasia or hemiparesis.` },
+    { id:"hl2",  cat:"pattern",     title:`Acute behavioral change`, body:`A sudden shift from her usual sociable baseline into agitation and disorientation, severe enough to alarm other residents, is a red flag for an acute organic process rather than a chronic dementia. Altered personality and social behavior, including agitation and aggression, is a recognized feature of paramedian thalamic territory involvement.` },
+    { id:"hl3",  cat:"pattern",     title:`A prior, resolved neurologic event`, body:`Right facial weakness with language dysfunction that fully resolved over two weeks describes a prior stroke or TIA, most likely in the left (dominant) anterolateral thalamic territory or its cortical equivalent, given the combination of dysphasia and facial involvement. This establishes that she already had cerebrovascular disease before this admission, and it's a different vascular territory from the one implicated today.` },
+    { id:"hl4",  cat:"genetics",    title:`A reliable cognitive baseline`, body:`Documenting that she was pleasant, sociable, and had good memory right up until the day of admission is what allows you to call this an acute change rather than a slowly progressive dementia. Without this detail, her confusion and memory loss could just as easily be attributed to an underlying chronic process.` },
+    { id:"hl5",  cat:"finding",     title:`An exam limited by agitation`, body:`An agitated, uncooperative patient makes it hard to reliably test cranial nerves, strength, reflexes, and sensation. Keep this in mind throughout the rest of her exam — a "normal" finding here carries less certainty than it would in a cooperative patient.` },
+    { id:"hl6",  cat:"pattern",     title:`Nutritional status argues against Wernicke's`, body:`Being well nourished and well hydrated is a small but useful negative: it argues against thiamine deficiency (Wernicke encephalopathy) as the cause of her confusion and memory disturbance, a diagnosis that can otherwise mimic parts of this presentation in an elderly nursing-home resident.` },
+    { id:"hl7",  cat:"finding",     title:`Sympathetic activation`, body:`Elevated pulse, respiration, and a blood pressure of 190/100 mmHg show a significant sympathetic surge. In an agitated patient this could simply reflect anxiety and struggle, but it's also consistent with diencephalic autonomic dysregulation, since the paramedian thalamic territory sits adjacent to hypothalamic structures that regulate autonomic tone.` },
+    { id:"hl8",  cat:"pattern",     title:`Flushing and diaphoresis`, body:`Flushed, moist skin alongside her vital sign changes rounds out a picture of autonomic hyperactivity. This combination, agitation plus a sympathetic surge, is worth tracking against her later course, since diencephalic lesions can produce genuine autonomic instability, not just anxiety-driven vital sign changes.` },
+    { id:"hl9",  cat:"finding",     title:`Disorientation`, body:`Disorientation to time and place is a core feature of the confusional state she presented with, and it's the first data point toward localizing a lesion affecting arousal and orientation, functions the paramedian thalamus helps support as part of the ascending reticular activating pathway.` },
+    { id:"hl10", cat:"term",        title:`Confabulation`, body:`Confabulation is the production of fabricated, distorted, or misinterpreted memories without the intent to deceive; the patient believes what she's saying. It's a hallmark of diencephalic (and hippocampal) amnestic syndromes, where a damaged memory system gets "filled in" with plausible but incorrect content, exactly as she does here by insisting she was on her way shopping.` },
+    { id:"hl11", cat:"genetics",    title:`Memory couldn't be formally tested here`, body:`Her refusal to cooperate means memory wasn't formally assessed at this visit. The marked memory dysfunction and confabulation described later, at discharge, is where that deficit becomes clearly documented. Don't read too much into the absence of a memory deficit on this exam; it reflects testing limitations, not an intact memory.` },
+    { id:"hl12", cat:"localization",title:`Normal brainstem reflexes`, body:`A normal jaw-jerk and present corneal reflex are brainstem-mediated signs. Their preservation argues against a brainstem lesion and, as in Case 8-3, supports a supratentorial, diencephalic localization instead.` },
+    { id:"hl13", cat:"localization",title:`No visual pathway or eye-movement findings`, body:`Full visual fields, full range of eye movements, and no nystagmus argue against involvement of the optic pathways or brainstem ocular motor nuclei. Note, though, that formal testing of vertical gaze specifically, the classic paramedian thalamic sign, isn't described here, likely because her agitation limited detailed testing.` },
+    { id:"hl14", cat:"localization",title:`No motor pathway involvement`, body:`Normal movements, strength, and reflexes throughout mean the corticospinal tract is not involved. This fits a paramedian lesion well: the paramedian territory is medial, while the motor fibers running through the internal capsule and adjacent ventrolateral/ventroanterior nuclei sit more laterally, in territory supplied by different vessels.` },
+    { id:"hl15", cat:"localization",title:`Sensation grossly intact`, body:`Normal pinprick sensation and no detectable proprioceptive loss, as far as testing allowed, is an important contrast with Case 8-3: the ventroposterior sensory relay nuclei (VPL/VPM) sit in the posterolateral territory, not the paramedian one, so sparing of sensation here is exactly what you'd expect from a paramedian lesion.` },
+    { id:"hl16", cat:"genetics",    title:`Another testing limitation`, body:`As with memory, her sensory exam is a soft negative rather than a confident one; an uncooperative patient can make subtle sensory loss easy to miss. This is a recurring theme in her exam: agitation limits how much you can rule out today.` },
+    { id:"hl17", cat:"pattern",     title:`Insomnia — the first sleep-wake disruption`, body:`Three days of insomnia while hospitalized is an early sign of a disrupted sleep-wake system. The paramedian thalamus carries fibers of the ascending reticular activating system, so lesions here characteristically produce sleep-wake abnormalities, and hers will evolve dramatically over the following weeks.` },
+    { id:"hl18", cat:"pattern",     title:`The amnestic-confabulatory syndrome, now fully apparent`, body:`By discharge, her memory dysfunction and confabulation are clearly established, the diencephalic amnestic syndrome driven by damage to the dorsomedial nucleus and/or the mammillothalamic tract, structures within the paramedian territory that feed into the same memory circuit (the Papez circuit) damaged in Korsakoff's psychosis.` },
+    { id:"hl19", cat:"pattern",     title:`Hypersomnolence — the sentinel bilateral sign`, body:`Marked hypersomnia progressing to being difficult to rouse is specifically called out as a feature of bilateral paramedian thalamic lesions. This is the single most important clue in her whole case: it suggests both sides of the diencephalon are now involved, not just one, and it signals a far more dangerous trajectory than a unilateral thalamic stroke.` },
+    { id:"hl20", cat:"genetics",    title:`A fatal outcome`, body:`Death one week after returning to the hospital reflects how serious bilateral paramedian thalamic injury can be. It can progress to unrousable coma via disruption of the ascending reticular activating system, and unlike Case 8-3's favorable outcome, this territory and this degree of bilateral involvement carries a genuinely poor prognosis.` }
+  ];
+
+  var catLabel = { localization:"Localization", finding:"Exam finding", term:"Terminology", pattern:"Pattern clue", genetics:"Trajectory" };
+  var catVar   = { localization:"--teal", finding:"--coral", term:"--gold", pattern:"--violet", genetics:"--sky" };
+  var catBgVar = { localization:"--teal-bg", finding:"--coral-bg", term:"--gold-bg", pattern:"--violet-bg", genetics:"--sky-bg" };
+
+  var byId = {};
+  annotations.forEach(function(a, i){ a.number = i + 1; byId[a.id] = a; });
+
+  var tooltip = document.getElementById('tooltip');
+  var panel = document.getElementById('panel');
+  var scrim = document.getElementById('scrim');
+  var panelBody = document.getElementById('panelBody');
+  var panelClose = document.getElementById('panelClose');
+
+  var hoverCapable = window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+  function firstSentence(text){
+    var idx = text.indexOf('. ');
+    return idx > -1 ? text.slice(0, idx + 1) : text;
+  }
+
+  function showTooltip(mark, ann){
+    var eyebrow = catLabel[ann.cat] + " · " + ann.number;
+    tooltip.innerHTML =
+      '<div class="t-eyebrow" style="color:var(' + catVar[ann.cat] + ')">' + eyebrow + '</div>' +
+      '<div class="t-title">' + ann.title + '</div>' +
+      '<div class="t-teaser">' + firstSentence(ann.body) + '</div>';
+    var r = mark.getBoundingClientRect();
+    tooltip.style.left = Math.max(8, Math.min(r.left, window.innerWidth - 296)) + 'px';
+    tooltip.style.top = (r.bottom + 8) + 'px';
+    tooltip.classList.add('visible');
+    requestAnimationFrame(function(){
+      var th = tooltip.offsetHeight;
+      var top = r.bottom + 8;
+      if (top + th > window.innerHeight - 10) {
+        top = r.top - th - 8;
+      }
+      tooltip.style.top = Math.max(8, top) + 'px';
+    });
+  }
+  function hideTooltip(){ tooltip.classList.remove('visible'); }
+
+  function openPanel(ann){
+    var eyebrow = catLabel[ann.cat] + " · " + ann.number;
+    panelBody.innerHTML =
+      '<div class="panel-eyebrow" style="color:var(' + catVar[ann.cat] + ')">' + eyebrow + '</div>' +
+      '<h3 class="panel-title">' + ann.title + '</h3>' +
+      '<span class="panel-cat-tag" style="background:var(' + catBgVar[ann.cat] + ');color:var(' + catVar[ann.cat] + ')">' + catLabel[ann.cat] + '</span>' +
+      '<p class="panel-text">' + ann.body + '</p>';
+    panel.classList.add('visible');
+    scrim.classList.add('visible');
+    panel.setAttribute('aria-hidden', 'false');
+  }
+  function closePanel(){
+    panel.classList.remove('visible');
+    scrim.classList.remove('visible');
+    panel.setAttribute('aria-hidden', 'true');
+  }
+
+  var marks = document.querySelectorAll('mark.hl');
+  for (var i = 0; i < marks.length; i++){
+    (function(mark){
+      var ann = byId[mark.id];
+      if (!ann) return;
+      if (hoverCapable){
+        mark.addEventListener('mouseenter', function(){ showTooltip(mark, ann); });
+        mark.addEventListener('mouseleave', hideTooltip);
+      }
+      mark.addEventListener('click', function(e){ e.stopPropagation(); hideTooltip(); openPanel(ann); });
+      mark.addEventListener('keypress', function(e){ if (e.key === 'Enter'){ openPanel(ann); } });
+    })(marks[i]);
+  }
+
+  panelClose.addEventListener('click', closePanel);
+  scrim.addEventListener('click', closePanel);
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closePanel(); });
+})();
+</script>
+</body>
+</html>

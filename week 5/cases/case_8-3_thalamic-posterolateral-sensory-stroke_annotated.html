@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Case 8-3 — Thalamic Posterolateral Sensory Stroke</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Nunito:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#F6F1E6;
+  --paper:#FCFAF3;
+  --ink:#2A241C;
+  --ink-soft:#6B6152;
+  --ink-faint:#9A8F7B;
+  --line:#DED2B6;
+  --line-soft:#EAE0C9;
+
+  --coral:#C85A3E;   --coral-bg:#F7E4DB;
+  --teal:#256B63;    --teal-bg:#DFEDE8;
+  --gold:#A47A1F;    --gold-bg:#F3E7C6;
+  --violet:#6B5390;  --violet-bg:#E9E2F1;
+  --sky:#2F6485;     --sky-bg:#DEE9EF;
+
+  --radius:10px;
+  --shadow:0 1px 2px rgba(42,36,28,.06), 0 8px 24px -12px rgba(42,36,28,.18);
+}
+
+*{ box-sizing:border-box; }
+html,body{ margin:0; padding:0; }
+body{
+  background:var(--cream);
+  color:var(--ink);
+  font-family:'Crimson Pro', Georgia, serif;
+  font-size:18px;
+  line-height:1.68;
+  -webkit-font-smoothing:antialiased;
+}
+
+.page{ max-width:1120px; margin:0 auto; padding:44px 24px 90px; }
+
+/* ---------- Header ---------- */
+.top-eyebrow{ font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:6px; }
+h1.case-title{ font-family:'Crimson Pro',serif; font-weight:700; font-size:clamp(28px,4vw,38px); margin:0 0 8px; color:var(--ink); letter-spacing:-0.01em; }
+.subtitle{ font-family:'Nunito',sans-serif; color:var(--ink-soft); font-size:15.5px; margin-bottom:20px; max-width:700px; }
+
+.meta-chips{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:24px; }
+.chip{ font-family:'Nunito',sans-serif; font-size:13px; font-weight:700; padding:6px 13px; border-radius:999px; background:var(--paper); border:1px solid var(--line); color:var(--ink-soft); }
+
+.legend{ display:flex; flex-wrap:wrap; gap:16px; padding:14px 18px; background:var(--paper); border:1px solid var(--line-soft); border-radius:var(--radius); margin-bottom:44px; font-family:'Nunito',sans-serif; font-size:13px; color:var(--ink-soft); box-shadow:var(--shadow); }
+.legend-title{ font-family:'IBM Plex Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-faint); width:100%; margin-bottom:2px; }
+.legend-item{ display:flex; align-items:center; gap:7px; }
+.legend-swatch{ width:12px; height:12px; border-radius:3px; flex:0 0 auto; }
+
+/* ---------- Case column ---------- */
+.case-column{ max-width:800px; margin:0 auto 40px; }
+.case-section{ margin-bottom:36px; }
+.case-section > h2{ font-family:'IBM Plex Mono',monospace; font-size:12.5px; text-transform:uppercase; letter-spacing:.09em; color:var(--ink-faint); border-bottom:1px solid var(--line-soft); padding-bottom:9px; margin:0 0 15px; font-weight:600; }
+.case-section p{ margin:0 0 14px; color:var(--ink); }
+.subhead-label{ font-weight:700; font-family:'Nunito',sans-serif; color:var(--ink); font-size:0.92em; letter-spacing:.01em; }
+
+mark.hl{ padding:0.5px 3px; border-radius:4px; cursor:pointer; font-weight:600; box-decoration-break:clone; -webkit-box-decoration-break:clone; }
+mark.hl[data-cat="localization"]{ background:var(--teal-bg); color:var(--teal); }
+mark.hl[data-cat="finding"]{ background:var(--coral-bg); color:var(--coral); }
+mark.hl[data-cat="term"]{ background:var(--gold-bg); color:var(--gold); }
+mark.hl[data-cat="pattern"]{ background:var(--violet-bg); color:var(--violet); }
+mark.hl[data-cat="genetics"]{ background:var(--sky-bg); color:var(--sky); }
+mark.hl:hover{ filter:brightness(0.94); }
+mark.hl:focus-visible{ outline:2px solid var(--ink); outline-offset:2px; }
+.hl-badge{ font-family:'IBM Plex Mono',monospace; font-size:10px; vertical-align:super; margin-left:1px; opacity:.7; font-weight:600; }
+
+.questions-list{ padding-left:24px; margin:0; }
+.questions-list li{ margin-bottom:11px; color:var(--ink-soft); font-family:'Crimson Pro',serif; }
+.questions-note{ font-family:'Nunito',sans-serif; font-size:13px; color:var(--ink-faint); font-style:italic; margin:-4px 0 18px; }
+
+/* ---------- Tooltip ---------- */
+.tooltip{ position:fixed; max-width:280px; background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:11px 13px; font-family:'Nunito',sans-serif; font-size:13px; z-index:500; opacity:0; pointer-events:none; transition:opacity .12s ease; }
+.tooltip.visible{ opacity:1; }
+.tooltip .t-eyebrow{ font-family:'IBM Plex Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:.07em; margin-bottom:4px; font-weight:700; }
+.tooltip .t-title{ font-weight:800; font-size:14px; margin-bottom:4px; color:var(--ink); font-family:'Nunito',sans-serif; }
+.tooltip .t-teaser{ color:var(--ink-soft); font-size:12.5px; line-height:1.45; }
+
+/* ---------- Docked panel ---------- */
+.scrim{ position:fixed; inset:0; background:rgba(42,36,28,.28); opacity:0; pointer-events:none; transition:opacity .18s ease; z-index:600; }
+.scrim.visible{ opacity:1; pointer-events:auto; }
+.panel{ position:fixed; background:var(--paper); box-shadow:var(--shadow); z-index:700; display:flex; flex-direction:column; }
+@media (min-width:1000px){
+  .panel{ top:0; right:0; height:100vh; width:400px; max-width:92vw; border-left:1px solid var(--line); transform:translateX(100%); transition:transform .22s ease; }
+  .panel.visible{ transform:translateX(0); }
+}
+@media (max-width:999px){
+  .panel{ left:0; right:0; bottom:0; max-height:78vh; border-radius:16px 16px 0 0; border-top:1px solid var(--line); transform:translateY(100%); transition:transform .22s ease; }
+  .panel.visible{ transform:translateY(0); }
+}
+.panel-head{ display:flex; justify-content:flex-end; align-items:flex-start; padding:14px 14px 0; }
+.panel-close{ background:none; border:none; font-size:24px; line-height:1; color:var(--ink-faint); cursor:pointer; padding:4px 10px; border-radius:6px; font-family:'Nunito',sans-serif; }
+.panel-close:hover{ background:var(--line-soft); color:var(--ink); }
+.panel-body{ padding:6px 26px 36px; overflow-y:auto; }
+.panel-eyebrow{ font-family:'IBM Plex Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:.08em; font-weight:700; margin-bottom:8px; }
+.panel-title{ font-family:'Crimson Pro',serif; font-size:23px; font-weight:700; color:var(--ink); margin:0 0 10px; line-height:1.3; }
+.panel-cat-tag{ display:inline-block; font-family:'Nunito',sans-serif; font-size:11px; font-weight:700; padding:4px 12px; border-radius:999px; margin-bottom:16px; }
+.panel-text{ font-family:'Nunito',sans-serif; font-size:15px; line-height:1.65; color:var(--ink-soft); }
+
+/* ---------- Section headings ---------- */
+.section-heading{ text-align:center; margin:70px 0 30px; }
+.section-heading .top-eyebrow{ margin-bottom:8px; }
+.section-heading h2{ font-family:'Crimson Pro',serif; font-size:clamp(24px,3vw,30px); font-weight:700; margin:0; color:var(--ink); }
+.section-heading p{ font-family:'Nunito',sans-serif; color:var(--ink-soft); font-size:14.5px; max-width:600px; margin:8px auto 0; }
+
+/* ---------- Grids / cards ---------- */
+.reasoning-grid, .deepdive-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+@media (max-width:999px){ .reasoning-grid, .deepdive-grid{ grid-template-columns:repeat(2,1fr); } }
+@media (max-width:640px){ .reasoning-grid, .deepdive-grid{ grid-template-columns:1fr; } }
+.card{ background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:22px; }
+.card.full{ grid-column:1 / -1; }
+.card h3.card-eyebrow{ font-family:'IBM Plex Mono',monospace; font-size:11.5px; text-transform:uppercase; letter-spacing:.07em; color:var(--ink-faint); margin:0 0 10px; font-weight:700; }
+.card .card-title{ font-family:'Crimson Pro',serif; font-weight:700; font-size:19px; margin:0 0 12px; color:var(--ink); }
+.card p{ font-family:'Nunito',sans-serif; font-size:14.5px; line-height:1.65; color:var(--ink-soft); margin:0 0 8px; }
+
+/* ---------- Differential table ---------- */
+table.diff-table{ width:100%; border-collapse:collapse; font-family:'Nunito',sans-serif; font-size:13.5px; }
+table.diff-table th, table.diff-table td{ text-align:left; padding:11px 13px; border-bottom:1px solid var(--line-soft); vertical-align:top; }
+table.diff-table th{ font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-faint); font-weight:700; }
+table.diff-table td{ color:var(--ink-soft); }
+tr.lead-dx{ background:var(--teal-bg); }
+tr.lead-dx td{ color:var(--ink); font-weight:600; }
+tr.lead-dx td:first-child{ color:var(--teal); }
+.tag-most-likely{ display:inline-block; background:var(--teal); color:var(--paper); font-family:'IBM Plex Mono',monospace; font-size:9.5px; font-weight:600; padding:2px 8px; border-radius:999px; margin-left:8px; vertical-align:middle; letter-spacing:.04em; }
+
+/* ---------- Workup flow ---------- */
+.workup-step{ display:flex; gap:14px; margin-bottom:17px; }
+.workup-step:last-child{ margin-bottom:0; }
+.workup-num{ flex:0 0 auto; width:28px; height:28px; border-radius:50%; background:var(--sky-bg); color:var(--sky); font-family:'IBM Plex Mono',monospace; font-weight:700; display:flex; align-items:center; justify-content:center; font-size:13px; margin-top:1px; }
+.workup-content{ font-family:'Nunito',sans-serif; font-size:14.5px; color:var(--ink-soft); line-height:1.55; }
+.workup-content b{ color:var(--ink); font-weight:700; }
+.workup-content .sub{ display:block; font-size:13px; color:var(--ink-faint); margin-top:3px; }
+
+/* ---------- Management checklist ---------- */
+.mgmt-checklist{ list-style:none; padding:0; margin:0; font-family:'Nunito',sans-serif; font-size:14.5px; color:var(--ink-soft); }
+.mgmt-checklist li{ padding-left:28px; position:relative; margin-bottom:11px; line-height:1.5; }
+.mgmt-checklist li:last-child{ margin-bottom:0; }
+.mgmt-checklist li::before{ content:"✓"; position:absolute; left:0; top:0; color:var(--teal); font-weight:700; }
+
+/* ---------- Deep dive ---------- */
+.dd-tag{ display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:10px; text-transform:uppercase; padding:3px 10px; border-radius:999px; margin-bottom:12px; font-weight:700; letter-spacing:.04em; }
+.takeaway{ margin-top:14px; padding-top:13px; border-top:1px dashed var(--line); }
+.takeaway .tk-label{ font-family:'Nunito',sans-serif; font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-faint); font-weight:800; display:block; margin-bottom:5px; }
+.dd-svg-wrap{ background:var(--cream); border:1px solid var(--line-soft); border-radius:8px; padding:10px; margin-bottom:14px; }
+.dd-svg-wrap svg{ width:100%; height:auto; display:block; }
+
+table.ref-table{ width:100%; border-collapse:collapse; font-family:'Nunito',sans-serif; font-size:12.5px; }
+table.ref-table th, table.ref-table td{ text-align:left; padding:8px 9px; border-bottom:1px solid var(--line-soft); vertical-align:top; }
+table.ref-table th{ font-size:10px; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-faint); font-weight:700; }
+table.ref-table td{ color:var(--ink-soft); }
+tr.this-pt{ background:var(--sky-bg); }
+tr.this-pt td{ color:var(--ink); font-weight:600; }
+.mini-tag{ font-family:'IBM Plex Mono',monospace; font-size:9px; background:var(--sky); color:var(--paper); padding:1px 7px; border-radius:999px; margin-left:6px; }
+
+.icon-list{ list-style:none; padding:0; margin:0 0 4px; }
+.icon-list li{ display:flex; gap:10px; padding:8px 0; border-bottom:1px solid var(--line-soft); font-family:'Nunito',sans-serif; font-size:13.5px; color:var(--ink-soft); align-items:flex-start; }
+.icon-list li:last-child{ border-bottom:none; }
+.icon-dot{ flex:0 0 auto; width:8px; height:8px; border-radius:50%; background:var(--gold); margin-top:6px; }
+.icon-list b{ color:var(--ink); }
+
+footer.build-footer{ margin-top:64px; text-align:center; font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--ink-faint); letter-spacing:.03em; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div class="top-eyebrow">Medical Neuroanatomy · Chapter 8 — Thalamus</div>
+    <h1 class="case-title">Case Study 8-3</h1>
+    <p class="subtitle">A 55-year-old man with sudden left-sided sensory loss and eyes-closed athetoid movements — a thalamic pure sensory stroke unfolding against a backdrop of longstanding myotonic dystrophy.</p>
+    <div class="meta-chips">
+      <span class="chip">55 M</span>
+      <span class="chip">Acute onset</span>
+      <span class="chip">Left hemibody sensory loss</span>
+      <span class="chip">Pseudoathetosis</span>
+      <span class="chip">Comorbid: Myotonic dystrophy (DM1)</span>
+    </div>
+    <div class="legend">
+      <div class="legend-title">Annotation key — click or tap any highlighted phrase</div>
+      <div class="legend-item"><span class="legend-swatch" style="background:var(--teal)"></span>Localization</div>
+      <div class="legend-item"><span class="legend-swatch" style="background:var(--coral)"></span>Exam finding</div>
+      <div class="legend-item"><span class="legend-swatch" style="background:var(--gold)"></span>Terminology</div>
+      <div class="legend-item"><span class="legend-swatch" style="background:var(--violet)"></span>Pattern clue</div>
+      <div class="legend-item"><span class="legend-swatch" style="background:var(--sky)"></span>Trajectory / workup</div>
+    </div>
+  </header>
+
+  <main class="case-column">
+
+    <section class="case-section" id="chief-complaint">
+      <h2>Chief Complaint</h2>
+      <p>A 55-year-old man presents with <mark class="hl" data-cat="finding" id="hl1" tabindex="0">left-sided sensory loss</mark><sup class="hl-badge">1</sup> and <mark class="hl" data-cat="term" id="hl2" tabindex="0">athetotic movements</mark><sup class="hl-badge">2</sup>.</p>
+    </section>
+
+    <section class="case-section" id="hpi">
+      <h2>History of Chief Complaint</h2>
+      <p>This 55-year-old man experienced a <mark class="hl" data-cat="genetics" id="hl3" tabindex="0">sudden onset</mark><sup class="hl-badge">3</sup> of numbness in his left upper limb while eating supper. When it persisted, he consulted his family physician.</p>
+    </section>
+
+    <section class="case-section" id="medical-history">
+      <h2>Medical History</h2>
+      <p>At the time of examination he was unmarried and worked in a factory performing quality-control inspections. Both of his parents were alive, and he had lived with them all his life. He was diagnosed with <mark class="hl" data-cat="term" id="hl4" tabindex="0">myotonic dystrophy</mark><sup class="hl-badge">4</sup> at 33 years of age; its course had been a <mark class="hl" data-cat="finding" id="hl5" tabindex="0">slow, progressive increase in proximal muscle weakness</mark><sup class="hl-badge">5</sup> since that time.</p>
+    </section>
+
+    <section class="case-section" id="general-pe">
+      <h2>General Physical Examination</h2>
+      <p>The patient was an awake and oriented male with significant <mark class="hl" data-cat="finding" id="hl6" tabindex="0">muscle wasting, especially in the proximal limb muscles</mark><sup class="hl-badge">6</sup>. His movements were punctuated by <mark class="hl" data-cat="term" id="hl7" tabindex="0">occasional tonic muscle contractions of considerable force</mark><sup class="hl-badge">7</sup>. He appeared older than his stated age. The <mark class="hl" data-cat="finding" id="hl8" tabindex="0">center of the lens in each eye was significantly grayed</mark><sup class="hl-badge">8</sup>, obscuring observation of the optic discs. His blood pressure, respiration, and temperature were all within the normal ranges. His chest was clear to auscultation. The abdomen was soft with no tenderness. A <mark class="hl" data-cat="finding" id="hl9" tabindex="0">reducible mass was present in the inguinal region</mark><sup class="hl-badge">9</sup> on the right. The cataracts, myotonia, and proximal muscle weakness were of long duration.</p>
+    </section>
+
+    <section class="case-section" id="neuro-exam">
+      <h2>Neurologic Examination</h2>
+      <p><span class="subhead-label">Mental Status.</span> He was awake and oriented to time and place. Normal mental status was found on all tests except for a <mark class="hl" data-cat="pattern" id="hl10" tabindex="0">short-term visual memory deficit</mark><sup class="hl-badge">10</sup> discovered during a neuropsychological examination at a later date; there was <mark class="hl" data-cat="localization" id="hl11" tabindex="0">no significant amnesia or aphasia</mark><sup class="hl-badge">11</sup>.</p>
+      <p><span class="subhead-label">Cranial Nerves.</span> <mark class="hl" data-cat="localization" id="hl12" tabindex="0">Visual fields were full to confrontation</mark><sup class="hl-badge">12</sup> (however, visual acuity was poor), a full range of eye movements was possible, and no nystagmus was present. Facial expression was full and smiling was symmetric. His hearing was normal in both ears. <mark class="hl" data-cat="localization" id="hl13" tabindex="0">Jaw-jerk and corneal reflexes were physiologic</mark><sup class="hl-badge">13</sup>. The palate was elevated on the midline and tongue protruded midline. Shoulder shrug was bilaterally symmetric. Swallowing and voice were normal.</p>
+      <p><span class="subhead-label">Motor Systems.</span> Extended periods of <mark class="hl" data-cat="term" id="hl14" tabindex="0">tonic muscle contractions followed some of his movements in all extremities; these lessened with repetitive motion</mark><sup class="hl-badge">14</sup>. Muscle strength was diminished, with considerable wasting present in the proximal muscles of the shoulders and pelvis. His <mark class="hl" data-cat="finding" id="hl15" tabindex="0">tendon reflexes were diminished but symmetric</mark><sup class="hl-badge">15</sup> in all extremities, and <mark class="hl" data-cat="localization" id="hl16" tabindex="0">plantar reflexes were flexor</mark><sup class="hl-badge">16</sup>. His left hand exhibited <mark class="hl" data-cat="pattern" id="hl17" tabindex="0">movements of an athetoid character, but only when he closed his eyes</mark><sup class="hl-badge">17</sup>.</p>
+      <p><span class="subhead-label">Sensation.</span> He had loss of sensation on the left side of his torso and face, and left extremities for <mark class="hl" data-cat="finding" id="hl18" tabindex="0">pinprick, light touch, proprioception, vibration, two-point discrimination, graphesthesia, and stereognosis</mark><sup class="hl-badge">18</sup>. There was an <mark class="hl" data-cat="pattern" id="hl19" tabindex="0">abrupt vertical boundary to the sensory loss along the midline of the torso</mark><sup class="hl-badge">19</sup>. <mark class="hl" data-cat="genetics" id="hl20" tabindex="0">No hyperesthesia or dysesthesia</mark><sup class="hl-badge">20</sup> was noted.</p>
+    </section>
+
+    <section class="case-section" id="follow-up">
+      <h2>Follow-up</h2>
+      <p>Examination five months following this incident found the <mark class="hl" data-cat="genetics" id="hl21" tabindex="0">dystonic character of his movements unchanged</mark><sup class="hl-badge">21</sup>, and his strength remained diminished. The athetotic movements of the left hand still occurred when he closed his eyes, however the <mark class="hl" data-cat="genetics" id="hl22" tabindex="0">sensory losses on the left side of his body were no longer detectable</mark><sup class="hl-badge">22</sup>.</p>
+    </section>
+
+    <section class="case-section" id="questions">
+      <h2>Questions</h2>
+      <p class="questions-note">Answered point-by-point in the Clinical Reasoning Walkthrough below.</p>
+      <ol class="questions-list">
+        <li>Has the patient experienced any changes in consciousness or cognition, language function or spatial recognition, personality or emotional behavior, or any loss in memory?</li>
+        <li>Does the patient exhibit any loss of vision and if so, where in the visual field is the loss? Are there any visual hallucinations present in this patient?</li>
+        <li>Are there any changes in cranial nerve function and if so, are they signs of suprasegmental or segmental level defects?</li>
+        <li>Are there any changes in motor function such as reflexes, muscle tone, movement, or coordination and if so, are they signs of suprasegmental or segmental level defects?</li>
+        <li>Are there any changes in sensory function and if so, what levels of the body have experienced this change?</li>
+        <li>What is the clinical temporal profile of this patient's neurologic problem: is the onset of neurologic findings acute or insidious, is the course of the neurologic disease chronically progressive, fluctuant or stable?</li>
+        <li>Based on the presenting signs and symptoms, do you think the distribution of the neurologic pathology is focal, multifocal or diffuse?</li>
+        <li>Based on the answers to these questions develop a differential diagnosis of the patient's neurological problem?</li>
+        <li>If the origin of the pathology is vascular, what arterial supply is most likely involved with the lesion in this patient?</li>
+      </ol>
+    </section>
+
+  </main>
+
+  <!-- ================= CLINICAL REASONING WALKTHROUGH ================= -->
+  <div class="section-heading">
+    <div class="top-eyebrow">Clinical Reasoning Walkthrough</div>
+    <h2>From findings to localization</h2>
+    <p>Built from the case findings plus the chapter's thalamic vascular-territory material (no small-group transcript was provided for this case).</p>
+  </div>
+
+  <div class="reasoning-grid">
+
+    <div class="card">
+      <h3 class="card-eyebrow">01 · Localization</h3>
+      <p>This is a <b style="color:var(--ink)">suprasegmental, sensory-only</b> syndrome localizing to the thalamus — specifically the <b style="color:var(--ink)">ventroposterior nuclear complex</b> (VPL for the body, VPM for the face), which relays pain, temperature, touch, proprioception, and vibration en route to the postcentral gyrus. Complete face + trunk + limb loss, a sharp midline boundary, an otherwise intact motor/cranial nerve/cognitive exam, and pseudoathetosis together form the textbook picture of Fisher's <i>pure sensory stroke</i> — distinguishing it from a cortical, brainstem, or peripheral lesion.</p>
+    </div>
+
+    <div class="card">
+      <h3 class="card-eyebrow">02 · Distribution</h3>
+      <p><b style="color:var(--ink)">Focal</b> — a single, discrete vascular territory (the posterolateral thalamus) rather than multifocal or diffuse disease. Every finding is unilateral and confined to one functional structure; there's no evidence of bihemispheric, multifocal, or systemic involvement.</p>
+    </div>
+
+    <div class="card">
+      <h3 class="card-eyebrow">03 · Time Course</h3>
+      <p><b style="color:var(--ink)">Acute</b> — numbness began abruptly during a meal, the classic vascular signature, rather than evolving over days as a mass lesion or demyelinating process would. The subsequent course was one of gradual improvement (sensory loss undetectable by 5 months), consistent with a single ischemic event rather than an expanding one.</p>
+    </div>
+
+    <div class="card full">
+      <h3 class="card-eyebrow">04 · Differential Diagnosis</h3>
+      <table class="diff-table">
+        <thead>
+          <tr><th>Diagnosis</th><th>Fits</th><th>Argues against</th></tr>
+        </thead>
+        <tbody>
+          <tr class="lead-dx">
+            <td>Posterolateral thalamic infarct (VPL/VPM territory)<span class="tag-most-likely">Most likely</span></td>
+            <td>Acute onset; complete hemibody + face loss of every modality; knife-edge midline split; pseudoathetosis from proprioceptive loss; no motor, cranial nerve, or major cognitive deficit; resolved over months, typical of a small deep infarct.</td>
+            <td>Nothing in the case argues against it.</td>
+          </tr>
+          <tr>
+            <td>Cortical (postcentral gyrus) pure sensory stroke</td>
+            <td>Can also produce a contralateral pure sensory syndrome.</td>
+            <td>Cortical lesions rarely split precisely at the anatomic midline, and usually spare some modalities (e.g. pain intact, discriminative touch lost) rather than losing all seven modalities equally.</td>
+          </tr>
+          <tr>
+            <td>Brainstem lesion (medial lemniscus / lateral spinothalamic level)</td>
+            <td>Can cause hemisensory loss.</td>
+            <td>A fully normal, symmetric cranial nerve exam is hard to reconcile with a brainstem lesion, where sensory and cranial nerve pathways are tightly packed together.</td>
+          </tr>
+          <tr>
+            <td>Peripheral nerve, plexus, or nerve root lesion</td>
+            <td>Can cause focal sensory loss.</td>
+            <td>Doesn't explain combined face + trunk + limb loss in one event, and peripheral/dermatomal patterns don't produce a sharp anatomic midline split.</td>
+          </tr>
+          <tr>
+            <td>Myotonic dystrophy — disease flare</td>
+            <td>Explains the chronic motor findings (wasting, myotonia, reduced reflexes).</td>
+            <td>DM1 is a myopathy — it doesn't cause acute-onset hemisensory loss or pseudoathetosis.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card full">
+      <h3 class="card-eyebrow">05 · Diagnostic Workup</h3>
+      <div class="workup-flow">
+        <div class="workup-step">
+          <div class="workup-num">1</div>
+          <div class="workup-content"><b>Non-contrast CT head</b> at presentation<span class="sub">Fast, bedside triage step to exclude hemorrhage before anything else.</span></div>
+        </div>
+        <div class="workup-step">
+          <div class="workup-num">2</div>
+          <div class="workup-content"><b>MRI brain with DWI</b><span class="sub">The confirmatory study — expect restricted diffusion in the posterolateral thalamus (VPL/VPM). Small, deep infarcts like this are frequently CT-negative early on.</span></div>
+        </div>
+        <div class="workup-step">
+          <div class="workup-num">3</div>
+          <div class="workup-content"><b>Vascular imaging (MRA/CTA)</b><span class="sub">Look for disease along the PCA and its thalamogeniculate branches, the vessel implicated by the posterolateral territory.</span></div>
+        </div>
+        <div class="workup-step">
+          <div class="workup-num">4</div>
+          <div class="workup-content"><b>Stroke etiology workup</b> — echocardiogram, carotid/vertebral duplex, telemetry/EKG<span class="sub">Standard secondary-prevention workup to identify a cardioembolic or large-vessel source.</span></div>
+        </div>
+        <div class="workup-step">
+          <div class="workup-num">5</div>
+          <div class="workup-content"><b>Formal neuropsychological testing</b><span class="sub">Already how the visual memory deficit was uncovered in this case — useful to fully characterize posterolateral (pulvinar-adjacent) territory involvement.</span></div>
+        </div>
+        <div class="workup-step">
+          <div class="workup-num">6</div>
+          <div class="workup-content"><b>Baseline myotonic dystrophy screening</b> — EKG for conduction disease, pulmonary function tests<span class="sub">Not for the stroke itself, but DM1's cardiac conduction defects and respiratory muscle weakness matter for his overall risk profile and any future anesthesia/procedures.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 class="card-eyebrow">06 · Prognosis</h3>
+      <p>Pure thalamic sensory strokes from small penetrating-artery territories, like the thalamogeniculate branches here, generally carry a favorable prognosis for the sensory deficit itself — consistent with the full resolution seen by 5 months. The main longer-term risks are <b style="color:var(--ink)">central post-stroke (Dejerine-Roussy) pain</b>, which can emerge after the numbness has already improved, and <b style="color:var(--ink)">recurrent stroke</b>, since a first thalamic infarct signals underlying cerebrovascular risk. His myotonic dystrophy will continue to progress independently of the stroke.</p>
+    </div>
+
+    <div class="card full">
+      <h3 class="card-eyebrow">07 · Management</h3>
+      <ul class="mgmt-checklist">
+        <li>Acute stroke pathway — confirm on imaging, assess reperfusion-therapy eligibility based on time since onset</li>
+        <li>Identify and treat the underlying vascular etiology: antiplatelet or anticoagulant therapy as indicated, statin, blood pressure control</li>
+        <li>Physical/occupational therapy focused on proprioceptive retraining and visual-compensation strategies for the pseudoathetosis</li>
+        <li>Monitor for central post-stroke (thalamic) pain and treat with neuropathic agents — gabapentinoids or TCAs — if it develops</li>
+        <li>Continue longitudinal myotonic dystrophy care as a separate chronic-disease track: cardiac conduction monitoring, respiratory function, cataract evaluation</li>
+        <li>Genetic counseling / family screening for myotonic dystrophy, given its autosomal dominant inheritance</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- ================= CONCEPT DEEP-DIVES ================= -->
+  <div class="section-heading">
+    <div class="top-eyebrow">Concept Deep-Dives</div>
+    <h2>The neuroanatomy behind this case</h2>
+    <p>Hand-built diagrams and reference tables — no lecture slides were provided for this case, so these are built to keep the format copyright-clean.</p>
+  </div>
+
+  <div class="deepdive-grid">
+
+    <!-- Card 1: VPL/VPM anatomy -->
+    <div class="card">
+      <span class="dd-tag" style="background:var(--teal-bg);color:var(--teal)">Localization</span>
+      <div class="card-title">The Body–Face Sensory Relay (VPL &amp; VPM)</div>
+      <div class="dd-svg-wrap">
+        <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="170" cy="105" rx="120" ry="70" fill="none" stroke="#DED2B6" stroke-width="2"/>
+          <path d="M110 60 A100 60 0 0 1 250 90 A100 60 0 0 1 200 165 A100 60 0 0 1 110 60 Z" fill="#DFEDE8" opacity="0.001"/>
+          <ellipse cx="150" cy="90" rx="60" ry="38" fill="#DFEDE8" stroke="#256B63" stroke-width="1.5"/>
+          <text x="150" y="94" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="13" font-weight="600" fill="#256B63">VPL</text>
+          <text x="150" y="108" text-anchor="middle" font-family="Nunito, sans-serif" font-size="9" fill="#256B63">body</text>
+          <ellipse cx="205" cy="130" rx="42" ry="30" fill="#DEE9EF" stroke="#2F6485" stroke-width="1.5"/>
+          <text x="205" y="133" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="600" fill="#2F6485">VPM</text>
+          <text x="205" y="146" text-anchor="middle" font-family="Nunito, sans-serif" font-size="8.5" fill="#2F6485">face</text>
+          <line x1="20" y1="90" x2="90" y2="90" stroke="#256B63" stroke-width="2" marker-end="url(#arrowT)"/>
+          <text x="20" y="80" font-family="Nunito, sans-serif" font-size="9.5" fill="#6B6152">Medial lemniscus</text>
+          <line x1="20" y1="160" x2="165" y2="140" stroke="#2F6485" stroke-width="2" marker-end="url(#arrowS)"/>
+          <text x="20" y="175" font-family="Nunito, sans-serif" font-size="9.5" fill="#6B6152">Trigeminothalamic tract</text>
+          <line x1="280" y1="100" x2="300" y2="70" stroke="#2A241C" stroke-width="2" marker-end="url(#arrowK)"/>
+          <text x="270" y="55" font-family="Nunito, sans-serif" font-size="9.5" fill="#6B6152">Postcentral gyrus (S1)</text>
+          <defs>
+            <marker id="arrowT" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#256B63"/></marker>
+            <marker id="arrowS" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#2F6485"/></marker>
+            <marker id="arrowK" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#2A241C"/></marker>
+          </defs>
+        </svg>
+      </div>
+      <p>VPL receives body sensation via the medial lemniscus (contralateral) and anterolateral system; VPM receives face sensation via the trigeminothalamic tracts. Both project topographically to the postcentral gyrus, building the sensory homunculus.</p>
+      <div class="takeaway">
+        <span class="tk-label">Tied to this patient</span>
+        <p style="margin:0">His sensory loss spans face, trunk, and limbs together — consistent with a lesion positioned centrally enough (or large enough) to involve both VPL and VPM at once, rather than sparing one representation the way a smaller, more restricted lesion often does.</p>
+      </div>
+    </div>
+
+    <!-- Card 2: Posterolateral territory fact card -->
+    <div class="card">
+      <span class="dd-tag" style="background:var(--teal-bg);color:var(--teal)">Localization</span>
+      <div class="card-title">The Posterolateral Vascular Territory</div>
+      <p><b style="color:var(--ink)">Artery:</b> Thalamogeniculate and posterior choroidal branches of the posterior cerebral artery (PCA).</p>
+      <p><b style="color:var(--ink)">Shape:</b> A dorsal wedge, lateral caudally and shifting medial rostrally.</p>
+      <p><b style="color:var(--ink)">Structures:</b> Ventroposterior nuclei (VPL/VPM), portions of the ventrolateral nucleus, pulvinar, lateroposterior nucleus, and contributions to the centromedian nucleus.</p>
+      <p><b style="color:var(--ink)">Typical deficits:</b> Hemibody sensory loss, hemiataxia, choreiform/athetoid movements, visual memory and perceptual dysfunction, and a risk of delayed central pain.</p>
+      <div class="takeaway">
+        <span class="tk-label">Tied to this patient</span>
+        <p style="margin:0">Every deficit on this list is present in this case — sensory loss, pseudoathetosis, and the visual memory deficit found on later testing — which is what makes the posterolateral territory the clean answer here.</p>
+      </div>
+    </div>
+
+    <!-- Card 3: Midline splitting -->
+    <div class="card">
+      <span class="dd-tag" style="background:var(--violet-bg);color:var(--violet)">Pattern clue</span>
+      <div class="card-title">Why the Loss Splits Exactly at the Midline</div>
+      <div class="dd-svg-wrap">
+        <svg viewBox="0 0 320 190" xmlns="http://www.w3.org/2000/svg">
+          <text x="60" y="18" text-anchor="middle" font-family="Nunito, sans-serif" font-size="10" font-weight="700" fill="#6B6152">Peripheral / root</text>
+          <circle cx="60" cy="38" r="14" fill="none" stroke="#9A8F7B" stroke-width="1.5"/>
+          <rect x="40" y="52" width="40" height="80" rx="10" fill="none" stroke="#9A8F7B" stroke-width="1.5"/>
+          <ellipse cx="52" cy="70" rx="9" ry="14" fill="#C85A3E" opacity="0.55"/>
+          <ellipse cx="70" cy="100" rx="7" ry="10" fill="#C85A3E" opacity="0.4"/>
+          <ellipse cx="45" cy="115" rx="6" ry="9" fill="#C85A3E" opacity="0.5"/>
+          <text x="60" y="150" text-anchor="middle" font-family="Nunito, sans-serif" font-size="8.5" fill="#9A8F7B">patchy, dermatomal</text>
+
+          <text x="245" y="18" text-anchor="middle" font-family="Nunito, sans-serif" font-size="10" font-weight="700" fill="#6B6152">Thalamic</text>
+          <circle cx="245" cy="38" r="14" fill="none" stroke="#9A8F7B" stroke-width="1.5"/>
+          <path d="M245 24 A14 14 0 0 0 245 52 Z" fill="#6B5390" opacity="0.55"/>
+          <rect x="225" y="52" width="40" height="80" rx="10" fill="none" stroke="#9A8F7B" stroke-width="1.5"/>
+          <rect x="225" y="52" width="20" height="80" rx="10" fill="#6B5390" opacity="0.55"/>
+          <line x1="245" y1="52" x2="245" y2="132" stroke="#6B5390" stroke-width="2"/>
+          <text x="245" y="150" text-anchor="middle" font-family="Nunito, sans-serif" font-size="8.5" fill="#9A8F7B">clean, knife-edge split</text>
+        </svg>
+      </div>
+      <p>A peripheral nerve, plexus, or root lesion produces patchy loss following that structure's own territory — never a perfectly straight line down the body's anatomic midline. The thalamus, by contrast, processes an entire contralateral body half through one relay structure.</p>
+      <div class="takeaway">
+        <span class="tk-label">Tied to this patient</span>
+        <p style="margin:0">The abrupt vertical boundary at his trunk midline is the single most useful bedside clue in this case — it's essentially impossible to produce with a peripheral lesion, and points straight at a central (thalamic) cause.</p>
+      </div>
+    </div>
+
+    <!-- Card 4: Pseudoathetosis vs true athetosis -->
+    <div class="card">
+      <span class="dd-tag" style="background:var(--violet-bg);color:var(--violet)">Pattern clue</span>
+      <div class="card-title">Pseudoathetosis vs. True Athetosis</div>
+      <table class="ref-table">
+        <thead><tr><th>Feature</th><th>True athetosis</th><th>Pseudoathetosis</th></tr></thead>
+        <tbody>
+          <tr><td>Origin</td><td>Basal ganglia dysfunction</td><td>Severe proprioceptive (large-fiber) sensory loss</td></tr>
+          <tr><td>Trigger</td><td>Continuous; worsens with movement</td><td>Appears / worsens specifically with eyes closed</td></tr>
+          <tr><td>Visual feedback</td><td>Unaffected by vision</td><td>Improves or disappears when the limb is visible</td></tr>
+          <tr><td>Company it keeps</td><td>Chorea, dystonia, rigidity</td><td>Loss of proprioception &amp; vibration sense</td></tr>
+          <tr class="this-pt"><td>This patient</td><td>—</td><td>Matches exactly<span class="mini-tag">left hand</span></td></tr>
+        </tbody>
+      </table>
+      <div class="takeaway">
+        <span class="tk-label">Tied to this patient</span>
+        <p style="margin:0">His movements are confined to the same limb as his sensory loss and appear only with the eyes closed — there's no need to invoke a second, separate basal ganglia problem when the thalamic sensory lesion already explains it fully.</p>
+      </div>
+    </div>
+
+    <!-- Card 5: Myotonic dystrophy -->
+    <div class="card">
+      <span class="dd-tag" style="background:var(--gold-bg);color:var(--gold)">Terminology</span>
+      <div class="card-title">Myotonic Dystrophy — Untangling the Chronic Findings</div>
+      <ul class="icon-list">
+        <li><span class="icon-dot"></span><span><b>Cataracts</b> — bilateral, early-onset posterior subcapsular lens changes, one of the most specific extramuscular clues</span></li>
+        <li><span class="icon-dot"></span><span><b>Myotonia</b> — delayed muscle relaxation after contraction; improves with repetition (the "warm-up phenomenon")</span></li>
+        <li><span class="icon-dot"></span><span><b>Proximal weakness &amp; wasting</b> — slowly progressive since diagnosis at age 33</span></li>
+        <li><span class="icon-dot"></span><span><b>Inguinal hernia</b> — from weakness of the abdominal wall musculature</span></li>
+        <li><span class="icon-dot"></span><span style="color:var(--ink-faint)"><b style="color:var(--ink-faint)">Not commented on here, but worth screening:</b> cardiac conduction disease, respiratory muscle weakness, frontal balding</span></li>
+      </ul>
+      <div class="takeaway">
+        <span class="tk-label">Tied to this patient</span>
+        <p style="margin:0">Every baseline finding — weakness, wasting, myotonia, cataracts, hernia, even his diminished tendon reflexes — is fully explained by 20+ years of myotonic dystrophy. Subtracting that chronic "noise" is what lets the new, purely sensory thalamic problem stand out clearly.</p>
+      </div>
+    </div>
+
+    <!-- Card 6: Territory comparison -->
+    <div class="card full">
+      <span class="dd-tag" style="background:var(--sky-bg);color:var(--sky)">Trajectory / workup</span>
+      <div class="card-title">Thalamic Vascular Syndromes at a Glance</div>
+      <table class="ref-table">
+        <thead><tr><th>Territory</th><th>Artery</th><th>Typical deficits</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Midline / paramedian</td>
+            <td>Paramedian branches off the basilar apex / proximal PCA</td>
+            <td>Coma or drowsiness, confusion, amnesia, confabulation, vertical gaze palsy, apathy or agitation</td>
+          </tr>
+          <tr>
+            <td>Anterolateral</td>
+            <td>Tuberothalamic (polar) branches of the posterior communicating artery</td>
+            <td>Aphasia (dominant side), neglect, abulia, language and memory deficits, transient hemiparesis</td>
+          </tr>
+          <tr class="this-pt">
+            <td>Posterolateral</td>
+            <td>Thalamogeniculate &amp; posterior choroidal branches of the PCA</td>
+            <td>Hemisensory loss, hemiataxia, choreiform/athetoid movements, delayed central pain risk<span class="mini-tag">this patient</span></td>
+          </tr>
+          <tr>
+            <td>Lateral / internal capsule</td>
+            <td>Anterior choroidal artery</td>
+            <td>Hemiparesis plus diminished pinprick and light touch</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="takeaway">
+        <span class="tk-label">Boards-style sort</span>
+        <p style="margin:0">Hemisensory loss with preserved cognition and language → posterolateral. Add amnesia/confabulation → paramedian. Add aphasia/neglect → anterolateral. Add hemiparesis → lateral/internal capsule.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="build-footer">CASE 8-3 · MEDICAL NEUROANATOMY CH. 8 · BUILT PER CASE_NOTE_BUILD_SPEC.MD</footer>
+</div>
+
+<div id="tooltip" class="tooltip" role="tooltip"></div>
+<div id="scrim" class="scrim"></div>
+<div id="panel" class="panel" role="dialog" aria-hidden="true" aria-label="Annotation detail">
+  <div class="panel-head"><button id="panelClose" class="panel-close" aria-label="Close">&times;</button></div>
+  <div id="panelBody" class="panel-body"></div>
+</div>
+
+<script>
+(function(){
+  var annotations = [
+    { id:"hl1",  cat:"finding",     title:`Left hemibody sensory loss`, body:`This is the presenting complaint that anchors the whole case: a large-fiber and small-fiber sensory deficit confined to one side of the body. Combined with the athetoid movements, it points toward a lesion affecting a major somatosensory relay rather than a single peripheral nerve or root.` },
+    { id:"hl2",  cat:"term",        title:`Athetosis`, body:`Athetosis describes slow, writhing, continuous involuntary movements, classically caused by basal ganglia disease. This patient's movements only appear with his eyes closed — a pattern that turns out to be pseudoathetosis rather than a true basal ganglia movement disorder (see the Sensation and Motor annotations below).` },
+    { id:"hl3",  cat:"genetics",    title:`Acute onset`, body:`Numbness that starts abruptly during a specific activity, here eating supper, rather than developing gradually over days, is the classic temporal signature of a vascular event. This detail alone should move an ischemic or hemorrhagic thalamic infarct to the top of the differential.` },
+    { id:"hl4",  cat:"term",        title:`Myotonic dystrophy (DM1)`, body:`An autosomal dominant, CTG-repeat trinucleotide disease causing myotonia (delayed muscle relaxation), progressive weakness, cataracts, and multisystem involvement. It is a pre-existing, chronic diagnosis in this patient, so it needs to be separated from his new, acute presenting complaint.` },
+    { id:"hl5",  cat:"finding",     title:`Chronic proximal weakness`, body:`This progressive proximal weakness has been present for over 20 years by the time of this presentation. It establishes his motor exam baseline, so any new motor findings need to be judged against it rather than assumed to be part of the acute event.` },
+    { id:"hl6",  cat:"finding",     title:`Proximal muscle wasting`, body:`Wasting concentrated in the shoulder and pelvic girdle muscles is consistent with his known myotonic dystrophy and is unrelated to the sensory complaint that brought him in today.` },
+    { id:"hl7",  cat:"term",        title:`Myotonia`, body:`Delayed relaxation after a voluntary muscle contraction is myotonia itself — the defining sign of myotonic dystrophy, caused by abnormal muscle membrane chloride channel function that keeps fibers depolarized after activation.` },
+    { id:"hl8",  cat:"finding",     title:`Cataracts`, body:`Early-onset, bilateral posterior subcapsular cataracts are one of the most specific extramuscular findings in myotonic dystrophy and often predate or accompany the muscle disease. They explain his poor visual acuity despite fully intact visual fields.` },
+    { id:"hl9",  cat:"finding",     title:`Inguinal hernia`, body:`Weakness of the abdominal wall musculature in myotonic dystrophy predisposes to inguinal hernias — another expected feature of his chronic disease rather than a new finding.` },
+    { id:"hl10", cat:"pattern",     title:`Short-term visual memory deficit`, body:`This subtle finding, uncovered only on later neuropsychological testing, is a recognized feature of posterolateral thalamic (pulvinar / lateroposterior) territory involvement. It's a small but important clue supporting a thalamic localization over a purely peripheral or brainstem one.` },
+    { id:"hl11", cat:"localization",title:`No amnesia or aphasia`, body:`Significant amnesia and aphasia are hallmark deficits of the anterolateral and paramedian thalamic territories, which involve the dorsomedial nucleus, mammillothalamic tract, and anterior nuclei. Their absence here argues against those territories and points toward a more posterolateral process.` },
+    { id:"hl12", cat:"localization",title:`Visual fields full to confrontation`, body:`Intact visual fields argue against involvement of the optic tract, lateral geniculate nucleus, or optic radiations — structures that sit just adjacent to the posterolateral thalamus. His reduced visual acuity is fully explained by his cataracts, not a lesion along the visual pathway.` },
+    { id:"hl13", cat:"localization",title:`Normal brainstem reflexes`, body:`A fully intact, symmetric cranial nerve exam — including brainstem-mediated reflexes like jaw-jerk and corneal — argues strongly against a brainstem lesion. It supports a supratentorial (thalamic) localization instead, where the crowded brainstem nuclei and pathways aren't at risk.` },
+    { id:"hl14", cat:"term",        title:`The "warm-up phenomenon"`, body:`Myotonia that lessens with repeated contraction is called the warm-up phenomenon, a clinically useful bedside sign for myotonic dystrophy: ask the patient to grip and release repeatedly and watch the relaxation speed up.` },
+    { id:"hl15", cat:"finding",     title:`Diminished, symmetric reflexes`, body:`Reduced deep tendon reflexes here reflect his underlying myopathy (reduced muscle bulk and contractile force), not a new corticospinal or peripheral nerve lesion. Symmetry keeps this finding tied to his chronic disease rather than the new focal event.` },
+    { id:"hl16", cat:"localization",title:`Flexor (normal) plantar responses`, body:`A flexor plantar response means there is no upper motor neuron, or corticospinal tract, involvement — important because it tells you his new lesion isn't damaging the motor pathway, only the sensory one.` },
+    { id:"hl17", cat:"pattern",     title:`Pseudoathetosis`, body:`Athetoid movements that appear only with the eyes closed are not a basal ganglia movement disorder at all — they are pseudoathetosis, produced when severe proprioceptive loss removes the limb's sense of position and vision becomes the only remaining feedback. Close the eyes, and the limb drifts and writhes without the patient's awareness.` },
+    { id:"hl18", cat:"finding",     title:`Loss of every sensory modality`, body:`Losing pinprick, light touch, proprioception, vibration, two-point discrimination, graphesthesia, and stereognosis together — both the anterolateral (pain/temperature) and dorsal column-medial lemniscus (proprioception/vibration) modalities — points to a lesion at the level where all of these pathways converge and travel together: the thalamus.` },
+    { id:"hl19", cat:"pattern",     title:`Sharp midline sensory boundary`, body:`A crisp vertical cutoff at the trunk midline is a classic sign of a central, thalamic sensory lesion. Peripheral or root-level sensory loss follows dermatomal or nerve territories and doesn't respect the anatomic midline this precisely, because it isn't produced by a single, sharply lateralized relay structure.` },
+    { id:"hl20", cat:"genetics",    title:`No dysesthesia (yet)`, body:`The absence of burning, dysesthetic pain at this visit doesn't rule out future trouble: thalamic sensory strokes involving the ventroposterior nuclei carry a real risk of later developing central post-stroke (Dejerine-Roussy) pain, sometimes weeks to months after the sensory loss itself has improved.` },
+    { id:"hl21", cat:"genetics",    title:`Motor findings unchanged at follow-up`, body:`The persistence of his baseline myotonic, dystonic-appearing movements at five months confirms they were never part of the acute event — they're simply his chronic myotonic dystrophy, present before the stroke and unaffected by it.` },
+    { id:"hl22", cat:"genetics",    title:`Sensory loss resolved`, body:`Full resolution of the hemibody sensory loss by five months is a good prognostic sign, typical of small, deep thalamic infarcts. Note that the pseudoathetosis persisted even after the measurable sensory loss resolved on formal testing — a reminder that subtle proprioceptive deficits can outlast what bedside sensory testing detects.` }
+  ];
+
+  var catLabel = { localization:"Localization", finding:"Exam finding", term:"Terminology", pattern:"Pattern clue", genetics:"Trajectory" };
+  var catVar   = { localization:"--teal", finding:"--coral", term:"--gold", pattern:"--violet", genetics:"--sky" };
+  var catBgVar = { localization:"--teal-bg", finding:"--coral-bg", term:"--gold-bg", pattern:"--violet-bg", genetics:"--sky-bg" };
+
+  var byId = {};
+  annotations.forEach(function(a, i){ a.number = i + 1; byId[a.id] = a; });
+
+  var tooltip = document.getElementById('tooltip');
+  var panel = document.getElementById('panel');
+  var scrim = document.getElementById('scrim');
+  var panelBody = document.getElementById('panelBody');
+  var panelClose = document.getElementById('panelClose');
+
+  var hoverCapable = window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+  function firstSentence(text){
+    var idx = text.indexOf('. ');
+    return idx > -1 ? text.slice(0, idx + 1) : text;
+  }
+
+  function showTooltip(mark, ann){
+    var eyebrow = catLabel[ann.cat] + " · " + ann.number;
+    tooltip.innerHTML =
+      '<div class="t-eyebrow" style="color:var(' + catVar[ann.cat] + ')">' + eyebrow + '</div>' +
+      '<div class="t-title">' + ann.title + '</div>' +
+      '<div class="t-teaser">' + firstSentence(ann.body) + '</div>';
+    var r = mark.getBoundingClientRect();
+    tooltip.style.left = Math.max(8, Math.min(r.left, window.innerWidth - 296)) + 'px';
+    tooltip.style.top = (r.bottom + 8) + 'px';
+    tooltip.classList.add('visible');
+    requestAnimationFrame(function(){
+      var th = tooltip.offsetHeight;
+      var top = r.bottom + 8;
+      if (top + th > window.innerHeight - 10) {
+        top = r.top - th - 8;
+      }
+      tooltip.style.top = Math.max(8, top) + 'px';
+    });
+  }
+  function hideTooltip(){ tooltip.classList.remove('visible'); }
+
+  function openPanel(ann){
+    var eyebrow = catLabel[ann.cat] + " · " + ann.number;
+    panelBody.innerHTML =
+      '<div class="panel-eyebrow" style="color:var(' + catVar[ann.cat] + ')">' + eyebrow + '</div>' +
+      '<h3 class="panel-title">' + ann.title + '</h3>' +
+      '<span class="panel-cat-tag" style="background:var(' + catBgVar[ann.cat] + ');color:var(' + catVar[ann.cat] + ')">' + catLabel[ann.cat] + '</span>' +
+      '<p class="panel-text">' + ann.body + '</p>';
+    panel.classList.add('visible');
+    scrim.classList.add('visible');
+    panel.setAttribute('aria-hidden', 'false');
+  }
+  function closePanel(){
+    panel.classList.remove('visible');
+    scrim.classList.remove('visible');
+    panel.setAttribute('aria-hidden', 'true');
+  }
+
+  var marks = document.querySelectorAll('mark.hl');
+  for (var i = 0; i < marks.length; i++){
+    (function(mark){
+      var ann = byId[mark.id];
+      if (!ann) return;
+      if (hoverCapable){
+        mark.addEventListener('mouseenter', function(){ showTooltip(mark, ann); });
+        mark.addEventListener('mouseleave', hideTooltip);
+      }
+      mark.addEventListener('click', function(e){ e.stopPropagation(); hideTooltip(); openPanel(ann); });
+      mark.addEventListener('keypress', function(e){ if (e.key === 'Enter'){ openPanel(ann); } });
+    })(marks[i]);
+  }
+
+  panelClose.addEventListener('click', closePanel);
+  scrim.addEventListener('click', closePanel);
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closePanel(); });
+})();
+</script>
+</body>
+</html>
