@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Case 9-1 — Acute Right-Sided Weakness &amp; Aphasia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Nunito:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#F6F1E6;
+  --paper:#FCFAF3;
+  --ink:#2A241C;
+  --ink-soft:#6B6152;
+  --ink-faint:#9A8F7B;
+  --line:#DED2B6;
+  --line-soft:#EAE0C9;
+
+  --coral:#C85A3E;   --coral-bg:#F7E4DB;
+  --teal:#256B63;    --teal-bg:#DFEDE8;
+  --gold:#A47A1F;    --gold-bg:#F3E7C6;
+  --violet:#6B5390;  --violet-bg:#E9E2F1;
+  --sky:#2F6485;     --sky-bg:#DEE9EF;
+
+  --radius:10px;
+  --shadow:0 1px 2px rgba(42,36,28,.06), 0 8px 24px -12px rgba(42,36,28,.18);
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--cream);
+  color:var(--ink);
+  font-family:'Nunito',sans-serif;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ---------- Header ---------- */
+.top{
+  max-width:800px;
+  margin:0 auto;
+  padding:36px 24px 12px;
+}
+.eyebrow{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12.5px;
+  letter-spacing:.09em;
+  text-transform:uppercase;
+  color:var(--ink-faint);
+  font-weight:600;
+}
+.case-title{
+  font-family:'Crimson Pro',serif;
+  font-weight:700;
+  font-size:2.1rem;
+  margin:.25em 0 .15em;
+  line-height:1.15;
+}
+.case-sub{
+  color:var(--ink-soft);
+  font-size:1.02rem;
+  font-style:italic;
+  font-family:'Crimson Pro',serif;
+}
+.legend{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px 14px;
+  margin-top:18px;
+  padding:12px 14px;
+  background:var(--paper);
+  border:1px solid var(--line-soft);
+  border-radius:var(--radius);
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11.5px;
+}
+.legend span{display:flex;align-items:center;gap:6px;color:var(--ink-soft);}
+.legend i{width:10px;height:10px;border-radius:3px;display:inline-block;}
+.hint{
+  margin-top:10px;
+  font-size:12.5px;
+  color:var(--ink-faint);
+  font-family:'IBM Plex Mono',monospace;
+}
+
+/* ---------- Case column ---------- */
+.case{
+  max-width:800px;
+  margin:0 auto;
+  padding:8px 24px 40px;
+  font-family:'Crimson Pro',serif;
+  font-size:1.13rem;
+}
+.case h2.section{
+  font-family:'Nunito',sans-serif;
+  font-weight:800;
+  font-size:.82rem;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--ink-faint);
+  margin:2.1em 0 .5em;
+  padding-bottom:.35em;
+  border-bottom:1px solid var(--line);
+}
+.case h2.section:first-of-type{margin-top:1em;}
+.case p{margin:0 0 1em;}
+.case .subhead{
+  font-family:'Nunito',sans-serif;
+  font-weight:700;
+  font-size:.98rem;
+  color:var(--ink);
+  display:block;
+  margin:1.1em 0 .3em;
+}
+
+mark.hl{
+  background:transparent;
+  color:inherit;
+  padding:.03em .1em;
+  border-radius:4px;
+  cursor:pointer;
+  transition:background .15s ease;
+  box-decoration-break:clone;
+  -webkit-box-decoration-break:clone;
+}
+mark.hl[data-cat="localization"]{background:var(--teal-bg); box-shadow:inset 0 -2px 0 var(--teal);}
+mark.hl[data-cat="finding"]{background:var(--coral-bg); box-shadow:inset 0 -2px 0 var(--coral);}
+mark.hl[data-cat="term"]{background:var(--gold-bg); box-shadow:inset 0 -2px 0 var(--gold);}
+mark.hl[data-cat="pattern"]{background:var(--violet-bg); box-shadow:inset 0 -2px 0 var(--violet);}
+mark.hl[data-cat="genetics"]{background:var(--sky-bg); box-shadow:inset 0 -2px 0 var(--sky);}
+mark.hl:hover, mark.hl.active{filter:brightness(0.95);}
+
+.hlnum{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:.6em;
+  vertical-align:super;
+  color:var(--ink-faint);
+  margin-left:1px;
+  font-weight:600;
+}
+
+/* ---------- Tooltip ---------- */
+#tooltip{
+  position:fixed;
+  z-index:60;
+  max-width:280px;
+  background:var(--ink);
+  color:var(--paper);
+  padding:10px 12px;
+  border-radius:8px;
+  font-family:'Nunito',sans-serif;
+  font-size:13px;
+  line-height:1.4;
+  box-shadow:var(--shadow);
+  pointer-events:none;
+  opacity:0;
+  transform:translateY(4px);
+  transition:opacity .12s ease, transform .12s ease;
+}
+#tooltip.show{opacity:1; transform:translateY(0);}
+#tooltip .tt-eyebrow{
+  display:block;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  opacity:.65;
+  margin-bottom:3px;
+}
+#tooltip .tt-title{font-weight:700; margin-bottom:2px; display:block;}
+
+/* ---------- Docked panel (desktop) / bottom sheet (mobile) ---------- */
+#overlay{
+  position:fixed; inset:0;
+  background:rgba(42,36,28,.25);
+  z-index:70;
+  opacity:0; pointer-events:none;
+  transition:opacity .18s ease;
+}
+#overlay.show{opacity:1; pointer-events:auto;}
+
+#panel{
+  position:fixed;
+  z-index:80;
+  background:var(--paper);
+  box-shadow:var(--shadow);
+  display:flex;
+  flex-direction:column;
+  transform:translateX(100%);
+  transition:transform .22s ease;
+}
+#panel.show{transform:translateX(0);}
+
+@media (min-width:1000px){
+  #panel{
+    top:0; right:0; bottom:0;
+    width:380px;
+    border-left:1px solid var(--line);
+  }
+}
+@media (max-width:999px){
+  #panel{
+    left:0; right:0; bottom:0;
+    max-height:70vh;
+    border-top-left-radius:16px;
+    border-top-right-radius:16px;
+    border-top:1px solid var(--line);
+    transform:translateY(100%);
+  }
+  #panel.show{transform:translateY(0);}
+}
+
+#panel .panel-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  padding:20px 20px 12px;
+  border-bottom:1px solid var(--line-soft);
+}
+#panel .panel-cat{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  font-weight:600;
+}
+#panel .panel-title{
+  font-family:'Crimson Pro',serif;
+  font-weight:600;
+  font-size:1.35rem;
+  margin:.2em 0 0;
+  line-height:1.25;
+}
+#panel .panel-close{
+  background:none; border:none; cursor:pointer;
+  font-size:22px; line-height:1; color:var(--ink-faint);
+  padding:2px 6px; border-radius:6px;
+  font-family:'Nunito',sans-serif;
+}
+#panel .panel-close:hover{background:var(--line-soft); color:var(--ink);}
+#panel .panel-body{
+  padding:16px 20px 24px;
+  overflow-y:auto;
+  font-family:'Crimson Pro',serif;
+  font-size:1.08rem;
+  color:var(--ink);
+}
+
+/* ---------- Reasoning + Deep-dive shared card system ---------- */
+.section-wrap{
+  max-width:1080px;
+  margin:0 auto;
+  padding:20px 24px 60px;
+}
+.section-heading{
+  font-family:'Nunito',sans-serif;
+  font-weight:800;
+  font-size:.85rem;
+  letter-spacing:.09em;
+  text-transform:uppercase;
+  color:var(--ink-faint);
+  border-top:1px solid var(--line);
+  padding-top:36px;
+  margin:0 0 4px;
+}
+.section-title{
+  font-family:'Crimson Pro',serif;
+  font-weight:700;
+  font-size:1.7rem;
+  margin:0 0 20px;
+}
+.card-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+}
+@media (max-width:900px){.card-grid{grid-template-columns:repeat(2,1fr);}}
+@media (max-width:640px){.card-grid{grid-template-columns:1fr;}}
+.card{
+  background:var(--paper);
+  border:1px solid var(--line-soft);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:18px 20px;
+}
+.card.span-full{grid-column:1/-1;}
+.card-cat{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10.5px;
+  letter-spacing:.07em;
+  text-transform:uppercase;
+  font-weight:700;
+  display:inline-block;
+  padding:2px 8px;
+  border-radius:5px;
+  margin-bottom:10px;
+}
+.card h3{
+  font-family:'Crimson Pro',serif;
+  font-size:1.25rem;
+  margin:0 0 8px;
+  font-weight:600;
+}
+.card p{
+  font-family:'Nunito',sans-serif;
+  font-size:.94rem;
+  color:var(--ink-soft);
+  margin:0 0 8px;
+}
+.cat-localization{background:var(--teal-bg); color:var(--teal);}
+.cat-finding{background:var(--coral-bg); color:var(--coral);}
+.cat-term{background:var(--gold-bg); color:var(--gold);}
+.cat-pattern{background:var(--violet-bg); color:var(--violet);}
+.cat-genetics{background:var(--sky-bg); color:var(--sky);}
+
+/* diff table */
+table.diff{
+  width:100%;
+  border-collapse:collapse;
+  font-family:'Nunito',sans-serif;
+  font-size:.92rem;
+}
+table.diff th{
+  text-align:left;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  letter-spacing:.05em;
+  text-transform:uppercase;
+  color:var(--ink-faint);
+  border-bottom:1px solid var(--line);
+  padding:8px 10px;
+}
+table.diff td{
+  padding:10px;
+  border-bottom:1px solid var(--line-soft);
+  vertical-align:top;
+  color:var(--ink-soft);
+}
+table.diff tr.lead td{background:var(--teal-bg); color:var(--ink);}
+table.diff tr.lead td:first-child{font-weight:700; color:var(--teal);}
+.tag-likely{
+  display:inline-block;
+  margin-left:6px;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:9.5px;
+  letter-spacing:.05em;
+  text-transform:uppercase;
+  background:var(--teal);
+  color:var(--paper);
+  padding:1px 6px;
+  border-radius:10px;
+  vertical-align:middle;
+}
+
+/* workup flow */
+.flow-step{
+  display:flex;
+  gap:14px;
+  padding:10px 0;
+  border-bottom:1px solid var(--line-soft);
+}
+.flow-step:last-child{border-bottom:none;}
+.flow-num{
+  flex:0 0 auto;
+  width:26px; height:26px;
+  border-radius:50%;
+  background:var(--teal);
+  color:var(--paper);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'IBM Plex Mono',monospace;
+  font-weight:700;
+  font-size:12px;
+}
+.flow-lead{font-weight:700; font-family:'Nunito',sans-serif; font-size:.96rem;}
+.flow-sub{color:var(--ink-soft); font-size:.88rem; font-family:'Nunito',sans-serif; margin-top:2px;}
+
+/* management checklist */
+ul.mgmt{list-style:none; margin:0; padding:0; font-family:'Nunito',sans-serif; font-size:.94rem; color:var(--ink-soft);}
+ul.mgmt li{padding:7px 0 7px 26px; position:relative; border-bottom:1px solid var(--line-soft);}
+ul.mgmt li:last-child{border-bottom:none;}
+ul.mgmt li::before{
+  content:"";
+  position:absolute; left:0; top:11px;
+  width:12px; height:12px;
+  border:1.5px solid var(--teal);
+  border-radius:3px;
+}
+
+/* svg card visuals */
+.card svg{width:100%; height:auto; display:block; margin:6px 0 10px;}
+.takeaway{
+  font-family:'Nunito',sans-serif;
+  font-size:.88rem;
+  color:var(--ink);
+  background:var(--line-soft);
+  border-radius:8px;
+  padding:8px 10px;
+  margin-top:8px;
+}
+.takeaway b{color:var(--ink);}
+
+footer.note{
+  max-width:800px;
+  margin:0 auto;
+  padding:0 24px 60px;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11.5px;
+  color:var(--ink-faint);
+}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <span class="eyebrow">Medical Neuroanatomy · Chapter 9 (Neocortex) · Case Study 9-1</span>
+  <h1 class="case-title">Acute Right-Sided Weakness &amp; Aphasia</h1>
+  <div class="case-sub">73-year-old, right-handed male — sudden right-sided weakness and loss of speech</div>
+  <div class="legend">
+    <span><i style="background:var(--teal)"></i>Localization</span>
+    <span><i style="background:var(--coral)"></i>Exam finding</span>
+    <span><i style="background:var(--gold)"></i>Terminology</span>
+    <span><i style="background:var(--violet)"></i>Pattern recognition</span>
+    <span><i style="background:var(--sky)"></i>Workup / trajectory</span>
+  </div>
+  <div class="hint">Hover a highlight for a quick note · tap/click one to open the full explanation</div>
+</div>
+
+<div class="case">
+
+<h2 class="section">Chief Complaint</h2>
+<p>A <mark class="hl" data-cat="localization" id="hl1">73-year-old, right-handed male<sup class="hlnum">1</sup></mark> with rapid onset of right-sided weakness and aphasia.</p>
+
+<h2 class="section">History of Chief Complaint</h2>
+<p>This 73-year-old, right-handed male was in excellent health until 7 o'clock on the evening of his admission, when he suddenly <mark class="hl" data-cat="finding" id="hl3">dropped his pipe out of his right hand<sup class="hlnum">2</sup></mark> while sitting on the back porch of his daughter's house. Although he did not experience a <mark class="hl" data-cat="term" id="hl4">syncopal episode<sup class="hlnum">3</sup></mark>, his family reported that he was <mark class="hl" data-cat="term" id="hl2">obtunded for a few minutes<sup class="hlnum">4</sup></mark>. Since this episode, he has been <mark class="hl" data-cat="finding" id="hl5">unable to speak<sup class="hlnum">5</sup></mark>. He was brought directly to the emergency room.</p>
+
+<h2 class="section">Medical History</h2>
+<p>His medical history was unremarkable. There was no history of peptic ulcer disease or of any previous myocardial infarction or rheumatic fever.</p>
+
+<h2 class="section">Social History</h2>
+<p>At the time of admission, the patient had been retired for 4 years from his position as an executive with a large firm in the southern portion of the country. He had been active in recreation for the past 10 years. He was in Maine visiting his daughter's family as part of an extended vacation touring the country in a recreation vehicle.</p>
+
+<h2 class="section">Medications</h2>
+<p>He was not on any prescription medications and the family denied that he had used any non-prescription medications outside of an occasional NSAID for periodic musculoskeletal pains.</p>
+
+<h2 class="section">General Physical Examination</h2>
+<p>The patient was an elderly male who appeared younger than his stated age. He was alert, cooperative, and followed three-step commands. His neck was supple with <mark class="hl" data-cat="genetics" id="hl6">bilateral high-pitched carotid bruits<sup class="hlnum">6</sup></mark>. No hemorrhages were present in the conjunctiva. No nail bed hemorrhages were present. Heart sounds were regular with no murmurs, rubs, or gallops. No easy bruising, bleeding, hematochezia, hemoptysis, or hematuria were noticeable. He denied any stomach pain. Skull and spine were atraumatic. No cranial or orbital bruits were heard. Also, no history of migraine or other previous neurologic illnesses was given.</p>
+
+<h2 class="section">Neurologic Examination</h2>
+
+<span class="subhead">Mental Status</span>
+<p>The patient was awake and oriented to person, place and time. He had a markedly decreased output of speech and <mark class="hl" data-cat="pattern" id="hl7">answered only in monosyllables of yes or no<sup class="hlnum">7</sup></mark>. If asked for names, <mark class="hl" data-cat="pattern" id="hl8">he pointed to the object or person, rather than responding with the word<sup class="hlnum">8</sup></mark>. By using yes or no responses and by following commands, <mark class="hl" data-cat="localization" id="hl9">he comprehended spoken and written language<sup class="hlnum">9</sup></mark>. He was <mark class="hl" data-cat="pattern" id="hl10">incapable of writing his name or the days of the week, but could point to the correct day from a list<sup class="hlnum">10</sup></mark>. He quickly recognized family members and attending hospital staff as they entered the room. <mark class="hl" data-cat="localization" id="hl11">He could follow three-step commands accurately with his left arm and hand<sup class="hlnum">11</sup></mark>.</p>
+
+<span class="subhead">Cranial Nerves</span>
+<p>The optic disks were flat; <mark class="hl" data-cat="finding" id="hl12">visual fields were intact<sup class="hlnum">12</sup></mark>. No hemorrhages or other embolic phenomena were present. He had a full range of extraocular motion. His pupils had a range of motion of 2.5mm to 1.5mm to both direct and consensual light reflexes. Both eyes could close tightly. <mark class="hl" data-cat="localization" id="hl13a">Wrinkle lines were symmetric across the forehead, and eyebrows elevated symmetrically<sup class="hlnum">13</sup></mark>. <mark class="hl" data-cat="localization" id="hl13b">The lower right quadrant of his face showed some paresis<sup class="hlnum">13</sup></mark> when he was asked to grimace or smile. Corneal, jaw-jerk, and gag reflexes were intact. His uvula elevated symmetrically, his tongue protruded along the midline, and his shoulder shrug was symmetric.</p>
+
+<span class="subhead">Motor Systems</span>
+<p>Motor examination revealed a <mark class="hl" data-cat="finding" id="hl14">right upper limb monoparesis with a right pronator drift<sup class="hlnum">14</sup></mark>. <mark class="hl" data-cat="pattern" id="hl15">Motor power was approximately 4/5 in the right upper extremity. Motor power in the right leg was 5/5<sup class="hlnum">15</sup></mark>. Deep tendon reflexes in his right upper extremity were 4/4 at the elbow and wrist, 3/4 at the knee, and 2/4 at the ankle. <mark class="hl" data-cat="finding" id="hl16">His right toe was up-going<sup class="hlnum">16</sup></mark>.</p>
+
+<span class="subhead">Sensation</span>
+<p><mark class="hl" data-cat="localization" id="hl17">Sensation to touch, vibration, proprioception, and pain were decreased on the right arm and thigh<sup class="hlnum">17</sup></mark> but were intact on the left side of his body. This portion of the examination was somewhat equivocal because of the patient's poor communication skills.</p>
+
+<h2 class="section">Follow-Up</h2>
+<p>Examination at 3 months after discharge found his gross strength on the right <mark class="hl" data-cat="genetics" id="hl18">much improved at 5/5 in both upper and lower extremities<sup class="hlnum">18</sup></mark>. Deep tendon reflexes were 3/4 at the elbow and wrist, 2/4 at the knee and 2/4 at the ankle. He had regained normal sensation through his right side. His speech consisted of numerous words but was not flowing. Many words were broken in sound and he <mark class="hl" data-cat="pattern" id="hl19">occasionally perseverated on sounds such as no-no-no or ta-ta-ta when he was unable to produce the correct word<sup class="hlnum">19</sup></mark>.</p>
+
+</div>
+
+<!-- ================= CLINICAL REASONING WALKTHROUGH ================= -->
+<div class="section-wrap">
+  <div class="section-heading">Clinical Reasoning Walkthrough</div>
+  <div class="section-title">From bedside findings to diagnosis</div>
+
+  <div class="card-grid">
+
+    <div class="card">
+      <span class="card-cat cat-localization">Localization</span>
+      <h3>Left hemisphere, lateral cortex</h3>
+      <p>Right-handedness predicts left-hemisphere language dominance, and this patient has aphasia — so the lesion is on the left. The combination of nonfluent speech, preserved comprehension, and a right face-and-arm-predominant weakness/sensory loss with clear upper motor neuron signs (hyperreflexia, Babinski, pronator drift) localizes the lesion to the left frontoparietal cortex along the lateral (Sylvian) convexity — the precentral/postcentral face-arm homunculus plus Broca's area — rather than to a subcortical, brainstem, or spinal level (no crossed cranial nerve findings, no bilateral or segmental signs).</p>
+    </div>
+
+    <div class="card">
+      <span class="card-cat cat-localization">Distribution</span>
+      <h3>Focal</h3>
+      <p>Every abnormal finding — the facial droop, arm weakness, arm/thigh sensory loss, and nonfluent aphasia — maps onto one contiguous region of cortex rather than several scattered areas. This is a single-territory (focal), not multifocal or diffuse, process.</p>
+    </div>
+
+    <div class="card">
+      <span class="card-cat cat-genetics">Time course</span>
+      <h3>Acute, then gradually improving</h3>
+      <p>Onset was sudden and witnessed (a specific moment — dropping the pipe at 7 pm), followed by brief obtundation and then a persistent, maximal-at-onset deficit. Over the following weeks to months, strength and reflexes trended back toward normal. This "sudden onset, then recovery" shape is the signature of an acute vascular insult, not a progressive (tumor) or fluctuating (demyelinating, seizure) course.</p>
+    </div>
+
+    <div class="card span-full">
+      <span class="card-cat cat-pattern">Differential diagnosis</span>
+      <h3>Working through the possibilities</h3>
+      <table class="diff">
+        <tr><th>Diagnosis</th><th>Fits</th><th>Argues against</th></tr>
+        <tr class="lead">
+          <td>Acute ischemic stroke — left MCA, upper division<span class="tag-likely">Most likely</span></td>
+          <td>Sudden focal onset; face+arm &gt; leg pattern; nonfluent (Broca's) aphasia with intact comprehension; bilateral carotid bruits as an embolic source; age 73 with vascular risk; gradual recovery over months typical of infarct evolution</td>
+          <td>No imaging in the vignette to confirm territory or rule out a small hemorrhage</td>
+        </tr>
+        <tr>
+          <td>Intracerebral hemorrhage</td>
+          <td>Acute focal deficit; obtundation at onset</td>
+          <td>No severe headache, vomiting, marked or worsening decreased consciousness, or bleeding diathesis (no bruising, no nail-bed/conjunctival hemorrhages)</td>
+        </tr>
+        <tr>
+          <td>Transient ischemic attack (TIA)</td>
+          <td>Sudden focal deficit with vascular risk factors</td>
+          <td>By definition resolves within 24 hours with no lasting deficit — this patient still has an aphasia and reflex asymmetry at 3 months</td>
+        </tr>
+        <tr>
+          <td>Seizure with Todd's paralysis</td>
+          <td>Brief altered responsiveness (obtundation) at onset</td>
+          <td>No witnessed convulsive activity or seizure history; fixed upper motor neuron signs (Babinski) and a recovery measured in months, not the hours typical of Todd's paralysis</td>
+        </tr>
+        <tr>
+          <td>Migraine with aura</td>
+          <td>Can cause transient focal neurologic symptoms</td>
+          <td>No migraine history; deficit is far more prolonged and accompanied by hard upper motor neuron signs atypical for migraine</td>
+        </tr>
+        <tr>
+          <td>Mass lesion (tumor, abscess)</td>
+          <td>Can produce a focal cortical deficit</td>
+          <td>Onset was abrupt and witnessed, not the gradually progressive course typical of an expanding mass; no fever or infectious signs</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="card span-full">
+      <span class="card-cat cat-genetics">Diagnostic workup</span>
+      <h3>What to order, and why</h3>
+      <div class="flow-step">
+        <div class="flow-num">1</div>
+        <div><div class="flow-lead">Non-contrast head CT</div><div class="flow-sub">First priority — excludes hemorrhage before any reperfusion therapy is considered; an acute ischemic infarct may still look normal in the first hours.</div></div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">2</div>
+        <div><div class="flow-lead">MRI brain with diffusion-weighted imaging (DWI)</div><div class="flow-sub">Once hemorrhage is excluded, confirms the acute infarct and delineates the left MCA (upper division) territory.</div></div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">3</div>
+        <div><div class="flow-lead">Carotid duplex ultrasound / CTA of the neck vessels</div><div class="flow-sub">Directly evaluates the bilateral bruits heard on exam for stenotic, embologenic plaque.</div></div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">4</div>
+        <div><div class="flow-lead">ECG and echocardiogram</div><div class="flow-sub">Screens for atrial fibrillation or another cardioembolic source competing with the carotid lesion.</div></div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">5</div>
+        <div><div class="flow-lead">Basic labs — CBC, coagulation panel, fasting lipids, glucose</div><div class="flow-sub">Assesses additional vascular risk factors and excludes a coagulopathy or hypoglycemia mimicking stroke.</div></div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">6</div>
+        <div><div class="flow-lead">Formal speech-language pathology evaluation</div><div class="flow-sub">Characterizes the aphasia subtype precisely and sets a baseline for rehabilitation planning.</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="card-cat cat-genetics">Prognosis</span>
+      <h3>Motor recovers faster than language</h3>
+      <p>By 3 months, right-sided strength had normalized and reflexes were settling toward baseline — consistent with the typical window in which most post-stroke motor recovery occurs. His expressive aphasia, however, remained abnormal, with broken, non-flowing speech and phonemic perseveration. Language recovery after a Broca's-type infarct is generally slower and more often incomplete than motor recovery, even when the causative lesion is relatively small.</p>
+    </div>
+
+    <div class="card">
+      <span class="card-cat cat-localization">Management</span>
+      <h3>Acute care, then secondary prevention and rehab</h3>
+      <ul class="mgmt">
+        <li>Assess eligibility for acute reperfusion therapy (IV thrombolysis / thrombectomy) once hemorrhage is excluded and the time-of-onset window is established</li>
+        <li>Antiplatelet therapy (e.g., aspirin) if not a reperfusion candidate, plus a statin</li>
+        <li>Carotid endarterectomy or stenting if duplex/CTA confirms significant carotid stenosis</li>
+        <li>Anticoagulation instead of antiplatelet therapy if a cardioembolic source (e.g., atrial fibrillation) is found</li>
+        <li>Risk-factor control: blood pressure, glucose, lipids</li>
+        <li>Physical and occupational therapy for the residual arm weakness</li>
+        <li>Speech-language therapy for the persistent nonfluent aphasia</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================= CONCEPT DEEP-DIVE ================= -->
+<div class="section-wrap">
+  <div class="section-heading">Concept Deep-Dive</div>
+  <div class="section-title">The neuroanatomy behind the exam</div>
+
+  <div class="card-grid">
+
+    <div class="card span-full">
+      <span class="card-cat cat-localization">Language Cortex</span>
+      <h3>Broca's area and the expressive language network</h3>
+      <svg viewBox="0 0 700 260" xmlns="http://www.w3.org/2000/svg">
+        <path d="M60,150 C55,90 110,45 200,35 C300,22 420,25 500,45 C580,63 630,95 635,140 C640,185 600,220 520,232 C440,244 340,238 260,232 C180,226 100,215 75,190 C63,177 62,165 60,150 Z" fill="none" stroke="#2A241C" stroke-width="2"/>
+        <path d="M300,60 C310,110 300,160 260,225" fill="none" stroke="#2A241C" stroke-width="1.5" stroke-dasharray="3,3"/>
+        <ellipse cx="245" cy="150" rx="55" ry="42" fill="var(--coral-bg)" stroke="var(--coral)" stroke-width="2"/>
+        <text x="245" y="147" text-anchor="middle" font-family="Nunito" font-weight="700" font-size="13" fill="var(--coral)">Broca's</text>
+        <text x="245" y="163" text-anchor="middle" font-family="Nunito" font-weight="700" font-size="13" fill="var(--coral)">area</text>
+        <ellipse cx="480" cy="160" rx="60" ry="40" fill="var(--teal-bg)" stroke="var(--teal)" stroke-width="2"/>
+        <text x="480" y="157" text-anchor="middle" font-family="Nunito" font-weight="700" font-size="13" fill="var(--teal)">Wernicke's</text>
+        <text x="480" y="173" text-anchor="middle" font-family="Nunito" font-weight="700" font-size="13" fill="var(--teal)">area</text>
+        <line x1="300" y1="150" x2="425" y2="158" stroke="var(--ink-faint)" stroke-width="2" stroke-dasharray="5,4"/>
+        <text x="360" y="140" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="var(--ink-faint)">arcuate fasciculus</text>
+        <text x="245" y="215" text-anchor="middle" font-family="Nunito" font-size="11" fill="var(--ink-soft)">speech production</text>
+        <text x="480" y="215" text-anchor="middle" font-family="Nunito" font-size="11" fill="var(--ink-soft)">language comprehension</text>
+        <text x="80" y="30" font-family="Nunito" font-weight="700" font-size="13" fill="var(--ink-soft)">Frontal</text>
+        <text x="560" y="30" font-family="Nunito" font-weight="700" font-size="13" fill="var(--ink-soft)">Parietal / Temporal</text>
+      </svg>
+      <p>Broca's area (posterior inferior frontal gyrus, areas 44/45) holds the motor programs for speech; Wernicke's area (posterior superior temporal gyrus) supports comprehension. A left anterior (Broca's) lesion produces exactly this patient's pattern — sparse, effortful, monosyllabic output with preserved comprehension of spoken and written language.</p>
+      <div class="takeaway"><b>This patient:</b> nonfluent output, intact comprehension (follows commands, points to correct answers), agraphia — the textbook signature of Broca's (motor/expressive) aphasia rather than a Wernicke's (fluent, comprehension-impaired) picture.</div>
+    </div>
+
+    <div class="card">
+      <span class="card-cat cat-localization">Motor/Sensory Homunculus</span>
+      <h3>Why the leg was spared</h3>
+      <svg viewBox="0 0 260 220" xmlns="http://www.w3.org/2000/svg">
+        <path d="M40,190 C20,140 30,80 70,45 C110,15 170,10 210,35 C240,55 245,90 230,120 C245,140 235,165 205,175 C185,182 160,178 145,165 C130,178 100,185 75,182 C55,180 45,186 40,190 Z" fill="var(--paper)" stroke="var(--ink)" stroke-width="2"/>
+        <path d="M145,15 C150,55 148,95 140,165" fill="none" stroke="var(--ink)" stroke-width="1.5" stroke-dasharray="3,3"/>
+        <ellipse cx="200" cy="140" rx="34" ry="26" fill="var(--coral-bg)" stroke="var(--coral)" stroke-width="2"/>
+        <text x="200" y="144" text-anchor="middle" font-family="Nunito" font-weight="700" font-size="11" fill="var(--coral)">face</text>
+        <ellipse cx="155" cy="90" rx="30" ry="45" fill="var(--coral-bg)" stroke="var(--coral)" stroke-width="2" transform="rotate(-15 155 90)"/>
+        <text x="150" y="95" text-anchor="middle" font-family="Nunito" font-weight="700" font-size="11" fill="var(--coral)">arm</text>
+        <ellipse cx="110" cy="35" rx="28" ry="30" fill="var(--sky-bg)" stroke="var(--sky)" stroke-width="2"/>
+        <text x="110" y="39" text-anchor="middle" font-family="Nunito" font-weight="700" font-size="10" fill="var(--sky)">leg</text>
+        <text x="130" y="205" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="var(--ink-faint)">lateral surface (MCA)</text>
+        <text x="110" y="15" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="var(--sky)">medial surface (ACA) →</text>
+      </svg>
+      <p>Face and arm sit on the lateral convexity, fed by the MCA; the leg's representation rolls over onto the medial surface, fed by the ACA. A lateral (MCA) lesion therefore weakens the face and arm while sparing the leg — exactly this patient's 4/5 arm vs. 5/5 leg split.</p>
+      <div class="takeaway"><b>This patient:</b> right face and arm weak, right leg normal strength — a lateral-surface, MCA-territory pattern.</div>
+    </div>
+
+    <div class="card">
+      <span class="card-cat cat-localization">Facial Nerve Pathway</span>
+      <h3>Central vs. peripheral facial palsy</h3>
+      <svg viewBox="0 0 260 200" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="60" cy="30" r="18" fill="var(--teal-bg)" stroke="var(--teal)" stroke-width="2"/>
+        <text x="60" y="34" text-anchor="middle" font-family="Nunito" font-size="9" font-weight="700" fill="var(--teal)">Cortex L</text>
+        <circle cx="200" cy="30" r="18" fill="var(--teal-bg)" stroke="var(--teal)" stroke-width="2"/>
+        <text x="200" y="34" text-anchor="middle" font-family="Nunito" font-size="9" font-weight="700" fill="var(--teal)">Cortex R</text>
+        <rect x="110" y="90" width="40" height="26" rx="4" fill="var(--gold-bg)" stroke="var(--gold)" stroke-width="2"/>
+        <text x="130" y="107" text-anchor="middle" font-family="Nunito" font-size="9" font-weight="700" fill="var(--gold)">VII nucleus</text>
+        <line x1="60" y1="48" x2="122" y2="90" stroke="var(--ink)" stroke-width="2"/>
+        <line x1="200" y1="48" x2="122" y2="90" stroke="var(--ink)" stroke-width="2"/>
+        <line x1="200" y1="48" x2="138" y2="90" stroke="var(--ink)" stroke-width="2"/>
+        <text x="70" y="70" font-family="Nunito" font-size="8" fill="var(--ink-faint)">upper face: bilateral input</text>
+        <line x1="150" y1="103" x2="215" y2="140" stroke="var(--coral)" stroke-width="2.5"/>
+        <text x="220" y="145" font-family="Nunito" font-size="9" font-weight="700" fill="var(--coral)">lower face</text>
+        <text x="220" y="157" font-family="Nunito" font-size="8" fill="var(--ink-faint)">(contralateral only)</text>
+        <line x1="110" y1="103" x2="55" y2="140" stroke="var(--ink-faint)" stroke-width="2"/>
+        <text x="20" y="145" font-family="Nunito" font-size="9" fill="var(--ink-faint)">upper face</text>
+        <text x="10" y="157" font-family="Nunito" font-size="8" fill="var(--ink-faint)">spared if L cortex hit</text>
+      </svg>
+      <p>The upper-face motor neurons receive input from both hemispheres; the lower-face neurons receive it only from the contralateral cortex. A cortical (UMN) lesion therefore weakens only the opposite lower face and spares the forehead — unlike a peripheral (CN VII nucleus/nerve, LMN) lesion, which weakens the entire same-sided face, top to bottom.</p>
+      <div class="takeaway"><b>This patient:</b> symmetric forehead wrinkling and eyebrow elevation, weak lower-right face — forehead-sparing confirms a central (left cortical), not peripheral, facial lesion.</div>
+    </div>
+
+    <div class="card">
+      <span class="card-cat cat-genetics">Vascular Territory</span>
+      <h3>MCA vs. ACA vs. PCA</h3>
+      <svg viewBox="0 0 260 190" xmlns="http://www.w3.org/2000/svg">
+        <path d="M30,150 C15,110 25,55 70,25 C110,0 170,-2 205,25 C235,48 240,85 225,115 C240,130 232,155 205,165 C185,172 160,168 148,158 C132,170 100,175 75,172 C50,170 40,165 30,150 Z" fill="var(--paper)" stroke="var(--ink)" stroke-width="2"/>
+        <path d="M65,170 C60,120 65,60 90,20" fill="none" stroke="var(--sky)" stroke-width="16" stroke-linecap="round" opacity="0.55"/>
+        <path d="M100,15 C150,10 195,30 220,70 C230,95 220,120 195,135 C170,148 130,150 100,140" fill="none" stroke="var(--coral)" stroke-width="24" stroke-linecap="round" opacity="0.5"/>
+        <path d="M180,140 C195,150 205,158 200,165" fill="none" stroke="var(--teal)" stroke-width="14" stroke-linecap="round" opacity="0.6"/>
+        <text x="45" y="55" font-family="Nunito" font-size="9" font-weight="700" fill="var(--sky)">ACA</text>
+        <text x="150" y="75" font-family="Nunito" font-size="9" font-weight="700" fill="var(--coral)">MCA</text>
+        <text x="195" y="150" font-family="Nunito" font-size="9" font-weight="700" fill="var(--teal)">PCA</text>
+      </svg>
+      <p>ACA: medial surface — leg, foot, urinary control, medial frontal behavior. MCA: lateral convexity — face, arm, primary language cortex. PCA: occipital/medial temporal — vision, memory structures. This patient's face+arm weakness, sensory loss, and language deficit — with normal vision and a normal leg — sit squarely in MCA territory.</p>
+      <div class="takeaway"><b>This patient:</b> intact visual fields (against PCA) and a normal leg (against ACA) — findings converge on the left MCA.</div>
+    </div>
+
+    <div class="card">
+      <span class="card-cat cat-pattern">Aphasia Types</span>
+      <h3>Sorting the aphasias by fluency, comprehension, repetition</h3>
+      <table class="diff" style="font-size:.82rem;">
+        <tr><th>Type</th><th>Fluency</th><th>Comprehension</th><th>Repetition</th></tr>
+        <tr class="lead"><td>Broca's</td><td>Nonfluent</td><td>Relatively spared</td><td>Impaired</td></tr>
+        <tr><td>Wernicke's</td><td>Fluent (paraphasic)</td><td>Impaired</td><td>Impaired</td></tr>
+        <tr><td>Global</td><td>Nonfluent</td><td>Impaired</td><td>Impaired</td></tr>
+        <tr><td>Transcortical motor</td><td>Nonfluent</td><td>Relatively spared</td><td>Preserved</td></tr>
+        <tr><td>Conduction</td><td>Fluent</td><td>Spared</td><td>Impaired</td></tr>
+      </table>
+      <div class="takeaway"><b>This patient:</b> nonfluent, comprehension spared, repetition not formally documented — fits the Broca's row; the presence of any residual monosyllables plus intact comprehension argues against a global aphasia.</div>
+    </div>
+
+    <div class="card">
+      <span class="card-cat cat-finding">Upper Motor Neuron Signs</span>
+      <h3>Reading the exam for UMN vs. LMN</h3>
+      <svg viewBox="0 0 260 150" xmlns="http://www.w3.org/2000/svg">
+        <rect x="10" y="15" width="110" height="120" rx="8" fill="var(--coral-bg)" stroke="var(--coral)" stroke-width="2"/>
+        <text x="65" y="35" text-anchor="middle" font-family="Nunito" font-weight="700" font-size="11" fill="var(--coral)">UMN signs</text>
+        <text x="65" y="55" text-anchor="middle" font-family="Nunito" font-size="9" fill="var(--ink)">Hyperreflexia</text>
+        <text x="65" y="72" text-anchor="middle" font-family="Nunito" font-size="9" fill="var(--ink)">Babinski sign</text>
+        <text x="65" y="89" text-anchor="middle" font-family="Nunito" font-size="9" fill="var(--ink)">Pronator drift</text>
+        <text x="65" y="106" text-anchor="middle" font-family="Nunito" font-size="9" fill="var(--ink)">Spasticity (late)</text>
+        <text x="65" y="123" text-anchor="middle" font-family="Nunito" font-size="9" fill="var(--ink)">No atrophy/fasciculations</text>
+        <rect x="140" y="15" width="110" height="120" rx="8" fill="var(--line-soft)" stroke="var(--ink-faint)" stroke-width="2"/>
+        <text x="195" y="35" text-anchor="middle" font-family="Nunito" font-weight="700" font-size="11" fill="var(--ink-soft)">LMN signs</text>
+        <text x="195" y="55" text-anchor="middle" font-family="Nunito" font-size="9" fill="var(--ink)">Hyporeflexia</text>
+        <text x="195" y="72" text-anchor="middle" font-family="Nunito" font-size="9" fill="var(--ink)">Flexor plantar</text>
+        <text x="195" y="89" text-anchor="middle" font-family="Nunito" font-size="9" fill="var(--ink)">Flaccid weakness</text>
+        <text x="195" y="106" text-anchor="middle" font-family="Nunito" font-size="9" fill="var(--ink)">Atrophy</text>
+        <text x="195" y="123" text-anchor="middle" font-family="Nunito" font-size="9" fill="var(--ink)">Fasciculations</text>
+      </svg>
+      <p>This patient's exam — increased right-sided reflexes (4/4, 3/4), an up-going toe, and a pronator drift, with no atrophy or fasciculations — is a pure UMN pattern, consistent with a corticospinal-tract lesion at the cortical level rather than damage to a peripheral nerve, root, or anterior horn cell.</p>
+    </div>
+
+  </div>
+</div>
+
+<footer class="note">Case 9-1 · Medical Neuroanatomy, Chapter 9 (Neocortex) · built from the case document; no small-group transcript was provided for this case, so annotations and deep-dive concepts are drawn from the case findings and the chapter's own discussion sections.</footer>
+
+<!-- ================= TOOLTIP + PANEL SCAFFOLDING ================= -->
+<div id="tooltip"><span class="tt-eyebrow"></span><span class="tt-title"></span></div>
+<div id="overlay"></div>
+<div id="panel">
+  <div class="panel-head">
+    <div>
+      <div class="panel-cat"></div>
+      <div class="panel-title"></div>
+    </div>
+    <button class="panel-close" aria-label="Close">&times;</button>
+  </div>
+  <div class="panel-body"></div>
+</div>
+
+<script>
+(function(){
+  var CAT_LABEL = {
+    localization: "Localization",
+    finding: "Exam finding",
+    term: "Terminology",
+    pattern: "Pattern recognition",
+    genetics: "Workup / Trajectory"
+  };
+  var CAT_COLOR = {
+    localization: "var(--teal)",
+    finding: "var(--coral)",
+    term: "var(--gold)",
+    pattern: "var(--violet)",
+    genetics: "var(--sky)"
+  };
+
+  var ANNOTATIONS = [
+    {target:"hl1", cat:"localization", eyebrow:"Localization · handedness & language dominance", title:"Right-handed → left hemisphere language dominance", body:"About 95–99% of right-handed people have left-hemisphere language dominance. This patient's aphasia strongly implicates a left-sided lesion, and predicts (correctly) that his right side — not his left — would be affected by a left-hemisphere lesion."},
+    {target:"hl3", cat:"finding", eyebrow:"Finding · sudden right-hand weakness", title:"The first sign: dropped pipe", body:"A sudden, painless loss of grip in the right hand is the earliest objective clue — an abrupt focal motor deficit, not a gradual one. This single detail already points toward a vascular time course before any exam is performed."},
+    {target:"hl4", cat:"term", eyebrow:"Term · syncope", title:"Syncope (and why he didn't have one)", body:"Syncope is a transient loss of consciousness from global cerebral hypoperfusion (e.g., cardiac arrhythmia, vasovagal reflex), and it resolves quickly and completely. Ruling it out here favors a focal cerebrovascular event over a cardiac/vasovagal cause of his brief unresponsiveness."},
+    {target:"hl2", cat:"term", eyebrow:"Term · obtunded", title:"Obtunded", body:"A reduced level of arousal — drowsy and slow to respond, but still arousable with stimulation (distinct from stupor or coma). A brief obtunded period followed by a focal deficit fits an acute vascular event better than a discrete syncopal spell or a generalized seizure."},
+    {target:"hl5", cat:"finding", eyebrow:"Finding · onset of aphasia", title:"Speech loss from the outset", body:"Aphasia was present from the very start of the event, not a later development — supporting a single acute insult (like an embolus lodging in the left MCA) rather than a slowly expanding process."},
+    {target:"hl6", cat:"genetics", eyebrow:"Workup · carotid bruits", title:"Bilateral carotid bruits", body:"A bruit over the carotid artery is turbulent flow through a narrowed (atherosclerotic) segment. Bilateral bruits in a 73-year-old point to significant carotid atherosclerotic disease — a leading source of artery-to-artery embolism and the most likely vascular culprit behind this stroke."},
+    {target:"hl7", cat:"pattern", eyebrow:"Pattern · nonfluent output", title:"Sparse, effortful speech", body:"Output reduced to single words is the hallmark of nonfluent (expressive) aphasia — slow and halting — in contrast to the fluent-but-empty output of a posterior (Wernicke's) lesion."},
+    {target:"hl8", cat:"pattern", eyebrow:"Pattern · anomia with gesture", title:"Naming fails, gesture compensates", body:"He knows what he wants to convey — he just can't retrieve or produce the word — and substitutes pointing. This dissociation between intact recognition and impaired word production is characteristic of a lesion anterior to Wernicke's area."},
+    {target:"hl9", cat:"localization", eyebrow:"Localization · comprehension spared", title:"Comprehension is intact", body:"Following commands and answering yes/no correctly shows that language comprehension (posterior, Wernicke's-dependent) is preserved. Combined with poor output, this localizes the lesion to the anterior (expressive/Broca's) language zone rather than the posterior (receptive) one."},
+    {target:"hl10", cat:"pattern", eyebrow:"Pattern · agraphia with intact recognition", title:"Can't write it, can still recognize it", body:"The same production-vs-recognition split seen in his speech shows up in writing: he can't generate written output (agraphia) but can still recognize the correct answer among choices — pointing to a motor/expressive deficit rather than lost knowledge or word meaning."},
+    {target:"hl11", cat:"localization", eyebrow:"Localization · unaffected side", title:"The left side works fine", body:"Explicitly normal function on the left confirms the deficit is one-sided (right body), which — combined with his aphasia — lateralizes the lesion to the left hemisphere."},
+    {target:"hl12", cat:"finding", eyebrow:"Finding · no visual field cut", title:"No hemianopsia", body:"Intact visual fields argue against involvement of the optic radiations or occipital (calcarine) cortex — territory supplied by the posterior cerebral artery — and help exclude a PCA-territory stroke from the differential."},
+    {target:"hl13a", cat:"localization", eyebrow:"Localization · UMN (central) facial palsy", title:"Forehead spared, lower face weak", body:"The forehead muscles receive bilateral upper motor neuron input, so a one-sided cortical (UMN) lesion spares them; only the lower face, which receives purely contralateral input, weakens. This 'forehead-sparing' pattern localizes the facial weakness above the facial nucleus — a central, not peripheral (Bell's palsy-type), lesion."},
+    {target:"hl13b", cat:"localization", eyebrow:"Localization · UMN (central) facial palsy", title:"Forehead spared, lower face weak", body:"The forehead muscles receive bilateral upper motor neuron input, so a one-sided cortical (UMN) lesion spares them; only the lower face, which receives purely contralateral input, weakens. This 'forehead-sparing' pattern localizes the facial weakness above the facial nucleus — a central, not peripheral (Bell's palsy-type), lesion."},
+    {target:"hl14", cat:"finding", eyebrow:"Finding · pronator drift", title:"Pronator drift", body:"With the arms outstretched and eyes closed, a weak arm slowly drifts and pronates (palm turns downward) — a sensitive early sign of subtle upper motor neuron weakness, often present before deficits are obvious on formal strength testing."},
+    {target:"hl15", cat:"pattern", eyebrow:"Pattern · arm-and-face, leg-sparing", title:"Arm and face hit, leg spared", body:"Weakness affecting the face and arm while the leg is essentially normal is the classic distribution of a lesion along the lateral cortical convexity — MCA territory — as opposed to a leg-predominant pattern, which would point to the ACA territory on the medial surface instead."},
+    {target:"hl16", cat:"finding", eyebrow:"Finding · Babinski sign", title:"Babinski sign", body:"An extensor (upward) great toe response to plantar stimulation is an unequivocal upper motor neuron sign in an adult. It doesn't occur with lower motor neuron or peripheral nerve lesions, and it confirms that the corticospinal tract itself is involved."},
+    {target:"hl17", cat:"localization", eyebrow:"Localization · cortical sensory loss, same distribution", title:"Sensory loss mirrors the motor pattern", body:"Decreased sensation in the arm and thigh — again sparing the distal leg/foot — mirrors the motor findings and supports the same explanation: a lesion of the lateral (MCA-supplied) postcentral gyrus, where face/arm representation sits, rather than the medial (ACA-supplied) leg representation."},
+    {target:"hl18", cat:"genetics", eyebrow:"Trajectory · motor recovery", title:"Strength recovers, reflexes settle", body:"By 3 months, strength has normalized and reflexes are trending back toward baseline — the expected trajectory for ischemic stroke, where most motor recovery occurs within the first three to six months."},
+    {target:"hl19", cat:"pattern", eyebrow:"Pattern · phonemic perseveration", title:"Perseveration — a residual Broca's signature", body:"Getting stuck repeating a sound or syllable while groping for a word is a well-recognized residual feature of Broca's (nonfluent) aphasia. Language recovery typically lags behind motor recovery and is often incomplete, even when strength returns to normal."}
+  ];
+
+  var byId = {};
+  ANNOTATIONS.forEach(function(a){ byId[a.target] = a; });
+
+  var tooltip = document.getElementById('tooltip');
+  var ttEyebrow = tooltip.querySelector('.tt-eyebrow');
+  var ttTitle = tooltip.querySelector('.tt-title');
+
+  var overlay = document.getElementById('overlay');
+  var panel = document.getElementById('panel');
+  var panelCat = panel.querySelector('.panel-cat');
+  var panelTitle = panel.querySelector('.panel-title');
+  var panelBody = panel.querySelector('.panel-body');
+  var panelClose = panel.querySelector('.panel-close');
+
+  var hasHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+  function positionTooltip(mark){
+    var r = mark.getBoundingClientRect();
+    var tw = tooltip.offsetWidth || 260;
+    var th = tooltip.offsetHeight || 60;
+    var left = r.left + (r.width/2) - (tw/2);
+    left = Math.max(10, Math.min(left, window.innerWidth - tw - 10));
+    var top = r.top - th - 10;
+    var flipped = false;
+    if(top < 8){ top = r.bottom + 10; flipped = true; }
+    tooltip.style.left = left + "px";
+    tooltip.style.top = top + "px";
+  }
+
+  function showTooltip(mark){
+    var a = byId[mark.id];
+    if(!a) return;
+    ttEyebrow.textContent = a.eyebrow;
+    ttTitle.textContent = a.title;
+    tooltip.classList.add('show');
+    positionTooltip(mark);
+  }
+  function hideTooltip(){ tooltip.classList.remove('show'); }
+
+  function openPanel(mark){
+    var a = byId[mark.id];
+    if(!a) return;
+    panelCat.textContent = CAT_LABEL[a.cat] || a.cat;
+    panelCat.style.color = CAT_COLOR[a.cat];
+    panelTitle.textContent = a.title;
+    panelBody.textContent = a.body;
+    overlay.classList.add('show');
+    panel.classList.add('show');
+    document.querySelectorAll('mark.hl.active').forEach(function(m){ m.classList.remove('active'); });
+    mark.classList.add('active');
+  }
+  function closePanel(){
+    overlay.classList.remove('show');
+    panel.classList.remove('show');
+    document.querySelectorAll('mark.hl.active').forEach(function(m){ m.classList.remove('active'); });
+  }
+
+  var marks = document.querySelectorAll('mark.hl');
+  marks.forEach(function(mark){
+    if(hasHover){
+      mark.addEventListener('mouseenter', function(){ showTooltip(mark); });
+      mark.addEventListener('mouseleave', hideTooltip);
+    }
+    mark.addEventListener('click', function(e){
+      e.stopPropagation();
+      hideTooltip();
+      openPanel(mark);
+    });
+  });
+
+  panelClose.addEventListener('click', closePanel);
+  overlay.addEventListener('click', closePanel);
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') closePanel();
+  });
+})();
+</script>
+
+</body>
+</html>
