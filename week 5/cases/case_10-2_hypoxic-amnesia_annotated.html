@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Case 10-2 — Bilateral Hippocampal Injury &amp; Watershed Infarct</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Nunito:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#F6F1E6;
+  --paper:#FCFAF3;
+  --ink:#2A241C;
+  --ink-soft:#6B6152;
+  --ink-faint:#9A8F7B;
+  --line:#DED2B6;
+  --line-soft:#EAE0C9;
+
+  --coral:#C85A3E;   --coral-bg:#F7E4DB;
+  --teal:#256B63;    --teal-bg:#DFEDE8;
+  --gold:#A47A1F;    --gold-bg:#F3E7C6;
+  --violet:#6B5390;  --violet-bg:#E9E2F1;
+  --sky:#2F6485;     --sky-bg:#DEE9EF;
+
+  --radius:10px;
+  --shadow:0 1px 2px rgba(42,36,28,.06), 0 8px 24px -12px rgba(42,36,28,.18);
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--cream);
+  color:var(--ink);
+  font-family:'Nunito',sans-serif;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  padding-bottom:80px;
+}
+
+/* ============ HEADER ============ */
+.masthead{
+  max-width:800px;
+  margin:0 auto;
+  padding:48px 24px 28px;
+  border-bottom:1px solid var(--line);
+}
+.eyebrow-top{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--ink-faint);
+  margin-bottom:10px;
+}
+h1.case-title{
+  font-family:'Crimson Pro',serif;
+  font-weight:700;
+  font-size:34px;
+  margin:0 0 8px;
+  color:var(--ink);
+}
+.case-sub{
+  font-family:'Crimson Pro',serif;
+  font-style:italic;
+  font-size:18px;
+  color:var(--ink-soft);
+  margin:0 0 14px;
+}
+.meta-note{
+  font-size:13px;
+  color:var(--ink-faint);
+  background:var(--paper);
+  border:1px solid var(--line-soft);
+  border-radius:var(--radius);
+  padding:10px 14px;
+  line-height:1.5;
+}
+.legend{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:16px;
+}
+.legend-chip{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  padding:4px 10px;
+  border-radius:999px;
+  font-weight:500;
+}
+
+/* ============ CASE COLUMN ============ */
+.case-wrap{
+  max-width:800px;
+  margin:0 auto;
+  padding:0 24px;
+}
+.case-section{
+  padding:28px 0;
+  border-bottom:1px solid var(--line-soft);
+}
+.case-section:last-of-type{ border-bottom:none; }
+.section-label{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--sky);
+  font-weight:600;
+  margin-bottom:10px;
+}
+.case-section p{
+  font-family:'Crimson Pro',serif;
+  font-size:19px;
+  color:var(--ink);
+  margin:0 0 14px;
+}
+.case-section p:last-child{margin-bottom:0;}
+.sub-label{
+  font-weight:700;
+  font-style:italic;
+}
+
+/* ============ HIGHLIGHTS ============ */
+mark.hl{
+  background:none;
+  color:inherit;
+  cursor:pointer;
+  padding:0 1px;
+  border-radius:4px;
+  box-decoration-break:clone;
+  -webkit-box-decoration-break:clone;
+  transition:background .15s ease;
+}
+mark.hl[data-cat="localization"]{ background:var(--teal-bg); }
+mark.hl[data-cat="finding"]{ background:var(--coral-bg); }
+mark.hl[data-cat="term"]{ background:var(--gold-bg); }
+mark.hl[data-cat="pattern"]{ background:var(--violet-bg); }
+mark.hl[data-cat="genetics"]{ background:var(--sky-bg); }
+mark.hl:hover, mark.hl.is-active{ filter:brightness(0.94); }
+.hl-badge{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;
+  vertical-align:super;
+  font-weight:600;
+  margin-left:1px;
+  opacity:.7;
+}
+
+/* ============ TOOLTIP ============ */
+#hl-tooltip{
+  position:fixed;
+  max-width:260px;
+  background:var(--ink);
+  color:var(--paper);
+  padding:10px 12px;
+  border-radius:8px;
+  font-size:13px;
+  line-height:1.4;
+  box-shadow:var(--shadow);
+  z-index:500;
+  pointer-events:none;
+  opacity:0;
+  transform:translateY(4px);
+  transition:opacity .12s ease, transform .12s ease;
+}
+#hl-tooltip.visible{ opacity:1; transform:translateY(0); }
+#hl-tooltip .tt-eyebrow{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  opacity:.7;
+  margin-bottom:3px;
+}
+#hl-tooltip .tt-title{
+  font-family:'Nunito',sans-serif;
+  font-weight:700;
+  margin-bottom:3px;
+}
+#hl-tooltip .tt-teaser{
+  font-family:'Nunito',sans-serif;
+  font-weight:400;
+  opacity:.9;
+}
+
+/* ============ DOCKED PANEL ============ */
+#hl-panel{
+  position:fixed;
+  z-index:600;
+  background:var(--paper);
+  box-shadow:var(--shadow);
+  display:flex;
+  flex-direction:column;
+  transform:translateX(110%);
+  transition:transform .22s ease;
+}
+#hl-panel.open{ transform:translateX(0); }
+#overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(42,36,28,.25);
+  z-index:550;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .2s ease;
+}
+#overlay.open{ opacity:1; pointer-events:auto; }
+
+@media (min-width:1000px){
+  #hl-panel{
+    top:0; right:0; height:100%;
+    width:380px;
+    border-left:1px solid var(--line);
+  }
+}
+@media (max-width:999px){
+  #hl-panel{
+    left:0; right:0; bottom:0;
+    max-height:70vh;
+    width:100%;
+    border-top-left-radius:16px;
+    border-top-right-radius:16px;
+    border-top:1px solid var(--line);
+    transform:translateY(110%);
+  }
+  #hl-panel.open{ transform:translateY(0); }
+}
+
+.panel-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  padding:20px 22px 14px;
+  border-bottom:1px solid var(--line-soft);
+  flex-shrink:0;
+}
+.panel-cat-tag{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  font-weight:600;
+  padding:3px 9px;
+  border-radius:999px;
+  margin-bottom:8px;
+  display:inline-block;
+}
+.panel-eyebrow{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  color:var(--ink-faint);
+  text-transform:uppercase;
+  letter-spacing:.05em;
+  margin-bottom:4px;
+}
+.panel-title{
+  font-family:'Crimson Pro',serif;
+  font-weight:700;
+  font-size:21px;
+  color:var(--ink);
+}
+.panel-close{
+  background:none;
+  border:none;
+  font-size:22px;
+  line-height:1;
+  color:var(--ink-faint);
+  cursor:pointer;
+  padding:2px 6px;
+  border-radius:6px;
+}
+.panel-close:hover{ background:var(--line-soft); color:var(--ink); }
+.panel-body{
+  padding:18px 22px 26px;
+  overflow-y:auto;
+  font-family:'Crimson Pro',serif;
+  font-size:17px;
+  color:var(--ink-soft);
+}
+
+/* category text/bg colors reused for tags */
+.cat-localization{ background:var(--teal-bg); color:var(--teal); }
+.cat-finding{ background:var(--coral-bg); color:var(--coral); }
+.cat-term{ background:var(--gold-bg); color:var(--gold); }
+.cat-pattern{ background:var(--violet-bg); color:var(--violet); }
+.cat-genetics{ background:var(--sky-bg); color:var(--sky); }
+
+/* ============ WALKTHROUGH & DEEP-DIVE SECTIONS ============ */
+.section-wrap{
+  max-width:1100px;
+  margin:0 auto;
+  padding:56px 24px 20px;
+}
+.section-heading{
+  text-align:center;
+  margin-bottom:32px;
+}
+.section-heading .kicker{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--ink-faint);
+  margin-bottom:8px;
+}
+.section-heading h2{
+  font-family:'Crimson Pro',serif;
+  font-weight:700;
+  font-size:30px;
+  margin:0;
+  color:var(--ink);
+}
+
+.rw-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:18px;
+}
+.rw-card{
+  background:var(--paper);
+  border:1px solid var(--line-soft);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:20px 22px;
+}
+.rw-card.full{ grid-column:1 / -1; }
+.rw-num{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  color:var(--ink-faint);
+  margin-bottom:6px;
+  letter-spacing:.05em;
+}
+.rw-card h3{
+  font-family:'Crimson Pro',serif;
+  font-size:20px;
+  margin:0 0 10px;
+  color:var(--ink);
+}
+.rw-card p{
+  font-size:15.5px;
+  color:var(--ink-soft);
+  margin:0 0 8px;
+  line-height:1.55;
+}
+.rw-card p:last-child{ margin-bottom:0; }
+
+table.diff-table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:15px;
+}
+table.diff-table th{
+  text-align:left;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:.05em;
+  color:var(--ink-faint);
+  padding:8px 10px;
+  border-bottom:2px solid var(--line);
+}
+table.diff-table td{
+  padding:12px 10px;
+  border-bottom:1px solid var(--line-soft);
+  vertical-align:top;
+  color:var(--ink-soft);
+  line-height:1.45;
+}
+table.diff-table tr.lead td{
+  background:var(--teal-bg);
+  color:var(--ink);
+}
+.lead-tag{
+  display:inline-block;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;
+  text-transform:uppercase;
+  background:var(--teal);
+  color:var(--paper);
+  padding:2px 7px;
+  border-radius:999px;
+  margin-bottom:5px;
+}
+td.dx-cell{ font-weight:700; color:var(--ink); font-family:'Nunito',sans-serif; }
+
+.workup-flow{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+.workup-step{
+  display:flex;
+  gap:14px;
+  align-items:flex-start;
+}
+.workup-step .num{
+  flex-shrink:0;
+  width:28px;
+  height:28px;
+  border-radius:50%;
+  background:var(--sky);
+  color:var(--paper);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:13px;
+  font-weight:600;
+}
+.workup-step .step-lead{
+  font-weight:700;
+  color:var(--ink);
+  font-family:'Nunito',sans-serif;
+  font-size:15.5px;
+  margin-bottom:2px;
+}
+.workup-step .step-sub{
+  font-size:14.5px;
+  color:var(--ink-soft);
+  font-family:'Crimson Pro',serif;
+}
+
+.mgmt-list{
+  list-style:none;
+  margin:0;
+  padding:0;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.mgmt-list li{
+  display:flex;
+  gap:10px;
+  font-size:15.5px;
+  color:var(--ink-soft);
+  line-height:1.5;
+}
+.mgmt-list li::before{
+  content:"✓";
+  color:var(--teal);
+  font-weight:700;
+  flex-shrink:0;
+}
+
+/* ============ CONCEPT DEEP-DIVE ============ */
+.dd-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:20px;
+}
+.dd-card{
+  background:var(--paper);
+  border:1px solid var(--line-soft);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:22px;
+  display:flex;
+  flex-direction:column;
+}
+.dd-tag{
+  align-self:flex-start;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10.5px;
+  text-transform:uppercase;
+  letter-spacing:.05em;
+  font-weight:600;
+  padding:3px 9px;
+  border-radius:999px;
+  margin-bottom:10px;
+}
+.dd-card h3{
+  font-family:'Crimson Pro',serif;
+  font-size:20px;
+  margin:0 0 12px;
+  color:var(--ink);
+}
+.dd-visual{
+  background:var(--cream);
+  border:1px solid var(--line-soft);
+  border-radius:8px;
+  padding:12px;
+  margin-bottom:14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.dd-visual svg{ width:100%; height:auto; display:block; }
+.dd-take{
+  font-size:14.5px;
+  color:var(--ink-soft);
+  line-height:1.55;
+  margin:0;
+}
+.dd-take strong{ color:var(--ink); }
+
+table.mini{
+  width:100%;
+  border-collapse:collapse;
+  font-size:13.5px;
+  margin-bottom:0;
+}
+table.mini th{
+  text-align:left;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10.5px;
+  text-transform:uppercase;
+  color:var(--ink-faint);
+  padding:6px 8px;
+  border-bottom:2px solid var(--line);
+}
+table.mini td{
+  padding:8px 8px;
+  border-bottom:1px solid var(--line-soft);
+  color:var(--ink-soft);
+}
+table.mini tr:last-child td{ border-bottom:none; }
+table.mini td.hicat{ font-weight:700; color:var(--ink); }
+
+footer.source-footer{
+  max-width:800px;
+  margin:40px auto 0;
+  padding:20px 24px 0;
+  border-top:1px solid var(--line);
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11.5px;
+  color:var(--ink-faint);
+  text-align:center;
+  line-height:1.6;
+}
+
+@media (max-width:1000px){
+  .rw-grid{ grid-template-columns:repeat(2,1fr); }
+  .dd-grid{ grid-template-columns:1fr; }
+}
+@media (max-width:640px){
+  .rw-grid{ grid-template-columns:1fr; }
+  h1.case-title{ font-size:27px; }
+  .case-section p{ font-size:17.5px; }
+}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="eyebrow-top">UNE COM · Medical Neuroanatomy · Chapter 10 — The Limbic Lobe</div>
+  <h1 class="case-title">Case Study 10-2</h1>
+  <p class="case-sub">A 55-year-old man with profound memory loss following cardiovascular surgery</p>
+  <div class="meta-note">No small-group transcript was provided for this case. The Clinical Reasoning Walkthrough and Concept Deep-Dive cards below are synthesized directly from this case's findings together with the chapter's own Discussion I (Hippocampal Formation, Amygdala) and Discussion II (Limbic Lobe Vasculature) sections — not from a separate reasoning document.</div>
+  <div class="legend">
+    <span class="legend-chip cat-localization">● localization</span>
+    <span class="legend-chip cat-finding">● finding</span>
+    <span class="legend-chip cat-term">● term</span>
+    <span class="legend-chip cat-pattern">● pattern</span>
+    <span class="legend-chip cat-genetics">● trajectory / workup</span>
+  </div>
+</header>
+
+<div class="case-wrap">
+
+  <div class="case-section">
+    <div class="section-label">Chief Complaint</div>
+    <p>A <mark class="hl" data-cat="pattern" id="hl1">profound memory loss following cardiovascular surgery<span class="hl-badge">1</span></mark></p>
+  </div>
+
+  <div class="case-section">
+    <div class="section-label">History of Chief Complaint</div>
+    <p>This is a 55-year-old, male government worker retired because of medical disability. During coronary surgery he suffered several extended periods of anoxia and has experienced severe neurologic consequences. He is presenting for a checkup, 4 years postsurgery.</p>
+  </div>
+
+  <div class="case-section">
+    <div class="section-label">Past Medical History</div>
+    <p>Five years ago, this patient was diagnosed with coronary artery occlusion, and bypass surgery was performed. During recovery, <mark class="hl" data-cat="finding" id="hl2">an atrial tear resulted in a significant loss of blood<span class="hl-badge">2</span></mark>. The patient experienced a <mark class="hl" data-cat="genetics" id="hl3">15-minute period of hypoxia<span class="hl-badge">3</span></mark>. The tear was repaired; however, during this second trip to the operating room, <mark class="hl" data-cat="finding" id="hl4">the patient's EEG was flat and his pupils were fixed<span class="hl-badge">4</span></mark>. The following day, further bleeding required a third trip to the operating room; again his pupils were fixed and <mark class="hl" data-cat="finding" id="hl5">the EEG was diminished in amplitude<span class="hl-badge">5</span></mark>.</p>
+    <p>Over the next 2 days the patient gradually regained consciousness. He had <mark class="hl" data-cat="localization" id="hl6">reduced strength and paresthesia in the left arm<span class="hl-badge">6</span></mark>. He also demonstrated severe memory loss and <mark class="hl" data-cat="pattern" id="hl7">confusion with respect to time and place<span class="hl-badge">7</span></mark>. Prior to the surgical event, he had no history of neurologic signs or symptoms.</p>
+  </div>
+
+  <div class="case-section">
+    <div class="section-label">General Physical Examination</div>
+    <p>This was a well-nourished, well-hydrated, obese male who was alert and cooperative and in no acute distress. <mark class="hl" data-cat="finding" id="hl8">Carotid auscultation revealed a soft bruit without radiation on the right<span class="hl-badge">8</span></mark>. Heartbeat was regular; <mark class="hl" data-cat="term" id="hl9">a grade III harsh systolic murmur, auscultated best at the second intercostal space on the right, with an S4 gallop was present<span class="hl-badge">9</span></mark>. Peripheral pulses were intact. Lungs were clear to auscultation and percussion. The abdomen was soft, without masses, tenderness, rigidity, or rebound. <mark class="hl" data-cat="finding" id="hl10">A +2 peripheral, dependent edema was noted in the lower extremities bilaterally<span class="hl-badge">10</span></mark>. Skin was sallow in appearance, with poor texture and turgor. A well-healed cicatrix of the anterior chest wall extended from the second intercostal space to the diaphragmatic area; a healed 2-cm cicatrix was noted in the left antecubital fossa; and a healed 1-cm cicatrix was located in the left subclavicular area.</p>
+  </div>
+
+  <div class="case-section">
+    <div class="section-label">Neurologic Examination</div>
+
+    <p><span class="sub-label">Mental Status.</span> The patient was disoriented with respect to time and place and could not describe the reason for his past hospital confinement or recall the history of his illness. However, <mark class="hl" data-cat="localization" id="hl12">his speech, naming, reading aloud, and comprehension were all normal for his age<span class="hl-badge">12</span></mark>. He <mark class="hl" data-cat="pattern" id="hl13">rapidly forgot information recently expressed to him; he could not recognize any words presented to him 5 minutes previously<span class="hl-badge">13</span></mark>. He could not recall the names of staff or physicians in either the office or the hospital. Prior to his illness, he had had a strong interest in American history and politics. During the examination <mark class="hl" data-cat="pattern" id="hl14">he could recall most of the president's names and supply some details concerning their era, but he could not identify the current president<span class="hl-badge">14</span></mark> or describe any recent historical events. He frequently relied on his family members to provide any recent descriptions of his life. He did not recall why he was ill or any of the events occurring around the time of his cardiac surgery. <mark class="hl" data-cat="localization" id="hl15">No other significant personality changes or cognitive deficits were detectable<span class="hl-badge">15</span></mark> in the patient.</p>
+
+    <p><span class="sub-label">Cranial Nerves.</span> His visual fields were full to confrontation; fundoscopic examination revealed <mark class="hl" data-cat="term" id="hl11">AV nicking and silver wire changes<span class="hl-badge">11</span></mark> without exudates, hemorrhages, or papilledema. <mark class="hl" data-cat="finding" id="hl16">His hearing was slightly diminished in both ears<span class="hl-badge">16</span></mark>. A full range of facial expression was present, and the jaw-jerk reflex was normal. Palate and uvula elevated symmetrically, and the tongue protruded on the midline.</p>
+
+    <p><span class="sub-label">Motor Systems.</span> Although the patient had motion in all extremities, strength was diminished on the left side, with <mark class="hl" data-cat="localization" id="hl18">slightly elevated deep tendon reflexes and a Babinski sign<span class="hl-badge">18</span></mark>. <mark class="hl" data-cat="localization" id="hl17">Strength in the left upper extremity was +3/5 and +4/5 in the left lower extremity<span class="hl-badge">17</span></mark>.</p>
+
+    <p><span class="sub-label">Sensation.</span> Vibratory sense, proprioception, and discriminative touch were <mark class="hl" data-cat="localization" id="hl19">diminished but not absent in the left and normal in the right extremities<span class="hl-badge">19</span></mark>. <mark class="hl" data-cat="finding" id="hl20">Paresthesias (tingling sensations) were found involving the patient's left hand and forearm<span class="hl-badge">20</span></mark>.</p>
+  </div>
+
+</div>
+
+<!-- ============ CLINICAL REASONING WALKTHROUGH ============ -->
+<div class="section-wrap">
+  <div class="section-heading">
+    <div class="kicker">Synthesis</div>
+    <h2>Clinical Reasoning Walkthrough</h2>
+  </div>
+
+  <div class="rw-grid">
+    <div class="rw-card">
+      <div class="rw-num">01 · Localization</div>
+      <h3>Two circuits, not one</h3>
+      <p>This case has a dual localization. The amnesia is <strong>bilateral and circuit-wide</strong> — a lesion of the limbic (hippocampal–diencephalic) memory circuit — since language, personality, and general cognition are preserved and there's no left-vs-right asymmetry described in the memory deficit itself.</p>
+      <p>The left-sided weakness, hyperreflexia, Babinski sign, and sensory loss are a separate, <strong>lateralized upper motor neuron</strong> finding, localizing to the right cerebral hemisphere (corticospinal tract and dorsal column-medial lemniscus projections), not to a peripheral nerve or segmental level.</p>
+    </div>
+
+    <div class="rw-card">
+      <div class="rw-num">02 · Distribution</div>
+      <h3>Multifocal, selectively vulnerable</h3>
+      <p>Not diffuse — cranial nerves, language, and right-sided motor/sensory function are spared. Not focal — two separate territories are involved (bilateral hippocampal CA1 plus a right-hemisphere region).</p>
+      <p>This patchy, "select structures only" pattern is the signature of <strong>global hypoperfusion</strong>: the tissue injured is whatever has the highest metabolic demand or the thinnest collateral supply, not whatever sits in one vessel's territory.</p>
+    </div>
+
+    <div class="rw-card">
+      <div class="rw-num">03 · Time Course</div>
+      <h3>Acute insult, chronic stable deficit</h3>
+      <p>Two discrete intraoperative events 5 years ago (documented flat EEG/fixed pupils, then diminished-amplitude EEG) produced an <strong>acute</strong> injury, followed by a 2-day gradual return of consciousness.</p>
+      <p>The exam 4 years later is unchanged from what would be expected at recovery — this is a <strong>fixed, static deficit</strong>, not a progressive one, which argues strongly against a neurodegenerative process and supports a one-time ischemic/anoxic mechanism.</p>
+    </div>
+
+    <div class="rw-card full">
+      <div class="rw-num">04 · Differential Diagnosis</div>
+      <h3>Working differential</h3>
+      <table class="diff-table">
+        <tr><th>Diagnosis</th><th>Fits</th><th>Argues against</th></tr>
+        <tr class="lead">
+          <td class="dx-cell"><span class="lead-tag">Most likely</span><br>Global hypoxic-ischemic injury: bilateral hippocampal (CA1) damage + right ACA–MCA watershed infarct</td>
+          <td>Two documented intraoperative hypotensive/hypoxic events; classic anterograde amnesia with a temporally graded retrograde component; arm-predominant left weakness with UMN signs matches a watershed distribution; stable 4-year course.</td>
+          <td>Requires accepting two co-occurring lesions from one systemic event rather than a single unifying vascular territory — but this is exactly what global hypoperfusion produces.</td>
+        </tr>
+        <tr>
+          <td class="dx-cell">Bilateral paramedian thalamic infarction (e.g., artery of Percheron)</td>
+          <td>Can produce a severe amnestic syndrome with preserved language.</td>
+          <td>Classically causes decreased arousal/vertical gaze palsy at onset, which isn't described; doesn't explain the lateralized left-sided UMN signs.</td>
+        </tr>
+        <tr>
+          <td class="dx-cell">Cardioembolic right MCA territory stroke</td>
+          <td>Would explain the left hemiparesis and hyperreflexia/Babinski.</td>
+          <td>Doesn't account for the bilateral, temporally graded memory loss, which is the dominant and defining feature here.</td>
+        </tr>
+        <tr>
+          <td class="dx-cell">Chronic hypertensive small-vessel (lacunar) disease</td>
+          <td>AV nicking/silver-wire changes confirm real, longstanding hypertension as a contributing risk factor.</td>
+          <td>Lacunes don't explain an abrupt, perioperative-onset amnestic syndrome this severe; this is a contributing comorbidity, not the primary mechanism.</td>
+        </tr>
+        <tr>
+          <td class="dx-cell">Neurodegenerative dementia (e.g., early Alzheimer's disease)</td>
+          <td>Anterograde amnesia is a hallmark early feature.</td>
+          <td>Onset is sharply time-locked to a specific perioperative event, not insidious; course is static over 4 years rather than progressive.</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="rw-card full">
+      <div class="rw-num">05 · Diagnostic Workup</div>
+      <h3>Next steps</h3>
+      <div class="workup-flow">
+        <div class="workup-step">
+          <div class="num">1</div>
+          <div><div class="step-lead">MRI brain with DWI/FLAIR</div><div class="step-sub">Look for chronic T2/FLAIR signal change in the bilateral hippocampi (CA1 subfield) and in the right ACA–MCA borderzone; also excludes a mass or hemorrhage as an alternative explanation.</div></div>
+        </div>
+        <div class="workup-step">
+          <div class="num">2</div>
+          <div><div class="step-lead">Formal neuropsychological / memory battery</div><div class="step-sub">Quantify the anterograde deficit and map the retrograde gradient (e.g., Wechsler Memory Scale) to confirm the Ribot-type pattern already suggested by the presidents question.</div></div>
+        </div>
+        <div class="workup-step">
+          <div class="num">3</div>
+          <div><div class="step-lead">Echocardiogram ± carotid duplex</div><div class="step-sub">Characterize the valvular disease behind the murmur/S4 gallop and screen for a thrombus or embolic source; carotid duplex quantifies the stenosis behind the soft right-sided bruit.</div></div>
+        </div>
+        <div class="workup-step">
+          <div class="num">4</div>
+          <div><div class="step-lead">Outpatient EEG</div><div class="step-sub">Assess for residual diffuse slowing or epileptiform activity, given that both intraoperative EEGs were markedly abnormal (flat, then low-amplitude).</div></div>
+        </div>
+        <div class="workup-step">
+          <div class="num">5</div>
+          <div><div class="step-lead">Ophthalmologic exam</div><div class="step-sub">Formally grade the hypertensive retinopathy (AV nicking, silver wire) to stage chronic vascular risk burden and guide blood pressure targets.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rw-card">
+      <div class="rw-num">06 · Prognosis</div>
+      <h3>Fixed deficit, ongoing risk</h3>
+      <p>Four years out, the anterograde amnesia is almost certainly permanent — bilateral CA1 loss doesn't regenerate. Some further shrinkage of the retrograde gradient toward normal is possible but unlikely to resolve fully. The motor/sensory deficit has already plateaued.</p>
+      <p>The patient's ongoing cardiac disease (murmur, S4, edema) and hypertension mean he remains at real risk for a <strong>second</strong> hypoperfusion event, which is arguably the more urgent forward-looking concern.</p>
+    </div>
+
+    <div class="rw-card">
+      <div class="rw-num">07 · Management</div>
+      <h3>Checklist</h3>
+      <ul class="mgmt-list">
+        <li>Cardiology follow-up to optimize the valvular disease and heart failure signs driving hemodynamic instability</li>
+        <li>Blood pressure control to slow further hypertensive small-vessel injury</li>
+        <li>Carotid duplex surveillance given the bruit, to determine if stenosis warrants intervention</li>
+        <li>Neuropsychological rehabilitation — external memory aids and structured routines, since the underlying tissue loss isn't reversible</li>
+        <li>PT/OT for the residual left arm/leg weakness and ADL adaptation</li>
+        <li>Safety and caregiver planning, given his reliance on family for recent-event recall</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ============ CONCEPT DEEP-DIVE ============ -->
+<div class="section-wrap">
+  <div class="section-heading">
+    <div class="kicker">Underlying Neuroanatomy</div>
+    <h2>Concept Deep-Dive</h2>
+  </div>
+
+  <div class="dd-grid">
+
+    <!-- Card 1: Papez circuit -->
+    <div class="dd-card">
+      <span class="dd-tag cat-localization">localization</span>
+      <h3>The Hippocampal–Diencephalic Memory Circuit (Papez Circuit)</h3>
+      <div class="dd-visual">
+        <svg viewBox="0 0 340 300" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arrow1" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L6,3 L0,6 Z" fill="#2F6485"/>
+            </marker>
+          </defs>
+          <g font-family="Nunito, sans-serif" font-size="11" fill="#2A241C" text-anchor="middle">
+            <ellipse cx="170" cy="40" rx="72" ry="24" fill="#DFEDE8" stroke="#256B63"/>
+            <text x="170" y="44">Hippocampus</text>
+
+            <ellipse cx="290" cy="110" rx="55" ry="24" fill="#DEE9EF" stroke="#2F6485"/>
+            <text x="290" y="106">Fornix</text>
+            <text x="290" y="119" font-size="9" fill="#6B6152">(fiber tract)</text>
+
+            <ellipse cx="255" cy="200" rx="65" ry="24" fill="#DEE9EF" stroke="#2F6485"/>
+            <text x="255" y="204">Mammillary bodies</text>
+
+            <ellipse cx="130" cy="230" rx="70" ry="24" fill="#DEE9EF" stroke="#2F6485"/>
+            <text x="130" y="226">Ant. thalamic nucleus</text>
+            <text x="130" y="239" font-size="9" fill="#6B6152">via mammillothalamic tract</text>
+
+            <ellipse cx="45" cy="150" rx="60" ry="24" fill="#E9E2F1" stroke="#6B5390"/>
+            <text x="45" y="154">Cingulate gyrus</text>
+
+            <ellipse cx="70" cy="65" rx="65" ry="24" fill="#F3E7C6" stroke="#A47A1F"/>
+            <text x="70" y="61">Entorhinal cortex</text>
+            <text x="70" y="74" font-size="9" fill="#6B6152">(parahippocampal gyrus)</text>
+
+            <path d="M220,50 Q260,65 275,88" fill="none" stroke="#2F6485" stroke-width="1.6" marker-end="url(#arrow1)"/>
+            <path d="M280,132 Q270,165 270,178" fill="none" stroke="#2F6485" stroke-width="1.6" marker-end="url(#arrow1)"/>
+            <path d="M200,215 Q165,225 158,227" fill="none" stroke="#2F6485" stroke-width="1.6" marker-end="url(#arrow1)"/>
+            <path d="M75,222 Q45,195 40,175" fill="none" stroke="#2F6485" stroke-width="1.6" marker-end="url(#arrow1)"/>
+            <path d="M50,128 Q55,100 60,88" fill="none" stroke="#2F6485" stroke-width="1.6" marker-end="url(#arrow1)"/>
+            <path d="M110,58 Q135,50 150,45" fill="none" stroke="#2F6485" stroke-width="1.6" marker-end="url(#arrow1)"/>
+          </g>
+        </svg>
+      </div>
+      <p class="dd-take"><strong>This patient's lesion sits at the first node.</strong> Losing the hippocampus itself breaks the whole loop's ability to encode new memories, even though every downstream station (fornix, mammillary bodies, thalamus, cingulate) remains structurally intact — which is why his deficit is purely mnemonic rather than a broader limbic/behavioral syndrome.</p>
+    </div>
+
+    <!-- Card 2: CA1 vulnerability table -->
+    <div class="dd-card">
+      <span class="dd-tag cat-pattern">pattern</span>
+      <h3>CA1 ("Sommer Sector"): Selectively Vulnerable to Anoxia</h3>
+      <div class="dd-visual">
+        <table class="mini">
+          <tr><th>Subfield</th><th>Vulnerability to anoxia/ischemia</th></tr>
+          <tr><td class="hicat">CA1 (Sommer sector)</td><td>Highest — first and most severely damaged; also the site of neurofibrillary tangle accumulation in Alzheimer's disease</td></tr>
+          <tr><td class="hicat">CA2</td><td>Relatively resistant</td></tr>
+          <tr><td class="hicat">CA3</td><td>More resistant than CA1</td></tr>
+          <tr><td class="hicat">Dentate gyrus (CA4 border)</td><td>Relatively resistant</td></tr>
+        </table>
+      </div>
+      <p class="dd-take">A brief, global hypoxic episode doesn't damage the hippocampus uniformly — it targets CA1 specifically. That's <strong>exactly the kind of selective, patchy injury</strong> a 15-minute hypoxic period plus two intraoperative hypotensive events would be expected to produce, well before it damages more resistant cortex.</p>
+    </div>
+
+    <!-- Card 3: Amnesia timeline -->
+    <div class="dd-card">
+      <span class="dd-tag cat-pattern">pattern</span>
+      <h3>Anterograde Amnesia + Temporally-Graded Retrograde Loss</h3>
+      <div class="dd-visual">
+        <svg viewBox="0 0 340 170" xmlns="http://www.w3.org/2000/svg">
+          <g font-family="Nunito, sans-serif" font-size="10.5" fill="#2A241C">
+            <defs>
+              <linearGradient id="gradmem" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#256B63" stop-opacity="0.85"/>
+                <stop offset="70%" stop-color="#256B63" stop-opacity="0.25"/>
+                <stop offset="100%" stop-color="#C85A3E" stop-opacity="0.15"/>
+              </linearGradient>
+            </defs>
+            <rect x="20" y="55" width="230" height="26" fill="url(#gradmem)" rx="4"/>
+            <text x="30" y="72" fill="#F6F1E6" font-weight="700">Remote memories (preserved)</text>
+
+            <line x1="255" y1="40" x2="255" y2="100" stroke="#C85A3E" stroke-width="2" stroke-dasharray="4,3"/>
+            <text x="258" y="35" fill="#C85A3E" font-weight="700" font-size="10">Injury</text>
+
+            <rect x="255" y="55" width="70" height="26" fill="#F7E4DB" stroke="#C85A3E" rx="4"/>
+            <text x="260" y="72" fill="#C85A3E" font-size="9.5">Recent / new (lost)</text>
+
+            <text x="20" y="105" fill="#6B6152">"Names of old presidents"</text>
+            <text x="255" y="118" fill="#6B6152" font-size="9">"Current president"</text>
+            <text x="255" y="130" fill="#6B6152" font-size="9">"5-minute word recall"</text>
+
+            <line x1="20" y1="145" x2="325" y2="145" stroke="#9A8F7B" stroke-width="1"/>
+            <text x="20" y="158" fill="#9A8F7B" font-size="9">years before injury</text>
+            <text x="270" y="158" fill="#9A8F7B" font-size="9">→ present</text>
+          </g>
+        </svg>
+      </div>
+      <p class="dd-take">This is <strong>Ribot's Law</strong> in action: older memories are more consolidated and less hippocampus-dependent for retrieval, so they survive; anything recent — including everything formed after the injury — is lost. His ability to name past presidents but not the current one is the single cleanest bedside sign of this gradient.</p>
+    </div>
+
+    <!-- Card 4: Watershed infarct -->
+    <div class="dd-card">
+      <span class="dd-tag cat-localization">localization</span>
+      <h3>Global Hypoperfusion &amp; Watershed (Borderzone) Infarction</h3>
+      <div class="dd-visual">
+        <svg viewBox="0 0 320 240" xmlns="http://www.w3.org/2000/svg">
+          <g>
+            <ellipse cx="160" cy="120" rx="140" ry="105" fill="#FCFAF3" stroke="#DED2B6" stroke-width="2"/>
+            <!-- ACA territory (medial/anterior) -->
+            <path d="M160,20 A140,105 0 0,1 240,60 L160,120 Z" fill="#E9E2F1" opacity="0.7"/>
+            <!-- MCA territory (large lateral) -->
+            <path d="M240,60 A140,105 0 0,1 240,180 L160,120 Z" fill="#F7E4DB" opacity="0.7"/>
+            <!-- PCA territory (posterior) -->
+            <path d="M240,180 A140,105 0 0,1 160,220 A140,105 0 0,1 40,180 L160,120 Z" fill="#DEE9EF" opacity="0.7"/>
+            <!-- borderzone hatch between ACA/MCA (anterior watershed) -->
+            <path d="M198,38 L222,72 L182,108 L152,68 Z" fill="none" stroke="#2A241C" stroke-width="1.4" stroke-dasharray="3,2"/>
+            <text x="150" y="55" font-family="IBM Plex Mono, monospace" font-size="9" fill="#2A241C">ACA–MCA</text>
+            <text x="150" y="65" font-family="IBM Plex Mono, monospace" font-size="9" fill="#2A241C">watershed</text>
+
+            <circle cx="185" cy="72" r="7" fill="#C85A3E"/>
+            <text x="196" y="76" font-family="Nunito, sans-serif" font-size="10" fill="#C85A3E" font-weight="700">injury here</text>
+
+            <text x="70" y="40" font-family="Nunito, sans-serif" font-size="11" fill="#6B5390">ACA</text>
+            <text x="255" y="120" font-family="Nunito, sans-serif" font-size="11" fill="#C85A3E">MCA</text>
+            <text x="140" y="205" font-family="Nunito, sans-serif" font-size="11" fill="#2F6485">PCA</text>
+            <text x="20" y="235" font-family="Nunito, sans-serif" font-size="10" fill="#6B6152">Right hemisphere, lateral view (schematic)</text>
+          </g>
+        </svg>
+      </div>
+      <p class="dd-take">During systemic hypotension, the territories <strong>furthest from all three major arteries</strong> — the borderzones — receive the least perfusion pressure. The anterior (ACA–MCA) watershed maps onto the shoulder/proximal-arm motor cortex, which is exactly why this patient's weakness is <strong>arm-predominant (3/5) more than leg (4/5)</strong>, rather than the equal arm/leg weakness of an internal capsule lesion.</p>
+    </div>
+
+    <!-- Card 5: Vascular supply of medial temporal lobe -->
+    <div class="dd-card">
+      <span class="dd-tag cat-genetics">workup / vascular</span>
+      <h3>Vascular Supply of the Hippocampus &amp; Amygdala</h3>
+      <div class="dd-visual">
+        <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg">
+          <g font-family="Nunito, sans-serif" font-size="10.5" fill="#2A241C">
+            <ellipse cx="160" cy="110" rx="145" ry="90" fill="#FCFAF3" stroke="#DED2B6" stroke-width="2"/>
+            <circle cx="90" cy="110" r="8" fill="#DEE9EF" stroke="#2F6485"/>
+            <text x="55" y="140" font-size="9.5">Internal carotid A.</text>
+
+            <path d="M98,110 C150,95 210,95 255,120" fill="none" stroke="#2F6485" stroke-width="2.4"/>
+            <text x="155" y="90" fill="#2F6485" font-weight="700">Anterior choroidal a.</text>
+
+            <path d="M255,120 C230,150 195,165 165,168" fill="none" stroke="#256B63" stroke-width="2.4"/>
+            <text x="175" y="188" fill="#256B63" font-weight="700">Posterior cerebral a.</text>
+
+            <ellipse cx="180" cy="130" rx="28" ry="16" fill="#F3E7C6" stroke="#A47A1F"/>
+            <text x="180" y="134" text-anchor="middle" font-size="9.5">Hippocampus</text>
+
+            <ellipse cx="150" cy="105" rx="20" ry="13" fill="#F7E4DB" stroke="#C85A3E"/>
+            <text x="150" y="109" text-anchor="middle" font-size="9">Amygdala</text>
+          </g>
+        </svg>
+      </div>
+      <p class="dd-take">Both the anterior choroidal artery and the posterior cerebral artery send small penetrating branches into the hippocampus and amygdala — these are relatively distal, thin-caliber vessels with limited collateral reserve. That makes the medial temporal lobe a <strong>second point of vulnerability</strong> during global hypoperfusion, on top of CA1's intrinsic metabolic fragility.</p>
+    </div>
+
+    <!-- Card 6: Fundus / hypertensive retinopathy -->
+    <div class="dd-card">
+      <span class="dd-tag cat-term">term</span>
+      <h3>AV Nicking &amp; Silver-Wire Arterioles</h3>
+      <div class="dd-visual">
+        <svg viewBox="0 0 260 200" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="130" cy="100" r="85" fill="#F7E4DB" opacity="0.5"/>
+          <circle cx="130" cy="100" r="85" fill="none" stroke="#DED2B6" stroke-width="2"/>
+          <circle cx="130" cy="100" r="16" fill="#F3E7C6" stroke="#A47A1F" stroke-width="1.5"/>
+          <g stroke-width="4" fill="none" stroke-linecap="round">
+            <path d="M130,100 C100,80 70,60 40,45" stroke="#C85A3E"/>
+            <path d="M130,100 C160,70 190,55 220,45" stroke="#C85A3E"/>
+            <path d="M130,100 C100,120 65,140 30,155" stroke="#2F6485" stroke-width="5"/>
+            <path d="M130,100 C165,125 195,145 225,160" stroke="#2F6485" stroke-width="5"/>
+          </g>
+          <!-- AV nicking crossing point -->
+          <circle cx="88" cy="128" r="4" fill="#2A241C"/>
+          <text x="94" y="132" font-family="Nunito, sans-serif" font-size="9.5" fill="#2A241C">A/V crossing — nicking</text>
+          <text x="150" y="42" font-family="Nunito, sans-serif" font-size="9.5" fill="#C85A3E">silver-wire arteriole</text>
+          <text x="65" y="188" font-family="Nunito, sans-serif" font-size="9.5" fill="#6B6152">Schematic fundus</text>
+        </svg>
+      </div>
+      <p class="dd-take"><strong>AV nicking</strong> = a thickened, hypertensive arteriole compressing the vein it crosses. <strong>Silver-wire arterioles</strong> = arteriolar wall thickening that increases the light reflex to a metallic sheen. Neither finding is acute — both are markers of the patient's <strong>chronic</strong> hypertension, a standing risk factor separate from (but compounding) the acute perioperative injury that caused his amnesia.</p>
+    </div>
+
+  </div>
+</div>
+
+<footer class="source-footer">
+  Case content: Medical Neuroanatomy, Chapter 10 — The Limbic Lobe, Case Study 10-2 (reproduced verbatim).<br>
+  Reasoning synthesized from case findings + Chapter 10 Discussion I &amp; II. No small-group transcript available for this case.
+</footer>
+
+<div id="overlay"></div>
+<div id="hl-tooltip"></div>
+<div id="hl-panel">
+  <div class="panel-head">
+    <div>
+      <span class="panel-cat-tag" id="panel-cat-tag"></span>
+      <div class="panel-eyebrow" id="panel-eyebrow"></div>
+      <div class="panel-title" id="panel-title"></div>
+    </div>
+    <button class="panel-close" id="panel-close" aria-label="Close">&times;</button>
+  </div>
+  <div class="panel-body" id="panel-body"></div>
+</div>
+
+<script>
+(function(){
+  var CAT_LABEL = {
+    localization: "Localization",
+    finding: "Finding",
+    term: "Term",
+    pattern: "Pattern",
+    genetics: "Trajectory / Workup"
+  };
+
+  var annotations = [
+    { target:"hl1", cat:"pattern", eyebrow:"Presenting Syndrome", title:"An amnestic syndrome, not a diffuse encephalopathy", body:"Framing the chief complaint around memory loss specifically — rather than confusion in general — sharply narrows the localization from the outset toward the limbic memory circuit rather than a broad cortical process." },
+    { target:"hl2", cat:"finding", eyebrow:"Mechanism", title:"Intraoperative hemorrhage causing systemic hypotension", body:"This explains why a cardiac procedure produced a brain injury: the tear caused hypovolemia and a drop in cerebral perfusion pressure, not a direct embolic or structural brain event." },
+    { target:"hl3", cat:"genetics", eyebrow:"Insult Duration", title:"Global, not focal, ischemic exposure", body:"Fifteen minutes of hypoxia is long enough to injure the brain's most metabolically demanding, least collateralized tissue first (hippocampal CA1, arterial borderzones) while sparing more robustly perfused regions — this is why the resulting damage is patchy rather than uniform." },
+    { target:"hl4", cat:"finding", eyebrow:"Severity Marker", title:"Global cortical / brainstem hypoperfusion", body:"A flat EEG plus fixed pupils during the second OR trip documents a severe hypoperfusion event — objective evidence the insult was substantial enough to suppress cortical electrical activity and brainstem-mediated pupillary reflexes, not just a brief desaturation." },
+    { target:"hl5", cat:"finding", eyebrow:"Second Insult", title:"A repeat hypoperfusion event", body:"A third trip to the OR for further bleeding produced a second episode of compromised perfusion. Two discrete injuries compound the total ischemic burden, helping explain why the resulting deficit is more severe than a single brief desaturation would produce." },
+    { target:"hl6", cat:"localization", eyebrow:"Lateralizing Sign", title:"Points to a right-hemisphere lesion", body:"Unlike the memory loss (bilateral, circuit-wide), this is a lateralized, contralateral finding — it signals a second, separate lesion superimposed on the diffuse anoxic injury, most consistent with a focal right-hemisphere ischemic event." },
+    { target:"hl7", cat:"pattern", eyebrow:"Disorientation", title:"A downstream consequence of amnesia", body:"Time/place disorientation here follows from the inability to form new memories rather than from a primary attentional or diffuse confusional state — the mental status exam below confirms this distinction." },
+    { target:"hl8", cat:"finding", eyebrow:"Vascular Risk Marker", title:"Evidence of carotid atherosclerosis", body:"A soft, non-radiating bruit suggests mild-to-moderate carotid stenosis — a chronic vascular risk factor and potential contributor to reduced cerebral perfusion reserve, though the acute injury here was primarily driven by the intraoperative hypotensive events, not carotid occlusion." },
+    { target:"hl9", cat:"term", eyebrow:"Terminology", title:"S4 gallop — a stiff, noncompliant ventricle", body:"The murmur and S4 (heard as the atrium contracts against a poorly compliant left ventricle) explain why this patient needed cardiac surgery in the first place, and why his heart remains a chronic source of hemodynamic instability four years later." },
+    { target:"hl10", cat:"finding", eyebrow:"Systemic Correlate", title:"Signs of chronic heart failure", body:"Bilateral dependent edema reflects ongoing cardiac dysfunction — useful context for why this patient remains at risk for future hypoperfusion events, though not a neurologic finding itself." },
+    { target:"hl11", cat:"term", eyebrow:"Fundoscopic Terminology", title:"Signs of chronic systemic hypertension", body:"AV nicking (a thickened arteriole compressing the vein it crosses) and silver-wire arterioles (increased light reflex from arteriolar wall thickening) are grade II-III hypertensive retinopathy findings — markers of long-standing hypertension and overall cerebrovascular risk." },
+    { target:"hl12", cat:"localization", eyebrow:"Negative Finding, Positive Localizing Value", title:"Argues against dominant (left) lateral temporal cortex", body:"Intact language rules out a lesion involving Wernicke's or Broca's areas and argues against a large left MCA territory infarct — it helps confine the memory deficit to medial temporal/diencephalic circuitry rather than lateral cortex." },
+    { target:"hl13", cat:"pattern", eyebrow:"Defining Feature", title:"Anterograde amnesia", body:"This is the operational definition of anterograde amnesia — inability to form new declarative memories — and is the single most specific finding for bilateral hippocampal/medial temporal damage in this case." },
+    { target:"hl14", cat:"pattern", eyebrow:"Temporal Gradient", title:"Graded retrograde amnesia (Ribot's Law)", body:"Remote memories, consolidated over decades before his illness, are preserved, while memories from around and after the injury are lost — a temporal gradient classically seen with hippocampal damage, since older memories become progressively less dependent on the hippocampus for retrieval." },
+    { target:"hl15", cat:"localization", eyebrow:"Negative Finding", title:"Argues against diffuse or frontal injury", body:"A pure amnestic syndrome without personality change, disinhibition, or broader cognitive decline argues against diffuse anoxic cortical injury or bilateral amygdala/orbitofrontal involvement (which would more likely produce a Kluver-Bucy-like picture) — the lesion is circumscribed to memory circuitry." },
+    { target:"hl16", cat:"finding", eyebrow:"Incidental / Age-Related", title:"Not a localizing cranial nerve finding", body:"Mild bilateral hearing loss here is nonspecific and most consistent with age-related presbycusis rather than a brainstem or CN VIII lesion, especially with an otherwise entirely normal cranial nerve exam." },
+    { target:"hl17", cat:"localization", eyebrow:"Distribution of Weakness", title:"Arm weaker than leg — a borderzone clue", body:"Weakness more pronounced in the arm than the leg is a classic pattern for an anterior (ACA-MCA) watershed/borderzone infarct, distinct from the leg-predominant pattern of an isolated ACA stroke or the equal arm/leg weakness of an internal capsule lesion." },
+    { target:"hl18", cat:"localization", eyebrow:"Upper Motor Neuron Signs", title:"Corticospinal tract, not peripheral nerve", body:"Hyperreflexia plus an extensor plantar response localizes to the corticospinal (upper motor neuron) pathway — a central, suprasegmental lesion, not a peripheral neuropathy — and given the left-sided distribution, it points to the contralateral (right) hemisphere or brainstem." },
+    { target:"hl19", cat:"localization", eyebrow:"Sensory Correlate", title:"Dorsal column-medial lemniscus pathway", body:"Reduced (not absent) vibratory sense, proprioception, and discriminative touch on the same side as the weakness supports a partial lesion of the sensorimotor cortex or its subcortical projections on the right, rather than a peripheral or spinal cord process." },
+    { target:"hl20", cat:"finding", eyebrow:"Symptom Correlate", title:"Subjective correlate of the sensory exam", body:"Tingling in the distal left upper extremity corresponds to the same corticosensory territory as the objective exam findings, reinforcing a single right-hemisphere lesion rather than a separate peripheral process." }
+  ];
+
+  var byTarget = {};
+  annotations.forEach(function(a){ byTarget[a.target] = a; });
+
+  var tooltip = document.getElementById("hl-tooltip");
+  var panel = document.getElementById("hl-panel");
+  var overlay = document.getElementById("overlay");
+  var panelCatTag = document.getElementById("panel-cat-tag");
+  var panelEyebrow = document.getElementById("panel-eyebrow");
+  var panelTitle = document.getElementById("panel-title");
+  var panelBody = document.getElementById("panel-body");
+  var panelClose = document.getElementById("panel-close");
+
+  var canHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+  function showTooltip(mark, ann){
+    tooltip.innerHTML =
+      '<div class="tt-eyebrow">' + ann.eyebrow + '</div>' +
+      '<div class="tt-title">' + ann.title + '</div>' +
+      '<div class="tt-teaser">' + ann.body.slice(0, 90) + (ann.body.length > 90 ? '…' : '') + '</div>';
+    var rect = mark.getBoundingClientRect();
+    var top = rect.bottom + 8;
+    tooltip.style.left = Math.max(8, Math.min(window.innerWidth - 268, rect.left)) + "px";
+    tooltip.style.top = top + "px";
+    tooltip.classList.add("visible");
+    var ttRect = tooltip.getBoundingClientRect();
+    if (ttRect.bottom > window.innerHeight - 8){
+      tooltip.style.top = (rect.top - ttRect.height - 8) + "px";
+    }
+  }
+  function hideTooltip(){ tooltip.classList.remove("visible"); }
+
+  function openPanel(ann){
+    panelCatTag.textContent = "● " + CAT_LABEL[ann.cat];
+    panelCatTag.className = "panel-cat-tag cat-" + ann.cat;
+    panelEyebrow.textContent = ann.eyebrow;
+    panelTitle.textContent = ann.title;
+    panelBody.textContent = ann.body;
+    panel.classList.add("open");
+    overlay.classList.add("open");
+    document.querySelectorAll("mark.hl.is-active").forEach(function(m){ m.classList.remove("is-active"); });
+    var activeMark = document.getElementById(ann.target);
+    if (activeMark) activeMark.classList.add("is-active");
+  }
+  function closePanel(){
+    panel.classList.remove("open");
+    overlay.classList.remove("open");
+    document.querySelectorAll("mark.hl.is-active").forEach(function(m){ m.classList.remove("is-active"); });
+  }
+
+  document.querySelectorAll("mark.hl").forEach(function(mark){
+    var ann = byTarget[mark.id];
+    if (!ann) return;
+
+    mark.addEventListener("click", function(e){
+      e.preventDefault();
+      openPanel(ann);
+      hideTooltip();
+    });
+
+    if (canHover){
+      mark.addEventListener("mouseenter", function(){ showTooltip(mark, ann); });
+      mark.addEventListener("mouseleave", hideTooltip);
+    }
+  });
+
+  panelClose.addEventListener("click", closePanel);
+  overlay.addEventListener("click", closePanel);
+  document.addEventListener("keydown", function(e){
+    if (e.key === "Escape") closePanel();
+  });
+})();
+</script>
+
+</body>
+</html>

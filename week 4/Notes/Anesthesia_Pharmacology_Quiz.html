@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>General Anesthesia — Board Review Quiz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;500;600;700;800&family=Nunito:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --teal: #1A7A6D;
+  --teal-deep: #125E54;
+  --teal-light: #E3F5F2;
+  --teal-mid: #2BA393;
+  --teal-glow: #3EC4B2;
+
+  --navy: #1B2A4A;
+  --navy2: #12203C;
+
+  --coral: #E07A5F;
+  --coral-bg: #FEF0EB;
+  --gold: #D4A843;
+  --gold-bg: #FDF6E3;
+  --gold-warm: #E8C76A;
+  --plum: #7B5EA7;
+  --plum-bg: #F3EEF9;
+  --sky: #4A9AE8;
+  --sky-bg: #EAF2FC;
+
+  --warm: #FBF8F3;
+  --cream: #F6F3EC;
+  --white: #FFFFFF;
+
+  --ink: #1E1E20;
+  --ink2: #3E4555;
+  --slate: #6B7689;
+  --mist: #A0AAB8;
+
+  --rule: #DBD5C9;
+  --rule2: #E9E4DA;
+
+  --green: #2D8659;
+  --green-bg: #E8F5EE;
+  --red: #C44040;
+  --red-bg: #FDF0F0;
+  --amber: #C07B1A;
+  --amber-bg: #FEF5E6;
+
+  --r: 14px;
+  --rs: 8px;
+  --sh: 0 1px 4px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.03);
+  --sh2: 0 8px 32px rgba(0,0,0,0.08);
+  --sh3: 0 12px 48px rgba(0,0,0,0.10);
+  --tr: 0.25s cubic-bezier(.4,0,.2,1);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: 'Nunito', sans-serif;
+  color: var(--ink);
+  background: var(--warm);
+}
+
+/* ===================== Launch Screen ===================== */
+.launch-wrap {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 32px;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(62,196,178,.16), transparent 28%),
+    radial-gradient(circle at 82% 20%, rgba(123,94,167,.12), transparent 30%),
+    linear-gradient(180deg, var(--warm) 0%, var(--cream) 100%);
+}
+.launch-card {
+  max-width: 760px;
+  background: rgba(255,255,255,.8);
+  backdrop-filter: blur(10px);
+  border-radius: 28px;
+  border: 1px solid rgba(18,32,60,.08);
+  box-shadow: 0 24px 80px rgba(18,32,60,.12);
+  padding: 40px 44px;
+}
+.launch-eyebrow {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--teal-deep);
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.launch-card h1 {
+  font-family: 'Crimson Pro', serif;
+  font-size: 34px;
+  font-weight: 800;
+  color: var(--navy2);
+  margin: 0 0 12px;
+  line-height: 1.15;
+}
+.launch-card p.desc {
+  font-size: 15.5px;
+  color: var(--ink2);
+  line-height: 1.6;
+  margin: 0 0 20px;
+}
+.launch-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 26px;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: var(--white);
+  border: 1px solid var(--rule2);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: var(--ink2);
+}
+.launch-btn {
+  appearance: none;
+  border: none;
+  cursor: pointer;
+  padding: 15px 30px;
+  border-radius: 999px;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 15.5px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--teal-mid), var(--teal-deep));
+  box-shadow: 0 12px 28px rgba(18,94,84,.28);
+  transition: transform var(--tr), box-shadow var(--tr);
+}
+.launch-btn:hover { transform: translateY(-1px); box-shadow: 0 16px 36px rgba(18,94,84,.34); }
+.launch-btn:active { transform: translateY(0); }
+.launch-note {
+  margin-top: 18px;
+  font-size: 12.5px;
+  color: var(--mist);
+}
+
+/* ===================== Quiz Overlay Shell ===================== */
+.qo {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  overflow-y: auto;
+  background:
+    radial-gradient(circle at 10% 0%, color-mix(in srgb, var(--teal-glow) 18%, transparent), transparent 24%),
+    radial-gradient(circle at 92% 8%, color-mix(in srgb, var(--plum) 16%, transparent), transparent 22%),
+    linear-gradient(180deg, var(--warm) 0%, var(--cream) 100%);
+}
+.qo.open  { display: block; animation: fi .35s cubic-bezier(.4,0,.2,1); }
+.qo.closing { display: block; pointer-events: none; animation: fo .34s cubic-bezier(.4,0,.2,1) forwards; }
+
+@keyframes fi { from { opacity: 0; transform: scale(0.985); } to { opacity: 1; transform: none; } }
+@keyframes fo { from { opacity: 1; } to { opacity: 0; } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+@keyframes cardIn { from { opacity: 0; transform: translateY(16px) scale(.99); } to { opacity: 1; transform: none; } }
+
+/* ---------- Top bar ---------- */
+.qt-bar {
+  position: sticky; top: 0; z-index: 12;
+  padding: 16px 26px;
+  display: flex; align-items: center; justify-content: space-between; gap: 14px;
+  flex-wrap: wrap;
+  color: #fff;
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--navy2) 94%, transparent),
+    color-mix(in srgb, var(--navy) 92%, transparent));
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 10px 28px rgba(18,32,60,.16);
+}
+.qt-bar h2 {
+  font-family: 'Crimson Pro', serif;
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+  white-space: nowrap;
+}
+.qt-btns { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.fs-ctrl {
+  display: flex; align-items: center; gap: 4px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 999px;
+  padding: 4px 6px 4px 10px;
+}
+.fs-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10.5px;
+  color: rgba(255,255,255,.55);
+  margin-right: 2px;
+}
+.fs-btn {
+  appearance: none; border: none; cursor: pointer;
+  background: transparent;
+  color: rgba(255,255,255,.7);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px;
+  padding: 5px 8px;
+  border-radius: 999px;
+  transition: background var(--tr), color var(--tr);
+}
+.fs-btn:hover { background: rgba(255,255,255,.12); color: #fff; }
+.fs-btn.on { background: var(--teal-glow); color: var(--navy2); font-weight: 700; }
+.qt-btn {
+  appearance: none; border: none; cursor: pointer;
+  padding: 9px 15px;
+  border-radius: 999px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  transition: transform var(--tr), box-shadow var(--tr), opacity var(--tr);
+}
+.qt-btn:hover { transform: translateY(-1px); }
+.qt-btn.reset, .qt-btn.close {
+  background: rgba(255,255,255,.07); color: rgba(255,255,255,.78);
+  border: 1px solid rgba(255,255,255,.1);
+}
+.qt-btn.print {
+  background: linear-gradient(135deg, var(--gold-warm), var(--gold));
+  color: var(--navy2); font-weight: 900;
+}
+
+/* ---------- Two-column grid ---------- */
+.qin {
+  max-width: 1380px;
+  margin: 0 auto;
+  padding: 28px 28px 84px;
+  display: grid;
+  grid-template-columns: 360px minmax(0, 1fr);
+  gap: 18px 24px;
+  align-items: start;
+}
+.q-left { display: flex; flex-direction: column; gap: 16px; }
+
+/* ---------- Score panel ---------- */
+.score-panel {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;
+  background: var(--white); border-radius: var(--r); border: 1px solid var(--rule2);
+  box-shadow: var(--sh); padding: 18px 10px 14px;
+  animation: slideUp .4s cubic-bezier(.4,0,.2,1) both;
+}
+.score-box { position: relative; text-align: center; padding-top: 6px; }
+.score-box::before {
+  content: '';
+  position: absolute; left: 16px; right: 16px; top: 0; height: 4px;
+  border-radius: 0 0 999px 999px;
+  background: linear-gradient(90deg, rgba(26,122,109,.16), rgba(62,196,178,.5));
+}
+.score-box .sv { font-family: 'Crimson Pro', serif; font-size: 32px; font-weight: 800; color: var(--navy); line-height: 1.1; }
+.score-box .sl { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: var(--mist); text-transform: uppercase; letter-spacing: .04em; margin-top: 2px; }
+.score-box.correct .sv  { color: var(--green); }
+.score-box.incorrect .sv { color: var(--red); }
+
+/* ---------- Mode toggle ---------- */
+.mode-toggle {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+  background: var(--white); border-radius: var(--r); border: 1px solid var(--rule2);
+  box-shadow: var(--sh); padding: 6px;
+  animation: slideUp .4s .04s cubic-bezier(.4,0,.2,1) both;
+}
+.mode-btn {
+  appearance: none; border: none; cursor: pointer;
+  padding: 11px 8px;
+  border-radius: var(--rs);
+  font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 13px;
+  color: var(--ink2);
+  background: transparent;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  transition: background var(--tr), color var(--tr);
+}
+.mode-icon { font-size: 14px; }
+.mode-btn.active {
+  background: linear-gradient(135deg, var(--navy2), var(--navy));
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(18,32,60,.22);
+}
+
+/* ---------- Timer panel ---------- */
+.timer-panel {
+  display: flex; flex-direction: column; gap: 10px;
+  animation: slideUp .4s .08s cubic-bezier(.4,0,.2,1) both;
+}
+.timer-card, .cd-card {
+  background: var(--white); border-radius: var(--r); border: 1px solid var(--rule2);
+  box-shadow: var(--sh); padding: 14px 16px;
+}
+.timer-lbl {
+  font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: var(--mist);
+  text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px;
+}
+.timer-time, .cd-time {
+  font-family: 'IBM Plex Mono', monospace; font-size: 26px; font-weight: 600; color: var(--navy);
+  margin-bottom: 8px;
+}
+.timer-card .tbtn {
+  appearance: none; border: 1px solid var(--rule2); cursor: pointer;
+  background: var(--cream); color: var(--ink2);
+  width: 34px; height: 34px; border-radius: 8px; margin-right: 6px;
+  font-size: 13px;
+  transition: background var(--tr);
+}
+.timer-card .tbtn:hover { background: var(--teal-light); }
+.cd-controls { display: flex; align-items: center; gap: 8px; }
+.cd-pm {
+  appearance: none; border: 1px solid var(--rule2); cursor: pointer;
+  background: var(--cream); color: var(--ink2);
+  width: 30px; height: 30px; border-radius: 8px; font-size: 15px; font-weight: 700;
+}
+.cd-val { font-family: 'IBM Plex Mono', monospace; font-weight: 700; min-width: 18px; text-align: center; }
+.cd-unit { font-size: 11px; color: var(--mist); margin-right: auto; }
+.cd-go {
+  appearance: none; border: none; cursor: pointer;
+  background: linear-gradient(135deg, var(--teal-mid), var(--teal-deep));
+  color: #fff; font-weight: 700; font-size: 12px;
+  padding: 8px 14px; border-radius: 999px;
+}
+
+/* ---------- Tool panel ---------- */
+.tool-panel {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px;
+  animation: slideUp .4s .14s cubic-bezier(.4,0,.2,1) both;
+}
+.q-tool {
+  appearance: none; cursor: pointer;
+  background: var(--white); color: var(--ink2);
+  border: 1px solid var(--rule2); border-radius: var(--rs);
+  font-family: 'Nunito', sans-serif; font-size: 11.5px; font-weight: 700;
+  padding: 10px 6px;
+  box-shadow: var(--sh);
+  transition: background var(--tr), color var(--tr), border-color var(--tr);
+}
+.q-tool.active.hl-tool { background: #FFF8B8; border-color: #D3AF2B; color: #6B5C00; }
+.q-tool.active.st-tool { background: var(--red-bg); border-color: rgba(196,64,64,.44); color: var(--red); }
+.tool-status {
+  grid-column: 1 / -1;
+  font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: var(--mist);
+  text-align: center; padding-top: 2px;
+}
+.tool-status.active-highlight { color: #8a6a00; }
+.tool-status.active-strike   { color: var(--red); }
+
+/* ---------- Exam submit row ---------- */
+.exam-submit-row {
+  display: none;
+  background: var(--white); border-radius: var(--r); border: 1px solid var(--rule2);
+  box-shadow: var(--sh); padding: 14px 16px;
+  align-items: center; justify-content: space-between; gap: 10px;
+  animation: slideUp .4s .18s cubic-bezier(.4,0,.2,1) both;
+}
+.exam-submit-row.show { display: flex; }
+.exam-progress { font-size: 12.5px; color: var(--ink2); font-weight: 600; }
+.exam-submit-row.exam-live { box-shadow: 0 0 0 3px rgba(224,122,95,.10), 0 14px 34px rgba(18,32,60,.08); }
+.exam-submit-btn {
+  appearance: none; border: none; cursor: pointer;
+  background: linear-gradient(135deg, var(--coral), #c9573c);
+  color: #fff; font-weight: 800; font-size: 12.5px;
+  padding: 10px 16px; border-radius: 999px;
+  white-space: nowrap;
+}
+.exam-submit-row.exam-done .exam-submit-btn {
+  background: linear-gradient(135deg, var(--green), #3aa56f);
+}
+.exam-submit-btn:disabled { opacity: .45; cursor: not-allowed; }
+
+/* ---------- Question card ---------- */
+.qcd {
+  background: var(--white);
+  border-radius: 22px;
+  border: 1px solid var(--rule2);
+  box-shadow: var(--sh2);
+  overflow: hidden;
+  animation: cardIn .45s cubic-bezier(.4,0,.2,1) both;
+}
+.qpg { height: 5px; background: var(--rule2); }
+.qpf { height: 100%; background: linear-gradient(90deg, var(--teal), var(--teal-glow)); transition: width .4s cubic-bezier(.4,0,.2,1); }
+
+.qbd { padding: 30px 32px 10px; }
+.qnum {
+  font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--mist);
+  text-transform: uppercase; letter-spacing: .06em; margin-bottom: 14px;
+}
+.qstem {
+  font-family: 'Crimson Pro', serif; font-size: 22px; font-weight: 600; line-height: 1.4;
+  color: var(--navy2); margin-bottom: 26px;
+  border-radius: var(--rs);
+  transition: background var(--tr), box-shadow var(--tr);
+}
+.qstem .stem-hl { background: #FFF1A6; border-radius: 6px; padding: 0 .12em; box-shadow: 0 0 0 1px rgba(212,168,67,.18); }
+.qstem .stem-st { text-decoration: line-through; text-decoration-color: var(--red); color: #8B2C2C !important; }
+.qstem.hl-applied { background: linear-gradient(180deg, #FFF4A8, #FFF7C9) !important; box-shadow: inset 0 0 0 2px rgba(212,168,67,.34); padding: 10px 12px; }
+.qstem.st-applied { background: linear-gradient(180deg, #FFF3F3, #FFF8F8) !important; box-shadow: inset 0 0 0 2px rgba(196,64,64,.22); padding: 10px 12px; }
+.qstem.tool-hover { box-shadow: inset 0 0 0 2px rgba(26,122,109,.16); background: rgba(26,122,109,.04); cursor: pointer; }
+
+.ach { display: flex; flex-direction: column; gap: 10px; margin-bottom: 22px; }
+.ac {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1.5px solid var(--rule2);
+  background: var(--cream);
+  cursor: pointer;
+  transition: border-color var(--tr), background var(--tr), transform var(--tr), box-shadow var(--tr);
+}
+.ac:hover:not(.dis) { border-color: var(--teal-mid); background: var(--teal-light); transform: translateX(2px); }
+.cl {
+  flex: 0 0 auto;
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'IBM Plex Mono', monospace; font-weight: 700; font-size: 13px;
+  background: var(--white); color: var(--ink2); border: 1.5px solid var(--rule2);
+  transition: all var(--tr);
+}
+.ctx { flex: 1; padding-top: 3px; font-size: 15px; line-height: 1.55; color: var(--ink); }
+
+.ac.sel { border-color: var(--teal); background: var(--teal-light); }
+.ac.sel .cl { background: var(--teal); color: #fff; border-color: var(--teal); }
+
+.ac.cor, .ac.shc { border-color: var(--green); background: var(--green-bg); }
+.ac.cor .cl, .ac.shc .cl { background: var(--green); color: #fff; border-color: var(--green); }
+
+.ac.inc { border-color: var(--red); background: var(--red-bg); }
+.ac.inc .cl { background: var(--red); color: #fff; border-color: var(--red); }
+
+.ac.dis { cursor: default; }
+.ac.dis:hover { transform: none; }
+
+.ac.hl-applied { background: #FFF8B8 !important; border-color: #D3AF2B; }
+.ac.hl-applied .cl { border-color: #D3AF2B; }
+.ac.st-applied { background: var(--red-bg) !important; border-color: rgba(196,64,64,.44); }
+.ac.st-applied .ctx { text-decoration: line-through; text-decoration-color: var(--red); }
+
+.submit-row { display: flex; justify-content: flex-end; margin-bottom: 20px; }
+.submit-btn {
+  appearance: none; border: none; cursor: pointer;
+  background: linear-gradient(135deg, var(--teal-mid), var(--teal-deep));
+  color: #fff; font-weight: 800; font-size: 14px;
+  padding: 12px 26px; border-radius: 999px;
+  box-shadow: 0 10px 24px rgba(18,94,84,.22);
+  transition: opacity var(--tr), transform var(--tr);
+}
+.submit-btn:hover:not(:disabled) { transform: translateY(-1px); }
+.submit-btn:disabled { opacity: .4; cursor: not-allowed; box-shadow: none; }
+
+.exb {
+  display: none;
+  flex-direction: column; gap: 12px;
+  margin: 0 -32px -0px;
+  padding: 24px 32px 4px;
+  background: var(--cream);
+  border-top: 1px dashed var(--rule);
+  animation: fi .3s cubic-bezier(.4,0,.2,1);
+}
+.exb.vis { display: flex; }
+.exs { border-radius: var(--rs); padding: 14px 16px; border-left: 4px solid; }
+.exl {
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px;
+}
+.ext { font-size: 14.5px; line-height: 1.6; color: var(--ink); }
+.exs.exc { background: var(--green-bg); border-color: var(--green); }
+.exs.exc .exl { color: var(--green); }
+.exs.exe { background: var(--teal-light); border-color: var(--teal); }
+.exs.exe .exl { color: var(--teal-deep); }
+.exs.exw { background: var(--red-bg); border-color: var(--red); }
+.exs.exw .exl { color: var(--red); }
+.wce { margin-bottom: 8px; }
+.wce:last-child { margin-bottom: 0; }
+.wce strong { color: var(--red); font-family: 'IBM Plex Mono', monospace; }
+
+.qnv {
+  display: flex; align-items: center; justify-content: space-between; gap: 14px;
+  padding: 18px 32px 26px;
+}
+.nb {
+  appearance: none; cursor: pointer;
+  background: var(--white); border: 1.5px solid var(--rule2);
+  color: var(--ink2); font-weight: 700; font-size: 13px;
+  padding: 11px 20px; border-radius: 999px;
+  transition: background var(--tr), border-color var(--tr), opacity var(--tr);
+}
+.nb:hover:not(:disabled) { background: var(--teal-light); border-color: var(--teal-mid); }
+.nb:disabled { opacity: .35; cursor: not-allowed; }
+.nb.pr { background: var(--navy2); border-color: var(--navy2); color: #fff; }
+.nb.pr:hover:not(:disabled) { background: var(--navy); }
+
+.qdots { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; max-width: 60%; }
+.qd {
+  appearance: none; cursor: pointer;
+  width: 11px; height: 11px; border-radius: 50%;
+  background: var(--white); border: 1.5px solid var(--rule2);
+  padding: 0; transition: transform var(--tr), background var(--tr), border-color var(--tr);
+}
+.qd:hover { transform: scale(1.25); }
+.qd.cur { background: var(--teal); border-color: var(--teal); transform: scale(1.3); }
+.qd.acor { background: var(--green); border-color: var(--green); }
+.qd.ainc { background: var(--red); border-color: var(--red); }
+.qd.asel { background: var(--gold); border-color: var(--gold); }
+
+/* ---------- Font size system ---------- */
+#qo[data-fs="sm"] .ctx { font-size: 13px; }
+#qo[data-fs="md"] .ctx { font-size: 15px; }
+#qo[data-fs="lg"] .ctx { font-size: 18px; }
+#qo[data-fs="xl"] .ctx { font-size: 21px; }
+
+/* ---------- Print review ---------- */
+#printReviewRoot { display: none; }
+body.print-review-active .launch-wrap,
+body.print-review-active .qo { display: none !important; }
+body.print-review-active #printReviewRoot { display: block; padding: 32px; background: #fff; }
+
+.print-shell { max-width: 980px; margin: 0 auto; font-family: 'Nunito', sans-serif; color: #1E1E20; }
+.print-shell h1 { font-family: 'Crimson Pro', serif; font-size: 24px; margin-bottom: 4px; }
+.print-shell .print-sub { color: #6B7689; font-size: 13px; margin-bottom: 22px; }
+.print-card { break-inside: avoid; border: 1px solid #ddd; border-radius: 16px; padding: 20px; margin-bottom: 18px; }
+.print-card .p-qnum { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #6B7689; text-transform: uppercase; margin-bottom: 6px; }
+.print-card .p-stem { font-family: 'Crimson Pro', serif; font-size: 17px; font-weight: 600; margin-bottom: 12px; }
+.print-choice { border: 1px solid #ddd; border-radius: 10px; padding: 8px 12px; margin-bottom: 6px; font-size: 13.5px; }
+.print-choice.correct { border-color: #2D8659; background: #E8F5EE; }
+.print-choice.incorrect { border-color: #C44040; background: #FDF0F0; }
+.print-explainer { border-radius: 8px; padding: 10px 12px; margin-top: 8px; font-size: 13px; border-left: 4px solid; }
+.print-explainer.correct-box { background: #E8F5EE; border-left-color: #2D8659; }
+.print-explainer.teach-box   { background: #E3F5F2; border-left-color: #1A7A6D; }
+.print-explainer.wrong-box   { background: #FDF0F0; border-left-color: #C44040; }
+
+@media print {
+  body.print-review-active .launch-wrap,
+  body.print-review-active .qo { display: none !important; }
+  body.print-review-active #printReviewRoot { display: block !important; padding: 0; }
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 920px) {
+  .qin { grid-template-columns: 1fr; padding: 22px 18px 72px; gap: 16px; }
+  .timer-panel { flex-direction: row; }
+  .timer-panel > * { flex: 1; }
+  .tool-panel  { grid-template-columns: 1fr 1fr 1fr; }
+}
+@media (max-width: 700px) {
+  .qt-bar { flex-direction: column; align-items: flex-start; }
+  .qin { padding: 18px 14px 64px; }
+  .timer-panel { flex-direction: column; }
+  .qbd { padding: 24px 20px 6px; }
+  .exb { margin: 0 -20px 0; padding: 20px 20px 4px; }
+  .qnv { padding: 16px 20px 22px; flex-direction: column; align-items: stretch; }
+  .qdots { order: 3; max-width: 100%; }
+  .nb { width: 100%; text-align: center; }
+  .qstem { font-size: 19px; }
+  .launch-card { padding: 28px 22px; }
+  .launch-card h1 { font-size: 26px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===================== Launch Screen ===================== -->
+<div class="launch-wrap">
+  <div class="launch-card">
+    <div class="launch-eyebrow">UNE COM &middot; OMS-1 &middot; Pharmacology</div>
+    <h1>General Anesthesia — Board Review Quiz</h1>
+    <p class="desc">25 board-style questions covering Dr. Ochs's General Anesthesia lecture: inhaled agent pharmacokinetics, MAC and Guedel's stages, mechanism of action, individual inhaled and IV agents, and balanced anesthesia. Every wrong answer is written to be just as detailed as the correct one — no length tells here.</p>
+    <div class="launch-meta">
+      <span class="chip">25 questions</span>
+      <span class="chip">5 choices each</span>
+      <span class="chip">Learn &amp; Exam modes</span>
+      <span class="chip">Highlight / strikeout tools</span>
+      <span class="chip">Dr. Scott D. Ochs, PhD</span>
+    </div>
+    <button class="launch-btn" id="openDemo">Open quiz →</button>
+    <div class="launch-note">Questions and answer order shuffle each time you open or reset the quiz.</div>
+  </div>
+</div>
+
+<!-- ===================== Quiz Overlay ===================== -->
+<div class="qo" id="qo" data-fs="md">
+  <div class="qt-bar">
+    <h2>General Anesthesia — Board Review</h2>
+    <div class="qt-btns">
+      <div class="fs-ctrl">
+        <span class="fs-label">Text</span>
+        <button class="fs-btn" data-fs-btn="sm">A-</button>
+        <button class="fs-btn on" data-fs-btn="md">A</button>
+        <button class="fs-btn" data-fs-btn="lg">A+</button>
+        <button class="fs-btn" data-fs-btn="xl">A++</button>
+      </div>
+      <button class="qt-btn print" id="printQuiz">Print</button>
+      <button class="qt-btn reset" id="resetQuiz">Reset</button>
+      <button class="qt-btn close" id="closeQuiz">Close</button>
+    </div>
+  </div>
+
+  <div class="qin">
+    <div class="q-left">
+      <div class="score-panel">
+        <div class="score-box">
+          <div class="sv" id="svCurrent">1</div>
+          <div class="sl">Current</div>
+        </div>
+        <div class="score-box correct">
+          <div class="sv" id="svCorrect">0</div>
+          <div class="sl">Correct</div>
+        </div>
+        <div class="score-box incorrect">
+          <div class="sv" id="svIncorrect">0</div>
+          <div class="sl">Incorrect</div>
+        </div>
+      </div>
+
+      <div class="mode-toggle" id="modeToggle">
+        <button class="mode-btn active" id="modeLearn">
+          <span class="mode-icon">🧠</span>Learn Mode
+        </button>
+        <button class="mode-btn" id="modeExam">
+          <span class="mode-icon">📝</span>Exam Mode
+        </button>
+      </div>
+
+      <div class="timer-panel">
+        <div class="timer-card">
+          <div class="timer-lbl">Timer</div>
+          <div class="timer-time" id="timerTime">00:00</div>
+          <button class="tbtn" id="timerStart" title="Start">▶</button>
+          <button class="tbtn" id="timerPause" title="Pause">⏸</button>
+          <button class="tbtn" id="timerReset" title="Reset">↺</button>
+        </div>
+        <div class="cd-card">
+          <div class="timer-lbl">Countdown</div>
+          <div class="cd-time" id="cdTime">05:00</div>
+          <div class="cd-controls">
+            <button class="cd-pm" id="cdMinus">−</button>
+            <div class="cd-val" id="cdVal">5</div>
+            <div class="cd-unit">min</div>
+            <button class="cd-pm" id="cdPlus">+</button>
+            <button class="cd-go" id="cdGo">Start</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="tool-panel">
+        <button class="q-tool" id="toolHighlight">Highlight</button>
+        <button class="q-tool" id="toolStrike">Strikeout</button>
+        <button class="q-tool" id="toolReveal">Reveal</button>
+        <div class="tool-status" id="toolStatus">Tool mode: none</div>
+      </div>
+
+      <div class="exam-submit-row" id="examSubmitRow">
+        <div class="exam-progress" id="examProgress">0 of 25 answered</div>
+        <button class="exam-submit-btn" id="submitExam" disabled>Submit Exam</button>
+      </div>
+    </div>
+
+    <div class="q-right">
+      <div class="qcd">
+        <div class="qpg"><div class="qpf" id="qpf" style="width: 4%;"></div></div>
+        <div class="qbd">
+          <div class="qnum" id="qNum">Question 1 of 25</div>
+          <div class="qstem" id="qStem"></div>
+          <div class="ach" id="achContainer"></div>
+          <div class="submit-row" id="submitRow">
+            <button class="submit-btn" id="submitOne" disabled>Submit Answer</button>
+          </div>
+          <div class="exb" id="exBlock"></div>
+        </div>
+        <div class="qnv">
+          <button class="nb" id="prevBtn">← Previous</button>
+          <div class="qdots" id="qDots"></div>
+          <button class="nb pr" id="nextBtn">Next →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="printReviewRoot" aria-hidden="true"></div>
+
+<script>
+/* ===================== Question Data ===================== */
+const QUESTIONS_RAW = [{"stem": "Which historical figure gave the first public demonstration of ether as a general anesthetic in 1846, prompting Oliver Wendell Holmes Sr. to coin the English term “anesthesia” in a letter addressed to him?", "teaching": "Dentists were first to the field of general anesthesia: Horace Wells with nitrous oxide in 1844, then William Morton with ether in 1846. The word “anesthesia” itself was coined only after Morton's demonstration, by a physician who wasn't even in the room.", "choices": [{"text": "Horace Wells, the dentist who first used nitrous oxide for dental extractions in 1844, two years before Morton", "correct": false, "why": "Wells used nitrous oxide two years earlier, in 1844 — he predates the ether demonstration that actually prompted the coining of the term “anesthesia.”"}, {"text": "William T. G. Morton, the dentist who performed the first public ether demonstration in 1846", "correct": true, "why": "Morton's 1846 public ether demonstration is the event that led Holmes to write him a letter coining the term “anesthesia” for what he had just shown the world."}, {"text": "James Simpson, the physician who introduced chloroform into obstetric anesthesia in 1847, as measured under standard operating-room conditions", "correct": false, "why": "Simpson's chloroform work came a year after Morton's ether demonstration and involved obstetric use, not the original public demonstration that inspired the naming."}, {"text": "Arthur Guedel, the physician who later formalized the four clinical stages of anesthetic depth", "correct": false, "why": "Guedel's staging system is a later 20th-century contribution to monitoring depth of anesthesia, unrelated to the 1846 naming event."}, {"text": "Oliver Wendell Holmes Sr., the physician who personally coined the English term “anesthesia” itself", "correct": false, "why": "Holmes coined the term in response to Morton's demonstration — he is the namer, not the dentist who performed the demonstration being named."}]}, {"stem": "A pharmacology exam question describes a scenario where a single hypnotic drug is administered alone and asks which single agent would be sufficient to achieve complete general anesthesia. What is the key board-level trap in a question framed this way?", "teaching": "Modern general anesthesia is almost never a single drug — it is a deliberate combination of a hypnotic, an analgesic, and often a muscle relaxant, each contributing what the others cannot.", "choices": [{"text": "Modern general anesthesia is almost never one drug alone; it is a combination of hypnotic, analgesic, and muscle-relaxant agents used together", "correct": true, "why": "This is the explicit board framing given in lecture: be suspicious any time a question implies one single agent covers immobility, amnesia, and analgesia all by itself."}, {"text": "A single hypnotic agent alone is entirely sufficient because hypnotics inherently provide analgesia and muscle relaxation as secondary effects", "correct": false, "why": "Hypnotics like propofol induce unconsciousness but do not reliably provide analgesia or muscle relaxation, which is exactly why they are combined with other drug classes."}, {"text": "A single hypnotic agent alone is sufficient only when nitrous oxide is used, since nitrous oxide alone can achieve full surgical anesthesia, based on the values given in the comparison table", "correct": false, "why": "Nitrous oxide cannot be used alone for induction — its MAC of 104% is not physically achievable, so it must always be combined with other agents."}, {"text": "A single hypnotic agent alone is sufficient for adult patients but never for pediatric patients undergoing the exact same surgical procedure, as this option frames the underlying pharmacology", "correct": false, "why": "The need for combination therapy is not a pediatric-specific issue; the three components of general anesthesia require multiple drug classes in patients of any age."}, {"text": "A single hypnotic agent alone is sufficient as long as the dose is increased well beyond the standard induction dose for that drug, over the course of a typical surgical case", "correct": false, "why": "Simply raising the dose of a hypnotic increases the risk of cardiorespiratory depression without reliably adding the analgesia or reflex suppression that a true combination regimen provides."}]}, {"stem": "According to the three-component framework of general anesthesia — immobility, amnesia, and loss of consciousness — which component is already present during Guedel Stage I, before the patient has even lost consciousness?", "teaching": "Amnesia begins forming before consciousness is lost, which is philosophically tricky: you can never truly prove unconsciousness, because amnesia erases any memory of having briefly been aware.", "choices": [{"text": "Immobility, since it blunts both the physical flinch and the autonomic reflex response to a surgical incision, according to this description of the mechanism", "correct": false, "why": "Immobility depends on adequate anesthetic depth at the spinal cord and typically isn't reliable until much deeper stages than Stage I."}, {"text": "Amnesia, since it prevents formation of both explicit and implicit memories from the earliest stage of anesthesia onward", "correct": true, "why": "Amnesia is explicitly described as present already in Stage I, before the patient ever loses consciousness — it is the earliest of the three components to appear."}, {"text": "Loss of consciousness, since it abolishes awareness, wakefulness, and perception of the surrounding environment, under the assumptions built into this option", "correct": false, "why": "Loss of consciousness defines a later stage than Stage I; Stage I is described specifically as occurring while the patient is still conscious."}, {"text": "Analgesia, since it is one of the three core components alongside immobility and loss of consciousness in this framework", "correct": false, "why": "Analgesia is a drug effect provided by opioids and certain agents, but it is not one of the three named core components of general anesthesia in this framework."}, {"text": "Muscle relaxation, since it suppresses reflex movement using a drug class entirely separate from the hypnotic agents used for induction", "correct": false, "why": "Muscle relaxation is achieved with neuromuscular blockers, a separate drug class covered in a different lecture, not one of the three named components here."}]}, {"stem": "Because alveolar surface area is enormous and alveolar membrane thickness is negligible, diffusion of an inhaled anesthetic across the alveolar membrane is essentially instantaneous, so P(alveolar) ≈ P(arterial) ≈ P(brain) at nearly all times. What does this make inhaled anesthetic uptake into the blood?", "teaching": "Because crossing the membrane is essentially instantaneous, the true bottleneck for inhaled anesthetics is how much blood carries the drug away from the alveolus — which is why solubility in blood, not membrane permeability, governs speed of onset.", "choices": [{"text": "Diffusion-limited, since the bottleneck is how slowly anesthetic molecules cross the thin alveolar-capillary membrane, as this particular explanation lays it out", "correct": false, "why": "This gets the mechanism backwards — diffusion across the membrane is described as essentially instantaneous, so it cannot be the rate-limiting step."}, {"text": "Perfusion-limited, since the bottleneck is how much drug the blood carries away rather than how fast it crosses the membrane", "correct": true, "why": "With diffusion essentially instantaneous, the rate-limiting factor becomes how quickly pulmonary blood flow removes anesthetic from the alveolus, which defines perfusion-limited kinetics."}, {"text": "Ventilation-limited, since the bottleneck is entirely how much fresh gas reaches the alveoli with each breath the patient takes", "correct": false, "why": "Ventilation does influence speed of onset, but it is not the defining bottleneck described here — the key limiting factor is how much drug the blood carries away."}, {"text": "Metabolism-limited, since the bottleneck is how quickly the liver can biotransform the inhaled agent before it reaches the brain", "correct": false, "why": "Hepatic metabolism plays little role in the initial rise of alveolar and brain partial pressure for inhaled agents; the described bottleneck is blood uptake, not liver clearance."}, {"text": "Protein-binding-limited, since the bottleneck is how tightly the anesthetic binds plasma proteins once it enters the bloodstream", "correct": false, "why": "Plasma protein binding is not the mechanism discussed for inhaled anesthetic uptake; the described rate-limiting factor is how much blood carries the drug away from the alveolus."}]}, {"stem": "Using the comparison table of inhaled agents (N2O, halothane, isoflurane, desflurane, sevoflurane) with their MAC%, oil/gas coefficient, and blood/gas coefficient values, which agent has both the fastest onset AND the lowest potency?", "teaching": "The table is designed to be read together: the lowest blood/gas coefficient predicts the fastest onset, and the highest MAC (paired with the lowest oil/gas coefficient) predicts the lowest potency. Nitrous oxide sits at both extremes simultaneously.", "choices": [{"text": "Nitrous oxide, which has the lowest blood/gas coefficient of the group and the highest MAC of 104%", "correct": true, "why": "Nitrous oxide's blood/gas coefficient of 0.47 is the lowest listed and its MAC of 104% is by far the highest, making it simultaneously the fastest-onset and least potent agent on the table."}, {"text": "Halothane, which has the lowest blood/gas coefficient of the group and also the highest MAC value of 104%", "correct": false, "why": "Halothane actually has the highest blood/gas coefficient (2.54) of the listed agents and the lowest MAC (0.75%), making it slow-onset and highly potent, not fast and weak."}, {"text": "Desflurane, which has the lowest blood/gas coefficient of the group but also the lowest MAC value on the table", "correct": false, "why": "Desflurane does have a low blood/gas coefficient (0.42), but its MAC of 6.60% is high, not low — it is fast-onset but relatively weak, not the most potent agent."}, {"text": "Sevoflurane, which has the highest oil/gas coefficient of the group and therefore the fastest onset in theory", "correct": false, "why": "Oil/gas coefficient predicts potency, not onset speed — and sevoflurane's oil/gas coefficient (47) is not the highest listed, nor is onset speed governed by this value."}, {"text": "Isoflurane, which has an intermediate blood/gas coefficient and simultaneously the lowest MAC value of the group", "correct": false, "why": "Isoflurane's MAC of 1.17% is not the lowest on the table — halothane's 0.75% is lower — and an intermediate blood/gas coefficient does not correspond to the fastest onset."}]}, {"stem": "On the classic FA/FI rate-of-onset graph, nitrous oxide always appears with the fastest-rising curve, yet it does not actually have the lowest blood:gas partition coefficient of the agents shown. What explains this apparent inconsistency?", "teaching": "This is a flagged “gotcha” in lecture: nitrous oxide's fast curve on the classic graph partly reflects its unusually high inspired concentration rather than superior blood solubility alone, so the comparison to the potent volatiles isn't strictly apples-to-apples.", "choices": [{"text": "Nitrous oxide is dosed at a much higher inspired concentration (up to 70–104%) than the volatile agents (roughly 1–8%), so the comparison isn't apples-to-apples", "correct": true, "why": "This is the exact explanation given for the gotcha — the huge difference in inspired concentration between nitrous oxide and the volatiles skews the classic graph's apparent speed comparison."}, {"text": "Nitrous oxide undergoes rapid hepatic metabolism into an active intermediate, and this hepatic clearance is what artificially accelerates its apparent alveolar equilibration curve", "correct": false, "why": "Hepatic metabolism is not a meaningful factor in inhaled anesthetic uptake kinetics; nitrous oxide is eliminated essentially unchanged through the lungs, not by hepatic biotransformation."}, {"text": "Nitrous oxide is perfusion-limited while every one of the volatile halogenated agents is instead diffusion-limited across the alveolar membrane, within the context of this specific patient presentation", "correct": false, "why": "All inhaled anesthetics, including the volatiles, are described as perfusion-limited rather than diffusion-limited, so this distinction does not explain the discrepancy."}, {"text": "The classic graph is actually built from oil:gas partition coefficients rather than blood:gas coefficients, which inflates nitrous oxide's apparent onset speed, under the assumptions built into this option", "correct": false, "why": "The FA/FI graph is a measure of onset speed tied to blood:gas solubility, not a plot of oil:gas coefficients, so this isn't the source of the discrepancy."}, {"text": "Nitrous oxide binds GABA-A receptors directly at the alveolar wall itself, which physically bypasses the normal step of alveolar-to-blood equilibration, across the dosing range typically used clinically", "correct": false, "why": "Nitrous oxide is thought to act mainly through NMDA receptor inhibition, not GABA-A potentiation, and receptor binding at any site doesn't bypass alveolar equilibration on this graph."}]}, {"stem": "The vessel-rich group (brain, liver, kidneys) receives about 75% of cardiac output but makes up only about 9% of body weight. What is the clinical consequence of this mismatch for inhaled anesthetic uptake into the brain, and how does this contrast with intravenous anesthetics?", "teaching": "This is the flagged contrast to remember: for inhaled agents, tissue depot loading barely matters because they clear straight out through the lungs; for IV agents, depot loading in slowly equilibrating tissue is the whole basis of context-sensitive half-time.", "choices": [{"text": "The vessel-rich group equilibrates almost as fast as the blood itself, with essentially no brain lag — unlike IV anesthetics, where tissue-depot loading is central to context-sensitive half-time", "correct": true, "why": "Because the vessel-rich group has high perfusion relative to its small volume, it equilibrates almost immediately behind the blood — the opposite of IV agents, where slow peripheral depot loading drives context-sensitive half-time."}, {"text": "The vessel-rich group equilibrates much more slowly than the blood because its 9% share of body weight outweighs its perfusion, delaying brain equilibration with inhaled agents, as this particular explanation lays it out", "correct": false, "why": "This reverses the actual relationship — the high perfusion-to-volume ratio of the vessel-rich group means it equilibrates almost as fast as blood, not slower."}, {"text": "The vessel-rich group acts as the primary depot tissue for inhaled agents, storing anesthetic and prolonging recovery for hours after the vaporizer is finally turned off, in this particular clinical scenario", "correct": false, "why": "Tissue depot loading and prolonged recovery from stored drug describe the fat group and the IV three-compartment model, not the rapidly equilibrating vessel-rich group with inhaled agents."}, {"text": "The vessel-rich group receives so little of total blood flow relative to muscle and fat that it is essentially irrelevant to the onset of any inhaled anesthetic effect, under the dosing conditions described here", "correct": false, "why": "The vessel-rich group actually receives the majority of cardiac output (about 75%), making it central rather than irrelevant to how quickly inhaled anesthetics reach the brain."}, {"text": "The vessel-rich group equilibrates at exactly the same rate as the fat group for inhaled agents, since both tissue groups share an identical anesthetic volume capacity, as measured under standard operating-room conditions", "correct": false, "why": "The fat group has a much higher volume capacity and lower perfusion than the vessel-rich group, so the two equilibrate at very different rates, not the same one."}]}, {"stem": "Nearly all inhaled anesthetics suppress cardiac output as a side effect, which — based on the relationship between cardiac output and alveolar uptake — creates a small self-limiting loop that slightly speeds up further anesthetic uptake. Which agent is the exception to this cardiac-output-suppressing pattern?", "teaching": "Nitrous oxide is the outlier on nearly every hemodynamic comparison in this lecture: it doesn't suppress cardiac output, doesn't drop blood pressure, and doesn't trigger reflex tachycardia the way the volatile agents do.", "choices": [{"text": "Nitrous oxide, which does not suppress cardiac output the way the volatile agents do", "correct": true, "why": "Nitrous oxide is explicitly called out as the exception to this self-limiting loop because it does not suppress cardiac output, unlike nearly all the volatile agents."}, {"text": "Sevoflurane, which is described as increasing cardiac output more than any other volatile agent in this lecture", "correct": false, "why": "Sevoflurane is grouped with the other volatiles as a negative inotrope that decreases mean arterial pressure, not as an agent that increases cardiac output."}, {"text": "Isoflurane, which is described as the only volatile agent that spares cardiac output at standard surgical concentrations", "correct": false, "why": "Isoflurane is not singled out as sparing cardiac output; the systemic effects table groups nearly all the volatiles together as negative inotropes, with nitrous oxide as the named exception."}, {"text": "Desflurane, which paradoxically raises cardiac output above baseline through direct sympathetic stimulation of the myocardium", "correct": false, "why": "Desflurane is grouped with the volatiles that show the greatest blood-pressure-lowering effect, not described as raising cardiac output through sympathetic stimulation."}, {"text": "Halothane, which has no measurable effect on cardiac output despite its potent negative inotropic effects elsewhere in the body", "correct": false, "why": "Halothane is a negative inotrope like the other volatiles and is not described as sparing cardiac output — nitrous oxide is the single named exception in this lecture."}]}, {"stem": "During emergence from sevoflurane anesthesia, a pediatric patient becomes transiently combative, disoriented, and delirious before fully waking. Which Guedel stage is this patient passing back through, and which agent is classically associated with this presentation on emergence?", "teaching": "Stage II is usually blown through quickly on induction with modern rapid agents, but it can reappear on emergence — classically with sevoflurane in children (emergent delirium), a mirror image of ketamine's tendency to spare kids from emergence reactions.", "choices": [{"text": "Stage II, Excitement — delirium and combative behavior that is usually blown through quickly on induction but can reappear on emergence, classically with sevoflurane", "correct": true, "why": "Stage II excitement is explicitly described as capable of reappearing on emergence, with sevoflurane in children given as the classic example — matching the pediatric patient in this vignette."}, {"text": "Stage I, Analgesia — the patient remains fully conscious with agent-dependent pain relief and pre-existing amnesia already present from the start of induction, across the dosing range typically used clinically", "correct": false, "why": "Stage I describes a still-conscious patient with analgesia and amnesia, not the combative, disoriented presentation described during this emergence."}, {"text": "Stage III, Surgical Anesthesia — unconsciousness with regular respiration and progressively decreasing eye movement across the four recognized surgical planes, according to this description of the mechanism", "correct": false, "why": "Stage III describes stable surgical-depth unconsciousness with regular breathing, not the combative delirium seen as the patient is emerging."}, {"text": "Stage IV, Medullary Depression — respiratory arrest progressing toward cardiac depression and death from anesthetic overdose, a state that must always be avoided, within the context of this specific patient presentation", "correct": false, "why": "Stage IV is a dangerous overdose state involving respiratory and cardiac depression, which is the opposite presentation of an agitated, combative emerging patient."}, {"text": "MAC-awake — the concentration at which patients stop responding to verbal questions and lose perceptive awareness of their immediate surroundings entirely, under the assumptions built into this option", "correct": false, "why": "MAC-awake is a dosing concentration corresponding functionally to Stage I, not a distinct stage describing combative delirium during emergence."}]}, {"stem": "How is minimum alveolar concentration (MAC) formally defined for an inhaled anesthetic?", "teaching": "MAC functions as the ED50 for inhaled anesthetics — which is exactly why no one runs a case at exactly 1.0 MAC, since by definition half the patients would still move at that concentration.", "choices": [{"text": "The alveolar partial pressure at which 50% of patients do not respond to a surgical incision, functioning as the ED50 for inhaled anesthetics", "correct": true, "why": "This is the formal definition given in lecture — MAC is explicitly framed as the ED50 for inhaled anesthetics, defined by non-response to surgical incision in half of patients."}, {"text": "The alveolar partial pressure at which 95% of patients do not respond to a surgical incision, used as the routine clinical dosing target, as measured under standard operating-room conditions", "correct": false, "why": "This describes MAC-95, the clinical target roughly 1.2–1.3× MAC, not the formal definition of MAC itself, which is defined at the 50% response threshold."}, {"text": "The blood partial pressure at which 50% of patients lose consciousness, independent of any surgical stimulus being applied, as this particular explanation lays it out", "correct": false, "why": "MAC is defined by alveolar partial pressure and by response to a surgical incision specifically, not by blood partial pressure or loss of consciousness alone."}, {"text": "The inspired partial pressure required to block the autonomic response to intubation in essentially all patients, in this particular clinical scenario", "correct": false, "why": "This describes MAC-BAR territory (1.7–2.0× MAC), not the base definition of MAC, and MAC is defined by alveolar, not inspired, partial pressure."}, {"text": "The alveolar partial pressure at which patients first stop responding to verbal questioning during induction of anesthesia, under the dosing conditions described here", "correct": false, "why": "Stopping response to verbal questioning corresponds to MAC-awake (0.3–0.5× MAC), a different and lower concentration than the formal MAC definition."}]}, {"stem": "Surgical teams never target exactly 1.0 MAC intraoperatively because, by definition, half of patients would still move at that concentration. Which value approximates the concentration actually targeted clinically to prevent movement in 95% of patients, and what is it called?", "teaching": "MAC-95 is the practical clinical target, roughly 1.2–1.3× MAC — it sits below MAC-intubation (~1.3× MAC) and well below MAC-BAR (1.7–2.0× MAC), which blocks autonomic reflexes entirely.", "choices": [{"text": "Roughly 1.2–1.3× MAC, referred to as MAC-95", "correct": true, "why": "MAC-95 is defined in lecture as roughly 1.2–1.3× the base MAC value, the concentration actually used clinically to prevent movement in the large majority of patients."}, {"text": "Roughly 1.7–2.0× MAC, referred to as MAC-BAR, needed to block the autonomic response to noxious stimuli entirely", "correct": false, "why": "MAC-BAR is a higher concentration than MAC-95, targeting complete autonomic reflex suppression rather than the 95% non-movement threshold asked about here."}, {"text": "Roughly 0.3–0.5× MAC, referred to as MAC-awake, the point at which patients stop responding to verbal questioning", "correct": false, "why": "MAC-awake is a much lower concentration corresponding to Stage I sedation, not the higher concentration used to prevent surgical movement in 95% of patients."}, {"text": "Exactly 1.0× MAC, since MAC is itself defined as the concentration at which all patients fail to respond to incision", "correct": false, "why": "MAC is defined at the 50% response threshold, not 100%, which is precisely why clinicians must dose above 1.0 MAC to reliably prevent movement."}, {"text": "Roughly 2.5–3.0× MAC, matching the LP50 concentration associated with cardiac arrest on the dose-response curve", "correct": false, "why": "LP50, the concentration associated with cardiac arrest, sits far above MAC-95 on the dose-response curve and represents a dangerous overdose range, not the surgical target."}]}, {"stem": "The Meyer-Overton constant states that an inhaled agent's oil:gas partition coefficient multiplied by its MAC is approximately 1.3 across agents. What is the practical use of this relationship, as described in lecture?", "teaching": "The Meyer-Overton rule itself is still considered valid even though the old unitary-theory explanation for it has been abandoned — potency still reliably tracks lipid solubility across inhaled agents.", "choices": [{"text": "Given one variable — either the oil:gas coefficient or MAC — the other can be back-calculated by dividing 1.3 by the known value", "correct": true, "why": "This is exactly how the relationship is described — with one variable known, the constant of 1.3 is divided by that value to back-calculate the other."}, {"text": "Given one variable, the other can be back-calculated by multiplying the known value directly by 1.3 without any division being involved", "correct": false, "why": "The relationship works by division, not multiplication — dividing 1.3 by the known variable yields the other, not multiplying by 1.3."}, {"text": "The relationship only applies to nitrous oxide and cannot be used to predict potency for any of the volatile halogenated agents, across the dosing range typically used clinically", "correct": false, "why": "The Meyer-Overton constant is described as holding across the inhaled agents generally, including the volatile halogenated agents, not as unique to nitrous oxide."}, {"text": "The relationship predicts speed of onset rather than potency, since it is fundamentally derived from the blood:gas partition coefficient", "correct": false, "why": "The Meyer-Overton relationship is built from the oil:gas coefficient and predicts potency, not the blood:gas coefficient, which governs speed of onset instead."}, {"text": "The relationship holds only at exactly 1.0 MAC and reliably breaks down at the higher concentrations used for surgical anesthesia", "correct": false, "why": "The relationship is described as a general correlation across agents rather than one restricted to a single specific MAC value or concentration range."}]}, {"stem": "Current thinking on the molecular mechanism of general anesthesia holds that the nonvolatile gas nitrous oxide and the volatile halogenated agents primarily act through different receptor targets. Which pairing correctly matches agent to primary mechanism?", "teaching": "The old unitary theory (membrane fluidization as a single mechanism) has been abandoned, replaced by evidence pointing to distinct molecular targets: NMDA inhibition for nitrous oxide, GABA-A potentiation for the volatiles.", "choices": [{"text": "Nitrous oxide primarily inhibits NMDA glutamate receptors, while the volatile halogenated agents primarily potentiate GABA-A receptors", "correct": true, "why": "This matches the current thinking described in lecture — the nonvolatile gas nitrous oxide works mainly through NMDA receptor inhibition, while the volatile agents work mainly through GABA-A potentiation."}, {"text": "Nitrous oxide primarily potentiates GABA-A receptors, while the volatile halogenated agents primarily inhibit NMDA glutamate receptors", "correct": false, "why": "This reverses the actual pairing described in lecture — nitrous oxide is linked to NMDA inhibition, and the volatiles are linked to GABA-A potentiation, not the other way around."}, {"text": "Both nitrous oxide and the volatile halogenated agents work exclusively through membrane fluidization, consistent with the original unitary theory", "correct": false, "why": "The unitary theory of membrane fluidization as a single mechanism is explicitly described as no longer accepted, ruling out this option."}, {"text": "Nitrous oxide primarily blocks voltage-gated sodium channels, while the volatile halogenated agents primarily activate potassium channels", "correct": false, "why": "Sodium and potassium channel effects are mentioned only as one of several supporting lines of evidence for hyperpolarization broadly, not as the specific primary mechanism assigned to either agent class."}, {"text": "Both nitrous oxide and the volatile halogenated agents work through an identical, fully elucidated single receptor mechanism, in this particular clinical scenario", "correct": false, "why": "The overall mechanism of general anesthesia is explicitly described as unknown as a single mechanism, and nitrous oxide and the volatiles are linked to different primary targets, not an identical one."}]}, {"stem": "Immobility and the combination of amnesia/loss of consciousness during general anesthesia are mediated at different anatomic sites in the central nervous system. Which pairing correctly matches component to site of action?", "teaching": "This anatomic split matters clinically: a drug or dose adequate to blunt movement at the spinal cord doesn't automatically guarantee amnesia or unconsciousness, since those depend on separate, higher CNS structures.", "choices": [{"text": "Immobility is mediated at the spinal cord, while amnesia and loss of consciousness are mediated at the brainstem, midbrain, and cerebral cortex", "correct": true, "why": "This matches the sites given in lecture — immobility is a spinal cord phenomenon, while amnesia and loss of consciousness depend on higher structures: brainstem, midbrain, and cerebral cortex."}, {"text": "Immobility is mediated at the cerebral cortex, while amnesia and loss of consciousness are mediated at the spinal cord exclusively, given the mechanism proposed in this choice", "correct": false, "why": "This reverses the actual anatomic assignment — immobility is described as a spinal cord phenomenon, not a cortical one, and amnesia/consciousness depend on higher structures, not the cord."}, {"text": "Both immobility and amnesia/loss of consciousness are mediated exclusively at the level of the spinal cord with no cortical involvement, based on the values given in the comparison table", "correct": false, "why": "Amnesia and loss of consciousness are specifically attributed to brainstem, midbrain, and cortical structures, not the spinal cord alone."}, {"text": "Immobility is mediated at the brainstem, while amnesia and loss of consciousness are mediated at the peripheral neuromuscular junction, as this option frames the underlying pharmacology", "correct": false, "why": "Immobility is a spinal cord phenomenon rather than a brainstem one, and amnesia/consciousness are cortical and subcortical phenomena, not neuromuscular junction effects."}, {"text": "Both immobility and amnesia/loss of consciousness are mediated exclusively within the cerebral cortex with no spinal cord involvement, over the course of a typical surgical case", "correct": false, "why": "Immobility is specifically attributed to the spinal cord rather than the cortex, making an exclusively cortical explanation for both components incorrect."}]}, {"stem": "An anesthesiologist avoids prolonged (greater than 24-hour) nitrous oxide exposure in a critically ill patient because of a specific enzymatic adverse effect. What is the underlying concern?", "teaching": "Nitrous oxide's B12 inhibition mechanism is thought to overlap with its NMDA antagonism, which is also why chronic recreational abuse of nitrous oxide can produce neurologic dysfunction similar to what's seen with ketamine misuse.", "choices": [{"text": "Nitrous oxide inhibits vitamin B12–dependent enzymes, risking megaloblastic anemia and neurologic dysfunction with prolonged exposure", "correct": true, "why": "This matches the specific adverse effect described in lecture — nitrous oxide inhibits B12-dependent enzymes, and prolonged exposure beyond about 24 hours risks hematopoietic and neurologic dysfunction."}, {"text": "Nitrous oxide inhibits 11β-hydroxylase, risking adrenal insufficiency with even a single brief exposure during routine induction, within the context of this specific patient presentation", "correct": false, "why": "11β-hydroxylase inhibition and the resulting adrenal insufficiency risk is the concern described for etomidate, not for nitrous oxide."}, {"text": "Nitrous oxide accumulates heavily in fat depots, risking a dramatically prolonged context-sensitive half-time after long infusions, under the assumptions built into this option", "correct": false, "why": "Context-sensitive half-time and tissue-depot loading are IV anesthetic concepts; inhaled agents like nitrous oxide are described as clearing through the lungs without meaningfully loading peripheral depots."}, {"text": "Nitrous oxide triggers ryanodine receptor hypersensitivity in skeletal muscle, risking malignant hyperthermia with prolonged exposure", "correct": false, "why": "Malignant hyperthermia risk in this lecture is specifically linked to halothane, particularly when combined with succinylcholine, not to nitrous oxide."}, {"text": "Nitrous oxide causes hepatotoxicity through a reactive trifluoroacetyl metabolite, risking fulminant liver failure with prolonged use", "correct": false, "why": "Hepatotoxicity from a reactive metabolite (“halothane hepatitis”) is the concern described for halothane, not for nitrous oxide, which is not associated with liver injury in this lecture."}]}, {"stem": "A patient receiving halothane in combination with succinylcholine develops a very high fever, tachycardia, tachypnea, acidosis, and muscle rigidity intraoperatively. What is this reaction, and what is its definitive pharmacologic treatment?", "teaching": "Halothane's risk profile — hepatotoxicity plus malignant hyperthermia risk, worsened by succinylcholine — is a major reason it has been phased out of US practice, even though it remains on the WHO Essential Medicines List internationally.", "choices": [{"text": "Malignant hyperthermia; treated definitively with dantrolene, a skeletal muscle ryanodine receptor antagonist that halts the reaction", "correct": true, "why": "This presentation matches malignant hyperthermia exactly as described in lecture, and dantrolene is named as the drug used to treat it."}, {"text": "Serotonin syndrome; treated definitively with flumazenil, the benzodiazepine receptor antagonist used for controlled reversal, in this particular clinical scenario", "correct": false, "why": "Flumazenil reverses benzodiazepine effects in a controlled setting and has no role in treating this hyperthermic, rigid presentation, which is malignant hyperthermia, not serotonin syndrome."}, {"text": "Opioid toxicity; treated definitively with naloxone, the opioid receptor antagonist used to reverse excessive intraoperative dosing, under the dosing conditions described here", "correct": false, "why": "Naloxone reverses opioid-induced respiratory depression, which is unrelated to the hyperthermia, rigidity, and acidosis described here, pointing instead to malignant hyperthermia."}, {"text": "Central anticholinergic toxicity; treated definitively with physostigmine, an acetylcholinesterase inhibitor used to reverse the syndrome", "correct": false, "why": "Physostigmine addresses anticholinergic toxidromes, a different clinical picture than the halothane-plus-succinylcholine malignant hyperthermia reaction described here."}, {"text": "Residual neuromuscular blockade; treated definitively with sugammadex, which reverses rocuronium- and vecuronium-induced paralysis, as this particular explanation lays it out", "correct": false, "why": "Sugammadex reverses specific nondepolarizing neuromuscular blockers and has no role in treating the hyperthermic, rigid, acidotic reaction described, which is malignant hyperthermia."}]}, {"stem": "A pediatric anesthesiologist chooses sevoflurane over desflurane for an inhalation-only induction in a young child. What is the main reason desflurane is avoided in this scenario?", "teaching": "Desflurane's pungency forces clinicians to premedicate with opioids to blunt airway irritation when it is used, and this same pungency is exactly why it is never chosen for pediatric inhalation induction.", "choices": [{"text": "Desflurane is pungent and can trigger coughing, breath-holding, and laryngospasm at higher concentrations, whereas sevoflurane is far less pungent and better tolerated", "correct": true, "why": "Desflurane's pungency causing airway irritation above 6% concentration is the specific reason it is not used in children, in direct contrast to sevoflurane's low pungency and good tolerability."}, {"text": "Desflurane has a much lower oil:gas partition coefficient than sevoflurane, making it far too weak to reliably achieve adequate surgical depth in a small child, over the course of a typical surgical case", "correct": false, "why": "Desflurane's potency relative to sevoflurane is not the stated reason for avoiding it pediatrically — the stated reason is airway irritation from pungency, not inadequate depth of anesthesia."}, {"text": "Desflurane requires an unheated vaporizer design that cannot reliably deliver an accurate concentration through a pediatric-sized breathing circuit, given the mechanism proposed in this choice", "correct": false, "why": "Desflurane actually requires a specialized heated vaporizer, and this equipment requirement is not the stated reason it is avoided in pediatric inhalation induction."}, {"text": "Desflurane causes significant nephrotoxicity via Compound A formation in the breathing circuit, a risk that is described as unique to the pediatric population, based on the values given in the comparison table", "correct": false, "why": "Compound A nephrotoxicity is a concern specifically linked to sevoflurane reacting with desiccated soda lime, not to desflurane."}, {"text": "Desflurane produces profound hepatotoxicity in children through an immune-mediated reaction to a trifluoroacetylated hepatic surface protein, as this option frames the underlying pharmacology", "correct": false, "why": "This trifluoroacetylated-protein hepatotoxicity mechanism describes halothane hepatitis, not a property of desflurane or a reason it is avoided pediatrically."}]}, {"stem": "Sevoflurane can react with desiccated soda lime in a rebreathing circuit to form a nephrotoxic byproduct. What is this byproduct called, and how is the risk minimized in modern practice?", "teaching": "In practice this risk is considered low because modern anesthesia machines use agent-specific vaporizers and clinicians maintain adequate fresh gas flow, but it's still a classically tested sevoflurane adverse effect.", "choices": [{"text": "Compound A; the risk is minimized by maintaining fresh gas flow above 2 L/min, and modern agent-specific vaporizers make the scenario low-risk", "correct": true, "why": "This matches the lecture description exactly — Compound A forms from sevoflurane reacting with desiccated soda lime, and keeping fresh gas flow above 2 L/min minimizes the risk."}, {"text": "Compound B; the risk is minimized by avoiding any use of soda lime whatsoever throughout sevoflurane administration and recovery, according to this description of the mechanism", "correct": false, "why": "The nephrotoxic byproduct described in lecture is named Compound A, not Compound B, and the mitigation strategy is fresh gas flow, not eliminating soda lime entirely."}, {"text": "Fluoride ion; the risk is minimized by co-administering nitrous oxide throughout the case to help buffer renal fluoride excretion, within the context of this specific patient presentation", "correct": false, "why": "The specific nephrotoxic byproduct discussed for sevoflurane in this lecture is Compound A, and nitrous oxide co-administration is not described as a mitigation strategy."}, {"text": "Trifluoroacetyl chloride; the risk is minimized by pretreating the patient with N-acetylcysteine before beginning inhalation induction, under the assumptions built into this option", "correct": false, "why": "Trifluoroacetylated metabolites are linked to halothane hepatotoxicity, not to sevoflurane's Compound A nephrotoxicity, and N-acetylcysteine pretreatment is not a described mitigation."}, {"text": "Methoxyflurane; the risk is minimized by limiting total anesthetic exposure to under two hours for any single surgical case, across the dosing range typically used clinically", "correct": false, "why": "Methoxyflurane is a separate, older abandoned agent, not the byproduct sevoflurane forms with soda lime, which is Compound A."}]}, {"stem": "Volatile anesthetics generally increase heart rate through a baroreceptor reflex triggered by a fall in blood pressure. Why does nitrous oxide NOT show this same reflex tachycardia?", "teaching": "This is the same underlying pattern that shows up across nearly every systemic effects comparison in this lecture: nitrous oxide's direct sympathetic stimulation offsets effects that the other volatiles produce through direct depression.", "choices": [{"text": "Nitrous oxide does not drop blood pressure the way the volatiles do, because its direct sympathetic stimulation offsets the fall, so there is no baroreceptor-driven reflex to trigger", "correct": true, "why": "Nitrous oxide's direct sympathetic stimulation is explicitly described as preventing the blood-pressure fall seen with the other volatiles, which removes the stimulus that would otherwise drive baroreceptor-mediated reflex tachycardia."}, {"text": "Nitrous oxide blocks the baroreceptor reflex arc directly at the level of the carotid sinus nerve, entirely independent of any change in blood pressure at all, as this particular explanation lays it out", "correct": false, "why": "The lecture attributes nitrous oxide's lack of reflex tachycardia to its effect on blood pressure via sympathetic stimulation, not to a direct block of the baroreceptor nerve itself."}, {"text": "Nitrous oxide causes an even greater fall in blood pressure than any of the volatiles, which paradoxically blunts the compensatory heart rate response entirely, in this particular clinical scenario", "correct": false, "why": "Nitrous oxide is described as having minimal effect on blood pressure compared to the volatiles, not a greater drop, so this does not explain the absence of reflex tachycardia."}, {"text": "Nitrous oxide has no measurable effect on the autonomic nervous system whatsoever, so no cardiovascular reflex of any kind can ever occur with its use, under the dosing conditions described here", "correct": false, "why": "Nitrous oxide is specifically described as having direct sympathetic stimulating effects, which is the opposite of having no autonomic nervous system effect at all."}, {"text": "Nitrous oxide selectively and permanently destroys peripheral baroreceptor afferent nerve fibers, preventing the reflex from ever being generated again, as measured under standard operating-room conditions", "correct": false, "why": "There is no described mechanism of nitrous oxide damaging baroreceptor afferent fibers; the explanation given is its sympathetic stimulation offsetting any blood pressure drop."}]}, {"stem": "In the IV three-compartment model with an added effect-site compartment, what distinguishes the role of V3, the slowly equilibrating depot compartment, from the effect-site compartment connected by the rate constant ke0?", "teaching": "These are explicitly described as two completely separate concepts: ke0 governs how fast a drug's clinical effect begins after a bolus, while V3 governs how long that effect lingers after a prolonged infusion is stopped.", "choices": [{"text": "V3 is the slowly filling depot that drives context-sensitive half-time after a long infusion, while the effect-site compartment via ke0 governs onset of effect as a separate concept", "correct": true, "why": "This matches the described roles exactly — V3 is the storage depot behind context-sensitive half-time, while the effect-site compartment governs onset of effect through ke0, explicitly called a separate concept."}, {"text": "V3 determines onset of drug effect through the rate constant ke0, while the effect-site compartment is instead the slowly filling depot responsible for context-sensitive half-time, as this option frames the underlying pharmacology", "correct": false, "why": "This swaps the two roles — ke0 and onset of effect belong to the effect-site compartment, while V3 is the depot tissue behind context-sensitive half-time, not the reverse."}, {"text": "V3 and the effect-site compartment refer to the exact same anatomic structure, simply described using two different names for one clinical phenomenon, over the course of a typical surgical case", "correct": false, "why": "The lecture explicitly states the effect compartment is a completely separate concept from context-sensitive half-time, meaning V3 and the effect-site compartment are distinct, not the same structure."}, {"text": "V3 fills almost instantly after a single bolus dose and empties just as quickly afterward, making it clinically irrelevant to prolonged infusions or recovery, given the mechanism proposed in this choice", "correct": false, "why": "V3 is specifically described as slowly equilibrating and taking much longer to fill and empty, making it central rather than irrelevant to recovery after prolonged infusions."}, {"text": "The effect-site compartment has a large volume that stores most of the administered drug over time, while V3 instead has a negligible volume connected by ke0, based on the values given in the comparison table", "correct": false, "why": "This reverses the described volumes — the effect compartment is described as having a negligible volume, while V3 is the larger, slowly equilibrating depot."}]}, {"stem": "Context-sensitive half-time increases with longer infusion duration for most IV anesthetics. Thiopental is described as the classic anesthesia “hangover” drug on this basis, while propofol, ketamine, and etomidate stay comparatively low even after prolonged infusions. What explains this difference?", "teaching": "Context-sensitive half-time cannot be predicted from elimination half-life alone — it depends on how much a drug loads slowly equilibrating peripheral depot tissue during a long infusion, which is why it's critical for planning emergence and recovery.", "choices": [{"text": "A long infusion loads the depot tissue (V3) near equilibrium for a drug like thiopental, so once the infusion stops, that tissue keeps feeding drug back into plasma and levels barely fall", "correct": true, "why": "This is exactly the described mechanism — thiopental's long infusion loads the depot compartment heavily, so it continues releasing drug back into plasma after the infusion stops, producing the prolonged “hangover.”"}, {"text": "Thiopental is metabolized exclusively by the kidneys, while propofol, ketamine, and etomidate are all metabolized instead by a much faster hepatic pathway, across the dosing range typically used clinically", "correct": false, "why": "The described mechanism behind context-sensitive half-time is depot tissue loading during infusion, not a difference in renal versus hepatic metabolic routes between these agents."}, {"text": "Context-sensitive half-time is identical to elimination half-life for every IV anesthetic, so thiopental's longer hangover simply reflects its longer elimination half-life, according to this description of the mechanism", "correct": false, "why": "Context-sensitive half-time is explicitly described as not the same as elimination half-life and as something that cannot be predicted from elimination half-life alone."}, {"text": "Thiopental produces an unusually long hangover because it is the only one of these four agents that is able to cross the blood-brain barrier at all, within the context of this specific patient presentation", "correct": false, "why": "All of these IV anesthetics act on the central nervous system and therefore must cross the blood-brain barrier; barrier crossing is not the described basis for thiopental's prolonged context-sensitive half-time."}, {"text": "A single bolus of thiopental loads the depot tissue far more heavily than a prolonged infusion does, which is why single boluses cause the longest hangover, under the assumptions built into this option", "correct": false, "why": "The lecture describes the opposite pattern — a single bolus drops 50% almost instantly through redistribution, while it is specifically prolonged infusion that loads the depot tissue and produces the long hangover."}]}, {"stem": "Both benzodiazepines and barbiturates bind the GABA-A receptor, but they alter its function in fundamentally different ways. Which statement correctly distinguishes the two drug classes, and how does this relate to their relative danger?", "teaching": "This potency-versus-efficacy distinction is exactly why barbiturates carry a much greater risk of fatal respiratory depression than benzodiazepines: raising the ceiling of channel activity (efficacy) is inherently more dangerous than simply shifting the dose-response curve (potency).", "choices": [{"text": "Benzodiazepines increase the likelihood that endogenous GABA opens the channel without raising the ceiling of activity, while barbiturates increase the duration the channel stays open and can act as direct agonists at high dose, making them more dangerous", "correct": true, "why": "This matches the described mechanism exactly — benzodiazepines shift the GABA dose-response curve leftward without raising efficacy, while barbiturates increase channel open duration and can act as direct agonists at high dose, which is why they carry more danger and respiratory depression risk."}, {"text": "Barbiturates increase the likelihood that endogenous GABA opens the channel without raising the ceiling of activity, while benzodiazepines increase channel-open duration and can act as direct agonists at high dose, making benzodiazepines more dangerous, as measured under standard operating-room conditions", "correct": false, "why": "This swaps the two mechanisms — it is benzodiazepines that increase the likelihood of channel opening (potency) without raising efficacy, while barbiturates are the ones that increase open duration and can act as direct agonists."}, {"text": "Benzodiazepines and barbiturates both increase the duration the GABA-A channel stays open to an identical degree at any given dose, which is why both drug classes carry an identical, well-documented risk of fatal respiratory depression, as this particular explanation lays it out", "correct": false, "why": "The two classes are described as working through different mechanisms with different resulting danger profiles, not as identical in either mechanism or in the degree of respiratory depression risk."}, {"text": "Benzodiazepines act as direct agonists at the GABA-A receptor at any dose given, without needing endogenous GABA present, which is precisely why they carry a greater risk of fatal overdose than barbiturates typically do, in this particular clinical scenario, based on the values given in the comparison table", "correct": false, "why": "Acting as a direct agonist at high dose is the property attributed to barbiturates, not benzodiazepines, and it is barbiturates that carry the greater overdose danger in this comparison."}, {"text": "Neither benzodiazepines nor barbiturates actually bind the GABA-A receptor at all; instead, both classes act primarily through direct antagonism of the NMDA receptor at the spinal cord level, under the dosing conditions described here, as this option frames the underlying pharmacology", "correct": false, "why": "Both drug classes are explicitly described as binding the GABA-A receptor, and NMDA receptor antagonism is the mechanism attributed to ketamine, not to benzodiazepines or barbiturates."}]}, {"stem": "A hemodynamically unstable trauma patient needs rapid sequence intubation. Etomidate is chosen for induction specifically because of its minimal cardiovascular effects, but the anesthesiologist avoids giving it as a continuous infusion. Why is etomidate restricted to induction-only use?", "teaching": "This same steroidogenesis-inhibiting property that makes etomidate dangerous as an infusion is, in theory, a flip side that could make it useful perioperatively in a patient with an excess-steroid-hormone state.", "choices": [{"text": "Etomidate inhibits 11β-hydroxylase and related steroidogenic enzymes, suppressing cortisol and aldosterone synthesis and risking adrenal insufficiency with sustained use", "correct": true, "why": "This is the exact reason given in lecture for why etomidate is restricted to induction-only use — its inhibition of steroidogenic enzymes suppresses cortisol and aldosterone, risking adrenal insufficiency with continuous infusion."}, {"text": "Etomidate accumulates rapidly and heavily in the vessel-rich group, producing an unpredictably deep and difficult-to-reverse level of unconsciousness over several hours, based on the values given in the comparison table", "correct": false, "why": "Vessel-rich group accumulation causing unpredictable depth is not the stated reason for restricting etomidate to induction-only use; the stated reason is adrenal suppression."}, {"text": "Etomidate causes severe hepatotoxicity through a reactive intermediate metabolite when it is infused continuously for more than a few hours in a critically ill patient, as this option frames the underlying pharmacology", "correct": false, "why": "Hepatotoxicity is the concern attributed to halothane, not etomidate; etomidate's induction-only restriction is specifically about adrenal suppression from steroidogenic enzyme inhibition."}, {"text": "Etomidate triggers malignant hyperthermia at a much higher rate than any of the volatile inhaled agents whenever it is given by continuous infusion, over the course of a typical surgical case", "correct": false, "why": "Malignant hyperthermia risk is associated with halothane, especially combined with succinylcholine, and is not the reason etomidate is restricted to induction-only dosing."}, {"text": "Etomidate binds irreversibly to NMDA receptors during any prolonged infusion, producing lasting dissociative psychiatric symptoms that persist after the case, given the mechanism proposed in this choice", "correct": false, "why": "NMDA receptor binding and dissociative effects describe ketamine's mechanism, not etomidate's, which acts on GABA-A receptors and is restricted for adrenal suppression reasons instead."}]}, {"stem": "Ketamine is favored in the emergency department for hemodynamically unstable trauma patients. What is its mechanism of action, and why does this make it hemodynamically favorable compared to most other induction agents?", "teaching": "This same sympathetic-preserving property is also why ketamine causes fewer emergence reactions in children, the opposite pattern from sevoflurane's tendency to cause pediatric emergent delirium.", "choices": [{"text": "It is an uncompetitive NMDA receptor antagonist that increases sympathetic tone, which raises cardiac output and preserves blood pressure rather than dropping it", "correct": true, "why": "This matches ketamine's described mechanism and effect exactly — uncompetitive NMDA antagonism paired with increased sympathetic outflow, which raises cardiac output and preserves hemodynamics in an unstable patient."}, {"text": "It is a competitive GABA-A receptor agonist that suppresses sympathetic tone, which lowers cardiac output but reliably improves overall coronary perfusion pressure", "correct": false, "why": "Ketamine's mechanism is NMDA receptor antagonism, not GABA-A agonism, and it increases rather than suppresses sympathetic tone, which is exactly why it preserves rather than lowers cardiac output."}, {"text": "It is an uncompetitive NMDA receptor antagonist that blocks sympathetic outflow entirely, stabilizing blood pressure by preventing any reflex cardiovascular change at all", "correct": false, "why": "Ketamine is described as increasing, not blocking, sympathetic outflow — this increased sympathetic tone is exactly what raises cardiac output and preserves blood pressure."}, {"text": "It is a selective alpha-1 adrenergic receptor antagonist that dilates peripheral vasculature, redistributing blood flow toward the vital organs during resuscitation", "correct": false, "why": "Ketamine's mechanism is NMDA receptor antagonism rather than alpha-1 adrenergic antagonism, and it increases sympathetic tone rather than causing peripheral vasodilation."}, {"text": "It is a direct myocardial calcium channel opener that increases contractility completely independent of any effect on the autonomic nervous system, within the context of this specific patient presentation", "correct": false, "why": "Ketamine's hemodynamic benefit is described as coming from increased sympathetic outflow due to NMDA antagonism, not from a direct myocardial calcium channel effect."}]}, {"stem": "A patient with a documented egg allergy is scheduled for induction with standard intralipid-formulated propofol, and the anesthesia team is also relying on propofol alone to cover intraoperative pain control. What are the two errors in this plan?", "teaching": "Propofol's only “bonus” effect beyond hypnosis is antiemetic, not analgesic — if a question implies propofol alone is covering pain control, that's a deliberate trap, and opioids remain analgesic-only in the reverse direction, never providing amnesia on their own.", "choices": [{"text": "Standard propofol is contraindicated because the lipid emulsion is egg-derived, and propofol provides no analgesia — its only “bonus” effect is antiemetic, not pain relief", "correct": true, "why": "Both errors match the lecture exactly — the standard intralipid formulation is egg-derived and contraindicated in egg allergy, and propofol's only extra benefit is antiemetic, never analgesic."}, {"text": "Standard propofol is contraindicated because it is chemically a barbiturate derivative, and propofol actually provides potent analgesia that can mask inadequate opioid dosing", "correct": false, "why": "Propofol is not a barbiturate derivative, and it provides no analgesia at all — both parts of this option misstate propofol's drug class and its lack of pain-relieving effect."}, {"text": "Standard propofol is safe despite the egg allergy since the allergenic protein is destroyed during compounding, and it genuinely does provide reliable analgesia, as measured under standard operating-room conditions", "correct": false, "why": "The egg-derived lipid emulsion remains a genuine contraindication in egg allergy, and propofol still provides no analgesia regardless of any claim about compounding."}, {"text": "Standard propofol is contraindicated because of soy allergy cross-reactivity rather than egg allergy, and its amnestic effect is commonly mistaken for analgesia, as this particular explanation lays it out", "correct": false, "why": "The described contraindication is specifically an egg allergy tied to the egg-derived lipid emulsion, not a soy cross-reactivity issue, though the underlying trap about mistaking other effects for analgesia is relevant."}, {"text": "Standard propofol is entirely safe in egg allergy, but it lacks amnestic properties altogether, so a benzodiazepine must be added to prevent explicit memory formation, in this particular clinical scenario", "correct": false, "why": "The egg-derived emulsion is a genuine contraindication in egg allergy, and propofol is a hypnotic agent that does produce amnesia — its documented gap is analgesia, not amnesia."}]}];
+
+/* ===================== Utilities ===================== */
+function escapeHTML(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+function fisherYates(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+const LETTERS = ['A','B','C','D','E'];
+
+/* ===================== State ===================== */
+let quizQuestions = [];   // shuffled questions, each with shuffled choices + correctIndex
+let userAnswers = [];     // {selected: idx|null, graded: bool, correct: bool|null}
+let toolMarks = [];       // per-question {stem: null|'hl'|'st', choices: [null,...]}
+let currentIndex = 0;
+let quizMode = 'learn';
+let examSubmitted = false;
+let toolMode = null;      // null | 'highlight' | 'strike'
+
+function buildQuizFromRaw() {
+  const shuffledQ = fisherYates(QUESTIONS_RAW);
+  quizQuestions = shuffledQ.map(q => {
+    const shuffledChoices = fisherYates(q.choices);
+    const correctIndex = shuffledChoices.findIndex(c => c.correct);
+    return { stem: q.stem, teaching: q.teaching, choices: shuffledChoices, correctIndex };
+  });
+  userAnswers = quizQuestions.map(() => ({ selected: null, graded: false, correct: null }));
+  toolMarks = quizQuestions.map(() => ({ stem: null, choices: quizQuestions[0] ? new Array(5).fill(null) : [] }));
+  toolMarks = quizQuestions.map(q => ({ stem: null, choices: new Array(q.choices.length).fill(null) }));
+  currentIndex = 0;
+  examSubmitted = false;
+}
+buildQuizFromRaw();
+
+/* ===================== DOM refs ===================== */
+const qo = document.getElementById('qo');
+const openDemo = document.getElementById('openDemo');
+const closeQuiz = document.getElementById('closeQuiz');
+const resetQuizBtn = document.getElementById('resetQuiz');
+const printQuizBtn = document.getElementById('printQuiz');
+
+const svCurrent = document.getElementById('svCurrent');
+const svCorrect = document.getElementById('svCorrect');
+const svIncorrect = document.getElementById('svIncorrect');
+
+const modeLearn = document.getElementById('modeLearn');
+const modeExam = document.getElementById('modeExam');
+
+const toolHighlight = document.getElementById('toolHighlight');
+const toolStrike = document.getElementById('toolStrike');
+const toolReveal = document.getElementById('toolReveal');
+const toolStatus = document.getElementById('toolStatus');
+
+const examSubmitRow = document.getElementById('examSubmitRow');
+const examProgress = document.getElementById('examProgress');
+const submitExamBtn = document.getElementById('submitExam');
+
+const qpf = document.getElementById('qpf');
+const qNum = document.getElementById('qNum');
+const qStem = document.getElementById('qStem');
+const achContainer = document.getElementById('achContainer');
+const submitRow = document.getElementById('submitRow');
+const submitOneBtn = document.getElementById('submitOne');
+const exBlock = document.getElementById('exBlock');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const qDots = document.getElementById('qDots');
+
+/* ===================== Open / Close ===================== */
+openDemo.addEventListener('click', () => qo.classList.add('open'));
+closeQuiz.addEventListener('click', () => {
+  qo.classList.add('closing');
+  setTimeout(() => qo.classList.remove('open', 'closing'), 320);
+});
+
+/* ===================== Font size ===================== */
+document.querySelectorAll('[data-fs-btn]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    qo.dataset.fs = btn.dataset.fsBtn;
+    document.querySelectorAll('[data-fs-btn]').forEach(b => b.classList.toggle('on', b === btn));
+  });
+});
+
+/* ===================== Timers ===================== */
+let timerInt = null, timerSec = 0;
+function renderTimer() {
+  const m = String(Math.floor(timerSec / 60)).padStart(2, '0');
+  const s = String(timerSec % 60).padStart(2, '0');
+  document.getElementById('timerTime').textContent = `${m}:${s}`;
+}
+document.getElementById('timerStart').addEventListener('click', () => {
+  if (timerInt) return;
+  timerInt = setInterval(() => { timerSec += 1; renderTimer(); }, 1000);
+});
+document.getElementById('timerPause').addEventListener('click', () => { clearInterval(timerInt); timerInt = null; });
+document.getElementById('timerReset').addEventListener('click', () => {
+  clearInterval(timerInt); timerInt = null; timerSec = 0; renderTimer();
+});
+
+let cdMinutes = 5, cdInt = null, cdSec = cdMinutes * 60;
+function renderCountdown() {
+  const m = String(Math.floor(cdSec / 60)).padStart(2, '0');
+  const s = String(cdSec % 60).padStart(2, '0');
+  document.getElementById('cdTime').textContent = `${m}:${s}`;
+  document.getElementById('cdVal').textContent = cdMinutes;
+}
+document.getElementById('cdMinus').addEventListener('click', () => {
+  if (cdInt) return;
+  cdMinutes = Math.max(1, cdMinutes - 1);
+  cdSec = cdMinutes * 60; renderCountdown();
+});
+document.getElementById('cdPlus').addEventListener('click', () => {
+  if (cdInt) return;
+  cdMinutes = Math.min(99, cdMinutes + 1);
+  cdSec = cdMinutes * 60; renderCountdown();
+});
+document.getElementById('cdGo').addEventListener('click', (e) => {
+  if (cdInt) { clearInterval(cdInt); cdInt = null; e.target.textContent = 'Start'; return; }
+  e.target.textContent = 'Pause';
+  cdInt = setInterval(() => {
+    if (cdSec <= 0) { clearInterval(cdInt); cdInt = null; document.getElementById('cdGo').textContent = 'Start'; return; }
+    cdSec -= 1; renderCountdown();
+  }, 1000);
+});
+renderCountdown();
+
+/* ===================== Tool mode (highlight / strikeout / reveal) ===================== */
+function setToolMode(mode) {
+  toolMode = (toolMode === mode) ? null : mode;
+  updateToolUI();
+}
+function updateToolUI() {
+  toolHighlight.classList.toggle('active', toolMode === 'highlight');
+  toolHighlight.classList.toggle('hl-tool', toolMode === 'highlight');
+  toolStrike.classList.toggle('active', toolMode === 'strike');
+  toolStrike.classList.toggle('st-tool', toolMode === 'strike');
+  toolStatus.classList.toggle('active-highlight', toolMode === 'highlight');
+  toolStatus.classList.toggle('active-strike', toolMode === 'strike');
+  toolStatus.textContent = toolMode ? `Tool mode: ${toolMode}` : 'Tool mode: none';
+  qStem.classList.toggle('tool-hover', !!toolMode);
+}
+toolHighlight.addEventListener('click', () => setToolMode('highlight'));
+toolStrike.addEventListener('click', () => setToolMode('strike'));
+toolReveal.addEventListener('click', () => exBlock.classList.toggle('vis'));
+
+function applyStemMarkup(type) {
+  const sel = window.getSelection();
+  if (!sel || sel.rangeCount === 0 || sel.isCollapsed) return false;
+  const range = sel.getRangeAt(0);
+  if (!qStem.contains(range.commonAncestorContainer)) return false;
+  const wrapper = document.createElement('span');
+  wrapper.className = type === 'highlight' ? 'stem-hl' : 'stem-st';
+  try { range.surroundContents(wrapper); }
+  catch (e) { const frag = range.extractContents(); wrapper.appendChild(frag); range.insertNode(wrapper); }
+  sel.removeAllRanges();
+  return true;
+}
+function toggleWholeStem(type) {
+  const marks = toolMarks[currentIndex];
+  if (type === 'highlight') {
+    marks.stem = (marks.stem === 'hl') ? null : 'hl';
+  } else {
+    marks.stem = (marks.stem === 'st') ? null : 'st';
+  }
+  applyStemVisualState();
+}
+function applyStemVisualState() {
+  const marks = toolMarks[currentIndex];
+  qStem.classList.toggle('hl-applied', marks.stem === 'hl');
+  qStem.classList.toggle('st-applied', marks.stem === 'st');
+}
+qStem.addEventListener('click', e => {
+  if (!toolMode) return;
+  const didApply = applyStemMarkup(toolMode);
+  if (!didApply) toggleWholeStem(toolMode);
+  e.preventDefault();
+});
+
+/* ===================== Mode toggle ===================== */
+function setMode(mode) {
+  quizMode = mode;
+  modeLearn.classList.toggle('active', mode === 'learn');
+  modeExam.classList.toggle('active', mode === 'exam');
+  examSubmitRow.classList.toggle('show', mode === 'exam');
+  submitRow.style.display = (mode === 'exam') ? 'none' : 'flex';
+  updateExamButton();
+  renderQuestion(currentIndex);
+}
+modeLearn.addEventListener('click', () => setMode('learn'));
+modeExam.addEventListener('click', () => setMode('exam'));
+
+function updateExamButton() {
+  const inExam = quizMode === 'exam';
+  const ans = userAnswers[currentIndex];
+  submitExamBtn.disabled = !inExam || examSubmitted;
+  examSubmitRow.classList.toggle('exam-live', inExam && !examSubmitted);
+  examSubmitRow.classList.toggle('exam-done', examSubmitted);
+  submitExamBtn.textContent = examSubmitted ? 'Exam Submitted' : 'Submit Exam';
+  const answeredCount = userAnswers.filter(a => a.selected !== null).length;
+  examProgress.textContent = examSubmitted
+    ? 'Exam submitted'
+    : `${answeredCount} of ${quizQuestions.length} answered`;
+}
+
+/* ===================== Grading ===================== */
+function gradeQuestion(index) {
+  const ans = userAnswers[index];
+  if (ans.selected === null || ans.graded) return false;
+  ans.graded = true;
+  ans.correct = (ans.selected === quizQuestions[index].correctIndex);
+  return true;
+}
+function gradeCurrentQuestion() {
+  const graded = gradeQuestion(currentIndex);
+  if (graded) renderQuestion(currentIndex);
+  return graded;
+}
+submitOneBtn.addEventListener('click', () => { gradeCurrentQuestion(); });
+
+submitExamBtn.addEventListener('click', () => {
+  if (quizMode !== 'exam') return;
+  if (examSubmitted) return;
+  quizQuestions.forEach((q, i) => gradeQuestion(i));
+  examSubmitted = true;
+  renderQuestion(currentIndex);
+  updateExamButton();
+});
+
+/* ===================== Render ===================== */
+function updateScorePanel() {
+  const correctCount = userAnswers.filter(a => a.graded && a.correct).length;
+  const incorrectCount = userAnswers.filter(a => a.graded && !a.correct).length;
+  svCurrent.textContent = currentIndex + 1;
+  svCorrect.textContent = correctCount;
+  svIncorrect.textContent = incorrectCount;
+}
+
+function updateNavDots() {
+  qDots.innerHTML = '';
+  userAnswers.forEach((ans, i) => {
+    const dot = document.createElement('button');
+    dot.className = 'qd';
+    if (i === currentIndex) dot.classList.add('cur');
+    if (ans.graded) dot.classList.add(ans.correct ? 'acor' : 'ainc');
+    else if (ans.selected !== null) dot.classList.add('asel');
+    dot.addEventListener('click', () => renderQuestion(i));
+    qDots.appendChild(dot);
+  });
+}
+
+function buildExplanationHTML(q, correctChoiceObj, wrongChoiceEntries) {
+  const wrongHTML = wrongChoiceEntries.map(([letter, why]) =>
+    `<div class="wce"><strong>${letter}</strong> — ${escapeHTML(why)}</div>`
+  ).join('');
+  return `
+    <div class="exs exc">
+      <div class="exl">Correct Answer</div>
+      <div class="ext">${escapeHTML(correctChoiceObj.why)}</div>
+    </div>
+    <div class="exs exe">
+      <div class="exl">Teaching Point</div>
+      <div class="ext">${escapeHTML(q.teaching)}</div>
+    </div>
+    <div class="exs exw">
+      <div class="exl">Why the Others Are Wrong</div>
+      <div class="ext">${wrongHTML}</div>
+    </div>
+  `;
+}
+
+function renderQuestion(index) {
+  currentIndex = index;
+  const q = quizQuestions[index];
+  const ans = userAnswers[index];
+  const marks = toolMarks[index];
+
+  qpf.style.width = (((index + 1) / quizQuestions.length) * 100) + '%';
+  qNum.textContent = `Question ${index + 1} of ${quizQuestions.length}`;
+
+  qStem.textContent = q.stem;
+  applyStemVisualState();
+
+  achContainer.innerHTML = '';
+  q.choices.forEach((choice, ci) => {
+    const div = document.createElement('div');
+    div.className = 'ac';
+    div.dataset.choice = ci;
+
+    if (ans.graded) {
+      div.classList.add('dis');
+      if (ci === q.correctIndex) div.classList.add('cor');
+      if (ans.selected === ci && ci !== q.correctIndex) div.classList.add('inc');
+    } else if (ans.selected === ci) {
+      div.classList.add('sel');
+    }
+
+    if (marks.choices[ci] === 'hl') div.classList.add('hl-applied');
+    if (marks.choices[ci] === 'st') div.classList.add('st-applied');
+
+    div.innerHTML = `<div class="cl">${LETTERS[ci]}</div><div class="ctx">${escapeHTML(choice.text)}</div>`;
+
+    div.addEventListener('click', () => {
+      if (toolMode) {
+        if (toolMode === 'highlight') {
+          marks.choices[ci] = (marks.choices[ci] === 'hl') ? null : 'hl';
+        } else {
+          marks.choices[ci] = (marks.choices[ci] === 'st') ? null : 'st';
+        }
+        renderQuestion(currentIndex);
+        return;
+      }
+      if (ans.graded) return;
+      ans.selected = ci;
+      renderQuestion(currentIndex);
+      submitOneBtn.disabled = false;
+      updateExamButton();
+    });
+
+    achContainer.appendChild(div);
+  });
+
+  // Submit row visibility / state
+  submitRow.style.display = (quizMode === 'exam') ? 'none' : 'flex';
+  submitOneBtn.disabled = ans.selected === null || ans.graded;
+  submitOneBtn.textContent = ans.graded ? 'Answered' : 'Submit Answer';
+
+  // Explanation block
+  const correctChoiceObj = q.choices[q.correctIndex];
+  const wrongEntries = q.choices
+    .map((c, ci) => [LETTERS[ci], c, ci])
+    .filter(([, , ci]) => ci !== q.correctIndex)
+    .map(([letter, c]) => [letter, c.why]);
+  exBlock.innerHTML = buildExplanationHTML(q, correctChoiceObj, wrongEntries);
+  exBlock.classList.toggle('vis', ans.graded);
+
+  prevBtn.disabled = index === 0;
+  nextBtn.disabled = index === quizQuestions.length - 1;
+
+  updateScorePanel();
+  updateNavDots();
+  updateExamButton();
+}
+
+prevBtn.addEventListener('click', () => { if (currentIndex > 0) renderQuestion(currentIndex - 1); });
+nextBtn.addEventListener('click', () => { if (currentIndex < quizQuestions.length - 1) renderQuestion(currentIndex + 1); });
+
+/* ===================== Reset ===================== */
+resetQuizBtn.addEventListener('click', () => {
+  clearInterval(timerInt); timerInt = null; timerSec = 0; renderTimer();
+  clearInterval(cdInt); cdInt = null; cdMinutes = 5; cdSec = cdMinutes * 60; renderCountdown();
+  document.getElementById('cdGo').textContent = 'Start';
+  toolMode = null; updateToolUI();
+  buildQuizFromRaw();
+  setMode('learn');
+  renderQuestion(0);
+});
+
+/* ===================== Print review ===================== */
+function buildPrintReviewMarkup() {
+  const answered = userAnswers
+    .map((ans, i) => ({ ans, q: quizQuestions[i], i }))
+    .filter(x => x.ans.graded);
+
+  const cards = answered.map(({ q, ans, i }) => {
+    const choiceRows = q.choices.map((c, ci) => {
+      let cls = 'print-choice';
+      if (ci === q.correctIndex) cls += ' correct';
+      else if (ans.selected === ci) cls += ' incorrect';
+      return `<div class="${cls}"><strong>${LETTERS[ci]}</strong> — ${escapeHTML(c.text)}</div>`;
+    }).join('');
+
+    const wrongRows = q.choices
+      .map((c, ci) => [LETTERS[ci], c, ci])
+      .filter(([, , ci]) => ci !== q.correctIndex)
+      .map(([letter, c]) => `<div class="wce"><strong>${letter}</strong> — ${escapeHTML(c.why)}</div>`)
+      .join('');
+
+    return `
+      <div class="print-card">
+        <div class="p-qnum">Question ${i + 1} of ${quizQuestions.length} — ${ans.correct ? 'Correct' : 'Incorrect'}</div>
+        <div class="p-stem">${escapeHTML(q.stem)}</div>
+        ${choiceRows}
+        <div class="print-explainer correct-box"><strong>Correct Answer:</strong> ${escapeHTML(q.choices[q.correctIndex].why)}</div>
+        <div class="print-explainer teach-box"><strong>Teaching Point:</strong> ${escapeHTML(q.teaching)}</div>
+        <div class="print-explainer wrong-box"><strong>Why the Others Are Wrong:</strong>${wrongRows}</div>
+      </div>
+    `;
+  }).join('');
+
+  const correctCount = answered.filter(x => x.ans.correct).length;
+  return `
+    <div class="print-shell">
+      <h1>General Anesthesia — Board Review: Answer Sheet</h1>
+      <div class="print-sub">${answered.length} of ${quizQuestions.length} questions answered &middot; ${correctCount} correct</div>
+      ${cards || '<p>No questions have been answered yet.</p>'}
+    </div>
+  `;
+}
+
+function printQuizReview() {
+  document.getElementById('printReviewRoot').innerHTML = buildPrintReviewMarkup();
+  document.body.classList.add('print-review-active');
+  setTimeout(() => window.print(), 50);
+}
+window.addEventListener('afterprint', () => {
+  document.body.classList.remove('print-review-active');
+});
+printQuizBtn.addEventListener('click', printQuizReview);
+
+/* ===================== Init ===================== */
+setMode('learn');
+renderQuestion(0);
+</script>
+</body>
+</html>
