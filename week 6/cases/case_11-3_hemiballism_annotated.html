@@ -30,6 +30,10 @@
 html,body{margin:0;padding:0;background:var(--cream);color:var(--ink);}
 body{font-family:'Crimson Pro',serif;line-height:1.7;}
 
+.font-controls{position:fixed;top:18px;right:20px;display:flex;gap:8px;z-index:700;}
+.font-btn{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;padding:8px 12px;font-family:'Nunito',sans-serif;font-size:.82rem;font-weight:800;cursor:pointer;box-shadow:var(--shadow);transition:transform .12s ease,background .12s ease,color .12s ease;}
+.font-btn:hover{background:var(--teal-bg);color:var(--teal);transform:translateY(-1px);}
+
 .header{max-width:800px;margin:0 auto;padding:44px 20px 20px;}
 .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);}
 .header h1{font-family:'Nunito',sans-serif;font-weight:800;font-size:1.9rem;margin:6px 0 4px;color:var(--ink);}
@@ -140,6 +144,11 @@ sup.hlnum{font-family:'IBM Plex Mono',monospace;font-size:.62em;color:var(--ink-
 </style>
 </head>
 <body>
+
+<div class="font-controls" aria-label="Font size controls">
+  <button id="font-decrease" class="font-btn" type="button" aria-label="Decrease font size">A-</button>
+  <button id="font-increase" class="font-btn" type="button" aria-label="Increase font size">A+</button>
+</div>
 
 <div class="header">
   <div class="eyebrow">Medical Neuroanatomy · Chapter 11 · Basal Ganglia</div>
@@ -517,6 +526,20 @@ sup.hlnum{font-family:'IBM Plex Mono',monospace;font-size:.62em;color:var(--ink-
   var panel = document.getElementById('hl-panel');
   var panelBody = document.getElementById('hl-panel-body');
   var panelClose = document.getElementById('hl-panel-close');
+  var fontDecrease = document.getElementById('font-decrease');
+  var fontIncrease = document.getElementById('font-increase');
+  var fontStorageKey = 'caseFontScale';
+  var fontScale = parseFloat(localStorage.getItem(fontStorageKey) || '1');
+
+  function clampScale(value){
+    return Math.min(1.3, Math.max(0.9, value));
+  }
+
+  function applyFontScale(value){
+    fontScale = clampScale(value);
+    document.documentElement.style.fontSize = (fontScale * 100) + '%';
+    localStorage.setItem(fontStorageKey, String(fontScale));
+  }
 
   function shortTeaser(text){
     if(text.length <= 100) return text;
@@ -584,6 +607,13 @@ sup.hlnum{font-family:'IBM Plex Mono',monospace;font-size:.62em;color:var(--ink-
     if(e.key === 'Escape') closePanel();
   });
   panelClose.addEventListener('click', closePanel);
+  fontDecrease.addEventListener('click', function(){
+    applyFontScale(fontScale - 0.05);
+  });
+  fontIncrease.addEventListener('click', function(){
+    applyFontScale(fontScale + 0.05);
+  });
+  applyFontScale(fontScale);
 })();
 </script>
 
