@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Case 11-4 — Basal Ganglia (Posthemiplegic Athetosis)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Nunito:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#F6F1E6;
+  --paper:#FCFAF3;
+  --ink:#2A241C;
+  --ink-soft:#6B6152;
+  --ink-faint:#9A8F7B;
+  --line:#DED2B6;
+  --line-soft:#EAE0C9;
+
+  --coral:#C85A3E;   --coral-bg:#F7E4DB;
+  --teal:#256B63;    --teal-bg:#DFEDE8;
+  --gold:#A47A1F;    --gold-bg:#F3E7C6;
+  --violet:#6B5390;  --violet-bg:#E9E2F1;
+  --sky:#2F6485;     --sky-bg:#DEE9EF;
+
+  --radius:10px;
+  --shadow:0 1px 2px rgba(42,36,28,.06), 0 8px 24px -12px rgba(42,36,28,.18);
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;background:var(--cream);color:var(--ink);}
+body{font-family:'Crimson Pro',serif;line-height:1.7;}
+
+.header{max-width:800px;margin:0 auto;padding:44px 20px 20px;}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);}
+.header h1{font-family:'Nunito',sans-serif;font-weight:800;font-size:1.9rem;margin:6px 0 4px;color:var(--ink);}
+.header .sub{font-family:'Nunito',sans-serif;font-weight:600;color:var(--ink-soft);font-size:1rem;margin:0 0 16px;}
+.dx-tag{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;background:var(--violet-bg);color:var(--violet);border-radius:999px;padding:5px 14px;font-weight:600;}
+
+.legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:20px;padding-top:16px;border-top:1px solid var(--line);}
+.legend-item{display:flex;align-items:center;gap:6px;font-family:'Nunito',sans-serif;font-size:.78rem;color:var(--ink-soft);}
+.legend-dot{width:10px;height:10px;border-radius:50%;display:inline-block;}
+
+.case-wrap{max-width:800px;margin:0 auto;padding:10px 20px 20px;}
+.case-section{margin-top:38px;}
+.case-heading{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:.74rem;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-faint);border-bottom:1px solid var(--line);padding-bottom:9px;margin-bottom:16px;}
+.case-section p{font-size:1.07rem;margin:0 0 14px;color:var(--ink);}
+.subhead{font-family:'Nunito',sans-serif;font-weight:700;font-size:.92rem;color:var(--teal);margin:20px 0 8px;}
+.subhead:first-child{margin-top:0;}
+
+mark.hl{cursor:pointer;padding:.02em .18em;border-radius:4px;text-decoration:none;transition:filter .1s;}
+mark.hl:hover{filter:brightness(0.96);}
+mark.hl[data-cat="localization"]{background:var(--teal-bg);box-shadow:inset 0 -2px 0 0 var(--teal);}
+mark.hl[data-cat="finding"]{background:var(--coral-bg);box-shadow:inset 0 -2px 0 0 var(--coral);}
+mark.hl[data-cat="term"]{background:var(--gold-bg);box-shadow:inset 0 -2px 0 0 var(--gold);}
+mark.hl[data-cat="pattern"]{background:var(--violet-bg);box-shadow:inset 0 -2px 0 0 var(--violet);}
+mark.hl[data-cat="genetics"]{background:var(--sky-bg);box-shadow:inset 0 -2px 0 0 var(--sky);}
+sup.hlnum{font-family:'IBM Plex Mono',monospace;font-size:.62em;color:var(--ink-faint);margin-left:1px;user-select:none;}
+
+.hl-tooltip{position:fixed;max-width:270px;background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:11px 13px;font-family:'Nunito',sans-serif;font-size:.83rem;z-index:500;opacity:0;pointer-events:none;transition:opacity .12s ease;}
+.hl-tooltip.visible{opacity:1;}
+.hl-tooltip .t-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;font-weight:600;}
+.hl-tooltip .t-title{font-weight:700;color:var(--ink);margin-bottom:4px;font-size:.86rem;}
+.hl-tooltip .t-body{color:var(--ink-soft);line-height:1.45;}
+
+.hl-panel{position:fixed;top:0;right:0;height:100%;width:380px;max-width:92vw;background:var(--paper);border-left:1px solid var(--line);box-shadow:var(--shadow);transform:translateX(105%);transition:transform .24s ease;z-index:600;padding:26px 24px;overflow-y:auto;}
+.hl-panel.open{transform:translateX(0);}
+.hl-panel-close{position:absolute;top:16px;right:18px;background:none;border:none;font-size:1.3rem;color:var(--ink-faint);cursor:pointer;line-height:1;padding:4px;}
+.hl-panel-close:hover{color:var(--ink);}
+.panel-num{font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--ink-faint);margin-bottom:10px;}
+.panel-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;font-weight:600;margin-bottom:8px;}
+.panel-title{font-family:'Nunito',sans-serif;font-weight:800;font-size:1.2rem;margin:0 0 14px;color:var(--ink);padding-right:20px;}
+.panel-text{font-size:1.02rem;color:var(--ink-soft);line-height:1.6;}
+
+@media (max-width:1000px){
+  .hl-panel{top:auto;bottom:0;left:0;right:0;width:100%;max-width:100%;height:auto;max-height:72vh;border-left:none;border-top:1px solid var(--line);border-radius:var(--radius) var(--radius) 0 0;transform:translateY(105%);}
+  .hl-panel.open{transform:translateY(0);}
+}
+
+.section-title{max-width:800px;margin:64px auto 4px;padding:0 20px;}
+.section-title h2{font-family:'Nunito',sans-serif;font-weight:800;font-size:1.5rem;margin:0;color:var(--ink);}
+.section-title p{font-family:'Nunito',sans-serif;color:var(--ink-soft);font-size:.92rem;margin:6px 0 0;}
+
+.qa-wrap{max-width:800px;margin:0 auto;padding:18px 20px 10px;}
+.qa-item{margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--line-soft);}
+.qa-item:last-child{border-bottom:none;}
+.qa-q{font-family:'Nunito',sans-serif;font-weight:700;font-size:.98rem;color:var(--ink);margin:0 0 6px;}
+.qa-q .qnum{font-family:'IBM Plex Mono',monospace;color:var(--ink-faint);margin-right:8px;}
+.qa-a{font-size:1.03rem;color:var(--ink-soft);margin:0;}
+
+.wt-wrap{max-width:1040px;margin:0 auto;padding:18px 20px 10px;}
+.walkthrough-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.wt-card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;}
+.wt-card.full{grid-column:1/-1;}
+.wt-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.68rem;letter-spacing:.07em;text-transform:uppercase;color:var(--teal);font-weight:600;margin-bottom:8px;}
+.wt-card h3{font-family:'Nunito',sans-serif;font-weight:800;font-size:1.05rem;margin:0 0 10px;color:var(--ink);}
+.wt-card p{font-size:.98rem;color:var(--ink-soft);margin:0 0 8px;line-height:1.6;}
+
+.diff-table{width:100%;border-collapse:collapse;font-family:'Nunito',sans-serif;font-size:.9rem;}
+.diff-table th{text-align:left;font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-faint);border-bottom:1px solid var(--line);padding:8px 10px;}
+.diff-table td{padding:10px 10px;border-bottom:1px solid var(--line-soft);color:var(--ink-soft);vertical-align:top;}
+.diff-table tr.lead td{background:var(--teal-bg);color:var(--ink);}
+.lead-tag{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:.05em;background:var(--teal);color:var(--paper);padding:2px 8px;border-radius:999px;margin-left:8px;font-weight:600;}
+
+.workup-flow{list-style:none;margin:0;padding:0;counter-reset:step;}
+.workup-flow li{position:relative;padding:0 0 16px 38px;counter-increment:step;}
+.workup-flow li::before{content:counter(step);position:absolute;left:0;top:0;width:26px;height:26px;border-radius:50%;background:var(--teal);color:var(--paper);font-family:'IBM Plex Mono',monospace;font-size:.78rem;display:flex;align-items:center;justify-content:center;font-weight:600;}
+.workup-flow li .step-lead{font-family:'Nunito',sans-serif;font-weight:700;color:var(--ink);}
+.workup-flow li .step-sub{display:block;font-size:.92rem;color:var(--ink-soft);margin-top:2px;}
+
+.mgmt-list{list-style:none;margin:0;padding:0;}
+.mgmt-list li{padding:7px 0 7px 26px;position:relative;font-size:.96rem;color:var(--ink-soft);border-bottom:1px solid var(--line-soft);}
+.mgmt-list li:last-child{border-bottom:none;}
+.mgmt-list li::before{content:"✓";position:absolute;left:0;color:var(--teal);font-weight:700;}
+
+@media (max-width:1000px){ .walkthrough-grid{grid-template-columns:repeat(2,1fr);} }
+@media (max-width:700px){ .walkthrough-grid{grid-template-columns:1fr;} }
+
+.dd-wrap{max-width:1040px;margin:0 auto;padding:18px 20px 70px;}
+.deepdive-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.dd-card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;}
+.dd-card.full{grid-column:1/-1;}
+.dd-tag{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:.06em;padding:3px 9px;border-radius:999px;margin-bottom:10px;font-weight:600;}
+.dd-tag.localization{background:var(--teal-bg);color:var(--teal);}
+.dd-tag.finding{background:var(--coral-bg);color:var(--coral);}
+.dd-tag.term{background:var(--gold-bg);color:var(--gold);}
+.dd-tag.pattern{background:var(--violet-bg);color:var(--violet);}
+.dd-tag.genetics{background:var(--sky-bg);color:var(--sky);}
+.dd-card h3{font-family:'Nunito',sans-serif;font-weight:800;font-size:1.02rem;margin:0 0 12px;color:var(--ink);}
+.dd-svg{width:100%;height:auto;display:block;margin-bottom:12px;}
+.dd-take{font-size:.95rem;color:var(--ink-soft);margin:0;line-height:1.6;}
+.dd-table{width:100%;border-collapse:collapse;font-family:'Nunito',sans-serif;font-size:.86rem;margin-bottom:10px;}
+.dd-table th{text-align:left;font-size:.64rem;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-faint);border-bottom:1px solid var(--line);padding:6px 8px;}
+.dd-table td{padding:8px 8px;border-bottom:1px solid var(--line-soft);color:var(--ink-soft);}
+.dd-table tr.hi td{background:var(--teal-bg);color:var(--ink);}
+
+@media (max-width:1000px){ .deepdive-grid{grid-template-columns:repeat(2,1fr);} }
+@media (max-width:700px){ .deepdive-grid{grid-template-columns:1fr;} }
+
+.footnote{max-width:800px;margin:0 auto;padding:0 20px 60px;font-family:'Nunito',sans-serif;font-size:.8rem;color:var(--ink-faint);}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="eyebrow">Medical Neuroanatomy · Chapter 11 · Basal Ganglia</div>
+  <h1>Case Study 11-4</h1>
+  <p class="sub">75-year-old man — postural movement disorder, 2 years post-stroke</p>
+  <span class="dx-tag">Working Dx: Posthemiplegic Athetosis (Right Internal Capsule Infarct)</span>
+  <div class="legend">
+    <div class="legend-item"><span class="legend-dot" style="background:var(--teal)"></span>Localization</div>
+    <div class="legend-item"><span class="legend-dot" style="background:var(--coral)"></span>Finding</div>
+    <div class="legend-item"><span class="legend-dot" style="background:var(--gold)"></span>Term</div>
+    <div class="legend-item"><span class="legend-dot" style="background:var(--violet)"></span>Pattern</div>
+    <div class="legend-item"><span class="legend-dot" style="background:var(--sky)"></span>Workup / Trajectory</div>
+  </div>
+</div>
+
+<div class="case-wrap">
+
+  <div class="case-section">
+    <div class="case-heading">Chief Complaint</div>
+    <p>A 75-year-old man with a history of a postural movement disorder subsequent to a cerebrovascular accident who presents for evaluation</p>
+  </div>
+
+  <div class="case-section">
+    <div class="case-heading">History of Chief Complaint</div>
+    <p>This was a 75-year-old, right-handed male with <mark id="hl1" class="hl" data-cat="pattern">tonic posturing motions of the left upper extremity that developed subsequent to a resolving spastic paralysis</mark><sup class="hlnum">1</sup>. He presented for an annual checkup, <mark id="hl2" class="hl" data-cat="genetics">2 years following a cerebrovascular event</mark><sup class="hlnum">2</sup>.</p>
+  </div>
+
+  <div class="case-section">
+    <div class="case-heading">Medical History</div>
+    <p>He was a Jewish scholar who emigrated from eastern Poland to the United States after World War II. He had been in good health until 2 years before, when <mark id="hl3" class="hl" data-cat="localization">he suffered a cerebrovascular accident of rapid onset that left him with spastic paralysis and sensory paresthesia in the left extremities</mark><sup class="hlnum">3</sup>. At that time <mark id="hl4" class="hl" data-cat="term">his strength in the left limbs was 2/5 and his deep tendon reflexes were elevated at +4/4</mark><sup class="hlnum">4</sup>. <mark id="hl5" class="hl" data-cat="localization">No language or cognitive deficit was recorded at the time of the first presentation</mark><sup class="hlnum">5</sup>.</p>
+  </div>
+
+  <div class="case-section">
+    <div class="case-heading">General Physical Examination</div>
+    <p>This was an alert, oriented, and cooperative man. He was well nourished and well hydrated and appeared his stated age. He had male-pattern baldness. His optic discs were clear with sharp borders. Visual acuity was normal with his glasses. His neck was supple; <mark id="hl6" class="hl" data-cat="genetics">a slight bruit was present over the right carotid</mark><sup class="hlnum">6</sup>. His chest was clear to percussion and abdomen was soft to palpation, with no tenderness or masses. His heart rate, blood pressure, and respirations were physiologic. His peripheral pulses were intact at the wrists and ankles. His skin was warm and moist, with good turgor.</p>
+  </div>
+
+  <div class="case-section">
+    <div class="case-heading">Neurologic Examination</div>
+
+    <div class="subhead">Mental Status</div>
+    <p>He was alert, oriented for time and place, and cooperative. <mark id="hl7" class="hl" data-cat="localization">He gave a precise history. Memory was appropriate; speech, writing, and reading (English, Polish, and Hebrew) were intact. He could list all the presidents in order and recite passages from the Torah verbatim</mark><sup class="hlnum">7</sup>.</p>
+
+    <div class="subhead">Cranial Nerves</div>
+    <p>He had a full range of eye movements and visual fields were intact. <mark id="hl8" class="hl" data-cat="term">His hearing was significantly diminished, especially for the high frequencies, more so in the right ear than in the left</mark><sup class="hlnum">8</sup>. The corneal and jaw-jerk reflexes were intact; facial expression was symmetric and appropriate to the situation. The gag reflex was intact; palate, uvula, and tongue were symmetric in position. <mark id="hl9" class="hl" data-cat="localization">He had slightly diminished sensation to vibratory sense on the left side of his face</mark><sup class="hlnum">9</sup>.</p>
+
+    <div class="subhead">Motor Systems</div>
+    <p>Strength was 5/5, and deep tendon reflexes were +2/4 for both extremities on the right. <mark id="hl10" class="hl" data-cat="finding">Strength was mildly reduced (4/5) for the upper limb on the left, and deep tendon reflexes were slightly elevated (+3/4)</mark><sup class="hlnum">10</sup>. <mark id="hl11" class="hl" data-cat="finding">The lower limb on the left had reduced strength (3/5) and increased deep tendon reflexes (+3/4)</mark><sup class="hlnum">11</sup>. <mark id="hl12" class="hl" data-cat="pattern">An involuntary, posturing movement was present in the left limbs that had not been detected in his first presentation, poststroke</mark><sup class="hlnum">12</sup>. In the upper limb <mark id="hl13" class="hl" data-cat="term">the movement consisted of slow, writhing postural changes, including pronounced flexion of the wrist, and phalangeal-metacarpal joints</mark><sup class="hlnum">13</sup>. With the upper limbs held horizontally extended, <mark id="hl14" class="hl" data-cat="term">the left limb wandered in position continuously</mark><sup class="hlnum">14</sup>. <mark id="hl15" class="hl" data-cat="term">Occasional sudden, jerky movements of the upper limb occurred</mark><sup class="hlnum">15</sup>. The lower left limb displayed slow postural movements that interfered with his gait. <mark id="hl16" class="hl" data-cat="pattern">The movement disorder was somewhat masked by the more pronounced residual paralysis in the lower left limb</mark><sup class="hlnum">16</sup>. <mark id="hl17" class="hl" data-cat="localization">The involuntary motion ceased when the patient slept, returning when he awoke</mark><sup class="hlnum">17</sup>. <mark id="hl18" class="hl" data-cat="localization">Past-pointing and dysmetria were not present on either side</mark><sup class="hlnum">18</sup>. <mark id="hl19" class="hl" data-cat="finding">Pronator drift did not appear to be present, but this was difficult to evaluate on the left side because of the wandering motion in the upper limb</mark><sup class="hlnum">19</sup>. With the upper limbs extended anteriorly and held in a fixed position, <mark id="hl20" class="hl" data-cat="term">a 10-Hz tremor was present in the right arm, but not in the left. This movement in the right limb was ameliorated when the arm was relaxed to the adducted portion</mark><sup class="hlnum">20</sup>. <mark id="hl21" class="hl" data-cat="finding">The tremor could be seen in his writing, particularly if he held his hand off of the paper's surface as he wrote</mark><sup class="hlnum">21</sup>.</p>
+
+    <div class="subhead">Sensation</div>
+    <p><mark id="hl22" class="hl" data-cat="localization">Response to pinprick, vibratory stimuli, and position sense was normal on the right side of his body and only slightly reduced on the left side</mark><sup class="hlnum">22</sup>.</p>
+  </div>
+
+</div>
+
+<!-- ================= CASE QUESTIONS ================= -->
+<div class="section-title">
+  <h2>Case Questions — Answered</h2>
+  <p>The manual's nine standard questions, answered directly from this patient's exam. Q6–Q9 are expanded further in the Clinical Reasoning Walkthrough below.</p>
+</div>
+<div class="qa-wrap">
+  <div class="qa-item">
+    <p class="qa-q"><span class="qnum">Q1</span>Changes in consciousness/cognition, language, spatial recognition, personality/emotional behavior, or memory?</p>
+    <p class="qa-a">None — and impressively so. He's alert, oriented, gives a precise history, and demonstrates fully intact memory, trilingual speech/reading/writing, and even verbatim recall. There's no personality change described. This is about as complete a picture of preserved higher cortical function as an exam can show.</p>
+  </div>
+  <div class="qa-item">
+    <p class="qa-q"><span class="qnum">Q2</span>Any visual field loss? Any visual hallucinations?</p>
+    <p class="qa-a">No. Visual fields are intact and extraocular movements are full; no hallucinations are reported.</p>
+  </div>
+  <div class="qa-item">
+    <p class="qa-q"><span class="qnum">Q3</span>Cranial nerve changes — suprasegmental or segmental?</p>
+    <p class="qa-a">Essentially normal — full eye movements, symmetric face, intact corneal/jaw-jerk/gag reflexes, midline palate/tongue. Two minor incidental notes: asymmetric high-frequency hearing loss (age-related, unrelated) and mildly diminished facial vibratory sensation on the left, which is more a subtle extension of his sensory findings than a true cranial nerve deficit.</p>
+  </div>
+  <div class="qa-item">
+    <p class="qa-q"><span class="qnum">Q4</span>Changes in motor function (reflexes, tone, movement, coordination) — suprasegmental or segmental?</p>
+    <p class="qa-a">Suprasegmental, and there are two separate stories layered together. First, a persistent (partially resolved) upper motor neuron deficit on the left — mild weakness with hyperreflexia in both the arm and leg, worse in the leg. Second, and new since his original presentation, athetosis of the left limbs — slow writhing postures, wrist/finger flexion, continuous wandering with the arms extended, and occasional jerky movements. A third, separate finding — a 10 Hz action/postural tremor in the right arm — is on the unaffected side and is very likely an unrelated, incidental essential tremor rather than part of the stroke syndrome.</p>
+  </div>
+  <div class="qa-item">
+    <p class="qa-q"><span class="qnum">Q5</span>Changes in sensory function — what level of the body?</p>
+    <p class="qa-a">Yes — mildly reduced pinprick, vibratory, and position sense on the left side of the body (plus mildly diminished facial vibratory sense on the left), consistent with residual sensory involvement from the original right-hemisphere stroke. The right side is fully normal.</p>
+  </div>
+  <div class="qa-item">
+    <p class="qa-q"><span class="qnum">Q6</span>Temporal profile — acute or chronic, progressive or stable?</p>
+    <p class="qa-a">Chronic. It's been 2 years since an acute stroke; the initial spastic paralysis has only partially resolved, and the athetosis emerged gradually afterward, absent at the very first presentation. At this point the picture appears to be a stable, chronic residual deficit rather than an actively evolving one.</p>
+  </div>
+  <div class="qa-item">
+    <p class="qa-q"><span class="qnum">Q7</span>Distribution — focal, multifocal, or diffuse?</p>
+    <p class="qa-a">Focal and unilateral — every stroke-related finding (weakness, hyperreflexia, athetosis, sensory change) is confined to the left side of the body. The right-arm tremor is a separate, isolated finding on the opposite side, unrelated to the stroke's distribution.</p>
+  </div>
+  <div class="qa-item">
+    <p class="qa-q"><span class="qnum">Q8</span>Differential diagnosis?</p>
+    <p class="qa-a">Posthemiplegic athetosis from a right internal capsule infarct is the leading diagnosis — see the full table below. The right-arm tremor is best regarded as a separate, incidental essential tremor rather than a second neurologic event tied to the stroke.</p>
+  </div>
+  <div class="qa-item">
+    <p class="qa-q"><span class="qnum">Q9</span>If vascular, what arterial territory?</p>
+    <p class="qa-a">Yes, vascular — most likely a small penetrating-vessel infarct of the right posterior limb of the internal capsule, where corticospinal and pallidothalamic fibers travel together (lenticulostriate or anterior choroidal artery territory). The bruit over the right carotid raises right carotid atherosclerosis as a plausible embolic source feeding that territory.</p>
+  </div>
+</div>
+
+<!-- ================= CLINICAL REASONING WALKTHROUGH ================= -->
+<div class="section-title">
+  <h2>Clinical Reasoning Walkthrough</h2>
+  <p>Localization → distribution → time course → differential → workup → prognosis → management</p>
+</div>
+<div class="wt-wrap">
+  <div class="walkthrough-grid">
+
+    <div class="wt-card">
+      <div class="wt-eyebrow">Localization</div>
+      <h3>Suprasegmental — right internal capsule</h3>
+      <p>Persistent hyperreflexic weakness (corticospinal tract) plus athetosis (pallidothalamic fibers) in the same left-sided limbs, with cortical functions and cerebellar coordination completely spared, points to a single discrete lesion of the right posterior limb of the internal capsule — the one place these two fiber systems travel side by side.</p>
+    </div>
+
+    <div class="wt-card">
+      <div class="wt-eyebrow">Distribution</div>
+      <h3>Focal, unilateral</h3>
+      <p>Every stroke-related abnormality is confined to the left side of the body. The right-arm action tremor is a separate, isolated finding on the opposite side — worth noting, but not part of this distribution.</p>
+    </div>
+
+    <div class="wt-card">
+      <div class="wt-eyebrow">Time Course</div>
+      <h3>Chronic — 2 years out, now stable</h3>
+      <p>An acute stroke 2 years ago produced severe spastic paralysis; that has only partially resolved, and a separate movement disorder (athetosis) emerged afterward and has apparently plateaued into a stable, chronic picture by this annual checkup.</p>
+    </div>
+
+    <div class="wt-card full">
+      <div class="wt-eyebrow">Differential Diagnosis</div>
+      <h3>Leading diagnosis: posthemiplegic athetosis (right internal capsule infarct)</h3>
+      <table class="diff-table">
+        <tr><th>Diagnosis</th><th>Fits</th><th>Argues against</th></tr>
+        <tr class="lead">
+          <td><strong>Posthemiplegic athetosis</strong> (right internal capsule infarct)<span class="lead-tag">Most likely</span></td>
+          <td>Persistent left-sided spastic hemiparesis plus delayed-onset athetosis in the same limbs — the classic internal capsule combination (corticospinal + pallidothalamic fibers); cortical sparing; sleep-dependence; possible carotid embolic source</td>
+          <td>Nothing in the history argues strongly against it</td>
+        </tr>
+        <tr>
+          <td>Recurrent or expanding stroke</td>
+          <td>Could theoretically explain evolving findings</td>
+          <td>This is a stable, 2-year follow-up visit with no acute decline described</td>
+        </tr>
+        <tr>
+          <td>Structural lesion (tumor)</td>
+          <td>Could produce a slowly evolving focal deficit</td>
+          <td>The abrupt stroke onset and staged evolution fit vascular disease far better than a mass lesion</td>
+        </tr>
+        <tr>
+          <td>Primary basal ganglia disease (e.g., Huntington's/Parkinson's)</td>
+          <td>Movement disorder as a presenting feature</td>
+          <td>Strictly unilateral and tightly tied in time and space to a single prior stroke, not the bilateral pattern of a diffuse neurodegenerative disease</td>
+        </tr>
+        <tr>
+          <td>Essential tremor <em>(separate issue — right arm)</em></td>
+          <td>Classic 10 Hz action/postural tremor, worse with extension, eased when relaxed</td>
+          <td>Nothing argues against it as a true, independent second diagnosis</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="wt-card full">
+      <div class="wt-eyebrow">Diagnostic Workup</div>
+      <h3>Confirming the lesion, addressing the carotid finding</h3>
+      <ol class="workup-flow">
+        <li><span class="step-lead">Carotid duplex ultrasound.</span><span class="step-sub">Given the right carotid bruit, evaluate for stenosis as a possible embolic source and to guide secondary prevention.</span></li>
+        <li><span class="step-lead">MRI brain.</span><span class="step-sub">Confirm a chronic right internal capsule infarct and exclude any new or additional lesion.</span></li>
+        <li><span class="step-lead">Cardiac evaluation.</span><span class="step-sub">Echocardiogram and rhythm monitoring to further assess embolic risk.</span></li>
+        <li><span class="step-lead">Vascular risk factor optimization.</span><span class="step-sub">Blood pressure, lipids, and glucose control given his age and prior stroke.</span></li>
+        <li><span class="step-lead">Separate work-up of the right-arm tremor.</span><span class="step-sub">Apply standard essential tremor criteria (family history, alcohol responsiveness) independently of the stroke evaluation.</span></li>
+      </ol>
+    </div>
+
+    <div class="wt-card">
+      <div class="wt-eyebrow">Prognosis</div>
+      <h3>Chronic, likely at a plateau</h3>
+      <p>Posthemiplegic athetosis, once established, tends to be a stable, chronic deficit; at 2 years, his residual weakness and movement disorder are likely close to their long-term baseline. His main ongoing risk is a second cerebrovascular event, given the carotid finding and vascular risk profile. The right-arm tremor, if essential tremor, typically has its own separate, slowly progressive but benign course.</p>
+    </div>
+
+    <div class="wt-card">
+      <div class="wt-eyebrow">Management</div>
+      <h3>Secondary prevention plus symptomatic care</h3>
+      <ul class="mgmt-list">
+        <li>Secondary stroke prevention — antiplatelet therapy, carotid intervention if significant stenosis is confirmed, risk factor control</li>
+        <li>Spasticity management — physical therapy, positioning/splinting, antispasmodic medication if functionally limiting</li>
+        <li>Symptomatic treatment of athetosis if disabling, with the same general pharmacologic approach used for other basal ganglia hyperkinesias</li>
+        <li>Independent evaluation and treatment of the right-arm tremor (e.g., propranolol or primidone) if it bothers him functionally — understanding it as unrelated to the stroke</li>
+        <li>Routine follow-up given his age and vascular risk profile</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================= CONCEPT DEEP-DIVE ================= -->
+<div class="section-title">
+  <h2>Concept Deep-Dive</h2>
+  <p>The underlying basal ganglia anatomy and circuitry this case is testing</p>
+</div>
+<div class="dd-wrap">
+  <div class="deepdive-grid">
+
+    <div class="dd-card">
+      <span class="dd-tag localization">Localization</span>
+      <h3>The Internal Capsule: Two Fiber Systems, One Lesion</h3>
+      <svg class="dd-svg" viewBox="0 0 400 190" xmlns="http://www.w3.org/2000/svg">
+        <rect x="20" y="20" width="360" height="150" rx="10" fill="#FCFAF3" stroke="#2A241C" stroke-width="1.5"/>
+        <text x="200" y="14" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9" fill="#6B6152">Posterior limb of the internal capsule</text>
+        <rect x="40" y="45" width="320" height="30" rx="6" fill="#DFEDE8" stroke="#256B63"/>
+        <text x="200" y="64" text-anchor="middle" font-family="Nunito, sans-serif" font-size="10" font-weight="700" fill="#2A241C">Corticospinal fibers (motor)</text>
+        <rect x="40" y="115" width="320" height="30" rx="6" fill="#E9E2F1" stroke="#6B5390"/>
+        <text x="200" y="134" text-anchor="middle" font-family="Nunito, sans-serif" font-size="10" font-weight="700" fill="#2A241C">Pallidothalamic fibers (ansa lenticularis / lenticular fasciculus)</text>
+        <ellipse cx="200" cy="97" rx="70" ry="42" fill="#F7E4DB" fill-opacity="0.75" stroke="#C85A3E" stroke-dasharray="4,3"/>
+        <text x="200" y="100" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9" font-weight="700" fill="#C85A3E">infarct</text>
+      </svg>
+      <p class="dd-take">Because the corticospinal and pallidothalamic fiber systems run side by side through this narrow bottleneck, one small lesion here can injure both at once — explaining why this patient has persistent spastic weakness (corticospinal) and athetosis (pallidothalamic) in exactly the same limbs.</p>
+    </div>
+
+    <div class="dd-card">
+      <span class="dd-tag term">Term</span>
+      <h3>Ballism, Chorea, Athetosis, Dystonia — Across the Chapter</h3>
+      <svg class="dd-svg" viewBox="0 0 400 100" xmlns="http://www.w3.org/2000/svg">
+        <line x1="25" y1="45" x2="375" y2="45" stroke="#DED2B6" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="55" cy="45" r="9" fill="#C85A3E"/>
+        <text x="55" y="70" text-anchor="middle" font-family="Nunito, sans-serif" font-size="9" font-weight="700" fill="#2A241C">Ballism</text>
+        <text x="55" y="82" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="7" fill="#6B6152">Case 11-3</text>
+        <circle cx="150" cy="45" r="9" fill="#A47A1F"/>
+        <text x="150" y="70" text-anchor="middle" font-family="Nunito, sans-serif" font-size="9" font-weight="700" fill="#2A241C">Chorea</text>
+        <text x="150" y="82" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="7" fill="#6B6152">Cases 11-1, 11-3</text>
+        <circle cx="255" cy="45" r="9" fill="#256B63"/>
+        <text x="255" y="70" text-anchor="middle" font-family="Nunito, sans-serif" font-size="9" font-weight="700" fill="#2A241C">Athetosis</text>
+        <text x="255" y="82" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="7" fill="#6B6152">Case 11-4 (this one)</text>
+        <circle cx="355" cy="45" r="9" fill="#6B5390"/>
+        <text x="355" y="70" text-anchor="middle" font-family="Nunito, sans-serif" font-size="9" font-weight="700" fill="#2A241C">Dystonia</text>
+        <text x="20" y="22" font-family="IBM Plex Mono, monospace" font-size="7" fill="#6B6152">violent, large</text>
+        <text x="330" y="22" font-family="IBM Plex Mono, monospace" font-size="7" fill="#6B6152">sustained, contorting</text>
+      </svg>
+      <p class="dd-take">Four cases, four points on the same basal ganglia hyperkinesia spectrum. This patient's slow, sustained wrist and finger posturing sits squarely at the athetosis end — slower and more sustained than the chorea in Case 11-1 or the ballism in Case 11-3.</p>
+    </div>
+
+    <div class="dd-card">
+      <span class="dd-tag pattern">Pattern</span>
+      <h3>One Lesion, Two Outputs</h3>
+      <svg class="dd-svg" viewBox="0 0 400 180" xmlns="http://www.w3.org/2000/svg">
+        <rect x="120" y="10" width="160" height="34" rx="6" fill="#F7E4DB" stroke="#C85A3E"/>
+        <text x="200" y="31" text-anchor="middle" font-family="Nunito, sans-serif" font-size="10" font-weight="700" fill="#2A241C">Right internal capsule lesion</text>
+        <line x1="170" y1="44" x2="110" y2="72" stroke="#256B63" stroke-width="2"/>
+        <line x1="230" y1="44" x2="290" y2="72" stroke="#6B5390" stroke-width="2"/>
+        <rect x="20" y="74" width="180" height="46" rx="6" fill="#DFEDE8" stroke="#256B63"/>
+        <text x="110" y="93" text-anchor="middle" font-family="Nunito, sans-serif" font-size="9" font-weight="700" fill="#2A241C">Corticospinal tract</text>
+        <text x="110" y="106" text-anchor="middle" font-family="Nunito, sans-serif" font-size="9" fill="#2A241C">disrupted</text>
+        <rect x="200" y="74" width="180" height="46" rx="6" fill="#E9E2F1" stroke="#6B5390"/>
+        <text x="290" y="93" text-anchor="middle" font-family="Nunito, sans-serif" font-size="9" font-weight="700" fill="#2A241C">Pallidothalamic fibers</text>
+        <text x="290" y="106" text-anchor="middle" font-family="Nunito, sans-serif" font-size="9" fill="#2A241C">disrupted</text>
+        <line x1="110" y1="120" x2="110" y2="138" stroke="#256B63" stroke-width="2"/>
+        <line x1="290" y1="120" x2="290" y2="138" stroke="#6B5390" stroke-width="2"/>
+        <rect x="20" y="140" width="180" height="34" rx="6" fill="#FCFAF3" stroke="#2A241C"/>
+        <text x="110" y="161" text-anchor="middle" font-family="Nunito, sans-serif" font-size="9" font-weight="700" fill="#2A241C">Spastic hemiparesis</text>
+        <rect x="200" y="140" width="180" height="34" rx="6" fill="#FCFAF3" stroke="#2A241C"/>
+        <text x="290" y="161" text-anchor="middle" font-family="Nunito, sans-serif" font-size="9" font-weight="700" fill="#2A241C">Athetosis</text>
+      </svg>
+      <p class="dd-take">A single small infarct produces two clinically distinct signs at once simply because two functionally unrelated fiber systems happen to travel through the same narrow anatomical bottleneck.</p>
+    </div>
+
+    <div class="dd-card">
+      <span class="dd-tag genetics">Workup</span>
+      <h3>Carotid Disease as a Stroke Mechanism</h3>
+      <table class="dd-table">
+        <tr><th>Step</th><th>What it means here</th></tr>
+        <tr><td>Right carotid bruit</td><td>Turbulent flow — suggests atherosclerotic narrowing</td></tr>
+        <tr><td>Embolization</td><td>Plaque or clot fragments travel downstream</td></tr>
+        <tr><td>Right MCA / lenticulostriate branch</td><td>Occluded, infarcting the right internal capsule</td></tr>
+        <tr class="hi"><td>Result</td><td>Left-sided deficits — contralateral to the right-sided lesion</td></tr>
+      </table>
+      <p class="dd-take">A bruit on the same side as the lesion, causing deficits on the opposite side of the body, is exactly the pattern expected of an artery-to-artery embolic stroke — and it's why carotid imaging belongs in his workup.</p>
+    </div>
+
+    <div class="dd-card">
+      <span class="dd-tag finding">Finding</span>
+      <h3>This Patient Has No Rest Tremor — On Either Side</h3>
+      <table class="dd-table">
+        <tr><th></th><th>Left side (stroke)</th><th>Right side (unaffected)</th></tr>
+        <tr><td>Movement type</td><td>Athetosis (slow, sustained posturing)</td><td>10 Hz action/postural tremor</td></tr>
+        <tr><td>Present at rest?</td><td>Yes — continuous</td><td>No</td></tr>
+        <tr><td>Present with arms extended?</td><td>Yes, worsens</td><td>Yes — this is when it appears</td></tr>
+        <tr><td>Eases with relaxation?</td><td>No</td><td>Yes</td></tr>
+      </table>
+      <p class="dd-take">None of this patient's findings behave like a parkinsonian rest tremor (Case 11-2). His stroke-side movement is a continuous, sustained postural disorder, and his only tremor is a classic action tremor on the opposite, unaffected side — two entirely different mechanisms living in the same patient.</p>
+    </div>
+
+    <div class="dd-card">
+      <span class="dd-tag pattern">Pattern</span>
+      <h3>The Chapter's Four Cases, Side by Side</h3>
+      <table class="dd-table">
+        <tr><th>Case</th><th>Movement disorder</th><th>Mechanism</th><th>Distribution</th></tr>
+        <tr><td>11-1</td><td>Chorea</td><td>Neurodegenerative (Huntington's)</td><td>Diffuse, bilateral</td></tr>
+        <tr><td>11-2</td><td>Rest tremor, rigidity, bradykinesia</td><td>Neurodegenerative (Parkinson's)</td><td>Diffuse, bilateral</td></tr>
+        <tr><td>11-3</td><td>Hemiballism-hemichorea</td><td>Vascular (STN/lenticular infarct)</td><td>Focal, unilateral</td></tr>
+        <tr class="hi"><td>11-4 <em>(this case)</em></td><td>Spastic hemiparesis + athetosis</td><td>Vascular (internal capsule infarct)</td><td>Focal, unilateral</td></tr>
+      </table>
+      <p class="dd-take">The same handful of basal ganglia structures and pathways produce four completely different-looking presentations, depending only on whether the process is diffuse and slow or focal and sudden — the single organizing idea running through this entire chapter.</p>
+    </div>
+
+  </div>
+</div>
+
+<div class="footnote">Source: Case Study 11-4, Medical Neuroanatomy, Chapter 11 (Basal Ganglia). No small-group transcript or lecture slides were provided for this case; Concept Deep-Dive content is drawn from the chapter's Discussion I/II text.</div>
+
+<div id="hl-tooltip" class="hl-tooltip"></div>
+<div id="hl-panel" class="hl-panel">
+  <button id="hl-panel-close" class="hl-panel-close" aria-label="Close">×</button>
+  <div id="hl-panel-body"></div>
+</div>
+
+<script>
+(function(){
+  var CAT_VAR = {
+    localization: '--teal',
+    finding: '--coral',
+    term: '--gold',
+    pattern: '--violet',
+    genetics: '--sky'
+  };
+
+  var annotations = [
+    {target:"hl1", cat:"pattern", eyebrow:"Posthemiplegic Pattern", title:"Athetosis emerging as spastic paralysis resolves",
+      body:"A movement disorder appearing as an initial paralysis improves — rather than at stroke onset — is the hallmark of a posthemiplegic movement disorder. The early hemiplegia masks a separate injury to nearby fiber tracts until the paralysis itself eases enough to reveal it."},
+    {target:"hl2", cat:"genetics", eyebrow:"Trajectory", title:"2 years out, presenting for routine follow-up",
+      body:"This isn't an acute presentation — it's a stable, chronic picture two years after the original stroke, here at a routine annual checkup rather than for a new complaint."},
+    {target:"hl3", cat:"localization", eyebrow:"Initial Stroke Syndrome", title:"Rapid-onset spastic paralysis + sensory paresthesia, left side",
+      body:"An abrupt combined motor and sensory deficit on one side of the body — with spasticity rather than flaccidity — points to an acute corticospinal (upper motor neuron) lesion, here on the right (contralateral to the left-sided findings)."},
+    {target:"hl4", cat:"term", eyebrow:"Severity at Onset", title:"2/5 strength, 4+/4 reflexes",
+      body:"Markedly reduced strength paired with markedly increased (hyperactive) deep tendon reflexes is the classic upper motor neuron (corticospinal tract) combination — weakness plus hyperreflexia, not the weakness-plus-hyporeflexia pattern of a lower motor neuron or segmental lesion."},
+    {target:"hl5", cat:"localization", eyebrow:"Cortical Sparing", title:"No language or cognitive deficit at presentation",
+      body:"Sparing of language and cognition from the very first presentation argues against a large cortical (e.g., full MCA territory) stroke and points instead toward a smaller, deeper lesion — such as the internal capsule — that spares the overlying cortex."},
+    {target:"hl6", cat:"genetics", eyebrow:"Workup Clue", title:"Bruit over the right carotid",
+      body:"A bruit over the right carotid raises right carotid atherosclerosis as a possible embolic source for a right-hemisphere infarct — which would explain the left-sided (contralateral) deficits. This is exactly the kind of finding that should prompt carotid imaging."},
+    {target:"hl7", cat:"localization", eyebrow:"Cortical Function Intact", title:"Multilingual, precise historian, recites Torah verbatim",
+      body:"This is about as thorough a demonstration of intact higher cortical function as an exam can offer — multilingual fluency, precise autobiographical recall, and verbatim memorized recitation. It strongly argues that this patient's lesion spared the cortex and is confined to a deeper structure."},
+    {target:"hl8", cat:"term", eyebrow:"Incidental Finding", title:"High-frequency hearing loss",
+      body:"Age-related, asymmetric high-frequency hearing loss (presbycusis) is a common incidental finding at 75 and isn't part of the stroke syndrome — it doesn't change the localization or differential here."},
+    {target:"hl9", cat:"localization", eyebrow:"Subtle Sensory Finding", title:"Diminished facial vibratory sense, left side",
+      body:"A mild reduction in facial vibratory sensation on the same side as the limb sensory changes suggests the sensory pathway disruption extends slightly rostral to where a purely limb-sparing lesion would reach — consistent with a lesion near the thalamus or internal capsule rather than a purely peripheral nerve process."},
+    {target:"hl10", cat:"finding", eyebrow:"Residual UMN Sign — Arm", title:"4/5 strength, 3+/4 reflexes, left arm",
+      body:"Two years out, the arm has recovered substantially from its initial 2/5 strength but still shows mild residual weakness with mildly increased reflexes — a persistent, partially resolved upper motor neuron deficit, not a fully resolved one."},
+    {target:"hl11", cat:"finding", eyebrow:"Residual UMN Sign — Leg", title:"3/5 strength, 3+/4 reflexes, left leg",
+      body:"The leg has recovered less than the arm — a common pattern after an internal capsule/corticospinal lesion, where fiber somatotopy means different body parts can recover at different rates. This more severe residual leg weakness is exactly what ends up masking the leg's own movement disorder."},
+    {target:"hl12", cat:"pattern", eyebrow:"Delayed Appearance", title:"A movement disorder not seen at first presentation",
+      body:"The involuntary posturing wasn't there right after the stroke — it appeared later, as the acute paralysis eased. This delayed emergence, rather than a movement disorder present from day one, is the signature of a posthemiplegic phenomenon rather than a primary basal ganglia disease."},
+    {target:"hl13", cat:"term", eyebrow:"Athetosis — Terminology", title:"Slow writhing, wrist and finger-joint flexion",
+      body:"Slow, sustained, writhing postural changes with pronounced flexion at the wrist and finger joints is the textbook description of athetosis — one of the movement disorders the chapter specifically attributes to disruption of pallidothalamic fibers as they pass through the internal capsule."},
+    {target:"hl14", cat:"term", eyebrow:"Athetosis on Posture", title:"Continuous wandering with arms extended",
+      body:"Athetosis is often most visible when a limb is held in a sustained posture (like arms extended) rather than fully at rest — the position seems to invite continuous, uncontrolled drifting rather than a stable hold."},
+    {target:"hl15", cat:"term", eyebrow:"Superimposed Chorea", title:"Occasional jerky movements layered on the athetosis",
+      body:"A few faster, jerkier movements riding on top of the slower writhing athetosis is a common real-world overlap — choreoathetosis — rather than a pure, single movement disorder type."},
+    {target:"hl16", cat:"pattern", eyebrow:"Masking Phenomenon", title:"Leg's movement disorder masked by its own residual paralysis",
+      body:"The same masking principle that hid this patient's arm athetosis right after the stroke is still at work in the leg: because the leg's residual weakness is more pronounced than the arm's, the leg's athetosis is harder to see clinically even though the underlying process is presumably the same in both limbs."},
+    {target:"hl17", cat:"localization", eyebrow:"Sleep-Dependence", title:"Movements disappear during sleep",
+      body:"As in the other basal-ganglia-circuit movement disorders in this chapter, this one vanishes during sleep and returns on waking — a shared feature reflecting dependence on ongoing, awake cortical-subcortical circuit activity."},
+    {target:"hl18", cat:"localization", eyebrow:"Negative Cerebellar Signs", title:"No past-pointing or dysmetria, either side",
+      body:"The absence of dysmetria or past-pointing on either side argues against a cerebellar contribution to this patient's incoordination, keeping the localization within the basal ganglia/internal capsule region rather than the cerebellum."},
+    {target:"hl19", cat:"finding", eyebrow:"Exam Limitation", title:"Pronator drift hard to assess on the left",
+      body:"The wandering athetotic motion itself makes a classic pronator drift test difficult to interpret on the left — another example of how a movement disorder can complicate the very exam maneuvers used to characterize it."},
+    {target:"hl20", cat:"term", eyebrow:"A Separate Finding — Postural Tremor", title:"10 Hz tremor, right arm, worse with extension",
+      body:"A tremor that appears when the arm is held extended against gravity and eases when the arm is relaxed and adducted is an action/postural tremor — the opposite pattern from a parkinsonian rest tremor, and a pattern classically associated with essential tremor rather than a basal ganglia lesion."},
+    {target:"hl21", cat:"finding", eyebrow:"Functional Demonstration", title:"Tremor visible in his handwriting",
+      body:"Tremor interfering with handwriting, especially when the hand isn't resting on a supporting surface, is a classic and clinically useful demonstration of an action tremor — and this is on the unaffected right side, distinct from his stroke-related left-sided findings."},
+    {target:"hl22", cat:"localization", eyebrow:"Residual Hemisensory Finding", title:"Normal on the right, slightly reduced on the left",
+      body:"A persistent, mild sensory reduction confined to the side opposite the original lesion is consistent with residual sensory involvement from the same right-hemisphere stroke, rather than a new or separate process."}
+  ];
+
+  var canHover = window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  var tooltip = document.getElementById('hl-tooltip');
+  var panel = document.getElementById('hl-panel');
+  var panelBody = document.getElementById('hl-panel-body');
+  var panelClose = document.getElementById('hl-panel-close');
+
+  function shortTeaser(text){
+    if(text.length <= 100) return text;
+    return text.slice(0,100).trim() + '…';
+  }
+
+  function showTooltip(a, el){
+    var v = CAT_VAR[a.cat];
+    tooltip.innerHTML =
+      '<div class="t-eyebrow" style="color:var(' + v + ')">' + a.eyebrow + '</div>' +
+      '<div class="t-title">' + a.title + '</div>' +
+      '<div class="t-body">' + shortTeaser(a.body) + '</div>';
+    var rect = el.getBoundingClientRect();
+    tooltip.style.left = Math.max(8, Math.min(rect.left, window.innerWidth - 286)) + 'px';
+    tooltip.style.top = (rect.bottom + 8) + 'px';
+    tooltip.classList.add('visible');
+    requestAnimationFrame(function(){
+      var th = tooltip.offsetHeight;
+      var top = rect.bottom + 8;
+      if(top + th > window.innerHeight - 8){
+        top = rect.top - th - 8;
+      }
+      tooltip.style.top = Math.max(8, top) + 'px';
+    });
+  }
+
+  function hideTooltip(){
+    tooltip.classList.remove('visible');
+  }
+
+  function openPanel(a, idx){
+    var v = CAT_VAR[a.cat];
+    panelBody.innerHTML =
+      '<div class="panel-num">Annotation ' + idx + ' of ' + annotations.length + '</div>' +
+      '<div class="panel-eyebrow" style="color:var(' + v + ')">' + a.eyebrow + '</div>' +
+      '<h3 class="panel-title">' + a.title + '</h3>' +
+      '<p class="panel-text">' + a.body + '</p>';
+    panel.classList.add('open');
+    hideTooltip();
+  }
+
+  function closePanel(){
+    panel.classList.remove('open');
+  }
+
+  annotations.forEach(function(a, i){
+    var el = document.getElementById(a.target);
+    if(!el) return;
+    el.addEventListener('click', function(e){
+      e.stopPropagation();
+      openPanel(a, i + 1);
+    });
+    if(canHover){
+      el.addEventListener('mouseenter', function(){ showTooltip(a, el); });
+      el.addEventListener('mouseleave', hideTooltip);
+    }
+  });
+
+  document.addEventListener('click', function(e){
+    if(panel.classList.contains('open') && !panel.contains(e.target)){
+      closePanel();
+    }
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') closePanel();
+  });
+  panelClose.addEventListener('click', closePanel);
+})();
+</script>
+
+</body>
+</html>

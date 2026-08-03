@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Case 11-2 — Basal Ganglia (Parkinson's Disease)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Nunito:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#F6F1E6;
+  --paper:#FCFAF3;
+  --ink:#2A241C;
+  --ink-soft:#6B6152;
+  --ink-faint:#9A8F7B;
+  --line:#DED2B6;
+  --line-soft:#EAE0C9;
+
+  --coral:#C85A3E;   --coral-bg:#F7E4DB;
+  --teal:#256B63;    --teal-bg:#DFEDE8;
+  --gold:#A47A1F;    --gold-bg:#F3E7C6;
+  --violet:#6B5390;  --violet-bg:#E9E2F1;
+  --sky:#2F6485;     --sky-bg:#DEE9EF;
+
+  --radius:10px;
+  --shadow:0 1px 2px rgba(42,36,28,.06), 0 8px 24px -12px rgba(42,36,28,.18);
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;background:var(--cream);color:var(--ink);}
+body{font-family:'Crimson Pro',serif;line-height:1.7;}
+
+.header{max-width:800px;margin:0 auto;padding:44px 20px 20px;}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);}
+.header h1{font-family:'Nunito',sans-serif;font-weight:800;font-size:1.9rem;margin:6px 0 4px;color:var(--ink);}
+.header .sub{font-family:'Nunito',sans-serif;font-weight:600;color:var(--ink-soft);font-size:1rem;margin:0 0 16px;}
+.dx-tag{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;background:var(--violet-bg);color:var(--violet);border-radius:999px;padding:5px 14px;font-weight:600;}
+
+.legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:20px;padding-top:16px;border-top:1px solid var(--line);}
+.legend-item{display:flex;align-items:center;gap:6px;font-family:'Nunito',sans-serif;font-size:.78rem;color:var(--ink-soft);}
+.legend-dot{width:10px;height:10px;border-radius:50%;display:inline-block;}
+
+.case-wrap{max-width:800px;margin:0 auto;padding:10px 20px 20px;}
+.case-section{margin-top:38px;}
+.case-heading{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:.74rem;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-faint);border-bottom:1px solid var(--line);padding-bottom:9px;margin-bottom:16px;}
+.case-section p{font-size:1.07rem;margin:0 0 14px;color:var(--ink);}
+.subhead{font-family:'Nunito',sans-serif;font-weight:700;font-size:.92rem;color:var(--teal);margin:20px 0 8px;}
+.subhead:first-child{margin-top:0;}
+
+mark.hl{cursor:pointer;padding:.02em .18em;border-radius:4px;text-decoration:none;transition:filter .1s;}
+mark.hl:hover{filter:brightness(0.96);}
+mark.hl[data-cat="localization"]{background:var(--teal-bg);box-shadow:inset 0 -2px 0 0 var(--teal);}
+mark.hl[data-cat="finding"]{background:var(--coral-bg);box-shadow:inset 0 -2px 0 0 var(--coral);}
+mark.hl[data-cat="term"]{background:var(--gold-bg);box-shadow:inset 0 -2px 0 0 var(--gold);}
+mark.hl[data-cat="pattern"]{background:var(--violet-bg);box-shadow:inset 0 -2px 0 0 var(--violet);}
+mark.hl[data-cat="genetics"]{background:var(--sky-bg);box-shadow:inset 0 -2px 0 0 var(--sky);}
+sup.hlnum{font-family:'IBM Plex Mono',monospace;font-size:.62em;color:var(--ink-faint);margin-left:1px;user-select:none;}
+
+.hl-tooltip{position:fixed;max-width:270px;background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:11px 13px;font-family:'Nunito',sans-serif;font-size:.83rem;z-index:500;opacity:0;pointer-events:none;transition:opacity .12s ease;}
+.hl-tooltip.visible{opacity:1;}
+.hl-tooltip .t-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;font-weight:600;}
+.hl-tooltip .t-title{font-weight:700;color:var(--ink);margin-bottom:4px;font-size:.86rem;}
+.hl-tooltip .t-body{color:var(--ink-soft);line-height:1.45;}
+
+.hl-panel{position:fixed;top:0;right:0;height:100%;width:380px;max-width:92vw;background:var(--paper);border-left:1px solid var(--line);box-shadow:var(--shadow);transform:translateX(105%);transition:transform .24s ease;z-index:600;padding:26px 24px;overflow-y:auto;}
+.hl-panel.open{transform:translateX(0);}
+.hl-panel-close{position:absolute;top:16px;right:18px;background:none;border:none;font-size:1.3rem;color:var(--ink-faint);cursor:pointer;line-height:1;padding:4px;}
+.hl-panel-close:hover{color:var(--ink);}
+.panel-num{font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--ink-faint);margin-bottom:10px;}
+.panel-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;font-weight:600;margin-bottom:8px;}
+.panel-title{font-family:'Nunito',sans-serif;font-weight:800;font-size:1.2rem;margin:0 0 14px;color:var(--ink);padding-right:20px;}
+.panel-text{font-size:1.02rem;color:var(--ink-soft);line-height:1.6;}
+
+@media (max-width:1000px){
+  .hl-panel{top:auto;bottom:0;left:0;right:0;width:100%;max-width:100%;height:auto;max-height:72vh;border-left:none;border-top:1px solid var(--line);border-radius:var(--radius) var(--radius) 0 0;transform:translateY(105%);}
+  .hl-panel.open{transform:translateY(0);}
+}
+
+.section-title{max-width:800px;margin:64px auto 4px;padding:0 20px;}
+.section-title h2{font-family:'Nunito',sans-serif;font-weight:800;font-size:1.5rem;margin:0;color:var(--ink);}
+.section-title p{font-family:'Nunito',sans-serif;color:var(--ink-soft);font-size:.92rem;margin:6px 0 0;}
+
+.qa-wrap{max-width:800px;margin:0 auto;padding:18px 20px 10px;}
+.qa-item{margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--line-soft);}
+.qa-item:last-child{border-bottom:none;}
+.qa-q{font-family:'Nunito',sans-serif;font-weight:700;font-size:.98rem;color:var(--ink);margin:0 0 6px;}
+.qa-q .qnum{font-family:'IBM Plex Mono',monospace;color:var(--ink-faint);margin-right:8px;}
+.qa-a{font-size:1.03rem;color:var(--ink-soft);margin:0;}
+
+.wt-wrap{max-width:1040px;margin:0 auto;padding:18px 20px 10px;}
+.walkthrough-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.wt-card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;}
+.wt-card.full{grid-column:1/-1;}
+.wt-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.68rem;letter-spacing:.07em;text-transform:uppercase;color:var(--teal);font-weight:600;margin-bottom:8px;}
+.wt-card h3{font-family:'Nunito',sans-serif;font-weight:800;font-size:1.05rem;margin:0 0 10px;color:var(--ink);}
+.wt-card p{font-size:.98rem;color:var(--ink-soft);margin:0 0 8px;line-height:1.6;}
+
+.diff-table{width:100%;border-collapse:collapse;font-family:'Nunito',sans-serif;font-size:.9rem;}
+.diff-table th{text-align:left;font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-faint);border-bottom:1px solid var(--line);padding:8px 10px;}
+.diff-table td{padding:10px 10px;border-bottom:1px solid var(--line-soft);color:var(--ink-soft);vertical-align:top;}
+.diff-table tr.lead td{background:var(--teal-bg);color:var(--ink);}
+.lead-tag{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:.05em;background:var(--teal);color:var(--paper);padding:2px 8px;border-radius:999px;margin-left:8px;font-weight:600;}
+
+.workup-flow{list-style:none;margin:0;padding:0;counter-reset:step;}
+.workup-flow li{position:relative;padding:0 0 16px 38px;counter-increment:step;}
+.workup-flow li::before{content:counter(step);position:absolute;left:0;top:0;width:26px;height:26px;border-radius:50%;background:var(--teal);color:var(--paper);font-family:'IBM Plex Mono',monospace;font-size:.78rem;display:flex;align-items:center;justify-content:center;font-weight:600;}
+.workup-flow li .step-lead{font-family:'Nunito',sans-serif;font-weight:700;color:var(--ink);}
+.workup-flow li .step-sub{display:block;font-size:.92rem;color:var(--ink-soft);margin-top:2px;}
+
+.mgmt-list{list-style:none;margin:0;padding:0;}
+.mgmt-list li{padding:7px 0 7px 26px;position:relative;font-size:.96rem;color:var(--ink-soft);border-bottom:1px solid var(--line-soft);}
+.mgmt-list li:last-child{border-bottom:none;}
+.mgmt-list li::before{content:"✓";position:absolute;left:0;color:var(--teal);font-weight:700;}
+
+@media (max-width:1000px){ .walkthrough-grid{grid-template-columns:repeat(2,1fr);} }
+@media (max-width:700px){ .walkthrough-grid{grid-template-columns:1fr;} }
+
+.dd-wrap{max-width:1040px;margin:0 auto;padding:18px 20px 70px;}
+.deepdive-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.dd-card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;}
+.dd-card.full{grid-column:1/-1;}
+.dd-tag{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:.06em;padding:3px 9px;border-radius:999px;margin-bottom:10px;font-weight:600;}
+.dd-tag.localization{background:var(--teal-bg);color:var(--teal);}
+.dd-tag.finding{background:var(--coral-bg);color:var(--coral);}
+.dd-tag.term{background:var(--gold-bg);color:var(--gold);}
+.dd-tag.pattern{background:var(--violet-bg);color:var(--violet);}
+.dd-tag.genetics{background:var(--sky-bg);color:var(--sky);}
+.dd-card h3{font-family:'Nunito',sans-serif;font-weight:800;font-size:1.02rem;margin:0 0 12px;color:var(--ink);}
+.dd-svg{width:100%;height:auto;display:block;margin-bottom:12px;}
+.dd-take{font-size:.95rem;color:var(--ink-soft);margin:0;line-height:1.6;}
+.dd-table{width:100%;border-collapse:collapse;font-family:'Nunito',sans-serif;font-size:.86rem;margin-bottom:10px;}
+.dd-table th{text-align:left;font-size:.64rem;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-faint);border-bottom:1px solid var(--line);padding:6px 8px;}
+.dd-table td{padding:8px 8px;border-bottom:1px solid var(--line-soft);color:var(--ink-soft);}
+
+@media (max-width:1000px){ .deepdive-grid{grid-template-columns:repeat(2,1fr);} }
+@media (max-width:700px){ .deepdive-grid{grid-template-columns:1fr;} }
+
+.footnote{max-width:800px;margin:0 auto;padding:0 20px 60px;font-family:'Nunito',sans-serif;font-size:.8rem;color:var(--ink-faint);}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="eyebrow">Medical Neuroanatomy · Chapter 11 · Basal Ganglia</div>
+  <h1>Case Study 11-2</h1>
+  <p class="sub">67-year-old man — reduced motion and a tremor</p>
+  <span class="dx-tag">Working Dx: Idiopathic Parkinson's Disease</span>
+  <div class="legend">
+    <div class="legend-item"><span class="legend-dot" style="background:var(--teal)"></span>Localization</div>
+    <div class="legend-item"><span class="legend-dot" style="background:var(--coral)"></span>Finding</div>
+    <div class="legend-item"><span class="legend-dot" style="background:var(--gold)"></span>Term</div>
+    <div class="legend-item"><span class="legend-dot" style="background:var(--violet)"></span>Pattern</div>
+    <div class="legend-item"><span class="legend-dot" style="background:var(--sky)"></span>Workup / Trajectory</div>
+  </div>
+</div>
+
+<div class="case-wrap">
+
+  <div class="case-section">
+    <div class="case-heading">Chief Complaint</div>
+    <p>A 67-year-old complaining of reduced motion and a tremor</p>
+  </div>
+
+  <div class="case-section">
+    <div class="case-heading">History of Chief Complaint</div>
+    <p>A 67-year-old, right-handed, retired city worker was brought to you by his wife because of <mark id="hl1" class="hl" data-cat="term">"shaking" and "weakness."</mark><sup class="hlnum">1</sup> His wife reported that not only did his hands shake, but she complained of <mark id="hl2" class="hl" data-cat="finding">changes in his personality</mark><sup class="hlnum">2</sup>. She also complained that he had become <mark id="hl3" class="hl" data-cat="finding">very slow or "weak" in his movements and often sat motionless with an expressionless face</mark><sup class="hlnum">3</sup>. He had <mark id="hl4" class="hl" data-cat="finding">difficulty getting up and moving about the house</mark><sup class="hlnum">4</sup>. She admitted that <mark id="hl5" class="hl" data-cat="genetics">this had been going on for over a year and was getting worse</mark><sup class="hlnum">5</sup>, but she had <mark id="hl6" class="hl" data-cat="pattern">resisted seeking treatment since she felt that he had just grown lazy after retirement</mark><sup class="hlnum">6</sup>. He had <mark id="hl7" class="hl" data-cat="genetics">recently suffered several falls, one of which had resulted in a skin laceration on his forehead</mark><sup class="hlnum">7</sup>. She was seeking a physician at this time because he had started to make <mark id="hl8" class="hl" data-cat="term">"funny noises with his mouth."</mark><sup class="hlnum">8</sup></p>
+  </div>
+
+  <div class="case-section">
+    <div class="case-heading">Medical History</div>
+    <p>At the time of examination, the patient had been retired for 2 years; until now he had been in good health except for an appendectomy at age 18. He had three children, who were living independently; none had attended college.</p>
+  </div>
+
+  <div class="case-section">
+    <div class="case-heading">General Physical Examination</div>
+    <p>This was an alert, cooperative, well hydrated, and well-nourished individual, oriented for place and time and appearing his stated age. He was seated quietly and <mark id="hl9" class="hl" data-cat="finding">did not offer much information during the examination, letting his wife provide most of the history</mark><sup class="hlnum">9</sup>. Optic discs were clear with sharp borders. Chest was clear to auscultation and percussion. Blood pressure was normal; peripheral pulses were intact; respirations and temperature were normal. Abdomen was soft to palpation, with no masses or tenderness present. Skin was of normal texture and turgor; a recent skin laceration, 2 cm in length, was present on his forehead.</p>
+  </div>
+
+  <div class="case-section">
+    <div class="case-heading">Neurologic Examination</div>
+
+    <div class="subhead">Mental Status</div>
+    <p>The patient was alert, oriented for time and place, and cooperative. Memory and knowledge were appropriate for his age. Speech was clear and meaningful, but <mark id="hl10" class="hl" data-cat="finding">soft and low in volume</mark><sup class="hlnum">10</sup>; his comprehension of language was good. He was capable of writing, but <mark id="hl11" class="hl" data-cat="term">his letters were noticeably reduced in size when compared with a previous sample of 10 years ago provided by his wife</mark><sup class="hlnum">11</sup>.</p>
+
+    <div class="subhead">Cranial Nerves</div>
+    <p>His range of movement for the extraocular eye muscles was full, and visual fields were complete to confrontation. The corneal, jaw-jerk, and gag reflexes were intact; palate and uvula elevated symmetrically; tongue protruded midline; and shoulder shrug was symmetric. <mark id="hl12" class="hl" data-cat="localization">A three-per-second resting tremor was present in the orofacial musculature that diminished on speaking and swallowing or when he opened his mouth</mark><sup class="hlnum">12</sup>. There was a <mark id="hl13" class="hl" data-cat="term">detectable high-frequency hearing loss, more in the right ear than in the left</mark><sup class="hlnum">13</sup>.</p>
+
+    <div class="subhead">Motor Systems</div>
+    <p>His strength was intact and deep tendon reflexes were normal in all extremities. He had <mark id="hl14" class="hl" data-cat="localization">a three-per-second tremor in both upper and lower extremities that was ameliorated with movement and returned upon resting</mark><sup class="hlnum">14</sup>. There was <mark id="hl15" class="hl" data-cat="term">cogwheel rigidity upon passive movement of the limbs</mark><sup class="hlnum">15</sup>. <mark id="hl16" class="hl" data-cat="localization">He had no dysmetria or past-pointing present in any extremity</mark><sup class="hlnum">16</sup>. <mark id="hl17" class="hl" data-cat="localization">With his arms extended, the tremor diminished and there was no pronator drift</mark><sup class="hlnum">17</sup>. The tremor returned when his arms were relaxed. <mark id="hl18" class="hl" data-cat="finding">His gait was slow, with many shuffling steps</mark><sup class="hlnum">18</sup>. Postural reflexes were compromised; <mark id="hl19" class="hl" data-cat="finding">if given an abrupt push, he retropulsed, with many short steps and was at risk for falling</mark><sup class="hlnum">19</sup>. <mark id="hl20" class="hl" data-cat="finding">The patient could not stand from a seated position in a low, soft-padded chair, but he could, after one or two attempts, rise from a higher chair with a stiffer seat</mark><sup class="hlnum">20</sup>.</p>
+
+    <div class="subhead">Sensation</div>
+    <p><mark id="hl21" class="hl" data-cat="localization">Discriminative touch and proprioception were intact throughout the body and face</mark><sup class="hlnum">21</sup>.</p>
+  </div>
+
+</div>
+
+<!-- ================= CASE QUESTIONS ================= -->
+<div class="section-title">
+  <h2>Case Questions — Answered</h2>
+  <p>The manual's nine standard questions, answered directly from this patient's exam. Q6–Q9 are expanded further in the Clinical Reasoning Walkthrough below.</p>
+</div>
+<div class="qa-wrap">
+  <div class="qa-item">
+    <p class="qa-q"><span class="qnum">Q1</span>Changes in consciousness/cognition, language, spatial recognition, personality/emotional behavior, or memory?</p>
+    <p class="qa-a">Formal mental status is largely intact — alert, oriented, memory and knowledge appropriate for age, comprehension good. The "personality change" and reduced conversational output his wife describes are better explained by hypomimia (masked facies), hypophonia, and apathy — recognized non-motor/motor features of parkinsonism — than by a true cognitive or personality disorder. No language deficit beyond reduced volume; no spatial recognition problem noted.</p>
+  </div>
+  <div class="qa-item">
+    <p class="qa-q"><span class="qnum">Q2</span>Any visual field loss? Any visual hallucinations?</p>
+    <p class="qa-a">No. Optic discs are clear, visual fields are full to confrontation, and no hallucinations are reported.</p>
+  </div>
+  <div class="qa-item">
+    <p class="qa-q"><span class="qnum">Q3</span>Cranial nerve changes — suprasegmental or segmental?</p>
+    <p class="qa-a">No true cranial nerve palsy — extraocular movements, facial symmetry, and the corneal/jaw-jerk/gag reflexes are all intact. The one abnormal cranial finding, a resting orofacial tremor that quiets with active mouth movement, is a suprasegmental (extrapyramidal) movement-disorder sign layered on an otherwise normal cranial nerve exam, not a segmental CN lesion. The high-frequency hearing loss is an incidental, age-related peripheral finding.</p>
+  </div>
+  <div class="qa-item">
+    <p class="qa-q"><span class="qnum">Q4</span>Changes in motor function (reflexes, tone, movement, coordination) — suprasegmental or segmental?</p>
+    <p class="qa-a">Suprasegmental/extrapyramidal, and it's the core of the case: a 3 Hz rest tremor (limbs and orofacial region) that improves with movement, cogwheel rigidity, bradykinesia (slow gait, difficulty rising from a low chair), and impaired postural reflexes (retropulsion). Strength and deep tendon reflexes are normal, and there's no dysmetria or pronator drift — so there's no segmental (LMN/UMN) or cerebellar component here.</p>
+  </div>
+  <div class="qa-item">
+    <p class="qa-q"><span class="qnum">Q5</span>Changes in sensory function — what level of the body?</p>
+    <p class="qa-a">None. Discriminative touch and proprioception are intact throughout the body and face.</p>
+  </div>
+  <div class="qa-item">
+    <p class="qa-q"><span class="qnum">Q6</span>Temporal profile — acute or chronic, progressive or stable?</p>
+    <p class="qa-a">Chronic and progressive — symptoms have been present for over a year and are described as steadily worsening, initially mistaken for age-related slowing or post-retirement laziness.</p>
+  </div>
+  <div class="qa-item">
+    <p class="qa-q"><span class="qnum">Q7</span>Distribution — focal, multifocal, or diffuse?</p>
+    <p class="qa-a">Diffuse and essentially bilateral — tremor is present in the face and in both upper and lower extremities, and bradykinesia/gait involvement is generalized rather than confined to one limb or side.</p>
+  </div>
+  <div class="qa-item">
+    <p class="qa-q"><span class="qnum">Q8</span>Differential diagnosis?</p>
+    <p class="qa-a">Idiopathic Parkinson's disease is the leading diagnosis — see the full differential table below. Early falls and a bilateral-at-presentation tremor are worth flagging as possible clues toward an atypical parkinsonian syndrome, but they don't outweigh the otherwise classic tetrad seen here.</p>
+  </div>
+  <div class="qa-item">
+    <p class="qa-q"><span class="qnum">Q9</span>If vascular, what arterial territory?</p>
+    <p class="qa-a">This is not a vascular presentation — it's a chronic, progressive degenerative process (loss of substantia nigra dopaminergic neurons), not an acute event. Vascular (lower-body) parkinsonism is a consideration in this age group, but it would implicate bilateral small penetrating (lenticulostriate) vessels causing subcortical white-matter disease, and it doesn't typically produce a prominent rest tremor like this patient's.</p>
+  </div>
+</div>
+
+<!-- ================= CLINICAL REASONING WALKTHROUGH ================= -->
+<div class="section-title">
+  <h2>Clinical Reasoning Walkthrough</h2>
+  <p>Localization → distribution → time course → differential → workup → prognosis → management</p>
+</div>
+<div class="wt-wrap">
+  <div class="walkthrough-grid">
+
+    <div class="wt-card">
+      <div class="wt-eyebrow">Localization</div>
+      <h3>Suprasegmental — basal ganglia (nigrostriatal)</h3>
+      <p>Normal strength, reflexes, and sensation, plus the absence of dysmetria and pronator drift, rule out a segmental (LMN/UMN) or cerebellar process. What's left is a pure extrapyramidal picture — rest tremor, cogwheel rigidity, bradykinesia, and impaired postural reflexes — the classic signature of substantia nigra / basal ganglia dysfunction.</p>
+    </div>
+
+    <div class="wt-card">
+      <div class="wt-eyebrow">Distribution</div>
+      <h3>Diffuse, essentially bilateral</h3>
+      <p>Tremor involves the face and all four limbs, and bradykinesia/gait changes are generalized. Bilateral involvement at presentation (rather than the classic asymmetric/unilateral onset of early idiopathic Parkinson's disease) is a subtle atypical note worth carrying into the differential.</p>
+    </div>
+
+    <div class="wt-card">
+      <div class="wt-eyebrow">Time Course</div>
+      <h3>Chronic, progressive</h3>
+      <p>Over a year of gradual worsening, initially attributed to aging or post-retirement laziness — the slow, insidious trajectory expected of a neurodegenerative disease rather than a stroke or acute toxic/metabolic insult.</p>
+    </div>
+
+    <div class="wt-card full">
+      <div class="wt-eyebrow">Differential Diagnosis</div>
+      <h3>Leading diagnosis: Idiopathic Parkinson's disease</h3>
+      <table class="diff-table">
+        <tr><th>Diagnosis</th><th>Fits</th><th>Argues against</th></tr>
+        <tr class="lead">
+          <td><strong>Idiopathic Parkinson's disease</strong><span class="lead-tag">Most likely</span></td>
+          <td>Classic tetrad — 3 Hz rest tremor improved by movement, cogwheel rigidity, bradykinesia (mask facies, micrographia, hypophonia, slow rise from a chair), and postural instability (retropulsion)</td>
+          <td>Early falls and bilateral-at-onset tremor are slightly atypical for early-stage disease, though this alone doesn't exclude it</td>
+        </tr>
+        <tr>
+          <td>Atypical parkinsonism (PSP / MSA)</td>
+          <td>Early falls; possible symmetric onset</td>
+          <td>No vertical gaze palsy or autonomic dysfunction described — features that, if present, would point more strongly toward PSP or MSA respectively</td>
+        </tr>
+        <tr>
+          <td>Essential tremor</td>
+          <td>Tremor as the presenting complaint in an older adult</td>
+          <td>This tremor is worse at rest and improves with action — the opposite of essential tremor, which is an action/postural tremor; no family history of tremor or head/voice involvement is described</td>
+        </tr>
+        <tr>
+          <td>Drug-induced parkinsonism</td>
+          <td>Can produce an identical tetrad</td>
+          <td>No history of antipsychotic, antiemetic, or other dopamine-blocking medication exposure provided</td>
+        </tr>
+        <tr>
+          <td>Vascular (lower-body) parkinsonism</td>
+          <td>Age, gait disturbance, falls</td>
+          <td>Typically produces a gait disorder with little or no rest tremor — the prominent tremor and cogwheeling here don't fit</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="wt-card full">
+      <div class="wt-eyebrow">Diagnostic Workup</div>
+      <h3>Confirming the diagnosis, screening for red flags</h3>
+      <ol class="workup-flow">
+        <li><span class="step-lead">Detailed medication history.</span><span class="step-sub">Rule out antipsychotics, metoclopramide, or other dopamine-blocking agents before labeling this idiopathic.</span></li>
+        <li><span class="step-lead">Targeted exam for atypical-parkinsonism red flags.</span><span class="step-sub">Vertical (especially downward) gaze, orthostatic blood pressure, cerebellar signs — screening for features that would point away from idiopathic PD.</span></li>
+        <li><span class="step-lead">Trial of levodopa.</span><span class="step-sub">A robust, sustained motor response supports idiopathic PD; a poor or absent response raises suspicion for an atypical syndrome.</span></li>
+        <li><span class="step-lead">Neuroimaging.</span><span class="step-sub">MRI brain to exclude structural or vascular contributors; a DaTscan can confirm a dopaminergic deficit if the diagnosis remains unclear.</span></li>
+        <li><span class="step-lead">Fall-risk and home-safety evaluation.</span><span class="step-sub">Given his recent falls and forehead laceration, refer for a formal gait/balance assessment and home safety review.</span></li>
+      </ol>
+    </div>
+
+    <div class="wt-card">
+      <div class="wt-eyebrow">Prognosis</div>
+      <h3>Chronic, slowly progressive</h3>
+      <p>Idiopathic Parkinson's disease typically responds well to dopaminergic therapy for years (sometimes called the "levodopa honeymoon"), though bradykinesia, gait, and postural instability tend to become less responsive over time, and non-motor features (cognitive change, autonomic dysfunction, mood symptoms) often emerge later. If this instead proves to be an atypical parkinsonian syndrome, the expected course is faster and less responsive to dopaminergic treatment.</p>
+    </div>
+
+    <div class="wt-card">
+      <div class="wt-eyebrow">Management</div>
+      <h3>Symptomatic and supportive</h3>
+      <ul class="mgmt-list">
+        <li>Dopaminergic therapy (levodopa/carbidopa or a dopamine agonist) as first-line treatment</li>
+        <li>Fall-prevention plan — home safety review, gait aids as needed</li>
+        <li>Physical/occupational therapy for gait, balance, and transfers</li>
+        <li>Speech therapy for hypophonia (e.g., LSVT LOUD)</li>
+        <li>Ongoing monitoring for emerging non-motor and cognitive symptoms</li>
+        <li>Caregiver support and education for his wife</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================= CONCEPT DEEP-DIVE ================= -->
+<div class="section-title">
+  <h2>Concept Deep-Dive</h2>
+  <p>The underlying basal ganglia anatomy and circuitry this case is testing</p>
+</div>
+<div class="dd-wrap">
+  <div class="deepdive-grid">
+
+    <div class="dd-card">
+      <span class="dd-tag localization">Localization</span>
+      <h3>Motor Circuit of the Basal Ganglia</h3>
+      <svg class="dd-svg" viewBox="0 0 400 230" xmlns="http://www.w3.org/2000/svg">
+        <rect x="120" y="8" width="160" height="34" rx="6" fill="#FCFAF3" stroke="#2A241C"/>
+        <text x="200" y="29" text-anchor="middle" font-family="Nunito, sans-serif" font-size="11" font-weight="700" fill="#2A241C">Motor / SMA Cortex</text>
+        <line x1="200" y1="42" x2="200" y2="62" stroke="#2A241C" stroke-width="1.5"/>
+        <circle cx="200" cy="60" r="3" fill="#FCFAF3" stroke="#2A241C"/>
+        <rect x="130" y="64" width="140" height="32" rx="6" fill="#DFEDE8" stroke="#256B63"/>
+        <text x="200" y="84" text-anchor="middle" font-family="Nunito, sans-serif" font-size="11" font-weight="700" fill="#2A241C">Putamen</text>
+        <line x1="200" y1="96" x2="200" y2="116" stroke="#256B63" stroke-width="2"/>
+        <circle cx="200" cy="114" r="3.5" fill="#256B63"/>
+        <rect x="130" y="118" width="140" height="32" rx="6" fill="#DFEDE8" stroke="#256B63"/>
+        <text x="200" y="138" text-anchor="middle" font-family="Nunito, sans-serif" font-size="11" font-weight="700" fill="#2A241C">GPi / SNr</text>
+        <line x1="200" y1="150" x2="200" y2="170" stroke="#256B63" stroke-width="2"/>
+        <circle cx="200" cy="168" r="3.5" fill="#256B63"/>
+        <rect x="130" y="172" width="140" height="32" rx="6" fill="#FCFAF3" stroke="#2A241C"/>
+        <text x="200" y="192" text-anchor="middle" font-family="Nunito, sans-serif" font-size="11" font-weight="700" fill="#2A241C">VL Thalamus</text>
+        <path d="M 270 188 C 340 188, 340 40, 270 24" fill="none" stroke="#2A241C" stroke-width="1.5"/>
+        <circle cx="273" cy="26" r="3" fill="#FCFAF3" stroke="#2A241C"/>
+        <text x="345" y="110" font-family="IBM Plex Mono, monospace" font-size="8" fill="#6B6152" transform="rotate(90 345 110)">back to cortex</text>
+        <text x="10" y="220" font-family="IBM Plex Mono, monospace" font-size="8" fill="#2A241C">● inhibitory (GABA)</text>
+        <text x="10" y="208" font-family="IBM Plex Mono, monospace" font-size="8" fill="#2A241C">○ excitatory (Glu)</text>
+      </svg>
+      <p class="dd-take">The putamen-based motor loop scales the intensity of voluntary movement. In this patient, basal ganglia output through this exact loop is what's driving his bradykinesia, rigidity, and slow, shuffling gait.</p>
+    </div>
+
+    <div class="dd-card">
+      <span class="dd-tag term">Term</span>
+      <h3>Nigrostriatal Dopamine &amp; the Direct/Indirect Balance</h3>
+      <svg class="dd-svg" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
+        <rect x="130" y="10" width="140" height="32" rx="6" fill="#FCFAF3" stroke="#2A241C"/>
+        <text x="200" y="30" text-anchor="middle" font-family="Nunito, sans-serif" font-size="11" font-weight="700" fill="#2A241C">Striatum</text>
+        <line x1="160" y1="42" x2="120" y2="70" stroke="#256B63" stroke-width="2"/>
+        <text x="90" y="60" font-family="IBM Plex Mono, monospace" font-size="9" fill="#256B63">Direct (D1)</text>
+        <line x1="240" y1="42" x2="280" y2="70" stroke="#6B5390" stroke-width="2"/>
+        <text x="255" y="60" font-family="IBM Plex Mono, monospace" font-size="9" fill="#6B5390">Indirect (D2)</text>
+        <rect x="60" y="72" width="120" height="30" rx="6" fill="#DFEDE8" stroke="#256B63"/>
+        <text x="120" y="91" text-anchor="middle" font-family="Nunito, sans-serif" font-size="10" fill="#2A241C">GPi ↓ activity</text>
+        <rect x="220" y="72" width="120" height="30" rx="6" fill="#E9E2F1" stroke="#6B5390"/>
+        <text x="280" y="91" text-anchor="middle" font-family="Nunito, sans-serif" font-size="10" fill="#2A241C">GPi ↑ activity</text>
+        <line x1="200" y1="42" x2="200" y2="130" stroke="#A47A1F" stroke-width="2"/>
+        <polygon points="195,126 205,126 200,136" fill="#A47A1F"/>
+        <text x="205" y="120" font-family="IBM Plex Mono, monospace" font-size="9" fill="#A47A1F">DA from SNc</text>
+        <rect x="140" y="140" width="120" height="32" rx="6" fill="#F3E7C6" stroke="#A47A1F"/>
+        <text x="200" y="160" text-anchor="middle" font-family="Nunito, sans-serif" font-size="10" font-weight="700" fill="#2A241C">SNc (dopamine)</text>
+        <text x="200" y="185" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="8" fill="#6B6152">excites direct · inhibits indirect</text>
+      </svg>
+      <p class="dd-take">Dopamine from the substantia nigra pars compacta normally excites the direct pathway and inhibits the indirect pathway — tilting the balance toward movement. In this patient, degeneration of these SNc neurons removes that tilt.</p>
+    </div>
+
+    <div class="dd-card">
+      <span class="dd-tag pattern">Pattern</span>
+      <h3>Why Dopamine Loss Causes Bradykinesia</h3>
+      <svg class="dd-svg" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
+        <rect x="10" y="12" width="150" height="40" rx="6" fill="#F3E7C6" stroke="#A47A1F"/>
+        <text x="85" y="30" text-anchor="middle" font-family="Nunito, sans-serif" font-size="10" font-weight="700" fill="#2A241C">SNc dopamine</text>
+        <text x="85" y="44" text-anchor="middle" font-family="Nunito, sans-serif" font-size="10" font-weight="700" fill="#2A241C">neurons degenerate</text>
+        <line x1="85" y1="52" x2="85" y2="72" stroke="#A47A1F" stroke-width="2"/>
+        <polygon points="80,68 90,68 85,76" fill="#A47A1F"/>
+        <rect x="10" y="78" width="150" height="34" rx="6" fill="#FCFAF3" stroke="#DED2B6"/>
+        <text x="85" y="96" text-anchor="middle" font-family="Nunito, sans-serif" font-size="10" fill="#2A241C">↓ Direct / ↑ Indirect</text>
+        <text x="85" y="108" text-anchor="middle" font-family="Nunito, sans-serif" font-size="9" fill="#6B6152">pathway tone</text>
+        <line x1="160" y1="95" x2="200" y2="95" stroke="#A47A1F" stroke-width="2"/>
+        <polygon points="196,90 196,100 206,95" fill="#A47A1F"/>
+        <rect x="210" y="78" width="150" height="34" rx="6" fill="#FCFAF3" stroke="#DED2B6"/>
+        <text x="285" y="99" text-anchor="middle" font-family="Nunito, sans-serif" font-size="10" fill="#2A241C">↑ GPi inhibits thalamus</text>
+        <line x1="285" y1="112" x2="285" y2="132" stroke="#A47A1F" stroke-width="2"/>
+        <polygon points="280,128 290,128 285,136" fill="#A47A1F"/>
+        <rect x="140" y="138" width="220" height="34" rx="6" fill="#DFEDE8" stroke="#256B63"/>
+        <text x="250" y="159" text-anchor="middle" font-family="Nunito, sans-serif" font-size="10" font-weight="700" fill="#2A241C">Thalamus under-excited → bradykinesia</text>
+      </svg>
+      <p class="dd-take">This is the mirror image of Huntington's disease: instead of too little inhibition of thalamus, this patient has too much. His slowness in rising from a chair and his shuffling gait are the direct behavioral output of an over-inhibited thalamocortical circuit.</p>
+    </div>
+
+    <div class="dd-card">
+      <span class="dd-tag finding">Finding</span>
+      <h3>Rest Tremor vs. Action/Postural Tremor</h3>
+      <table class="dd-table">
+        <tr><th></th><th>Rest tremor (parkinsonian)</th><th>Action/postural tremor (essential)</th></tr>
+        <tr><td>Present when</td><td>Limb fully relaxed, at rest</td><td>Limb held against gravity or in motion</td></tr>
+        <tr><td>Effect of movement</td><td>Diminishes or disappears</td><td>Worsens</td></tr>
+        <tr><td>Typical frequency</td><td>~3–6 Hz</td><td>~6–12 Hz</td></tr>
+        <tr><td>This patient</td><td>Fits — tremor eases with arms extended/active use, returns at rest</td><td>Doesn't fit this pattern</td></tr>
+      </table>
+      <p class="dd-take">This bedside distinction is exactly what separates this patient's tremor from essential tremor: his gets better, not worse, the moment he uses the limb.</p>
+    </div>
+
+    <div class="dd-card">
+      <span class="dd-tag term">Term</span>
+      <h3>Cardinal Signs of Parkinsonism (TRAP)</h3>
+      <table class="dd-table">
+        <tr><th>Sign</th><th>This patient's exam finding</th></tr>
+        <tr><td><strong>T</strong>remor</td><td>3 Hz rest tremor — orofacial, both upper and lower extremities</td></tr>
+        <tr><td><strong>R</strong>igidity</td><td>Cogwheel rigidity on passive limb movement</td></tr>
+        <tr><td><strong>A</strong>kinesia/Bradykinesia</td><td>Masked facies, hypophonia, micrographia, slow rise from a chair</td></tr>
+        <tr><td><strong>P</strong>ostural instability</td><td>Retropulsion on pull test, shuffling gait, recent falls</td></tr>
+      </table>
+      <p class="dd-take">This patient hits all four cardinal signs — a textbook-complete presentation of parkinsonism, whatever its ultimate etiology turns out to be.</p>
+    </div>
+
+    <div class="dd-card">
+      <span class="dd-tag genetics">Workup</span>
+      <h3>Idiopathic PD vs. Atypical Parkinsonism — Red Flags</h3>
+      <table class="dd-table">
+        <tr><th>Red flag</th><th>Suggests</th></tr>
+        <tr><td>Falls within 1–2 years of onset</td><td>PSP or MSA rather than idiopathic PD</td></tr>
+        <tr><td>Symmetric onset</td><td>Atypical parkinsonism</td></tr>
+        <tr><td>Poor/absent levodopa response</td><td>Atypical parkinsonism</td></tr>
+        <tr><td>Early autonomic failure</td><td>MSA</td></tr>
+        <tr><td>Vertical (downward) gaze palsy</td><td>PSP</td></tr>
+      </table>
+      <p class="dd-take">This patient already has two soft red flags — early falls and a bilateral-at-presentation tremor — which don't overturn the working diagnosis but are exactly why a levodopa trial and close follow-up (rather than a diagnosis carved in stone) are part of his workup.</p>
+    </div>
+
+  </div>
+</div>
+
+<div class="footnote">Source: Case Study 11-2, Medical Neuroanatomy, Chapter 11 (Basal Ganglia). No small-group transcript or lecture slides were provided for this case; Concept Deep-Dive content is drawn from the chapter's Discussion I/II text.</div>
+
+<div id="hl-tooltip" class="hl-tooltip"></div>
+<div id="hl-panel" class="hl-panel">
+  <button id="hl-panel-close" class="hl-panel-close" aria-label="Close">×</button>
+  <div id="hl-panel-body"></div>
+</div>
+
+<script>
+(function(){
+  var CAT_VAR = {
+    localization: '--teal',
+    finding: '--coral',
+    term: '--gold',
+    pattern: '--violet',
+    genetics: '--sky'
+  };
+
+  var annotations = [
+    {target:"hl1", cat:"term", eyebrow:"Lay Terminology", title:"\"Shaking\" and \"weakness\" — patient/family framing",
+      body:"Family members often describe bradykinesia (slowness) as \"weakness,\" but formal strength testing here is completely normal (intact strength, normal reflexes). The real problem isn't muscle power — it's how slowly and effortfully movement is initiated and carried out."},
+    {target:"hl2", cat:"finding", eyebrow:"Personality Change?", title:"Reported personality change",
+      body:"What the wife perceives as a personality change is often, on exam, better characterized as reduced facial expressiveness (masked facies) and apathy rather than a true cognitive or psychiatric shift — his formal mental status here is otherwise intact (oriented, memory and knowledge appropriate for age)."},
+    {target:"hl3", cat:"finding", eyebrow:"Bradykinesia + Hypomimia", title:"Slow movements and an expressionless face",
+      body:"Global slowing of movement (bradykinesia) paired with a fixed, expressionless face (hypomimia, or \"masked facies\") is one of the cardinal features of parkinsonism — loss of the spontaneous facial and gestural movement that basal ganglia output normally scales."},
+    {target:"hl4", cat:"finding", eyebrow:"Functional Impact", title:"Difficulty getting up and moving about the house",
+      body:"Bradykinesia and postural instability translate directly into real-world functional decline — trouble with transfers and ambulation at home, well before this reached a doctor's office."},
+    {target:"hl5", cat:"genetics", eyebrow:"Trajectory", title:"Over a year, progressively worsening",
+      body:"A slow, insidious decline over more than a year — not a discrete event — is the temporal signature of a neurodegenerative process. This chronic-progressive trajectory is a big part of why the family initially misread it as normal aging or laziness rather than a medical problem."},
+    {target:"hl6", cat:"pattern", eyebrow:"Diagnostic Delay", title:"Mistaken for laziness after retirement",
+      body:"Bradykinesia and apathy are easy to misattribute to a life change like retirement rather than recognize as neurologic symptoms. This kind of misattribution is a common reason parkinsonism goes undiagnosed for a year or more, as happened here."},
+    {target:"hl7", cat:"genetics", eyebrow:"Red Flag — Workup Trigger", title:"Recent falls with head injury",
+      body:"Falls that start early in a parkinsonian syndrome — rather than years into it — are a recognized red flag for an atypical parkinsonian syndrome (such as progressive supranuclear palsy) rather than idiopathic Parkinson's disease, and should prompt closer follow-up and consideration of neuroimaging rather than being dismissed as an unrelated accident."},
+    {target:"hl8", cat:"term", eyebrow:"Symptom Description", title:"\"Funny noises with his mouth\"",
+      body:"This lay description likely reflects the orofacial (jaw/lip) rest tremor documented later on cranial nerve exam, along with reduced control over swallowing and speech movements — not a separate ENT complaint."},
+    {target:"hl9", cat:"finding", eyebrow:"Reduced Spontaneity", title:"Letting his wife answer for him",
+      body:"Reduced spontaneous speech and reliance on a spouse to supply the history is a subtle but recognized parkinsonian feature — a combination of hypophonia (soft voice), slowed word-finding effort, and apathy, rather than a language or memory problem."},
+    {target:"hl10", cat:"finding", eyebrow:"Speech", title:"Soft, low-volume speech",
+      body:"Hypophonia — a soft, monotonous voice — is one of the most common early motor speech signs in parkinsonism, resulting from bradykinesia and rigidity affecting the muscles of respiration and phonation."},
+    {target:"hl11", cat:"term", eyebrow:"Micrographia", title:"Progressively smaller handwriting",
+      body:"Micrographia — handwriting that becomes smaller, often across the course of a single sentence, and smaller yet over the years — is a classic parkinsonian sign, and having an old writing sample for comparison makes it unusually well-documented in this case."},
+    {target:"hl12", cat:"localization", eyebrow:"Rest Tremor — Orofacial", title:"3 Hz jaw/perioral tremor, suppressed by action",
+      body:"A resting tremor of the jaw and perioral region that fades during active use of those same muscles (speaking, swallowing, opening the mouth) is the textbook behavior of a parkinsonian rest tremor — present at rest, and specifically suppressed by voluntary movement of that body part."},
+    {target:"hl13", cat:"term", eyebrow:"Incidental Finding", title:"High-frequency hearing loss",
+      body:"Age-related, asymmetric high-frequency hearing loss (presbycusis) is an extremely common incidental finding in a 67-year-old and isn't part of the parkinsonian syndrome — worth noting on exam but it doesn't change the localization or differential here."},
+    {target:"hl14", cat:"localization", eyebrow:"Rest Tremor — Limbs", title:"3 Hz tremor, better with movement, worse at rest",
+      body:"A tremor that lessens with movement and returns at rest is the defining feature of a rest tremor — the opposite pattern from essential tremor, which is an action/postural tremor that worsens, not improves, with movement. That's an important bedside distinction."},
+    {target:"hl15", cat:"term", eyebrow:"Rigidity — Terminology", title:"Cogwheel rigidity",
+      body:"Cogwheel rigidity is a ratchety, catch-and-release quality felt during passive limb movement, thought to represent an underlying rest tremor superimposed on lead-pipe rigidity. It's one of the four cardinal signs of parkinsonism, alongside tremor, bradykinesia, and postural instability."},
+    {target:"hl16", cat:"localization", eyebrow:"Negative Cerebellar Signs", title:"No dysmetria or past-pointing",
+      body:"The absence of dysmetria or past-pointing argues against a cerebellar lesion as the source of his tremor and incoordination, keeping the localization within the basal ganglia rather than the cerebellum."},
+    {target:"hl17", cat:"localization", eyebrow:"Negative Pyramidal Sign", title:"No pronator drift; tremor suppressed with arms extended",
+      body:"No pronator drift argues against a corticospinal (pyramidal) lesion. That the tremor itself diminishes with the arms held extended — and returns once they're relaxed — further confirms this is a classic rest tremor rather than a postural (action) tremor."},
+    {target:"hl18", cat:"finding", eyebrow:"Gait", title:"Shuffling, slow gait",
+      body:"Short, shuffling steps with reduced stride length and diminished arm swing are the hallmark parkinsonian gait, reflecting bradykinesia applied to locomotion."},
+    {target:"hl19", cat:"finding", eyebrow:"Postural Instability", title:"Retropulsion on pull test",
+      body:"Retropulsion — stumbling backward with small steps after a gentle, unexpected push — reflects loss of the automatic postural reflexes that normally correct a shift in center of gravity. It's the fourth cardinal sign of parkinsonism and the one most directly tied to his fall risk."},
+    {target:"hl20", cat:"finding", eyebrow:"Bradykinesia — Functional Test", title:"Can't rise from a low, soft chair",
+      body:"Difficulty generating the initial forward-and-up momentum needed to stand from a low, soft seat — but relative success from a higher, firmer one that requires less generated force — is a concrete bedside demonstration of bradykinesia and reduced postural power, rather than true muscle weakness."},
+    {target:"hl21", cat:"localization", eyebrow:"Sensory Exam", title:"Sensation fully intact",
+      body:"A completely normal sensory exam keeps this a pure motor (extrapyramidal) syndrome, arguing against a sensory neuropathy or spinal cord process contributing to his gait and coordination complaints."}
+  ];
+
+  var canHover = window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  var tooltip = document.getElementById('hl-tooltip');
+  var panel = document.getElementById('hl-panel');
+  var panelBody = document.getElementById('hl-panel-body');
+  var panelClose = document.getElementById('hl-panel-close');
+
+  function shortTeaser(text){
+    if(text.length <= 100) return text;
+    return text.slice(0,100).trim() + '…';
+  }
+
+  function showTooltip(a, el){
+    var v = CAT_VAR[a.cat];
+    tooltip.innerHTML =
+      '<div class="t-eyebrow" style="color:var(' + v + ')">' + a.eyebrow + '</div>' +
+      '<div class="t-title">' + a.title + '</div>' +
+      '<div class="t-body">' + shortTeaser(a.body) + '</div>';
+    var rect = el.getBoundingClientRect();
+    tooltip.style.left = Math.max(8, Math.min(rect.left, window.innerWidth - 286)) + 'px';
+    tooltip.style.top = (rect.bottom + 8) + 'px';
+    tooltip.classList.add('visible');
+    requestAnimationFrame(function(){
+      var th = tooltip.offsetHeight;
+      var top = rect.bottom + 8;
+      if(top + th > window.innerHeight - 8){
+        top = rect.top - th - 8;
+      }
+      tooltip.style.top = Math.max(8, top) + 'px';
+    });
+  }
+
+  function hideTooltip(){
+    tooltip.classList.remove('visible');
+  }
+
+  function openPanel(a, idx){
+    var v = CAT_VAR[a.cat];
+    panelBody.innerHTML =
+      '<div class="panel-num">Annotation ' + idx + ' of ' + annotations.length + '</div>' +
+      '<div class="panel-eyebrow" style="color:var(' + v + ')">' + a.eyebrow + '</div>' +
+      '<h3 class="panel-title">' + a.title + '</h3>' +
+      '<p class="panel-text">' + a.body + '</p>';
+    panel.classList.add('open');
+    hideTooltip();
+  }
+
+  function closePanel(){
+    panel.classList.remove('open');
+  }
+
+  annotations.forEach(function(a, i){
+    var el = document.getElementById(a.target);
+    if(!el) return;
+    el.addEventListener('click', function(e){
+      e.stopPropagation();
+      openPanel(a, i + 1);
+    });
+    if(canHover){
+      el.addEventListener('mouseenter', function(){ showTooltip(a, el); });
+      el.addEventListener('mouseleave', hideTooltip);
+    }
+  });
+
+  document.addEventListener('click', function(e){
+    if(panel.classList.contains('open') && !panel.contains(e.target)){
+      closePanel();
+    }
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') closePanel();
+  });
+  panelClose.addEventListener('click', closePanel);
+})();
+</script>
+
+</body>
+</html>

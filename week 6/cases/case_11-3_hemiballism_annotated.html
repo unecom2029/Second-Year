@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Case 11-3 — Basal Ganglia (Posthemiplegic Hemiballism-Hemichorea)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Nunito:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#F6F1E6;
+  --paper:#FCFAF3;
+  --ink:#2A241C;
+  --ink-soft:#6B6152;
+  --ink-faint:#9A8F7B;
+  --line:#DED2B6;
+  --line-soft:#EAE0C9;
+
+  --coral:#C85A3E;   --coral-bg:#F7E4DB;
+  --teal:#256B63;    --teal-bg:#DFEDE8;
+  --gold:#A47A1F;    --gold-bg:#F3E7C6;
+  --violet:#6B5390;  --violet-bg:#E9E2F1;
+  --sky:#2F6485;     --sky-bg:#DEE9EF;
+
+  --radius:10px;
+  --shadow:0 1px 2px rgba(42,36,28,.06), 0 8px 24px -12px rgba(42,36,28,.18);
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;background:var(--cream);color:var(--ink);}
+body{font-family:'Crimson Pro',serif;line-height:1.7;}
+
+.header{max-width:800px;margin:0 auto;padding:44px 20px 20px;}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);}
+.header h1{font-family:'Nunito',sans-serif;font-weight:800;font-size:1.9rem;margin:6px 0 4px;color:var(--ink);}
+.header .sub{font-family:'Nunito',sans-serif;font-weight:600;color:var(--ink-soft);font-size:1rem;margin:0 0 16px;}
+.dx-tag{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;background:var(--violet-bg);color:var(--violet);border-radius:999px;padding:5px 14px;font-weight:600;}
+
+.legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:20px;padding-top:16px;border-top:1px solid var(--line);}
+.legend-item{display:flex;align-items:center;gap:6px;font-family:'Nunito',sans-serif;font-size:.78rem;color:var(--ink-soft);}
+.legend-dot{width:10px;height:10px;border-radius:50%;display:inline-block;}
+
+.case-wrap{max-width:800px;margin:0 auto;padding:10px 20px 20px;}
+.case-section{margin-top:38px;}
+.case-heading{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:.74rem;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-faint);border-bottom:1px solid var(--line);padding-bottom:9px;margin-bottom:16px;}
+.case-section p{font-size:1.07rem;margin:0 0 14px;color:var(--ink);}
+.subhead{font-family:'Nunito',sans-serif;font-weight:700;font-size:.92rem;color:var(--teal);margin:20px 0 8px;}
+.subhead:first-child{margin-top:0;}
+
+mark.hl{cursor:pointer;padding:.02em .18em;border-radius:4px;text-decoration:none;transition:filter .1s;}
+mark.hl:hover{filter:brightness(0.96);}
+mark.hl[data-cat="localization"]{background:var(--teal-bg);box-shadow:inset 0 -2px 0 0 var(--teal);}
+mark.hl[data-cat="finding"]{background:var(--coral-bg);box-shadow:inset 0 -2px 0 0 var(--coral);}
+mark.hl[data-cat="term"]{background:var(--gold-bg);box-shadow:inset 0 -2px 0 0 var(--gold);}
+mark.hl[data-cat="pattern"]{background:var(--violet-bg);box-shadow:inset 0 -2px 0 0 var(--violet);}
+mark.hl[data-cat="genetics"]{background:var(--sky-bg);box-shadow:inset 0 -2px 0 0 var(--sky);}
+sup.hlnum{font-family:'IBM Plex Mono',monospace;font-size:.62em;color:var(--ink-faint);margin-left:1px;user-select:none;}
+
+.hl-tooltip{position:fixed;max-width:270px;background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:11px 13px;font-family:'Nunito',sans-serif;font-size:.83rem;z-index:500;opacity:0;pointer-events:none;transition:opacity .12s ease;}
+.hl-tooltip.visible{opacity:1;}
+.hl-tooltip .t-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;font-weight:600;}
+.hl-tooltip .t-title{font-weight:700;color:var(--ink);margin-bottom:4px;font-size:.86rem;}
+.hl-tooltip .t-body{color:var(--ink-soft);line-height:1.45;}
+
+.hl-panel{position:fixed;top:0;right:0;height:100%;width:380px;max-width:92vw;background:var(--paper);border-left:1px solid var(--line);box-shadow:var(--shadow);transform:translateX(105%);transition:transform .24s ease;z-index:600;padding:26px 24px;overflow-y:auto;}
+.hl-panel.open{transform:translateX(0);}
+.hl-panel-close{position:absolute;top:16px;right:18px;background:none;border:none;font-size:1.3rem;color:var(--ink-faint);cursor:pointer;line-height:1;padding:4px;}
+.hl-panel-close:hover{color:var(--ink);}
+.panel-num{font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--ink-faint);margin-bottom:10px;}
+.panel-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;font-weight:600;margin-bottom:8px;}
+.panel-title{font-family:'Nunito',sans-serif;font-weight:800;font-size:1.2rem;margin:0 0 14px;color:var(--ink);padding-right:20px;}
+.panel-text{font-size:1.02rem;color:var(--ink-soft);line-height:1.6;}
+
+@media (max-width:1000px){
+  .hl-panel{top:auto;bottom:0;left:0;right:0;width:100%;max-width:100%;height:auto;max-height:72vh;border-left:none;border-top:1px solid var(--line);border-radius:var(--radius) var(--radius) 0 0;transform:translateY(105%);}
+  .hl-panel.open{transform:translateY(0);}
+}
+
+.section-title{max-width:800px;margin:64px auto 4px;padding:0 20px;}
+.section-title h2{font-family:'Nunito',sans-serif;font-weight:800;font-size:1.5rem;margin:0;color:var(--ink);}
+.section-title p{font-family:'Nunito',sans-serif;color:var(--ink-soft);font-size:.92rem;margin:6px 0 0;}
+
+.qa-wrap{max-width:800px;margin:0 auto;padding:18px 20px 10px;}
+.qa-item{margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--line-soft);}
+.qa-item:last-child{border-bottom:none;}
+.qa-q{font-family:'Nunito',sans-serif;font-weight:700;font-size:.98rem;color:var(--ink);margin:0 0 6px;}
+.qa-q .qnum{font-family:'IBM Plex Mono',monospace;color:var(--ink-faint);margin-right:8px;}
+.qa-a{font-size:1.03rem;color:var(--ink-soft);margin:0;}
+
+.wt-wrap{max-width:1040px;margin:0 auto;padding:18px 20px 10px;}
+.walkthrough-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.wt-card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;}
+.wt-card.full{grid-column:1/-1;}
+.wt-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.68rem;letter-spacing:.07em;text-transform:uppercase;color:var(--teal);font-weight:600;margin-bottom:8px;}
+.wt-card h3{font-family:'Nunito',sans-serif;font-weight:800;font-size:1.05rem;margin:0 0 10px;color:var(--ink);}
+.wt-card p{font-size:.98rem;color:var(--ink-soft);margin:0 0 8px;line-height:1.6;}
+
+.diff-table{width:100%;border-collapse:collapse;font-family:'Nunito',sans-serif;font-size:.9rem;}
+.diff-table th{text-align:left;font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-faint);border-bottom:1px solid var(--line);padding:8px 10px;}
+.diff-table td{padding:10px 10px;border-bottom:1px solid var(--line-soft);color:var(--ink-soft);vertical-align:top;}
+.diff-table tr.lead td{background:var(--teal-bg);color:var(--ink);}
+.lead-tag{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:.05em;background:var(--teal);color:var(--paper);padding:2px 8px;border-radius:999px;margin-left:8px;font-weight:600;}
+
+.workup-flow{list-style:none;margin:0;padding:0;counter-reset:step;}
+.workup-flow li{position:relative;padding:0 0 16px 38px;counter-increment:step;}
+.workup-flow li::before{content:counter(step);position:absolute;left:0;top:0;width:26px;height:26px;border-radius:50%;background:var(--teal);color:var(--paper);font-family:'IBM Plex Mono',monospace;font-size:.78rem;display:flex;align-items:center;justify-content:center;font-weight:600;}
+.workup-flow li .step-lead{font-family:'Nunito',sans-serif;font-weight:700;color:var(--ink);}
+.workup-flow li .step-sub{display:block;font-size:.92rem;color:var(--ink-soft);margin-top:2px;}
+
+.mgmt-list{list-style:none;margin:0;padding:0;}
+.mgmt-list li{padding:7px 0 7px 26px;position:relative;font-size:.96rem;color:var(--ink-soft);border-bottom:1px solid var(--line-soft);}
+.mgmt-list li:last-child{border-bottom:none;}
+.mgmt-list li::before{content:"✓";position:absolute;left:0;color:var(--teal);font-weight:700;}
+
+@media (max-width:1000px){ .walkthrough-grid{grid-template-columns:repeat(2,1fr);} }
+@media (max-width:700px){ .walkthrough-grid{grid-template-columns:1fr;} }
+
+.dd-wrap{max-width:1040px;margin:0 auto;padding:18px 20px 70px;}
+.deepdive-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.dd-card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;}
+.dd-card.full{grid-column:1/-1;}
+.dd-tag{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:.06em;padding:3px 9px;border-radius:999px;margin-bottom:10px;font-weight:600;}
+.dd-tag.localization{background:var(--teal-bg);color:var(--teal);}
+.dd-tag.finding{background:var(--coral-bg);color:var(--coral);}
+.dd-tag.term{background:var(--gold-bg);color:var(--gold);}
+.dd-tag.pattern{background:var(--violet-bg);color:var(--violet);}
+.dd-tag.genetics{background:var(--sky-bg);color:var(--sky);}
+.dd-card h3{font-family:'Nunito',sans-serif;font-weight:800;font-size:1.02rem;margin:0 0 12px;color:var(--ink);}
+.dd-svg{width:100%;height:auto;display:block;margin-bottom:12px;}
+.dd-take{font-size:.95rem;color:var(--ink-soft);margin:0;line-height:1.6;}
+.dd-table{width:100%;border-collapse:collapse;font-family:'Nunito',sans-serif;font-size:.86rem;margin-bottom:10px;}
+.dd-table th{text-align:left;font-size:.64rem;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-faint);border-bottom:1px solid var(--line);padding:6px 8px;}
+.dd-table td{padding:8px 8px;border-bottom:1px solid var(--line-soft);color:var(--ink-soft);}
+.dd-table tr.hi td{background:var(--teal-bg);color:var(--ink);}
+
+@media (max-width:1000px){ .deepdive-grid{grid-template-columns:repeat(2,1fr);} }
+@media (max-width:700px){ .deepdive-grid{grid-template-columns:1fr;} }
+
+.footnote{max-width:800px;margin:0 auto;padding:0 20px 60px;font-family:'Nunito',sans-serif;font-size:.8rem;color:var(--ink-faint);}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="eyebrow">Medical Neuroanatomy · Chapter 11 · Basal Ganglia</div>
+  <h1>Case Study 11-3</h1>
+  <p class="sub">54-year-old woman — post-stroke movement disorder, 9 months out</p>
+  <span class="dx-tag">Working Dx: Posthemiplegic Hemiballism-Hemichorea</span>
+  <div class="legend">
+    <div class="legend-item"><span class="legend-dot" style="background:var(--teal)"></span>Localization</div>
+    <div class="legend-item"><span class="legend-dot" style="background:var(--coral)"></span>Finding</div>
+    <div class="legend-item"><span class="legend-dot" style="background:var(--gold)"></span>Term</div>
+    <div class="legend-item"><span class="legend-dot" style="background:var(--violet)"></span>Pattern</div>
+    <div class="legend-item"><span class="legend-dot" style="background:var(--sky)"></span>Workup / Risk Factors</div>
+  </div>
+</div>
+
+<div class="case-wrap">
+
+  <div class="case-section">
+    <div class="case-heading">Chief Complaint</div>
+    <p>A 54-year-old woman status post-stroke 9 months ago for which she has a movement disorder and who is now presenting for evaluation</p>
+  </div>
+
+  <div class="case-section">
+    <div class="case-heading">History of Chief Complaint</div>
+    <p>This was a 54-year-old, right-handed housewife who <mark id="hl1" class="hl" data-cat="localization">developed hemiparesis and hemiparesthesia of rapid onset in the right arm and leg 9 months earlier</mark><sup class="hlnum">1</sup>. Subsequently, <mark id="hl2" class="hl" data-cat="pattern">the paresis and sensory deficit resolved over a 3-month interval</mark><sup class="hlnum">2</sup>; however, <mark id="hl3" class="hl" data-cat="term">an involuntary, flinging motion of the right arm and a writhing, jerky motion of the right leg slowly developed during this time</mark><sup class="hlnum">3</sup>. She is in considerable distress, since the involuntary motions of her extremity <mark id="hl4" class="hl" data-cat="finding">disrupted her gait and postural station and thus incapacitated her in her daily routines</mark><sup class="hlnum">4</sup>. She admitted to <mark id="hl5" class="hl" data-cat="finding">severe social embarrassment because of the involuntary motion</mark><sup class="hlnum">5</sup>.</p>
+  </div>
+
+  <div class="case-section">
+    <div class="case-heading">Medical History</div>
+    <p>Her past medical history was <mark id="hl6" class="hl" data-cat="genetics">positive for hypertension, smoking, and alcohol consumption</mark><sup class="hlnum">6</sup>. Nine months previously, she had suffered <mark id="hl7" class="hl" data-cat="localization">a cerebrovascular event that left her with hemiparesis and hemibody sensory loss on the right side</mark><sup class="hlnum">7</sup>. <mark id="hl8" class="hl" data-cat="localization">Language and cognition were not noticeably affected in this event</mark><sup class="hlnum">8</sup>.</p>
+  </div>
+
+  <div class="case-section">
+    <div class="case-heading">General Physical Examination</div>
+    <p>The patient was an alert, well-hydrated, but <mark id="hl9" class="hl" data-cat="finding">underweight female, appearing older than the stated age. Signs of exhaustion and distress were evident, and she was of anxious demeanor</mark><sup class="hlnum">9</sup>. Her optic discs were clear and had sharp borders; visual acuity was normal. Her neck was supple, with no bruits. Her blood pressure, heart rate, and respirations were slightly elevated. Her chest was clear to percussion, and the abdomen was soft, with no masses or tenderness. <mark id="hl10" class="hl" data-cat="finding">The remainder of the examination was precluded because of the excessive involuntary limb motion</mark><sup class="hlnum">10</sup>.</p>
+  </div>
+
+  <div class="case-section">
+    <div class="case-heading">Neurologic Examination</div>
+
+    <div class="subhead">Mental Status</div>
+    <p>This is an alert, oriented, and cooperative female in considerable emotional distress. <mark id="hl11" class="hl" data-cat="localization">Language, comprehension, reading, and memory were appropriate</mark><sup class="hlnum">11</sup>.</p>
+
+    <div class="subhead">Cranial Nerve</div>
+    <p><mark id="hl12" class="hl" data-cat="finding">Testing was complicated by the violence of her involuntary motion in the upper extremity</mark><sup class="hlnum">12</sup>. She had a full range of eye movements, pupils were equal and reactive to light, and accommodation was intact. The corneal and gag reflexes were intact; jaw-jerk was normotensive. Her hearing was equal in both ears. Her tongue protruded on the midline.</p>
+
+    <div class="subhead">Motor Systems</div>
+    <p>Muscle strength and reflexes were normal in both extremities on the left but were <mark id="hl13" class="hl" data-cat="finding">difficult to test definitively on the right because of the continuous and violent involuntary motion</mark><sup class="hlnum">13</sup>. The movement in the upper extremity consisted of <mark id="hl14" class="hl" data-cat="term">violent flinging motions superimposed on a continuous writhing jerky movement</mark><sup class="hlnum">14</sup>. <mark id="hl15" class="hl" data-cat="term">The lower extremity demonstrated the continuous writhing motion with only brief jerks</mark><sup class="hlnum">15</sup>. Occasionally, the jerky motion in the lower extremity became violent. <mark id="hl16" class="hl" data-cat="finding">Attempts to reduce the motion in either extremity by physical restraint were unsuccessful</mark><sup class="hlnum">16</sup>. <mark id="hl17" class="hl" data-cat="finding">She could move the right extremities on command in between the involuntary motions</mark><sup class="hlnum">17</sup>. <mark id="hl18" class="hl" data-cat="finding">Gait was severely compromised by the flinging of the upper extremity</mark><sup class="hlnum">18</sup>. Although <mark id="hl19" class="hl" data-cat="localization">she did not experience an embarrassment of postural reflexes</mark><sup class="hlnum">19</sup>, the upper extremity motion was continually pulling her off station. <mark id="hl20" class="hl" data-cat="localization">The involuntary movement of the right extremities was ameliorated with sleep but returned upon waking</mark><sup class="hlnum">20</sup>.</p>
+
+    <div class="subhead">Sensation</div>
+    <p><mark id="hl21" class="hl" data-cat="localization">Vibratory sensation and pinprick were intact on the left; to the extent that it could be tested, both modalities were equivocal on the right</mark><sup class="hlnum">21</sup>.</p>
+  </div>
+
+</div>
+
+<!-- ================= CASE QUESTIONS ================= -->
+<div class="section-title">
+  <h2>Case Questions — Answered</h2>
+  <p>The manual's nine standard questions, answered directly from this patient's exam. Q6–Q9 are expanded further in the Clinical Reasoning Walkthrough below.</p>
+</div>
+<div class="qa-wrap">
+  <div class="qa-item">
+    <p class="qa-q"><span class="qnum">Q1</span>Changes in consciousness/cognition, language, spatial recognition, personality/emotional behavior, or memory?</p>
+    <p class="qa-a">Cognition, language, comprehension, reading, and memory are all explicitly documented as appropriate — both at the time of her original stroke and on this exam. She is, understandably, in considerable emotional distress with an anxious demeanor and signs of exhaustion, but that's a reasonable reaction to nine months of a disabling, embarrassing movement disorder, not a primary personality or psychiatric change.</p>
+  </div>
+  <div class="qa-item">
+    <p class="qa-q"><span class="qnum">Q2</span>Any visual field loss? Any visual hallucinations?</p>
+    <p class="qa-a">No. Visual acuity is normal, optic discs are clear, and no hallucinations are reported.</p>
+  </div>
+  <div class="qa-item">
+    <p class="qa-q"><span class="qnum">Q3</span>Cranial nerve changes — suprasegmental or segmental?</p>
+    <p class="qa-a">None. Extraocular movements, pupils, corneal/gag reflexes, jaw-jerk, hearing, and tongue position are all normal — testing was simply made difficult by the violent arm movement, not by any true cranial nerve deficit.</p>
+  </div>
+  <div class="qa-item">
+    <p class="qa-q"><span class="qnum">Q4</span>Changes in motor function (reflexes, tone, movement, coordination) — suprasegmental or segmental?</p>
+    <p class="qa-a">Yes, and it's the core of the case — but note the history has two motor components. Nine months ago there was a segmental/corticospinal sign (hemiparesis, i.e., true weakness) that has since resolved. What remains now is purely suprasegmental/extrapyramidal: violent flinging (ballism) of the right arm and writhing, jerky (choreoathetosis) movements of the right arm and leg, with normal strength and reflexes on the left and preserved voluntary movement of the right limbs between episodes.</p>
+  </div>
+  <div class="qa-item">
+    <p class="qa-q"><span class="qnum">Q5</span>Changes in sensory function — what level of the body?</p>
+    <p class="qa-a">There was a transient right hemibody sensory loss at the time of the stroke that resolved along with the weakness. Currently, sensation is fully intact on the left; on the right it's "equivocal," but that's most likely a testing artifact from the violent involuntary motion rather than a definite residual deficit.</p>
+  </div>
+  <div class="qa-item">
+    <p class="qa-q"><span class="qnum">Q6</span>Temporal profile — acute or chronic, progressive or stable?</p>
+    <p class="qa-a">Biphasic. An acute stroke 9 months ago produced sudden hemiparesis and hemiparesthesia; that deficit resolved over about 3 months, after which a movement disorder gradually emerged and has now been persistent and disabling for months. The initial event was acute; the current complaint is chronic and essentially stable (not actively acute or progressive).</p>
+  </div>
+  <div class="qa-item">
+    <p class="qa-q"><span class="qnum">Q7</span>Distribution — focal, multifocal, or diffuse?</p>
+    <p class="qa-a">Focal and strictly unilateral — right arm and leg only, with the entire left side completely spared. This is a sharp contrast to Cases 11-1 and 11-2, where the process was diffuse and bilateral.</p>
+  </div>
+  <div class="qa-item">
+    <p class="qa-q"><span class="qnum">Q8</span>Differential diagnosis?</p>
+    <p class="qa-a">Posthemiplegic hemiballism-hemichorea from a focal contralateral (left) subthalamic/lenticular infarct is the leading diagnosis — see the full differential table below. A focal motor seizure and a structural mass lesion are reasonable alternatives to actively rule out, but the classic biphasic stroke story argues strongly for the vascular explanation.</p>
+  </div>
+  <div class="qa-item">
+    <p class="qa-q"><span class="qnum">Q9</span>If vascular, what arterial territory?</p>
+    <p class="qa-a">Yes — this is fundamentally a vascular case. The lesion is on the left (contralateral to her right-sided findings), most likely a small penetrating-vessel (lacunar) infarct involving the subthalamic nucleus and/or adjacent lenticular nucleus (putamen)/internal capsule. That territory is supplied by lenticulostriate branches of the middle cerebral artery and/or thalamic-subthalamic perforators, and a lacunar mechanism fits well with her vascular risk factors (hypertension, smoking).</p>
+  </div>
+</div>
+
+<!-- ================= CLINICAL REASONING WALKTHROUGH ================= -->
+<div class="section-title">
+  <h2>Clinical Reasoning Walkthrough</h2>
+  <p>Localization → distribution → time course → differential → workup → prognosis → management</p>
+</div>
+<div class="wt-wrap">
+  <div class="walkthrough-grid">
+
+    <div class="wt-card">
+      <div class="wt-eyebrow">Localization</div>
+      <h3>Suprasegmental — left subthalamic/lenticular region</h3>
+      <p>The combination of ballism (subthalamic nucleus) and choreoathetosis (striatum/lenticular nucleus), a preceding contralateral hemiparesis/hemiparesthesia (internal capsule), and completely spared language and cognition together point to a discrete, deep, contralateral (left) subcortical lesion rather than a cortical stroke or a diffuse basal ganglia disease.</p>
+    </div>
+
+    <div class="wt-card">
+      <div class="wt-eyebrow">Distribution</div>
+      <h3>Focal, strictly unilateral</h3>
+      <p>Only the right arm and leg are affected; the left side is entirely normal. This focal, one-sided pattern is the key distribution clue that separates a discrete vascular lesion from the diffuse, bilateral basal ganglia diseases seen in Cases 11-1 (Huntington's) and 11-2 (Parkinson's).</p>
+    </div>
+
+    <div class="wt-card">
+      <div class="wt-eyebrow">Time Course</div>
+      <h3>Biphasic — acute event, then a delayed, persistent movement disorder</h3>
+      <p>An abrupt stroke 9 months ago, a 3-month resolution of the original weakness/numbness, and then a slowly emerging movement disorder that has now been stable and disabling for several months. This staged pattern — acute vascular insult followed by a delayed hyperkinesia — is itself a diagnostic clue (a posthemiplegic movement disorder).</p>
+    </div>
+
+    <div class="wt-card full">
+      <div class="wt-eyebrow">Differential Diagnosis</div>
+      <h3>Leading diagnosis: posthemiplegic hemiballism-hemichorea</h3>
+      <table class="diff-table">
+        <tr><th>Diagnosis</th><th>Fits</th><th>Argues against</th></tr>
+        <tr class="lead">
+          <td><strong>Posthemiplegic hemiballism-hemichorea</strong> (focal subthalamic/lenticular infarct)<span class="lead-tag">Most likely</span></td>
+          <td>Classic biphasic story (stroke → resolution → delayed movement disorder), sharply lateralized findings, vascular risk factors, cortical functions spared</td>
+          <td>Nothing in the history argues strongly against it</td>
+        </tr>
+        <tr>
+          <td>Focal motor seizure</td>
+          <td>Can produce abnormal involuntary limb movement</td>
+          <td>Continuous/persistent over months rather than paroxysmal episodes, with normal alertness and interaction throughout — not the pattern of ongoing seizure activity</td>
+        </tr>
+        <tr>
+          <td>Structural mass lesion (tumor)</td>
+          <td>Could cause a progressive focal deficit</td>
+          <td>Abrupt onset with a classic resolving stroke syndrome fits vascular disease far better than a mass lesion, which would more typically show gradual progression</td>
+        </tr>
+        <tr>
+          <td>Drug-induced movement disorder</td>
+          <td>Can cause chorea/dyskinesia</td>
+          <td>No such medication history is provided</td>
+        </tr>
+        <tr>
+          <td>Primary (non-vascular) chorea — autoimmune/metabolic</td>
+          <td>Chorea is part of the clinical picture</td>
+          <td>Strictly unilateral and tightly linked in time to a discrete stroke, not the bilateral pattern expected of a systemic process</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="wt-card full">
+      <div class="wt-eyebrow">Diagnostic Workup</div>
+      <h3>Confirming the lesion, preventing the next stroke</h3>
+      <ol class="workup-flow">
+        <li><span class="step-lead">MRI brain.</span><span class="step-sub">Look for a chronic infarct involving the left subthalamic nucleus and/or lenticular nucleus (putamen)/internal capsule, confirming the localization suggested by the exam.</span></li>
+        <li><span class="step-lead">Vascular risk-factor workup.</span><span class="step-sub">Blood pressure, lipid panel, glucose/HbA1c — she already carries hypertension and a smoking history, the classic small-vessel (lacunar) risk profile.</span></li>
+        <li><span class="step-lead">Cardiac and carotid evaluation.</span><span class="step-sub">Echocardiogram and carotid imaging to exclude an embolic source, since a cardioembolic mechanism can occasionally mimic a lacunar presentation.</span></li>
+        <li><span class="step-lead">Movement-disorder characterization.</span><span class="step-sub">Formally grade the severity of the ballism/chorea to guide and monitor treatment response.</span></li>
+        <li><span class="step-lead">Psychosocial assessment.</span><span class="step-sub">Given her considerable distress, exhaustion, and embarrassment, screen for a co-existing mood disorder and connect her with support resources.</span></li>
+      </ol>
+    </div>
+
+    <div class="wt-card">
+      <div class="wt-eyebrow">Prognosis</div>
+      <h3>Often persistent, but can gradually ease</h3>
+      <p>Posthemiplegic movement disorders can improve gradually over the first year or two after the causative stroke, but many patients — like this one, already nine months in — are left with a significant, persistent disability. Her ongoing vascular risk factors also carry a real risk of a second cerebrovascular event, making secondary prevention just as important as treating the movement disorder itself.</p>
+    </div>
+
+    <div class="wt-card">
+      <div class="wt-eyebrow">Management</div>
+      <h3>Symptomatic treatment plus secondary stroke prevention</h3>
+      <ul class="mgmt-list">
+        <li>Pharmacologic treatment of hemiballism — a dopamine-depleting agent (e.g., tetrabenazine) or a low-dose antipsychotic; an anticonvulsant such as valproate is another option</li>
+        <li>Aggressive secondary stroke prevention — antihypertensive therapy, antiplatelet therapy, smoking and alcohol cessation counseling</li>
+        <li>Physical/occupational therapy for gait and fall safety, given how much the arm movement disrupts her balance</li>
+        <li>Consider referral for stereotactic surgical options (e.g., pallidotomy) if medication-refractory</li>
+        <li>Psychosocial support and counseling for the distress and embarrassment she's experiencing</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================= CONCEPT DEEP-DIVE ================= -->
+<div class="section-title">
+  <h2>Concept Deep-Dive</h2>
+  <p>The underlying basal ganglia anatomy and circuitry this case is testing</p>
+</div>
+<div class="dd-wrap">
+  <div class="deepdive-grid">
+
+    <div class="dd-card">
+      <span class="dd-tag localization">Localization</span>
+      <h3>The Subthalamic Nucleus and Hemiballism</h3>
+      <svg class="dd-svg" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
+        <rect x="10" y="12" width="150" height="40" rx="6" fill="#F7E4DB" stroke="#C85A3E"/>
+        <text x="85" y="30" text-anchor="middle" font-family="Nunito, sans-serif" font-size="10" font-weight="700" fill="#2A241C">Vascular lesion of</text>
+        <text x="85" y="44" text-anchor="middle" font-family="Nunito, sans-serif" font-size="10" font-weight="700" fill="#2A241C">subthalamic nucleus (STN)</text>
+        <line x1="85" y1="52" x2="85" y2="72" stroke="#C85A3E" stroke-width="2"/>
+        <polygon points="80,68 90,68 85,76" fill="#C85A3E"/>
+        <rect x="10" y="78" width="150" height="34" rx="6" fill="#FCFAF3" stroke="#DED2B6"/>
+        <text x="85" y="96" text-anchor="middle" font-family="Nunito, sans-serif" font-size="10" fill="#2A241C">↓ Excitatory drive</text>
+        <text x="85" y="108" text-anchor="middle" font-family="Nunito, sans-serif" font-size="9" fill="#6B6152">from STN to GPi</text>
+        <line x1="160" y1="95" x2="200" y2="95" stroke="#C85A3E" stroke-width="2"/>
+        <polygon points="196,90 196,100 206,95" fill="#C85A3E"/>
+        <rect x="210" y="78" width="150" height="34" rx="6" fill="#FCFAF3" stroke="#DED2B6"/>
+        <text x="285" y="96" text-anchor="middle" font-family="Nunito, sans-serif" font-size="10" fill="#2A241C">↓ GPi activity</text>
+        <text x="285" y="108" text-anchor="middle" font-family="Nunito, sans-serif" font-size="9" fill="#6B6152">→ ↓ inhibits thalamus</text>
+        <line x1="285" y1="112" x2="285" y2="132" stroke="#C85A3E" stroke-width="2"/>
+        <polygon points="280,128 290,128 285,136" fill="#C85A3E"/>
+        <rect x="140" y="138" width="220" height="34" rx="6" fill="#E9E2F1" stroke="#6B5390"/>
+        <text x="250" y="159" text-anchor="middle" font-family="Nunito, sans-serif" font-size="10" font-weight="700" fill="#2A241C">Thalamus disinhibited → violent, contralateral ballism</text>
+      </svg>
+      <p class="dd-take">The subthalamic nucleus normally provides excitatory drive that keeps GPi active and thalamus appropriately inhibited. Knock out the STN with a small vascular lesion, and GPi output collapses — thalamus runs unchecked, and the result is the violent, large-amplitude flinging seen in this patient's right arm.</p>
+    </div>
+
+    <div class="dd-card">
+      <span class="dd-tag term">Term</span>
+      <h3>Ballism, Chorea, Athetosis, Dystonia — One Spectrum</h3>
+      <svg class="dd-svg" viewBox="0 0 400 90" xmlns="http://www.w3.org/2000/svg">
+        <line x1="25" y1="45" x2="375" y2="45" stroke="#DED2B6" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="55" cy="45" r="9" fill="#C85A3E"/>
+        <text x="55" y="70" text-anchor="middle" font-family="Nunito, sans-serif" font-size="9" font-weight="700" fill="#2A241C">Ballism</text>
+        <circle cx="150" cy="45" r="9" fill="#A47A1F"/>
+        <text x="150" y="70" text-anchor="middle" font-family="Nunito, sans-serif" font-size="9" font-weight="700" fill="#2A241C">Chorea</text>
+        <circle cx="255" cy="45" r="9" fill="#256B63"/>
+        <text x="255" y="70" text-anchor="middle" font-family="Nunito, sans-serif" font-size="9" font-weight="700" fill="#2A241C">Athetosis</text>
+        <circle cx="355" cy="45" r="9" fill="#6B5390"/>
+        <text x="355" y="70" text-anchor="middle" font-family="Nunito, sans-serif" font-size="9" font-weight="700" fill="#2A241C">Dystonia</text>
+        <text x="55" y="22" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="7" fill="#6B6152">violent, large</text>
+        <text x="150" y="22" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="7" fill="#6B6152">fast, jerky</text>
+        <text x="255" y="22" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="7" fill="#6B6152">slow, sinuous</text>
+        <text x="355" y="22" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="7" fill="#6B6152">sustained, contorting</text>
+      </svg>
+      <p class="dd-take">Ballism is essentially chorea's larger, more violent cousin — same basal ganglia disinhibition mechanism, bigger amplitude, usually proximal. This patient shows the full range at once: ballism in the arm, choreoathetosis in the leg, all from a single small lesion.</p>
+    </div>
+
+    <div class="dd-card">
+      <span class="dd-tag pattern">Pattern</span>
+      <h3>Posthemiplegic Movement Disorders — the Timeline</h3>
+      <svg class="dd-svg" viewBox="0 0 400 130" xmlns="http://www.w3.org/2000/svg">
+        <line x1="30" y1="60" x2="370" y2="60" stroke="#9A8F7B" stroke-width="2"/>
+        <circle cx="40" cy="60" r="6" fill="#C85A3E"/>
+        <text x="40" y="40" text-anchor="middle" font-family="Nunito, sans-serif" font-size="9" font-weight="700" fill="#2A241C">Day 0</text>
+        <text x="40" y="82" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="8" fill="#6B6152">Stroke: hemiparesis</text>
+        <text x="40" y="94" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="8" fill="#6B6152">+ hemiparesthesia</text>
+        <circle cx="200" cy="60" r="6" fill="#A47A1F"/>
+        <text x="200" y="40" text-anchor="middle" font-family="Nunito, sans-serif" font-size="9" font-weight="700" fill="#2A241C">~3 months</text>
+        <text x="200" y="82" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="8" fill="#6B6152">Weakness/numbness</text>
+        <text x="200" y="94" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="8" fill="#6B6152">resolve</text>
+        <circle cx="355" cy="60" r="6" fill="#6B5390"/>
+        <text x="355" y="40" text-anchor="middle" font-family="Nunito, sans-serif" font-size="9" font-weight="700" fill="#2A241C">3–9 months</text>
+        <text x="355" y="82" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="8" fill="#6B6152">Movement disorder</text>
+        <text x="355" y="94" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="8" fill="#6B6152">emerges, persists</text>
+      </svg>
+      <p class="dd-take">The initial hemiplegia effectively masks a separate, adjacent basal ganglia injury until the corticospinal deficit resolves enough to unmask it — which is exactly why this patient's movement disorder wasn't the presenting problem nine months ago, but is now.</p>
+    </div>
+
+    <div class="dd-card">
+      <span class="dd-tag genetics">Workup</span>
+      <h3>Vascular Territories of the Basal Ganglia</h3>
+      <table class="dd-table">
+        <tr><th>Vessel</th><th>Supplies</th></tr>
+        <tr><td>Medial striate vessels (incl. artery of Heubner)</td><td>Head of caudate, anterior putamen, external globus pallidus, anterior limb of internal capsule</td></tr>
+        <tr><td>Lateral striate vessels</td><td>Putamen, globus pallidus, anterior and posterior limbs of internal capsule</td></tr>
+        <tr><td>Anterior choroidal artery</td><td>Posterior globus pallidus, putamen, genu of internal capsule</td></tr>
+      </table>
+      <p class="dd-take">This patient's combination of an internal-capsule-type initial deficit plus a subthalamic/lenticular movement disorder fits a small penetrating branch of these territories — exactly the kind of vessel most vulnerable to her hypertension and smoking history.</p>
+    </div>
+
+    <div class="dd-card">
+      <span class="dd-tag finding">Finding</span>
+      <h3>Lacunar Stroke Syndromes</h3>
+      <table class="dd-table">
+        <tr><th>Syndrome</th><th>Typical site</th></tr>
+        <tr class="hi"><td>Sensorimotor stroke <em>(this patient)</em></td><td>Thalamus + adjacent posterior limb of internal capsule</td></tr>
+        <tr><td>Pure motor hemiparesis</td><td>Posterior limb of internal capsule / corona radiata</td></tr>
+        <tr><td>Pure sensory stroke</td><td>Ventral posterolateral (VPL) thalamus</td></tr>
+        <tr><td>Ataxic hemiparesis</td><td>Pons or internal capsule</td></tr>
+        <tr><td>Dysarthria–clumsy hand</td><td>Pons or internal capsule</td></tr>
+      </table>
+      <p class="dd-take">Her initial presentation — combined weakness and numbness on one side, with cognition and language spared — is the classic sensorimotor lacunar syndrome, exactly the small deep-vessel mechanism now implicated in her delayed movement disorder as well.</p>
+    </div>
+
+    <div class="dd-card">
+      <span class="dd-tag pattern">Pattern</span>
+      <h3>Focal Vascular vs. Diffuse Neurodegenerative</h3>
+      <table class="dd-table">
+        <tr><th></th><th>Cases 11-1 / 11-2</th><th>Case 11-3</th></tr>
+        <tr><td>Mechanism</td><td>Neurodegenerative</td><td>Vascular (lacunar infarct)</td></tr>
+        <tr><td>Onset</td><td>Insidious</td><td>Abrupt (stroke)</td></tr>
+        <tr><td>Distribution</td><td>Diffuse, bilateral</td><td>Focal, unilateral</td></tr>
+        <tr><td>Course</td><td>Progressive</td><td>Stroke, then a stable residual movement disorder</td></tr>
+        <tr><td>Treatment focus</td><td>Chronic dopaminergic/VMAT2 therapy</td><td>Symptomatic treatment + secondary stroke prevention</td></tr>
+      </table>
+      <p class="dd-take">Distribution and time course are doing most of the diagnostic work across this entire chapter — the same basal ganglia circuitry produces very different-looking diseases depending on whether the process is diffuse and slow (Huntington's, Parkinson's) or focal and sudden (this patient's stroke).</p>
+    </div>
+
+  </div>
+</div>
+
+<div class="footnote">Source: Case Study 11-3, Medical Neuroanatomy, Chapter 11 (Basal Ganglia). No small-group transcript or lecture slides were provided for this case; Concept Deep-Dive content is drawn from the chapter's Discussion I/II text.</div>
+
+<div id="hl-tooltip" class="hl-tooltip"></div>
+<div id="hl-panel" class="hl-panel">
+  <button id="hl-panel-close" class="hl-panel-close" aria-label="Close">×</button>
+  <div id="hl-panel-body"></div>
+</div>
+
+<script>
+(function(){
+  var CAT_VAR = {
+    localization: '--teal',
+    finding: '--coral',
+    term: '--gold',
+    pattern: '--violet',
+    genetics: '--sky'
+  };
+
+  var annotations = [
+    {target:"hl1", cat:"localization", eyebrow:"Stroke Syndrome", title:"Rapid-onset hemiparesis + hemiparesthesia, right side",
+      body:"An abrupt onset of combined motor and sensory deficit on one side of the body is the classic signature of an acute vascular event (stroke) — here affecting the left hemisphere, since deficits appear on the right (contralateral) side of the body."},
+    {target:"hl2", cat:"pattern", eyebrow:"Posthemiplegic Pattern", title:"Deficit resolved, then a movement disorder appeared",
+      body:"This staged evolution — initial paresis/sensory loss that resolves, followed weeks to months later by an involuntary movement disorder — is a recognized entity called a posthemiplegic movement disorder. The early hemiplegia essentially masks the movement disorder until the paralysis itself improves enough to reveal it."},
+    {target:"hl3", cat:"term", eyebrow:"Movement Disorder — Terminology", title:"Flinging (ballism) + writhing/jerky (choreoathetosis)",
+      body:"Violent, flinging limb movements define ballism (or hemiballism when unilateral); the slower writhing, jerky quality in the leg is choreoathetosis. Having both qualities present together — flinging in the arm, choreoathetosis in the leg — is a well-described combination called hemiballism-hemichorea."},
+    {target:"hl4", cat:"finding", eyebrow:"Functional Impact", title:"Disrupted gait and postural station",
+      body:"An involuntary flinging arm movement is disabling well beyond the arm itself — it disrupts balance and ambulation broadly, which is exactly why this brought her back for evaluation nine months after her original stroke."},
+    {target:"hl5", cat:"finding", eyebrow:"Psychosocial Impact", title:"Severe social embarrassment",
+      body:"Visible, uncontrollable limb movements carry a heavy social cost, and her embarrassment is a reasonable reaction to a disabling and conspicuous movement disorder — not evidence of a separate psychiatric process."},
+    {target:"hl6", cat:"genetics", eyebrow:"Vascular Risk Factors", title:"Hypertension, smoking, alcohol use",
+      body:"Hypertension and smoking are the classic risk factors for small-vessel (lacunar) cerebrovascular disease — exactly the mechanism that produces focal infarcts of the subthalamic nucleus or lenticular nucleus, the structures responsible for this patient's movement disorder."},
+    {target:"hl7", cat:"localization", eyebrow:"Prior Stroke", title:"Hemiparesis + hemibody sensory loss, right side",
+      body:"A combined motor and sensory deficit affecting an entire half of the body points to a lesion involving the posterior limb of the internal capsule or an adjacent subcortical structure on the left, where both the corticospinal and thalamocortical sensory fibers travel in close proximity."},
+    {target:"hl8", cat:"localization", eyebrow:"Negative Cortical Signs", title:"Language and cognition unaffected",
+      body:"Sparing of language and cognition during the acute stroke argues against a large cortical (e.g., MCA territory) infarct and instead supports a small, deep (lacunar) lesion — consistent with a focal subcortical structure like the subthalamic nucleus or lenticular nucleus rather than the cortex itself."},
+    {target:"hl9", cat:"finding", eyebrow:"Reactive Distress", title:"Exhausted, anxious, appearing older than her age",
+      body:"Nine months of a disabling, embarrassing, unrelenting movement disorder is exhausting — her anxious demeanor and haggard appearance reflect the toll of the condition itself rather than a primary psychiatric diagnosis."},
+    {target:"hl10", cat:"finding", eyebrow:"Exam Limitation", title:"Exam precluded by the movement",
+      body:"The involuntary motion is severe enough to physically interfere with a routine physical exam — a concrete marker of how disabling this movement disorder has become nine months out."},
+    {target:"hl11", cat:"localization", eyebrow:"Cortical Functions Intact", title:"Language, comprehension, reading, memory all appropriate",
+      body:"A fully intact higher cortical exam, even in the setting of a dramatic movement disorder, again supports a discrete subcortical lesion (basal ganglia/subthalamic region) rather than a large or cortical stroke."},
+    {target:"hl12", cat:"finding", eyebrow:"Exam Limitation", title:"Violent motion complicates testing",
+      body:"The severity and violence of the involuntary arm movement is itself a clinical sign — it's disruptive enough to interfere with a basic cranial nerve exam, underscoring how much more prominent the movement disorder is than any residual weakness."},
+    {target:"hl13", cat:"finding", eyebrow:"Exam Limitation", title:"Right-sided exam difficult to interpret",
+      body:"Formal strength and reflex testing on the right is confounded by the continuous, violent movement — a practical reminder that a movement disorder can make a routine motor exam unreliable, not that the underlying strength itself is necessarily abnormal."},
+    {target:"hl14", cat:"term", eyebrow:"Movement Description", title:"Ballism superimposed on choreoathetosis (arm)",
+      body:"In the arm, the exam describes two movement qualities layered on top of each other: large-amplitude, violent flinging (ballism) riding on a continuous, slower writhing (choreoathetosis) — the combination that gives this presentation its name."},
+    {target:"hl15", cat:"term", eyebrow:"Movement Description", title:"Predominantly choreoathetotic (leg)",
+      body:"The leg shows mostly the slower writhing quality with only occasional brief jerks — milder and more purely choreoathetotic than the arm, which shows the full violent ballistic component. This limb-to-limb variability is common even within a single hemiballism-hemichorea presentation."},
+    {target:"hl16", cat:"finding", eyebrow:"Involuntary Character", title:"Cannot be stopped by physical restraint",
+      body:"That even external physical restraint cannot suppress the movement underscores how powerfully and involuntarily it's generated — this isn't a movement she's failing to inhibit, it's one that can't be mechanically overridden either."},
+    {target:"hl17", cat:"finding", eyebrow:"Preserved Voluntary Control", title:"Can still move the limb on command",
+      body:"Being able to voluntarily move the right extremities in between the involuntary episodes confirms the corticospinal (strength) pathway itself is functionally intact — the problem is an involuntary movement superimposed on normal voluntary capacity, not paralysis."},
+    {target:"hl18", cat:"finding", eyebrow:"Gait", title:"Gait compromised by the flinging arm",
+      body:"Even though her legs alone might allow reasonably preserved ambulation, the violent arm movement itself is enough to throw off her balance and gait — illustrating how a single limb's movement disorder can dominate the whole functional picture."},
+    {target:"hl19", cat:"localization", eyebrow:"Negative Finding", title:"No impairment of postural reflexes",
+      body:"Unlike the postural instability and retropulsion seen in parkinsonism (basal ganglia output circuit dysfunction affecting the whole thalamocortical loop), this patient's balance is disrupted mechanically by the flinging limb itself — her underlying postural reflex system is intact. That's an important distinguishing feature from a globalized basal ganglia disease."},
+    {target:"hl20", cat:"localization", eyebrow:"Sleep-Dependence", title:"Movements disappear during sleep",
+      body:"Like the chorea in Case 11-1, this movement disorder vanishes during sleep — a shared feature of basal ganglia-circuit hyperkinesias, reflecting their dependence on ongoing cortical-subcortical circuit activity that quiets during sleep."},
+    {target:"hl21", cat:"localization", eyebrow:"Sensory Exam", title:"Sensation intact on the left, equivocal on the right",
+      body:"Normal sensation on the unaffected left side confirms the sensory pathways themselves are fine; the equivocal findings on the right are most likely a testing artifact from the violent involuntary motion rather than a true residual sensory deficit, though some mild residual sensory involvement from the original stroke can't be fully excluded."}
+  ];
+
+  var canHover = window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  var tooltip = document.getElementById('hl-tooltip');
+  var panel = document.getElementById('hl-panel');
+  var panelBody = document.getElementById('hl-panel-body');
+  var panelClose = document.getElementById('hl-panel-close');
+
+  function shortTeaser(text){
+    if(text.length <= 100) return text;
+    return text.slice(0,100).trim() + '…';
+  }
+
+  function showTooltip(a, el){
+    var v = CAT_VAR[a.cat];
+    tooltip.innerHTML =
+      '<div class="t-eyebrow" style="color:var(' + v + ')">' + a.eyebrow + '</div>' +
+      '<div class="t-title">' + a.title + '</div>' +
+      '<div class="t-body">' + shortTeaser(a.body) + '</div>';
+    var rect = el.getBoundingClientRect();
+    tooltip.style.left = Math.max(8, Math.min(rect.left, window.innerWidth - 286)) + 'px';
+    tooltip.style.top = (rect.bottom + 8) + 'px';
+    tooltip.classList.add('visible');
+    requestAnimationFrame(function(){
+      var th = tooltip.offsetHeight;
+      var top = rect.bottom + 8;
+      if(top + th > window.innerHeight - 8){
+        top = rect.top - th - 8;
+      }
+      tooltip.style.top = Math.max(8, top) + 'px';
+    });
+  }
+
+  function hideTooltip(){
+    tooltip.classList.remove('visible');
+  }
+
+  function openPanel(a, idx){
+    var v = CAT_VAR[a.cat];
+    panelBody.innerHTML =
+      '<div class="panel-num">Annotation ' + idx + ' of ' + annotations.length + '</div>' +
+      '<div class="panel-eyebrow" style="color:var(' + v + ')">' + a.eyebrow + '</div>' +
+      '<h3 class="panel-title">' + a.title + '</h3>' +
+      '<p class="panel-text">' + a.body + '</p>';
+    panel.classList.add('open');
+    hideTooltip();
+  }
+
+  function closePanel(){
+    panel.classList.remove('open');
+  }
+
+  annotations.forEach(function(a, i){
+    var el = document.getElementById(a.target);
+    if(!el) return;
+    el.addEventListener('click', function(e){
+      e.stopPropagation();
+      openPanel(a, i + 1);
+    });
+    if(canHover){
+      el.addEventListener('mouseenter', function(){ showTooltip(a, el); });
+      el.addEventListener('mouseleave', hideTooltip);
+    }
+  });
+
+  document.addEventListener('click', function(e){
+    if(panel.classList.contains('open') && !panel.contains(e.target)){
+      closePanel();
+    }
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') closePanel();
+  });
+  panelClose.addEventListener('click', closePanel);
+})();
+</script>
+
+</body>
+</html>
