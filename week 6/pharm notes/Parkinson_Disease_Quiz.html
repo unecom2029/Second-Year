@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parkinson Disease Pharmacology Quiz</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Ctext y=%2250%22 x=%2232%22 text-anchor=%22middle%22 font-size=%2248%22%3E%F0%9F%A7%A0%3C/text%3E%3C/svg%3E">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;500;600;700;800&family=Nunito:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+:root {
+  --teal: #1A7A6D; --teal-deep: #125E54; --teal-light: #E3F5F2; --teal-mid: #2BA393; --teal-glow: #3EC4B2;
+  --navy: #1B2A4A; --navy2: #12203C;
+  --coral: #E07A5F; --coral-bg: #FEF0EB;
+  --gold: #D4A843; --gold-bg: #FDF6E3; --gold-warm: #E8C76A;
+  --plum: #7B5EA7; --plum-bg: #F3EEF9;
+  --sky: #4A9AE8; --sky-bg: #EAF2FC;
+  --warm: #FBF8F3; --cream: #F6F3EC; --white: #FFFFFF;
+  --ink: #1E1E20; --ink2: #3E4555; --slate: #6B7689; --mist: #A0AAB8;
+  --rule: #DBD5C9; --rule2: #E9E4DA;
+  --green: #2D8659; --green-bg: #E8F5EE; --red: #C44040; --red-bg: #FDF0F0;
+  --amber: #C07B1A; --amber-bg: #FEF5E6;
+  --r: 14px; --rs: 8px;
+  --sh: 0 1px 4px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.03);
+  --sh2: 0 8px 32px rgba(0,0,0,0.08);
+  --sh3: 0 12px 48px rgba(0,0,0,0.10);
+  --tr: 0.25s cubic-bezier(.4,0,.2,1);
+}
+* { box-sizing: border-box; }
+html,body { margin:0; padding:0; }
+body { font-family:'Nunito',sans-serif; color:var(--ink); background:var(--warm); }
+h1,h2,h3 { font-family:'Crimson Pro',serif; margin:0; }
+button { font-family:'Nunito',sans-serif; cursor:pointer; }
+
+/* ============ LAUNCH SCREEN ============ */
+.launch-wrap {
+  min-height: 100vh; display:grid; place-items:center; padding:32px;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(62,196,178,.16), transparent 28%),
+    radial-gradient(circle at 82% 20%, rgba(123,94,167,.12), transparent 30%),
+    linear-gradient(180deg, var(--warm) 0%, var(--cream) 100%);
+}
+.launch-card {
+  max-width: 760px; background: rgba(255,255,255,.8); backdrop-filter: blur(10px);
+  border-radius: 28px; border: 1px solid rgba(18,32,60,.08);
+  box-shadow: 0 24px 80px rgba(18,32,60,.12); padding: 44px 40px;
+}
+.launch-card .eyebrow {
+  font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:.12em; text-transform:uppercase;
+  color: var(--teal-deep); font-weight:600; margin-bottom:12px;
+}
+.launch-card h1 { font-size: 36px; font-weight:800; color: var(--navy); margin-bottom:14px; line-height:1.15; }
+.launch-card p.launch-desc { font-size:16px; color: var(--ink2); line-height:1.6; margin-bottom:22px; max-width:600px; }
+.launch-meta { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:28px; }
+.chip {
+  display:inline-flex; align-items:center; gap:6px; padding:8px 14px; border-radius:999px;
+  background: var(--white); border:1px solid var(--rule2); font-family:'IBM Plex Mono',monospace;
+  font-size:12.5px; color:var(--ink2);
+}
+.launch-btn {
+  border:none; padding:16px 34px; border-radius:999px; font-size:16px; font-weight:800;
+  color:#fff; background: linear-gradient(135deg, var(--teal-mid), var(--teal-deep));
+  box-shadow: 0 14px 34px rgba(26,122,109,.28); transition: transform var(--tr), box-shadow var(--tr);
+}
+.launch-btn:hover { transform: translateY(-2px); box-shadow: 0 18px 40px rgba(26,122,109,.34); }
+.launch-note { margin-top:16px; font-size:13px; color:var(--mist); }
+
+/* ============ QUIZ OVERLAY ============ */
+.qo {
+  display:none; position:fixed; inset:0; z-index:200; overflow-y:auto;
+  background:
+    radial-gradient(circle at 10% 0%, color-mix(in srgb, var(--teal-glow) 18%, transparent), transparent 24%),
+    radial-gradient(circle at 92% 8%, color-mix(in srgb, var(--plum) 16%, transparent), transparent 22%),
+    linear-gradient(180deg, var(--warm) 0%, var(--cream) 100%);
+}
+.qo.open { display:block; animation: fi .35s cubic-bezier(.4,0,.2,1); }
+.qo.closing { display:block; pointer-events:none; animation: fo .34s cubic-bezier(.4,0,.2,1) forwards; }
+@keyframes fi { from{opacity:0; transform:scale(.985);} to{opacity:1; transform:none;} }
+@keyframes fo { from{opacity:1;} to{opacity:0;} }
+@keyframes slideUp { from{opacity:0; transform:translateY(12px);} to{opacity:1; transform:none;} }
+@keyframes cardIn { from{opacity:0; transform:translateY(16px) scale(.99);} to{opacity:1; transform:none;} }
+@keyframes qBarOut { from{opacity:1; transform:translateY(0);} to{opacity:0; transform:translateY(-12px);} }
+@keyframes qSheetOut { from{opacity:1; filter:blur(0);} to{opacity:0; filter:blur(3px);} }
+.qo.closing .qt-bar { animation: qBarOut .3s cubic-bezier(.4,0,.2,1) forwards; }
+.qo.closing .qin { animation: qSheetOut .3s cubic-bezier(.4,0,.2,1) forwards; }
+
+/* ============ TOP BAR ============ */
+.qt-bar {
+  position:sticky; top:0; z-index:12; padding:16px 26px;
+  display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap;
+  color:#fff;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--navy2) 94%, transparent), color-mix(in srgb, var(--navy) 92%, transparent));
+  border-bottom:1px solid rgba(255,255,255,.08); backdrop-filter: blur(16px);
+  box-shadow: 0 10px 28px rgba(18,32,60,.16);
+}
+.qt-bar h2 { font-size:19px; font-weight:700; color:#fff; }
+.qt-btns { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.fs-ctrl {
+  display:flex; align-items:center; gap:4px; background:rgba(255,255,255,.08); border-radius:999px; padding:5px 10px;
+}
+.fs-label { font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:rgba(255,255,255,.55); margin-right:2px; }
+.fs-btn {
+  border:none; background:transparent; color:rgba(255,255,255,.75); font-family:'IBM Plex Mono',monospace;
+  font-size:12px; padding:4px 8px; border-radius:6px; transition: background var(--tr), color var(--tr);
+}
+.fs-btn:hover { background:rgba(255,255,255,.14); color:#fff; }
+.fs-btn.on { background:var(--teal-glow); color:var(--navy2); font-weight:700; }
+.qt-btn { border:none; border-radius:999px; padding:10px 18px; font-size:13.5px; font-weight:700; transition: transform var(--tr), opacity var(--tr); }
+.qt-btn:hover { transform: translateY(-1px); }
+.qt-btn.reset, .qt-btn.close { background: rgba(255,255,255,.07); color: rgba(255,255,255,.78); border:1px solid rgba(255,255,255,.1); }
+.qt-btn.print { background: linear-gradient(135deg, var(--gold-warm), var(--gold)); color: var(--navy2); font-weight:900; }
+
+/* ============ CONTENT GRID ============ */
+.qin { max-width:1380px; margin:0 auto; padding:28px 28px 84px; display:grid; grid-template-columns: 360px minmax(0,1fr); gap:18px 24px; align-items:start; }
+.q-left { display:flex; flex-direction:column; gap:16px; }
+.panel-card { background: var(--white); border:1px solid var(--rule2); border-radius: var(--r); padding:18px; box-shadow: var(--sh); }
+
+/* ============ SCORE PANEL ============ */
+.score-panel { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; background:var(--white); border:1px solid var(--rule2); border-radius:var(--r); padding:18px 10px 14px; box-shadow: var(--sh); animation: slideUp .4s cubic-bezier(.4,0,.2,1) both; }
+.score-box { position:relative; text-align:center; padding-top:10px; }
+.score-box::before { content:''; position:absolute; left:16px; right:16px; top:0; height:4px; border-radius:0 0 999px 999px; background: linear-gradient(90deg, rgba(26,122,109,.16), rgba(62,196,178,.5)); }
+.score-box .sv { font-family:'Crimson Pro',serif; font-size:34px; font-weight:800; color:var(--navy); line-height:1; }
+.score-box .sl { font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--mist); margin-top:4px; }
+.score-box.correct .sv { color: var(--green); }
+.score-box.incorrect .sv { color: var(--red); }
+
+/* ============ MODE TOGGLE ============ */
+.mode-toggle { display:flex; gap:6px; background:var(--white); border:1px solid var(--rule2); border-radius:999px; padding:5px; box-shadow: var(--sh); animation: slideUp .4s .04s cubic-bezier(.4,0,.2,1) both; }
+.mode-btn { flex:1; border:none; background:transparent; border-radius:999px; padding:10px 8px; font-size:13.5px; font-weight:700; color:var(--ink2); display:flex; align-items:center; justify-content:center; gap:6px; transition: all var(--tr); }
+.mode-btn.active { background: linear-gradient(135deg, var(--navy), var(--navy2)); color:#fff; box-shadow: var(--sh); }
+.mode-icon { font-size:14px; }
+
+/* ============ TIMER PANEL ============ */
+.timer-panel { display:grid; grid-template-columns:1fr; gap:10px; animation: slideUp .4s .08s cubic-bezier(.4,0,.2,1) both; }
+.timer-card, .cd-card { background:var(--white); border:1px solid var(--rule2); border-radius:var(--r); padding:14px 16px; box-shadow: var(--sh); text-align:center; }
+.timer-lbl { font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--mist); margin-bottom:6px; }
+.timer-time, .cd-time { font-family:'IBM Plex Mono',monospace; font-size:26px; font-weight:600; color:var(--navy); margin-bottom:8px; }
+.tbtn { border:none; background:var(--cream); border-radius:8px; padding:6px 12px; margin:0 3px; font-size:14px; color:var(--ink2); }
+.tbtn:hover { background:var(--rule2); }
+.cd-controls { display:flex; align-items:center; justify-content:center; gap:8px; }
+.cd-pm { border:none; background:var(--cream); border-radius:8px; width:28px; height:28px; font-size:16px; color:var(--ink2); }
+.cd-val { font-family:'IBM Plex Mono',monospace; font-weight:700; min-width:16px; }
+.cd-unit { font-size:12px; color:var(--mist); }
+.cd-go { border:none; background: linear-gradient(135deg, var(--teal-mid), var(--teal-deep)); color:#fff; border-radius:999px; padding:6px 16px; font-size:12.5px; font-weight:700; margin-left:6px; }
+
+/* ============ TOOL PANEL ============ */
+.tool-panel { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; animation: slideUp .4s .14s cubic-bezier(.4,0,.2,1) both; }
+.q-tool { border:1px solid var(--rule2); background:var(--white); border-radius:var(--rs); padding:10px 6px; font-size:12px; font-weight:700; color:var(--ink2); box-shadow: var(--sh); transition: all var(--tr); }
+.q-tool:hover { border-color: var(--teal); }
+.q-tool.active.hl-tool { background:#FFF8B8; border-color:#D3AF2B; color:#6B5C00; }
+.q-tool.active.st-tool { background: var(--red-bg); border-color: rgba(196,64,64,.44); color: var(--red); }
+.tool-status { font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--mist); text-align:center; margin-top:2px; }
+.tool-status.active-highlight { color:#8a6a00; }
+.tool-status.active-strike { color: var(--red); }
+
+/* ============ EXAM SUBMIT ROW ============ */
+.exam-submit-row { background:var(--white); border:1px solid var(--rule2); border-radius:var(--r); padding:16px; box-shadow: var(--sh); text-align:center; display:none; }
+.exam-submit-row.show { display:block; }
+.exam-submit-row.exam-live { box-shadow: 0 0 0 3px rgba(224,122,95,.10), 0 14px 34px rgba(18,32,60,.08); }
+.exam-progress { font-size:12.5px; color:var(--slate); margin-bottom:10px; font-family:'IBM Plex Mono',monospace; }
+.exam-submit-btn { width:100%; border:none; border-radius:999px; padding:12px; font-size:14px; font-weight:800; color:#fff; background: linear-gradient(135deg, var(--coral), #d0654a); }
+.exam-submit-row.exam-done .exam-submit-btn { background: linear-gradient(135deg, var(--green), #3aa56f); }
+.exam-submit-btn:disabled { opacity:.45; cursor:not-allowed; }
+
+/* ============ QUESTION CARD ============ */
+.qcd { background:var(--white); border:1px solid var(--rule2); border-radius:20px; box-shadow: var(--sh2); overflow:hidden; animation: cardIn .4s cubic-bezier(.4,0,.2,1) both; }
+.qpg { height:6px; background:var(--rule2); }
+.qpf { height:100%; background: linear-gradient(90deg, var(--teal), var(--teal-glow)); transition: width .4s cubic-bezier(.4,0,.2,1); }
+.qbd { padding:30px 34px 20px; }
+.qnum { font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--teal-deep); font-weight:700; margin-bottom:14px; }
+.qstem { font-family:'Crimson Pro',serif; font-size:21px; line-height:1.5; color:var(--ink); margin-bottom:26px; border-radius:10px; padding:4px; transition: background var(--tr), box-shadow var(--tr); }
+.qstem.tool-hover { box-shadow: inset 0 0 0 2px rgba(26,122,109,.16); background: rgba(26,122,109,.04); cursor: pointer; }
+.qstem .stem-hl { background:#FFF1A6; border-radius:6px; padding:0 .12em; box-shadow: 0 0 0 1px rgba(212,168,67,.18); }
+.qstem .stem-st { text-decoration:line-through; text-decoration-color: var(--red); color:#8B2C2C !important; }
+.qstem.hl-applied { background: linear-gradient(180deg, #FFF4A8, #FFF7C9) !important; box-shadow: inset 0 0 0 2px rgba(212,168,67,.34); }
+.qstem.st-applied { background: linear-gradient(180deg, #FFF3F3, #FFF8F8) !important; box-shadow: inset 0 0 0 2px rgba(196,64,64,.22); }
+
+.ach { display:flex; flex-direction:column; gap:10px; margin-bottom:20px; }
+.ac { display:flex; align-items:flex-start; gap:14px; border:1.5px solid var(--rule2); background:var(--cream); border-radius:var(--r); padding:14px 16px; cursor:pointer; transition: all var(--tr); }
+.ac:hover:not(.dis) { border-color: var(--teal-mid); background:#fff; box-shadow: var(--sh); }
+.cl { flex-shrink:0; width:30px; height:30px; border-radius:50%; background:var(--white); border:1.5px solid var(--rule); display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:13px; color:var(--ink2); transition: all var(--tr); }
+.ctx { font-size:16px; line-height:1.5; color:var(--ink); padding-top:3px; }
+.ac.sel { border-color: var(--teal); background: var(--teal-light); }
+.ac.sel .cl { background:var(--teal); color:#fff; border-color:var(--teal); }
+.ac.cor, .ac.shc { border-color: var(--green); background: var(--green-bg); }
+.ac.cor .cl, .ac.shc .cl { background:var(--green); color:#fff; border-color:var(--green); }
+.ac.inc { border-color: var(--red); background: var(--red-bg); }
+.ac.inc .cl { background:var(--red); color:#fff; border-color:var(--red); }
+.ac.dis { cursor:default; }
+.ac.dis:hover { box-shadow:none; }
+.ac.hl-applied { background:#FFF8B8 !important; box-shadow: inset 0 0 0 2px rgba(212,168,67,.34); }
+.ac.hl-applied .cl { background:var(--gold); color:#3a2e00; border-color:var(--gold); }
+.ac.st-applied { background: var(--red-bg) !important; }
+.ac.st-applied .ctx { text-decoration:line-through; color:#8B2C2C; }
+
+.submit-row { display:flex; justify-content:flex-end; margin-bottom:6px; }
+.submit-btn { border:none; border-radius:999px; padding:12px 28px; font-size:14.5px; font-weight:800; color:#fff; background: linear-gradient(135deg, var(--teal-mid), var(--teal-deep)); box-shadow: 0 10px 24px rgba(26,122,109,.24); transition: all var(--tr); }
+.submit-btn:disabled { opacity:.4; cursor:not-allowed; box-shadow:none; }
+
+.exb { display:none; flex-direction:column; gap:12px; margin: 6px 0 4px; }
+.exb.vis { display:flex; animation: fi .3s cubic-bezier(.4,0,.2,1); }
+.exs { border-radius:12px; padding:14px 18px; border-left:4px solid; }
+.exl { font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.08em; text-transform:uppercase; font-weight:700; margin-bottom:6px; }
+.ext { font-size:15px; line-height:1.55; color:var(--ink); }
+.exc { border-color: var(--green); background: var(--green-bg); } .exc .exl { color: var(--green); }
+.exe { border-color: var(--teal); background: var(--teal-light); } .exe .exl { color: var(--teal-deep); }
+.exw { border-color: var(--red); background: var(--red-bg); } .exw .exl { color: var(--red); }
+.wce { margin-bottom:6px; }
+.wce:last-child { margin-bottom:0; }
+
+.qnv { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:16px 34px 24px; border-top:1px solid var(--rule2); flex-wrap:wrap; }
+.nb { border:1px solid var(--rule2); background:var(--white); border-radius:999px; padding:10px 20px; font-size:13.5px; font-weight:700; color:var(--ink2); transition: all var(--tr); }
+.nb:hover:not(:disabled) { border-color:var(--teal); color:var(--teal-deep); }
+.nb:disabled { opacity:.4; cursor:not-allowed; }
+.nb.pr { background: linear-gradient(135deg, var(--navy), var(--navy2)); color:#fff; border:none; }
+.qdots { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; }
+.qd { width:12px; height:12px; border-radius:50%; border:1.5px solid var(--rule); background:var(--white); padding:0; transition: all var(--tr); }
+.qd.cur { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(26,122,109,.18); }
+.qd.acor { background: var(--green); border-color: var(--green); }
+.qd.ainc { background: var(--red); border-color: var(--red); }
+.qd.asel { background: var(--gold); border-color: var(--gold); }
+
+/* ============ PRINT REVIEW ============ */
+#printReviewRoot { display:none; }
+body.print-review-active .launch-wrap, body.print-review-active .qo { display:none !important; }
+body.print-review-active #printReviewRoot { display:block; padding:32px; background:#fff; }
+.print-shell { max-width:980px; margin:0 auto; font-family:'Nunito',sans-serif; }
+.print-shell h1 { font-family:'Crimson Pro',serif; font-size:26px; margin-bottom:4px; }
+.print-shell .print-meta { color:#666; font-size:13px; margin-bottom:20px; }
+.print-card { break-inside:avoid; border:1px solid #ddd; border-radius:16px; padding:20px; margin-bottom:18px; }
+.print-card .pq-num { font-family:'IBM Plex Mono',monospace; font-size:11px; color:#1A7A6D; font-weight:700; margin-bottom:6px; text-transform:uppercase; }
+.print-card .pq-stem { font-family:'Crimson Pro',serif; font-size:17px; margin-bottom:12px; }
+.print-choice { border:1px solid #ddd; border-radius:8px; padding:8px 12px; margin-bottom:6px; font-size:13.5px; }
+.print-choice.correct { border-color:#2D8659; background:#E8F5EE; }
+.print-choice.incorrect { border-color:#C44040; background:#FDF0F0; }
+.print-explainer { border-radius:8px; padding:10px 14px; margin-top:6px; font-size:13px; }
+.print-explainer.correct-box { background:#E8F5EE; border-left:4px solid #2D8659; }
+.print-explainer.teach-box { background:#E3F5F2; border-left:4px solid #1A7A6D; }
+.print-explainer.wrong-box { background:#FDF0F0; border-left:4px solid #C44040; }
+@media print {
+  body.print-review-active .launch-wrap, body.print-review-active .qo { display:none !important; }
+  body.print-review-active #printReviewRoot { display:block !important; padding:0; }
+}
+
+/* ============ FONT SIZE SYSTEM ============ */
+#qo[data-fs="sm"] .ctx { font-size:13.5px; }
+#qo[data-fs="md"] .ctx { font-size:16px; }
+#qo[data-fs="lg"] .ctx { font-size:18.5px; }
+#qo[data-fs="xl"] .ctx { font-size:21px; }
+#qo[data-fs="sm"] .qstem { font-size:18px; }
+#qo[data-fs="md"] .qstem { font-size:21px; }
+#qo[data-fs="lg"] .qstem { font-size:24px; }
+#qo[data-fs="xl"] .qstem { font-size:27px; }
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 920px) {
+  .qin { grid-template-columns: 1fr; padding: 22px 18px 72px; gap:16px; }
+  .timer-panel { grid-template-columns: 1fr 1fr; }
+  .tool-panel { grid-template-columns: 1fr 1fr 1fr; }
+}
+@media (max-width: 700px) {
+  .qt-bar { flex-direction: column; align-items: flex-start; }
+  .qin { padding: 18px 14px 64px; }
+  .timer-panel, .tool-panel { grid-template-columns: 1fr; }
+  .qnv { flex-direction: column; align-items: stretch; }
+  .qdots { order: 3; }
+  .nb { width: 100%; }
+  .qstem { font-size: 19px; }
+  .qbd { padding: 22px 20px 16px; }
+  .launch-card { padding: 30px 22px; }
+  .launch-card h1 { font-size: 27px; }
+}
+
+</style>
+</head>
+<body>
+
+<div class="launch-wrap">
+  <div class="launch-card">
+    <div class="eyebrow">Pharmacology · Movement Disorders</div>
+    <h1>Parkinson Disease Pharmacology Quiz</h1>
+    <p class="launch-desc">25 questions spanning mechanism, pharmacokinetics, adverse effects, drug interactions, and clinical decision-making across every drug class in the Parkinson disease lecture. Mix of recall, application, and higher-order clinical reasoning.</p>
+    <div class="launch-meta">
+      <span class="chip">📋 25 Questions</span>
+      <span class="chip">🧠 Learn or Exam Mode</span>
+      <span class="chip">⏱️ Timer + Countdown</span>
+      <span class="chip">🖍️ Highlight &amp; Strikeout Tools</span>
+      <span class="chip">🖨️ Print Review</span>
+    </div>
+    <button class="launch-btn" id="openDemo">Open Quiz</button>
+    <p class="launch-note">Source: Pharmacological Management of Parkinson Disease — Scott D. Ochs, PharmD, UNE College of Medicine</p>
+  </div>
+</div>
+
+<div class="qo" id="qo" data-fs="md">
+  <div class="qt-bar">
+    <h2>Parkinson Disease Pharmacology Quiz</h2>
+    <div class="qt-btns">
+      <div class="fs-ctrl">
+        <span class="fs-label">Text</span>
+        <button class="fs-btn" data-fs-btn="sm">A-</button>
+        <button class="fs-btn on" data-fs-btn="md">A</button>
+        <button class="fs-btn" data-fs-btn="lg">A+</button>
+        <button class="fs-btn" data-fs-btn="xl">A++</button>
+      </div>
+      <button class="qt-btn print" id="printQuiz">Print</button>
+      <button class="qt-btn reset" id="resetQuiz">Reset</button>
+      <button class="qt-btn close" id="closeQuiz">Close</button>
+    </div>
+  </div>
+
+  <div class="qin">
+    <div class="q-left">
+      <div class="score-panel">
+        <div class="score-box"><div class="sv" id="svCurrent">1</div><div class="sl">Current</div></div>
+        <div class="score-box correct"><div class="sv" id="svCorrect">0</div><div class="sl">Correct</div></div>
+        <div class="score-box incorrect"><div class="sv" id="svIncorrect">0</div><div class="sl">Incorrect</div></div>
+      </div>
+
+      <div class="mode-toggle" id="modeToggle">
+        <button class="mode-btn active" id="modeLearn"><span class="mode-icon">🧠</span>Learn Mode</button>
+        <button class="mode-btn" id="modeExam"><span class="mode-icon">📝</span>Exam Mode</button>
+      </div>
+
+      <div class="timer-panel">
+        <div class="timer-card">
+          <div class="timer-lbl">Timer</div>
+          <div class="timer-time" id="timerTime">00:00</div>
+          <div>
+            <button class="tbtn" id="timerStart">▶</button>
+            <button class="tbtn" id="timerPause">⏸</button>
+            <button class="tbtn" id="timerReset">↺</button>
+          </div>
+        </div>
+        <div class="cd-card">
+          <div class="timer-lbl">Countdown</div>
+          <div class="cd-time" id="cdTime">05:00</div>
+          <div class="cd-controls">
+            <button class="cd-pm" id="cdMinus">−</button>
+            <div class="cd-val" id="cdVal">5</div>
+            <div class="cd-unit">min</div>
+            <button class="cd-pm" id="cdPlus">+</button>
+            <button class="cd-go" id="cdGo">Start</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="tool-panel">
+        <button class="q-tool" id="toolHighlight">Highlight tool</button>
+        <button class="q-tool" id="toolStrike">Strikeout tool</button>
+        <button class="q-tool" id="toolReveal">Reveal explanation</button>
+      </div>
+      <div class="tool-status" id="toolStatus">Tool mode: none</div>
+
+      <div class="exam-submit-row" id="examSubmitRow">
+        <div class="exam-progress" id="examProgress">0 of 25 answered</div>
+        <button class="exam-submit-btn" id="submitExam" disabled>Submit Exam</button>
+      </div>
+    </div>
+
+    <div class="q-right">
+      <div class="qcd" id="qA">
+        <div class="qpg"><div class="qpf" id="qpf" style="width:4%;"></div></div>
+        <div class="qbd">
+          <div class="qnum" id="qNum">Question 1 of 25</div>
+          <div class="qstem" id="qStem"><span class="stem-text"></span></div>
+          <div class="ach" id="achWrap"></div>
+          <div class="submit-row"><button class="submit-btn" id="submitOne" disabled>Submit Answer</button></div>
+          <div class="exb" id="exBlock"></div>
+        </div>
+        <div class="qnv">
+          <button class="nb" id="prevBtn">← Previous</button>
+          <div class="qdots" id="qDots"></div>
+          <button class="nb pr" id="nextBtn">Next →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="printReviewRoot" aria-hidden="true"></div>
+
+
+<script>
+const QUESTIONS = [
+{
+  stem: "Lewy bodies, the pathologic hallmark confirmed at autopsy in Parkinson disease, are most characteristically found within surviving neurons of which structure?",
+  choices: ["Substantia nigra", "Locus coeruleus", "Nucleus basalis of Meynert", "Subthalamic nucleus"],
+  correct: 0,
+  explanation: {
+    correct: "Lewy bodies are intracytoplasmic inclusions found in surviving dopaminergic neurons of the substantia nigra — the primary site of neurodegeneration in PD.",
+    teaching: "Loss of substantia nigra dopaminergic neurons, with Lewy bodies in the survivors, is the pathologic definition of PD; diagnosis is often confirmed only postmortem.",
+    wrongs: [
+      "<strong>B</strong> — The locus coeruleus is affected in some neurodegenerative diseases, but it isn't the defining site for Lewy bodies in PD.",
+      "<strong>C</strong> — The nucleus basalis of Meynert is the major cholinergic hub implicated in Alzheimer disease, not PD.",
+      "<strong>D</strong> — The subthalamic nucleus is a key basal ganglia relay station, not the site of Lewy body pathology."
+    ]
+  }
+},
+{
+  stem: "A 64-year-old man is brought in by his wife, who reports his right hand \u201cshakes when he's just sitting still\u201d but calms when he reaches for a cup. Exam shows increased resistance through passive range of motion and slowed voluntary movement. Which triad does this describe?",
+  choices: ["Resting tremor, rigidity, bradykinesia", "Intention tremor, spasticity, hyperreflexia", "Chorea, athetosis, dystonia", "Myoclonus, rigidity, hyperkinesia"],
+  correct: 0,
+  explanation: {
+    correct: "A tremor that lessens with intentional movement (resting tremor), increased resistance to passive movement (rigidity), and slowed voluntary movement (bradykinesia) are PD's three hallmark features.",
+    teaching: "Resting tremor improves with action — a key distinguishing feature from cerebellar/intention tremor, which worsens with movement.",
+    wrongs: [
+      "<strong>B</strong> — Intention tremor with spasticity/hyperreflexia describes cerebellar or upper motor neuron disease, not PD.",
+      "<strong>C</strong> — Chorea, athetosis, and dystonia are hyperkinetic movement disorders — the opposite pattern from PD's hypokinetic presentation.",
+      "<strong>D</strong> — Myoclonus and hyperkinesia don't fit this hypokinetic, resting-tremor-predominant picture."
+    ]
+  }
+},
+{
+  stem: "A 58-year-old woman on chronic metoclopramide for gastroparesis develops a resting tremor, rigidity, and shuffling gait over several months. What is the most likely mechanism?",
+  choices: ["Central D2 receptor blockade", "Selective loss of substantia nigra neurons", "NMDA receptor overactivation", "Accelerated Lewy body formation"],
+  correct: 0,
+  explanation: {
+    correct: "Metoclopramide is a central dopamine D2 receptor antagonist; blocking D2 mimics the loss of dopaminergic signaling seen in idiopathic PD, producing drug-induced parkinsonism.",
+    teaching: "Any chronic D2 blocker — antiemetics like metoclopramide/prochlorperazine, or antipsychotics — can cause parkinsonism that is often reversible after stopping the drug.",
+    wrongs: [
+      "<strong>B</strong> — This describes idiopathic PD's own pathology, not the mechanism of a drug-induced picture.",
+      "<strong>C</strong> — NMDA overactivation isn't the mechanism behind D2-blocker-induced parkinsonism.",
+      "<strong>D</strong> — Metoclopramide doesn't accelerate Lewy body formation; its effect here is purely receptor blockade."
+    ]
+  }
+},
+{
+  stem: "In idiopathic Parkinson disease, loss of dopaminergic input to the striatum leads to bradykinesia primarily because:",
+  choices: ["The indirect pathway becomes chronically overactive", "The direct pathway becomes overactive, over-exciting the cortex", "Striatal cholinergic interneurons degenerate entirely", "Cortical glutamate output to the striatum is abolished"],
+  correct: 0,
+  explanation: {
+    correct: "Loss of D2-mediated dopamine signaling removes the normal brake on the indirect pathway, which becomes overactive and drives excess GABAergic inhibition of the thalamus.",
+    teaching: "Both pathways lose dopamine input in PD, but the clinically dominant effect is disinhibition (overactivity) of the indirect pathway, not underactivity of the direct pathway alone.",
+    wrongs: [
+      "<strong>B</strong> — The direct pathway actually loses drive in PD (less D1 stimulation) — the opposite of overactive.",
+      "<strong>C</strong> — Cholinergic interneurons survive in PD; it's the imbalance with them, not their destruction, that matters.",
+      "<strong>D</strong> — Cortical glutamate release isn't abolished; the problem lies downstream in basal ganglia circuitry."
+    ]
+  }
+},
+{
+  stem: "Carbidopa is co-administered with levodopa specifically because it:",
+  choices: ["Inhibits peripheral decarboxylation of levodopa", "Directly stimulates central dopamine receptors", "Crosses the blood-brain barrier to block central dopamine breakdown", "Increases dopamine reuptake in the striatum"],
+  correct: 0,
+  explanation: {
+    correct: "Carbidopa inhibits L-aromatic amino acid decarboxylase (LAAD) in the periphery only — it does not cross the blood-brain barrier — sparing more levodopa to reach the CNS intact.",
+    teaching: "If carbidopa did cross the BBB, it would block the very conversion (levodopa → dopamine) that makes levodopa work — its peripheral-only action is the whole point.",
+    wrongs: [
+      "<strong>B</strong> — Carbidopa has no direct dopamine receptor activity; only dopamine (from converted levodopa) does.",
+      "<strong>C</strong> — Carbidopa deliberately does <em>not</em> cross the BBB — this describes the opposite of its real property.",
+      "<strong>D</strong> — Carbidopa doesn't affect dopamine reuptake; that's not its mechanism."
+    ]
+  }
+},
+{
+  stem: "A patient on levodopa/carbidopa notices her medication works less reliably after a high-protein meal. The best explanation is:",
+  choices: ["Dietary amino acids compete with levodopa for transport", "Protein delays gastric emptying, destroying levodopa in the stomach", "High-protein meals induce hepatic metabolism of levodopa", "Protein binds levodopa in the gut, blocking absorption entirely"],
+  correct: 0,
+  explanation: {
+    correct: "Levodopa is absorbed and transported into the brain via amino acid transporters; large dietary protein loads compete for the same transporters, reducing effective levodopa delivery.",
+    teaching: "This is why some patients are advised to take levodopa away from high-protein meals or use a modest protein-redistribution approach.",
+    wrongs: [
+      "<strong>B</strong> — The issue is transporter competition, not gastric destruction of the drug.",
+      "<strong>C</strong> — Levodopa's peripheral metabolism is via decarboxylation and COMT, not hepatic enzyme induction by dietary protein.",
+      "<strong>D</strong> — Levodopa isn't completely blocked by protein; absorption still occurs, just diminished."
+    ]
+  }
+},
+{
+  stem: "A Parkinson patient hospitalized for surgery has his home levodopa/carbidopa held for two days. He develops fever, severe rigidity, and altered mental status. What should have been done differently?",
+  choices: ["Levodopa should have been tapered, not stopped abruptly", "Carbidopa should have been continued alone", "A dopamine agonist should have fully replaced levodopa", "An anticholinergic should have been added preoperatively"],
+  correct: 0,
+  explanation: {
+    correct: "Abrupt levodopa withdrawal can precipitate neuroleptic malignant syndrome; levodopa should always be tapered rather than stopped suddenly, even perioperatively.",
+    teaching: "NMS in PD patients is a \u201cdon't miss\u201d complication of abrupt dopaminergic withdrawal — fever, rigidity, and altered mental status should trigger immediate consideration of it.",
+    wrongs: [
+      "<strong>B</strong> — Carbidopa alone has no antiparkinsonian activity and wouldn't prevent withdrawal effects.",
+      "<strong>C</strong> — Substituting a dopamine agonist doesn't fix the core issue — the abrupt discontinuation itself.",
+      "<strong>D</strong> — Anticholinergics don't prevent NMS from dopaminergic withdrawal."
+    ]
+  }
+},
+{
+  stem: "A patient on levodopa is started on phenelzine for depression and develops a hypertensive crisis. This interaction shares its mechanism with which classic food-drug interaction?",
+  choices: ["Tyramine-containing cheese with MAO inhibitors", "Grapefruit juice interacting with CYP3A4 substrate drugs", "Vitamin K-rich green vegetables interacting with warfarin", "Dairy products chelating oral tetracycline antibiotics"],
+  correct: 0,
+  explanation: {
+    correct: "Phenelzine is a non-selective MAO inhibitor; blocking MAO-A prevents breakdown of both dopamine (from levodopa) and dietary tyramine, in each case risking a hypertensive crisis.",
+    teaching: "The \u201ccheese effect\u201d and the levodopa-MAOI interaction are mechanistically identical — unmetabolized pressor amine accumulation from non-selective MAO-A inhibition.",
+    wrongs: [
+      "<strong>B</strong> — Grapefruit-CYP3A4 interactions involve enzyme inhibition of drug metabolism, an unrelated mechanism.",
+      "<strong>C</strong> — Warfarin-vitamin K interactions involve clotting factor synthesis, unrelated to MAO.",
+      "<strong>D</strong> — Dairy-tetracycline involves chelation and reduced absorption, unrelated to MAO."
+    ]
+  }
+},
+{
+  stem: "A patient on long-term carbidopa/levodopa reports her stiffness reliably returns about 30 minutes before her next scheduled dose, every day without exception. This pattern is best described as:",
+  choices: ["End-of-dose \u201cwearing off\u201d", "The \u201con-off\u201d phenomenon pattern", "Peak-dose dyskinesia episode", "Start hesitation freezing"],
+  correct: 0,
+  explanation: {
+    correct: "A predictable return of symptoms timed to the end of the dosing interval is classic \u201cwearing off,\u201d distinct from the random, unpredictable fluctuations of \u201con-off.\u201d",
+    teaching: "Timing is the key differentiator: wearing off is predictable and dose-related; on-off is random and often more severe.",
+    wrongs: [
+      "<strong>B</strong> — On-off is random and unpredictable, not reliably tied to dose timing as in this vignette.",
+      "<strong>C</strong> — Peak-dose dyskinesia occurs at maximal drug levels, not right before the next dose.",
+      "<strong>D</strong> — Start hesitation (\u201cfreezing\u201d) classically occurs on waking, not as a predictable pre-dose pattern."
+    ]
+  }
+},
+{
+  stem: "A patient develops writhing facial and limb movements roughly 60\u201390 minutes after each levodopa dose, coinciding with peak plasma levels. The most appropriate initial step is to:",
+  choices: ["Reduce the dopaminergic drug dose", "Add a COMT inhibitor", "Switch entirely to a dopamine agonist", "Add an anticholinergic"],
+  correct: 0,
+  explanation: {
+    correct: "Peak-dose dyskinesia results from excessive dopaminergic stimulation at peak levels; reducing the dopaminergic dose (or adding amantadine) is the standard first step.",
+    teaching: "This is the opposite problem from wearing off — too much dopamine, not too little — so the fix is dose reduction, not augmentation.",
+    wrongs: [
+      "<strong>B</strong> — COMT inhibitors extend and augment levodopa's effect, which would worsen a peak-level dyskinesia problem.",
+      "<strong>C</strong> — An abrupt full switch isn't the standard stepwise approach and doesn't directly address the peak-level excess.",
+      "<strong>D</strong> — Anticholinergics target tremor, not peak-dose dyskinesia."
+    ]
+  }
+},
+{
+  stem: "Entacapone is prescribed as monotherapy, without levodopa, for a patient with early tremor. What is the expected clinical result?",
+  choices: ["No antiparkinsonian benefit", "Modest improvement in tremor only", "Significant improvement in bradykinesia", "Worsening of dyskinesias"],
+  correct: 0,
+  explanation: {
+    correct: "COMT inhibitors have zero intrinsic antiparkinsonian activity — their entire mechanism depends on extending levodopa's availability; given alone, they do nothing for PD symptoms.",
+    teaching: "Remember: entacapone, opicapone, and tolcapone are only ever adjuncts to levodopa, never monotherapy — a common exam trap.",
+    wrongs: [
+      "<strong>B</strong> — COMT inhibitors don't independently affect tremor without levodopa present.",
+      "<strong>C</strong> — Same reasoning applies — no levodopa on board means no COMT-inhibitor-mediated benefit.",
+      "<strong>D</strong> — There's no levodopa here to cause dyskinesias, so this wouldn't occur either."
+    ]
+  }
+},
+{
+  stem: "A patient with mildly elevated liver enzymes needs a COMT inhibitor added to his levodopa regimen for wearing off. Which agent should be avoided?",
+  choices: ["Tolcapone", "Entacapone", "Opicapone", "All are equally safe"],
+  correct: 0,
+  explanation: {
+    correct: "Tolcapone carries a boxed risk of fatal hepatotoxicity and requires serial LFT monitoring — a poor choice with pre-existing liver enzyme elevation.",
+    teaching: "When a COMT inhibitor is needed in a patient with hepatic concerns, entacapone or opicapone (no hepatotoxicity signal) are preferred over tolcapone.",
+    wrongs: [
+      "<strong>B</strong> — Entacapone lacks tolcapone's hepatotoxicity risk and is reasonable here.",
+      "<strong>C</strong> — Opicapone likewise lacks the hepatotoxicity signal and is a reasonable once-daily option.",
+      "<strong>D</strong> — They are not equally safe — tolcapone specifically carries the hepatotoxicity risk."
+    ]
+  }
+},
+{
+  stem: "A patient newly started on entacapone calls, concerned about orange-tinted urine. The appropriate response is:",
+  choices: ["Reassure — this is a benign, expected effect", "Stop the drug immediately and order LFTs urgently", "Order a urinalysis to evaluate for hematuria", "Switch her promptly to opicapone instead"],
+  correct: 0,
+  explanation: {
+    correct: "Brown/orange urine discoloration is a known, benign adverse effect of entacapone (and tolcapone) and does not require drug discontinuation.",
+    teaching: "Don't confuse benign chromaturia with the hepatotoxicity concern that's specific to tolcapone — different issues within the same drug class.",
+    wrongs: [
+      "<strong>B</strong> — This benign effect doesn't warrant stopping the drug; LFT monitoring is the tolcapone-specific concern.",
+      "<strong>C</strong> — The discoloration comes from drug metabolites, not blood, so a hematuria workup is unnecessary.",
+      "<strong>D</strong> — There's no urgency to switch agents for a benign, expected side effect."
+    ]
+  }
+},
+{
+  stem: "Unlike phenelzine, selegiline does not require dietary tyramine restriction at typical doses. This is best explained by:",
+  choices: ["MAO-B selectivity spares MAO-A to clear dietary tyramine", "Selegiline is poorly absorbed from the GI tract entirely", "Selegiline directly antagonizes peripheral tyramine receptors", "Tyramine has no relevant effect on dopaminergic neurons at all"],
+  correct: 0,
+  explanation: {
+    correct: "At clinically selective doses, selegiline spares MAO-A, which remains available to clear dietary tyramine in the periphery — avoiding the hypertensive crisis seen with non-selective MAO inhibition.",
+    teaching: "Selectivity is dose-dependent — at high doses, selegiline loses MAO-B selectivity and the cheese-effect risk returns.",
+    wrongs: [
+      "<strong>B</strong> — Selegiline is well absorbed orally; poor absorption isn't the reason.",
+      "<strong>C</strong> — There's no direct tyramine receptor antagonism involved; the mechanism is enzymatic selectivity.",
+      "<strong>D</strong> — Tyramine's pressor effects are independent of dopaminergic neurons; this doesn't explain the difference."
+    ]
+  }
+},
+{
+  stem: "A Parkinson patient on selegiline is given meperidine postoperatively for pain and develops agitation, hyperthermia, and myoclonus within hours. The most likely diagnosis is:",
+  choices: ["Serotonin syndrome", "Neuroleptic malignant syndrome", "Malignant hyperthermia", "Anticholinergic toxicity"],
+  correct: 0,
+  explanation: {
+    correct: "MAO-B inhibitors interact with serotonergic/opioid agents like meperidine to precipitate serotonin syndrome — agitation, hyperthermia, and myoclonus are classic features.",
+    teaching: "Meperidine (and other serotonergic drugs) should be avoided in patients on MAO-B inhibitors; this is distinct from the dopaminergic \u201ccheese effect.\u201d",
+    wrongs: [
+      "<strong>B</strong> — NMS is linked to dopamine blockade or abrupt dopaminergic withdrawal, not this drug combination.",
+      "<strong>C</strong> — Malignant hyperthermia is triggered by inhaled anesthetics/succinylcholine, unrelated here.",
+      "<strong>D</strong> — Anticholinergic toxicity presents with dry mucosa, mydriasis, and urinary retention, not this picture."
+    ]
+  }
+},
+{
+  stem: "An 80-year-old man with stage 4 chronic kidney disease and early Parkinson disease needs a dopamine agonist. Which formulation avoids renal dose adjustment entirely?",
+  choices: ["Transdermal rotigotine", "Oral pramipexole", "Oral ropinirole", "Subcutaneous apomorphine"],
+  correct: 0,
+  explanation: {
+    correct: "Rotigotine's transdermal delivery requires no dose adjustment for renal (or hepatic) insufficiency, making it uniquely convenient here.",
+    teaching: "Know each agonist's PK personality: pramipexole is renally excreted, ropinirole is hepatically metabolized (CYP1A2), and rotigotine is the patch with no organ-based adjustment.",
+    wrongs: [
+      "<strong>B</strong> — Pramipexole is renally excreted and requires dose adjustment in renal insufficiency — the opposite of what's needed here.",
+      "<strong>C</strong> — Ropinirole is hepatically metabolized, and this vignette specifies renal, not hepatic, impairment.",
+      "<strong>D</strong> — Apomorphine is a rescue therapy for acute freezing episodes, not a routine renal-friendly option."
+    ]
+  }
+},
+{
+  stem: "A man on pramipexole is brought in by his wife, who reports he has run up significant gambling debts over the past few months \u2014 behavior completely out of character. The most appropriate next step is to:",
+  choices: ["Recognize this as a known dopamine agonist effect and reassess", "Refer to psychiatry for a new primary gambling disorder", "Reassure the family this is unrelated to any medication he takes", "Increase the pramipexole dose to improve motor symptoms"],
+  correct: 0,
+  explanation: {
+    correct: "Impulse control disorders — pathological gambling, compulsive shopping, hypersexuality — are a recognized dopamine agonist adverse effect, especially with pramipexole and ropinirole, and should prompt medication reassessment.",
+    teaching: "Counsel every patient starting a dopamine agonist about ICDs before symptoms appear — they're often mistaken for a primary psychiatric issue.",
+    wrongs: [
+      "<strong>B</strong> — Psychiatric involvement may eventually help, but the first step is recognizing the medication link.",
+      "<strong>C</strong> — This is a well-documented medication effect, not something to dismiss as unrelated.",
+      "<strong>D</strong> — Increasing the causative drug would worsen, not improve, this adverse effect."
+    ]
+  }
+},
+{
+  stem: "A patient asks whether her new \u201crescue\u201d injection for sudden freezing episodes is a narcotic, since it's chemically related to morphine. The best response is:",
+  choices: ["No \u2014 it does not bind opioid receptors despite the name", "Yes \u2014 it is a full opioid agonist used off-label", "Yes \u2014 it is a partial opioid agonist with dopaminergic activity", "No \u2014 it works entirely through cholinergic blockade"],
+  correct: 0,
+  explanation: {
+    correct: "Apomorphine, despite its name and morphine-related chemical structure, does not bind opioid receptors — it works as a dopamine receptor agonist.",
+    teaching: "This name-based misconception is common and worth proactively addressing with patients starting apomorphine.",
+    wrongs: [
+      "<strong>B</strong> — Apomorphine is not an opioid agonist of any kind, full or partial.",
+      "<strong>C</strong> — Same issue — no opioid receptor activity is involved at all.",
+      "<strong>D</strong> — Its mechanism is dopaminergic agonism, not cholinergic blockade."
+    ]
+  }
+},
+{
+  stem: "A patient using apomorphine for rescue freezing episodes is prescribed ondansetron for unrelated nausea. What is the primary concern?",
+  choices: ["Severe hypotension and syncope", "Serotonin syndrome", "QT prolongation as the defining concern", "Loss of apomorphine efficacy"],
+  correct: 0,
+  explanation: {
+    correct: "5-HT3 receptor blockers like ondansetron are contraindicated with apomorphine due to reports of severe hypotension and syncope with this combination.",
+    teaching: "Trimethobenzamide, not a 5-HT3 blocker, is the antiemetic specifically paired with apomorphine to manage its nausea.",
+    wrongs: [
+      "<strong>B</strong> — This interaction isn't characterized as serotonin syndrome; it's a hypotension/syncope risk.",
+      "<strong>C</strong> — QT prolongation isn't the concern specifically named for this interaction.",
+      "<strong>D</strong> — Ondansetron doesn't reduce apomorphine's efficacy; the issue is a dangerous hemodynamic interaction."
+    ]
+  }
+},
+{
+  stem: "A 72-year-old woman with known mitral valve disease needs a dopamine agonist added to her levodopa regimen. Which agent is least appropriate?",
+  choices: ["Bromocriptine", "Pramipexole", "Rotigotine", "Ropinirole"],
+  correct: 0,
+  explanation: {
+    correct: "Bromocriptine is an ergot-derived agonist associated with valvular fibrosis and heart disease — a poor choice with pre-existing valvular pathology.",
+    teaching: "Ergot-derived agonists (bromocriptine, historically pergolide) carry fibrotic/valvulopathy risk that non-ergot agents do not.",
+    wrongs: [
+      "<strong>B</strong> — Pramipexole is a non-ergot agonist without the valvulopathy association.",
+      "<strong>C</strong> — Rotigotine is likewise non-ergot and doesn't carry this risk.",
+      "<strong>D</strong> — Ropinirole is also non-ergot and is a reasonable alternative here."
+    ]
+  }
+},
+{
+  stem: "Istradefylline improves motor symptoms in Parkinson disease primarily by:",
+  choices: ["Blocking adenosine A2A receptors to boost D2 signaling", "Directly agonizing dopamine D2 receptors at the synapse", "Inhibiting central catechol-O-methyltransferase activity", "Blocking NMDA-type glutamate receptors directly"],
+  correct: 0,
+  explanation: {
+    correct: "Istradefylline is a selective adenosine A2A receptor antagonist; since A2A co-localizes with D2 and normally dampens its function, blocking A2A effectively enhances D2 signaling.",
+    teaching: "Istradefylline is a caffeine analog — caffeine's own adenosine-blocking action is part of why epidemiologic studies link caffeine to lower PD risk.",
+    wrongs: [
+      "<strong>B</strong> — Istradefylline doesn't bind D2 directly; its effect on D2 signaling is indirect, via adenosine blockade.",
+      "<strong>C</strong> — This describes the COMT inhibitor mechanism, a different drug class entirely.",
+      "<strong>D</strong> — NMDA blockade describes amantadine's mechanism, not istradefylline's."
+    ]
+  }
+},
+{
+  stem: "A Parkinson patient with both levodopa-induced dyskinesias and a concurrent influenza infection is started on a single agent that could reasonably help both problems. Which drug is this?",
+  choices: ["Amantadine", "Selegiline", "Entacapone", "Trihexyphenidyl"],
+  correct: 0,
+  explanation: {
+    correct: "Amantadine is uniquely useful for treating dyskinesias as a dopaminergic/NMDA-blocking adjunct, and it also carries an FDA indication for influenza treatment.",
+    teaching: "Amantadine's multi-mechanism profile (\u2191dopamine release, \u2193reuptake, NMDA blockade, anticholinergic activity) is what gives it this unusual dual utility.",
+    wrongs: [
+      "<strong>B</strong> — Selegiline has no antiviral indication and isn't the go-to agent for dyskinesias specifically.",
+      "<strong>C</strong> — Entacapone has no antiviral use and, as a levodopa-potentiator, could worsen dyskinesias.",
+      "<strong>D</strong> — Trihexyphenidyl has no antiviral activity and targets tremor, not dyskinesias."
+    ]
+  }
+},
+{
+  stem: "A patient on amantadine develops a mottled, lace-like purplish discoloration of both lower legs along with mild ankle swelling. This finding is:",
+  choices: ["Livedo reticularis, a known amantadine adverse effect", "Drug-induced vasculitis requiring immediate discontinuation", "Evidence of deep vein thrombosis", "An allergic reaction requiring epinephrine"],
+  correct: 0,
+  explanation: {
+    correct: "Livedo reticularis with peripheral edema is a distinctive, well-described adverse effect of amantadine.",
+    teaching: "Recognizing this benign-but-memorable finding can save a patient from an unnecessary vascular workup.",
+    wrongs: [
+      "<strong>B</strong> — This isn't vasculitis and doesn't require immediate discontinuation on its own.",
+      "<strong>C</strong> — DVT presents with unilateral swelling and pain, not bilateral lace-like mottling.",
+      "<strong>D</strong> — This isn't an acute allergic reaction and doesn't require epinephrine."
+    ]
+  }
+},
+{
+  stem: "A 45-year-old man with PD whose most bothersome symptom is tremor (rigidity and bradykinesia are mild) also has narrow-angle glaucoma. What is the concern with adding trihexyphenidyl?",
+  choices: ["Anticholinergic effects risking angle-closure glaucoma", "It will specifically and significantly worsen his bradykinesia", "It is renally cleared, making it unsafe with his glaucoma", "There genuinely is no relevant interaction to worry about"],
+  correct: 0,
+  explanation: {
+    correct: "Anticholinergics are contraindicated in glaucoma because pupillary dilation can precipitate an acute angle-closure crisis — a real concern despite an otherwise good symptom fit.",
+    teaching: "Anticholinergics work best for tremor and are best tolerated in younger patients — but glaucoma is an absolute contraindication regardless of age or symptom fit.",
+    wrongs: [
+      "<strong>B</strong> — Anticholinergics aren't particularly effective against bradykinesia either way, but that's not the glaucoma-specific issue.",
+      "<strong>C</strong> — The concern isn't renal clearance; it's the anticholinergic-induced angle-closure risk.",
+      "<strong>D</strong> — There is a real, clinically important contraindication here."
+    ]
+  }
+},
+{
+  stem: "A 78-year-old man with new bradykinesia and rigidity has stage 3 chronic kidney disease and a distant history of a psychotic episode. Which initial therapy best fits this overall picture?",
+  choices: ["Levodopa/carbidopa", "Pramipexole", "Bromocriptine", "Trihexyphenidyl"],
+  correct: 0,
+  explanation: {
+    correct: "At 78, levodopa/carbidopa is preferred over a dopamine agonist by age alone; it also avoids pramipexole's renal-adjustment issue and agonists' psychosis risk given his history.",
+    teaching: "Synthesis question: age (>65 \u2192 levodopa preferred), renal disease (avoid pramipexole), and psychiatric history (agonists \u2191 psychosis risk) all point the same direction here.",
+    wrongs: [
+      "<strong>B</strong> — Pramipexole requires renal adjustment in CKD and carries higher psychosis risk — both problematic here.",
+      "<strong>C</strong> — Bromocriptine carries its own cardiac/fibrotic risk and isn't preferred when non-ergot or levodopa options exist.",
+      "<strong>D</strong> — Anticholinergics are poorly tolerated in older patients and don't fit this bradykinesia/rigidity-predominant case."
+    ]
+  }
+}
+];
+
+/* ================= STATE ================= */
+let currentIndex = 0;
+let quizMode = 'learn'; // 'learn' | 'exam'
+let examSubmitted = false;
+let toolMode = null; // 'highlight' | 'strike' | null
+let selectedChoice = null; // string index of currently selected choice, or null
+
+// Per-question answer state
+const answers = QUESTIONS.map(() => ({
+  selected: null,   // string index
+  graded: false,
+  correct: null,    // true/false once graded
+  hl: new Set(),     // choice indices highlighted
+  st: new Set(),     // choice indices struck out
+  stemHtml: null,    // saved stem markup (with hl/st spans) if modified
+  stemWhole: null     // 'hl' | 'st' | null for whole-stem toggle
+}));
+
+/* ================= DOM REFS ================= */
+const qo = document.getElementById('qo');
+const openDemo = document.getElementById('openDemo');
+const closeQuiz = document.getElementById('closeQuiz');
+const resetQuiz = document.getElementById('resetQuiz');
+const printQuizBtn = document.getElementById('printQuiz');
+const qNum = document.getElementById('qNum');
+const qStem = document.getElementById('qStem');
+const achWrap = document.getElementById('achWrap');
+const submitOne = document.getElementById('submitOne');
+const exBlock = document.getElementById('exBlock');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const qDots = document.getElementById('qDots');
+const qpf = document.getElementById('qpf');
+const svCurrent = document.getElementById('svCurrent');
+const svCorrect = document.getElementById('svCorrect');
+const svIncorrect = document.getElementById('svIncorrect');
+const modeLearn = document.getElementById('modeLearn');
+const modeExam = document.getElementById('modeExam');
+const examSubmitRow = document.getElementById('examSubmitRow');
+const examProgress = document.getElementById('examProgress');
+const submitExamBtn = document.getElementById('submitExam');
+const toolHighlight = document.getElementById('toolHighlight');
+const toolStrike = document.getElementById('toolStrike');
+const toolReveal = document.getElementById('toolReveal');
+const toolStatus = document.getElementById('toolStatus');
+
+/* ================= UTIL ================= */
+function escapeHTML(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+const LETTERS = ['A','B','C','D','E'];
+
+/* ================= OPEN / CLOSE ================= */
+openDemo.addEventListener('click', () => { qo.classList.add('open'); renderQuestion(currentIndex); });
+closeQuiz.addEventListener('click', () => {
+  qo.classList.add('closing');
+  setTimeout(() => qo.classList.remove('open','closing'), 320);
+});
+
+/* ================= RENDER ================= */
+function renderQuestion(index) {
+  currentIndex = index;
+  const q = QUESTIONS[index];
+  const st = answers[index];
+  selectedChoice = st.selected;
+
+  qNum.textContent = `Question ${index + 1} of ${QUESTIONS.length}`;
+  qpf.style.width = (((index + 1) / QUESTIONS.length) * 100) + '%';
+
+  // Stem
+  qStem.classList.remove('hl-applied','st-applied','tool-hover');
+  if (st.stemWhole === 'hl') qStem.classList.add('hl-applied');
+  if (st.stemWhole === 'st') qStem.classList.add('st-applied');
+  qStem.innerHTML = st.stemHtml !== null ? st.stemHtml : `<span class="stem-text">${escapeHTML(q.stem)}</span>`;
+
+  // Choices
+  achWrap.innerHTML = '';
+  q.choices.forEach((choiceText, i) => {
+    const ac = document.createElement('div');
+    ac.className = 'ac';
+    ac.dataset.choice = String(i);
+    ac.innerHTML = `<div class="cl">${LETTERS[i]}</div><div class="ctx">${escapeHTML(choiceText)}</div>`;
+    if (st.hl.has(i)) ac.classList.add('hl-applied');
+    if (st.st.has(i)) ac.classList.add('st-applied');
+    if (st.selected === String(i)) ac.classList.add('sel');
+    achWrap.appendChild(ac);
+  });
+
+  wireChoiceEls();
+
+  // Grading visual state + explanation
+  exBlock.classList.remove('vis');
+  exBlock.innerHTML = buildExplanationHTML(q);
+  const showGraded = st.graded && (quizMode === 'learn' || examSubmitted);
+  if (showGraded) applyGradedVisuals(index);
+
+  // Submit button visibility/state
+  const inExamUngraded = quizMode === 'exam' && !examSubmitted;
+  document.querySelector('.submit-row').style.display = inExamUngraded ? 'none' : 'flex';
+  submitOne.disabled = st.selected === null || st.graded;
+  submitOne.textContent = st.graded ? 'Answer Submitted' : 'Submit Answer';
+
+  // Nav buttons
+  prevBtn.disabled = index === 0;
+  nextBtn.disabled = index === QUESTIONS.length - 1;
+
+  renderDots();
+  renderScore();
+  updateExamButton();
+  clearToolHoverState();
+}
+
+function buildExplanationHTML(q) {
+  const wrongHtml = q.explanation.wrongs.map(w => `<div class="wce">${w}</div>`).join('');
+  return `
+    <div class="exs exc"><div class="exl">Correct Answer</div><div class="ext">${q.explanation.correct}</div></div>
+    <div class="exs exe"><div class="exl">Teaching Point</div><div class="ext">${q.explanation.teaching}</div></div>
+    <div class="exs exw"><div class="exl">Why the Others Are Wrong</div><div class="ext">${wrongHtml}</div></div>
+  `;
+}
+
+function applyGradedVisuals(index) {
+  const q = QUESTIONS[index];
+  const st = answers[index];
+  const choiceEls = Array.from(achWrap.querySelectorAll('.ac'));
+  choiceEls.forEach(c => c.classList.add('dis'));
+  choiceEls[q.correct].classList.add('cor');
+  if (st.selected !== null && Number(st.selected) !== q.correct) {
+    const picked = choiceEls.find(c => c.dataset.choice === st.selected);
+    if (picked) picked.classList.add('inc');
+  }
+  exBlock.classList.add('vis');
+}
+
+/* ================= CHOICE INTERACTION ================= */
+function wireChoiceEls() {
+  const choiceEls = Array.from(achWrap.querySelectorAll('.ac'));
+  choiceEls.forEach(choice => {
+    choice.addEventListener('click', () => {
+      const st = answers[currentIndex];
+      if (toolMode === 'highlight') {
+        const idx = Number(choice.dataset.choice);
+        if (st.hl.has(idx)) { st.hl.delete(idx); choice.classList.remove('hl-applied'); }
+        else { st.hl.add(idx); choice.classList.add('hl-applied'); st.st.delete(idx); choice.classList.remove('st-applied'); }
+        return;
+      }
+      if (toolMode === 'strike') {
+        const idx = Number(choice.dataset.choice);
+        if (st.st.has(idx)) { st.st.delete(idx); choice.classList.remove('st-applied'); }
+        else { st.st.add(idx); choice.classList.add('st-applied'); st.hl.delete(idx); choice.classList.remove('hl-applied'); }
+        return;
+      }
+      if (st.graded && quizMode === 'learn') return; // locked after grading in learn mode
+      if (examSubmitted) return;
+      choiceEls.forEach(c => c.classList.remove('sel'));
+      choice.classList.add('sel');
+      st.selected = choice.dataset.choice;
+      selectedChoice = st.selected;
+      submitOne.disabled = false;
+      renderDots();
+      updateExamButton();
+      updateExamProgress();
+    });
+  });
+}
+
+/* ================= GRADING ================= */
+function gradeCurrentQuestion() {
+  const st = answers[currentIndex];
+  if (st.selected === null) return false;
+  const q = QUESTIONS[currentIndex];
+  st.graded = true;
+  st.correct = Number(st.selected) === q.correct;
+  applyGradedVisuals(currentIndex);
+  submitOne.disabled = true;
+  submitOne.textContent = 'Answer Submitted';
+  renderDots();
+  renderScore();
+  return true;
+}
+
+submitOne.addEventListener('click', () => {
+  if (quizMode === 'exam' && !examSubmitted) return;
+  gradeCurrentQuestion();
+});
+
+/* ================= SCORE / DOTS ================= */
+function renderScore() {
+  svCurrent.textContent = String(currentIndex + 1);
+  let correct = 0, incorrect = 0;
+  answers.forEach(a => { if (a.graded) { if (a.correct) correct++; else incorrect++; } });
+  svCorrect.textContent = String(correct);
+  svIncorrect.textContent = String(incorrect);
+}
+
+function renderDots() {
+  qDots.innerHTML = '';
+  answers.forEach((a, i) => {
+    const dot = document.createElement('button');
+    dot.className = 'qd';
+    if (i === currentIndex) dot.classList.add('cur');
+    if (a.graded) dot.classList.add(a.correct ? 'acor' : 'ainc');
+    else if (a.selected !== null) dot.classList.add('asel');
+    dot.addEventListener('click', () => renderQuestion(i));
+    qDots.appendChild(dot);
+  });
+}
+
+function updateExamProgress() {
+  const answered = answers.filter(a => a.selected !== null).length;
+  examProgress.textContent = `${answered} of ${QUESTIONS.length} answered`;
+}
+
+/* ================= NAVIGATION ================= */
+prevBtn.addEventListener('click', () => { if (currentIndex > 0) renderQuestion(currentIndex - 1); });
+nextBtn.addEventListener('click', () => { if (currentIndex < QUESTIONS.length - 1) renderQuestion(currentIndex + 1); });
+
+/* ================= MODE TOGGLE ================= */
+function setMode(mode) {
+  quizMode = mode;
+  modeLearn.classList.toggle('active', mode === 'learn');
+  modeExam.classList.toggle('active', mode === 'exam');
+  examSubmitRow.classList.toggle('show', mode === 'exam');
+  updateExamButton();
+  renderQuestion(currentIndex);
+  updateExamProgress();
+}
+modeLearn.addEventListener('click', () => setMode('learn'));
+modeExam.addEventListener('click', () => setMode('exam'));
+
+function updateExamButton() {
+  const inExam = quizMode === 'exam';
+  const st = answers[currentIndex];
+  submitExamBtn.disabled = !inExam || examSubmitted || answers.every(a => a.selected === null);
+  examSubmitRow.classList.toggle('exam-live', inExam && !examSubmitted);
+  examSubmitRow.classList.toggle('exam-done', examSubmitted);
+  submitExamBtn.textContent = examSubmitted ? 'Exam Submitted' : 'Submit Exam';
+}
+
+submitExamBtn.addEventListener('click', () => {
+  if (quizMode !== 'exam') return;
+  if (examSubmitted) return;
+  examSubmitted = true;
+  answers.forEach((a, i) => {
+    if (a.selected !== null && !a.graded) {
+      a.graded = true;
+      a.correct = Number(a.selected) === QUESTIONS[i].correct;
+    }
+  });
+  examProgress.textContent = 'Exam submitted';
+  updateExamButton();
+  renderQuestion(currentIndex);
+});
+
+/* ================= TIMERS ================= */
+let timerInt = null, timerSec = 0;
+const timerTime = document.getElementById('timerTime');
+function renderTimer() {
+  const m = String(Math.floor(timerSec / 60)).padStart(2,'0');
+  const s = String(timerSec % 60).padStart(2,'0');
+  timerTime.textContent = `${m}:${s}`;
+}
+document.getElementById('timerStart').addEventListener('click', () => {
+  if (timerInt) return;
+  timerInt = setInterval(() => { timerSec += 1; renderTimer(); }, 1000);
+});
+document.getElementById('timerPause').addEventListener('click', () => { clearInterval(timerInt); timerInt = null; });
+document.getElementById('timerReset').addEventListener('click', () => { clearInterval(timerInt); timerInt=null; timerSec=0; renderTimer(); });
+
+let cdMinutes = 5, cdInt = null, cdSec = cdMinutes * 60;
+const cdTime = document.getElementById('cdTime');
+const cdVal = document.getElementById('cdVal');
+const cdGo = document.getElementById('cdGo');
+function renderCountdown() {
+  const m = String(Math.floor(cdSec / 60)).padStart(2,'0');
+  const s = String(cdSec % 60).padStart(2,'0');
+  cdTime.textContent = `${m}:${s}`;
+}
+document.getElementById('cdMinus').addEventListener('click', () => {
+  if (cdInt) return;
+  cdMinutes = Math.max(1, cdMinutes - 1); cdVal.textContent = cdMinutes;
+  cdSec = cdMinutes * 60; renderCountdown();
+});
+document.getElementById('cdPlus').addEventListener('click', () => {
+  if (cdInt) return;
+  cdMinutes = Math.min(99, cdMinutes + 1); cdVal.textContent = cdMinutes;
+  cdSec = cdMinutes * 60; renderCountdown();
+});
+cdGo.addEventListener('click', () => {
+  if (cdInt) { clearInterval(cdInt); cdInt = null; cdGo.textContent = 'Start'; return; }
+  cdGo.textContent = 'Pause';
+  cdInt = setInterval(() => {
+    if (cdSec <= 0) { clearInterval(cdInt); cdInt = null; cdGo.textContent = 'Start'; return; }
+    cdSec -= 1; renderCountdown();
+  }, 1000);
+});
+
+/* ================= TOOLS ================= */
+function setToolMode(mode) {
+  toolMode = toolMode === mode ? null : mode;
+  updateToolUI();
+}
+function updateToolUI() {
+  toolHighlight.classList.toggle('active', toolMode === 'highlight');
+  toolHighlight.classList.toggle('hl-tool', toolMode === 'highlight');
+  toolStrike.classList.toggle('active', toolMode === 'strike');
+  toolStrike.classList.toggle('st-tool', toolMode === 'strike');
+  toolStatus.classList.remove('active-highlight','active-strike');
+  if (toolMode === 'highlight') { toolStatus.textContent = 'Tool mode: highlight (click text/choices)'; toolStatus.classList.add('active-highlight'); }
+  else if (toolMode === 'strike') { toolStatus.textContent = 'Tool mode: strikeout (click text/choices)'; toolStatus.classList.add('active-strike'); }
+  else { toolStatus.textContent = 'Tool mode: none'; }
+  qStem.classList.toggle('tool-hover', !!toolMode);
+}
+toolHighlight.addEventListener('click', () => setToolMode('highlight'));
+toolStrike.addEventListener('click', () => setToolMode('strike'));
+toolReveal.addEventListener('click', () => exBlock.classList.toggle('vis'));
+
+function clearToolHoverState() {
+  qStem.classList.toggle('tool-hover', !!toolMode);
+}
+
+function applyStemMarkup(type) {
+  const sel = window.getSelection();
+  if (!sel || sel.rangeCount === 0 || sel.isCollapsed) return false;
+  const range = sel.getRangeAt(0);
+  if (!qStem.contains(range.commonAncestorContainer)) return false;
+  const wrapper = document.createElement('span');
+  wrapper.className = type === 'highlight' ? 'stem-hl' : 'stem-st';
+  try { range.surroundContents(wrapper); }
+  catch (e) { const frag = range.extractContents(); wrapper.appendChild(frag); range.insertNode(wrapper); }
+  sel.removeAllRanges();
+  qStem.normalize();
+  answers[currentIndex].stemHtml = qStem.innerHTML;
+  return true;
+}
+function toggleWholeStem(type) {
+  const st = answers[currentIndex];
+  if (type === 'highlight') {
+    const on = st.stemWhole !== 'hl';
+    st.stemWhole = on ? 'hl' : null;
+    qStem.classList.toggle('hl-applied', on);
+    qStem.classList.remove('st-applied');
+  } else {
+    const on = st.stemWhole !== 'st';
+    st.stemWhole = on ? 'st' : null;
+    qStem.classList.toggle('st-applied', on);
+    qStem.classList.remove('hl-applied');
+  }
+}
+qStem.addEventListener('click', e => {
+  if (!toolMode) return;
+  const didApply = applyStemMarkup(toolMode);
+  if (!didApply) toggleWholeStem(toolMode);
+  e.preventDefault();
+});
+
+/* ================= FONT SIZE ================= */
+document.querySelectorAll('[data-fs-btn]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    qo.dataset.fs = btn.dataset.fsBtn;
+    document.querySelectorAll('[data-fs-btn]').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+  });
+});
+
+/* ================= RESET ================= */
+resetQuiz.addEventListener('click', () => {
+  if (!confirm('Reset the quiz? This clears all answers, highlights, and progress.')) return;
+  answers.forEach(a => { a.selected=null; a.graded=false; a.correct=null; a.hl=new Set(); a.st=new Set(); a.stemHtml=null; a.stemWhole=null; });
+  examSubmitted = false;
+  quizMode = 'learn';
+  modeLearn.classList.add('active'); modeExam.classList.remove('active');
+  examSubmitRow.classList.remove('show','exam-live','exam-done');
+  timerSec = 0; renderTimer();
+  clearInterval(timerInt); timerInt = null;
+  clearInterval(cdInt); cdInt = null; cdMinutes = 5; cdSec = 300; cdVal.textContent = '5'; renderCountdown(); cdGo.textContent = 'Start';
+  toolMode = null; updateToolUI();
+  renderQuestion(0);
+});
+
+/* ================= PRINT REVIEW ================= */
+function buildPrintReviewMarkup() {
+  const rows = QUESTIONS.map((q, i) => {
+    const st = answers[i];
+    const choicesHtml = q.choices.map((c, ci) => {
+      let cls = '';
+      if (ci === q.correct) cls = 'correct';
+      else if (st.selected !== null && Number(st.selected) === ci) cls = 'incorrect';
+      return `<div class="print-choice ${cls}">${LETTERS[ci]}. ${escapeHTML(c)}</div>`;
+    }).join('');
+    const wrongHtml = q.explanation.wrongs.map(w => `<div>${w}</div>`).join('');
+    return `
+      <div class="print-card">
+        <div class="pq-num">Question ${i + 1} of ${QUESTIONS.length}${st.graded ? (st.correct ? ' — Correct' : ' — Incorrect') : ' — Not answered'}</div>
+        <div class="pq-stem">${escapeHTML(q.stem)}</div>
+        ${choicesHtml}
+        <div class="print-explainer correct-box">${q.explanation.correct}</div>
+        <div class="print-explainer teach-box">${q.explanation.teaching}</div>
+        <div class="print-explainer wrong-box">${wrongHtml}</div>
+      </div>`;
+  }).join('');
+  const correct = answers.filter(a => a.graded && a.correct).length;
+  const graded = answers.filter(a => a.graded).length;
+  return `<div class="print-shell">
+    <h1>Parkinson Disease Pharmacology Quiz — Answer Review</h1>
+    <div class="print-meta">${graded} of ${QUESTIONS.length} graded · ${correct} correct</div>
+    ${rows}
+  </div>`;
+}
+function printQuizReview() {
+  document.getElementById('printReviewRoot').innerHTML = buildPrintReviewMarkup();
+  document.body.classList.add('print-review-active');
+  setTimeout(() => window.print(), 50);
+}
+window.addEventListener('afterprint', () => { document.body.classList.remove('print-review-active'); });
+printQuizBtn.addEventListener('click', printQuizReview);
+
+/* ================= INIT ================= */
+renderTimer(); renderCountdown();
+renderQuestion(0);
+
+</script>
+</body>
+</html>
