@@ -19,13 +19,17 @@
   --sh:0 8px 24px rgba(18,32,60,.08);--sh2:0 14px 34px rgba(18,32,60,.10);--sh3:0 28px 70px rgba(18,32,60,.12);
   --tr:0.25s cubic-bezier(.4,0,.2,1);--r:14px;--rs:8px;
   --stem-size:25px;--choice-size:15.5px;
+  --app-vh:100dvh;--app-vw:100vw;
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased}
+body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--ink);min-height:var(--app-vh);-webkit-font-smoothing:antialiased}
+body.nbme-lock{overflow:hidden}
 .view{display:none}.view.active{display:block}
+#viewQuizNbme{height:var(--app-vh);overflow:hidden}
+#viewQuizNbme.active{position:fixed;inset:0;z-index:40}
 
 /* ══ SETUP VIEW ══ */
-.setup-page{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px}
+.setup-page{min-height:var(--app-vh);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px}
 .setup-card{background:var(--white);border-radius:24px;border:1px solid var(--rule);box-shadow:var(--sh3);width:min(680px,100%);overflow:hidden}
 .setup-top{background:linear-gradient(135deg,var(--navy) 0%,#1B2A4A 100%);padding:36px 36px 30px;text-align:center}
 .setup-emoji{font-size:48px;margin-bottom:14px}
@@ -77,7 +81,7 @@ body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--ink);mi
 .err-msg.show{display:flex}
 
 /* ══ QUIZ VIEW ══ */
-.quiz-page{min-height:100vh;display:flex;flex-direction:column}
+.quiz-page{min-height:var(--app-vh);display:flex;flex-direction:column}
 
 /* top bar */
 .qt-bar{background:linear-gradient(180deg,var(--navy) 0%,var(--navy2) 100%);display:flex;align-items:center;gap:14px;padding:0 22px;height:52px;flex-shrink:0;box-shadow:0 2px 12px rgba(18,32,60,.22)}
@@ -187,13 +191,13 @@ body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--ink);mi
 .qd.mk{box-shadow:0 0 0 2px rgba(192,123,26,.28)}
 
 /* NBME / NBOME VIEW */
-.nb-wrap{min-height:100vh;background:#0d1117}
-.nb-util{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 18px;background:#0d1117;color:#fff}
+.nb-wrap{height:var(--app-vh);min-height:var(--app-vh);display:flex;flex-direction:column;overflow:hidden;background:#0d1117}
+.nb-util{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 18px;background:#0d1117;color:#fff}
 .nb-util-name{font-family:'Crimson Pro',serif;font-size:26px;line-height:1;letter-spacing:-.3px}
 .nb-util-actions{display:flex;flex-wrap:wrap;gap:8px}
 .nb-util-btn{padding:8px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);color:#fff;font-family:'Nunito',sans-serif;font-size:12.5px;font-weight:800;cursor:pointer;transition:var(--tr)}
 .nb-util-btn:hover{background:rgba(255,255,255,.14);transform:translateY(-1px)}
-.nb-app{width:100%;min-height:calc(100vh - 58px);display:grid;grid-template-rows:auto 1fr auto;background:#fff}
+.nb-app{flex:1;min-height:0;width:100%;display:grid;grid-template-rows:auto minmax(0,1fr) auto;background:#fff;overflow:hidden}
 .nb-header,.nb-footer{background:#004976;color:#fff;border-color:#003653;user-select:none}
 .nb-header{min-height:78px;display:grid;grid-template-columns:190px 1fr auto;align-items:stretch;border-bottom:3px solid #003653}
 .nb-status-box{padding:10px 14px;display:flex;flex-direction:column;justify-content:center;border-right:1px solid rgba(255,255,255,.28);line-height:1.15}
@@ -202,6 +206,8 @@ body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--ink);mi
 .nb-header-center{display:flex;align-items:center;gap:8px;padding:8px 12px;flex-wrap:wrap}
 .nb-action-btn,.nb-mode-pill{min-height:52px;padding:6px 11px;border:1px solid rgba(255,255,255,.5);border-radius:3px;display:flex;align-items:center;justify-content:center;gap:6px;background:transparent;color:#fff;cursor:pointer;font-family:Arial,Helvetica,sans-serif;font-size:.8rem;font-weight:700;line-height:1.2;transition:background .16s ease,border-color .16s ease}
 .nb-action-btn:hover,.nb-mode-pill:hover,.nb-mode-pill.active,.nb-action-btn.active{background:#356f94}
+.nb-action-btn:disabled,.nb-mode-pill:disabled{opacity:.45;cursor:default;background:transparent}
+.nb-action-btn:disabled:hover,.nb-mode-pill:disabled:hover{background:transparent}
 .nb-action-btn.active.hl{background:#f5c84b;border-color:#fff;color:#17212b}
 .nb-action-btn.active.st{background:#f9d8de;border-color:#fff;color:#7d1830}
 .nb-item-picker{display:flex;align-items:center;gap:7px;white-space:nowrap}
@@ -212,17 +218,25 @@ body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--ink);mi
 .nb-nav-btn:hover{background:#356f94}
 .nb-nav-btn:disabled{opacity:.45;cursor:default;background:transparent}
 .nb-nav-btn .icon{display:block;font-size:1.4rem;margin-bottom:4px}
-.nb-body{min-height:0;display:grid;grid-template-columns:74px 1fr;background:#fff}
-.nb-rail{min-height:0;overflow-y:auto;padding:7px 6px;background:#e8edf1;border-right:1px solid #8b969f}
-.nb-rail-title{margin:3px 0 7px;color:#35424e;text-align:center;font-size:.69rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.nb-body{min-height:0;display:grid;grid-template-columns:84px minmax(0,1fr);background:#fff;overflow:hidden}
+.nb-rail{min-height:0;display:flex;flex-direction:column;gap:6px;padding:7px 6px;background:#e8edf1;border-right:1px solid #8b969f;overflow:hidden}
+.nb-rail-title{margin:3px 0 1px;color:#35424e;text-align:center;font-size:.69rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.nb-rail-scroll{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding-right:1px;scrollbar-width:thin;scrollbar-color:#8b969f #dce4ea}
+.nb-rail-scroll::-webkit-scrollbar{width:8px}
+.nb-rail-scroll::-webkit-scrollbar-track{background:#dce4ea;border-radius:999px}
+.nb-rail-scroll::-webkit-scrollbar-thumb{background:#8b969f;border-radius:999px}
+.nb-rail-arrow{display:inline-flex;align-items:center;justify-content:center;width:100%;height:28px;border:1px solid #8d98a1;border-radius:3px;background:#f7fafc;color:#22313d;font-size:.9rem;font-weight:900;cursor:pointer;transition:background .16s ease,border-color .16s ease,color .16s ease}
+.nb-rail-arrow:hover:not(:disabled){background:#d9e5ee;border-color:#647280}
+.nb-rail-arrow:disabled{opacity:.38;cursor:default}
 .nb-rail-btn{width:100%;height:35px;margin-bottom:5px;position:relative;border:1px solid #8d98a1;border-radius:2px;background:#fff;color:#1d2933;font-weight:700;cursor:pointer}
 .nb-rail-btn:hover{background:#f4f8fb}
 .nb-rail-btn.current{background:#004976;color:#fff;border-color:#004976}
 .nb-rail-btn.answered::after{content:'';position:absolute;right:4px;bottom:4px;width:7px;height:7px;border-radius:50%;background:#257a43;box-shadow:0 0 0 1px #fff}
 .nb-rail-btn.marked::before{content:'⚑';position:absolute;left:3px;top:1px;color:#bd7400;font-size:.78rem}
 .nb-rail-btn.current.marked::before{color:#ffd75e}
-.nb-stage{position:relative;min-width:0;min-height:0;overflow:hidden;background:#fff}
-.nb-question-scroll{height:100%;overflow:auto;padding:26px clamp(24px,6vw,92px) 70px}
+.nb-stage{position:relative;display:flex;flex-direction:column;min-width:0;min-height:0;overflow:hidden;background:#fff}
+#nbFinishBanner{flex-shrink:0}
+.nb-question-scroll{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;padding:26px clamp(24px,6vw,92px) 70px}
 .nb-question-card,.nb-review-wrap{width:min(980px,100%);margin:0 auto}
 .nb-question-label{margin-bottom:16px;color:#5b6570;font-weight:700;font-size:.9rem;letter-spacing:.02em}
 .nb-question-stem{font-size:1.08rem;line-height:1.58;user-select:text}
@@ -305,17 +319,17 @@ body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--ink);mi
 .lab-table .continuation{color:transparent}
 
 /* finish overlay */
-.fin{background:linear-gradient(135deg,var(--navy),#2A3562);border-radius:28px;padding:32px;text-align:center;color:#fff;box-shadow:var(--sh3);margin-bottom:18px}
-.fin-pct{font-family:'IBM Plex Mono',monospace;font-size:64px;font-weight:700;color:var(--teal-glow);line-height:1}
+.fin{background:linear-gradient(135deg,var(--navy),#2A3562);border-radius:24px;padding:22px 24px;text-align:center;color:#fff;box-shadow:var(--sh3);margin:0 auto 14px;max-width:min(780px,100%)}
+.fin-pct{font-family:'IBM Plex Mono',monospace;font-size:46px;font-weight:700;color:var(--teal-glow);line-height:1}
 .fin-pct-lbl{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.45);margin:4px 0 14px}
-.fin-msg{font-family:'Crimson Pro',serif;font-size:30px;font-weight:700;margin-bottom:6px}
-.fin-sub{font-size:14px;color:rgba(255,255,255,.6);margin-bottom:22px}
-.fin-btns{display:flex;gap:12px;justify-content:center}
-.fin-btn{padding:11px 20px;border-radius:12px;border:1.5px solid rgba(255,255,255,.25);background:transparent;color:rgba(255,255,255,.8);font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;cursor:pointer;transition:all .18s}
+.fin-msg{font-family:'Crimson Pro',serif;font-size:24px;font-weight:700;margin-bottom:6px}
+.fin-sub{font-size:13px;color:rgba(255,255,255,.6);margin-bottom:18px}
+.fin-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.fin-btn{padding:10px 16px;border-radius:12px;border:1.5px solid rgba(255,255,255,.25);background:transparent;color:rgba(255,255,255,.8);font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;cursor:pointer;transition:all .18s}
 .fin-btn:hover{background:rgba(255,255,255,.12);color:#fff}
 
 /* final review sheet */
-.sum-sheet{margin-top:18px;background:rgba(255,255,255,.96);border:1px solid rgba(18,32,60,.08);border-radius:28px;box-shadow:var(--sh3);overflow:hidden}
+.sum-sheet{margin-top:18px;background:rgba(255,255,255,.96);border:1px solid rgba(18,32,60,.08);border-radius:28px;box-shadow:var(--sh3);overflow:hidden;scroll-margin-top:20px}
 .sum-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding:26px 28px 22px;border-bottom:1px solid rgba(18,32,60,.08);background:linear-gradient(180deg,color-mix(in srgb,var(--warm) 48%,transparent),#fff)}
 .sum-kicker{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--mist);margin-bottom:8px}
 .sum-title{font-family:'Crimson Pro',serif;font-size:34px;line-height:1.02;color:var(--navy);margin:0 0 8px}
@@ -345,6 +359,7 @@ body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--ink);mi
 .sum-section{padding:16px 18px;border-radius:18px;border:1px solid rgba(18,32,60,.06);background:rgba(246,243,236,.56)}
 .sum-label{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:800;letter-spacing:1.7px;text-transform:uppercase;color:var(--mist);margin-bottom:9px}
 .sum-text{font-size:15px;line-height:1.65;color:var(--ink2)}
+.sum-view{display:grid;gap:18px}
 
 /* responsive */
 @media(max-width:820px){
@@ -438,7 +453,7 @@ body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--ink);mi
         </button>
         <button class="setup-ui-btn" id="uiModeNbmeBtn" type="button" onclick="selectLaunchUI('nbme')">
           <span class="setup-ui-name">NBME / NBOME Style</span>
-          <span class="setup-ui-meta">Header navigation, item rail, footer timer, and an exam-stage layout modeled after the simulator.</span>
+          <span class="setup-ui-meta">Header navigation, question rail, footer timer, and an exam-stage layout modeled after the simulator.</span>
         </button>
       </div>
     </div>
@@ -543,7 +558,7 @@ body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--ink);mi
   <div class="nb-app">
     <header class="nb-header">
       <div class="nb-status-box">
-        <strong id="nbItemIndicator">Item: 1 of 1</strong>
+        <strong id="nbItemIndicator">Question: 1 of 1</strong>
         <span id="nbStatusMeta">Answered 0 of 1</span>
       </div>
 
@@ -554,9 +569,10 @@ body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--ink);mi
         <button class="nb-action-btn" type="button" onclick="clearMarks()">Clear</button>
         <button class="nb-mode-pill active" id="nbModeLearn" type="button" onclick="setMode('learn')">Learn</button>
         <button class="nb-mode-pill" id="nbModeExam" type="button" onclick="setMode('exam')">Testing</button>
+        <button class="nb-action-btn" id="nbSummaryBtn" type="button" onclick="toggleSummaryPanel()" disabled>See Score &amp; Summary</button>
         <div class="nb-item-picker">
-          <label for="nbItemSelect">Item</label>
-          <select id="nbItemSelect" aria-label="Jump to an item" onchange="goQ(parseInt(this.value,10))"></select>
+          <label for="nbItemSelect">Question</label>
+          <select id="nbItemSelect" aria-label="Jump to a question" onchange="goQ(parseInt(this.value,10))"></select>
         </div>
       </div>
 
@@ -572,8 +588,12 @@ body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--ink);mi
 
     <main class="nb-body">
       <aside class="nb-rail" aria-label="Question navigator">
-        <div class="nb-rail-title">Items</div>
-        <div id="nbRailItems"></div>
+        <div class="nb-rail-title">Questions</div>
+        <button class="nb-rail-arrow" id="nbRailUpBtn" type="button" aria-label="Scroll question list up" onclick="scrollNbmeRail(-1)">▲</button>
+        <div class="nb-rail-scroll" id="nbRailScroll" onscroll="syncNbmeRailArrows()">
+          <div id="nbRailItems"></div>
+        </div>
+        <button class="nb-rail-arrow" id="nbRailDownBtn" type="button" aria-label="Scroll question list down" onclick="scrollNbmeRail(1)">▼</button>
       </aside>
 
       <section class="nb-stage">
@@ -650,6 +670,7 @@ var quizMode='learn';
 var uiMode='classic';
 var examSubmitted=false;
 var reviewOpen=false;
+var summaryVisible=false;
 var toolMode='';
 var labUnitMode='us';
 var timerSec=0,timerRunning=false,timerInterval=null;
@@ -852,6 +873,7 @@ function resetQuizState(withTimerReset){
   CQ=0;
   examSubmitted=false;
   reviewOpen=false;
+  summaryVisible=false;
   toolMode='';
   if(withTimerReset)resetTimer();else updTimer();
   syncToolButtons();
@@ -1015,7 +1037,7 @@ function buildReviewSheetItemsHTML(){
 }
 function buildReviewSheetHTML(forPrint){
   var title=getQuizTitle();
-  var actionHTML=forPrint?'':`<div class="sum-actions"><button class="sum-btn primary" type="button" onclick="printSummarySheet()">🖨 Print Summary</button></div>`;
+  var actionHTML=forPrint?'':`<div class="sum-actions"><button class="sum-btn" type="button" onclick="hideSummarySheet()">← Back to Questions</button><button class="sum-btn primary" type="button" onclick="printSummarySheet()">🖨 Print Summary</button></div>`;
   return `<section class="sum-sheet" id="summarySheet">
     <div class="sum-head">
       <div>
@@ -1075,16 +1097,70 @@ function printSummarySheet(){
     printWindow.print();
   },250);
 }
+function buildSummaryViewHTML(){
+  return `<div class="sum-view" id="summaryViewTop">${buildFinishHTML()}${buildReviewSheetHTML(false)}</div>`;
+}
+function scrollQuizViewportTop(){
+  window.scrollTo({top:0,behavior:'smooth'});
+  var nbScroller=document.querySelector('.nb-question-scroll');
+  if(nbScroller)nbScroller.scrollTo({top:0,behavior:'smooth'});
+}
+function scrollNbmeRail(direction){
+  var scroller=document.getElementById('nbRailScroll');
+  if(!scroller)return;
+  scroller.scrollBy({top:direction*180,behavior:'smooth'});
+}
+function syncNbmeRailArrows(){
+  var scroller=document.getElementById('nbRailScroll');
+  var upBtn=document.getElementById('nbRailUpBtn');
+  var downBtn=document.getElementById('nbRailDownBtn');
+  if(!scroller||!upBtn||!downBtn)return;
+  var maxScroll=Math.max(0,scroller.scrollHeight-scroller.clientHeight);
+  var hasOverflow=maxScroll>4;
+  upBtn.style.visibility=hasOverflow?'visible':'hidden';
+  downBtn.style.visibility=hasOverflow?'visible':'hidden';
+  upBtn.disabled=!hasOverflow||scroller.scrollTop<=2;
+  downBtn.disabled=!hasOverflow||scroller.scrollTop>=maxScroll-2;
+}
+function keepCurrentRailItemVisible(){
+  var scroller=document.getElementById('nbRailScroll');
+  if(!scroller)return;
+  var current=scroller.querySelector('.nb-rail-btn.current');
+  if(current)current.scrollIntoView({block:'nearest'});
+}
+function toggleSummaryPanel(){
+  if(!isQuizComplete())return;
+  if(summaryVisible)hideSummarySheet();
+  else viewSummarySheet();
+}
+function viewSummarySheet(){
+  if(!isQuizComplete())return;
+  summaryVisible=true;
+  renderQ();
+  var target=document.getElementById(uiMode==='nbme'?'summaryViewTop':'summarySheet');
+  if(!target)return;
+  target.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function hideSummarySheet(){
+  if(!summaryVisible)return;
+  summaryVisible=false;
+  renderQ();
+  scrollQuizViewportTop();
+}
 function buildFinishHTML(){
   var total=questions.length||1;
   var pct=Math.round(NC/total*100);
   var msg=pct>=80?'🎉 Strong work!':pct>=60?'📈 Getting there.':'📚 Keep reviewing.';
+  var summaryBtn=summaryVisible
+    ? '<button class="fin-btn" onclick="hideSummarySheet()">← Back to Questions</button>'
+    : '<button class="fin-btn" onclick="viewSummarySheet()">📋 View Summary</button>';
   return `<div class="fin">
     <div class="fin-pct">${pct}%</div>
     <div class="fin-pct-lbl">Final Score</div>
     <div class="fin-msg">${msg}</div>
     <div class="fin-sub">${NC} correct · ${NI} incorrect · ${questions.length} questions</div>
     <div class="fin-btns">
+      ${summaryBtn}
       <button class="fin-btn" onclick="printSummarySheet()">🖨 Print Summary</button>
       <button class="fin-btn" onclick="resetQuiz()">↺ Retake</button>
       <button class="fin-btn" onclick="exitQuiz()">✕ Exit</button>
@@ -1094,7 +1170,7 @@ function buildFinishHTML(){
 function renderFinishBanners(){
   var html=isQuizComplete()?buildFinishHTML():'';
   document.getElementById('finBanner').innerHTML=html;
-  document.getElementById('nbFinishBanner').innerHTML=html;
+  document.getElementById('nbFinishBanner').innerHTML=(isQuizComplete()&&!summaryVisible)?html:'';
 }
 
 // ── RENDERING ──
@@ -1119,6 +1195,14 @@ function syncModeButtons(){
     endBtn.textContent=reviewOpen?'Submit Exam':'Review / End Block';
     endBtn.disabled=false;
   }
+}
+function syncSummaryButtons(){
+  var btn=document.getElementById('nbSummaryBtn');
+  if(!btn)return;
+  var complete=isQuizComplete();
+  btn.disabled=!complete;
+  btn.classList.toggle('active',complete&&summaryVisible);
+  btn.textContent=complete?(summaryVisible?'Hide Summary':'See Score & Summary'):'See Score & Summary';
 }
 function syncToolButtons(){
   document.getElementById('hlTool').classList.toggle('active',toolMode==='hl');
@@ -1201,8 +1285,8 @@ function buildClassicQuestion(){
       <div class="ac-txt" data-choice-html="${ci}">${getChoiceHTML(CQ,ci)}</div>
     </div>`;
   }).join('');
-  var submitHTML=(!ans&&!isExam)?`<div class="submit-row"><button class="submit-btn" onclick="submitAns()"${sel!==undefined?'':' disabled'}>Submit Answer</button></div>`:'';
-  var noteHTML=(isExam&&!examSubmitted)?'<div class="qnum">Testing mode hides explanations until you submit the exam.</div>':'';
+  var submitLabel=isExam?'Submit Question':'Submit Answer';
+  var submitHTML=!ans?`<div class="submit-row"><button class="submit-btn" onclick="submitAns()"${sel!==undefined?'':' disabled'}>${submitLabel}</button></div>`:'';
   var feedbackHTML=ans?buildExplanationHTML(q,ans):'';
   var qnumClass='qnum'+(marked[CQ]?' marked':'');
   var qnumText=`Question ${CQ+1} of ${total}${marked[CQ]?' • Flagged':''}`;
@@ -1210,7 +1294,6 @@ function buildClassicQuestion(){
     <div class="qpg"><div class="qpf" style="width:${progress}%"></div></div>
     <div class="qbd">
       <div class="${qnumClass}">${qnumText}</div>
-      ${noteHTML}
       <div class="qstem" id="stemEl" data-stem-html="1">${getStemHTML(CQ)}</div>
       <div class="ach" id="achEl">${choicesHTML}</div>
       ${submitHTML}
@@ -1229,7 +1312,7 @@ function buildNbmeRail(){
     if(i===CQ&&!reviewOpen)classes.push('current');
     if(answers[i]||selected[i]!==undefined)classes.push('answered');
     if(marked[i])classes.push('marked');
-    return `<button class="${classes.join(' ')}" type="button" onclick="goQ(${i})" aria-label="Go to item ${i+1}">${i+1}</button>`;
+    return `<button class="${classes.join(' ')}" type="button" onclick="goQ(${i})" aria-label="Go to question ${i+1}">${i+1}</button>`;
   }).join('');
 }
 function buildNbmeQuestion(){
@@ -1237,7 +1320,7 @@ function buildNbmeQuestion(){
   var ans=answers[CQ];
   var sel=getSelectedChoice(CQ);
   var isExam=quizMode==='exam';
-  var noteHTML=(isExam&&!examSubmitted)?'<p class="nb-stage-note">Testing mode hides rationales until you submit the block, just like the real exam flow.</p>':'';
+  var submitLabel=isExam?'Submit Question':'Submit Answer';
   var answersHTML=q.choices.map(function(choice,ci){
     var classes=['nb-answer-row'];
     if(ans)classes.push('locked');
@@ -1251,12 +1334,11 @@ function buildNbmeQuestion(){
       <div class="nb-answer-copy"><strong>${LETTERS[ci]||String.fromCharCode(65+ci)}.</strong> <span data-choice-html="${ci}">${getChoiceHTML(CQ,ci)}</span></div>
     </div>`;
   }).join('');
-  var submitHTML=(!ans&&!isExam)?`<div class="nb-submit-row"><button class="nb-submit-btn" onclick="submitAns()"${sel!==undefined?'':' disabled'}>Submit Question</button></div>`:'';
+  var submitHTML=!ans?`<div class="nb-submit-row"><button class="nb-submit-btn" onclick="submitAns()"${sel!==undefined?'':' disabled'}>${submitLabel}</button></div>`:'';
   var feedbackHTML=ans?buildExplanationHTML(q,ans):'';
   return `<div class="nb-question-card">
-    <div class="nb-question-label">ITEM ${CQ+1}</div>
+    <div class="nb-question-label">QUESTION ${CQ+1}</div>
     <div class="nb-question-stem" id="nbStemEl" data-stem-html="1">${getStemHTML(CQ)}</div>
-    ${noteHTML}
     <div class="nb-answers">${answersHTML}</div>
     ${submitHTML}
     ${feedbackHTML}
@@ -1277,14 +1359,14 @@ function buildNbmeReview(){
   }).join('');
   return `<div class="nb-review-wrap">
     <h2>Review This Block</h2>
-    <p>Check your completion status before you submit the exam. Select an item number to jump back to it.</p>
+    <p>Check your completion status before you submit the exam. Select a question number to jump back to it.</p>
     <div class="nb-review-summary">
       <div class="nb-summary-chip">Answered<strong>${answered}</strong></div>
       <div class="nb-summary-chip">Incomplete<strong>${incomplete}</strong></div>
       <div class="nb-summary-chip">Marked<strong>${flagged}</strong></div>
     </div>
     <table class="nb-review-table">
-      <thead><tr><th>Item</th><th>Status</th><th>Selected Answer</th><th>Marked</th></tr></thead>
+      <thead><tr><th>Question</th><th>Status</th><th>Selected Answer</th><th>Marked</th></tr></thead>
       <tbody>${rows}</tbody>
     </table>
     <div class="nb-review-actions">
@@ -1294,7 +1376,7 @@ function buildNbmeReview(){
 }
 function renderClassicView(){
   document.getElementById('qtSubmitBtn').style.display=quizMode==='exam'&&!examSubmitted?'':'none';
-  document.getElementById('qArea').innerHTML=isQuizComplete()?buildReviewSheetHTML(false):buildClassicQuestion();
+  document.getElementById('qArea').innerHTML=(isQuizComplete()&&summaryVisible)?buildReviewSheetHTML(false):buildClassicQuestion();
 }
 function renderNbmeView(){
   var total=questions.length;
@@ -1305,19 +1387,22 @@ function renderNbmeView(){
   }else{
     statusMeta='Correct '+NC+' • Incorrect '+NI+' • Score '+(getScorePercent()==='—'?'—':getScorePercent()+'%');
   }
-  document.getElementById('nbItemIndicator').textContent=reviewOpen?'Block Review':'Item: '+(CQ+1)+' of '+total;
+  document.getElementById('nbItemIndicator').textContent=reviewOpen?'Block Review':'Question: '+(CQ+1)+' of '+total;
   document.getElementById('nbStatusMeta').textContent=statusMeta;
   document.getElementById('nbItemSelect').value=String(CQ);
   document.getElementById('nbPrevBtn').disabled=CQ===0||reviewOpen;
   document.getElementById('nbNextBtn').disabled=CQ===total-1||reviewOpen;
   document.getElementById('nbRailItems').innerHTML=buildNbmeRail();
-  if(isQuizComplete())document.getElementById('nbContent').innerHTML=buildReviewSheetHTML(false);
+  if(isQuizComplete()&&summaryVisible)document.getElementById('nbContent').innerHTML=buildSummaryViewHTML();
   else document.getElementById('nbContent').innerHTML=(reviewOpen&&quizMode==='exam'&&!examSubmitted)?buildNbmeReview():buildNbmeQuestion();
+  keepCurrentRailItemVisible();
+  syncNbmeRailArrows();
 }
 function renderQ(){
   if(!questions.length)return;
   renderFinishBanners();
   syncModeButtons();
+  syncSummaryButtons();
   syncToolButtons();
   syncMarkButtons();
   updScore();
@@ -1329,17 +1414,32 @@ function renderQ(){
 // ── QUIZ ACTIONS ──
 function pick(ci){
   if(answers[CQ])return;
+  summaryVisible=false;
   selected[CQ]=ci;
   reviewOpen=false;
   renderQ();
 }
 function submitAns(){
-  if(quizMode!=='learn'||answers[CQ]||selected[CQ]===undefined)return;
+  if(selected[CQ]===undefined||examSubmitted)return;
+  if(quizMode==='exam'){
+    reviewOpen=false;
+    summaryVisible=false;
+    if(CQ<questions.length-1){
+      CQ++;
+      renderQ();
+      scrollQuizViewportTop();
+    }else{
+      renderQ();
+      showToast('Last question saved. Use Review / End Block or Submit Exam when you are ready.','ok');
+    }
+    return;
+  }
+  if(answers[CQ])return;
   var ok=selected[CQ]===questions[CQ].correct;
   answers[CQ]={s:selected[CQ],r:ok?'c':'i'};
   updateScoreCounts();
   renderQ();
-  if(Object.keys(answers).length===questions.length)setTimeout(showFinish,300);
+  if(quizMode==='learn'&&Object.keys(answers).length===questions.length)setTimeout(showFinish,300);
 }
 function submitExam(){
   if(quizMode!=='exam'||examSubmitted)return;
@@ -1374,16 +1474,18 @@ function handleNbmeEndAction(){
     renderQ();
   }
 }
-function prevQ(){if(CQ>0){CQ--;reviewOpen=false;renderQ();}}
-function nextQ(){if(CQ<questions.length-1){CQ++;reviewOpen=false;renderQ();}}
+function prevQ(){if(CQ>0){CQ--;reviewOpen=false;summaryVisible=false;renderQ();}}
+function nextQ(){if(CQ<questions.length-1){CQ++;reviewOpen=false;summaryVisible=false;renderQ();}}
 function goQ(i){
   if(i<0||i>=questions.length)return;
   CQ=i;
   reviewOpen=false;
+  summaryVisible=false;
   renderQ();
 }
 function toggleMark(){
   if(!questions.length)return;
+  summaryVisible=false;
   if(marked[CQ])delete marked[CQ];
   else marked[CQ]=true;
   renderQ();
@@ -1581,14 +1683,15 @@ function updTimer(){
 
 // ── FINISH / RESET ──
 function showFinish(){
+  summaryVisible=false;
   renderQ();
-  window.scrollTo({top:0,behavior:'smooth'});
+  scrollQuizViewportTop();
 }
 function resetQuiz(){
   if(!questions.length)return;
   resetQuizState(true);
   renderQ();
-  window.scrollTo({top:0,behavior:'smooth'});
+  scrollQuizViewportTop();
 }
 function exitQuiz(){
   pauseTimer();
@@ -1597,9 +1700,15 @@ function exitQuiz(){
 }
 
 // ── VIEW ──
+function syncViewportSize(){
+  document.documentElement.style.setProperty('--app-vh',window.innerHeight+'px');
+  document.documentElement.style.setProperty('--app-vw',window.innerWidth+'px');
+}
 function switchView(id){
   document.querySelectorAll('.view').forEach(function(view){view.classList.remove('active');});
   document.getElementById(id).classList.add('active');
+  document.body.classList.toggle('nbme-lock',id==='viewQuizNbme');
+  syncViewportSize();
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -1631,7 +1740,10 @@ document.addEventListener('keydown',function(event){
   if(event.key==='ArrowLeft')prevQ();
   if(!answers[CQ]&&/^[a-eA-E]$/.test(event.key))pick(event.key.toUpperCase().charCodeAt(0)-65);
 });
+window.addEventListener('resize',syncViewportSize);
+window.addEventListener('orientationchange',syncViewportSize);
 
+syncViewportSize();
 syncLaunchUIButtons();
 syncModeButtons();
 syncToolButtons();
