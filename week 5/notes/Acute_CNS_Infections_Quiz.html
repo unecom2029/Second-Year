@@ -1,1228 +1,780 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="en"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Acute CNS Infections — Quiz</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;500;600;700;800&family=Nunito:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<title>UNE COM — Custom Quiz Builder</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&amp;family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&amp;family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
 <style>
+:root{
+  --navy:#12203C;--navy2:#1B2A4A;
+  --teal:#1A7A6D;--teal-glow:#3EC4B2;--teal-mid:#2BA393;--teal-light:#E3F5F2;--teal-deep:#125E54;
+  --green:#2D8659;--green-bg:#E8F5EE;
+  --red:#C44040;--red-bg:#FDF0F0;
+  --amber:#C07B1A;--amber-bg:#FEF5E6;
+  --gold-bg:#FDF6E3;
+  --coral:#E07A5F;
+  --ink:#1E1E20;--ink2:#3E4555;--slate:#6B7689;--mist:#A0AAB8;
+  --rule:#DBD5C9;--cream:#F6F3EC;--warm:#FBF8F3;--white:#FFFFFF;
+  --sh:0 8px 24px rgba(18,32,60,.08);--sh2:0 14px 34px rgba(18,32,60,.10);--sh3:0 28px 70px rgba(18,32,60,.12);
+  --tr:0.25s cubic-bezier(.4,0,.2,1);--r:14px;--rs:8px;
+  --stem-size:25px;--choice-size:15.5px;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased}
+.view{display:none}.view.active{display:block}
 
-* { box-sizing: border-box; }
-:root {
-  --teal: #1A7A6D; --teal-deep: #125E54; --teal-light: #E3F5F2; --teal-mid: #2BA393; --teal-glow: #3EC4B2;
-  --navy: #1B2A4A; --navy2: #12203C;
-  --coral: #E07A5F; --coral-bg: #FEF0EB;
-  --gold: #D4A843; --gold-bg: #FDF6E3; --gold-warm: #E8C76A;
-  --plum: #7B5EA7; --plum-bg: #F3EEF9;
-  --sky: #4A9AE8; --sky-bg: #EAF2FC;
-  --warm: #FBF8F3; --cream: #F6F3EC; --white: #FFFFFF;
-  --ink: #1E1E20; --ink2: #3E4555; --slate: #6B7689; --mist: #A0AAB8;
-  --rule: #DBD5C9; --rule2: #E9E4DA;
-  --green: #2D8659; --green-bg: #E8F5EE;
-  --red: #C44040; --red-bg: #FDF0F0;
-  --amber: #C07B1A; --amber-bg: #FEF5E6;
-  --r: 14px; --rs: 8px;
-  --sh: 0 1px 4px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.03);
-  --sh2: 0 8px 32px rgba(0,0,0,0.08);
-  --sh3: 0 12px 48px rgba(0,0,0,0.10);
-  --tr: 0.25s cubic-bezier(.4,0,.2,1);
-}
-html, body { margin: 0; padding: 0; font-family: 'Nunito', sans-serif; color: var(--ink); background: var(--warm); }
-h1, h2, h3 { font-family: 'Crimson Pro', serif; margin: 0; }
-button { font-family: inherit; cursor: pointer; }
+/* ══ SETUP VIEW ══ */
+.setup-page{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px}
+.setup-card{background:var(--white);border-radius:24px;border:1px solid var(--rule);box-shadow:var(--sh3);width:min(680px,100%);overflow:hidden}
+.setup-top{background:linear-gradient(135deg,var(--navy) 0%,#1B2A4A 100%);padding:36px 36px 30px;text-align:center}
+.setup-emoji{font-size:48px;margin-bottom:14px}
+.setup-title{font-family:'Crimson Pro',serif;font-size:36px;font-weight:700;color:#fff;letter-spacing:-.4px;margin-bottom:6px}
+.setup-title em{font-style:normal;color:var(--teal-glow)}
+.setup-sub{font-size:15px;color:rgba(255,255,255,.65);line-height:1.6}
 
-/* ================= Launch screen ================= */
-.launch-wrap {
-  min-height: 100vh; display: grid; place-items: center; padding: 32px;
-  background:
-    radial-gradient(circle at 15% 20%, rgba(62,196,178,.16), transparent 28%),
-    radial-gradient(circle at 82% 20%, rgba(123,94,167,.12), transparent 30%),
-    linear-gradient(180deg, var(--warm) 0%, var(--cream) 100%);
-}
-.launch-card {
-  max-width: 760px; background: rgba(255,255,255,.85); backdrop-filter: blur(10px);
-  border-radius: 28px; border: 1px solid rgba(18,32,60,.08);
-  box-shadow: 0 24px 80px rgba(18,32,60,.12); padding: 44px;
-  text-align: center;
-}
-.launch-card h1 { font-size: 34px; font-weight: 800; color: var(--navy); margin-bottom: 12px; }
-.launch-card p { color: var(--slate); font-size: 16px; line-height: 1.6; margin-bottom: 22px; }
-.launch-meta { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 30px; }
-.chip {
-  display: inline-flex; align-items: center; padding: 8px 14px; border-radius: 999px;
-  background: var(--white); border: 1px solid var(--rule2);
-  font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--ink2);
-}
-.launch-btn {
-  border: none; padding: 16px 38px; border-radius: 999px; font-size: 16px; font-weight: 800;
-  color: #fff; background: linear-gradient(135deg, var(--teal-mid), var(--teal-deep));
-  box-shadow: 0 12px 30px rgba(26,122,109,.28); transition: transform var(--tr), box-shadow var(--tr);
-}
-.launch-btn:hover { transform: translateY(-2px); box-shadow: 0 16px 38px rgba(26,122,109,.36); }
+.setup-body{padding:32px 36px 36px}
 
-/* ================= Quiz overlay shell ================= */
-.qo {
-  display: none; position: fixed; inset: 0; z-index: 200; overflow-y: auto;
-  background:
-    radial-gradient(circle at 10% 0%, rgba(62,196,178,.18), transparent 24%),
-    radial-gradient(circle at 92% 8%, rgba(123,94,167,.16), transparent 22%),
-    linear-gradient(180deg, var(--warm) 0%, var(--cream) 100%);
-}
-.qo.open { display: block; animation: fi .35s cubic-bezier(.4,0,.2,1); }
-.qo.closing { display: block; pointer-events: none; animation: fo .34s cubic-bezier(.4,0,.2,1) forwards; }
-@keyframes fi { from { opacity: 0; transform: scale(0.985); } to { opacity: 1; transform: none; } }
-@keyframes fo { from { opacity: 1; } to { opacity: 0; } }
-@keyframes slideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
-@keyframes cardIn { from { opacity: 0; transform: translateY(16px) scale(.99); } to { opacity: 1; transform: none; } }
+/* instruction steps */
+.how-title{font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--mist);margin-bottom:16px}
+.steps{display:flex;flex-direction:column;gap:12px;margin-bottom:28px}
+.step{display:flex;gap:14px;align-items:flex-start;padding:14px 16px;border-radius:12px;background:var(--warm);border:1px solid var(--rule)}
+.step-num{width:28px;height:28px;border-radius:50%;background:var(--navy);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-family:'IBM Plex Mono',monospace}
+.step-text{font-size:14px;color:var(--ink2);line-height:1.6}
+.step-text strong{color:var(--ink);display:block;margin-bottom:2px}
 
-/* ================= Top bar ================= */
-.qt-bar {
-  position: sticky; top: 0; z-index: 12; padding: 16px 26px;
-  display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap;
-  color: #fff;
-  background: linear-gradient(135deg, rgba(18,32,60,.94), rgba(27,42,74,.92));
-  border-bottom: 1px solid rgba(255,255,255,.08);
-  backdrop-filter: blur(16px); box-shadow: 0 10px 28px rgba(18,32,60,.16);
-}
-.qt-bar h2 { font-size: 19px; font-weight: 700; color: #fff; }
-.qt-btns { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.fs-ctrl { display: flex; align-items: center; gap: 4px; background: rgba(255,255,255,.06); border-radius: 999px; padding: 4px; }
-.fs-label { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: var(--mist); padding: 0 6px; }
-.fs-btn {
-  border: none; background: transparent; color: rgba(255,255,255,.7); padding: 5px 9px; border-radius: 999px;
-  font-family: 'IBM Plex Mono', monospace; font-size: 11px; transition: background var(--tr), color var(--tr);
-}
-.fs-btn.active, .fs-btn:hover { background: rgba(255,255,255,.16); color: #fff; }
-.qt-btn { border: none; border-radius: 999px; padding: 8px 16px; font-size: 12.5px; font-weight: 700; font-family: 'Nunito',sans-serif; }
-.qt-btn.reset, .qt-btn.close { background: rgba(255,255,255,.08); color: rgba(255,255,255,.82); border: 1px solid rgba(255,255,255,.14); }
-.qt-btn.reset:hover, .qt-btn.close:hover { background: rgba(255,255,255,.16); }
-.qt-btn.print { background: linear-gradient(135deg, var(--gold-warm), var(--gold)); color: var(--navy2); font-weight: 900; }
+/* prompt copy box */
+.prompt-wrap{background:var(--navy);border-radius:12px;padding:16px 18px;position:relative;margin-bottom:8px}
+.prompt-inner{font-family:'IBM Plex Mono',monospace;font-size:11.5px;line-height:1.75;color:#9AD3F2;white-space:pre-wrap;word-break:break-word;max-height:160px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.1) transparent;padding-right:70px}
+.copy-prompt-btn{position:absolute;top:12px;right:12px;padding:6px 12px;background:rgba(62,196,178,.15);border:1px solid rgba(62,196,178,.35);border-radius:7px;color:var(--teal-glow);font-size:12px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;transition:all .18s;white-space:nowrap}
+.copy-prompt-btn:hover{background:rgba(62,196,178,.28)}
+.copy-prompt-btn.ok{background:rgba(45,134,89,.2);border-color:rgba(45,134,89,.4);color:#5EC490}
 
-/* ================= Two-column grid ================= */
-.qin { max-width: 1380px; margin: 0 auto; padding: 28px 28px 84px; display: grid; grid-template-columns: 360px minmax(0, 1fr); gap: 18px 24px; align-items: start; }
-.q-left { display: flex; flex-direction: column; gap: 16px; }
-.panel {
-  background: var(--white); border-radius: var(--r); border: 1px solid var(--rule2);
-  box-shadow: var(--sh); padding: 16px; position: relative;
-}
+.divider{height:1px;background:var(--rule);margin:24px 0}
 
-/* ================= Score panel ================= */
-.score-panel { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; animation: slideUp .4s cubic-bezier(.4,0,.2,1) both; }
-.score-box {
-  position: relative; text-align: center; background: var(--white); border: 1px solid var(--rule2);
-  border-radius: var(--r); padding: 16px 8px 12px; box-shadow: var(--sh); overflow: hidden;
-}
-.score-box::before {
-  content: ''; position: absolute; left: 16px; right: 16px; top: 0; height: 4px; border-radius: 0 0 999px 999px;
-  background: linear-gradient(90deg, rgba(26,122,109,.16), rgba(62,196,178,.5));
-}
-.score-box.correct::before { background: linear-gradient(90deg, rgba(45,134,89,.18), rgba(45,134,89,.5)); }
-.score-box.incorrect::before { background: linear-gradient(90deg, rgba(196,64,64,.18), rgba(196,64,64,.5)); }
-.score-box .sv { font-family: 'Crimson Pro', serif; font-size: 32px; font-weight: 800; color: var(--navy); line-height: 1.1; }
-.score-box.correct .sv { color: var(--green); }
-.score-box.incorrect .sv { color: var(--red); }
-.score-box .sl { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: var(--mist); text-transform: uppercase; letter-spacing: .05em; margin-top: 4px; }
+/* paste area */
+.field{display:flex;flex-direction:column;gap:7px;margin-bottom:16px}
+.field:last-child{margin-bottom:0}
+.lbl{font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--slate)}
+.inp{padding:10px 14px;border-radius:var(--rs);border:1.5px solid var(--rule);font-family:'Nunito',sans-serif;font-size:14px;font-weight:600;color:var(--ink);background:var(--warm);outline:none;transition:border-color .18s;width:100%}
+.inp:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(62,196,178,.12);background:#fff}
+.ta{width:100%;padding:13px 15px;border-radius:var(--rs);border:1.5px solid var(--rule);font-family:'IBM Plex Mono',monospace;font-size:12px;line-height:1.7;color:var(--ink);background:var(--warm);resize:vertical;min-height:160px;outline:none;transition:border-color .18s}
+.ta:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(62,196,178,.12);background:#fff}
+.ta::placeholder{color:var(--mist)}
+.setup-actions{display:flex;gap:12px;margin-top:18px}
+.launch-btn{width:100%;padding:16px;border-radius:16px;border:none;background:linear-gradient(135deg,var(--teal-glow),var(--teal-mid));color:var(--navy);font-family:'Nunito',sans-serif;font-size:17px;font-weight:900;cursor:pointer;letter-spacing:.3px;transition:all .2s;box-shadow:0 8px 22px rgba(62,196,178,.3);margin-top:18px}
+.launch-btn:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(62,196,178,.38)}
+.setup-actions .launch-btn{margin-top:0;flex:1}
+.ghost-btn{padding:16px 18px;border-radius:16px;border:1.5px solid rgba(18,32,60,.12);background:#fff;color:var(--navy);font-family:'Nunito',sans-serif;font-size:15px;font-weight:900;cursor:pointer;letter-spacing:.2px;transition:all .2s;box-shadow:0 8px 22px rgba(18,32,60,.08)}
+.ghost-btn:hover{transform:translateY(-2px);border-color:rgba(26,122,109,.34);color:var(--teal);box-shadow:0 14px 30px rgba(18,32,60,.12)}
+.err-msg{padding:10px 14px;border-radius:var(--rs);font-size:13px;font-weight:700;display:none;align-items:center;gap:8px;margin-top:10px;background:var(--red-bg);color:var(--red);border:1px solid rgba(196,64,64,.2)}
+.err-msg.show{display:flex}
 
-/* ================= Mode toggle ================= */
-.mode-toggle {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 6px; background: var(--cream);
-  border-radius: 999px; padding: 5px; animation: slideUp .4s .04s cubic-bezier(.4,0,.2,1) both;
-}
-.mode-btn {
-  border: none; background: transparent; padding: 10px 8px; border-radius: 999px; font-weight: 700; font-size: 13px;
-  color: var(--ink2); display: flex; align-items: center; justify-content: center; gap: 6px; transition: background var(--tr), color var(--tr);
-}
-.mode-btn.active { background: linear-gradient(135deg, var(--navy2), var(--navy)); color: #fff; box-shadow: var(--sh); }
-.mode-icon { font-size: 14px; }
+/* ══ QUIZ VIEW ══ */
+.quiz-page{min-height:100vh;display:flex;flex-direction:column}
 
-/* ================= Timer panel ================= */
-.timer-panel { display: grid; grid-template-columns: 1fr; gap: 10px; animation: slideUp .4s .08s cubic-bezier(.4,0,.2,1) both; }
-.timer-card, .cd-card { background: var(--white); border: 1px solid var(--rule2); border-radius: var(--r); padding: 12px 14px; box-shadow: var(--sh); text-align: center; }
-.timer-lbl { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: var(--mist); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 4px; }
-.timer-time, .cd-time { font-family: 'Crimson Pro', serif; font-size: 26px; font-weight: 800; color: var(--navy); margin-bottom: 8px; }
-.tbtn {
-  border: 1px solid var(--rule2); background: var(--cream); border-radius: var(--rs); width: 34px; height: 34px;
-  font-size: 13px; margin: 0 3px; transition: background var(--tr);
-}
-.tbtn:hover { background: var(--teal-light); }
-.cd-controls { display: flex; align-items: center; justify-content: center; gap: 8px; }
-.cd-pm { border: 1px solid var(--rule2); background: var(--cream); border-radius: var(--rs); width: 28px; height: 28px; font-weight: 700; }
-.cd-val { font-family: 'IBM Plex Mono', monospace; font-weight: 700; min-width: 16px; }
-.cd-unit { font-size: 11px; color: var(--mist); }
-.cd-go { border: none; background: linear-gradient(135deg, var(--teal-mid), var(--teal-deep)); color: #fff; border-radius: var(--rs); padding: 6px 14px; font-weight: 700; font-size: 12px; margin-left: 6px; }
+/* top bar */
+.qt-bar{background:linear-gradient(180deg,var(--navy) 0%,var(--navy2) 100%);display:flex;align-items:center;gap:14px;padding:0 22px;height:52px;flex-shrink:0;box-shadow:0 2px 12px rgba(18,32,60,.22)}
+.qt-name{font-family:'Crimson Pro',serif;font-size:18px;font-weight:700;color:#fff;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:-.2px}
+.qt-btn{padding:8px 14px;border-radius:10px;border:1.5px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.75);font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;cursor:pointer;transition:all .18s}
+.qt-btn:hover{background:rgba(255,255,255,.1);color:#fff}
 
-/* ================= Tool panel ================= */
-.tool-panel { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; animation: slideUp .4s .14s cubic-bezier(.4,0,.2,1) both; }
-.q-tool {
-  border: 1px solid var(--rule2); background: var(--cream); color: var(--ink2); border-radius: var(--rs);
-  padding: 10px 6px; font-size: 11.5px; font-weight: 700; text-align: center; transition: background var(--tr), border-color var(--tr), color var(--tr);
-}
-.q-tool.active.hl-tool { background: #FFF8B8; border-color: #D3AF2B; color: #6B5C00; }
-.q-tool.active.st-tool { background: var(--red-bg); border-color: rgba(196,64,64,.44); color: var(--red); }
-.tool-status { grid-column: 1 / -1; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--slate); text-align: center; margin-top: -2px; }
-.tool-status.active-highlight { color: #8a6a00; }
-.tool-status.active-strike { color: var(--red); }
+/* grid */
+.qin{max-width:1360px;margin:0 auto;width:100%;padding:22px 20px 72px;display:grid;grid-template-columns:320px minmax(0,1fr);gap:18px 22px;align-items:start}
 
-/* ================= Exam submit row ================= */
-.exam-submit-row {
-  background: var(--white); border: 1px solid var(--rule2); border-radius: var(--r); padding: 14px;
-  display: flex; align-items: center; justify-content: space-between; gap: 10px; box-shadow: var(--sh);
-  animation: slideUp .4s .18s cubic-bezier(.4,0,.2,1) both;
-}
-.exam-progress { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--slate); }
-.exam-submit-btn {
-  border: none; border-radius: 999px; padding: 10px 18px; font-weight: 800; font-size: 13px; color: #fff;
-  background: linear-gradient(135deg, var(--coral), #c9603f);
-}
-.exam-submit-row.exam-live { box-shadow: 0 0 0 3px rgba(224,122,95,.10), 0 14px 34px rgba(18,32,60,.08); }
-.exam-submit-row.exam-done .exam-submit-btn { background: linear-gradient(135deg, var(--green), #3aa56f); }
-.exam-submit-btn:disabled { opacity: .45; cursor: not-allowed; }
+/* sidebar panels */
+.score-panel{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:0}
+.score-box{position:relative;overflow:hidden;background:color-mix(in srgb,var(--white) 88%,var(--warm) 12%);border-radius:20px;padding:16px 12px 13px;text-align:center;box-shadow:var(--sh2);border:1px solid rgba(18,32,60,.08);transition:var(--tr)}
+.score-box::before{content:'';position:absolute;left:14px;right:14px;top:0;height:4px;border-radius:0 0 999px 999px;background:linear-gradient(90deg,rgba(26,122,109,.16),rgba(62,196,178,.5));opacity:.75}
+.score-box.correct{background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(232,245,238,.98))}.score-box.correct::before{background:linear-gradient(90deg,rgba(45,134,89,.2),rgba(45,134,89,.72))}
+.score-box.incorrect{background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(253,240,240,.98))}.score-box.incorrect::before{background:linear-gradient(90deg,rgba(196,64,64,.18),rgba(196,64,64,.68))}
+.sv{font-family:'Crimson Pro',serif;font-size:34px;font-weight:800;color:var(--navy);line-height:1}
+.sl{font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--mist);font-weight:800;margin-top:7px}
+.score-box.correct .sv{color:var(--green)}.score-box.incorrect .sv{color:var(--red)}
 
-/* ================= Question card ================= */
-.qcd { background: var(--white); border-radius: 20px; border: 1px solid var(--rule2); box-shadow: var(--sh2); overflow: hidden; animation: cardIn .42s cubic-bezier(.4,0,.2,1) both; }
-.qpg { height: 5px; background: var(--rule2); }
-.qpf { height: 100%; background: linear-gradient(90deg, var(--teal-mid), var(--teal-glow)); transition: width var(--tr); }
-.qbd { padding: 28px 32px 8px; }
-.qnum { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--mist); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px; }
-.qstem { font-family: 'Crimson Pro', serif; font-size: 21px; line-height: 1.5; color: var(--ink); margin-bottom: 22px; cursor: default; border-radius: 10px; padding: 4px; transition: background var(--tr), box-shadow var(--tr); }
-#qo[data-fs="sm"] .qstem { font-size: 18px; }
-#qo[data-fs="lg"] .qstem { font-size: 23px; }
-#qo[data-fs="xl"] .qstem { font-size: 26px; }
-.qstem .stem-hl { background: #FFF1A6; border-radius: 6px; padding: 0 .12em; box-shadow: 0 0 0 1px rgba(212,168,67,.18); }
-.qstem .stem-st { text-decoration: line-through; text-decoration-color: var(--red); color: #8B2C2C !important; }
-.qstem.hl-applied { background: linear-gradient(180deg, #FFF4A8, #FFF7C9) !important; box-shadow: inset 0 0 0 2px rgba(212,168,67,.34); }
-.qstem.st-applied { background: linear-gradient(180deg, #FFF3F3, #FFF8F8) !important; box-shadow: inset 0 0 0 2px rgba(196,64,64,.22); }
-.qstem.tool-hover { box-shadow: inset 0 0 0 2px rgba(26,122,109,.16); background: rgba(26,122,109,.04); }
+.mode-toggle{display:flex;gap:7px;padding:7px;border-radius:22px;background:rgba(255,255,255,.76);backdrop-filter:blur(8px);border:1px solid rgba(18,32,60,.08);box-shadow:var(--sh2)}
+.mode-btn{flex:1;padding:12px 14px;border-radius:16px;text-align:center;font-family:'Nunito',sans-serif;font-size:13.5px;font-weight:800;cursor:pointer;border:none;background:transparent;color:var(--slate);transition:all .22s}
+.mode-btn:hover{color:var(--navy);background:rgba(18,32,60,.04)}
+.mode-btn.active{background:linear-gradient(135deg,var(--navy),#2A3562);color:#fff;box-shadow:0 10px 22px rgba(27,42,74,.18)}
+.mode-btn .mode-icon{display:block;font-size:19px;margin-bottom:3px}
 
-.ach { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
-.ac {
-  display: flex; align-items: flex-start; gap: 14px; padding: 14px 16px; border-radius: var(--r);
-  background: var(--cream); border: 1.5px solid var(--rule2); cursor: pointer; transition: background var(--tr), border-color var(--tr), transform var(--tr);
+.timer-card{position:relative;display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:42px 16px 16px;background:rgba(255,255,255,.84);border-radius:22px;border:1px solid rgba(18,32,60,.08);box-shadow:var(--sh2);transition:var(--tr)}
+.timer-card.run{border-color:rgba(26,122,109,.34);box-shadow:0 0 0 4px rgba(26,122,109,.08),var(--sh2)}
+.timer-card.warn{border-color:rgba(224,122,95,.4);box-shadow:0 0 0 4px rgba(224,122,95,.08),var(--sh2)}
+.timer-lbl{position:absolute;top:13px;left:15px;font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--mist);font-weight:800;padding:5px 9px;border-radius:999px;background:rgba(18,32,60,.04)}
+.timer-time{font-family:'IBM Plex Mono',monospace;font-size:38px;font-weight:600;color:var(--navy);min-width:110px;text-align:center;letter-spacing:2px}
+.timer-card.warn .timer-time{color:var(--coral)}
+.tbtn{width:40px;height:40px;border-radius:50%;border:1.8px solid rgba(27,42,74,.24);background:rgba(255,255,255,.9);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:var(--tr);color:var(--navy);flex-shrink:0;box-shadow:0 6px 18px rgba(18,32,60,.08)}
+.tbtn:hover{background:var(--navy);color:#fff;transform:translateY(-1px) scale(1.04);border-color:var(--navy)}
+
+.tool-panel{display:flex;flex-wrap:wrap;gap:9px;padding:9px;border-radius:22px;background:rgba(255,255,255,.76);backdrop-filter:blur(8px);border:1px solid rgba(18,32,60,.08);box-shadow:var(--sh2)}
+.q-tool{flex:1 1 120px;min-width:0;padding:11px 14px;border-radius:14px;font-size:12.5px;font-weight:800;border:1.5px solid rgba(18,32,60,.08);background:rgba(255,255,255,.86);cursor:pointer;transition:var(--tr);font-family:'Nunito',sans-serif;color:var(--ink2);box-shadow:0 6px 16px rgba(18,32,60,.06);text-align:left}
+.q-tool:hover{border-color:rgba(26,122,109,.32);color:var(--teal);transform:translateY(-1px);background:#fff}
+.q-tool.active.hl-tool{background:#FFF8B8;border-color:#D3AF2B;color:#6B5C00;box-shadow:0 0 0 3px rgba(211,175,43,.12)}
+.q-tool.active.st-tool{background:var(--red-bg);border-color:rgba(196,64,64,.44);color:var(--red);box-shadow:0 0 0 3px rgba(196,64,64,.08)}
+.font-tools{display:flex;align-items:center;gap:8px;flex:1 1 100%;padding:12px 14px;border-radius:14px;border:1.5px solid rgba(18,32,60,.08);background:rgba(255,255,255,.86);box-shadow:0 6px 16px rgba(18,32,60,.06)}
+.font-tools-label{font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--slate)}
+.font-tools-group{display:flex;gap:8px;margin-left:auto}
+.font-btn{min-width:42px;padding:9px 12px;border-radius:12px;border:1.5px solid rgba(18,32,60,.1);background:#fff;color:var(--navy);font-family:'Nunito',sans-serif;font-size:13px;font-weight:900;cursor:pointer;transition:var(--tr);box-shadow:0 6px 14px rgba(18,32,60,.05)}
+.font-btn:hover{transform:translateY(-1px);border-color:rgba(26,122,109,.34);color:var(--teal)}
+.font-btn.reset{min-width:54px}
+
+/* sidebar stack */
+.sidebar{display:flex;flex-direction:column;gap:14px;position:sticky;top:18px}
+
+/* question card — pixel-perfect hub match */
+.qcd{background:color-mix(in srgb,var(--white) 94%,var(--warm) 6%);border-radius:28px;overflow:hidden;box-shadow:var(--sh3);border:1px solid rgba(18,32,60,.08);animation:cardIn .42s cubic-bezier(.4,0,.2,1) both}
+@keyframes cardIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.qpg{height:6px;background:color-mix(in srgb,var(--teal) 10%,transparent)}
+.qpf{height:100%;background:linear-gradient(90deg,var(--teal),var(--teal-glow));transition:width .5s cubic-bezier(.4,0,.2,1);border-radius:0 999px 999px 0}
+.qbd{padding:28px 34px 26px}
+.qnum{display:inline-flex;align-items:center;padding:6px 11px;border-radius:999px;background:rgba(18,32,60,.045);font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--mist);letter-spacing:1.8px;text-transform:uppercase;margin-bottom:14px;font-weight:700}
+.qstem{font-family:'Crimson Pro',serif;font-size:var(--stem-size);line-height:1.35;margin-bottom:22px;font-weight:600;color:var(--ink);letter-spacing:-.15px}
+.qstem mark{background:#FFFAAD;padding:1px 3px;border-radius:3px;color:inherit}
+.qstem s{color:var(--mist);text-decoration:line-through}
+.ach{display:grid;gap:10px}
+.ac{display:flex;align-items:flex-start;gap:14px;padding:15px 18px;border:1.5px solid rgba(18,32,60,.09);border-radius:18px;cursor:pointer;transition:var(--tr);background:color-mix(in srgb,var(--warm) 78%,var(--white) 22%);box-shadow:0 6px 18px rgba(18,32,60,.04)}
+.ac:hover:not(.dis){border-color:rgba(26,122,109,.4);background:linear-gradient(180deg,#fff,#F0F7F5);transform:translateY(-1px)}
+.ac.sel{border-color:rgba(26,122,109,.5)!important;background:linear-gradient(180deg,#fff,#EFF7F5)!important;transform:translateY(-1px)}
+.ac.cor{border-color:rgba(45,134,89,.44)!important;background:linear-gradient(180deg,#fff,#EDF8F1)!important}
+.ac.inc{border-color:rgba(196,64,64,.4)!important;background:linear-gradient(180deg,#fff,#FDF2F2)!important}
+.ac.dis{cursor:default;transform:none!important}
+.cl{width:42px;height:42px;border-radius:50%;border:1.8px solid rgba(18,32,60,.12);display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:700;flex-shrink:0;transition:var(--tr);background:#fff;box-shadow:0 6px 14px rgba(18,32,60,.05)}
+.ac.sel .cl{background:var(--teal)!important;border-color:var(--teal)!important;color:#fff!important}
+.ac.cor .cl{background:var(--green)!important;border-color:var(--green)!important;color:#fff!important}
+.ac.inc .cl{background:var(--red)!important;border-color:var(--red)!important;color:#fff!important}
+.ac-txt{font-size:var(--choice-size);font-weight:600;line-height:1.5;color:var(--ink);padding-top:9px}
+.ac-txt mark{background:#FFFAAD;padding:1px 2px;border-radius:3px;color:inherit}
+.ac-txt s{color:var(--mist);text-decoration:line-through}
+.submit-row{margin-top:24px;text-align:center}
+.submit-btn{padding:15px 54px;border-radius:18px;background:linear-gradient(135deg,var(--teal),var(--teal-mid));color:#fff;font-family:'Nunito',sans-serif;font-size:17px;font-weight:900;cursor:pointer;border:none;transition:var(--tr);box-shadow:0 10px 24px rgba(26,122,109,.24);letter-spacing:.4px}
+.submit-btn:hover{transform:translateY(-2px);box-shadow:0 16px 30px rgba(26,122,109,.3)}
+.submit-btn:disabled{opacity:.25;cursor:not-allowed;transform:none;box-shadow:none}
+.exb{margin-top:26px;border-radius:22px;overflow:hidden;display:none;border:1px solid rgba(18,32,60,.08);background:#fff}
+.exb.vis{display:block;animation:fadeUp .38s cubic-bezier(.4,0,.2,1)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.exs{padding:20px 24px}.exs+.exs{border-top:1px solid rgba(18,32,60,.06)}
+.exs.exc{background:var(--green-bg);border-left:5px solid var(--green)}
+.exs.exw{background:var(--red-bg);border-left:5px solid var(--red)}
+.exs.exo{background:var(--amber-bg);border-left:5px solid var(--amber)}
+.exs.exe{background:var(--teal-light);border-left:5px solid var(--teal)}
+.exl{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;margin-bottom:10px}
+.exs.exc .exl{color:var(--green)}.exs.exw .exl{color:var(--red)}.exs.exo .exl{color:var(--amber)}.exs.exe .exl{color:var(--teal)}
+.ext{font-size:15px;line-height:1.65;color:var(--ink2)}
+.wce{margin-top:10px;padding-top:10px;border-top:1px solid rgba(196,64,64,.12)}
+.wce strong{color:var(--red);font-family:'IBM Plex Mono',monospace;font-size:12.5px}
+.qnv{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:16px 24px 20px;border-top:1px solid rgba(18,32,60,.08);background:linear-gradient(180deg,color-mix(in srgb,var(--warm) 32%,transparent),color-mix(in srgb,var(--cream) 82%,transparent))}
+.nb{padding:12px 22px;border:1.8px solid rgba(27,42,74,.2);background:#fff;border-radius:16px;cursor:pointer;font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;color:var(--navy);transition:var(--tr);box-shadow:0 8px 18px rgba(18,32,60,.06)}
+.nb:hover{background:var(--navy);color:#fff;transform:translateY(-1px);border-color:var(--navy)}
+.nb.pr{background:linear-gradient(135deg,var(--navy),#2A3562);color:#fff;border-color:transparent}
+.nb.pr:hover{background:linear-gradient(135deg,var(--navy2),var(--navy))}
+.nb:disabled{opacity:.22;cursor:not-allowed;transform:none!important;box-shadow:none}
+.nav-dots{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;flex:1}
+.qd{width:10px;height:10px;border-radius:50%;background:rgba(18,32,60,.1);cursor:pointer;border:none;padding:0;transition:var(--tr)}
+.qd:hover{background:rgba(18,32,60,.28);transform:scale(1.25)}
+.qd.on{background:var(--teal-glow);box-shadow:0 0 0 3px rgba(62,196,178,.22)}
+.qd.dc{background:var(--green)}.qd.di{background:var(--red)}
+
+/* finish overlay */
+.fin{background:linear-gradient(135deg,var(--navy),#2A3562);border-radius:28px;padding:32px;text-align:center;color:#fff;box-shadow:var(--sh3);margin-bottom:18px}
+.fin-pct{font-family:'IBM Plex Mono',monospace;font-size:64px;font-weight:700;color:var(--teal-glow);line-height:1}
+.fin-pct-lbl{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.45);margin:4px 0 14px}
+.fin-msg{font-family:'Crimson Pro',serif;font-size:30px;font-weight:700;margin-bottom:6px}
+.fin-sub{font-size:14px;color:rgba(255,255,255,.6);margin-bottom:22px}
+.fin-btns{display:flex;gap:12px;justify-content:center}
+.fin-btn{padding:11px 20px;border-radius:12px;border:1.5px solid rgba(255,255,255,.25);background:transparent;color:rgba(255,255,255,.8);font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;cursor:pointer;transition:all .18s}
+.fin-btn:hover{background:rgba(255,255,255,.12);color:#fff}
+
+/* responsive */
+@media(max-width:820px){
+  .qin{grid-template-columns:1fr;padding:16px 14px 64px}
+  .sidebar{position:static;flex-direction:row;flex-wrap:wrap}
+  .score-panel{flex:1 1 200px}
+  .mode-toggle,.tool-panel{flex:1 1 100%}
+  .timer-card{flex:1 1 160px}
 }
-.ac:hover:not(.dis) { border-color: var(--teal-mid); background: var(--teal-light); }
-.ac .cl {
-  flex-shrink: 0; width: 30px; height: 30px; border-radius: 50%; background: var(--white); border: 1.5px solid var(--rule);
-  display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-weight: 700; font-size: 13px; color: var(--ink2);
-}
-.ac .ctx { font-size: 16px; line-height: 1.5; color: var(--ink); padding-top: 3px; }
-#qo[data-fs="sm"] .ctx { font-size: 13px; }
-#qo[data-fs="md"] .ctx { font-size: 16px; }
-#qo[data-fs="lg"] .ctx { font-size: 19px; }
-#qo[data-fs="xl"] .ctx { font-size: 22px; }
+@media(max-width:480px){.qbd{padding:20px 16px}.qstem{font-size:max(21px,var(--stem-size))}.qnv{flex-direction:column;padding:14px 16px 18px}.nb{width:100%}.font-tools{flex-direction:column;align-items:stretch}.font-tools-group{margin-left:0;justify-content:space-between}}
+@media(max-width:560px){.setup-actions{flex-direction:column}}
 
-.ac.sel { border-color: var(--teal); background: var(--teal-light); }
-.ac.sel .cl { background: var(--teal); border-color: var(--teal); color: #fff; }
-.ac.cor, .ac.shc { border-color: var(--green); background: var(--green-bg); }
-.ac.cor .cl, .ac.shc .cl { background: var(--green); border-color: var(--green); color: #fff; }
-.ac.inc { border-color: var(--red); background: var(--red-bg); }
-.ac.inc .cl { background: var(--red); border-color: var(--red); color: #fff; }
-.ac.dis { cursor: default; }
-.ac.dis:hover { border-color: inherit; background: inherit; }
-.ac.hl-applied { background: #FFF8CE !important; border-color: #D3AF2B !important; }
-.ac.hl-applied .cl { background: #F2DA6B; border-color: #D3AF2B; }
-.ac.st-applied { background: var(--red-bg) !important; }
-.ac.st-applied .ctx { text-decoration: line-through; color: #8B2C2C; }
-
-.submit-row { display: flex; justify-content: flex-end; margin-bottom: 6px; }
-.submit-btn {
-  border: none; border-radius: 999px; padding: 12px 26px; font-weight: 800; font-size: 14px; color: #fff;
-  background: linear-gradient(135deg, var(--teal-mid), var(--teal-deep)); box-shadow: 0 8px 20px rgba(26,122,109,.24);
-  transition: opacity var(--tr), transform var(--tr);
-}
-.submit-btn:disabled { opacity: .4; cursor: not-allowed; box-shadow: none; }
-.submit-btn:not(:disabled):hover { transform: translateY(-1px); }
-
-.exb { display: none; flex-direction: column; gap: 12px; padding: 4px 0 24px; animation: fi .3s cubic-bezier(.4,0,.2,1) both; }
-.exb.vis { display: flex; }
-.exs { border-radius: var(--r); padding: 14px 18px; border-left: 4px solid var(--rule); }
-.exs.exc { border-left-color: var(--green); background: var(--green-bg); }
-.exs.exe { border-left-color: var(--teal); background: var(--teal-light); }
-.exs.exw { border-left-color: var(--red); background: var(--red-bg); }
-.exl { font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--ink2); margin-bottom: 6px; }
-.ext { font-size: 14.5px; line-height: 1.6; color: var(--ink); }
-.wce { margin-bottom: 6px; }
-.wce:last-child { margin-bottom: 0; }
-
-.qnv { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 32px 22px; border-top: 1px solid var(--rule2); flex-wrap: wrap; }
-.nb {
-  border: 1px solid var(--rule2); background: var(--white); color: var(--ink2); border-radius: 999px;
-  padding: 10px 18px; font-weight: 700; font-size: 13px; transition: background var(--tr);
-}
-.nb:hover:not(:disabled) { background: var(--cream); }
-.nb:disabled { opacity: .4; cursor: not-allowed; }
-.nb.pr { background: linear-gradient(135deg, var(--navy2), var(--navy)); color: #fff; border: none; }
-.qdots { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
-.qd { width: 12px; height: 12px; border-radius: 50%; border: 1.5px solid var(--rule); background: var(--white); padding: 0; }
-.qd.cur { background: var(--teal); border-color: var(--teal); box-shadow: 0 0 0 3px rgba(26,122,109,.18); }
-.qd.acor { background: var(--green); border-color: var(--green); }
-.qd.ainc { background: var(--red); border-color: var(--red); }
-.qd.asel { background: var(--gold); border-color: var(--gold); }
-
-/* ================= Print review ================= */
-#printReviewRoot { display: none; }
-body.print-review-active .launch-wrap, body.print-review-active .qo { display: none !important; }
-body.print-review-active #printReviewRoot { display: block; padding: 32px; background: #fff; }
-.print-shell { max-width: 980px; margin: 0 auto; font-family: 'Nunito', sans-serif; color: #1E1E20; }
-.print-shell h1 { font-family: 'Crimson Pro', serif; font-size: 24px; margin-bottom: 4px; }
-.print-shell .print-sub { color: #6B7689; font-size: 13px; margin-bottom: 20px; }
-.print-card { break-inside: avoid; border: 1px solid #ddd; border-radius: 16px; padding: 20px; margin-bottom: 18px; }
-.print-q-num { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #A0AAB8; text-transform: uppercase; margin-bottom: 6px; }
-.print-stem { font-family: 'Crimson Pro', serif; font-size: 17px; margin-bottom: 12px; }
-.print-choice { border: 1px solid #ddd; border-radius: 10px; padding: 8px 12px; margin-bottom: 6px; font-size: 13.5px; }
-.print-choice.correct { border-color: #2D8659; background: #E8F5EE; }
-.print-choice.incorrect { border-color: #C44040; background: #FDF0F0; }
-.print-explainer { border-radius: 10px; padding: 10px 14px; margin-top: 10px; font-size: 13px; }
-.print-explainer.correct-box { background: #E8F5EE; border-left: 4px solid #2D8659; }
-.print-explainer.teach-box { background: #E3F5F2; border-left: 4px solid #1A7A6D; }
-.print-explainer.wrong-box { background: #FDF0F0; border-left: 4px solid #C44040; }
-@media print {
-  body.print-review-active .launch-wrap, body.print-review-active .qo { display: none !important; }
-  body.print-review-active #printReviewRoot { display: block !important; padding: 0; }
-}
-
-/* ================= Responsive ================= */
-@media (max-width: 920px) {
-  .qin { grid-template-columns: 1fr; padding: 22px 18px 72px; gap: 16px; }
-  .tool-panel { grid-template-columns: 1fr 1fr 1fr; }
-}
-@media (max-width: 700px) {
-  .qt-bar { flex-direction: column; align-items: flex-start; }
-  .qin { padding: 18px 14px 64px; }
-  .qnv { flex-direction: column; align-items: stretch; }
-  .qdots { order: 3; }
-  .nb { width: 100%; text-align: center; }
-  .qstem { font-size: 19px; }
-  .qbd { padding: 22px 20px 8px; }
-  .qnv { padding: 16px 20px 20px; }
-}
-
+/* toast */
+.toast-wrap{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:999;pointer-events:none}
+.toast{padding:11px 20px;border-radius:999px;font-size:13.5px;font-weight:700;box-shadow:0 8px 28px rgba(0,0,0,.15);animation:toastIn .28s cubic-bezier(.2,.8,.2,1) both;white-space:nowrap}
+@keyframes toastIn{from{opacity:0;transform:translateY(14px) scale(.94)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes toastOut{to{opacity:0;transform:translateY(8px) scale(.95)}}
+.toast.ok{background:var(--navy);color:var(--teal-glow)}.toast.err{background:var(--red);color:#fff}
 </style>
 </head>
 <body>
+<div class="toast-wrap" id="toastWrap"></div>
 
-<div class="launch-wrap" id="launchWrap">
-  <div class="launch-card">
-    <h1>Acute CNS Infections</h1>
-    <p>20 board-style questions covering viral, bacterial, fungal, and parasitic meningitis, encephalitis, and the other acute brain infections — prion disease, PML, rabies, shingles, and more.</p>
-    <div class="launch-meta">
-      <span class="chip">20 Questions</span>
-      <span class="chip">Learn &amp; Exam Modes</span>
-      <span class="chip">Microbiology</span>
-      <span class="chip">USMLE-style vignettes</span>
-    </div>
-    <button class="launch-btn" id="openDemo">Open quiz</button>
+<!-- ══════════ SETUP VIEW ══════════ -->
+<div class="view active" id="viewSetup">
+<div class="setup-page">
+<div class="setup-card">
+
+  <div class="setup-top">
+    <div class="setup-emoji">🧪</div>
+    <div class="setup-title">Custom <em>Quiz Builder</em></div>
+    <div class="setup-sub">Generate a quiz from any AI and run it in the same exam format as the study hub.</div>
   </div>
+
+  <div class="setup-body">
+    <div class="how-title">How it works</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-text">
+          <strong>Copy the prompt below</strong>
+          Paste it into ChatGPT, Claude, Gemini, or any AI — then add your notes or questions after it and send.
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-text">
+          <strong>Copy the AI's response</strong>
+          It will return a formatted list of questions. Copy the whole thing.
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-text">
+          <strong>Paste it below and launch</strong>
+          Hit Launch and the quiz opens immediately in the full exam UI.
+        </div>
+      </div>
+    </div>
+
+    <!-- Prompt to copy -->
+    <div class="lbl" style="margin-bottom:8px">Your AI prompt</div>
+    <div class="prompt-wrap">
+      <button class="copy-prompt-btn" id="copyPromptBtn" onclick="copyPrompt()">📋 Copy prompt</button>
+      <div class="prompt-inner" id="promptText">You are a medical school question writer. You have TWO modes:
+
+MODE 1 — GENERATE: If I give you notes or lecture content, write quiz questions from it.
+MODE 2 — CONVERT: If I give you already-written questions in any format, convert them into the format below without changing the medical content.
+
+Output ONLY a raw JSON array — no markdown, no backticks, no explanation.
+
+[
+  {
+    "stem": "Question text here?",
+    "choices": [
+      "A. Correct answer — stay true to the diction of the professor",
+      "B. Wrong answer — make relevant with plausible detail",
+      "C. Wrong answer — make relevant with plausible detail",
+      "D. Wrong answer — make relevant with plausible detail",
+      "E. Wrong answer — make relevant with plausible detail"
+    ],
+    "correct": 0,
+    "explanation": "Why the correct answer is right. Use arrows (→) to show mechanisms.",
+    "wrongExplanations": {
+      "1": "Why B is wrong — be specific.",
+      "2": "Why C is wrong — be specific.",
+      "3": "Why D is wrong — be specific.",
+      "4": "Why E is wrong — be specific."
+    },
+    "eli5": "Explain the concept like the student is 10. Max 3 sentences."
+  }
+]
+
+Rules:
+- "correct" is a NUMBER (0=A, 1=B, 2=C, 3=D, 4=E)
+- Include a wrong explanation for every wrong choice
+- Prefer using the actual choice index as the key, so if A is wrong use "0", if B is wrong use "1", etc.
+- Vary which letter is correct — don't always use 0
+- If converting questions with fewer than 5 choices, add distractors to reach 5
+- Keep all answer choices similar in length so the correct answer is not guessable by length
+- Output ONLY the JSON array
+
+MY CONTENT:
+</div>
+    </div>
+    <p style="font-size:12px;color:var(--mist);margin-bottom:24px;margin-top:6px">Paste your notes or existing questions <em>after</em> this prompt before sending to your AI.</p>
+
+    <div class="divider"></div>
+
+    <div class="field">
+      <label class="lbl">Quiz name (optional)</label>
+      <input class="inp" id="quizName" placeholder="e.g. Ferland — Confidence Intervals — Bank 1">
+    </div>
+    <div class="field">
+      <label class="lbl">Paste AI response here</label>
+      <textarea class="ta" id="pasteArea" placeholder="Paste the AI's response here and hit Launch…"></textarea>
+    </div>
+    <div class="setup-actions">
+      <button class="launch-btn" onclick="launchQuiz()">🚀 Launch Quiz</button>
+      <button class="ghost-btn" onclick="downloadQuiz()">⬇ Download My Quiz</button>
+    </div>
+    <div class="err-msg" id="errMsg"></div>
+  </div>
+
+</div>
+</div>
 </div>
 
-<div class="qo" id="qo" data-fs="md">
+<!-- ══════════ QUIZ VIEW ══════════ -->
+<div class="view" id="viewQuiz">
+<div class="quiz-page">
+
+  <!-- top bar -->
   <div class="qt-bar">
-    <h2>Acute CNS Infections — Quiz</h2>
-    <div class="qt-btns">
-      <div class="fs-ctrl">
-        <span class="fs-label">Text</span>
-        <button class="fs-btn" data-fs-btn="sm">A-</button>
-        <button class="fs-btn active" data-fs-btn="md">A</button>
-        <button class="fs-btn" data-fs-btn="lg">A+</button>
-        <button class="fs-btn" data-fs-btn="xl">A++</button>
-      </div>
-      <button class="qt-btn print" id="printQuiz">Print</button>
-      <button class="qt-btn reset" id="resetQuiz">Reset</button>
-      <button class="qt-btn close" id="closeQuiz">Close</button>
-    </div>
+    <div class="qt-name" id="qtName">Quiz</div>
+    <button class="qt-btn" onclick="downloadQuiz()">⬇ Download Quiz</button>
+    <button class="qt-btn" onclick="resetQuiz()">↺ Reset</button>
+    <button class="qt-btn" onclick="exitQuiz()">✕ Close</button>
   </div>
 
+  <!-- grid -->
   <div class="qin">
-    <div class="q-left">
+
+    <!-- LEFT SIDEBAR -->
+    <div class="sidebar">
+
+      <!-- score boxes -->
       <div class="score-panel">
-        <div class="score-box"><div class="sv" id="svCurrent">1</div><div class="sl">Current</div></div>
-        <div class="score-box correct"><div class="sv" id="svCorrect">0</div><div class="sl">Correct</div></div>
-        <div class="score-box incorrect"><div class="sv" id="svIncorrect">0</div><div class="sl">Incorrect</div></div>
+        <div class="score-box correct"><div class="sv" id="sC">0</div><div class="sl">Correct</div></div>
+        <div class="score-box incorrect"><div class="sv" id="sI">0</div><div class="sl">Incorrect</div></div>
+        <div class="score-box"><div class="sv" id="sP">—</div><div class="sl">Score</div></div>
       </div>
 
-      <div class="mode-toggle" id="modeToggle">
-        <button class="mode-btn active" id="modeLearn"><span class="mode-icon">🧠</span>Learn Mode</button>
-        <button class="mode-btn" id="modeExam"><span class="mode-icon">📝</span>Exam Mode</button>
+      <!-- mode toggle -->
+      <div class="mode-toggle">
+        <button class="mode-btn active" id="modeLearn" onclick="setMode('learn')"><span class="mode-icon">📚</span>Learn Mode</button>
+        <button class="mode-btn" id="modeExam" onclick="setMode('exam')"><span class="mode-icon">📝</span>Exam Mode</button>
       </div>
 
-      <div class="panel timer-panel">
-        <div class="timer-card">
-          <div class="timer-lbl">Timer</div>
-          <div class="timer-time" id="timerTime">00:00</div>
-          <div>
-            <button class="tbtn" id="timerStart" title="Start">▶</button>
-            <button class="tbtn" id="timerPause" title="Pause">⏸</button>
-            <button class="tbtn" id="timerReset" title="Reset">↺</button>
+      <!-- timer -->
+      <div class="timer-card" id="timerCard">
+        <div class="timer-lbl">TIMER</div>
+        <div class="timer-time" id="timerTime">00:00</div>
+        <button class="tbtn" id="timerPlayBtn" onclick="toggleTimer()">▶</button>
+        <button class="tbtn" onclick="resetTimer()">↺</button>
+      </div>
+
+      <!-- tools -->
+      <div class="tool-panel">
+        <button class="q-tool hl-tool" id="hlTool" onclick="toggleTool('hl')">🖊 Highlight</button>
+        <button class="q-tool st-tool" id="stTool" onclick="toggleTool('st')">✂ Strikethrough</button>
+        <button class="q-tool" onclick="clearMarks()">✖ Clear Marks</button>
+        <div class="font-tools">
+          <span class="font-tools-label">Text Size</span>
+          <div class="font-tools-group">
+            <button class="font-btn" onclick="adjustFontSize(-1)" aria-label="Decrease question and answer text size">A-</button>
+            <button class="font-btn reset" onclick="resetFontSize()" aria-label="Reset question and answer text size">A</button>
+            <button class="font-btn" onclick="adjustFontSize(1)" aria-label="Increase question and answer text size">A+</button>
           </div>
         </div>
-        <div class="cd-card">
-          <div class="timer-lbl">Countdown</div>
-          <div class="cd-time" id="cdTime">05:00</div>
-          <div class="cd-controls">
-            <button class="cd-pm" id="cdMinus">−</button>
-            <div class="cd-val" id="cdVal">5</div>
-            <div class="cd-unit">min</div>
-            <button class="cd-pm" id="cdPlus">+</button>
-            <button class="cd-go" id="cdGo">Start</button>
-          </div>
-        </div>
       </div>
 
-      <div class="panel">
-        <div class="tool-panel">
-          <button class="q-tool" id="toolHighlight">Highlight tool</button>
-          <button class="q-tool" id="toolStrike">Strikeout tool</button>
-          <button class="q-tool" id="toolReveal">Reveal explanation</button>
-          <div class="tool-status" id="toolStatus">Tool mode: none</div>
-        </div>
-      </div>
-
-      <div class="exam-submit-row" id="examSubmitRow">
-        <div class="exam-progress" id="examProgress">0 of 20 answered</div>
-        <button class="exam-submit-btn" id="submitExam" disabled>Submit Exam</button>
-      </div>
     </div>
 
-    <div class="q-right">
-      <div class="qcd" id="qcd">
-        <div class="qpg"><div class="qpf" id="qpf" style="width: 5%;"></div></div>
-        <div class="qbd">
-          <div class="qnum" id="qnum">Question 1 of 20</div>
-          <div class="qstem" id="qStem"><span class="stem-text" id="qStemText">Loading…</span></div>
-          <div class="ach" id="ach"></div>
-          <div class="submit-row"><button class="submit-btn" id="submitOne" disabled>Submit Answer</button></div>
-          <div class="exb" id="exBlock">
-            <div class="exs exc"><div class="exl">Correct Answer</div><div class="ext" id="exCorrect"></div></div>
-            <div class="exs exe"><div class="exl">Teaching Point</div><div class="ext" id="exTeach"></div></div>
-            <div class="exs exw"><div class="exl">Why the Others Are Wrong</div><div class="ext" id="exWrong"></div></div>
-          </div>
-        </div>
-        <div class="qnv">
-          <button class="nb" id="prevBtn">← Previous</button>
-          <div class="qdots" id="qdots"></div>
-          <button class="nb pr" id="nextBtn">Next →</button>
-        </div>
-      </div>
+    <!-- RIGHT: QUESTION -->
+    <div>
+      <div id="finBanner"></div>
+      <div id="qArea"></div>
     </div>
+
   </div>
 </div>
-
-<div id="printReviewRoot" aria-hidden="true"></div>
+</div>
 
 <script>
-const questions = [
+// ── STATE ──
+var questions=[], answers={}, selected={}, NC=0, NI=0, CQ=0;
+var quizMode='learn';
+var toolMode='';
+var timerSec=0, timerRunning=false, timerInterval=null;
+var fontStep=0;
+var LETTERS=['A','B','C','D','E'];
+var PRELOADED_QUIZ_NAME="Vaughn Neuro set";
+var PRELOADED_QUESTIONS_JSON="[{\"stem\":\"A 19-year-old male college freshman living in a dormitory presents to the ED with 8 hours of fever, headache, and neck stiffness. His roommate reports a rapidly spreading rash of small, non-blanching red-purple spots over his legs and trunk that appeared within the last two hours. He is now hypotensive and tachycardic with cool extremities. Which of the following is most directly responsible for this patient's rapid progression to shock?\",\"choices\":[\"B. IgA protease-mediated defeat of mucosal secretory antibody, permitting initial nasopharyngeal colonization\",\"C. Capsule-mediated evasion of complement-mediated phagocytosis, allowing prolonged bacteremic survival\",\"A. Massive overproduction of lipo-oligosaccharide triggering a systemic inflammatory and coagulopathic cascade\",\"E. Pilus-mediated adherence to nasopharyngeal epithelial cells, initiating the earliest step of mucosal colonization\",\"D. Peptidoglycan and cell wall debris from bacterial lysis driving a cytokine response confined to the subarachnoid space\"],\"correct\":2,\"explanation\":\"The rash plus rapid shock reflect meningococcemia, not meningitis alone. The driver is massive overproduction of lipo-oligosaccharide (functionally equivalent to LPS) → Waterhouse-Friderichsen syndrome → fulminant sepsis with DIC and shock. This is a distinct, far more lethal process than the localized CNS inflammation of meningitis by itself.\",\"wrongExplanations\":{\"0\":\"Describes an early colonization step (defeating mucosal IgA) that occurs hours to days before deterioration, not the mechanism of septic shock itself.\",\"1\":\"Explains how the organism survives in the bloodstream long enough to seed the meninges, but this is a prerequisite for invasion, not the trigger for shock.\",\"3\":\"Describes the very first step of colonization at the nasopharyngeal mucosa, occurring long before bacteremia or the shock state.\",\"4\":\"Describes the localized CNS inflammatory cascade of meningitis in the subarachnoid space — this patient's rash and shock reflect systemic meningococcemia, a separate and far more dangerous process.\"},\"eli5\":\"This germ makes a toxic coating that floods the whole bloodstream, not just the brain fluid, sending the whole body into overdrive very fast. That's why the rash and shock can appear within hours. It's much more dangerous than a regular case of bacterial meningitis.\"},{\"stem\":\"A 5-day-old male born at term via uncomplicated vaginal delivery presents with poor feeding, lethargy, and temperature instability, without nuchal rigidity on exam. Lumbar puncture reveals a neutrophilic pleocytosis, glucose 22 mg/dL, and protein 210 mg/dL. Gram stain shows Gram-positive rods. Empiric ampicillin, cefotaxime, and gentamicin are started. What is the primary rationale for including ampicillin in this neonatal regimen?\",\"choices\":[\"C. It provides the primary bactericidal coverage against Gram-negative enteric organisms such as E. coli K1, making gentamicin unnecessary\",\"B. It provides coverage against Listeria monocytogenes, acquired from maternal GI/vaginal flora and not reliably covered by cephalosporins\",\"A. It achieves the CSF penetration required to treat Group B Streptococcus, since cefotaxime alone cannot reliably cross the blood-brain barrier\",\"D. It blunts the neonatal cytokine response to bacterial lysis, functioning analogously to dexamethasone in older patients\",\"E. It specifically targets Neisseria meningitidis, the predominant cause of neonatal meningitis in term infants\"],\"correct\":1,\"explanation\":\"Neonatal bacterial meningitis is dominated by organisms acquired around delivery — GBS, E. coli, and Listeria monocytogenes. Cefotaxime reliably covers GBS and E. coli but has no activity against Listeria, which is exactly why ampicillin is added; gentamicin is added separately for synergy.\",\"wrongExplanations\":{\"0\":\"Gentamicin, not ampicillin, provides the Gram-negative enteric synergy in this regimen; ampicillin's unique contribution is Listeria coverage.\",\"2\":\"Cefotaxime crosses the blood-brain barrier well and is the primary agent for GBS coverage; ampicillin's role is to cover the gap cefotaxime misses (Listeria), not to boost GBS penetration.\",\"3\":\"Ampicillin is an antibacterial, not an anti-inflammatory agent — it has no role analogous to dexamethasone.\",\"4\":\"N. meningitidis is a Gram-negative diplococcus, not a Gram-positive rod, and is not a predominant neonatal pathogen; it becomes relevant starting in the school-age/young-adult group.\"},\"eli5\":\"Newborns can pick up a few different germs from mom around birth, and one of them (Listeria) isn't killed by the antibiotic that handles the other two. So doctors add ampicillin specifically to cover that one germ too.\"},{\"stem\":\"A 22-year-old college student presents with 2 days of headache, low-grade fever, and mild neck stiffness, one week after a nonspecific GI illness. He is alert, non-toxic-appearing, and answers questions appropriately. Lumbar puncture shows: opening pressure 160 mm H2O, WBC 180/mm³ (92% lymphocytes), glucose 58 mg/dL, protein 48 mg/dL, lactate 2.1 mM/L. Gram stain and bacterial culture are negative. Which of the following best explains this CSF profile?\",\"choices\":[\"C. Viruses don't consume CSF glucose or generate bacterial-lysis debris, so glucose, protein, and lactate remain near-normal despite the pleocytosis\",\"A. Early bacterial meningitis frequently presents with this exact reassuring profile before the neutrophilic response has time to develop\",\"B. Fungal meningitis characteristically produces a lymphocytic pleocytosis with markedly elevated lactate, matching this presentation\",\"D. Partially treated bacterial meningitis, from prior oral antibiotic use, classically produces this exact lymphocyte-predominant, near-normal glucose/protein pattern\",\"E. Parasitic meningitis is excluded here only because of lymphocyte predominance, since every parasitic cause of meningitis is defined by either a neutrophilic or eosinophilic pleocytosis instead\"],\"correct\":0,\"explanation\":\"This is a textbook viral CSF profile — mild-to-moderate lymphocytic pleocytosis with normal or only mildly elevated protein, normal glucose, and normal lactate. Bacteria consume glucose and spill debris on lysis; viruses do neither, so the chemistry stays near-normal despite the pleocytosis.\",\"wrongExplanations\":{\"1\":\"Bacterial meningitis is defined by markedly abnormal values (WBC 1,000–5,000/mm³ neutrophilic, glucose <40 mg/dL, protein >45 mg/dL, lactate >3.5 mM/L) from the outset — it doesn't pass through a normal-looking early phase.\",\"2\":\"Fungal meningitis does produce a lymphocytic pleocytosis, but characteristically with an elevated lactate (>3.5 mM/L), unlike the near-normal lactate seen here.\",\"3\":\"Partially treated bacterial meningitis can blunt neutrophilic predominance, but typically still shows elevated protein and reduced glucose reflecting the underlying bacterial process, unlike this largely normal chemistry panel.\",\"4\":\"Naegleria, a parasitic cause, actually produces a neutrophilic pleocytosis — lymphocyte predominance alone doesn't rule out every parasitic cause; it's the overall normal chemistry that argues against a more destructive process.\"},\"eli5\":\"When the fluid around the brain looks almost normal except for extra lymphocyte cells, that's the classic fingerprint of a virus — viruses don't 'eat' the sugar or leave much wreckage the way bacteria do. This pattern, plus a negative bacterial culture, points strongly toward a viral cause.\"},{\"stem\":\"A 34-year-old male with a CD4 count of 40 cells/mm³ presents with three weeks of progressively worsening headache, lethargy, and diplopia, now with new confusion. CSF India ink preparation reveals encapsulated, budding yeast forms. Which of the following best describes how this organism most likely reached the subarachnoid space in this patient?\",\"choices\":[\"A. Direct extension from a contiguous sinus or mastoid infection through the cribriform plate\",\"E. Ingestion of contaminated soil followed by transmural translocation across the intestinal epithelium\",\"C. Reactivation of latent organism from a dorsal root or cranial sensory ganglion established many years earlier during a prior primary viral infection\",\"B. Retrograde axonal transport following inoculation at a peripheral wound site\",\"D. Hematogenous spread from a primary pulmonary exposure, followed by transcellular migration in yeast form across the blood-brain barrier\"],\"correct\":4,\"explanation\":\"This is cryptococcal meningoencephalitis. Infection typically begins as a primary respiratory exposure; in an immunocompromised host the organism spreads hematogenously and crosses the blood-brain barrier via transcellular migration in yeast form. Cryptococcus was the 4th leading cause of death in AIDS patients before effective antifungal therapy.\",\"wrongExplanations\":{\"0\":\"Describes the classic route for brain abscess (about a third of which arise from otitis media/sinus spread), not cryptococcal meningitis, which spreads hematogenously.\",\"1\":\"Describes an oral-fecal/GI translocation route, which is not how Cryptococcus, an inhaled organism, reaches the CNS.\",\"2\":\"Describes VZV/herpes zoster reactivation from a sensory ganglion, an entirely different latency mechanism unrelated to fungal CNS invasion.\",\"3\":\"Describes rabies virus transmission — retrograde axonal transport from a bite wound — not the route used by an inhaled fungal pathogen.\"},\"eli5\":\"This fungus is breathed in through the lungs first, and if the immune system is too weak to stop it there, it travels through the blood and slips across the brain's protective barrier. It's the classic brain infection seen in people with very advanced, untreated HIV/AIDS.\"},{\"stem\":\"A 9-year-old boy develops severe headache, fever, and neck stiffness 5 days after swimming in a warm freshwater lake during a summer heat wave, with rapid progression to altered mental status and seizures over the following day. CSF shows a neutrophilic pleocytosis with RBCs present and low glucose; wet mount reveals motile trophozoites. Which of the following describes the route by which this organism most likely reached the CNS?\",\"choices\":[\"C. Ingestion of the organism followed by translocation across the intestinal wall into the portal circulation\",\"A. Hematogenous dissemination from a primary pulmonary exposure with subsequent transcellular crossing of the blood-brain barrier\",\"E. Entry through the nasal mucosa with direct migration along the olfactory nerve into the brain\",\"B. Contiguous spread from an untreated middle ear infection into the adjacent temporal lobe\",\"D. Retrograde spread along a peripheral sensory nerve following inoculation at a minor skin wound\"],\"correct\":2,\"explanation\":\"This is primary amoebic meningoencephalitis (PAM) from Naegleria fowleri, the most common protozoan cause of meningitis in the US. The trophozoite enters via the nose in warm soil-contaminated freshwater and follows the olfactory nerve directly into the brain, producing a rapid, almost always fatal course.\",\"wrongExplanations\":{\"0\":\"Describes an enteric/GI translocation route, which is not how Naegleria — acquired through the nose — reaches the brain.\",\"1\":\"Describes the fungal (Cryptococcus) route — respiratory exposure with hematogenous BBB crossing — not the direct olfactory-nerve route used by Naegleria.\",\"3\":\"Describes the classic route for a contiguous brain abscess, not an amoebic CNS infection acquired from freshwater exposure.\",\"4\":\"Describes the rabies virus route (retrograde transport from a bite/skin inoculation site), an unrelated mechanism from an unrelated pathogen class.\"},\"eli5\":\"This amoeba gets into the brain by swimming up the nose during freshwater exposure and then crawling straight along the smell nerve into the brain — it doesn't need to travel through the blood at all. That direct, short path is part of why it can cause damage so quickly.\"},{\"stem\":\"A 45-year-old man is diagnosed with pneumococcal meningitis and started on ceftriaxone, vancomycin, and dexamethasone. Which of the following best explains the rationale for including dexamethasone in this regimen?\",\"choices\":[\"C. It improves CSF penetration of ceftriaxone by directly increasing blood-brain barrier permeability\",\"A. It blunts the host's pro-inflammatory cytokine response driving BBB breakdown and tissue damage, rather than acting on the organism\",\"E. It prevents Waterhouse-Friderichsen syndrome by directly stabilizing adrenal cortical blood flow and function throughout the course of acute infection\",\"D. It functions as a third, mechanistically distinct antibacterial agent, working by inhibiting bacterial cell wall or protein synthesis pathways\",\"B. It provides synergistic bactericidal activity against penicillin-resistant S. pneumoniae when combined with vancomycin\"],\"correct\":1,\"explanation\":\"Dexamethasone doesn't target the organism — it blunts the host's own pro-inflammatory response, which is what actually drives much of the tissue damage and neurologic sequelae in bacterial meningitis. The rule of thumb: calm the storm, don't kill the bug.\",\"wrongExplanations\":{\"0\":\"Dexamethasone's benefit comes from reducing inflammation-driven BBB permeability and edema, not from increasing drug penetration through it.\",\"2\":\"Waterhouse-Friderichsen syndrome is specific to fulminant meningococcemia, and dexamethasone's role in standard meningitis treatment is unrelated to adrenal protection.\",\"3\":\"Dexamethasone is a corticosteroid with no direct antimicrobial mechanism; it does not inhibit bacterial cell wall or protein synthesis.\",\"4\":\"Dexamethasone has no direct antibacterial activity; it is purely anti-inflammatory and does not enhance vancomycin's bactericidal effect.\"},\"eli5\":\"This medicine doesn't fight the germ at all — it calms down the body's own overreaction to the infection, since a lot of the damage in bacterial meningitis actually comes from the immune system's response rather than the bacteria themselves.\"},{\"stem\":\"A 68-year-old man in Massachusetts presents in August with four days of fever, confusion, and new-onset seizures after spending increased time gardening at dusk. MRI shows nonspecific signal changes, and CSF PCR for HSV is negative. Given that this represents the most commonly identified cause of viral encephalitis in the United States specifically, which organism is most likely responsible?\",\"choices\":[\"D. Eastern equine encephalitis virus\",\"C. Japanese encephalitis virus\",\"A. Herpes simplex virus type 1\",\"B. West Nile virus\",\"E. Powassan virus\"],\"correct\":3,\"explanation\":\"West Nile virus, a Culex mosquito-borne flavivirus, is the most common viral encephalitis agent in the US — distinct from HSV-1, which is the most common cause of sporadic encephalitis overall (vector-independent), and Japanese encephalitis, which holds the most-common-worldwide distinction.\",\"wrongExplanations\":{\"0\":\"EEE carries a very high mortality rate but is far less common overall than West Nile virus in the US.\",\"1\":\"Japanese encephalitis is the most common cause of infective encephalitis worldwide, but it is not endemic to the United States.\",\"2\":\"HSV-1 is the most common cause of sporadic encephalitis year-round with no vector required — but the question asks for the most common cause in the US specifically, which is West Nile virus, and CSF PCR for HSV was already negative.\",\"4\":\"Powassan virus transmits extremely rapidly (as little as ~15 minutes of tick attachment) but is a far less common cause of US encephalitis than West Nile virus.\"},\"eli5\":\"In the United States, mosquito bites in late summer are the most common way people catch encephalitis, and West Nile virus is the biggest culprit behind that. Herpes causes more cases overall worldwide without needing a mosquito, but within the US, West Nile leads for mosquito-spread cases.\"},{\"stem\":\"A 66-year-old woman develops rapidly progressive dementia over six weeks, accompanied by myoclonus and ataxia. Brain biopsy shows vacuolation of the neuropil without any accompanying lymphocytic infiltrate. Which of the following best explains the fundamental mechanism by which the underlying pathologic agent propagates and causes disease?\",\"choices\":[\"D. Autoantibodies directed against a specific neuronal surface antigen trigger complement-mediated injury to postsynaptic neurons over a period of weeks\",\"A. A double-stranded DNA virus establishes latency in neurons and reactivates under conditions of immunosuppression, triggering a demyelinating response\",\"E. A bacterial exotoxin selectively inhibits presynaptic vesicle fusion at the neuromuscular junction, producing progressive neuromuscular dysfunction over time\",\"B. An RNA virus undergoes retrograde axonal transport from a peripheral site of inoculation to reach the CNS\",\"C. A misfolded, beta-sheet protein conformer template-converts normal protein copies into the same pathologic shape, without nucleic acid replication or immune response\"],\"correct\":4,\"explanation\":\"This is prion disease. PrP-Sc is a conformational isomer of the normal cellular protein PrP-C, adopting a beta-sheet conformation instead of PrP-C's alpha-helical one. PrP-Sc template-converts more PrP-C into itself, amplifying without any replication machinery — and provokes no immune response since the abnormal protein reads as 'self,' consistent with the absence of lymphocytic infiltrate.\",\"wrongExplanations\":{\"0\":\"Describes an autoimmune/paraneoplastic encephalitis mechanism, not the templated protein-misfolding process of prion disease.\",\"1\":\"Describes JC virus/PML — a DNA virus with true latency and reactivation — not a prion, which has no nucleic acid at all.\",\"2\":\"Describes a toxin-mediated mechanism (e.g., botulinum toxin), unrelated to prion pathology.\",\"3\":\"Describes the rabies virus mechanism of retrograde neural spread, an entirely different (RNA-virus-based) process.\"},\"eli5\":\"A prion isn't alive and has no genetic material — it's a normal brain protein that folded into the wrong shape, and that wrong shape can 'convince' nearby normal proteins to fold the same way, like a chain reaction. That's why there's no immune response and no cure: there's nothing alive to attack.\"},{\"stem\":\"A 28-year-old man in the United Kingdom presents with early prominent psychiatric symptoms and dysesthesias, followed months later by ataxia and progressive cognitive decline — a course notably longer than typical sporadic presentations. Autopsy reveals extensive florid amyloid plaques. Which of the following most likely explains the origin of this patient's disease?\",\"choices\":[\"B. Inheritance of a germline mutation in the gene encoding the prion protein\",\"E. Acquisition following a documented traumatic head injury\",\"A. A spontaneous, sporadic post-translational misfolding event with no identifiable exposure\",\"C. Exposure via a contaminated neurosurgical instrument or corneal transplant\",\"D. Consumption of meat products contaminated with the agent of bovine spongiform encephalopathy\"],\"correct\":4,\"explanation\":\"This describes variant CJD — younger age of onset, early psychiatric prominence, a longer clinical course than sporadic CJD, and florid plaques on pathology — resulting from bovine-to-human transmission via BSE (\\\"mad cow disease\\\")-contaminated meat.\",\"wrongExplanations\":{\"0\":\"Describes familial CJD, an inherited condition — this patient's presentation and epidemiologic context instead point to an acquired dietary exposure.\",\"1\":\"Describes the acquired form of Gerstmann-Sträussler-Scheinker syndrome, which follows physical injury rather than dietary exposure.\",\"2\":\"Describes sporadic CJD, the most common form overall, but it lacks a specific dietary exposure and typically has a shorter clinical course than described here.\",\"3\":\"Describes iatrogenic CJD, transmitted via contaminated medical/surgical equipment or tissue, not a dietary route.\"},\"eli5\":\"This form of the disease comes from eating meat products contaminated with 'mad cow disease,' which is why it showed up in younger patients in the UK during that outbreak, with a longer symptom course than the usual, spontaneous form.\"},{\"stem\":\"A 41-year-old woman with multiple sclerosis on natalizumab therapy presents with six weeks of progressive cognitive decline, visual field deficits, and ataxia. MRI reveals non-enhancing, asymmetric white matter lesions without mass effect. CSF PCR is positive for a small, non-enveloped, circular double-stranded DNA virus. What is the most appropriate next step in management?\",\"choices\":[\"A. Initiate oral acyclovir for a full 14- to 21-day course to specifically target the causative herpesvirus infection\",\"B. Begin liposomal amphotericin B and flucytosine pending fungal culture confirmation\",\"D. Administer rabies immunoglobulin and initiate the post-exposure vaccination series\",\"E. Discontinue natalizumab to restore immune function, since no direct antiviral therapy exists for this organism\",\"C. Start empiric ceftriaxone plus vancomycin coverage while awaiting the CSF Gram stain and culture results to return\"],\"correct\":3,\"explanation\":\"This describes PML from JC virus reactivation, precipitated by an immunomodulating drug. Treatment is restoration of immune function — antiretroviral therapy in AIDS, or stopping the offending immunosuppressive drug — since there is no direct antiviral treatment for JC virus itself, the opposite logic from most other CNS infections.\",\"wrongExplanations\":{\"0\":\"Acyclovir targets herpesviruses (HSV, VZV), not JC virus, which has no direct antiviral treatment.\",\"1\":\"This is an antifungal regimen appropriate for Cryptococcus, not a treatment for a DNA polyomavirus.\",\"2\":\"Rabies immunoglobulin/vaccination is post-exposure prophylaxis for rabies virus exposure, unrelated to JC virus reactivation.\",\"4\":\"This is empiric bacterial meningitis coverage; the CSF and imaging findings here are not consistent with a bacterial process.\"},\"eli5\":\"This virus usually stays quietly asleep inside most people, kept under control by the immune system, but a medicine that weakens the immune system let it wake up and start damaging the brain's wiring. Since no drug directly kills this virus, the fix is to stop the medicine that let the immune system down.\"},{\"stem\":\"A 52-year-old man presents six weeks after an unnoticed bat exposure at a rural cabin with new agitation, hydrophobia, and hypersalivation, progressing to coma over the following days. Autopsy would most likely reveal eosinophilic cytoplasmic inclusions in which of the following locations, reflecting this organism's characteristic route of spread?\",\"choices\":[\"B. Neuronal cytoplasm, as a result of retrograde axonal transport from the peripheral inoculation site to the CNS\",\"D. Ependymal cell cytoplasm, as a result of direct extension from an adjacent sinus infection\",\"C. Macrophage cytoplasm within the small bowel epithelium, as a result of systemic spread following an initial intestinal infection\",\"A. Astrocyte cytoplasm, as a result of transcellular migration across the blood-brain barrier in yeast form\",\"E. Oligodendrocyte cytoplasm, as a result of latency and reactivation following childhood exposure\"],\"correct\":0,\"explanation\":\"This is rabies. The rhabdovirus travels via retrograde neural spread — from the periphery to spinal ganglia, up the spinal cord to the brain, and back out to the periphery — accumulating in neuronal cytoplasm as Negri bodies, the classic histologic finding.\",\"wrongExplanations\":{\"1\":\"Describes the classic contiguous-spread route for brain abscess, not a neurotropic viral infection.\",\"2\":\"Describes Tropheryma whipplei's spread pattern (initial macrophage infection in the small bowel), unrelated to rabies.\",\"3\":\"Describes the Cryptococcus route (hematogenous, transcellular migration in yeast form), an entirely different pathogen class and mechanism.\",\"4\":\"Describes JC virus/PML — childhood acquisition with later reactivation — a mechanism unrelated to rabies' direct retrograde transport following a bite.\"},\"eli5\":\"This virus enters through a bite and slowly climbs backward up the nerves toward the brain, leaving behind telltale round marks (Negri bodies) inside brain cells along the way. That's very different from how other brain infections spread through the blood or by direct extension nearby.\"},{\"stem\":\"A 58-year-old woman presents with three days of burning pain over the right side of her thorax, followed by the onset of grouped vesicles on an erythematous base confined strictly to a single dermatome that does not cross the midline. Which of the following best explains why the rash remains confined to this single, unilateral dermatomal distribution?\",\"choices\":[\"C. The virus reactivates simultaneously within multiple dorsal root ganglia but only becomes clinically apparent at the site of the greatest prior local trauma or immune weakness\",\"B. The virus disseminates hematogenously but is clinically restricted to a single dermatome by pre-existing dermatome-specific immunity\",\"E. The rash reflects direct inoculation from contact with another individual's active lesion, limited to the exposed dermatome only\",\"D. The virus spreads via contiguous extension through the epidermis from an adjacent, clinically unaffected dermatome\",\"A. Reactivated virus travels back down the one sensory nerve where it established latency in the dorsal root ganglion\"],\"correct\":4,\"explanation\":\"Reactivation of latent VZV travels back down the single sensory nerve in which it established lifelong latency during the primary chickenpox infection, which is exactly why the rash always stays in one dermatome and never crosses the midline.\",\"wrongExplanations\":{\"0\":\"Latency and reactivation occur within a single ganglion corresponding to the affected dermatome, not simultaneously across multiple ganglia.\",\"1\":\"Zoster reactivation is not a hematogenous process; it travels along a single peripheral nerve, which is the actual reason for dermatomal confinement, not circulating immunity.\",\"2\":\"This presentation represents reactivation of the patient's own latent virus from a prior primary chickenpox infection, not a new exogenous inoculation.\",\"3\":\"The rash does not spread by contiguous skin-to-skin extension; it follows the distribution of the single reactivated nerve.\"},\"eli5\":\"After chickenpox, the virus hides quietly inside one specific nerve for years. When it wakes back up, it travels back down that exact nerve to the skin — and only that one — which is why the rash always forms a single band on just one side of the body.\"},{\"stem\":\"A 34-year-old man with a history of chronic, poorly treated otitis media presents with two weeks of worsening headache, low-grade fever, and a new focal seizure. MRI reveals a ring-enhancing lesion in the temporal lobe with a hypointense center. Which of the following organisms is most likely responsible for this presentation?\",\"choices\":[\"A. Neisseria meningitidis, the meningococcal diplococcus\",\"D. Naegleria fowleri, the freshwater amoeba\",\"C. Staphylococcus aureus or viridans-group streptococci\",\"B. Cryptococcus neoformans, the encapsulated yeast\",\"E. Listeria monocytogenes, the Gram-positive rod\"],\"correct\":2,\"explanation\":\"This is a brain abscess arising from contiguous or hematogenous spread from another infected site — about 33% are associated with otitis media or mastoiditis, and most commonly caused by S. aureus or oral (viridans-group) streptococci. The ring-enhancing lesion is the classic radiologic signature of an abscess.\",\"wrongExplanations\":{\"0\":\"N. meningitidis causes acute meningitis with a classic petechial/purpuric rash and septic course, not a focal, contiguous-spread abscess from chronic ear disease.\",\"1\":\"Naegleria causes primary amoebic meningoencephalitis following freshwater nasal exposure, an unrelated clinical scenario.\",\"3\":\"Cryptococcus causes a fungal meningoencephalitis, almost exclusively in severely immunocompromised hosts, and is not the typical organism behind an otitis-associated brain abscess.\",\"4\":\"Listeria is a classic cause of meningitis in neonates, pregnant women, the elderly, and the immunocompromised — not the typical organism behind a contiguous abscess arising from chronic otitis media.\"},\"eli5\":\"About a third of brain abscesses start when a stubborn ear infection spreads next door into the brain, and the germs most often responsible are common skin and mouth bacteria, not the classic meningitis bugs. On a scan, the abscess looks like a bright ring around a darker, pus-filled center.\"},{\"stem\":\"A 54-year-old Caucasian man presents with a several-year history of migratory arthralgias, chronic diarrhea, abdominal pain, and unintentional weight loss. Over the past four months he has developed progressive cognitive decline, cerebellar ataxia, intermittent myoclonic jerks, and abnormal eye movements. Which of the following findings on small bowel biopsy would most strongly support the diagnosis?\",\"choices\":[\"D. PAS-positive macrophages within the lamina propria\",\"B. Villous atrophy with intraepithelial lymphocytosis\",\"A. Non-caseating granulomas with multinucleated giant cells\",\"C. Crypt abscesses with transmural lymphoid aggregates\",\"E. Foamy macrophages staining positive for acid-fast bacilli\"],\"correct\":0,\"explanation\":\"This is Whipple's disease from Tropheryma whipplei. The classic tetrad (arthralgia, diarrhea, abdominal pain, weight loss) precedes late (~10%) CNS involvement — dementia, cerebellar ataxia, myoclonus, ophthalmoplegia — and the finding central to diagnosis is PAS-positive macrophages on small bowel biopsy.\",\"wrongExplanations\":{\"1\":\"Describes celiac disease, which does not produce the systemic multisystem/CNS picture described here.\",\"2\":\"Describes Crohn's disease, an inflammatory bowel condition with a distinct biopsy signature unrelated to Whipple's.\",\"3\":\"Describes ulcerative colitis/IBD-pattern findings, not the macrophage-laden pattern characteristic of Whipple's.\",\"4\":\"Describes Mycobacterium avium-intracellulare (MAI) infection, a classic mimic of Whipple's on biopsy — both show foamy, macrophage-laden findings, but MAI macrophages stain acid-fast positive, while T. whipplei does not.\"},\"eli5\":\"This is a rare gut infection that first causes joint pain, diarrhea, belly pain, and weight loss, and only later — in a small number of patients — spreads to the brain and causes confusion and coordination problems. Doctors confirm it with a very distinctive biopsy pattern from the small intestine.\"},{\"stem\":\"A 74-year-old woman with type 2 diabetes presents with fever, confusion, and neck stiffness. Empiric ceftriaxone and vancomycin are started in the emergency department. CSF Gram stain subsequently returns showing Gram-positive rods. Which of the following is the most appropriate immediate modification to her antibiotic regimen?\",\"choices\":[\"C. Switch to ceftazidime and gentamicin, since Gram-positive rods on CSF stain are most consistent with Gram-negative enteric organisms in this age group\",\"A. Discontinue vancomycin, since Gram-positive rods indicate an organism that is inherently penicillin-sensitive and vancomycin coverage is redundant\",\"B. Add gentamicin alone without ampicillin, since aminoglycoside monotherapy is first-line for Gram-positive rod meningitis in adults\",\"E. Add ampicillin, since the initial empiric regimen does not reliably cover Listeria monocytogenes, which becomes an important pathogen with advancing age\",\"D. No change is needed, since ceftriaxone and vancomycin already provide adequate empiric coverage for all Gram-positive organisms causing meningitis in elderly patients\"],\"correct\":3,\"explanation\":\"Patients over 50 require empiric coverage of ampicillin + ceftriaxone + vancomycin + dexamethasone specifically because Listeria risk rises with age. Once Gram-positive rods are seen on stain, the Gram-stain-guided regimen calls for ampicillin (or TMP-SMX) + gentamicin — ceftriaxone alone does not reliably cover Listeria.\",\"wrongExplanations\":{\"0\":\"Gram-positive rods (like Listeria) are morphologically and therapeutically distinct from Gram-negative enteric rods, which require an entirely different regimen (ceftazidime + gentamicin).\",\"1\":\"Vancomycin remains necessary for empiric coverage of penicillin-resistant S. pneumoniae until an organism is definitively identified; discontinuing it based on a Gram-positive rod stain alone is not indicated.\",\"2\":\"Ampicillin, not gentamicin alone, is the backbone agent for Listeria coverage; gentamicin is added for synergy, not used as monotherapy.\",\"4\":\"The initial regimen of ceftriaxone and vancomycin does not reliably cover Listeria monocytogenes, a Gram-positive rod that becomes a key pathogen in patients over 50.\"},\"eli5\":\"Older adults are more likely to get a specific type of meningitis bacteria (Listeria) that the usual antibiotics don't fully cover, so once the lab shows the right clue on the Gram stain, doctors add one more antibiotic specifically aimed at that bug.\"},{\"stem\":\"A 38-year-old man undergoes lumbar puncture for suspected bacterial meningitis. The needle passes sequentially through the epidural space, dura mater, and arachnoid mater before CSF is obtained. In which anatomic compartment does the purulent exudate of acute bacterial meningitis characteristically accumulate?\",\"choices\":[\"A. The subarachnoid space, between the arachnoid and pia mater\",\"B. The subdural space, between the dura and arachnoid mater\",\"E. The ventricular system exclusively, without extension into the surrounding meninges\",\"D. The perivascular (Virchow-Robin) spaces surrounding penetrating cortical vessels\",\"C. The epidural space, external to the dura mater\"],\"correct\":0,\"explanation\":\"Bacterial meningitis is inflammation of the meninges and the CSF-filled subarachnoid space specifically — bacteria replicate within this space (between arachnoid and pia), driving the cytokine storm and purulent exudate responsible for the clinical syndrome. This is distinct from subdural empyema and epidural abscess, separate entities discussed elsewhere in the same lecture.\",\"wrongExplanations\":{\"1\":\"Describes the subdural space — the site of subdural empyema, a distinct entity, not where CSF/bacterial meningitis exudate collects.\",\"2\":\"While ventriculitis can complicate severe meningitis, the primary compartment of infection is the entire CSF-filled subarachnoid space, not the ventricles in isolation.\",\"3\":\"Perivascular spaces are involved in some CNS pathologies but are not the primary compartment of bacterial meningitis's purulent exudate.\",\"4\":\"Describes the epidural space — the site of epidural abscess, an anatomically separate infection.\"},\"eli5\":\"The brain and spinal cord are wrapped in three protective layers, and the space between the two innermost layers is filled with the fluid that bathes the brain. That's exactly where bacteria multiply and cause the inflammation of meningitis.\"},{\"stem\":\"A 27-year-old woman presents with fever, headache, and photophobia. On exam, passive flexion of the hip with the knee extended does not reproduce pain (negative Kernig sign), and passive neck flexion does not elicit involuntary hip/knee flexion (negative Brudzinski sign). Which of the following statements about these two exam findings is most accurate?\",\"choices\":[\"B. Both signs are classically taught but are only positive in 5–10% of true cases, so their absence shouldn't rule out meningitis\",\"D. Both signs are said to be more sensitive specifically in neonates than in adults, making them the primary bedside screening tool used in that younger age group\",\"C. Kernig's sign is specific for viral meningitis, while Brudzinski's sign is specific for bacterial meningitis\",\"A. A negative Kernig's and Brudzinski's sign together reliably excludes bacterial meningitis and further workup is unnecessary\",\"E. A positive result for either sign is required to meet the diagnostic criteria for the classic meningitis triad\"],\"correct\":0,\"explanation\":\"Kernig's and Brudzinski's signs are taught heavily but are only actually positive 5–10% of the time in true meningitis cases — their low sensitivity means a negative exam should not be used to rule out the diagnosis, even though boards will still ask about them.\",\"wrongExplanations\":{\"1\":\"Incorrect — the opposite is true; neonates typically skip classic meningeal signs entirely, so passive neck stiffness maneuvers are not the primary neonatal screening tool.\",\"2\":\"Incorrect — neither sign is organism-specific; both are general (and insensitive) signs of meningeal irritation regardless of etiology.\",\"3\":\"Incorrect because of the low sensitivity — a negative result does not meaningfully lower the probability of bacterial meningitis given how rarely these signs are positive even in confirmed cases.\",\"4\":\"Incorrect — the classic triad centers on fever, headache/altered mentation, and nuchal rigidity; Kernig's/Brudzinski's are adjunct maneuvers, not required diagnostic criteria.\"},\"eli5\":\"These two classic 'stiff neck' tests are taught a lot in school, but they're actually negative most of the time even in real cases of meningitis. So doctors can't rely on them alone to rule the disease out.\"},{\"stem\":\"A 58-year-old man with a history of recent pneumonia presents with fever, headache, and neck stiffness. CSF Gram stain shows Gram-positive diplococci. On blood agar culture, the isolate demonstrates a greenish zone of incomplete hemolysis and is inhibited by an optochin disk. Which organism is most consistent with these findings?\",\"choices\":[\"C. Streptococcus pneumoniae\",\"E. Haemophilus influenzae type b\",\"B. Listeria monocytogenes\",\"D. Group B Streptococcus (S. agalactiae)\",\"A. Neisseria meningitidis\"],\"correct\":0,\"explanation\":\"Alpha-hemolysis (a greenish zone of incomplete hemolysis) plus optochin sensitivity are classic distinguishing lab features of Streptococcus pneumoniae, the leading overall cause of bacterial meningitis in adults, consistent with this patient's preceding pneumonia.\",\"wrongExplanations\":{\"1\":\"H. influenzae is a Gram-negative coccobacillus, not a Gram-positive diplococcus, and is unrelated to the alpha-hemolysis/optochin pattern described.\",\"2\":\"Listeria is a Gram-positive rod, not a diplococcus, and is not identified by optochin sensitivity.\",\"3\":\"GBS is a Gram-positive coccus but classically beta-hemolytic and optochin-resistant, distinguishing it from S. pneumoniae.\",\"4\":\"N. meningitidis is a Gram-negative diplococcus, not Gram-positive, and does not show alpha-hemolysis/optochin sensitivity.\"},\"eli5\":\"This lab pattern — a specific type of partial blood-cell breakdown on a culture plate plus sensitivity to a particular test disk — is the classic fingerprint doctors use to identify Streptococcus pneumoniae, the most common cause of bacterial meningitis in adults.\"},{\"stem\":\"An 82-year-old nursing home resident with chronic indwelling urinary catheterization presents with fever, altered mental status, and neck stiffness. CSF Gram stain shows Gram-negative rods. Which of the following empiric regimens is most appropriate for this Gram stain finding?\",\"choices\":[\"A. Ampicillin plus gentamicin\",\"D. Ceftazidime plus gentamicin\",\"B. Ceftriaxone plus vancomycin plus dexamethasone\",\"C. Penicillin G alone\",\"E. Doxycycline monotherapy\"],\"correct\":1,\"explanation\":\"Gram-negative rods (enterics, H. influenzae, Pseudomonas) are covered by ceftazidime plus gentamicin. Elderly and institutionalized patients are at elevated risk for Gram-negative enteric organisms, and this pairing provides appropriate coverage including antipseudomonal activity.\",\"wrongExplanations\":{\"0\":\"Ampicillin plus gentamicin is the regimen for Gram-positive rods (e.g., Listeria), not Gram-negative rods.\",\"2\":\"Ceftriaxone plus vancomycin plus dexamethasone is the empiric regimen for suspected Gram-positive diplococci or culture-negative disease in younger age ranges, not the Gram-stain-guided regimen for Gram-negative rods.\",\"3\":\"Penicillin G is used for confirmed penicillin-sensitive S. pneumoniae or N. meningitidis, and has no reliable activity against Gram-negative enteric rods.\",\"4\":\"Doxycycline is used for agents such as Mycoplasma, Anaplasma, Ehrlichia, or Borrelia in the encephalitis context, not as empiric coverage for Gram-negative rods on a meningitis Gram stain.\"},\"eli5\":\"When the Gram stain shows a certain type of rod-shaped bacteria, doctors reach for a specific antibiotic combination built to cover that exact category of bug, rather than the combination used for other Gram stain patterns.\"},{\"stem\":\"In 2012, several hundred patients who had received epidural steroid injections for back pain developed fungal meningitis, with roughly 100 deaths, after the injected methylprednisolone was traced to a single compounding pharmacy. Which of the following best characterizes this outbreak compared to typical cases of fungal CNS infection?\",\"choices\":[\"C. It resulted from ingestion of Histoplasma-contaminated soil during a regional outbreak\",\"E. It was an iatrogenic infection — contaminated injectable medication delivered an unusual mold directly into the CNS, bypassing the usual respiratory route\",\"D. It occurred exclusively in immunocompetent hosts who were exposed to Coccidioides through inhalation of contaminated desert dust particles\",\"A. It occurred through what would normally be the classic route of primary respiratory exposure followed by hematogenous spread to the CNS\",\"B. It represented reactivation of latent Cryptococcus neoformans in patients with undiagnosed HIV infection\"],\"correct\":1,\"explanation\":\"The NECC outbreak involved Exserohilum rostratum (and related molds like Aspergillus fumigatus) contaminating injectable methylprednisolone; patients received the fungus directly into the CNS space via epidural injection — a rare instance of iatrogenic fungal CNS infection occurring outside the setting of classic immunosuppression or the typical inhalational route.\",\"wrongExplanations\":{\"0\":\"Histoplasma is acquired by inhalation from contaminated soil, not by direct epidural injection as occurred in this outbreak.\",\"2\":\"This outbreak was defined by direct injection of a contaminated product, not by inhalational exposure to Coccidioides in the desert Southwest.\",\"3\":\"The classic respiratory-exposure-then-hematogenous-spread route describes typical fungal meningitis (e.g., Cryptococcus, Histoplasma); this outbreak instead involved direct CNS inoculation via a contaminated injectable.\",\"4\":\"Cryptococcus is the classic AIDS-associated organism, but this outbreak involved Exserohilum/Aspergillus contamination of injectable medication, unrelated to HIV status.\"},\"eli5\":\"A batch of medicine meant for back pain injections was accidentally contaminated with mold, and doctors ended up injecting that mold directly into patients near the spine — a very unusual way to get a fungal brain infection, since it skipped the lungs and the immune system entirely.\"},{\"stem\":\"A 61-year-old man in the ICU with a central venous catheter and recent broad-spectrum antibiotic therapy develops fever and altered mental status. Blood and CSF cultures grow a budding yeast. Which of the following best describes the source of this organism, distinguishing it from the other major fungal agents of meningitis?\",\"choices\":[\"D. It establishes latency in a sensory ganglion following an earlier primary infection\",\"E. It is acquired through ingestion of undercooked meat containing tissue cysts\",\"C. It is acquired through direct percutaneous inoculation from contaminated freshwater\",\"A. It arises from the patient's own endogenous flora, rather than from an environmental exposure\",\"B. It is acquired by inhalation of spores from soil contaminated with bird or bat droppings\"],\"correct\":3,\"explanation\":\"Candida (including the increasingly resistant C. auris) arises from the patient's own endogenous flora, distinguishing it from the environmental, geography-linked fungi (Cryptococcus, Histoplasma, Blastomyces, Coccidioides) that are acquired by inhalation from contaminated soil or droppings.\",\"wrongExplanations\":{\"0\":\"Describes VZV reactivation, an unrelated viral mechanism.\",\"1\":\"Describes Toxoplasma gondii transmission, an unrelated parasitic mechanism.\",\"2\":\"Describes a parasitic (Naegleria/Acanthamoeba) exposure route, not a fungal one.\",\"4\":\"Describes the acquisition route for the environmental/geography-linked fungi (Histoplasma, Blastomyces, Coccidioides), not Candida.\"},\"eli5\":\"This particular fungus already lives on or in the patient's own body under normal circumstances — it only causes a brain infection when something (like a central line or strong antibiotics) lets it get out of its usual place and into the bloodstream, unlike other fungi that are breathed in from the environment.\"},{\"stem\":\"A 44-year-old man who recently relocated from Arizona presents with headache, low-grade fever, and confusion over several weeks. He works construction and reports significant dust exposure. CSF shows a lymphocytic pleocytosis. Which of the following organisms is most strongly associated with this patient's geographic and occupational exposure history?\",\"choices\":[\"A. Histoplasma capsulatum\",\"E. Candida albicans\",\"D. Cryptococcus neoformans\",\"B. Coccidioides immitis\",\"C. Blastomyces dermatitidis\"],\"correct\":3,\"explanation\":\"Coccidioides immitis is endemic to the desert Southwest (\\\"Valley Fever\\\"), acquired by inhalation of arthroconidia from disturbed soil/dust — consistent with this patient's Arizona residence and dust-heavy construction work.\",\"wrongExplanations\":{\"0\":\"Histoplasma is associated with central US river valleys (e.g., Ohio/Mississippi), not the desert Southwest.\",\"1\":\"Candida is an endogenous organism, not tied to soil/dust exposure in a specific region.\",\"2\":\"Cryptococcus is a worldwide, classically AIDS-associated organism with no specific geographic exposure link like this patient's.\",\"4\":\"Blastomyces is associated with the central/southeastern US near water, not the arid Southwest.\"},\"eli5\":\"This particular fungus lives in desert soil in the American Southwest and gets stirred up into the air by digging or wind, so people who breathe in a lot of desert dust — especially construction workers in that region — are at higher risk.\"},{\"stem\":\"A 26-year-old contact lens wearer who uses homemade lens solution presents with severe eye pain, photophobia, and a ring-shaped corneal infiltrate, without any neurologic symptoms. Which of the following best describes the typical clinical behavior of the organism most likely responsible?\",\"choices\":[\"E. It is transmitted by tick bite and causes a rapidly progressive encephalitis within hours of attachment\",\"D. It establishes latency in the trigeminal ganglion and reactivates to cause a vesicular corneal lesion\",\"C. It most commonly causes an isolated keratitis and only disseminates to cause meningoencephalitis in immunocompromised hosts\",\"A. It causes an almost universally fatal primary amoebic meningoencephalitis after nasal inoculation from warm freshwater\",\"B. It causes eosinophilic meningitis following ingestion of raw or undercooked snails or slugs\"],\"correct\":2,\"explanation\":\"Acanthamoeba spp., acquired from contaminated water (especially contact lens solution), most commonly causes keratitis alone; in immunocompromised hosts it can disseminate to cause meningoencephalitis/encephalitis — distinct from Naegleria fowleri's rapid, almost always fatal PAM following nasal freshwater exposure.\",\"wrongExplanations\":{\"0\":\"Describes a tick-borne pathogen (e.g., Powassan virus), an unrelated transmission route and organism.\",\"1\":\"Describes HSV keratitis via trigeminal ganglion latency, a viral mechanism unrelated to Acanthamoeba.\",\"3\":\"Describes Naegleria fowleri's PAM, a distinct amoeba with a different exposure route (nasal, warm freshwater) and far more rapid, uniformly fatal course.\",\"4\":\"Describes Angiostrongylus, a helminth acquired by ingestion of snails/slugs, an entirely different organism and route.\"},\"eli5\":\"This particular amoeba usually just causes a painful eye infection in contact lens wearers, especially if their cleaning solution is contaminated — it only spreads to cause a brain infection in people whose immune systems are already significantly weakened.\"},{\"stem\":\"A 19-year-old man returns from a trip to Southeast Asia where he sampled raw snail dishes at a local market. Two weeks later he develops headache, neck stiffness, and paresthesias. CSF analysis reveals a markedly eosinophilic pleocytosis. Which of the following organisms is most likely responsible for this presentation?\",\"choices\":[\"E. Toxoplasma gondii\",\"D. Angiostrongylus cantonensis\",\"C. Baylisascaris procyonis\",\"B. Acanthamoeba spp.\",\"A. Naegleria fowleri\"],\"correct\":1,\"explanation\":\"Angiostrongylus cantonensis, acquired by ingesting raw or undercooked snails/slugs (or contaminated produce), is the classic cause of eosinophilic meningitis — the eosinophil-rich CSF is the key diagnostic clue distinguishing it from the neutrophilic CSF of Naegleria.\",\"wrongExplanations\":{\"0\":\"Toxoplasma is acquired from cat feces or undercooked meat and does not classically produce an eosinophilic CSF pattern.\",\"2\":\"Baylisascaris is acquired from ingestion of raccoon feces-contaminated material, not from snails/slugs.\",\"3\":\"Acanthamoeba is acquired from contaminated water/contact lens solution and classically causes keratitis, not an eosinophilic meningitis from snail ingestion.\",\"4\":\"Naegleria produces a neutrophilic, not eosinophilic, CSF pleocytosis and is acquired via nasal freshwater exposure, not snail ingestion.\"},\"eli5\":\"A specific parasite that lives in snails and slugs can infect people who eat them raw or undercooked, and it leaves a very particular clue in the spinal fluid — a spike in eosinophils, the same immune cells the body uses against other worm infections.\"},{\"stem\":\"A 3-year-old boy who frequently plays in a backyard with a known raccoon den presents with lethargy, ataxia, and eye movement abnormalities several weeks after a reported episode of pica (eating dirt). Ingestion of which of the following is most likely responsible for this presentation?\",\"choices\":[\"D. Trophozoites present in soil contaminated with bird droppings\",\"E. Spores present in bat guano-contaminated soil\",\"C. Cysts present in contaminated freshwater\",\"B. Larvae present in undercooked pork\",\"A. Eggs shed in raccoon feces\"],\"correct\":4,\"explanation\":\"Baylisascaris procyonis is acquired through ingestion of eggs shed in raccoon feces, classically in young children with pica/soil exposure in areas with raccoon activity — consistent with this patient's exposure history and neurologic presentation.\",\"wrongExplanations\":{\"0\":\"Trophozoites and bird-dropping-contaminated soil describe Naegleria/fungal exposure patterns, not Baylisascaris egg ingestion.\",\"1\":\"Bat guano-contaminated soil is the classic exposure route for Histoplasma, an unrelated fungal organism.\",\"2\":\"Describes exposure routes for organisms like Naegleria (freshwater), not the raccoon-feces route of Baylisascaris.\",\"3\":\"Describes the route of acquisition for Taenia solium (pork tapeworm/neurocysticercosis), not Baylisascaris.\"},\"eli5\":\"This roundworm's eggs are shed in raccoon droppings, and young kids who put dirt or contaminated objects in their mouths in areas where raccoons have been can accidentally swallow the eggs, which then travel to the brain.\"},{\"stem\":\"A 36-year-old man with HIV and a CD4 count of 60 cells/mm³ who owns several outdoor cats presents with headache, confusion, and a new focal motor deficit. MRI reveals multiple ring-enhancing lesions with surrounding edema. Which of the following is the most likely causative organism?\",\"choices\":[\"E. Cryptococcus neoformans\",\"B. Toxoplasma gondii\",\"C. Tropheryma whipplei\",\"D. Rabies virus\",\"A. JC virus\"],\"correct\":1,\"explanation\":\"Toxoplasma gondii, acquired from cat feces (or undercooked meat), is among the most common sporadic causes of encephalitis after herpes and classically presents with multiple ring-enhancing brain lesions in an immunocompromised host — consistent with this patient's cat exposure, low CD4 count, and imaging findings.\",\"wrongExplanations\":{\"0\":\"Cryptococcus classically causes a meningoencephalitis rather than discrete ring-enhancing parenchymal lesions.\",\"2\":\"Tropheryma whipplei causes late CNS involvement following a multi-year history of GI/joint symptoms, not an acute presentation with ring-enhancing lesions.\",\"3\":\"Rabies causes a diffuse encephalitis with hydrophobia and Negri body formation, not focal ring-enhancing mass lesions.\",\"4\":\"JC virus (PML) produces non-enhancing white matter lesions without mass effect or ring enhancement, unlike the ring-enhancing lesions described here.\"},\"eli5\":\"This parasite, commonly picked up from cat litter boxes, usually stays dormant and harmless — but in someone with a severely weakened immune system, it can reactivate and form multiple pus-like pockets in the brain that show up as ring-shaped spots on a scan.\"},{\"stem\":\"A 29-year-old recent immigrant from a rural area of Latin America presents with new-onset seizures. MRI reveals multiple cystic brain lesions at different stages of degeneration. He reports a history of eating pork prepared at informal roadside stands. Which of the following best describes the mechanism by which this patient acquired his CNS infection?\",\"choices\":[\"C. Retrograde neural transport from a peripheral bite wound\",\"B. Hematogenous spread from a primary pulmonary infection\",\"D. Reactivation of a latent virus that had been dormant since childhood, triggered by a period of immunosuppression\",\"A. Direct inhalation of infectious spores from contaminated soil\",\"E. Ingestion of eggs from a human tapeworm carrier, with larvae migrating to and encysting in the CNS\"],\"correct\":4,\"explanation\":\"Human neurocysticercosis results from ingesting Taenia solium eggs (typically via fecal-oral contamination from a tapeworm carrier, rather than directly from cyst-containing pork, which instead causes intestinal taeniasis); larvae then migrate hematogenously and encyst in the CNS, producing multiple cystic lesions at varying stages, a classic cause of adult-onset seizures in endemic regions.\",\"wrongExplanations\":{\"0\":\"Describes the rabies virus mechanism, an unrelated viral pathogen.\",\"1\":\"Describes a fungal (Cryptococcus) route of CNS spread, not the egg-ingestion route of neurocysticercosis.\",\"2\":\"Describes JC virus/PML reactivation, an unrelated viral mechanism.\",\"3\":\"Describes the acquisition route for environmental fungi (e.g., Coccidioides, Histoplasma), not Taenia solium.\"},\"eli5\":\"This brain infection doesn't come directly from eating infected pork — it comes from accidentally swallowing tapeworm eggs, often through contaminated food or water, after which tiny larvae travel through the body and form cysts in the brain, which can trigger seizures.\"},{\"stem\":\"A 16-year-old boy with a history of measles infection at age 6 (prior to any vaccination) presents to his pediatrician with a several-month history of behavioral changes, myoclonic jerks, and progressive cognitive decline. Which of the following measles-associated CNS syndromes is most consistent with this timeline and presentation?\",\"choices\":[\"E. Acute disseminated encephalomyelitis occurring during the exanthem\",\"B. Post-infectious encephalitis\",\"D. Measles inclusion-body encephalitis\",\"A. Primary measles encephalitis\",\"C. Subacute sclerosing panencephalitis\"],\"correct\":4,\"explanation\":\"SSPE develops 6–10 years after the primary measles infection (consistent with this patient's ~10-year interval), is progressive, and is almost always fatal — distinguishing it from the much earlier-onset syndromes: primary encephalitis (within 7 days), post-infectious encephalitis (2–30 days), and MIBE (within 1 year, in immunocompromised hosts).\",\"wrongExplanations\":{\"0\":\"This is not one of the four described measles-associated syndromes and does not match the years-long latency described here.\",\"1\":\"Post-infectious encephalitis is immune-mediated and occurs 2–30 days after the rash, not years later.\",\"2\":\"MIBE develops within 1 year in immunocompromised hosts from actively replicating virus in the brain, not 10 years later in an otherwise healthy adolescent.\",\"3\":\"Primary measles encephalitis occurs within 7 days of the acute illness, far too early to match this patient's multi-year interval.\"},\"eli5\":\"There's a very rare, delayed brain complication of measles that doesn't show up until years — sometimes a decade — after the original infection, causing a slow, worsening decline in brain function. It's basically the opposite of 'acute': it's the latest and slowest of all the measles brain complications.\"},{\"stem\":\"A 55-year-old man from the Northeast presents in June with fever, confusion, and ataxia four days after removing an attached tick that he estimates had been on his skin for less than 30 minutes. Which of the following viral encephalitis agents is most consistent with this exposure history?\",\"choices\":[\"C. Japanese encephalitis virus\",\"D. Powassan virus\",\"B. Eastern equine encephalitis virus\",\"E. St. Louis encephalitis virus\",\"A. West Nile virus\"],\"correct\":1,\"explanation\":\"Powassan virus, transmitted by Ixodes ticks, is notable for extremely rapid transmission — infection can occur with as little as ~15 minutes of tick attachment — distinguishing it from mosquito-borne agents like West Nile, EEE, Japanese encephalitis, and St. Louis encephalitis virus.\",\"wrongExplanations\":{\"0\":\"Japanese encephalitis is transmitted by Culex mosquitoes and is not endemic to the Northeast US.\",\"2\":\"EEE is transmitted by Culiseta mosquitoes, an unrelated vector to this patient's tick exposure.\",\"3\":\"St. Louis encephalitis is mosquito-borne, not tick-borne, and does not match this exposure history.\",\"4\":\"West Nile virus is transmitted by Culex mosquitoes, not ticks, and does not match this brief-tick-attachment exposure history.\"},\"eli5\":\"Most of the brain-infecting viruses discussed need a mosquito bite, but this one is spread by ticks — and unlike most tick-borne infections that need many hours of attachment, this virus can be transmitted in well under an hour, so even a very brief tick bite can be enough.\"},{\"stem\":\"A 6-year-old girl is recovering after a 10-day hospitalization for pneumococcal meningitis, treated with appropriate antibiotics and dexamethasone. Her fever has resolved and mental status has normalized, but her parents note she is no longer responding to sounds behind her and is asking them to repeat themselves. Which of the following best explains this new finding?\",\"choices\":[\"E. A normal finding in children this age that does not warrant further evaluation\",\"B. An expected, transient side effect of dexamethasone that will resolve completely without intervention\",\"A. Inflammatory damage to the cochlear branch of cranial nerve VIII, a long-term sequela of meningitis\",\"C. A new, unrelated case of otitis media coincidentally arising during her hospitalization\",\"D. Recurrence of the meningitis with a newly resistant organism, requiring an immediate repeat lumbar puncture for confirmation\"],\"correct\":2,\"explanation\":\"Hearing loss from cranial nerve damage (cochlear branch of CN VIII) is one of the significant long-term sequelae of bacterial meningitis survivors, alongside cognitive deficits, motor deficits, visual impairment, and hydrocephalus — a direct consequence of the inflammatory cascade during acute infection.\",\"wrongExplanations\":{\"0\":\"Hearing loss following bacterial meningitis is a recognized complication requiring audiologic evaluation, not a finding to dismiss as normal.\",\"1\":\"Dexamethasone is not associated with permanent or even reliably transient hearing loss as a known side effect; this finding is a recognized meningitis sequela.\",\"3\":\"While otitis media is a described predisposing condition for brain abscess elsewhere in this material, this presentation is a known post-meningitic sequela rather than a coincidental new infection.\",\"4\":\"New hearing loss alone, without recurrent fever or clinical deterioration, is not itself an indication for repeat lumbar puncture.\"},\"eli5\":\"Even after the infection itself is fully treated, the inflammation from bacterial meningitis can leave lasting damage to the nerve that carries sound information to the brain, which is why some kids develop hearing loss afterward and need a hearing check.\"}]";
+var DOWNLOAD_TEMPLATE='';
+
+// ── PROMPT ──
+var PROMPT=`You are a medical school question writer. You have TWO modes:
+
+MODE 1 — GENERATE: If I give you notes or lecture content, write quiz questions from it.
+MODE 2 — CONVERT: If I give you already-written questions in any format, convert them into the format below without changing the medical content.
+
+Output ONLY a raw JSON array — no markdown, no backticks, no explanation.
+
+[
   {
-    "stem": "A 58-year-old woman has had progressively worsening headaches, facial pain, and unsteady gait over several months. MRI shows diffuse thickening and enhancement of the dura mater, without leptomeningeal enhancement or CSF pleocytosis. Which of the following best describes this presentation?",
+    "stem": "Question text here?",
     "choices": [
-      "Acute infectious meningitis involving the arachnoid mater, subarachnoid space, and pia mater layers together",
-      "Pachymeningitis, a distinct dural process with a different symptom pattern than typical meningitis",
-      "Subacute viral meningitis with a slowly evolving, self-limited leptomeningeal inflammatory response pattern",
-      "Meningoencephalitis with combined involvement of both the meninges and the adjacent brain parenchyma tissue"
-    ],
-    "correct": 1,
-    "explanation": {
-      "correct": "Chronic dural thickening with facial pain, ataxia, and cranial nerve findings \u2014 but no leptomeningeal enhancement or CSF pleocytosis \u2014 describes pachymeningitis, a distinct process confined to the dura rather than the leptomeninges.",
-      "teaching": "The dura is rarely involved in typical acute meningitis. When it is, the disease looks completely different: chronic headache, facial pain, cerebellar ataxia, and cranial nerve palsies, with dural thickening as the key imaging clue rather than CSF pleocytosis.",
-      "wrongs": [
-        "A \u2014 Acute infectious meningitis involves the leptomeninges (arachnoid, subarachnoid space, pia) and would be expected to show CSF pleocytosis, which this patient does not have.",
-        "C \u2014 Viral meningitis, even when subacute, still centers on leptomeningeal inflammation and typically produces a lymphocytic CSF pleocytosis, which is absent here.",
-        "D \u2014 Meningoencephalitis requires parenchymal brain involvement in addition to meningeal disease; this case shows isolated dural change without either leptomeningeal or parenchymal findings."
-      ]
-    }
-  },
-  {
-    "stem": "During the summer months, a 4-year-old boy develops fever, neck stiffness, and a diffuse macular rash after attending a day camp with a swimming pool. CSF shows a lymphocytic pleocytosis with normal glucose. Which virologic feature is most characteristic of the most likely causative agent?",
-    "choices": [
-      "A non-enveloped, single-stranded positive-sense RNA genome that resists inactivation in the environment",
-      "A large, enveloped, single-stranded negative-sense RNA genome transmitted mainly by respiratory droplets",
-      "A double-stranded DNA genome carried on two segments that replicates preferentially within rodent hosts",
-      "An enveloped, double-stranded DNA genome that establishes lifelong latency within the sensory ganglia tissue"
-    ],
-    "correct": 0,
-    "explanation": {
-      "correct": "Summer-seasonal aseptic meningitis in a young child, with a normal-glucose lymphocytic CSF and an accompanying rash, is the classic picture for a non-polio enterovirus \u2014 a small, non-enveloped, single-stranded positive-sense RNA picornavirus that survives well outside the body.",
-      "teaching": "Non-enveloped viruses like enteroviruses lack a lipid envelope, so they resist drying and disinfection and spread easily via the fecal-oral route and contaminated water \u2014 which is exactly why they cluster in summer and around pools and camps.",
-      "wrongs": [
-        "B \u2014 This describes something closer to mumps virus (a paramyxovirus), which is enveloped, fragile outside the body, and spreads by respiratory droplets rather than water or fecal-oral routes.",
-        "C \u2014 A segmented double-stranded RNA or DNA genome with a rodent reservoir describes agents like LCMV or hantavirus, not the enterovirus responsible for this summertime presentation.",
-        "D \u2014 A double-stranded DNA virus with lifelong ganglionic latency describes the herpesvirus family, which does not show the strong summer seasonality or pool-associated transmission seen here."
-      ]
-    }
-  },
-  {
-    "stem": "A 26-year-old sexually active woman presents with fever, headache, and nuchal rigidity three days after developing painful genital vesicular lesions. This is her first episode of genital symptoms. Which statement about her current neurologic illness is most accurate?",
-    "choices": [
-      "It most commonly occurs during a first, primary episode of genital infection rather than with recurrent outbreaks",
-      "It typically develops only after several recurrent episodes of genital lesions have already taken place over time",
-      "It is caused by a non-enveloped DNA virus that spreads primarily through the fecal-oral transmission route instead",
-      "It is a well-described complication of childhood mumps infection acquired before routine vaccination began widely"
+      "A. Correct answer — stay true to the diction of the professor",
+      "B. Wrong answer — make relevant with plausible detail",
+      "C. Wrong answer — make relevant with plausible detail",
+      "D. Wrong answer — make relevant with plausible detail",
+      "E. Wrong answer — make relevant with plausible detail"
     ],
     "correct": 0,
-    "explanation": {
-      "correct": "HSV-2 meningitis in the US occurs almost exclusively during a primary genital outbreak \u2014 as in this patient's first episode \u2014 and is rare with recurrent disease.",
-      "teaching": "Primary versus recurrent matters enormously for HSV-2: meningitis tracks with the primary infection, when viremia and neural spread are most active, not with later recurrences once the immune response has been established.",
-      "wrongs": [
-        "B \u2014 This reverses the actual pattern; recurrent HSV-2 outbreaks almost never cause meningitis, while the primary episode is the classic setting for it.",
-        "C \u2014 HSV-2 is an enveloped double-stranded DNA herpesvirus spread by direct contact, not a non-enveloped virus spread by the fecal-oral route.",
-        "D \u2014 Mumps meningitis is a real but separate entity tied to unvaccinated paramyxovirus infection; it has no relationship to this patient's genital HSV-2 outbreak."
-      ]
-    }
-  },
-  {
-    "stem": "A 30-year-old pet store employee develops fever, headache, and meningismus several weeks after cleaning cages that housed pet mice. CSF analysis reveals a lymphocytic pleocytosis. Which organism is the most likely cause of her illness?",
-    "choices": [
-      "Lymphocytic choriomeningitis virus, an enveloped arenavirus carried by rodents",
-      "Neisseria meningitidis, a gram-negative diplococcus carried in the human nasopharynx",
-      "Naegleria fowleri, a free-living amoeba acquired from warm contaminated fresh water",
-      "Mumps virus, an enveloped paramyxovirus spread by respiratory droplets and saliva"
-    ],
-    "correct": 0,
-    "explanation": {
-      "correct": "Rodent exposure (house mice specifically) with subsequent aseptic meningitis is the classic setup for lymphocytic choriomeningitis virus, an arenavirus transmitted via aerosolized rodent urine or feces.",
-      "teaching": "LCMV is a recurring boards favorite specifically because of its rodent-exposure history \u2014 pet store workers, laboratory animal handlers, and infested homes are the settings where this diagnosis gets tested.",
-      "wrongs": [
-        "B \u2014 Neisseria meningitidis spreads person-to-person via the human nasopharynx and has no connection to rodent exposure.",
-        "C \u2014 Naegleria fowleri requires warm freshwater exposure through the nose, not contact with rodent cages, and causes a much more fulminant illness.",
-        "D \u2014 Mumps virus spreads by respiratory droplets between people and is unrelated to rodent contact, making it a poor fit for this exposure history."
-      ]
-    }
-  },
-  {
-    "stem": "A 45-year-old man with a history of recent otitis media develops sudden high fever, severe headache, and nuchal rigidity. CSF Gram stain shows gram-positive diplococci, and culture on blood agar demonstrates a zone of partial (green) hemolysis with sensitivity to optochin. Which organism is responsible for his infection?",
-    "choices": [
-      "Streptococcus pneumoniae, the most common cause of community-acquired bacterial meningitis in adults",
-      "Neisseria meningitidis, an oxidase-positive organism that frequently produces a diffuse petechial skin rash",
-      "Listeria monocytogenes, a soil-derived organism most often acquired through eating contaminated soft food",
-      "Haemophilus influenzae type b, an encapsulated coccobacillus once quite common among very young children"
-    ],
-    "correct": 0,
-    "explanation": {
-      "correct": "Gram-positive diplococci, alpha-hemolysis, and optochin sensitivity are the defining laboratory signature of Streptococcus pneumoniae, which is also the leading overall cause of bacterial meningitis and commonly follows a preceding otitis or respiratory infection.",
-      "teaching": "Alpha-hemolytic plus optochin-sensitive plus gram-positive diplococci is a set of three findings that should immediately point to pneumococcus \u2014 this combination is tested precisely because it distinguishes S. pneumoniae from other streptococci.",
-      "wrongs": [
-        "B \u2014 Neisseria meningitidis is a gram-negative diplococcus, not gram-positive, and would not show alpha-hemolysis or optochin sensitivity on culture.",
-        "C \u2014 Listeria monocytogenes is a gram-positive rod rather than a diplococcus, and does not show the hemolysis and optochin pattern described here.",
-        "D \u2014 Haemophilus influenzae type b is a gram-negative coccobacillus, inconsistent with both the gram-positive stain and the diplococcus morphology seen in this case."
-      ]
-    }
-  },
-  {
-    "stem": "A previously healthy 19-year-old college student develops fever and headache in the morning and is found unresponsive with a diffuse petechial rash and hypotension by evening. Laboratory studies reveal disseminated intravascular coagulation, and imaging later confirms bilateral adrenal hemorrhage. Which process best explains this rapid deterioration?",
-    "choices": [
-      "Fulminant meningococcemia driven by massive release of lipo-oligosaccharide from Neisseria meningitidis",
-      "Cryptococcal meningoencephalitis progressing gradually and rapidly in an undiagnosed immunocompromised host",
-      "Primary amoebic meningoencephalitis from Naegleria fowleri following recent warm freshwater lake exposure",
-      "Progressive multifocal leukoencephalopathy triggered by reactivation of a latent JC polyomavirus infection"
-    ],
-    "correct": 0,
-    "explanation": {
-      "correct": "Petechial rash, DIC, shock, and bilateral adrenal hemorrhage (Waterhouse-Friderichsen syndrome) in a previously healthy young adult are the hallmark of fulminant meningococcemia, driven by massive endotoxin-like lipo-oligosaccharide release from Neisseria meningitidis.",
-      "teaching": "Meningococcemia can kill within hours in someone who was healthy that morning \u2014 the petechial rash plus DIC plus adrenal hemorrhage triad is specific enough that it should trigger immediate empiric treatment rather than waiting for confirmatory testing.",
-      "wrongs": [
-        "B \u2014 Cryptococcal disease runs a subacute-to-chronic course over days to weeks in immunocompromised hosts and does not produce this kind of hours-long fulminant collapse with DIC and adrenal hemorrhage.",
-        "C \u2014 Naegleria causes a rapidly fatal illness as well, but through direct amoebic brain invasion after freshwater exposure, not through a petechial rash, DIC, or adrenal hemorrhage.",
-        "D \u2014 PML is a slowly progressive demyelinating disease over weeks to months in immunosuppressed patients, entirely inconsistent with this acute, hours-long deterioration."
-      ]
-    }
-  },
-  {
-    "stem": "A term infant develops fever, poor feeding, and a bulging fontanelle on day 4 of life. Blood and CSF cultures grow an unencapsulated, catalase-negative, gram-positive coccus arranged in chains. Which organism is the most likely cause, and what is its usual source?",
-    "choices": [
-      "Streptococcus agalactiae, acquired from maternal vaginal or gastrointestinal colonization",
-      "Escherichia coli bearing the K1 capsular antigen, acquired from maternal bowel colonization during birth",
-      "Listeria monocytogenes, acquired from maternal ingestion of contaminated unpasteurized soft cheese products",
-      "Staphylococcus epidermidis, acquired from a colonized indwelling cerebrospinal fluid shunt device"
-    ],
-    "correct": 0,
-    "explanation": {
-      "correct": "Gram-positive cocci in chains, catalase-negative, causing early neonatal meningitis is the signature of Group B strep (Streptococcus agalactiae), acquired from maternal vaginal/GI colonization \u2014 the leading overall cause of neonatal meningitis.",
-      "teaching": "Catalase status is the fastest way to separate the neonatal gram-positive cocci: GBS is catalase-negative, while a coagulase- or catalase-positive gram-positive coccus should instead point toward a staphylococcal organism.",
-      "wrongs": [
-        "B \u2014 E. coli K1 is a leading neonatal meningitis agent as well, but it is a gram-negative rod, not a gram-positive coccus in chains, which rules it out here.",
-        "C \u2014 Listeria monocytogenes is also acquired from maternal sources and causes neonatal meningitis, but it is a gram-positive rod rather than a coccus, and is catalase-positive.",
-        "D \u2014 Staphylococcus epidermidis is associated with CNS shunts and nosocomial late-onset disease, not with vaginal/GI colonization causing early-onset meningitis on day 4 of life."
-      ]
-    }
-  },
-  {
-    "stem": "A 32-year-old pregnant woman develops fever and mild headache after eating unpasteurized soft cheese. Blood cultures grow a non-spore-forming, gram-positive rod. Which feature makes this organism particularly dangerous in this clinical setting?",
-    "choices": [
-      "Pregnancy specifically increases susceptibility to primary gastrointestinal infection with this organism",
-      "This organism produces a potent exotoxin that selectively and directly damages fetal cardiac muscle tissue",
-      "This organism forms resistant endospores that persist indefinitely within the maternal intestinal epithelium",
-      "This organism is transmitted exclusively through respiratory droplets from other actively infected patients"
-    ],
-    "correct": 0,
-    "explanation": {
-      "correct": "Listeria monocytogenes infection is specifically dangerous in pregnancy because pregnant women are roughly 20 times more susceptible to primary gastrointestinal infection than the general population, and the organism can then cross to the fetus.",
-      "teaching": "Listeria is the reason pregnant patients are counseled to avoid unpasteurized soft cheeses and deli meats \u2014 the food-safety advice exists specifically because of this dramatically increased susceptibility during pregnancy.",
-      "wrongs": [
-        "B \u2014 Listeria's danger in pregnancy comes from transplacental and vertical transmission risk, not from a cardiotoxic exotoxin selectively targeting fetal heart tissue.",
-        "C \u2014 Listeria monocytogenes is explicitly a non-spore-forming organism, unlike Bacillus or Clostridium species, so spore persistence is not the relevant mechanism.",
-        "D \u2014 Listeria is a soil and food-borne organism acquired mainly through ingestion of contaminated food, not through respiratory droplet transmission between people."
-      ]
-    }
-  },
-  {
-    "stem": "A lumbar puncture is performed on an adult with suspected meningitis. Which combination of CSF findings would most strongly favor a bacterial rather than a viral cause?",
-    "choices": [
-      "Glucose below 34 mg/dL, protein above 220 mg/dL, and a neutrophil-predominant pleocytosis",
-      "Glucose within the normal range, mildly elevated protein, and a lymphocyte-predominant pleocytosis",
-      "Normal opening pressure, a negative Gram stain, and a mild lymphocytic pleocytosis under 100 cells",
-      "Elevated eosinophil count together with red blood cells and larvae seen on direct wet-mount smear"
-    ],
-    "correct": 0,
-    "explanation": {
-      "correct": "Markedly low glucose, markedly elevated protein, and a neutrophilic pleocytosis together are the classic bacterial CSF signature, reflecting the intense inflammatory and metabolic disruption bacteria cause in the subarachnoid space.",
-      "teaching": "The single fastest discriminator at the bedside is cell type: neutrophilic pleocytosis points toward bacterial disease, while lymphocytic pleocytosis points toward viral disease \u2014 glucose and protein trends reinforce that same pattern.",
-      "wrongs": [
-        "B \u2014 Normal glucose with only mild protein elevation and a lymphocytic pleocytosis is the expected profile for viral meningitis, essentially the opposite of what favors a bacterial process.",
-        "C \u2014 A normal opening pressure with a low-grade lymphocytic pleocytosis and negative Gram stain is again far more consistent with viral than bacterial meningitis.",
-        "D \u2014 Eosinophilic pleocytosis with visible larvae points toward a parasitic cause such as Angiostrongylus, not toward a bacterial process."
-      ]
-    }
-  },
-  {
-    "stem": "A 38-year-old man with untreated HIV infection and a CD4 count of 40 cells/mm3 presents with several weeks of headache, lethargy, and blurred vision. CSF India ink staining reveals encapsulated yeast forms. Which organism is responsible, and what made this patient susceptible to it?",
-    "choices": [
-      "Cryptococcus neoformans, which causes disseminated disease almost exclusively in immunocompromised hosts",
-      "Histoplasma capsulatum, which causes disseminated meningitis primarily in otherwise healthy young travelers",
-      "Naegleria fowleri, which causes a rapidly fatal meningoencephalitis in patients regardless of immune status",
-      "Toxoplasma gondii, which forms encapsulated tissue cysts that stain directly with a CSF India ink preparation"
-    ],
-    "correct": 0,
-    "explanation": {
-      "correct": "Encapsulated yeast on India ink stain in a severely immunosuppressed patient with a subacute headache-and-lethargy course is the classic presentation of cryptococcal meningoencephalitis, which occurs almost exclusively when cellular immunity is severely impaired.",
-      "teaching": "India ink staining directly visualizes the thick polysaccharide capsule as a clear halo around the yeast \u2014 this is the fastest bedside test for Cryptococcus and was historically central to diagnosing this AIDS-defining infection.",
-      "wrongs": [
-        "B \u2014 Histoplasma more typically causes disseminated disease in immunocompromised hosts as well, but it does not stain with the encapsulated-yeast India ink pattern described here.",
-        "C \u2014 Naegleria causes a fulminant, days-long illness in otherwise healthy people after freshwater exposure, not the weeks-long subacute course seen in this immunosuppressed patient.",
-        "D \u2014 Toxoplasma forms tissue cysts within the brain parenchyma itself; it does not appear as encapsulated yeast on a CSF India ink preparation."
-      ]
-    }
-  },
-  {
-    "stem": "A 12-year-old boy develops severe headache, fever, and altered mental status three days after swimming and diving in a warm freshwater lake. His condition rapidly progresses to coma. Which route of entry explains how the causative organism reached his central nervous system?",
-    "choices": [
-      "Trophozoites entered through the nasal mucosa and migrated centrally along the olfactory nerve",
-      "Larvae penetrated intact skin on his feet and then migrated hematogenously into the bloodstream",
-      "Encysted organisms were swallowed and later crossed the intestinal wall into regional lymphatics",
-      "Eggs were inhaled directly into the respiratory tract and then disseminated through the bronchi"
-    ],
-    "correct": 0,
-    "explanation": {
-      "correct": "Naegleria fowleri trophozoites enter through the nasal mucosa \u2014 classically during diving or forceful water contact with the nose \u2014 and travel directly along the olfactory nerve into the brain, producing this rapidly fatal amoebic meningoencephalitis.",
-      "teaching": "Naegleria is one of the few CNS pathogens that bypasses the bloodstream and blood-brain barrier entirely, using the olfactory nerve as a direct highway from nose to brain \u2014 which is exactly why deep diving in warm water is the classic exposure history.",
-      "wrongs": [
-        "B \u2014 Skin penetration by larvae with hematogenous spread describes an organism like Strongyloides stercoralis, not the amoebic trophozoite responsible for this presentation.",
-        "C \u2014 Ingestion with intestinal crossing describes helminths such as Baylisascaris or Taenia, not Naegleria, which specifically enters through the nasal route.",
-        "D \u2014 Inhalation of eggs into the respiratory tract does not describe any of the major CNS parasitic agents discussed in this context, including Naegleria."
-      ]
-    }
-  },
-  {
-    "stem": "A traveler returning from Southeast Asia develops headache, paresthesias, and neck stiffness after a meal that included raw snails and fresh, unwashed vegetables. CSF analysis reveals a marked eosinophilic pleocytosis. Which organism is the most likely cause?",
-    "choices": [
-      "Angiostrongylus cantonensis, a rat lungworm acquired by ingesting larvae carried in snails or produce",
-      "Naegleria fowleri, a free-living amoeba acquired by inhaling contaminated freshwater through the nose",
-      "Listeria monocytogenes, a soil-derived bacterium acquired by ingesting unpasteurized dairy food products",
-      "Cryptococcus neoformans, an encapsulated yeast acquired by inhaling soil contaminated with bird droppings"
-    ],
-    "correct": 0,
-    "explanation": {
-      "correct": "Eosinophilic meningitis after eating raw snails or contaminated produce, especially with a Southeast Asian travel history, is the classic presentation of Angiostrongylus cantonensis, whose larvae migrate through the brain and provoke a strong eosinophilic response.",
-      "teaching": "Eosinophils in the CSF should immediately narrow the differential toward a parasitic cause \u2014 Angiostrongylus from snails/produce being the prototype, distinct from the neutrophilic pattern of bacterial disease or the lymphocytic pattern of viral disease.",
-      "wrongs": [
-        "B \u2014 Naegleria is acquired through nasal contact with warm freshwater, not through ingestion of snails or produce, and typically causes a neutrophilic rather than eosinophilic CSF pattern.",
-        "C \u2014 Listeria is acquired through contaminated dairy and other foods, but it causes a bacterial meningitis with a neutrophilic pleocytosis, not the eosinophilic pattern seen here.",
-        "D \u2014 Cryptococcus is acquired by inhalation of contaminated soil or droppings, an entirely different exposure route from the ingestion history described in this traveler."
-      ]
-    }
-  },
-  {
-    "stem": "A 55-year-old man develops fever, confusion, and word-finding difficulty over two days. MRI shows temporal lobe edema, and CSF PCR is positive for a specific viral genome. Which statement about this infection is most accurate?",
-    "choices": [
-      "It is the most common identifiable cause of sporadic encephalitis in immunocompetent adults",
-      "It is transmitted almost exclusively through the bite of an infected mosquito or tick vector",
-      "It occurs primarily as a rare complication of live-attenuated childhood vaccination programs",
-      "It is caused by a prion protein that converts normal cellular protein into a pathologic isoform"
-    ],
-    "correct": 0,
-    "explanation": {
-      "correct": "Temporal lobe involvement with fever, confusion, and language disturbance is the classic presentation of HSV-1 encephalitis, which is the most common identifiable cause of sporadic encephalitis in immunocompetent adults.",
-      "teaching": "Temporal lobe localization on imaging is the single biggest clue toward HSV-1 encephalitis, and it is the reason empiric acyclovir is started immediately in suspected encephalitis, often before PCR confirmation returns.",
-      "wrongs": [
-        "B \u2014 Vector-borne transmission by mosquitoes or ticks describes arboviral encephalitis agents such as West Nile or Powassan virus, not HSV-1, which spreads through direct contact and neural reactivation.",
-        "C \u2014 HSV-1 encephalitis is not related to vaccination programs; it results from reactivation or primary infection with a virus that is extremely common in the general population.",
-        "D \u2014 A prion mechanism describes Creutzfeldt-Jakob disease, an entirely different category of illness from the viral, PCR-confirmed encephalitis described in this vignette."
-      ]
-    }
-  },
-  {
-    "stem": "During late summer, an elderly man develops fever, confusion, and asymmetric limb weakness after several outdoor evenings without insect repellent. Serologic testing confirms a flavivirus infection. Which statement about this virus is correct?",
-    "choices": [
-      "It is the most common cause of epidemic viral encephalitis currently reported within the United States",
-      "It is transmitted directly from person to person through respiratory droplets during prolonged close contact",
-      "It is acquired through ingestion of larvae contained within undercooked freshwater snails or crab meat",
-      "It causes a demyelinating illness that develops only after years of untreated chronic immunosuppression"
-    ],
-    "correct": 0,
-    "explanation": {
-      "correct": "Late-summer fever, confusion, and asymmetric weakness following mosquito exposure describes West Nile virus, currently the most common cause of epidemic viral encephalitis in the United States.",
-      "teaching": "West Nile virus is maintained in a bird-mosquito cycle, with humans and horses as incidental hosts \u2014 the seasonal pattern and outdoor evening exposure in this vignette are the classic epidemiologic clues pointing toward it.",
-      "wrongs": [
-        "B \u2014 West Nile virus requires a mosquito vector for transmission and does not spread directly between people through respiratory droplets.",
-        "C \u2014 Ingestion of larvae in snails or crabs describes the exposure route for Angiostrongylus cantonensis, not a mosquito-borne flavivirus like West Nile.",
-        "D \u2014 West Nile virus causes an acute encephalitis rather than a chronic demyelinating disease that only appears after years of immunosuppression, which instead describes PML."
-      ]
-    }
-  },
-  {
-    "stem": "A 16-year-old girl who had measles at age 7 develops progressive personality change, myoclonus, and cognitive decline over several months, ultimately becoming bedridden. Which measles-related brain disease best fits this delayed presentation?",
-    "choices": [
-      "Subacute sclerosing panencephalitis, presenting roughly six to ten years after the initial infection",
-      "Primary measles encephalitis, presenting quite acutely within the first week of the original measles rash",
-      "Measles inclusion body encephalitis, presenting within the first year in an immunocompromised host patient",
-      "Post-infectious encephalitis, presenting between two and thirty days after resolution of the measles rash"
-    ],
-    "correct": 0,
-    "explanation": {
-      "correct": "Progressive personality change, myoclonus, and cognitive decline appearing six to ten years after the original measles infection is the classic delayed course of subacute sclerosing panencephalitis (SSPE), which is almost always fatal.",
-      "teaching": "Measles has four distinct brain syndromes distinguished almost entirely by timing: days for primary encephalitis, weeks for post-infectious encephalitis, up to a year for inclusion body encephalitis, and years later for SSPE \u2014 timing is the key to sorting them out.",
-      "wrongs": [
-        "B \u2014 Primary measles encephalitis develops acutely, within about a week of the original rash, not years later as described in this patient.",
-        "C \u2014 Measles inclusion body encephalitis occurs within the first year after infection and specifically in immunocompromised hosts, neither of which fits this otherwise healthy girl nine years out.",
-        "D \u2014 Post-infectious encephalitis is an immune-mediated process that develops within days to a month after the rash, far too soon to match this patient's multi-year delay."
-      ]
-    }
-  },
-  {
-    "stem": "An immigrant from a rural area with a history of consuming undercooked pork develops new-onset seizures. Brain MRI reveals multiple cystic lesions scattered throughout the cortex. Which organism is the most likely cause of these findings?",
-    "choices": [
-      "Taenia solium, whose larvae encyst within brain tissue after the eggs are ingested by the host",
-      "Toxoplasma gondii, whose oocysts are shed in cat feces and later form encysted structures within brain tissue",
-      "Naegleria fowleri, whose trophozoites invade the brain after entering through the nasal mucosa",
-      "Toxocara canis, whose larvae migrate through ocular tissue rather than through the cerebral parenchyma"
-    ],
-    "correct": 0,
-    "explanation": {
-      "correct": "New-onset seizures with multiple cystic brain lesions in someone with a pork-consumption history is the classic picture of neurocysticercosis, caused by larval Taenia solium encysting within the brain after egg ingestion.",
-      "teaching": "Neurocysticercosis is one of the most common causes of adult-onset seizures worldwide in endemic regions, and the combination of cystic brain lesions plus a pork-exposure history should trigger this diagnosis immediately.",
-      "wrongs": [
-        "B \u2014 Toxoplasma is acquired from cat feces rather than pork, and while it can cause brain lesions, this patient's specific pork-consumption history points instead toward Taenia solium.",
-        "C \u2014 Naegleria fowleri causes an acute, rapidly fatal meningoencephalitis after freshwater nasal exposure, not the chronic cystic lesions and seizures described in this case.",
-        "D \u2014 Toxocara canis larvae typically cause visceral or ocular larva migrans rather than the multiple cortical cystic lesions seen on this patient's imaging."
-      ]
-    }
-  },
-  {
-    "stem": "A 64-year-old woman develops rapidly progressive dementia, myoclonus, and ataxia over just a few months, and brain biopsy reveals vacuolation of the neuropil without any inflammatory infiltrate. Which mechanism underlies this disease process?",
-    "choices": [
-      "Conversion of normal cellular prion protein into a misfolded, protease-resistant beta-sheet isoform",
-      "Reactivation of a latent polyomavirus within oligodendrocytes following a period of severe immunosuppression",
-      "Retrograde axonal transport of a bullet-shaped rhabdovirus from a distant, contaminated peripheral wound site",
-      "Autoimmune-mediated demyelination triggered several weeks after a preceding systemic viral infection"
-    ],
-    "correct": 0,
-    "explanation": {
-      "correct": "Rapidly progressive dementia with myoclonus, ataxia, and spongiform (vacuolated) histology without inflammation describes Creutzfeldt-Jakob disease, driven by conversion of normal alpha-helical PrP-C into the pathologic, protease-resistant beta-sheet isoform PrP-Sc.",
-      "teaching": "The absence of an inflammatory infiltrate is a key clue with prion disease \u2014 because PrP-Sc is a misfolded version of a normal self protein, the immune system never recognizes it as foreign, so no inflammatory response is mounted despite the severe neuronal damage.",
-      "wrongs": [
-        "B \u2014 Polyomavirus reactivation in oligodendrocytes describes progressive multifocal leukoencephalopathy, which causes demyelination rather than the vacuolated, spongiform histology described in this case.",
-        "C \u2014 Retrograde transport of a rhabdovirus describes rabies, which produces Negri bodies on histology rather than the diffuse vacuolation seen with prion disease.",
-        "D \u2014 Autoimmune post-infectious demyelination would typically show an inflammatory infiltrate on biopsy, the opposite of the inflammation-free vacuolation described here."
-      ]
-    }
-  },
-  {
-    "stem": "A 50-year-old man on chronic immunosuppressive therapy for a lymphoproliferative disorder develops progressive hemianopia, ataxia, and cognitive decline. MRI shows multifocal white matter lesions without mass effect or contrast enhancement. Which organism is most likely responsible for his illness?",
-    "choices": [
-      "JC virus, a polyomavirus that reactivates from latency during periods of severe immunosuppression",
-      "Rabies virus, a bullet-shaped rhabdovirus that spreads retrogradely from a peripheral nerve injury site",
-      "Varicella-zoster virus, reactivating from within a dorsal root ganglion after years of dormant latency",
-      "Cryptococcus neoformans, an encapsulated yeast that disseminates hematogenously into the brain over weeks"
-    ],
-    "correct": 0,
-    "explanation": {
-      "correct": "Multifocal, non-enhancing white matter lesions with progressive neurologic deficits in a chronically immunosuppressed patient is the classic picture of progressive multifocal leukoencephalopathy, caused by reactivation of latent JC virus, a polyomavirus acquired in childhood.",
-      "teaching": "JC virus infects most people harmlessly in childhood and stays dormant for decades \u2014 PML only appears once severe, sustained immunosuppression (lymphoproliferative disease, transplant, certain immunomodulating drugs) allows it to reactivate and demyelinate white matter.",
-      "wrongs": [
-        "B \u2014 Rabies produces an acute, rapidly fatal encephalitic illness with hydrophobia and coma, not the slowly progressive demyelinating white matter disease described in this vignette.",
-        "C \u2014 Varicella-zoster reactivation classically produces a dermatomal skin eruption (shingles) rather than the multifocal white matter demyelination seen on this patient's MRI.",
-        "D \u2014 Cryptococcus causes a meningoencephalitis with CSF and meningeal findings, not the discrete non-enhancing white matter lesions characteristic of PML."
-      ]
-    }
-  },
-  {
-    "stem": "Several weeks after being bitten by a stray bat, a man develops fever, agitation, and difficulty swallowing, followed by an intense fear of drinking water. Brain biopsy after his death reveals eosinophilic cytoplasmic inclusions within neurons. Which of the following best describes how the causative virus reached his brain?",
-    "choices": [
-      "Retrograde travel along peripheral nerves from the bite site through spinal ganglia to the brain",
-      "Direct hematogenous spread through the systemic bloodstream shortly after the initial skin inoculation",
-      "Transcellular migration directly across brain capillary endothelium during a brief viremic period",
-      "Entry through the choroid plexus epithelium following a prolonged bacteremia from the wound site"
-    ],
-    "correct": 0,
-    "explanation": {
-      "correct": "Rabies virus travels by retrograde axonal transport from the bite site, along peripheral nerves through spinal ganglia and the spinal cord to the brain, which explains both the long incubation period and the classic hydrophobia and Negri body inclusions in this case.",
-      "teaching": "Rabies is one of the clearest examples of a virus that never enters the bloodstream at all \u2014 it moves exclusively along neurons, which is why the incubation period depends heavily on how far the bite site is from the brain.",
-      "wrongs": [
-        "B \u2014 Rabies specifically avoids significant hematogenous spread; it travels along nerves rather than through the blood, unlike many other CNS viral pathogens.",
-        "C \u2014 Direct transcellular migration across brain capillary endothelium during viremia describes how some encephalitis-causing arboviruses enter the CNS, not the neural route used by rabies virus.",
-        "D \u2014 Choroid plexus entry following bacteremia describes a bacterial mechanism of CNS invasion, which is unrelated to how rabies virus, a purely neurotropic virus, reaches the brain."
-      ]
-    }
-  },
-  {
-    "stem": "A 70-year-old man develops a painful, vesicular rash confined to a single band across one side of his chest, following the distribution of a single spinal nerve. Which statement about this condition is most accurate?",
-    "choices": [
-      "It results from reactivation of varicella-zoster virus that has remained latent within a sensory ganglion",
-      "It results from primary infection with varicella-zoster virus acquired through recent airborne transmission",
-      "It results from reactivation of herpes simplex virus type 2 that had been latent within an autonomic ganglion",
-      "It results from disseminated infection with a virus that has never previously infected this patient at all"
-    ],
-    "correct": 0,
-    "explanation": {
-      "correct": "A painful, dermatomal vesicular rash in an older adult is the classic presentation of herpes zoster (shingles), caused by reactivation of varicella-zoster virus that has remained latent within a sensory ganglion since the patient's original childhood chickenpox infection.",
-      "teaching": "The single-dermatome distribution is the key diagnostic clue for zoster \u2014 it reflects the virus traveling back down the one sensory nerve whose ganglion harbored it, rather than a new, widespread primary infection.",
-      "wrongs": [
-        "B \u2014 Shingles is a reactivation of a virus already present in the body, not a new primary infection acquired through recent airborne exposure.",
-        "C \u2014 Zoster is caused by varicella-zoster virus, not herpes simplex type 2, and VZV reactivates from sensory rather than autonomic ganglia.",
-        "D \u2014 This patient was previously infected with varicella-zoster virus during childhood chickenpox; the current illness is a reactivation, not a first-time infection."
-      ]
-    }
+    "explanation": "Why the correct answer is right. Use arrows (→) to show mechanisms.",
+    "wrongExplanations": {
+      "1": "Why B is wrong — be specific.",
+      "2": "Why C is wrong — be specific.",
+      "3": "Why D is wrong — be specific.",
+      "4": "Why E is wrong — be specific."
+    },
+    "eli5": "Explain the concept like the student is 10. Max 3 sentences."
   }
-];
+]
 
+Rules:
+- "correct" is a NUMBER (0=A, 1=B, 2=C, 3=D, 4=E)
+- Include a wrong explanation for every wrong choice
+- Prefer using the actual choice index as the key, so if A is wrong use "0", if B is wrong use "1", etc.
+- Vary which letter is correct — don't always use 0
+- If converting questions with fewer than 5 choices, add distractors to reach 5
+- Keep all answer choices similar in length so the correct answer is not guessable by length
+- Output ONLY the JSON array
 
-// ============ Element references ============
-const launchWrap = document.getElementById('launchWrap');
-const openDemo = document.getElementById('openDemo');
-const qo = document.getElementById('qo');
-const closeQuiz = document.getElementById('closeQuiz');
-const resetQuiz = document.getElementById('resetQuiz');
-const printQuiz = document.getElementById('printQuiz');
+MY CONTENT:
+`;
+document.getElementById('promptText').textContent=PROMPT;
+DOWNLOAD_TEMPLATE=document.documentElement.outerHTML;
 
-const modeLearn = document.getElementById('modeLearn');
-const modeExam = document.getElementById('modeExam');
-const submitRowEl = document.querySelector('.submit-row');
-
-const svCurrent = document.getElementById('svCurrent');
-const svCorrect = document.getElementById('svCorrect');
-const svIncorrect = document.getElementById('svIncorrect');
-
-const timerTime = document.getElementById('timerTime');
-const cdTime = document.getElementById('cdTime');
-const cdVal = document.getElementById('cdVal');
-const cdGo = document.getElementById('cdGo');
-
-const toolHighlight = document.getElementById('toolHighlight');
-const toolStrike = document.getElementById('toolStrike');
-const toolReveal = document.getElementById('toolReveal');
-const toolStatus = document.getElementById('toolStatus');
-
-const examSubmitRow = document.getElementById('examSubmitRow');
-const examProgress = document.getElementById('examProgress');
-const submitExamBtn = document.getElementById('submitExam');
-
-const qpf = document.getElementById('qpf');
-const qnum = document.getElementById('qnum');
-const qStem = document.getElementById('qStem');
-const qStemText = document.getElementById('qStemText');
-const ach = document.getElementById('ach');
-const submitOne = document.getElementById('submitOne');
-const exBlock = document.getElementById('exBlock');
-const exCorrect = document.getElementById('exCorrect');
-const exTeach = document.getElementById('exTeach');
-const exWrong = document.getElementById('exWrong');
-const qdots = document.getElementById('qdots');
-const prevBtn = document.getElementById('prevBtn');
-const nextBtn = document.getElementById('nextBtn');
-
-// ============ State ============
-let current = 0;
-let quizMode = 'learn';
-let examSubmitted = false;
-let toolMode = null;
-let choiceEls = [];
-const answers = questions.map(() => ({ selected: null, graded: false, correct: null }));
-
-// ============ Rendering ============
-function renderQuestion(idx) {
-  current = idx;
-  const q = questions[idx];
-  const st = answers[idx];
-
-  qnum.textContent = `Question ${idx + 1} of ${questions.length}`;
-  qStemText.textContent = q.stem;
-  qStem.classList.remove('hl-applied', 'st-applied');
-  qStem.querySelectorAll('.stem-hl, .stem-st').forEach(span => {
-    span.replaceWith(document.createTextNode(span.textContent));
+function copyPrompt(){
+  navigator.clipboard.writeText(PROMPT).then(function(){
+    var b=document.getElementById('copyPromptBtn');
+    b.textContent='✅ Copied!';b.classList.add('ok');
+    showToast('Prompt copied! Add your content after it.','ok');
+    setTimeout(function(){b.textContent='📋 Copy prompt';b.classList.remove('ok');},2500);
   });
-  qStem.normalize();
+}
 
-  ach.innerHTML = '';
-  const letters = ['A', 'B', 'C', 'D'];
-  q.choices.forEach((choiceText, i) => {
-    const div = document.createElement('div');
-    div.className = 'ac';
-    div.dataset.choice = String(i);
-    const cl = document.createElement('div');
-    cl.className = 'cl';
-    cl.textContent = letters[i];
-    const ctx = document.createElement('div');
-    ctx.className = 'ctx';
-    ctx.textContent = choiceText;
-    div.appendChild(cl);
-    div.appendChild(ctx);
-    ach.appendChild(div);
-  });
-  choiceEls = Array.from(ach.querySelectorAll('.ac'));
-  attachChoiceHandlers();
-
-  exCorrect.textContent = q.explanation.correct;
-  exTeach.textContent = q.explanation.teaching;
-  exWrong.innerHTML = '';
-  q.explanation.wrongs.forEach(w => {
-    const div = document.createElement('div');
-    div.className = 'wce';
-    const m = w.match(/^([A-D])\s*—\s*(.*)$/);
-    if (m) {
-      const strong = document.createElement('strong');
-      strong.textContent = m[1];
-      div.appendChild(strong);
-      div.appendChild(document.createTextNode(' — ' + m[2]));
-    } else {
-      div.textContent = w;
-    }
-    exWrong.appendChild(div);
-  });
-
-  exBlock.classList.remove('vis');
-  submitOne.disabled = true;
-
-  if (st.selected !== null) {
-    choiceEls[st.selected].classList.add('sel');
-    submitOne.disabled = false;
+// ── PARSE ──
+function parseRaw(raw){
+  raw=raw.trim().replace(/^```(?:json)?\s*/i,'').replace(/\s*```\s*$/,'').trim();
+  try{return JSON.parse(raw);}catch(e){}
+  var m=raw.match(/\[[\s\S]*\]/);
+  if(m){try{return JSON.parse(m[0]);}catch(e){}}
+  return null;
+}
+function shuffle(arr){
+  var out=arr.slice();
+  for(var i=out.length-1;i>0;i--){
+    var j=Math.floor(Math.random()*(i+1));
+    var tmp=out[i];
+    out[i]=out[j];
+    out[j]=tmp;
   }
-  if (st.graded) {
-    applyGradedStyles(idx);
-    exBlock.classList.add('vis');
+  return out;
+}
+function buildWrongExplanationLookup(rawChoices, rawCorrect, wrongExplanations){
+  var lookup={};
+  if(!wrongExplanations||typeof wrongExplanations!=='object')return lookup;
+  var wrongChoiceIndices=[];
+  rawChoices.forEach(function(_,idx){if(idx!==rawCorrect)wrongChoiceIndices.push(idx);});
+  var directHits=wrongChoiceIndices.filter(function(idx){return !!wrongExplanations[String(idx)];}).length;
+  var orderedHits=wrongChoiceIndices.filter(function(_,orderPos){return !!wrongExplanations[String(orderPos+1)];}).length;
+  var useOrdered=orderedHits>directHits;
+  wrongChoiceIndices.forEach(function(idx,orderPos){
+    var chosenKey=useOrdered?String(orderPos+1):String(idx);
+    if(wrongExplanations[chosenKey])lookup[String(idx)]=String(wrongExplanations[chosenKey]);
+  });
+  return lookup;
+}
+function normQ(q){
+  if(!q.stem||!Array.isArray(q.choices)||q.choices.length<2)return null;
+  var rawChoices=q.choices.map(String);
+  while(rawChoices.length<5)rawChoices.push('');
+  var rawCorrect=typeof q.correct==='number'?q.correct:(parseInt(q.correct)||0);
+  if(rawCorrect<0||rawCorrect>=rawChoices.length)rawCorrect=0;
+  var wrongLookup=buildWrongExplanationLookup(rawChoices, rawCorrect, q.wrongExplanations);
+
+  var choiceMeta=rawChoices.map(function(choiceText,idx){
+    var wrongText='';
+    if(idx!==rawCorrect&&wrongLookup[String(idx)]){
+      wrongText=wrongLookup[String(idx)];
+    }
+    return {
+      text:choiceText,
+      isCorrect:idx===rawCorrect,
+      wrongExplanation:wrongText
+    };
+  });
+
+  var realChoices=choiceMeta.filter(function(choice){return choice.text.trim();});
+  var blankChoices=choiceMeta.filter(function(choice){return !choice.text.trim();});
+  var shuffledChoices=shuffle(realChoices).concat(blankChoices);
+  var nq={stem:String(q.stem),choices:[],correct:0,explanation:String(q.explanation||''),wrongExplanations:{},eli5:String(q.eli5||'')};
+  shuffledChoices.forEach(function(choice,idx){
+    nq.choices.push(choice.text);
+    if(choice.isCorrect)nq.correct=idx;
+    else if(choice.wrongExplanation)nq.wrongExplanations[String(idx)]=choice.wrongExplanation;
+  });
+  return nq;
+}
+function getNormalizedQuestionsFromRaw(raw){
+  var parsed=parseRaw(raw);
+  if(!parsed||!Array.isArray(parsed))return null;
+  var valid=[];
+  parsed.forEach(function(q){var nq=normQ(q);if(nq)valid.push(nq);});
+  return valid.length?valid:null;
+}
+function startQuiz(valid,name){
+  questions=valid;answers={};selected={};NC=0;NI=0;CQ=0;quizMode='learn';toolMode='';
+  resetTimer();
+  applyFontSize();
+  document.getElementById('quizName').value=name||'Custom Quiz';
+  document.getElementById('qtName').textContent=name||'Custom Quiz';
+  document.getElementById('modeLearn').classList.add('active');
+  document.getElementById('modeExam').classList.remove('active');
+  document.getElementById('hlTool').classList.remove('active');
+  document.getElementById('stTool').classList.remove('active');
+  document.getElementById('errMsg').className='err-msg';
+  switchView('viewQuiz');
+  renderQ();
+}
+function getQuizPayload(){
+  if(Array.isArray(questions)&&questions.length){
+    return {
+      name:document.getElementById('qtName').textContent.trim()||document.getElementById('quizName').value.trim()||'Custom Quiz',
+      questions:questions
+    };
+  }
+  var raw=document.getElementById('pasteArea').value.trim();
+  if(!raw)return null;
+  var valid=getNormalizedQuestionsFromRaw(raw);
+  if(!valid)return null;
+  return {
+    name:document.getElementById('quizName').value.trim()||'Custom Quiz',
+    questions:valid
+  };
+}
+function slugifyFileName(name){
+  return (name||'custom-quiz').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,64)||'custom-quiz';
+}
+function toEmbeddedJSONString(value){
+  return JSON.stringify(value).replace(/<\/script/gi,'<\\/script').replace(/\u2028/g,'\\u2028').replace(/\u2029/g,'\\u2029');
+}
+function buildDownloadHTML(payload){
+  return DOWNLOAD_TEMPLATE
+    .replace('"__QUIZ_BUILDER_PRELOADED_NAME__"', toEmbeddedJSONString(payload.name||'Custom Quiz'))
+    .replace('"__QUIZ_BUILDER_PRELOADED_QUESTIONS__"', toEmbeddedJSONString(JSON.stringify(payload.questions||[])));
+}
+function downloadQuiz(){
+  var payload=getQuizPayload();
+  if(!payload){
+    showErr("Paste a valid quiz first so I have something to save.");
+    return;
+  }
+  var html=buildDownloadHTML(payload);
+  var blob=new Blob([html],{type:'text/html'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  a.href=url;
+  a.download=slugifyFileName(payload.name)+'.html';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(function(){URL.revokeObjectURL(url);},1000);
+  document.getElementById('errMsg').className='err-msg';
+  showToast('Downloaded a standalone copy of your quiz.','ok');
+}
+function hydratePreloadedQuiz(){
+  if(PRELOADED_QUIZ_NAME!=="__QUIZ_BUILDER_PRELOADED_NAME__"){
+    document.getElementById('quizName').value=PRELOADED_QUIZ_NAME;
+  }
+  if(PRELOADED_QUESTIONS_JSON==="__QUIZ_BUILDER_PRELOADED_QUESTIONS__")return;
+  try{
+    var preloaded=JSON.parse(PRELOADED_QUESTIONS_JSON);
+    if(!Array.isArray(preloaded)||!preloaded.length)return;
+    document.getElementById('pasteArea').value=JSON.stringify(preloaded,null,2);
+    startQuiz(preloaded, PRELOADED_QUIZ_NAME||'Custom Quiz');
+    showToast('Saved quiz loaded.','ok');
+  }catch(e){}
+}
+
+// ── LAUNCH ──
+function launchQuiz(){
+  var raw=document.getElementById('pasteArea').value.trim();
+  if(!raw){showErr('Paste your AI response first.');return;}
+  var valid=getNormalizedQuestionsFromRaw(raw);
+  if(!valid){showErr("Couldn't read the format. Make sure you copied the full response from your AI.");return;}
+  startQuiz(valid, document.getElementById('quizName').value.trim()||'Custom Quiz');
+}
+
+// ── RENDER ──
+function renderQ(){
+  document.getElementById('finBanner').innerHTML='';
+  var q=questions[CQ],tot=questions.length,ans=answers[CQ],sel=selected[CQ];
+  var pg=((CQ+1)/tot*100).toFixed(1);
+  var isExam=quizMode==='exam';
+
+  var choicesHTML=q.choices.map(function(c,ci){
+    var cls='ac';
+    if(ans){cls+=' dis';if(ci===q.correct)cls+=' cor';else if(ci===ans.s)cls+=' inc';}
+    else if(isExam&&answers[CQ]===undefined&&sel===ci){cls+=' sel';}
+    else if(!isExam&&sel===ci){cls+=' sel';}
+    var txt=c.replace(/^[A-E]\.\s*/i,'');
+    return '<div class="'+cls+'" onclick="pick('+ci+')"><div class="cl">'+LETTERS[ci]+'</div><div class="ac-txt">'+txt+'</div></div>';
+  }).join('');
+
+  var submitHTML='';
+  if(!ans&&!isExam){submitHTML='<div class="submit-row"><button class="submit-btn" onclick="submitAns()"'+(sel!==undefined?'':' disabled')+'>Submit Answer</button></div>';}
+
+  var expHTML='';
+  if(ans&&!isExam){
+    var cL=LETTERS[q.correct],sL=LETTERS[ans.s];
+    var myW=ans.s!==q.correct&&q.wrongExplanations&&q.wrongExplanations[String(ans.s)]?'<div class="exs exw"><div class="exl">✗ Why '+sL+' is Wrong</div><div class="ext">'+q.wrongExplanations[String(ans.s)]+'</div></div>':'';
+    var others='';
+    if(q.wrongExplanations){var oks=Object.keys(q.wrongExplanations).filter(function(k){return +k!==q.correct&&(!ans||+k!==ans.s)&&q.wrongExplanations[k];});if(oks.length)others='<div class="exs exo"><div class="exl">✗ Other Wrong Choices</div><div class="ext">'+oks.map(function(k){return'<div class="wce"><strong>'+LETTERS[+k]+':</strong> '+q.wrongExplanations[k]+'</div>';}).join('')+'</div></div>';}
+    var eli5=q.eli5?'<div class="exs exe"><div class="exl">💡 ELI5</div><div class="ext">'+q.eli5+'</div></div>':'';
+    expHTML='<div class="exb vis"><div class="exs exc"><div class="exl">✓ Why '+cL+' is Correct</div><div class="ext">'+q.explanation+'</div></div>'+myW+others+eli5+'</div>';
   }
 
-  submitRowEl.style.display = (quizMode === 'learn' && !st.graded) ? 'flex' : 'none';
+  var dots=questions.map(function(_,i){var dc=answers[i]?(answers[i].r==='c'?' dc':' di'):(i===CQ?' on':'');return '<button class="qd'+dc+'" onclick="goQ('+i+')" title="Q'+(i+1)+'"></button>';}).join('');
 
-  prevBtn.disabled = idx === 0;
-  nextBtn.disabled = idx === questions.length - 1;
-
-  updateProgress();
-  updateNavDots();
-  updateScorePanel();
-  updateExamProgressText();
-  updateExamButton();
+  document.getElementById('qArea').innerHTML=
+    '<div class="qcd">'+
+      '<div class="qpg"><div class="qpf" style="width:'+pg+'%"></div></div>'+
+      '<div class="qbd">'+
+        '<div class="qnum">Question '+(CQ+1)+' of '+tot+'</div>'+
+        '<div class="qstem" id="stemEl">'+q.stem+'</div>'+
+        '<div class="ach" id="achEl">'+choicesHTML+'</div>'+
+        submitHTML+expHTML+
+      '</div>'+
+      '<div class="qnv">'+
+        '<button class="nb" onclick="prevQ()"'+(CQ===0?' disabled':'')+'>← Prev</button>'+
+        '<div class="nav-dots">'+dots+'</div>'+
+        '<button class="nb pr" onclick="nextQ()"'+(CQ===tot-1?' disabled':'')+'>Next →</button>'+
+      '</div>'+
+    '</div>';
+  updScore();
 }
 
-function applyGradedStyles(idx) {
-  const q = questions[idx];
-  const st = answers[idx];
-  choiceEls.forEach(c => c.classList.add('dis'));
-  choiceEls[q.correct].classList.add('cor');
-  if (st.selected !== null && st.selected !== q.correct) {
-    choiceEls[st.selected].classList.add('inc');
-  }
+function pick(ci){
+  if(answers[CQ])return;
+  selected[CQ]=ci;
+  renderQ();
 }
 
-function attachChoiceHandlers() {
-  choiceEls.forEach(choice => {
-    choice.addEventListener('click', () => {
-      const idx = current;
-      const st = answers[idx];
-
-      if (toolMode === 'highlight') {
-        choice.classList.toggle('hl-applied');
-        choice.classList.remove('st-applied');
-        return;
-      }
-      if (toolMode === 'strike') {
-        choice.classList.toggle('st-applied');
-        choice.classList.remove('hl-applied');
-        return;
-      }
-      if (st.graded) return;
-      if (quizMode === 'exam' && examSubmitted) return;
-
-      choiceEls.forEach(c => c.classList.remove('sel'));
-      choice.classList.add('sel');
-      st.selected = parseInt(choice.dataset.choice, 10);
-      submitOne.disabled = false;
-      updateProgress();
-      updateNavDots();
-      updateExamProgressText();
-      updateExamButton();
-    });
-  });
+function submitAns(){
+  if(answers[CQ]||selected[CQ]===undefined)return;
+  var ok=selected[CQ]===questions[CQ].correct;
+  answers[CQ]={s:selected[CQ],r:ok?'c':'i'};
+  if(ok)NC++;else NI++;
+  updScore();renderQ();
+  if(Object.keys(answers).length===questions.length)setTimeout(showFinish,500);
 }
 
-// ============ Grading (Learn Mode) ============
-function gradeCurrentQuestion() {
-  const idx = current;
-  const st = answers[idx];
-  if (st.selected === null || st.graded) return false;
-  st.graded = true;
-  st.correct = st.selected === questions[idx].correct;
-  applyGradedStyles(idx);
-  exBlock.classList.add('vis');
-  submitOne.disabled = true;
-  submitRowEl.style.display = 'none';
-  updateScorePanel();
-  updateNavDots();
-  updateProgress();
-  return true;
-}
-submitOne.addEventListener('click', gradeCurrentQuestion);
+function prevQ(){if(CQ>0){CQ--;renderQ();}}
+function nextQ(){if(CQ<questions.length-1){CQ++;renderQ();}}
+function goQ(i){CQ=i;renderQ();}
 
-// ============ Exam Mode ============
-function updateExamButton() {
-  const inExam = quizMode === 'exam';
-  submitExamBtn.disabled = !inExam || examSubmitted;
-  examSubmitRow.classList.toggle('exam-live', inExam && !examSubmitted);
-  examSubmitRow.classList.toggle('exam-done', examSubmitted);
-  submitExamBtn.textContent = examSubmitted ? 'Exam Submitted' : 'Submit Exam';
+function updScore(){
+  document.getElementById('sC').textContent=NC;
+  document.getElementById('sI').textContent=NI;
+  var t=NC+NI;document.getElementById('sP').textContent=t>0?Math.round(NC/t*100)+'%':'—';
 }
-function updateExamProgressText() {
-  if (examSubmitted) { examProgress.textContent = 'Exam submitted'; return; }
-  const answeredCount = answers.filter(a => a.selected !== null).length;
-  examProgress.textContent = `${answeredCount} of ${questions.length} answered`;
+
+// ── MODE ──
+function setMode(m){
+  quizMode=m;
+  document.getElementById('modeLearn').classList.toggle('active',m==='learn');
+  document.getElementById('modeExam').classList.toggle('active',m==='exam');
+  renderQ();
 }
-submitExamBtn.addEventListener('click', () => {
-  if (quizMode !== 'exam' || examSubmitted) return;
-  examSubmitted = true;
-  answers.forEach((st, i) => {
-    if (st.selected !== null) {
-      st.graded = true;
-      st.correct = st.selected === questions[i].correct;
-    }
-  });
-  updateExamButton();
-  updateExamProgressText();
-  renderQuestion(current);
+
+// ── TOOLS ──
+function toggleTool(t){
+  if(toolMode===t){toolMode='';document.getElementById(t==='hl'?'hlTool':'stTool').classList.remove('active');}
+  else{toolMode=t;document.getElementById('hlTool').classList.toggle('active',t==='hl');document.getElementById('stTool').classList.toggle('active',t==='st');}
+}
+function clearMarks(){
+  var stem=document.getElementById('stemEl');
+  var ach=document.getElementById('achEl');
+  [stem,ach].forEach(function(el){if(!el)return;el.querySelectorAll('mark,s').forEach(function(m){m.replaceWith(document.createTextNode(m.textContent));});});
+}
+function applyFontSize(){
+  var root=document.documentElement;
+  var stemSize=25+(fontStep*2.5);
+  var choiceSize=15.5+(fontStep*1.2);
+  root.style.setProperty('--stem-size', stemSize.toFixed(1)+'px');
+  root.style.setProperty('--choice-size', choiceSize.toFixed(1)+'px');
+}
+function adjustFontSize(delta){
+  fontStep=Math.max(-2,Math.min(4,fontStep+delta));
+  applyFontSize();
+}
+function resetFontSize(){
+  fontStep=0;
+  applyFontSize();
+}
+document.addEventListener('mouseup',function(e){
+  if(!toolMode)return;
+  var sel=window.getSelection();
+  if(!sel||sel.isCollapsed)return;
+  var range=sel.getRangeAt(0);
+  var container=range.commonAncestorContainer;
+  var qArea=document.getElementById('qArea');
+  if(!qArea||!qArea.contains(container))return;
+  try{
+    var tag=toolMode==='hl'?'mark':'s';
+    var el=document.createElement(tag);
+    range.surroundContents(el);
+    sel.removeAllRanges();
+  }catch(e){}
 });
 
-function setMode(mode) {
-  quizMode = mode;
-  modeLearn.classList.toggle('active', mode === 'learn');
-  modeExam.classList.toggle('active', mode === 'exam');
-  const st = answers[current];
-  submitRowEl.style.display = (mode === 'learn' && !st.graded) ? 'flex' : 'none';
-  updateExamButton();
-  updateExamProgressText();
+// ── TIMER ──
+function toggleTimer(){
+  if(timerRunning)pauseTimer();else startTimer();
 }
-modeLearn.addEventListener('click', () => setMode('learn'));
-modeExam.addEventListener('click', () => setMode('exam'));
-
-// ============ Score panel / progress / nav dots ============
-function updateScorePanel() {
-  svCurrent.textContent = current + 1;
-  svCorrect.textContent = answers.filter(a => a.graded && a.correct).length;
-  svIncorrect.textContent = answers.filter(a => a.graded && a.correct === false).length;
+function startTimer(){
+  timerRunning=true;
+  document.getElementById('timerPlayBtn').textContent='⏸';
+  document.getElementById('timerCard').classList.add('run');
+  timerInterval=setInterval(function(){timerSec++;updTimer();},1000);
 }
-function updateProgress() {
-  const answeredCount = answers.filter(a => a.selected !== null).length;
-  qpf.style.width = (answeredCount / questions.length * 100) + '%';
+function pauseTimer(){
+  timerRunning=false;
+  document.getElementById('timerPlayBtn').textContent='▶';
+  document.getElementById('timerCard').classList.remove('run');
+  clearInterval(timerInterval);
 }
-function buildNavDots() {
-  qdots.innerHTML = '';
-  questions.forEach((_, i) => {
-    const btn = document.createElement('button');
-    btn.className = 'qd';
-    btn.type = 'button';
-    btn.setAttribute('aria-label', `Question ${i + 1}`);
-    btn.addEventListener('click', () => renderQuestion(i));
-    qdots.appendChild(btn);
-  });
+function resetTimer(){
+  pauseTimer();timerSec=0;updTimer();
+  document.getElementById('timerCard').classList.remove('warn');
 }
-function updateNavDots() {
-  const dots = Array.from(qdots.children);
-  dots.forEach((d, i) => {
-    d.className = 'qd';
-    const st = answers[i];
-    if (st.graded) d.classList.add(st.correct ? 'acor' : 'ainc');
-    else if (st.selected !== null) d.classList.add('asel');
-    if (i === current) d.classList.add('cur');
-  });
+function updTimer(){
+  var m=Math.floor(timerSec/60).toString().padStart(2,'0');
+  var s=(timerSec%60).toString().padStart(2,'0');
+  document.getElementById('timerTime').textContent=m+':'+s;
+  if(timerSec>90)document.getElementById('timerCard').classList.add('warn');
+  else document.getElementById('timerCard').classList.remove('warn');
 }
 
-// ============ Nav buttons ============
-prevBtn.addEventListener('click', () => { if (current > 0) renderQuestion(current - 1); });
-nextBtn.addEventListener('click', () => { if (current < questions.length - 1) renderQuestion(current + 1); });
-
-// ============ Open / close overlay ============
-openDemo.addEventListener('click', () => { qo.classList.add('open'); });
-closeQuiz.addEventListener('click', () => {
-  qo.classList.add('closing');
-  setTimeout(() => qo.classList.remove('open', 'closing'), 320);
-});
-
-// ============ Reset ============
-resetQuiz.addEventListener('click', () => {
-  if (!window.confirm('Reset all progress on this quiz?')) return;
-  answers.forEach(a => { a.selected = null; a.graded = false; a.correct = null; });
-  examSubmitted = false;
-  clearInterval(timerInt); timerInt = null; timerSec = 0; renderTimer();
-  clearInterval(cdInt); cdInt = null; cdMinutes = 5; cdSec = cdMinutes * 60; cdGo.textContent = 'Start'; renderCountdown();
-  toolMode = null; updateToolUI();
-  setMode('learn');
-  renderQuestion(0);
-});
-
-// ============ Font size ============
-document.querySelectorAll('[data-fs-btn]').forEach(btn => {
-  btn.addEventListener('click', () => {
-    qo.dataset.fs = btn.dataset.fsBtn;
-    document.querySelectorAll('[data-fs-btn]').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-  });
-});
-
-// ============ Timer (stopwatch) ============
-let timerInt = null;
-let timerSec = 0;
-function renderTimer() {
-  const m = String(Math.floor(timerSec / 60)).padStart(2, '0');
-  const s = String(timerSec % 60).padStart(2, '0');
-  timerTime.textContent = `${m}:${s}`;
+// ── FINISH ──
+function showFinish(){
+  var tot=questions.length,pct=Math.round(NC/tot*100);
+  var msg=pct>=80?'🎉 Strong work!':pct>=60?'📈 Getting there.':'📚 Keep reviewing.';
+  document.getElementById('finBanner').innerHTML=
+    '<div class="fin">'+
+      '<div class="fin-pct">'+pct+'%</div>'+
+      '<div class="fin-pct-lbl">Final Score</div>'+
+      '<div class="fin-msg">'+msg+'</div>'+
+      '<div class="fin-sub">'+NC+' correct · '+NI+' incorrect · '+tot+' questions</div>'+
+      '<div class="fin-btns">'+
+        '<button class="fin-btn" onclick="resetQuiz()">↺ Retake</button>'+
+        '<button class="fin-btn" onclick="exitQuiz()">✕ Exit</button>'+
+      '</div>'+
+    '</div>';
+  window.scrollTo({top:0,behavior:'smooth'});
 }
-document.getElementById('timerStart').addEventListener('click', () => {
-  if (timerInt) return;
-  timerInt = setInterval(() => { timerSec += 1; renderTimer(); }, 1000);
-});
-document.getElementById('timerPause').addEventListener('click', () => { clearInterval(timerInt); timerInt = null; });
-document.getElementById('timerReset').addEventListener('click', () => {
-  clearInterval(timerInt); timerInt = null; timerSec = 0; renderTimer();
-});
+function resetQuiz(){answers={};selected={};NC=0;NI=0;CQ=0;resetTimer();document.getElementById('finBanner').innerHTML='';renderQ();window.scrollTo({top:0,behavior:'smooth'});}
+function exitQuiz(){pauseTimer();switchView('viewSetup');}
 
-// ============ Countdown ============
-let cdMinutes = 5;
-let cdInt = null;
-let cdSec = cdMinutes * 60;
-function renderCountdown() {
-  const m = String(Math.floor(cdSec / 60)).padStart(2, '0');
-  const s = String(cdSec % 60).padStart(2, '0');
-  cdTime.textContent = `${m}:${s}`;
-  cdVal.textContent = String(cdMinutes);
-}
-document.getElementById('cdMinus').addEventListener('click', () => {
-  if (cdInt) return;
-  cdMinutes = Math.max(1, cdMinutes - 1);
-  cdSec = cdMinutes * 60; renderCountdown();
-});
-document.getElementById('cdPlus').addEventListener('click', () => {
-  if (cdInt) return;
-  cdMinutes = Math.min(99, cdMinutes + 1);
-  cdSec = cdMinutes * 60; renderCountdown();
-});
-cdGo.addEventListener('click', () => {
-  if (cdInt) { clearInterval(cdInt); cdInt = null; cdGo.textContent = 'Start'; return; }
-  cdGo.textContent = 'Pause';
-  cdInt = setInterval(() => {
-    if (cdSec <= 0) { clearInterval(cdInt); cdInt = null; cdGo.textContent = 'Start'; return; }
-    cdSec -= 1; renderCountdown();
-  }, 1000);
-});
+// ── VIEW ──
+function switchView(id){document.querySelectorAll('.view').forEach(function(v){v.classList.remove('active');});document.getElementById(id).classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
 
-// ============ Tool system (highlight / strikeout / reveal) ============
-function updateToolUI() {
-  toolHighlight.classList.toggle('active', toolMode === 'highlight');
-  toolHighlight.classList.toggle('hl-tool', toolMode === 'highlight');
-  toolStrike.classList.toggle('active', toolMode === 'strike');
-  toolStrike.classList.toggle('st-tool', toolMode === 'strike');
-  toolStatus.textContent = toolMode ? `Tool mode: ${toolMode}` : 'Tool mode: none';
-  toolStatus.classList.toggle('active-highlight', toolMode === 'highlight');
-  toolStatus.classList.toggle('active-strike', toolMode === 'strike');
+// ── HELPERS ──
+function showErr(msg){var el=document.getElementById('errMsg');el.textContent='❌ '+msg;el.className='err-msg show';}
+function showToast(msg,type){
+  var w=document.getElementById('toastWrap'),t=document.createElement('div');
+  t.className='toast '+type;t.textContent=msg;w.appendChild(t);
+  setTimeout(function(){t.style.animation='toastOut .28s ease forwards';setTimeout(function(){if(t.parentNode)t.parentNode.removeChild(t);},300);},2800);
 }
-function setToolMode(mode) {
-  toolMode = toolMode === mode ? null : mode;
-  updateToolUI();
-}
-toolHighlight.addEventListener('click', () => setToolMode('highlight'));
-toolStrike.addEventListener('click', () => setToolMode('strike'));
-toolReveal.addEventListener('click', () => exBlock.classList.toggle('vis'));
-
-function applyStemMarkup(type) {
-  const sel = window.getSelection();
-  if (!sel || sel.rangeCount === 0 || sel.isCollapsed) return false;
-  const range = sel.getRangeAt(0);
-  if (!qStem.contains(range.commonAncestorContainer)) return false;
-  const wrapper = document.createElement('span');
-  wrapper.className = type === 'highlight' ? 'stem-hl' : 'stem-st';
-  try { range.surroundContents(wrapper); }
-  catch (e) { const frag = range.extractContents(); wrapper.appendChild(frag); range.insertNode(wrapper); }
-  sel.removeAllRanges();
-  return true;
-}
-function toggleWholeStem(type) {
-  if (type === 'highlight') { qStem.classList.toggle('hl-applied'); qStem.classList.remove('st-applied'); }
-  else { qStem.classList.toggle('st-applied'); qStem.classList.remove('hl-applied'); }
-}
-qStem.addEventListener('click', e => {
-  if (!toolMode) return;
-  const didApply = applyStemMarkup(toolMode);
-  if (!didApply) toggleWholeStem(toolMode);
-  e.preventDefault();
-});
-
-// ============ Print review ============
-function escapeHTML(value) {
-  return String(value ?? '')
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-}
-function buildPrintReviewMarkup() {
-  const letters = ['A', 'B', 'C', 'D'];
-  let cards = '';
-  questions.forEach((q, i) => {
-    const st = answers[i];
-    if (!st.graded) return;
-    let choicesHtml = '';
-    q.choices.forEach((c, ci) => {
-      let cls = '';
-      if (ci === q.correct) cls = 'correct';
-      else if (ci === st.selected) cls = 'incorrect';
-      choicesHtml += `<div class="print-choice ${cls}"><strong>${letters[ci]}.</strong> ${escapeHTML(c)}</div>`;
-    });
-    const wrongsHtml = q.explanation.wrongs.map(w => escapeHTML(w)).join('<br>');
-    cards += `<div class="print-card">
-      <div class="print-q-num">Question ${i + 1} — ${st.correct ? 'Correct' : 'Incorrect'}</div>
-      <div class="print-stem">${escapeHTML(q.stem)}</div>
-      ${choicesHtml}
-      <div class="print-explainer correct-box"><strong>Correct Answer:</strong> ${escapeHTML(q.explanation.correct)}</div>
-      <div class="print-explainer teach-box"><strong>Teaching Point:</strong> ${escapeHTML(q.explanation.teaching)}</div>
-      <div class="print-explainer wrong-box"><strong>Why the Others Are Wrong:</strong><br>${wrongsHtml}</div>
-    </div>`;
-  });
-  if (!cards) cards = '<p>No questions have been answered yet.</p>';
-  const gradedCount = answers.filter(a => a.graded).length;
-  const correctCount = answers.filter(a => a.graded && a.correct).length;
-  return `<div class="print-shell">
-    <h1>Acute CNS Infections — Quiz Answer Review</h1>
-    <div class="print-sub">${gradedCount} of ${questions.length} answered &middot; ${correctCount} correct</div>
-    ${cards}
-  </div>`;
-}
-function printQuizReview() {
-  document.getElementById('printReviewRoot').innerHTML = buildPrintReviewMarkup();
-  document.body.classList.add('print-review-active');
-  setTimeout(() => window.print(), 50);
-}
-window.addEventListener('afterprint', () => { document.body.classList.remove('print-review-active'); });
-printQuiz.addEventListener('click', printQuizReview);
-
-// ============ Init ============
-buildNavDots();
-renderTimer();
-renderCountdown();
-updateToolUI();
-renderQuestion(0);
-
-</script>
-</body>
-</html>
+hydratePreloadedQuiz();
+applyFontSize();
+</script></body></html>
