@@ -671,6 +671,7 @@ var uiMode='classic';
 var examSubmitted=false;
 var reviewOpen=false;
 var summaryVisible=false;
+var finishBannerMinimized=false;
 var toolMode='';
 var labUnitMode='us';
 var timerSec=0,timerRunning=false,timerInterval=null;
@@ -874,6 +875,7 @@ function resetQuizState(withTimerReset){
   examSubmitted=false;
   reviewOpen=false;
   summaryVisible=false;
+  finishBannerMinimized=false;
   toolMode='';
   if(withTimerReset)resetTimer();else updTimer();
   syncToolButtons();
@@ -1097,8 +1099,13 @@ function printSummarySheet(){
     printWindow.print();
   },250);
 }
+function buildNbmeCompletionViewHTML(){
+  var finishHTML=finishBannerMinimized?'':buildFinishHTML({allowMinimize:true});
+  return `<div class="sum-view" id="completionViewTop">${finishHTML}${buildNbmeQuestion()}</div>`;
+}
 function buildSummaryViewHTML(){
-  return `<div class="sum-view" id="summaryViewTop">${buildFinishHTML()}${buildReviewSheetHTML(false)}</div>`;
+  var finishHTML=finishBannerMinimized?'':buildFinishHTML({allowMinimize:true});
+  return `<div class="sum-view" id="summaryViewTop">${finishHTML}${buildReviewSheetHTML(false)}</div>`;
 }
 function scrollQuizViewportTop(){
   window.scrollTo({top:0,behavior:'smooth'});
@@ -1135,6 +1142,7 @@ function toggleSummaryPanel(){
 }
 function viewSummarySheet(){
   if(!isQuizComplete())return;
+  finishBannerMinimized=false;
   summaryVisible=true;
   renderQ();
   var target=document.getElementById(uiMode==='nbme'?'summaryViewTop':'summarySheet');
@@ -1147,13 +1155,20 @@ function hideSummarySheet(){
   renderQ();
   scrollQuizViewportTop();
 }
-function buildFinishHTML(){
+function minimizeFinishBanner(){
+  finishBannerMinimized=true;
+  renderQ();
+}
+function buildFinishHTML(options){
+  options=options||{};
+  var allowMinimize=!!options.allowMinimize;
   var total=questions.length||1;
   var pct=Math.round(NC/total*100);
   var msg=pct>=80?'🎉 Strong work!':pct>=60?'📈 Getting there.':'📚 Keep reviewing.';
   var summaryBtn=summaryVisible
     ? '<button class="fin-btn" onclick="hideSummarySheet()">← Back to Questions</button>'
     : '<button class="fin-btn" onclick="viewSummarySheet()">📋 View Summary</button>';
+  var minimizeBtn=allowMinimize?'<button class="fin-btn" onclick="minimizeFinishBanner()">Minimize</button>':'';
   return `<div class="fin">
     <div class="fin-pct">${pct}%</div>
     <div class="fin-pct-lbl">Final Score</div>
@@ -1162,6 +1177,7 @@ function buildFinishHTML(){
     <div class="fin-btns">
       ${summaryBtn}
       <button class="fin-btn" onclick="printSummarySheet()">🖨 Print Summary</button>
+      ${minimizeBtn}
       <button class="fin-btn" onclick="resetQuiz()">↺ Retake</button>
       <button class="fin-btn" onclick="exitQuiz()">✕ Exit</button>
     </div>
@@ -1170,7 +1186,7 @@ function buildFinishHTML(){
 function renderFinishBanners(){
   var html=isQuizComplete()?buildFinishHTML():'';
   document.getElementById('finBanner').innerHTML=html;
-  document.getElementById('nbFinishBanner').innerHTML=(isQuizComplete()&&!summaryVisible)?html:'';
+  document.getElementById('nbFinishBanner').innerHTML='';
 }
 
 // ── RENDERING ──
@@ -1394,6 +1410,7 @@ function renderNbmeView(){
   document.getElementById('nbNextBtn').disabled=CQ===total-1||reviewOpen;
   document.getElementById('nbRailItems').innerHTML=buildNbmeRail();
   if(isQuizComplete()&&summaryVisible)document.getElementById('nbContent').innerHTML=buildSummaryViewHTML();
+  else if(isQuizComplete())document.getElementById('nbContent').innerHTML=buildNbmeCompletionViewHTML();
   else document.getElementById('nbContent').innerHTML=(reviewOpen&&quizMode==='exam'&&!examSubmitted)?buildNbmeReview():buildNbmeQuestion();
   keepCurrentRailItemVisible();
   syncNbmeRailArrows();
