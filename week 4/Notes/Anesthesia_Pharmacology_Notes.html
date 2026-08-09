@@ -42,10 +42,11 @@ em { color: var(--ink-soft); font-style: italic; }
 a { color: var(--coral); }
 
 /* ---------- Header + Nav ---------- */
+:root { --header-h: 92px; }
 .page-header {
   position: sticky; top: 0; z-index: 100;
   background: var(--ink); color: var(--cream);
-  padding: 10px 28px;
+  padding: 10px clamp(12px, 4vw, 28px);
   border-bottom: 3px solid var(--coral);
   display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
 }
@@ -53,10 +54,20 @@ a { color: var(--coral); }
   font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em;
   color: var(--gold); text-transform: uppercase;
 }
-.page-header .title { font-family: 'Crimson Pro', serif; font-size: 19px; font-weight: 600; }
+.page-header .title { font-family: 'Crimson Pro', serif; font-size: clamp(15px, 2.6vw, 19px); font-weight: 600; }
 .page-header .subtitle { font-family: 'Nunito', sans-serif; font-size: 12px; color: var(--cream-dk); opacity: 0.85; }
+.header-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.zoom-controls { display: flex; align-items: center; gap: 4px; background: rgba(255,255,255,0.08); border-radius: 20px; padding: 3px; }
+.zoom-btn {
+  font-family: 'IBM Plex Mono', monospace; font-weight: 700; font-size: 12px;
+  width: 28px; height: 28px; border-radius: 50%; border: none; cursor: pointer;
+  background: var(--cream); color: var(--ink); display: flex; align-items: center; justify-content: center;
+  transition: transform 0.15s, background 0.15s;
+}
+.zoom-btn:hover { background: var(--gold); transform: translateY(-1px); }
+.zoom-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--cream-dk); min-width: 34px; text-align: center; }
 .lo-anchor-nav {
-  position: sticky; top: 81px; z-index: 99;
+  position: sticky; top: var(--header-h); z-index: 99;
   background: #fff;
   border-bottom: 2px solid var(--border-mid);
   display: flex; overflow-x: auto;
@@ -77,7 +88,7 @@ a { color: var(--coral); }
 .lo-anchor-nav a:hover, .lo-anchor-nav a.active { color: var(--coral); border-bottom-color: var(--coral); }
 
 /* ---------- Layout ---------- */
-.content-wrap { max-width: 900px; margin: 0 auto; padding: 30px 24px 80px; }
+.content-wrap { max-width: 900px; margin: 0 auto; padding: 30px clamp(14px, 4vw, 24px) 80px; }
 .lo-section { padding: 22px 0 8px; scroll-margin-top: 138px; }
 .section-divider { border: none; border-top: 1px dashed var(--border-mid); margin: 40px 0; }
 
@@ -228,7 +239,7 @@ code { font-family: 'IBM Plex Mono', monospace; font-size: 0.9em; background: va
   padding: 12px 20px; border-bottom: 3px solid var(--coral); flex-wrap: wrap; gap: 10px;
 }
 .hy-modal-bar .hy-modal-title { font-family: 'Crimson Pro', serif; font-size: 18px; font-weight: 600; }
-.hy-modal-bar .hy-modal-actions { display: flex; gap: 8px; align-items: center; }
+.hy-modal-bar .hy-modal-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .hy-print-btn, .hy-close-btn {
   font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600;
   text-transform: uppercase; letter-spacing: 0.03em; border: none; border-radius: 6px;
@@ -269,17 +280,39 @@ code { font-family: 'IBM Plex Mono', monospace; font-size: 0.9em; background: va
 .hy-formula-mini { font-family: 'IBM Plex Mono', monospace; font-size: 9px; background: var(--cream-dk); border-radius: 4px; padding: 3px 6px; margin: 3px 0; text-align: center; }
 .hy-tag { display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 7.5px; background: var(--cream-dk); border-radius: 3px; padding: 0 4px; color: var(--ink-soft); }
 
+/* On-screen readability: widen the summary grid's text at narrower viewports (print keeps it dense — see @media print) */
+@media screen and (max-width: 980px) {
+  .hy-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .hy-card li, .hy-card table { font-size: 11px; }
+  .hy-card table th { font-size: 8.5px; }
+  .hy-card-title { font-size: 13px; }
+}
+@media screen and (max-width: 620px) {
+  .hy-grid { grid-template-columns: 1fr; }
+  .hy-modal-bar { justify-content: center; text-align: center; }
+  .hy-page { padding: 14px 14px 18px; }
+}
+
+/* ---------- Print: isolate #hyOverlay as the only visible element ---------- */
 @media print {
-  body * { visibility: hidden !important; }
-  #hyOverlay, #hyOverlay * { visibility: visible !important; }
+  html, body { height: auto !important; overflow: visible !important; background: #fff !important; }
+  body > *:not(#hyOverlay) { display: none !important; }
   #hyOverlay {
-    position: absolute; inset: auto; top: 0; left: 0; width: 100%; height: auto;
-    background: #fff !important; padding: 0; display: block !important; overflow: visible;
+    display: block !important; position: static !important; inset: auto !important;
+    background: #fff !important; padding: 0 !important; overflow: visible !important;
+    z-index: auto !important;
   }
-  .hy-modal { box-shadow: none; border-radius: 0; max-width: 100%; width: 100%; }
+  .hy-modal {
+    box-shadow: none !important; border-radius: 0 !important; max-width: 100% !important;
+    width: 100% !important; overflow: visible !important;
+  }
   .hy-modal-bar { display: none !important; }
-  .hy-page { padding: 0.15in 0.3in; }
-  .hy-card { background: #fff; box-shadow: none; }
+  .hy-page { padding: 0.15in 0.3in !important; overflow: visible !important; }
+  .hy-card { background: #fff !important; box-shadow: none !important; }
+  .hy-grid { grid-template-columns: repeat(3, 1fr) !important; }
+  .hy-card li, .hy-card table { font-size: 9px !important; }
+  .hy-card table th { font-size: 7px !important; }
+  .hy-card-title { font-size: 12px !important; }
   @page { size: letter landscape; margin: 0.25in; }
 }
 </style>
@@ -292,7 +325,14 @@ code { font-family: 'IBM Plex Mono', monospace; font-size: 0.9em; background: va
     <span class="title">General Anesthesia — Inhaled &amp; IV Agents</span>
   </div>
   <div class="subtitle">Dr. Scott D. Ochs, PhD · Professor of Pharmacology</div>
-  <button class="hy-btn" onclick="openHYSummary()">📋 One-Page High-Yield Summary</button>
+  <div class="header-actions">
+    <div class="zoom-controls">
+      <button class="zoom-btn" onclick="adjustZoom(-1)" aria-label="Decrease text size">A−</button>
+      <span class="zoom-label" id="zoomLabel">100%</span>
+      <button class="zoom-btn" onclick="adjustZoom(1)" aria-label="Increase text size">A+</button>
+    </div>
+    <button class="hy-btn" onclick="openHYSummary()">📋 One-Page High-Yield Summary</button>
+  </div>
 </div>
 
 <nav class="lo-anchor-nav">
@@ -313,7 +353,7 @@ code { font-family: 'IBM Plex Mono', monospace; font-size: 0.9em; background: va
   <div class="hy-modal-bar">
     <span class="hy-modal-title">One-Page High-Yield Summary</span>
     <div class="hy-modal-actions">
-      <button class="hy-print-btn" onclick="window.print()">🖨️ Print / Save PDF</button>
+      <button class="hy-print-btn" onclick="printHYSummary()">🖨️ Print / Save PDF</button>
       <button class="hy-close-btn" onclick="closeHYSummary()">✕ Close</button>
     </div>
   </div>
@@ -1583,6 +1623,47 @@ document.addEventListener('keydown', (e) => {
   if (!document.getElementById('hyOverlay').classList.contains('open')) return;
   if (e.key === 'Escape') closeHYSummary(null);
 });
+
+// ---- Print: temporarily reset any text-zoom so print CSS controls layout, then restore ----
+function printHYSummary() {
+  const restoreZoom = document.documentElement.style.zoom || '';
+  document.documentElement.style.zoom = '1';
+  const restore = () => { document.documentElement.style.zoom = restoreZoom; window.removeEventListener('afterprint', restore); };
+  window.addEventListener('afterprint', restore);
+  setTimeout(() => { window.print(); }, 30);
+  // Fallback in case afterprint doesn't fire in this browser
+  setTimeout(restore, 3000);
+}
+
+// ---- Text-size (A- / A+) controls, applied via zoom so layout/spacing scale together ----
+const ZOOM_STEPS = [0.85, 0.9, 0.95, 1, 1.1, 1.2, 1.3, 1.4];
+let zoomIdx = ZOOM_STEPS.indexOf(1);
+function applyZoom() {
+  const level = ZOOM_STEPS[zoomIdx];
+  document.documentElement.style.zoom = level;
+  const label = document.getElementById('zoomLabel');
+  if (label) label.textContent = Math.round(level * 100) + '%';
+  try { localStorage.setItem('anesthesia-notes-zoom-idx', zoomIdx); } catch (err) {}
+}
+function adjustZoom(dir) {
+  zoomIdx = Math.min(ZOOM_STEPS.length - 1, Math.max(0, zoomIdx + dir));
+  applyZoom();
+}
+(function restoreZoomPref() {
+  try {
+    const saved = localStorage.getItem('anesthesia-notes-zoom-idx');
+    if (saved !== null && ZOOM_STEPS[+saved] !== undefined) zoomIdx = +saved;
+  } catch (err) {}
+  applyZoom();
+})();
+
+// ---- Keep the sticky sub-nav pinned right under the header, even as the header wraps on narrow screens ----
+function syncHeaderHeight() {
+  const header = document.querySelector('.page-header');
+  if (header) document.documentElement.style.setProperty('--header-h', header.offsetHeight + 'px');
+}
+window.addEventListener('load', syncHeaderHeight);
+window.addEventListener('resize', syncHeaderHeight);
 
 // Scroll reveal
 const revealObs = new IntersectionObserver((entries) => {
