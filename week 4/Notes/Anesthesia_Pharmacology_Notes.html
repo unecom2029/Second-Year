@@ -200,6 +200,88 @@ td.quiz-cell { position: relative; cursor: pointer; }
 .section-intro { font-size: 15.5px; color: var(--ink-soft); margin-bottom: 6px; }
 code { font-family: 'IBM Plex Mono', monospace; font-size: 0.9em; background: var(--cream-dk); padding: 1px 5px; border-radius: 3px; }
 .formula { font-family: 'IBM Plex Mono', monospace; background: var(--cream-mid); border: 1px solid var(--border); border-radius: 8px; padding: 10px 16px; margin: 14px 0; font-size: 14.5px; text-align: center; }
+
+/* ---------- High-Yield Summary button + modal ---------- */
+.hy-btn {
+  font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; font-weight: 600;
+  letter-spacing: 0.03em; text-transform: uppercase; color: var(--ink);
+  background: var(--gold); border: none; padding: 8px 16px; border-radius: 20px;
+  cursor: pointer; white-space: nowrap; transition: transform 0.15s, box-shadow 0.15s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+}
+.hy-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.25); }
+
+#hyOverlay {
+  position: fixed; inset: 0; background: rgba(20,16,12,0.78); z-index: 1001;
+  display: none; align-items: flex-start; justify-content: center;
+  padding: 26px 16px; overflow-y: auto;
+}
+#hyOverlay.open { display: flex; }
+
+.hy-modal {
+  background: var(--cream); border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  width: 100%; max-width: 1180px; overflow: hidden;
+}
+.hy-modal-bar {
+  position: sticky; top: 0; z-index: 2; background: var(--ink); color: var(--cream);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 20px; border-bottom: 3px solid var(--coral); flex-wrap: wrap; gap: 10px;
+}
+.hy-modal-bar .hy-modal-title { font-family: 'Crimson Pro', serif; font-size: 18px; font-weight: 600; }
+.hy-modal-bar .hy-modal-actions { display: flex; gap: 8px; align-items: center; }
+.hy-print-btn, .hy-close-btn {
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.03em; border: none; border-radius: 6px;
+  padding: 7px 13px; cursor: pointer;
+}
+.hy-print-btn { background: var(--coral); color: #fff; }
+.hy-print-btn:hover { background: #ad4630; }
+.hy-close-btn { background: var(--ink-soft); color: #fff; }
+.hy-close-btn:hover { background: #443c30; }
+
+.hy-page {
+  padding: 16px 22px 20px; background: #fff;
+}
+.hy-page-head { text-align: center; margin-bottom: 10px; }
+.hy-page-head .hy-h1 { font-family: 'Crimson Pro', serif; font-size: 20px; font-weight: 700; color: var(--ink); margin-bottom: 2px; }
+.hy-page-head .hy-h2 { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+
+.hy-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.hy-card {
+  border: 1px solid var(--border-mid); border-radius: 8px; padding: 8px 10px;
+  background: var(--cream-mid); break-inside: avoid; page-break-inside: avoid;
+}
+.hy-card-head {
+  display: flex; align-items: baseline; gap: 6px; margin-bottom: 4px;
+  border-bottom: 1px solid var(--border); padding-bottom: 3px;
+}
+.hy-card-num {
+  font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; font-weight: 700;
+  color: #fff; background: var(--coral); border-radius: 3px; padding: 1px 5px; flex-shrink: 0;
+}
+.hy-card-title { font-family: 'Crimson Pro', serif; font-size: 12px; font-weight: 700; color: var(--ink); line-height: 1.15; }
+.hy-card ul { margin: 0; padding-left: 13px; list-style: disc; }
+.hy-card li { font-size: 9px; line-height: 1.32; margin-bottom: 2px; color: var(--ink-soft); }
+.hy-card li strong { color: var(--ink); }
+.hy-card table { width: 100%; border-collapse: collapse; font-size: 8px; margin-top: 2px; }
+.hy-card table th, .hy-card table td { padding: 1.5px 3px; border-bottom: 1px solid var(--border); text-align: left; }
+.hy-card table th { font-family: 'IBM Plex Mono', monospace; font-weight: 600; color: var(--ink-muted); text-transform: uppercase; font-size: 7px; }
+.hy-formula-mini { font-family: 'IBM Plex Mono', monospace; font-size: 9px; background: var(--cream-dk); border-radius: 4px; padding: 3px 6px; margin: 3px 0; text-align: center; }
+.hy-tag { display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 7.5px; background: var(--cream-dk); border-radius: 3px; padding: 0 4px; color: var(--ink-soft); }
+
+@media print {
+  body * { visibility: hidden !important; }
+  #hyOverlay, #hyOverlay * { visibility: visible !important; }
+  #hyOverlay {
+    position: absolute; inset: auto; top: 0; left: 0; width: 100%; height: auto;
+    background: #fff !important; padding: 0; display: block !important; overflow: visible;
+  }
+  .hy-modal { box-shadow: none; border-radius: 0; max-width: 100%; width: 100%; }
+  .hy-modal-bar { display: none !important; }
+  .hy-page { padding: 0.15in 0.3in; }
+  .hy-card { background: #fff; box-shadow: none; }
+  @page { size: letter landscape; margin: 0.25in; }
+}
 </style>
 </head>
 <body>
@@ -210,6 +292,7 @@ code { font-family: 'IBM Plex Mono', monospace; font-size: 0.9em; background: va
     <span class="title">General Anesthesia — Inhaled &amp; IV Agents</span>
   </div>
   <div class="subtitle">Dr. Scott D. Ochs, PhD · Professor of Pharmacology</div>
+  <button class="hy-btn" onclick="openHYSummary()">📋 One-Page High-Yield Summary</button>
 </div>
 
 <nav class="lo-anchor-nav">
@@ -221,16 +304,144 @@ code { font-family: 'IBM Plex Mono', monospace; font-size: 0.9em; background: va
   <a href="#effects">Systemic Effects</a>
   <a href="#ivpk">IV PK &amp; CSHT</a>
   <a href="#ivagents">IV Agents</a>
-  <a href="#adjuncts">Opioids &amp; Balanced</a>
+  <a href="#adjuncts">Balanced Anesthesia</a>
   <a href="#gallery">Gallery</a>
 </nav>
+
+<div id="hyOverlay" onclick="closeHYSummary(event)">
+<div class="hy-modal" onclick="event.stopPropagation()">
+  <div class="hy-modal-bar">
+    <span class="hy-modal-title">One-Page High-Yield Summary</span>
+    <div class="hy-modal-actions">
+      <button class="hy-print-btn" onclick="window.print()">🖨️ Print / Save PDF</button>
+      <button class="hy-close-btn" onclick="closeHYSummary()">✕ Close</button>
+    </div>
+  </div>
+  <div class="hy-page">
+    <div class="hy-page-head">
+      <div class="hy-h1">General Anesthesia — High-Yield Summary</div>
+      <div class="hy-h2">Anesthesia Pharmacology · Dr. Scott D. Ochs · Mapped to Learning Objectives 1–9</div>
+    </div>
+    <div class="hy-grid">
+
+      <div class="hy-card">
+        <div class="hy-card-head"><span class="hy-card-num">LO1</span><span class="hy-card-title">Mechanism of Action &amp; Physiology</span></div>
+        <ul>
+          <li><strong>Volatile agents:</strong> potentiate GABA<sub>A</sub> (↑ duration Cl⁻ channel open)</li>
+          <li><strong>N<sub>2</sub>O:</strong> NMDA receptor antagonist (like ketamine)</li>
+          <li>All: hyperpolarization via K<sup>+</sup>/Na<sup>+</sup> channel effects</li>
+          <li><strong>Immobility</strong> site = spinal cord</li>
+          <li><strong>Amnesia / LOC</strong> site = cortex, brainstem, midbrain</li>
+          <li>Unitary (membrane-expansion) theory = outdated</li>
+        </ul>
+      </div>
+
+      <div class="hy-card">
+        <div class="hy-card-head"><span class="hy-card-num">LO2</span><span class="hy-card-title">Theories &amp; Receptor Targets</span></div>
+        <ul>
+          <li><strong>Meyer-Overton rule</strong> (still valid): potency ∝ lipid solubility</li>
+          <li>Oil:Gas coefficient governs <strong>potency</strong>; Blood:Gas governs <strong>speed</strong></li>
+          <li>Receptor targets: GABA<sub>A</sub> (volatiles), NMDA (N<sub>2</sub>O, ketamine)</li>
+          <li>Also: K<sup>+</sup>/Na<sup>+</sup> channel hyperpolarization</li>
+        </ul>
+        <div class="hy-formula-mini">Oil:Gas × MAC ≈ 1.3</div>
+      </div>
+
+      <div class="hy-card">
+        <div class="hy-card-head"><span class="hy-card-num">LO3</span><span class="hy-card-title">Potency / Class / Duration</span></div>
+        <table>
+          <tr><th>Agent</th><th>MAC%</th><th>Onset</th><th>Recovery</th></tr>
+          <tr><td>N<sub>2</sub>O</td><td>104</td><td>Fastest</td><td>Fast</td></tr>
+          <tr><td>Halothane</td><td>0.75</td><td>Slow</td><td>Slow</td></tr>
+          <tr><td>Isoflurane</td><td>1.17</td><td>Interm.</td><td>Interm.</td></tr>
+          <tr><td>Desflurane</td><td>6.6</td><td>Pungency-ltd</td><td>Fastest</td></tr>
+          <tr><td>Sevoflurane</td><td>1.8</td><td>Fastest practice</td><td>Fast</td></tr>
+        </table>
+        <ul><li>IV agents = "rapid ultrashort" (propofol/etomidate/ketamine) except thiopental (long w/ infusion)</li></ul>
+      </div>
+
+      <div class="hy-card">
+        <div class="hy-card-head"><span class="hy-card-num">LO4</span><span class="hy-card-title">Inhaled vs. IV/Oral Agents</span></div>
+        <ul>
+          <li><strong>Inhaled:</strong> N<sub>2</sub>O, Halothane <span class="hy-tag">not US</span>, Isoflurane <span class="hy-tag">rare</span>, Desflurane, Sevoflurane</li>
+          <li><strong>IV:</strong> Barbiturates <span class="hy-tag">FYI</span>, Propofol, Etomidate, Ketamine, Dexmedetomidine, Benzodiazepines</li>
+          <li>Ketamine: IV, IM, PO, rectal, epidural, intranasal</li>
+          <li>Methohexital: can be given rectally</li>
+        </ul>
+      </div>
+
+      <div class="hy-card">
+        <div class="hy-card-head"><span class="hy-card-num">LO5</span><span class="hy-card-title">PK — Onset, Duration, Recovery</span></div>
+        <ul>
+          <li>Inhaled = <strong>perfusion-limited</strong>, not diffusion-limited (P<sub>alv</sub>≈P<sub>art</sub>≈P<sub>brain</sub>)</li>
+          <li>↓ Blood:gas solubility → faster onset <em>and</em> faster recovery</li>
+          <li>↑ Ventilation or ↓ cardiac output → faster induction</li>
+          <li>IV = 3-compartment model; effect compartment (k<sub>e0</sub>) sets onset of effect</li>
+        </ul>
+      </div>
+
+      <div class="hy-card">
+        <div class="hy-card-head"><span class="hy-card-num">LO6</span><span class="hy-card-title">MAC &amp; Potency</span></div>
+        <ul>
+          <li><strong>MAC</strong> = alveolar conc. where 50% don't move to incision (ED<sub>50</sub>)</li>
+          <li>Clinical target = <strong>MAC-95</strong> (~1.2–1.3× MAC)</li>
+          <li>MAC-awake 0.3–0.5 · MAC-intubation ~1.3 · MAC-BAR 1.7–2.0</li>
+          <li>MAC ↓ with age, hypothermia, other CNS depressants</li>
+          <li>↑ Oil:gas coefficient → ↓ MAC → more potent</li>
+        </ul>
+      </div>
+
+      <div class="hy-card">
+        <div class="hy-card-head"><span class="hy-card-num">LO7</span><span class="hy-card-title">Context-Sensitive Half-Time</span></div>
+        <ul>
+          <li><strong>CSHT</strong> = time for plasma conc. to fall 50% after stopping a steady-state infusion</li>
+          <li><strong>≠ elimination half-life</strong>; rises with infusion duration (tissue depot loading)</li>
+          <li><strong>Thiopental</strong> = the "hangover" drug — CSHT rises steeply</li>
+          <li>Propofol, ketamine, etomidate = CSHT stays low even long infusion</li>
+          <li>Dexmedetomidine CSHT &gt; propofol's, rises past ~4h</li>
+        </ul>
+      </div>
+
+      <div class="hy-card">
+        <div class="hy-card-head"><span class="hy-card-num">LO8</span><span class="hy-card-title">Indications / CI / AEs / Interactions</span></div>
+        <table>
+          <tr><th>Agent</th><th>Key AE / CI</th></tr>
+          <tr><td>N<sub>2</sub>O</td><td>Diffusion hypoxia, ↓B12; can't use alone</td></tr>
+          <tr><td>Halothane</td><td>Hepatotox., MH (+succinylcholine) → dantrolene</td></tr>
+          <tr><td>Desflurane</td><td>Airway irritation &gt;6%; avoid in kids</td></tr>
+          <tr><td>Sevoflurane</td><td>Emergent delirium (peds), Compound A nephrotox.</td></tr>
+          <tr><td>Barbiturates</td><td>CI: acute intermittent porphyria</td></tr>
+          <tr><td>Propofol</td><td>↓BP, egg allergy (intralipid), infusion syndrome</td></tr>
+          <tr><td>Etomidate</td><td>Myoclonus, adrenal suppression → induction-only</td></tr>
+          <tr><td>Ketamine</td><td>Emergence reactions (adults); ↑sympathetic tone</td></tr>
+          <tr><td>Dexmedetomidine</td><td>↓/↑BP, bradycardia, sinus arrest</td></tr>
+          <tr><td>Benzodiazepines</td><td>Reversed by flumazenil (not for OD — seizure risk)</td></tr>
+        </table>
+      </div>
+
+      <div class="hy-card">
+        <div class="hy-card-head"><span class="hy-card-num">LO9</span><span class="hy-card-title">Application &amp; Patient Monitoring</span></div>
+        <ul>
+          <li>Consciousness check = <strong>trapezius squeeze</strong></li>
+          <li>Guedel stages I–IV; surgery targets <strong>Stage III, plane 3</strong></li>
+          <li>Color-coded vaporizers: Sevo=yellow, Des=blue, Iso=purple</li>
+          <li><strong>Balanced anesthesia:</strong> hypnotic + analgesic ± muscle relaxant → less of each drug</li>
+          <li>5 goals: unconsciousness, amnesia, analgesia, ↓autonomic reflex, muscle relaxation</li>
+          <li>MH treatment = <strong>dantrolene</strong>; flumazenil = controlled reversal only</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</div>
+</div>
 
 <div class="content-wrap">
 
 <section id="overview" class="lo-section">
   <span class="lo-badge">Overview</span>
   <h2>General Anesthesia — Definition &amp; History</h2>
-  <p class="section-intro">Anesthesia comes from the Greek <em>anaisthēsia</em> — "lack of sensation." Oliver Wendell Holmes Sr. coined the English term in an 1846 letter to William T.G. Morton, the dentist who gave the first public demonstration of ether. Fittingly, dentists were the first people to use general anesthesia, reaching for nitrous oxide and ether.</p>
+  <p class="section-intro">General anesthesia is a drug-induced, reversible state with three distinct physiologic goals — not a single "off switch" for the brain. Understanding <strong>which drug hits which target</strong> is the foundation for everything that follows: mechanism, potency, pharmacokinetics, and clinical use.</p>
 
   <h3>The Three Components</h3>
   <div class="sign-grid reveal">
@@ -254,6 +465,15 @@ code { font-family: 'IBM Plex Mono', monospace; font-size: 0.9em; background: va
     </div>
   </div>
 
+  <div class="callout callout-violet reveal">
+    <div class="callout-label">🧠 Memory Hook</div>
+    Anesthesia isn't one "off switch" for the brain — it's three separate switches, hit by drugs acting at different sites (spinal cord for immobility; cortex/brainstem for amnesia and consciousness). That's <strong>why</strong> a paralyzed patient can still need anesthetic depth monitoring, and why amnesia can outlast the memory of ever "waking up."
+  </div>
+  <div class="callout callout-sky reveal">
+    <div class="callout-label">👶 ELI5</div>
+    Imagine three dimmer switches, not one: <strong>Move</strong> (can you flinch?), <strong>Remember</strong> (will you recall the pain?), and <strong>Aware</strong> (are the lights on upstairs?). General anesthesia turns all three down together — but they don't dim at the same rate, which is why amnesia can kick in before you're technically "asleep."
+  </div>
+
   <h3>Drugs Used During General Anesthesia</h3>
   <div class="two-col reveal">
     <div>
@@ -273,22 +493,6 @@ code { font-family: 'IBM Plex Mono', monospace; font-size: 0.9em; background: va
   <div class="callout callout-gold reveal">
     <div class="callout-label">⚠️ Board framing</div>
     Modern general anesthesia is almost never one drug alone — it's a <strong>combination</strong> of hypnotic, analgesic, and (when needed) muscle-relaxant agents. Keep this in mind every time a question asks "which single agent would you use."
-  </div>
-
-  <h3>History of Inhaled Anesthetics</h3>
-  <div class="comp-table-wrap reveal">
-    <table class="comp-table">
-      <tr><th>Agent</th><th>Year</th><th>Key Figure</th></tr>
-      <tr><td>Nitrous Oxide</td><td>1844</td><td>Horace Wells</td></tr>
-      <tr><td>Ether</td><td>1846</td><td>William Morton</td></tr>
-      <tr><td>Chloroform</td><td>1847</td><td>James Simpson</td></tr>
-      <tr><td>Fluroxene</td><td>1951</td><td>—</td></tr>
-      <tr><td>Isoflurane</td><td>1982</td><td>—</td></tr>
-    </table>
-  </div>
-  <div class="callout callout-teal reveal">
-    <div class="callout-label">Pattern to notice</div>
-    N<sub>2</sub>O was the <strong>first</strong> inhaled anesthetic ever used and it's still in use today. Sevoflurane and desflurane were the <strong>last</strong> developed and are also still in routine use. Almost everything invented in between — enflurane, methoxyflurane, older ether/chloroform — got abandoned: explosion risk, hepatotoxicity, seizures above 2 MAC, nephrotoxicity, or unacceptable malignant hyperthermia risk.
   </div>
 
   <h3>General Anesthetic Agents at a Glance</h3>
@@ -362,6 +566,14 @@ code { font-family: 'IBM Plex Mono', monospace; font-size: 0.9em; background: va
     <div class="callout-label">⚠️ High-yield relationship</div>
     Speed and potency are usually <strong>inversely</strong> related. Nitrous oxide is the fastest-onset agent and the least potent. Halothane is the most potent and among the slowest.
   </div>
+  <div class="callout callout-sky reveal">
+    <div class="callout-label">👶 ELI5</div>
+    Think of the alveolus as a small waiting room and the blood as a bus that carries drug away. If the drug barely dissolves in blood (low blood:gas), the "bus" only takes a few passengers each trip — so the waiting room (alveolar pressure) fills up fast, and the brain equilibrates fast too. If the drug loves blood (high blood:gas), the bus fills to capacity every trip and keeps carrying drug away, so the waiting room takes forever to pressurize.
+  </div>
+  <div class="callout callout-violet reveal">
+    <div class="callout-label">🧠 Memory Hook</div>
+    <strong>Low solubility, fast mobility.</strong> Poor blood solubility = fast onset AND fast recovery (same property drives both directions) — that's N<sub>2</sub>O, desflurane, sevoflurane. High solubility (halothane) = slow onset, slow "hangover."
+  </div>
 
   <h3>Rate of Onset and Recovery: FA/FI</h3>
   <p><span class="mnemonic">F<sub>A</sub></span> = alveolar fractional concentration. <span class="mnemonic">F<sub>I</sub></span> = inspired fractional concentration. The faster F<sub>A</sub>/F<sub>I</sub> approaches 1, the faster the onset. The <strong>least soluble</strong> drugs (lowest blood:gas coefficient) have both the fastest onset <em>and</em> the fastest recovery — same underlying property drives both directions. N<sub>2</sub>O, desflurane, and sevoflurane are considered <strong>perfusion-limited anesthetics</strong>.</p>
@@ -403,6 +615,11 @@ code { font-family: 'IBM Plex Mono', monospace; font-size: 0.9em; background: va
     </div>
   </div>
   <p>Because the <strong>vessel-rich group</strong> gets most of the cardiac output but has the lowest volume capacity, it equilibrates almost as fast as the blood does. Once alveolar and arterial pressures equilibrate, the brain is right behind — there's essentially no lag between blood and brain equilibration.</p>
+
+  <div class="callout callout-violet reveal">
+    <div class="callout-label">🧠 Memory Hook</div>
+    Line the four groups up by how fast they fill and how big they are: <strong>VRG</strong> = small tank, huge hose (brain/liver/kidneys — equilibrates almost instantly). <strong>MG</strong> = medium tank, medium hose (muscle/skin — takes longer). <strong>FG</strong> = huge tank, thin hose (fat — a slow-filling reservoir that matters most on long cases). <strong>VPG</strong> = tiny tank, barely any hose (bone/cartilage — essentially irrelevant to onset).
+  </div>
 
   <h3>Elimination</h3>
   <p>Tissue depots have little effect on arterial anesthetic concentration for <strong>inhaled</strong> agents — most current drugs have low blood:gas coefficients, so they clear straight out through the lungs before they ever meaningfully load peripheral tissue.</p>
@@ -472,12 +689,20 @@ code { font-family: 'IBM Plex Mono', monospace; font-size: 0.9em; background: va
     </div>
   </div>
   <div class="callout callout-teal reveal">Recovery from anesthesia moves back through these same stages in reverse.</div>
+  <div class="callout callout-violet reveal">
+    <div class="callout-label">🧠 Memory Hook</div>
+    <strong>"Aware, Awful, Asleep-for-surgery, Arrest."</strong> Stage I you're still aware (just numb/amnestic). Stage II is the awful, thrashing excitement phase. Stage III is where surgery actually happens. Stage IV means you've gone too deep — it's an overdose, not a destination.
+  </div>
 
   <h3>Measuring Depth — MAC</h3>
   <p>Consciousness can be checked with the <strong>trapezius squeeze test</strong>. But the core quantitative concept is <strong>minimum alveolar concentration (MAC)</strong>: the alveolar partial pressure at which <strong>50% of patients do not respond to a surgical incision</strong> — essentially the ED<sub>50</sub> for inhaled anesthetics.</p>
   <div class="callout callout-coral reveal">
     <div class="callout-label">⚠️ Board pearl</div>
     You would never run surgery at exactly 1.0 MAC — half your patients would move. Clinically, surgery targets <strong>MAC-95</strong>, roughly <strong>1.2–1.3× MAC</strong>.
+  </div>
+  <div class="callout callout-sky reveal">
+    <div class="callout-label">👶 ELI5</div>
+    MAC is basically a "coin-flip dose" — the concentration where a coin flip decides whether the patient moves when cut. It's the anesthesia version of an ED<sub>50</sub>, and just like any ED<sub>50</sub>, you dose <em>above</em> it in practice so you're not gambling on half your patients.
   </div>
 
   <div class="fig-grid wide reveal">
@@ -548,6 +773,10 @@ code { font-family: 'IBM Plex Mono', monospace; font-size: 0.9em; background: va
       <p style="font-size:13px;">Given one variable, back-calculate the other by dividing by 1.3.</p>
     </div>
   </div>
+  <div class="callout callout-sky reveal">
+    <div class="callout-label">👶 ELI5</div>
+    Anesthetic molecules that are more "fat-loving" (lipophilic) are more potent — the oilier the drug, the less of it you need. That's why an oil-loving vodka analogy works: a drug that dissolves easily into fatty membranes gets into the brain's lipid bilayer more efficiently, so a smaller partial pressure does the job. Oily = potent, low MAC.
+  </div>
 
   <div class="fig-grid wide reveal">
     <div class="fig-thumb" onclick="openLB('meyer_overton')">
@@ -571,6 +800,10 @@ code { font-family: 'IBM Plex Mono', monospace; font-size: 0.9em; background: va
     <div class="callout-label">Current thinking</div>
     The <strong>nonvolatile</strong> gas N<sub>2</sub>O most likely works mainly through <strong>NMDA receptor inhibition</strong>, while the <strong>volatile</strong> halogenated agents work mainly through <strong>GABA<sub>A</sub> potentiation</strong>.
   </div>
+  <div class="callout callout-violet reveal">
+    <div class="callout-label">🧠 Memory Hook</div>
+    N<sub>2</sub>O is the <strong>oddball</strong> everywhere in this lecture — different mechanism (NMDA, like ketamine), no cardiovascular depression, and it can't be used alone. If a question describes the "exception," it's almost always N<sub>2</sub>O.
+  </div>
 
   <h3>Site of Action</h3>
   <div class="two-col reveal">
@@ -584,10 +817,7 @@ code { font-family: 'IBM Plex Mono', monospace; font-size: 0.9em; background: va
     </div>
   </div>
 
-  <div class="callout callout-gold reveal">
-    <div class="callout-label">The Ideal Anesthetic Gas (doesn't exist)</div>
-    A truly "ideal" inhaled anesthetic would be pleasant to inhale, potent enough to allow high-flow oxygen, produce rapid and adjustable emergence, be easy to administer/measure, be chemically stable inside and outside the body, act specifically at CNS sites, and be free of cardiorespiratory side effects. None of the real agents check every box — which is exactly why the field has cycled through so many drugs (see History, above).
-  </div>
+
 </section>
 <hr class="section-divider">
 
@@ -608,6 +838,10 @@ code { font-family: 'IBM Plex Mono', monospace; font-size: 0.9em; background: va
     <div class="callout-label">Adverse effects</div>
     Inhibits <strong>vitamin B12–dependent enzymes</strong> → risk of hematopoietic dysfunction (megaloblastic anemia with prolonged use, e.g., &gt;24h) and neurologic dysfunction (seen with chronic recreational abuse — mechanism overlaps with ketamine's NMDA antagonism).
   </div>
+  <div class="callout callout-violet reveal">
+    <div class="callout-label">🧠 Memory Hook</div>
+    N<sub>2</sub>O keeps breaking the pattern: no BP drop (direct sympathetic stimulation), no reflex tachycardia, NMDA (not GABA) mechanism, and it can't be used alone (MAC of 104% is physically impossible to deliver). One gas, four exceptions.
+  </div>
 
   <h3>Halothane</h3>
   <ul>
@@ -618,6 +852,10 @@ code { font-family: 'IBM Plex Mono', monospace; font-size: 0.9em; background: va
     <div class="callout-label">Adverse effects</div>
     <strong>Hepatotoxicity</strong> ("halothane hepatitis") and increased risk of <strong>malignant hyperthermia</strong> (very high fever, tachycardia, tachypnea, acidosis, muscle rigidity, rhabdomyolysis) — risk rises further when combined with succinylcholine. Treat malignant hyperthermia with <strong>dantrolene</strong>.
   </div>
+  <div class="callout callout-violet reveal">
+    <div class="callout-label">🧠 Memory Hook</div>
+    <strong>"Ha-LIVER-thane."</strong> Halothane hits the liver (hepatotoxicity) and, paired with succinylcholine, can trigger a fire the body can't put out (malignant hyperthermia) — the antidote is <strong>dantrolene</strong>, full stop, memorize that pairing cold.
+  </div>
 
   <h3>Desflurane</h3>
   <ul>
@@ -627,6 +865,10 @@ code { font-family: 'IBM Plex Mono', monospace; font-size: 0.9em; background: va
     <li>Requires a complex heated vaporizer</li>
     <li>Significant greenhouse gas effect — being pushed out of the market for both airway-irritation and environmental reasons</li>
   </ul>
+  <div class="callout callout-violet reveal">
+    <div class="callout-label">🧠 Memory Hook</div>
+    <strong>Des = "distasteful."</strong> Fastest recovery on paper, but too pungent to breathe down comfortably — so it's the recovery champion, not the induction champion. That title goes to sevoflurane.
+  </div>
 
   <h3>Sevoflurane</h3>
   <ul>
@@ -638,6 +880,10 @@ code { font-family: 'IBM Plex Mono', monospace; font-size: 0.9em; background: va
   <div class="callout callout-coral reveal">
     <div class="callout-label">Adverse effects</div>
     <strong>Emergent delirium</strong> in pediatric patients (mirror image of ketamine, which tends to spare kids from emergence reactions). <strong>Nephrotoxicity</strong> via Compound A, which forms in desiccated soda lime — maintain fresh gas flow &gt;2 L/min to prevent it. In practice this is low-risk because modern machines use agent-specific vaporizers.
+  </div>
+  <div class="callout callout-violet reveal">
+    <div class="callout-label">🧠 Memory Hook</div>
+    <strong>Sevo = Smooth.</strong> Low pungency + no concentration ceiling = the go-to inhalation induction agent, especially in kids. Trade-off: kids who go smoothly to sleep sometimes wake up rough (emergent delirium) — the opposite of ketamine's pattern.
   </div>
 
   <h3>Comparison Summary</h3>
@@ -707,6 +953,10 @@ code { font-family: 'IBM Plex Mono', monospace; font-size: 0.9em; background: va
       <div class="sign-text">All relax skeletal muscle — except N<sub>2</sub>O</div>
       <div class="sign-detail">Useful — lets you reduce the dose of neuromuscular blocker needed.</div>
     </div>
+  </div>
+  <div class="callout callout-violet reveal">
+    <div class="callout-label">🧠 Memory Hook</div>
+    Four systemic effects, one exception each time: all volatiles ↑RR, ↑HR, ↓contractility, and relax muscle — <strong>except N<sub>2</sub>O</strong>, which does none of that because it drives sympathetic tone up instead of blood pressure down. If you see "the odd one out," bet on nitrous.
   </div>
 
   <h3>Administration</h3>
@@ -808,6 +1058,14 @@ code { font-family: 'IBM Plex Mono', monospace; font-size: 0.9em; background: va
     A <strong>single bolus</strong> drops 50% almost instantly (rapid redistribution into V2). A <strong>long infusion</strong> loads V1, V2, <em>and</em> V3 near equilibrium — so when you stop, the depot tissue keeps feeding drug back into V1, and blood levels barely fall. <strong>Thiopental</strong> is the poster child (long infusion → very long CSHT, the classic anesthesia "hangover" drug). <strong>Propofol, ketamine, and etomidate</strong> stay comparatively low even after prolonged infusions.
   </div>
   <p><strong>Clinical translation:</strong> CSHT tells you how long the anesthetic effect will linger once you stop the infusion — critical for planning emergence and recovery, and it <strong>cannot be predicted from elimination half-life alone.</strong></p>
+  <div class="callout callout-sky reveal">
+    <div class="callout-label">👶 ELI5</div>
+    Picture a bathtub with the drain wide open. A quick splash of water (single bolus) drains to half-full almost instantly. But if you've been running the faucet for hours (long infusion), the tub — and the sponge sitting in it (peripheral tissue) — are both soaked, so even with the same size drain, it takes much longer to get back to half-full. The drain never changed; how long you ran the faucet did.
+  </div>
+  <div class="callout callout-violet reveal">
+    <div class="callout-label">🧠 Memory Hook</div>
+    <strong>Thiopental = the hangover drug.</strong> Its CSHT rises steeply with infusion time — that's the pharmacologic reason "truth serum" leaves patients groggy for hours. Propofol, ketamine, and etomidate are the "quick recovery" trio precisely because their CSHT stays flat even after a long infusion.
+  </div>
 </section>
 <hr class="section-divider">
 
@@ -837,6 +1095,10 @@ code { font-family: 'IBM Plex Mono', monospace; font-size: 0.9em; background: va
       <p>Rapid ultrashort-acting; no sulfur → reduced uptake into fat. Repeated boluses/infusion cause a more marked decrease in elimination than thiopental. Same MOA, contraindication, and AEs as thiopental. Can be given <strong>rectally</strong>.</p>
     </div>
   </div>
+  <div class="callout callout-violet reveal">
+    <div class="callout-label">🧠 Memory Hook</div>
+    <strong>"Barb-iturates block Bathroom breaks."</strong> Contraindicated in acute intermittent <strong>porphyria</strong> because they induce ALA synthase and can precipitate a life-threatening attack — a classic single-fact board trap.
+  </div>
 
   <h3>Propofol</h3>
   <p>Rapid, ultrashort-acting IV anesthetic. <strong>MOA</strong> not fully understood — binds the <strong>β subunit</strong> of the GABA<sub>A</sub> receptor (non-interface site), potentiating its activity.</p>
@@ -865,6 +1127,10 @@ code { font-family: 'IBM Plex Mono', monospace; font-size: 0.9em; background: va
     <div class="callout-label">Fospropofol</div>
     A water-soluble <strong>prodrug</strong>, converted to propofol by alkaline phosphatase — <strong>not</strong> an intralipid formulation (so no egg-allergy or infection-risk concern).
   </div>
+  <div class="callout callout-violet reveal">
+    <div class="callout-label">🧠 Memory Hook</div>
+    <strong>"Milk of amnesia."</strong> White, egg-based emulsion, egg-allergy contraindication, and a short CSHT that makes it the default induction and MAC/sedation workhorse — but remember, it treats nausea, not pain (no analgesic effect).
+  </div>
 
   <h3>Etomidate</h3>
   <p>Rapid, ultrashort-acting IV anesthetic. <strong>MOA</strong> not fully understood — binds β2- or β3-subunit-containing GABA<sub>A</sub> receptors (transmembrane interface site), potentiating activity.</p>
@@ -889,6 +1155,10 @@ code { font-family: 'IBM Plex Mono', monospace; font-size: 0.9em; background: va
   <div class="callout callout-gold reveal">
     <div class="callout-label">Flip side</div>
     That same steroidogenesis inhibition could, in theory, make etomidate useful perioperatively in a patient with an excess-steroid-hormone state.
+  </div>
+  <div class="callout callout-violet reveal">
+    <div class="callout-label">🧠 Memory Hook</div>
+    <strong>"Etomidate: easy on the heart, hard on the adrenals."</strong> Minimal hemodynamic effects make it the pick for unstable patients needing intubation — but adrenal suppression (11β-hydroxylase inhibition) is exactly why it's induction-only, never an infusion.
   </div>
 
   <h3>Ketamine — "A Special Anesthetic"</h3>
@@ -917,6 +1187,14 @@ code { font-family: 'IBM Plex Mono', monospace; font-size: 0.9em; background: va
     <li><strong>Indications:</strong> induction, adjunct during general anesthesia (especially when preserved cardiac output matters); can be given IV, IM, oral, rectal, epidural, or intranasally</li>
     <li><strong>AEs:</strong> unpleasant emergence reactions in <strong>adults</strong> (hallucinations, out-of-body experiences, psychedelia)</li>
   </ul>
+  <div class="callout callout-sky reveal">
+    <div class="callout-label">👶 ELI5</div>
+    Ketamine "disconnects" the brain rather than shutting it off — eyes stay open, the patient looks awake but isn't processing normally (dissociative anesthesia), like the brain's wires got unplugged from each other instead of powered down.
+  </div>
+  <div class="callout callout-violet reveal">
+    <div class="callout-label">🧠 Memory Hook</div>
+    <strong>Ketamine is the anti-propofol.</strong> Propofol drops BP and gives no analgesia; ketamine raises BP (sympathetic surge) and gives strong analgesia. That's why it's the trauma/hemodynamically-unstable-patient favorite — and why kids tolerate emergence better than adults do (opposite of sevoflurane's pediatric pattern).
+  </div>
 
   <h3>Dexmedetomidine</h3>
   <p>A very selective <strong>α2-adrenergic receptor agonist</strong> — think of it as clonidine's CNS-selective cousin.</p>
@@ -955,6 +1233,14 @@ code { font-family: 'IBM Plex Mono', monospace; font-size: 0.9em; background: va
     <li><strong>Indication:</strong> sedation for intubated/mechanically ventilated ICU patients ("fighting the ventilator") — given by infusion because of the short elimination half-life, but sedation lingers well after a long infusion is stopped (unlike propofol)</li>
     <li><strong>AEs:</strong> hypotension, transient hypertension, bradycardia, sinus arrest, respiratory depression</li>
   </ul>
+  <div class="callout callout-sky reveal">
+    <div class="callout-label">👶 ELI5</div>
+    Dexmedetomidine borrows the brain's own "go to sleep" switch (the same circuit that drives natural NREM sleep) instead of forcing unconsciousness — that's why patients on it are sedated but easily rousable, more like a nap than a coma.
+  </div>
+  <div class="callout callout-violet reveal">
+    <div class="callout-label">🧠 Memory Hook</div>
+    Dexmedetomidine is <strong>clonidine's CNS-selective cousin</strong> — α2 agonism gives both sedation (via locus coeruleus) and analgesia (via the spinal cord), the same descending-pathway trick N<sub>2</sub>O uses for its own analgesia.
+  </div>
 
   <h3>Benzodiazepines</h3>
   <p>Agents: diazepam, lorazepam, and <strong>midazolam</strong> (most commonly used in this context — faster onset, greater amnesia, less postoperative sedation than the others).</p>
@@ -967,29 +1253,25 @@ code { font-family: 'IBM Plex Mono', monospace; font-size: 0.9em; background: va
     <div class="callout-label">Benzodiazepine vs. barbiturate — the key distinction</div>
     Both bind GABA<sub>A</sub>, but differently. <strong>Benzodiazepines</strong> increase the <em>likelihood</em> that endogenous GABA opens the channel — they shift the GABA dose-response curve leftward (↑ <strong>potency</strong>) without raising the ceiling (efficacy stays the same, no matter the dose). <strong>Barbiturates</strong> increase the <em>duration</em> the channel stays open (↑ <strong>efficacy</strong>) and can act as direct agonists at high dose — which is exactly why they carry more danger and more respiratory depression than benzodiazepines.
   </div>
+  <div class="callout callout-sky reveal">
+    <div class="callout-label">👶 ELI5</div>
+    Think of the GABA<sub>A</sub> channel as a door with an endogenous doorman (GABA). Benzodiazepines just make the doorman <em>more likely</em> to let people through — they can't force the door open by themselves. Barbiturates prop the door open <em>longer</em> every time, and at high enough doses can shove it open on their own — which is why an overdose is so much more dangerous.
+  </div>
   <div class="callout callout-coral reveal">
     <div class="callout-label">Reversal — flumazenil</div>
     A benzodiazepine receptor antagonist. <strong>Do not</strong> give it for a benzodiazepine overdose — risk of precipitating seizures. Its real use is a <strong>controlled reversal</strong> after a large intraoperative benzodiazepine load, in a monitored setting where the dose given is known.
+  </div>
+  <div class="callout callout-violet reveal">
+    <div class="callout-label">🧠 Memory Hook</div>
+    <strong>Midazolam = the "M&A" drug</strong> — fast onset, strong anterograde <strong>Amnesia</strong>, minimal respiratory depression, and reversible with flumazenil (but only in a controlled setting, never blindly for an overdose).
   </div>
 </section>
 <hr class="section-divider">
 
 <section id="adjuncts" class="lo-section">
-  <span class="lo-badge teal">Adjuncts</span>
-  <h2>Opioids &amp; Balanced Anesthesia</h2>
-
-  <h3>Opioids</h3>
-  <div class="callout callout-coral reveal">
-    <div class="callout-label">⚠️ Board pearl</div>
-    Opioids are <strong>analgesic only</strong> — <strong>not an anesthetic.</strong> They do <strong>not</strong> cause amnesia, even at high doses, and will not produce unconsciousness alone.
-  </div>
-  <ul>
-    <li><strong>MOA:</strong> opioid receptor agonist</li>
-    <li><strong>Indications:</strong> postoperative pain management; intraoperative use in a balanced anesthesia regimen (lowers the MAC of the inhaled agent needed)</li>
-    <li>Can be used for general anesthesia, but requires large doses combined with large doses of a benzodiazepine</li>
-  </ul>
-
-  <h3>Balanced Anesthesia</h3>
+  <span class="lo-badge teal">Clinical Application</span>
+  <h2>Balanced Anesthesia</h2>
+  <p class="section-intro">No single general anesthetic checks every box safely at a tolerable dose — that's the whole reason modern anesthesia <strong>combines</strong> drug classes. (Opioids are analgesic-only adjuncts, not anesthetics themselves — they don't cause amnesia or unconsciousness alone — but they're the classic partner that lets you use less of the general anesthetic.)</p>
   <p>Five desired effects — the whole point of combining agents is that you need <strong>less of each drug</strong> to hit all five safely:</p>
   <div class="sign-grid reveal">
     <div class="sign-item">
@@ -1026,6 +1308,10 @@ code { font-family: 'IBM Plex Mono', monospace; font-size: 0.9em; background: va
   <div class="callout callout-gold reveal">
     <div class="callout-label">Don't forget</div>
     <strong>Propofol</strong> does <em>not</em> contribute analgesia — its "bonus" effect is antiemetic, not analgesic. If a question implies propofol alone is covering pain control, that's a trap.
+  </div>
+  <div class="callout callout-violet reveal">
+    <div class="callout-label">🧠 Memory Hook</div>
+    <strong>"Balanced" means a team, not a hero drug.</strong> Every agent in this lecture earns its spot on the balanced anesthesia roster by covering one or two of the five goals — knowing which drug covers which goal is really just this whole lecture, restated as a checklist.
   </div>
 </section>
 <hr class="section-divider">
@@ -1282,6 +1568,20 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') closeLB(null);
   if (e.key === 'ArrowLeft')  shiftLB(-1);
   if (e.key === 'ArrowRight') shiftLB(1);
+});
+
+function openHYSummary() {
+  document.getElementById('hyOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeHYSummary(e) {
+  if (e && e.target !== document.getElementById('hyOverlay')) return;
+  document.getElementById('hyOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', (e) => {
+  if (!document.getElementById('hyOverlay').classList.contains('open')) return;
+  if (e.key === 'Escape') closeHYSummary(null);
 });
 
 // Scroll reveal
