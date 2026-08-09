@@ -194,6 +194,21 @@ table.comp-table tr:nth-child(even) td:first-child { background: var(--cream-mid
 .fig-text { display: block; font-size: 13px; color: var(--ink); margin-top: 3px; line-height: 1.4; }
 .fig-source { display: block; font-size: 11px; color: var(--ink-muted); margin-top: 4px; font-style: italic; }
 
+/* ---------- Memory Hook / ELI5 ---------- */
+.mem-eli5 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 18px 0; }
+.mem-card { border-radius: 10px; padding: 15px 18px; box-shadow: var(--shadow); background: #fff; }
+.mem-card.hook { border: 1.5px dashed var(--gold); background: #fdf9ef; }
+.mem-card.eli5 { border: 1.5px dashed var(--teal); background: #eff8f7; }
+.mem-card-label {
+  font-family: 'IBM Plex Mono', monospace; font-weight: 700; font-size: 12px;
+  text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 7px;
+  display: flex; align-items: center; gap: 6px;
+}
+.mem-card.hook .mem-card-label { color: var(--gold); }
+.mem-card.eli5 .mem-card-label { color: var(--teal); }
+.mem-card p { font-size: 14px; margin-bottom: 0; color: var(--ink-soft); line-height: 1.55; }
+@media (max-width: 680px) { .mem-eli5 { grid-template-columns: 1fr; } }
+
 /* ---------- Gallery ---------- */
 .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin: 18px 0; }
 .gallery-grid .fig-thumb img { height: 140px; }
@@ -201,6 +216,59 @@ table.comp-table tr:nth-child(even) td:first-child { background: var(--cream-mid
 /* ---------- Reveal animation ---------- */
 .reveal { opacity: 0; transform: translateY(14px); transition: opacity 0.5s, transform 0.5s; }
 .reveal.visible { opacity: 1; transform: none; }
+
+/* ---------- High-Yield Summary ---------- */
+.hy-toggle-btn {
+  margin-left: auto;
+  background: var(--coral); color: #fff; border: none; border-radius: 8px;
+  padding: 8px 14px; font-family: 'IBM Plex Mono', monospace; font-weight: 700;
+  font-size: 12px; cursor: pointer; white-space: nowrap; transition: background 0.15s;
+  flex-shrink: 0;
+}
+.hy-toggle-btn:hover { background: #a8432c; }
+.hy-overlay {
+  position: fixed; inset: 0; background: rgba(20,16,12,0.85); z-index: 2000;
+  display: none; align-items: flex-start; justify-content: center; overflow-y: auto; padding: 30px 16px;
+}
+.hy-overlay.open { display: flex; }
+.hy-panel {
+  background: var(--cream); border-radius: 14px; max-width: 1000px; width: 100%;
+  padding: 22px 24px 34px; box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+.hy-panel-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 2px; }
+.hy-panel-head h2 { margin: 0; font-size: 21px; }
+.hy-close-btn {
+  background: none; border: 1px solid var(--border-mid); border-radius: 6px; font-size: 15px;
+  padding: 4px 11px; cursor: pointer; color: var(--ink-soft); font-family: 'IBM Plex Mono', monospace;
+}
+.hy-close-btn:hover { background: var(--cream-mid); }
+.hy-panel-sub { font-size: 13px; color: var(--ink-muted); margin: 4px 0 16px; }
+.hy-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 760px) { .hy-grid { grid-template-columns: 1fr; } .hy-panel { padding: 16px 14px 26px; } }
+.hy-block { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; }
+.hy-block h4 {
+  margin: 0 0 6px; font-size: 13.5px; color: var(--coral); font-family: 'Crimson Pro', serif;
+  font-weight: 700; display: flex; align-items: center; gap: 6px;
+}
+.hy-block h4 .hy-num {
+  display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px;
+  border-radius: 5px; background: var(--ink); color: #fdf6ec; font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; font-weight: 700; flex-shrink: 0;
+}
+.hy-block p { font-size: 12px; margin: 0 0 5px; color: var(--ink-soft); line-height: 1.45; }
+.hy-block p:last-child { margin-bottom: 0; }
+.hy-mini-table { width: 100%; border-collapse: collapse; font-size: 11px; margin: 4px 0; }
+.hy-mini-table th {
+  background: var(--ink); color: #fdf6ec; text-align: left; padding: 3px 6px;
+  font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 9.5px; text-transform: uppercase;
+}
+.hy-mini-table td { padding: 3px 6px; border-bottom: 1px solid var(--border); vertical-align: top; }
+.hy-mini-table tr:last-child td { border-bottom: none; }
+.hy-mini-table td:first-child { font-weight: 700; color: var(--coral); white-space: nowrap; }
+.hy-quiz-wrap .quiz-bar { padding: 5px 8px; border-radius: 6px; font-size: 10px; margin-bottom: 0; }
+.hy-quiz-wrap .quiz-bar .quiz-label { font-size: 9.5px; }
+.hy-quiz-wrap .quiz-bar button { padding: 3px 7px; font-size: 9.5px; }
+.hy-quiz-wrap table.hy-mini-table { margin-top: 0; }
 
 /* ---------- Lightbox ---------- */
 #lightbox {
@@ -236,6 +304,7 @@ table.comp-table tr:nth-child(even) td:first-child { background: var(--cream-mid
 .quiz-progress-fill { height: 100%; background: var(--coral); width: 0%; transition: width 0.25s; }
 .quiz-wrap .comp-table-wrap { border-radius: 0 0 10px 10px; margin-top: 0; }
 .cell-inner { transition: filter 0.2s; }
+.cell-mask { display: none; }
 td.quiz-hidden .cell-inner { filter: blur(5px); user-select: none; }
 td.quiz-hidden { position: relative; cursor: pointer; }
 td.quiz-hidden .cell-mask {
@@ -271,6 +340,7 @@ td.reveal-pop .cell-inner { animation: revealPop 0.3s ease; }
   <span class="eyebrow">Microbiology</span>
   <h1>Acute CNS Infections</h1>
   <span class="sub">Meningitis · Encephalitis · Prion Disease · PML · Rabies · Shingles · Brain Abscess · Whipple's — 2026</span>
+  <button class="hy-toggle-btn" onclick="toggleHY()">⚡ High-Yield Summary</button>
 </div>
 
 <nav class="lo-anchor-nav">
@@ -325,6 +395,17 @@ td.reveal-pop .cell-inner { animation: revealPop 0.3s ease; }
   <div class="callout callout-gold">
     <div class="callout-label">⚠️ Boards pearl</div>
     The dura itself is rarely infected in typical meningitis. When it is, that's a distinct entity — <strong>pachymeningitis</strong> — which presents completely differently: chronic headache, facial pain, cerebellar ataxia, cranial nerve palsies, and dural thickening on MRI (rather than the classic meningeal triad).
+  </div>
+
+  <div class="mem-eli5 reveal">
+    <div class="mem-card hook">
+      <div class="mem-card-label">🧠 Memory Hook</div>
+      <p>Outer→inner spells "DAP": <strong>D</strong>ura (durable, tough, closest to skull) → <strong>A</strong>rachnoid (spiderweb-like — "arachnid") → <strong>P</strong>ia (Latin "tender mother," hugs the brain directly). "Lepto" = thin/delicate = arachnoid + subarachnoid space + pia together — that's the compartment where essentially all acute infectious meningitis actually happens. For the naming logic: meningo- = coverings, encephalo- = brain tissue, so meningoencephalitis is simply "both, at once."</p>
+    </div>
+    <div class="mem-card eli5">
+      <div class="mem-card-label">🎈 ELI5</div>
+      <p>Your brain is wrapped like a fragile package for shipping: a tough outer box (dura), a layer of webby bubble wrap with fluid sloshing underneath it (arachnoid + CSF), and a thin sheet stuck right onto the item itself (pia). Meningitis is germs getting into that fluid layer. Encephalitis is germs getting through all the packaging to attack the brain itself — which is why it causes more focal problems like weakness or confusion, not just a headache and stiff neck.</p>
+    </div>
   </div>
 
   <h3>Acute, Subacute, Chronic — Timing Matters</h3>
@@ -403,6 +484,17 @@ td.reveal-pop .cell-inner { animation: revealPop 0.3s ease; }
     Viral-meningitis questions love to give you virology facts instead of a name — nucleic acid type, envelope status, segment number — and expect you to work backward to the agent. Enveloped viruses are generally more fragile in the environment (labile lipid envelope) and favor close person-to-person spread; non-enveloped viruses (enteroviruses) are hardier and spread more easily via fomites/water/food.
   </div>
 
+  <div class="mem-eli5 reveal">
+    <div class="mem-card hook">
+      <div class="mem-card-label">🧠 Memory Hook</div>
+      <p>"Aseptic" ≠ "viral" — it just means nothing grew on stain/culture. Rank the leaderboard: <strong>Enterovirus</strong> is the #1 cause overall (summer, fecal–oral, non-enveloped = hardy in water). <strong>HSV-2</strong> is the #1 herpesvirus cause, but only with a <em>primary</em> infection — recurrent HSV-2 essentially never does it. <strong>LCMV</strong>: "Lousy Cage Mouse" — rodent urine/feces exposure. <strong>Mumps</strong>: "M for Mumps, M for Meningitis" — ~30% of unvaccinated cases, pre-MMR.</p>
+    </div>
+    <div class="mem-card eli5">
+      <div class="mem-card-label">🎈 ELI5</div>
+      <p>Most viral meningitis is caused by everyday viruses that usually just give you a cold or stomach bug — they occasionally wander into the fluid around the brain instead of staying put in the gut or nose. It's typically a rough, miserable week rather than a life-threatening emergency, which is the big-picture difference from bacterial meningitis.</p>
+    </div>
+  </div>
+
   <h3>How Viruses Get Into the CNS</h3>
   <p>The path is the same general shape for every virus on this list: colonize a mucosal surface (respiratory, GI, or GU) → local replication → escape into the blood (<strong>viremia</strong>) → cross into the CNS.</p>
   <div class="flow-row reveal">
@@ -476,7 +568,7 @@ td.reveal-pop .cell-inner { animation: revealPop 0.3s ease; }
         <tr><td>S. pneumoniae</td><td>Gram(+) diplococci, always in pairs</td><td>Alpha-hemolytic, optochin-sensitive, encapsulated (90+ capsular types)</td><td><strong>#1 overall cause</strong> — ~59% of US cases (2023 data); nasopharyngeal carriage 5–90% depending on population (school-age contacts drive this way up); often follows pneumonia/otitis/dental infection; mortality 18–30%</td></tr>
         <tr><td>N. meningitidis</td><td>Gram(–) diplococci</td><td>Oxidase-positive, encapsulated</td><td>More common in children/young adults; <strong>only agent that goes epidemic</strong>; <strong>only major bacterial cause with a rash</strong> (petechial); mortality ~10–15% for meningitis alone, &gt;50% with meningococcemia</td></tr>
         <tr><td>H. influenzae b</td><td>Gram(–) coccobacilli</td><td>Encapsulated (Hib); non-typable strains lack capsule → far less virulent</td><td>Formerly the leading cause in children &lt;6yr — now rare thanks to Hib vaccine; unvaccinated children remain at real risk</td></tr>
-        <tr><td>S. agalactiae (GBS)</td><td>Gram(+) cocci, <strong>encapsulated</strong></td><td>Group B strep</td><td><strong>Leading cause of neonatal meningitis</strong> (&gt;50% of cases, early + late onset); ~40% of pregnant women colonized vaginally</td></tr>
+        <tr><td>S. agalactiae (GBS)</td><td>Gram(+) cocci, unencapsulated</td><td>Group B strep</td><td><strong>Leading cause of neonatal meningitis</strong> (&gt;50% of cases, early + late onset); ~40% of pregnant women colonized vaginally</td></tr>
         <tr><td>L. monocytogenes</td><td>Gram(+) rods, non-spore-forming, unencapsulated</td><td>Soil organism; food-borne (subject of recall surveillance — soft cheeses like brie)</td><td>2–8% of US cases; mortality 20–30% (highest of the six); pregnant women 20× more likely to get primary GI infection; #3 neonatal agent</td></tr>
         <tr><td>E. coli (K1)</td><td>Gram(–) rods</td><td>K1 capsular type specifically</td><td>#2 neonatal agent; ~50%+ of pregnant women colonized, 75% of their infants become colonized after birth; also seen post-trauma/neurosurgery</td></tr>
       </tbody>
@@ -513,7 +605,17 @@ td.reveal-pop .cell-inner { animation: revealPop 0.3s ease; }
   <div class="callout callout-gold">
     <div class="callout-label">⚠️ Capsule = virulence</div>
     Every major encapsulated organism above (<em>S. pneumoniae</em>, <em>N. meningitidis</em>, <em>H. influenzae</em> b) uses its capsule as the primary virulence factor — it inhibits phagocytosis and blocks complement, letting the organism survive long enough in the bloodstream to reach the subarachnoid space. It's also why capsular polysaccharide is the antigen behind all three vaccines. <em>Listeria</em> and unencapsulated <em>H. influenzae</em> strains are the exceptions — and unencapsulated <em>H. influenzae</em> is correspondingly far less virulent than Hib ever was.
-    <p style="margin:8px 0 0; font-size:14px;"><strong>Clean version of this pearl:</strong> of the six major bacterial etiologies of meningitis, <strong>every single one is encapsulated except <em>Listeria monocytogenes</em></strong> — which has neither a capsule nor spores. That includes GBS and <em>E. coli</em> K1, which are both encapsulated too, even though it's easy to mentally file them as "just" Gram-positive/negative rods and cocci without registering the capsule. One organism to remember as the exception beats memorizing five as the rule.</p>
+  </div>
+
+  <div class="mem-eli5 reveal">
+    <div class="mem-card hook">
+      <div class="mem-card-label">🧠 Memory Hook</div>
+      <p>"<strong>P</strong>lease <strong>N</strong>ever <strong>H</strong>ave <strong>G</strong>reat <strong>L</strong>uck <strong>E</strong>ating" — roughly in order of overall US frequency: <strong>P</strong>neumoniae → <strong>N</strong>eisseria → <strong>H</strong>. flu → <strong>G</strong>BS → <strong>L</strong>isteria → <strong>E</strong>. coli. Capsule = the "invisibility cloak" against phagocytes — it's why the three most encapsulated bugs (Pneumo, Meningo, Hib) each got a vaccine designed to strip it away, and why unencapsulated <em>Listeria</em> and non-typable <em>H. flu</em> are comparatively wimpy.</p>
+    </div>
+    <div class="mem-card eli5">
+      <div class="mem-card-label">🎈 ELI5</div>
+      <p>Six bacteria cause almost all bacterial meningitis, and which one you're likely to get mostly comes down to age: newborns pick theirs up from mom around birth, older kids and adults catch a different set going around school or the community. Some of these bugs wear a slippery outer "cloak" (capsule) that hides them from your immune cells — that cloak is exactly what the vaccines are built to target.</p>
+    </div>
   </div>
 
   <h3>Other, Less Common Agents</h3>
@@ -539,6 +641,17 @@ td.reveal-pop .cell-inner { animation: revealPop 0.3s ease; }
         <tr><td>Diabetics</td><td>S. pneumoniae, L. monocytogenes, GBS</td></tr>
       </tbody>
     </table>
+  </div>
+
+  <div class="mem-eli5 reveal">
+    <div class="mem-card hook">
+      <div class="mem-card-label">🧠 Memory Hook</div>
+      <p><strong>Neonates = "GEL"</strong> — GBS, E. coli, Listeria — all picked up from mom's vaginal/GI flora around delivery. <strong>School-age/young adults</strong> = Meningo + Pneumo (crowded dorms/barracks = classic meningococcal outbreak setting). <strong>Elderly, pregnant, or immunocompromised</strong> = Listeria creeps back onto the list — think "L for Late-life and Listeria in the deli/soft cheese."</p>
+    </div>
+    <div class="mem-card eli5">
+      <div class="mem-card-label">🎈 ELI5</div>
+      <p>Different bacteria hang around different places, so the age group tells you where the infection probably came from: babies get it from mom during birth, school-age kids and young adults catch it from close contact with each other, and older or immune-weakened people are vulnerable to bacteria (like Listeria in deli meat) that a strong immune system would normally brush off without a problem.</p>
+    </div>
   </div>
 
   <h3>Pathogenesis</h3>
@@ -567,6 +680,17 @@ td.reveal-pop .cell-inner { animation: revealPop 0.3s ease; }
   <div class="callout callout-coral">
     <div class="callout-label">⚠️ Meningococcemia — the one to fear</div>
     <p><strong>N. meningitidis</strong> is the only major bacterial cause of a rash, seen in 50–60% of meningococcal meningitis as an early petechial rash (erythematous → petechial → can coalesce into purpuric, "gunmetal gray" lesions within about a week). The real danger isn't the meningitis — it's <strong>meningococcemia</strong>: systemic spread with a sepsis-like course that can progress from "not feeling well" to death within hours in a previously healthy person. About 12% of meningitis patients develop meningococcemia; 18% present with shock and no meningitis at all. Meningitis alone runs ~10–15% mortality; meningococcemia is <strong>&gt;50%</strong>. The driver is massive overproduction of lipo-oligosaccharide (functionally equivalent to LPS), producing <strong>Waterhouse-Friderichsen syndrome</strong> (bilateral hemorrhagic adrenal destruction), subendocardial hemorrhage, pulmonary edema, valvular hemorrhage, and progression to fulminant sepsis with DIC and shock.</p>
+  </div>
+
+  <div class="mem-eli5 reveal">
+    <div class="mem-card hook">
+      <div class="mem-card-label">🧠 Memory Hook</div>
+      <p><em>N. meningitidis</em> is the only Big Six bug that (1) goes epidemic and (2) causes a rash — "Meningo, the only one that Makes a Mark." Rash evolution: petechial → purpuric → "gunmetal gray," like a bruise rapidly getting worse over about a week. <strong>WFS</strong> = "Wipes-out Full adrenals Suddenly" — bilateral adrenal hemorrhage from DIC, the classic autopsy finding behind sudden collapse.</p>
+    </div>
+    <div class="mem-card eli5">
+      <div class="mem-card-label">🎈 ELI5</div>
+      <p>Meningococcus is the one clinicians fear most because it doesn't just infect the fluid around the brain — it can flood the entire bloodstream and send the whole body into shock within hours, with a spreading purple-red rash as tiny blood vessels start leaking. It's a "call 911 right now" emergency, faster-moving than typical bacterial meningitis.</p>
+    </div>
   </div>
 
   <div class="fig-grid reveal">
@@ -630,6 +754,17 @@ td.reveal-pop .cell-inner { animation: revealPop 0.3s ease; }
     During the height of the AIDS epidemic, <em>Cryptococcus neoformans</em> was the <strong>4th leading cause of death</strong> in that population. It presented as a severe meningoencephalitis: severe headache, cranial nerve palsies, lethargy, major mental status changes, diplopia, blurred vision, progression to coma — and was essentially <strong>100% fatal</strong> before effective antifungal therapy existed.
   </div>
 
+  <div class="mem-eli5 reveal">
+    <div class="mem-card hook">
+      <div class="mem-card-label">🧠 Memory Hook</div>
+      <p>Geography does the work: <strong>Histo</strong> "hides in the Heartland" (Ohio/Mississippi river valleys), <strong>Blasto</strong> lurks in the south-central/southeastern woods near water, <strong>Cocci</strong> = "Cocci loves Cacti" (desert Southwest, "Valley Fever"). <strong>Crypto</strong> is the worldwide, AIDS-defining exception — no geography needed, just a weak immune system. India ink stain = a clear halo (the capsule) around the yeast, like a spotlight ring.</p>
+    </div>
+    <div class="mem-card eli5">
+      <div class="mem-card-label">🎈 ELI5</div>
+      <p>Fungal meningitis almost never happens unless your immune system is already down — these fungi are bullies that only start trouble once your body's bodyguards (immune cells) aren't around to stop them. Where a patient lives or has traveled often tells you which fungus is responsible, since most of them live in specific soil or bird/bat droppings tied to certain regions of the country.</p>
+    </div>
+  </div>
+
   <div class="fig-grid reveal">
     <div class="fig-thumb" onclick="openLB('crypto_inkindia')">
       <img id="i_crypto_inkindia" src="" alt="Cryptococcus India ink stain">
@@ -652,10 +787,10 @@ td.reveal-pop .cell-inner { animation: revealPop 0.3s ease; }
   <div class="comp-table-wrap">
     <table class="comp-table">
       <caption>Amoebic Agents</caption>
-      <thead><tr><th>Organism</th><th>Source / route</th><th>Presentation</th><th>Mortality / burden</th></tr></thead>
+      <thead><tr><th>Organism</th><th>Source / route</th><th>Presentation</th></tr></thead>
       <tbody>
-        <tr><td>Naegleria fowleri</td><td>Warm, soil-contaminated fresh water (lakes, ponds, hot tubs, contaminated contact lens solution); trophozoite is the infectious stage; enters via the nose → follows the olfactory nerve (or via the eye → ophthalmic nerve)</td><td><strong>Primary amoebic meningoencephalitis (PAM)</strong> — "eats through" the BBB; nests of amoebae form in brain tissue (basilar cerebrum, cerebellum) within days, with visible hemorrhage; symptoms depend on where they land — loss of taste/smell, headache, nausea, stiff neck, hallucinations; most common protozoan cause of meningitis in the US</td><td><strong>~97% mortality</strong>, death usually within 2 weeks of symptom onset; only 10–15 US cases/yr (20–25 worldwide) — rare, but a perennial boards favorite because of that mortality rate</td></tr>
-        <tr><td>Acanthamoeba spp.</td><td>Contaminated water, especially contact lens solution; can also be acquired by inhalation or through skin lesions</td><td>Most commonly causes <strong>keratitis</strong> alone; in immunocompromised hosts can disseminate to cause meningoencephalitis/encephalitis. More common in parts of the Middle East, South Asia, Latin America, and the Caribbean; incidence reportedly rising</td><td>~90% mortality once disseminated; only 3–10 US cases/yr reported</td></tr>
+        <tr><td>Naegleria fowleri</td><td>Warm, soil-contaminated fresh water (lakes, ponds, hot tubs, contaminated contact lens solution); trophozoite is the infectious stage; enters via the nose → follows the olfactory nerve (or via the eye → ophthalmic nerve)</td><td><strong>Primary amoebic meningoencephalitis (PAM)</strong> — "eats through" the BBB; rapid, almost always fatal progression; most common protozoan cause of meningitis in the US</td></tr>
+        <tr><td>Acanthamoeba spp.</td><td>Contaminated water, especially contact lens solution</td><td>Most commonly causes <strong>keratitis</strong> alone; in immunocompromised hosts can disseminate to cause meningoencephalitis/encephalitis. More common in parts of the Middle East, South Asia, Latin America, and the Caribbean</td></tr>
       </tbody>
     </table>
   </div>
@@ -671,11 +806,11 @@ td.reveal-pop .cell-inner { animation: revealPop 0.3s ease; }
   <div class="comp-table-wrap">
     <table class="comp-table">
       <caption>Nematode Agents</caption>
-      <thead><tr><th>Organism</th><th>Source / route</th><th>Presentation</th><th>Mortality / burden</th></tr></thead>
+      <thead><tr><th>Organism</th><th>Source / route</th><th>Presentation</th></tr></thead>
       <tbody>
-        <tr><td>Angiostrongylus cantonensis</td><td>Ingestion of larvae in snails/slugs, freshwater prawns/crabs, frogs, or contaminated leafy greens; rodents are the natural definitive host; endemic to SE Asia, South America, Caribbean</td><td>Larvae migrate hematogenously through the brain, molting to adults en route → classic cause of <strong>eosinophilic meningitis</strong> — CSF eosinophils can run ~34% vs. a 1–4% normal baseline, an unmistakable number on a CSF differential</td><td>~1–3% mortality overall, higher with more severe/eosinophilic forms of meningitis</td></tr>
-        <tr><td>Strongyloides stercoralis</td><td>Larvae (~300 µm) penetrate skin from soil, attracted by CO₂ and other skin chemoattractants (rarely ingested)</td><td>Usually just a dermatitis (± GI or respiratory symptoms); meningitis is not caused by the larvae directly but by the non-sterile Gram-negative enteric bacteria (e.g., <em>E. coli</em>) they carry with them — a risk that only becomes real with <strong>hyperinfection</strong>, essentially confined to immunosuppressed hosts</td><td>Hyperinfection mortality ~70–100% untreated, ~50–80% even with treatment — the bacteria riding along with the larvae are what actually kill</td></tr>
-        <tr><td>Baylisascaris procyonis</td><td>Ingestion of eggs (~80 µm) from raccoon feces — the "raccoon roundworm"</td><td>Egg → larvae penetrate the gut wall → disseminate to tissue including brain, where they cause severe, often irreversible neurologic damage; a perennial USMLE favorite; adult worm can reach 24 cm. <strong>Ocular larva migrans</strong> from the same organism is far more common than CNS disease/death</td><td>~15–20% mortality even with treatment; &lt;1 US case/yr, only ~20–30 total documented US cases over the last 30 years</td></tr>
+        <tr><td>Angiostrongylus cantonensis</td><td>Ingestion of larvae in snails/slugs, freshwater prawns/crabs, frogs, or contaminated leafy greens; rodents are the natural definitive host; endemic to SE Asia, South America, Caribbean</td><td>Larvae migrate hematogenously through the brain → classic cause of <strong>eosinophilic meningitis</strong></td></tr>
+        <tr><td>Strongyloides stercoralis</td><td>Larvae (~300 µm) penetrate skin from soil (rarely ingested)</td><td>Usually self-limited, but <strong>hyperinfection</strong> is a major risk for disseminated Gram-negative rod infection (e.g., E. coli) reaching the meninges — especially relevant in immunosuppressed patients</td></tr>
+        <tr><td>Baylisascaris procyonis</td><td>Ingestion of eggs (~80 µm) from raccoon feces — the "raccoon roundworm"</td><td>Egg → larvae penetrate the gut wall → disseminate to tissue including brain; poor prognosis; a perennial USMLE favorite; adult worm can reach 24 cm</td></tr>
       </tbody>
     </table>
   </div>
@@ -696,7 +831,18 @@ td.reveal-pop .cell-inner { animation: revealPop 0.3s ease; }
 
   <div class="callout callout-sky">
     <div class="callout-label">Pattern check: CSF cell type as a clue</div>
-    <strong>Eosinophilic</strong> CSF pleocytosis points toward <em>Angiostrongylus</em> (and helminths generally); <strong>neutrophilic</strong> pleocytosis in a parasitic infection points toward <em>Naegleria</em>; <strong>lymphocytic</strong> pleocytosis points toward <em>Acanthamoeba</em> — worth noting specifically because it's the one amoeba here that doesn't go neutrophilic. This distinction shows up again in the CSF Diagnostics section below.
+    <strong>Eosinophilic</strong> CSF pleocytosis points toward <em>Angiostrongylus</em>; <strong>neutrophilic</strong> pleocytosis in a parasitic infection points toward <em>Naegleria</em>. This distinction shows up again in the CSF Diagnostics section below.
+  </div>
+
+  <div class="mem-eli5 reveal">
+    <div class="mem-card hook">
+      <div class="mem-card-label">🧠 Memory Hook</div>
+      <p><strong>"Naegleria = Nose"</strong> — warm freshwater up the nose → olfactory nerve → brain-eating amoeba, almost always fatal. <strong>"Bay(lisascaris) = stay away from raccoons"</strong> (egg ingestion from feces). <strong>Angiostrongylus = snails/slugs → Eosinophils</strong> — pair the "A" of Angio with "A" for eosinophil-rich Asia/Americas exposure. CSF cell clue: eosinophilic → Angiostrongylus; neutrophilic (in a parasitic infection) → Naegleria.</p>
+    </div>
+    <div class="mem-card eli5">
+      <div class="mem-card-label">🎈 ELI5</div>
+      <p>A few parasites reach the brain only through very specific exposures — swimming in warm lake water that goes up your nose, eating undercooked snails or slugs, or accidentally swallowing something contaminated with raccoon droppings. A blood or CSF test can give a clue: extra "eosinophil" cells (the kind usually seen with allergies or worm infections) point toward a roundworm rather than a bacterium or virus.</p>
+    </div>
   </div>
 </section>
 <hr class="section-divider">
@@ -727,7 +873,7 @@ td.reveal-pop .cell-inner { animation: revealPop 0.3s ease; }
         <tr><td>Viral</td><td>~5–1,000/mm³, lymphocytic</td><td>Normal</td><td>Normal, mild ↑</td><td>Normal</td><td>Gram stain/culture negative; opening pressure normal; PCR (enterovirus, HSV, COVID, HIV) or CSF IgM (EEE, WEE, St. Louis, Powassan)</td></tr>
         <tr><td>Bacterial</td><td>1,000–5,000/mm³, neutrophilic</td><td>&lt;40 mg/dL (CSF:serum ratio &lt;0.4)</td><td>&gt;45 mg/dL</td><td>&gt;3.5 mM/L</td><td>Opening pressure 200–300 mm H₂O; (+) Gram stain and culture</td></tr>
         <tr><td>Fungal</td><td>~5–500/mm³, lymphocytic</td><td>Normal or &lt;40 mg/dL</td><td>Normal or &gt;45 mg/dL</td><td>&gt;3.5 mM/L</td><td>Opening pressure variable (usually ↑); yeasts visualized directly</td></tr>
-        <tr><td>Parasitic</td><td>Cell type is agent-specific: <strong>neutrophilic</strong> (Naegleria), <strong>lymphocytic</strong> (Acanthamoeba — despite also being an amoeba), or <strong>eosinophilic</strong> (Angiostrongylus and most other helminths)</td><td>Decreased</td><td>&gt;45 mg/dL</td><td>&gt;3.5 mM/L (variable)</td><td>RBCs often present; trophozoites/larvae visualized on smear; PCR for Angiostrongylus; larvae in brain for Baylisascaris; eggs in urine</td></tr>
+        <tr><td>Parasitic</td><td>Neutrophilic (Naegleria) or eosinophilic (Angiostrongylus)</td><td>Decreased</td><td>&gt;45 mg/dL</td><td>&gt;3.5 mM/L (variable)</td><td>RBCs often present; trophozoites/larvae visualized on smear; PCR for Angiostrongylus; larvae in brain for Baylisascaris; eggs in urine</td></tr>
       </tbody>
     </table>
   </div>
@@ -745,9 +891,15 @@ td.reveal-pop .cell-inner { animation: revealPop 0.3s ease; }
     <strong>Viruses:</strong> PCR (entero, HSV, COVID, HIV); CSF IgM for arboviral agents. <strong>Bacteria:</strong> Gram stain, culture, rapid antigen tests. <strong>Fungi:</strong> direct visualization (India ink for Cryptococcus), culture, antigen tests. <strong>Parasites:</strong> direct smear (trophozoites/larvae), PCR, serology, eggs in urine.
   </div>
 
-  <div class="callout callout-sky">
-    <div class="callout-label">How good are these tests, really?</div>
-    <strong>Gram stain</strong> is positive in only 60–90% of true bacterial meningitis — a negative stain doesn't rule it out. <strong>CSF culture</strong> remains the gold standard and is positive in up to 90% of cases, though truly fastidious organisms may need specialized media (chocolate agar, Thayer-Martin) rather than standard blood agar. <strong>Blood cultures</strong> are only about 50% positive. <strong>Latex agglutination</strong> can rapidly detect antigen for the most common organisms (<em>S. pneumoniae</em>, <em>H. influenzae</em>, GBS, <em>E. coli</em>, <em>N. meningitidis</em>) faster than a full culture-and-sensitivity workup, and multiplex PCR panels are now available that screen for 5–8 common organisms at once. For lactate specifically, the bacterial/viral cutoff isn't a hard 3.0 — anything <strong>≥3.5</strong> should already be pushing you toward bacterial.
+  <div class="mem-eli5 reveal">
+    <div class="mem-card hook">
+      <div class="mem-card-label">🧠 Memory Hook</div>
+      <p><strong>Bacterial</strong> = "sugar's gone, protein's through the roof, neutrophils storming in" — the bacteria are literally eating the glucose and spilling debris as they lyse. <strong>Viral</strong> = "everything's roughly normal except calm lymphocytes" — viruses don't consume glucose or generate the same wreckage. One-line rule: glucose ↓↓ + protein ↑↑ + neutrophils = bacterial; near-normal numbers + lymphocytes = viral.</p>
+    </div>
+    <div class="mem-card eli5">
+      <div class="mem-card-label">🎈 ELI5</div>
+      <p>You can often tell bacterial and viral meningitis apart just by testing the fluid around the brain, the same way you could guess what's growing in a pond by testing the water. Bacteria "eat" the sugar in the fluid and leave behind a mess of protein and immune cells; viruses mostly just pass through without consuming the sugar or making nearly as much of a mess.</p>
+    </div>
   </div>
 </section>
 <hr class="section-divider">
@@ -813,6 +965,17 @@ td.reveal-pop .cell-inner { animation: revealPop 0.3s ease; }
     Co-treatment with dexamethasone doesn't target the organism — it blunts the host's own pro-inflammatory response, which is what's actually driving a lot of the tissue damage and neurologic sequelae. It's added across most bacterial regimens for exactly that reason.
   </div>
 
+  <div class="mem-eli5 reveal">
+    <div class="mem-card hook">
+      <div class="mem-card-label">🧠 Memory Hook</div>
+      <p>Empiric therapy by age = "cover the age-specific bugs before you know who's guilty." Newborns get triple coverage because Listeria (Ampicillin) + GBS/E. coli (Cefotaxime) + a synergy boost (Gentamicin) all need covering at once. Everyone 1mo–50yo gets a 3rd-gen cephalosporin + Vancomycin (resistant pneumo) + steroid; &gt;50yo or immunocompromised adds Ampicillin back in — because Listeria risk returns with age. Dexamethasone's job: "calm the storm, don't kill the bug" — it's anti-inflammatory, not antimicrobial.</p>
+    </div>
+    <div class="mem-card eli5">
+      <div class="mem-card-label">🎈 ELI5</div>
+      <p>Since it takes days to grow bacteria in a lab, doctors start with a "best guess" antibiotic combo picked by the patient's age, then narrow it down once culture results return. They also give a steroid alongside the antibiotics — not to kill bacteria, but to calm the body's own overreaction, since a lot of the damage in bacterial meningitis actually comes from inflammation rather than the bacteria themselves.</p>
+    </div>
+  </div>
+
   <h3>Parasitic</h3>
   <ul>
     <li><strong>Naegleria</strong> (if caught early): amphotericin B + rifampin + fluconazole + miltefosine + azithromycin + dexamethasone</li>
@@ -829,23 +992,23 @@ td.reveal-pop .cell-inner { animation: revealPop 0.3s ease; }
 
 <section id="encephalitis" class="lo-section">
   <div class="section-head"><span class="lo-badge teal">8</span><h2>Encephalitis</h2></div>
-  <p class="section-intro">Inflammation of the brain parenchyma itself, rather than just its coverings — meaning neurologic dysfunction shows up earlier and more prominently than in meningitis, and hospitalizations run longer, with worse outcomes overall. It shares the meningitis triad (fever, headache, altered mental status) but adds focal deficits on top. About <strong>60% of US encephalitis cases go undiagnosed</strong> even after workup, so the true incidence is unknown — several thousand cases are reported to the CDC each year regardless.</p>
+  <p class="section-intro">Inflammation of the brain parenchyma itself, rather than just its coverings — meaning neurologic dysfunction shows up earlier and more prominently than in meningitis, and hospitalizations run longer. It shares the meningitis triad (fever, headache, altered mental status) but adds focal deficits on top.</p>
 
   <h3>Viral Etiologies (Most Common Overall)</h3>
   <div class="comp-table-wrap">
     <table class="comp-table">
       <caption>Viral Agents of Encephalitis</caption>
-      <thead><tr><th>Agent / group</th><th>Vector / transmission</th><th>Notable features</th><th>Burden / mortality</th></tr></thead>
+      <thead><tr><th>Agent / group</th><th>Vector / transmission</th><th>Notable features</th></tr></thead>
       <tbody>
-        <tr><td>Herpes group (HSV-1)</td><td>Reactivation/direct spread</td><td><strong>Most common cause of sporadic encephalitis</strong>; HSV-2 encephalitis is rare outside neonates — essentially the reverse of the meningitis picture, where HSV-2 dominates</td><td>Only ~10–15% of all encephalitis cases overall, but ~60% of herpes-associated encephalitis specifically is HSV-1</td></tr>
-        <tr><td>Enterovirus (including poliovirus)</td><td>Fecal–oral</td><td>Less common cause of encephalitis than herpes; can also produce meningoencephalitis</td><td>—</td></tr>
-        <tr><td>West Nile virus (Flavivirus, ~50 nm ss(+)RNA)</td><td><em>Culex</em> mosquito; birds are the primary reservoir</td><td><strong>Most common viral encephalitis agent in the US</strong> and the leading cause of mosquito-borne disease overall</td><td>~30,000 diagnosed cases since 1999; &gt;1,000 neuroinvasive cases in 2024 alone; ~70% of infections are asymptomatic and only ~1% of those infected go on to develop encephalitis — makes true incidence hard to pin down</td></tr>
-        <tr><td>EEE / WEE (Togavirus, ~80 nm ss(+)RNA)</td><td><em>Culiseta</em> mosquito; birds are the reservoir (enzootic cycle)</td><td>Considered the most severe mosquito-borne disease in the US</td><td>Only 10–20 US cases/yr, but 93–95% mortality once neuroinvasive; incidence reportedly rising since 2019</td></tr>
-        <tr><td>Powassan virus (Flavivirus)</td><td><em>Ixodes</em> ticks (also woodchuck/squirrel ticks, <em>Dermacentor</em>); white-footed mouse reservoir</td><td>Rapid transmission — as little as ~15 minutes of tick attachment, vs. the 24–48 hours <em>Ixodes</em> needs to transmit Lyme disease</td><td>~76 US cases in 2025, mostly New England; found across North America (including Maine) and also in Russia/the Far East</td></tr>
-        <tr><td>Japanese encephalitis (Flavivirus)</td><td><em>Culex</em> mosquito; bird → pig → human cycle</td><td><strong>Most common cause of infective encephalitis worldwide</strong>; the only one of these with a vaccine</td><td>10,000–12,000 deaths/yr worldwide, mostly Asia and the Western Pacific</td></tr>
-        <tr><td>St. Louis encephalitis, LCMV</td><td>Mosquito / rodent</td><td>Less common; overlap with meningitis agents above</td><td>—</td></tr>
-        <tr><td>SARS-CoV-2</td><td>Respiratory</td><td>More associated with encephalitis than with isolated meningitis, but now uncommon overall</td><td>—</td></tr>
-        <tr><td>Measles</td><td>Respiratory</td><td>Four distinct brain syndromes — see below</td><td>See callout below</td></tr>
+        <tr><td>Herpes group (HSV-1)</td><td>Reactivation/direct spread</td><td><strong>Most common cause of sporadic encephalitis</strong>; HSV-2 encephalitis is rare outside neonates</td></tr>
+        <tr><td>Enterovirus (including poliovirus)</td><td>Fecal–oral</td><td>Less common cause of encephalitis than herpes</td></tr>
+        <tr><td>West Nile virus (Flavivirus)</td><td><em>Culex</em> mosquito</td><td><strong>Most common viral encephalitis agent in the US</strong></td></tr>
+        <tr><td>EEE / WEE (Togavirus)</td><td><em>Culiseta</em> mosquito</td><td>High mortality, especially EEE</td></tr>
+        <tr><td>Powassan virus</td><td><em>Ixodes</em> tick</td><td>Rapid transmission — as little as ~15 minutes of tick attachment</td></tr>
+        <tr><td>Japanese encephalitis (Flavivirus)</td><td><em>Culex</em> mosquito</td><td><strong>Most common cause of infective encephalitis worldwide</strong></td></tr>
+        <tr><td>St. Louis encephalitis, LCMV</td><td>Mosquito / rodent</td><td>Less common; overlap with meningitis agents above</td></tr>
+        <tr><td>SARS-CoV-2</td><td>Respiratory</td><td>More associated with encephalitis than with isolated meningitis, but still uncommon overall</td></tr>
+        <tr><td>Measles</td><td>Respiratory</td><td>Four distinct brain syndromes — see below</td></tr>
       </tbody>
     </table>
   </div>
@@ -858,11 +1021,22 @@ td.reveal-pop .cell-inner { animation: revealPop 0.3s ease; }
   <div class="callout callout-teal">
     <div class="callout-label">Measles-related brain infections — four distinct entities</div>
     <ul style="margin-bottom:0;">
-      <li><strong>Primary measles encephalitis</strong> — direct viral invasion of the CNS, presenting within 7 days of the measles prodrome; occurs in ~1–3/1,000 cases; ~10–15% mortality</li>
-      <li><strong>Post-infectious encephalitis (post-measles encephalomyelitis)</strong> — occurs 2–30 days after the rash; mechanism debated (direct viral invasion vs. autoimmune activation, with autoimmune currently favored); ~20% mortality — somewhat higher than the primary form</li>
-      <li><strong>Measles inclusion-body encephalitis (MIBE)</strong> — occurs almost exclusively in immunocompromised hosts, up to a year after infection, with active virus isolable from the brain and ongoing neurologic decline; ~75–100% mortality</li>
-      <li><strong>Subacute sclerosing panencephalitis (SSPE)</strong> — a progressive neurodegenerative disease from persistent/reactivated measles infection, presenting 6–10 years after primary infection on average (up to 20 years in some cases); particularly high risk if measles was contracted before age 1; progressive cognitive/motor decline, behavioral change, seizures, ataxia → vegetative state; almost always fatal, typically 1–3 years after onset. Incidence had dropped sharply with MMR uptake — a reason the current resurgence in measles cases is a genuine concern</li>
+      <li><strong>Primary measles encephalitis</strong> — within 7 days of illness; ~1–3/1,000 cases</li>
+      <li><strong>Post-infectious encephalitis</strong> — immune-mediated, 2–30 days after the rash</li>
+      <li><strong>Measles inclusion-body encephalitis (MIBE)</strong> — within 1 year, virus actively growing in brain, usually fatal</li>
+      <li><strong>Subacute sclerosing panencephalitis (SSPE)</strong> — 6–10 years later, progressive and almost always fatal</li>
     </ul>
+  </div>
+
+  <div class="mem-eli5 reveal">
+    <div class="mem-card hook">
+      <div class="mem-card-label">🧠 Memory Hook</div>
+      <p><strong>HSV-1</strong> = #1 cause of <em>sporadic</em> encephalitis (year-round, no vector required) vs. <strong>West Nile</strong> = #1 viral encephalitis agent <em>in the US specifically</em> (mosquito-season dependent) vs. <strong>Japanese encephalitis</strong> = #1 cause <em>worldwide</em>. For measles: picture a countdown clock — 7 days (primary), weeks (post-infectious, immune-mediated), 1 year (MIBE), years later (SSPE) — earliest/mildest to latest/almost-universally-fatal.</p>
+    </div>
+    <div class="mem-card eli5">
+      <div class="mem-card-label">🎈 ELI5</div>
+      <p>Encephalitis is the brain-tissue version of meningitis — instead of just infecting the fluid around the brain, the germ gets into the brain itself, so patients act confused or develop focal problems like weakness or seizures, not just a headache and stiff neck. Herpes is the most common cause when it "just happens" with no clear source; mosquito and tick bites cause most of the rest in the US.</p>
+    </div>
   </div>
 
   <h3>Non-Viral Causes of Encephalitis</h3>
@@ -877,10 +1051,10 @@ td.reveal-pop .cell-inner { animation: revealPop 0.3s ease; }
     <div>
       <h4>Parasites</h4>
       <ul>
-        <li><strong>Toxoplasma gondii</strong> — cat feces/oocysts (~10–12 µm) in contaminated food or from handling cats/litter; among the most common <em>sporadic</em> causes of encephalitis after herpes. Most immunocompetent adults get only mild flu-like illness; risk is concentrated in the immunocompromised, very young children, and the fetus (transplacental spread → severe CNS/vision/hearing defects). ~10–30% mortality in immunocompromised hosts with toxoplasma encephalitis</li>
+        <li><strong>Toxoplasma gondii</strong> — cat feces; among the most common <em>sporadic</em> causes of encephalitis after herpes</li>
         <li><strong>Naegleria fowleri</strong> — see meningitis section</li>
-        <li><strong>Taenia solium</strong> (pork tapeworm) — developing countries, from ingesting larvae in undercooked pork → larvae migrate to brain/eyes → <strong>neurocysticercosis</strong> (cysts in the subarachnoid/ventricular spaces). A major global problem: ~50,000 deaths/yr worldwide, but rare in the US (~0.6 cases/million; only a handful of deaths recorded over multi-year spans)</li>
-        <li><strong>Toxocara</strong> (canis/cati) — egg ingestion (~80 µm eggs from dog/cat feces); larvae can't mature further in humans (a dead-end host) but still cause tissue damage; presents mainly as visceral/ocular larva migrans rather than encephalitis, especially in children. CNS involvement is uncommon and often asymptomatic when it occurs; ~6% mortality overall (includes immunocompromised hosts) — most cases are self-limited</li>
+        <li><strong>Taenia solium</strong> (pork tapeworm) — developing countries → <strong>neurocysticercosis</strong></li>
+        <li><strong>Toxocara</strong> (canis/cati) — egg ingestion; larvae can't mature further in humans; presents as visceral/ocular larva migrans</li>
       </ul>
     </div>
   </div>
@@ -943,13 +1117,35 @@ td.reveal-pop .cell-inner { animation: revealPop 0.3s ease; }
       </tbody>
     </table>
   </div>
-  <p>Most common presentation — <strong>CJD:</strong> occurs in roughly <strong>1 in a million</strong> people, ~90% of which are the sporadic form (the variant/"mad cow" form accounts for only a small number of the total). Once symptoms begin — rapidly progressive mental deterioration, myoclonus, nystagmus, ataxia, dystonia, hyperreflexia — death typically follows within a year; how long the abnormal protein was silently accumulating beforehand is unknown. The diagnostic gold standard is still brain biopsy (spongiform change, gliosis, positive staining for the abnormal protein), but MRI and clinical presentation are used more often in practice. CSF biomarkers can support the diagnosis: <strong>tau protein</strong> (also used in Alzheimer's workups) and elevated <strong>14-3-3 protein</strong> (a brain-expressed protein involved in neural signaling). A newer test, <strong>RT-QuIC</strong> (real-time quaking-induced conversion), detects misfolded prion protein in CSF by "shaking" a sample to dislodge and amplify the abnormal aggregates, which are then detected by fluorescence. There is no effective treatment for any prion disease — care is purely supportive.</p>
+  <p>Most common presentation — <strong>CJD:</strong> rapidly progressive mental deterioration, myoclonus, nystagmus, ataxia, death typically within a year. There is no effective treatment for any prion disease.</p>
+
+  <div class="mem-eli5 reveal">
+    <div class="mem-card hook">
+      <div class="mem-card-label">🧠 Memory Hook</div>
+      <p>Prions = "Proteins Rioting Improperly, Only Nonliving" — no DNA/RNA, so nothing to sequence, culture, or hit with an antibiotic/antiviral. Track the shape-shift: PrP<sup>C</sup> (Cellular, normal, alpha-<strong>C</strong>urly helix) → PrP<sup>Sc</sup> (<strong>Sc</strong>rapie, pathologic, beta-<strong>S</strong>heet/flat) — and it's a chain reaction, since one misfolded protein "converts" its neighbors like a molecular game of telephone gone wrong. "Spongiform" = the brain literally looks like a sponge (vacuoles) under the microscope.</p>
+    </div>
+    <div class="mem-card eli5">
+      <div class="mem-card-label">🎈 ELI5</div>
+      <p>A prion isn't a germ at all — it's a normal protein that folded into the wrong shape, like a piece of paper crumpled instead of neatly folded. The scary part is the crumpled version can "teach" nearby normal proteins to crumple too, so it spreads through the brain like a chain reaction, leaving sponge-like holes behind. There's no cure, because there's nothing alive to kill.</p>
+    </div>
+  </div>
 
   <hr class="section-divider" style="margin: 30px 0;">
 
   <h3>Progressive Multifocal Leukoencephalopathy (PML) — JC Virus</h3>
-  <p><strong>JC virus</strong> (named for John Cunningham, an early patient) is a polyomavirus: 40 nm, non-enveloped, circular dsDNA, capable of latency. Primary infection, probably via the oral/respiratory route, occurs in childhood and is asymptomatic — <strong>80–85% of adults are seropositive</strong>, meaning most of us are carrying it silently. It stays latent until significant immunosuppression (AIDS with very low CD4 counts, lymphoproliferative/myeloproliferative disease, organ transplant, immunomodulating drugs — including some MS therapies) triggers reactivation. On reactivation, the virus specifically infects <strong>oligodendrocytes</strong> (the CNS's myelin-producing cells), driving progressive demyelination: altered mental status, hemianopia, diplopia, hemiparesis, gait ataxia, seizures. About 5% of AIDS patients were found to have PML during the height of the AIDS epidemic, before modern antiretroviral therapy was widely available.</p>
-  <p><strong>Diagnosis:</strong> brain biopsy is the gold standard — histology shows enlarged oligodendrocytes with a ground-glass appearance, enlarged nuclei, and viral inclusions; PCR for JC virus in CSF is also available, though sensitivity may be limited early in the disease course. <strong>Treatment:</strong> there's no direct antiviral treatment for JC virus itself — management is entirely about restoring immune function (antiretroviral therapy in AIDS, or reducing/stopping the offending immunosuppressive drug where feasible). Without immune restoration this is close to uniformly fatal; even with restoration and improved survival, most survivors are left with moderate-to-severe permanent disability.</p>
+  <p><strong>JC virus</strong> is a polyomavirus: 40 nm, non-enveloped, circular dsDNA, capable of latency. It's acquired in childhood — 80%+ of adults are seropositive — and stays silent until severe immunosuppression (AIDS, lymphoproliferative/myeloproliferative disease, organ transplant, immunomodulating drugs) triggers reactivation. Reactivated JC virus causes a <strong>demyelinating disease</strong>: altered mental status, hemianopia, diplopia, ataxia, seizures — with high mortality.</p>
+  <p><strong>Diagnosis:</strong> brain biopsy; PCR for JC virus in CSF. <strong>Treatment:</strong> restore immune function — antiretroviral therapy in AIDS, or stopping the offending immunosuppressive drug. There's no direct antiviral treatment for JC virus itself.</p>
+
+  <div class="mem-eli5 reveal">
+    <div class="mem-card hook">
+      <div class="mem-card-label">🧠 Memory Hook</div>
+      <p>PML = "Previously Mild, Now Lethal" — JC virus is silently carried by 80%+ of adults their whole lives, kept in check by the immune system, and only causes disease once that system collapses (AIDS, transplant, immunomodulating drugs like natalizumab). No antiviral targets JC virus directly — the <em>only</em> treatment is restoring immune function, which is the opposite logic from almost every other infection in this lecture.</p>
+    </div>
+    <div class="mem-card eli5">
+      <div class="mem-card-label">🎈 ELI5</div>
+      <p>Most adults quietly carry JC virus their whole lives without ever knowing it — the immune system just keeps it locked in a cage. But if something seriously weakens the immune system, the virus escapes and starts eating away at the brain's white matter (its "wiring"). The only real fix is helping the immune system get strong again — there's no drug that attacks the virus itself.</p>
+    </div>
+  </div>
 
   <div class="fig-grid reveal">
     <div class="fig-thumb" onclick="openLB('jc_virus_em')"><img id="i_jc_virus_em" src="" alt="JC virus EM"><div class="fig-caption"><span class="fig-num">Fig.</span><span class="fig-text">JC virus — electron micrograph (polyomavirus)</span><span class="fig-source">Acute CNS Infections lecture, 2026</span></div></div>
@@ -960,12 +1156,19 @@ td.reveal-pop .cell-inner { animation: revealPop 0.3s ease; }
   <hr class="section-divider" style="margin: 30px 0;">
 
   <h3>Rabies</h3>
-  <p>A <strong>rhabdovirus</strong> of the genus <em>Lyssavirus</em> (from Greek <em>lyssa</em>, "madness") — 180 × 75 nm, enveloped, bullet-shaped, ss(–)RNA. Transmitted via contaminated saliva, most often through a bite (US reservoirs: skunks, raccoons, foxes, and — despite the raccoon's reputation — <strong>bats are currently the leading source</strong> of human exposure in this country). An open wound licked by a rabid animal can transmit it too, but a bite is far more efficient. After inoculation, the virus travels by <strong>retrograde neural spread</strong>: from the periphery, along peripheral nerve axons, to the dorsal root ganglia, up the spinal cord to the brain — and then <em>back out</em> anterograde to the periphery, notably the salivary glands, completing the cycle so the next bite can transmit it. Incubation is long (up to ~3 months, shorter — as little as ~1 month — the closer the bite is to the head/neck), and the virus accumulates in neuronal cytoplasm as <strong>Negri bodies</strong> — the classic histologic finding.</p>
-  <div class="sign-grid reveal">
-    <div class="sign-item"><span class="sign-icon">🇺🇸</span><div class="sign-label">US burden</div><div class="sign-text">~5 human cases/yr</div><div class="sign-detail">Worldwide: 50,000–100,000 deaths/yr, overwhelmingly in developing countries, where ~90% of transmission is from domestic dogs (vs. wild animals in the US)</div></div>
-    <div class="sign-item"><span class="sign-icon">🦇</span><div class="sign-label">Bite → disease risk</div><div class="sign-text">~15% average</div><div class="sign-detail">Up to 60–80% if the bite is severe and near the face/head, which also speeds viral travel to the brain</div></div>
+  <p>A <strong>rhabdovirus</strong> — 180 × 75 nm, enveloped, bullet-shaped, ss(–)RNA. Transmitted via contaminated saliva (bite, most often raccoon, skunk, fox, bat). After inoculation, the virus travels by <strong>retrograde neural spread</strong>: from the periphery to spinal ganglia, up the spinal cord to the brain, and then back out to the periphery again (notably the salivary glands, which is how it re-enters saliva to complete its transmission cycle). Incubation is long, and the virus accumulates in neuronal cytoplasm as <strong>Negri bodies</strong> — the classic histologic finding.</p>
+  <p><strong>Clinical:</strong> headache, fever, dysphagia, hydrophobia, progression to coma and death. <strong>Diagnosis:</strong> direct fluorescent antibody (DFA) testing on animal brain tissue, PCR of saliva, serology. <strong>Treatment:</strong> wound care, post-exposure prophylaxis (vaccine + rabies immunoglobulin), plus animal vaccination as the public-health control measure.</p>
+
+  <div class="mem-eli5 reveal">
+    <div class="mem-card hook">
+      <div class="mem-card-label">🧠 Memory Hook</div>
+      <p>Rabies = "retrograde rider" — travels backward up the nerve from the bite site to the spinal cord to the brain, then rides back <em>out</em> to the salivary glands to complete its own transmission cycle (that's exactly why it drives hydrophobia/biting behavior). Negri bodies = the eosinophilic "passport stamps" it leaves in neurons. Because the trip up to the brain is slow (long incubation), post-exposure prophylaxis given <em>before</em> symptoms start can still stop it — once symptoms appear, it's essentially 100% fatal.</p>
+    </div>
+    <div class="mem-card eli5">
+      <div class="mem-card-label">🎈 ELI5</div>
+      <p>Rabies enters through a bite wound and slowly climbs up the nerves to the brain, which is why symptoms can take weeks to show up. Once it reaches the brain it does its damage, then travels back down to the saliva glands so it can spread to the next bite victim. Because that trip is slow, getting the rabies vaccine right after a bite can still stop the virus before it ever reaches the brain — but once symptoms start, it's too late.</p>
+    </div>
   </div>
-  <p><strong>Clinical:</strong> headache, fever, dysphagia, increased muscle tone, hydrophobia (painful swallowing-muscle spasm triggered by the sight/sound of water — not literally a fear of water), progression to coma and death; once clinical symptoms begin, the outcome is essentially fixed. <strong>Diagnosis:</strong> direct fluorescent antibody (DFA) testing on animal brain tissue (easier and more reliable than hunting for Negri bodies histologically), RT-PCR of saliva (only detectable in the human victim's saliva many months in), serology. <strong>Treatment:</strong> the 1–3 month incubation window is the opportunity — wound care plus post-exposure prophylaxis with vaccine (<strong>Imovax</strong>, grown in human diploid MRC-5 cells; or the newer, cheaper <strong>Rabavert</strong>, grown in chicken fibroblasts — both given as 4 doses over 2 weeks) and rabies immunoglobulin. Once clinical symptoms appear, there is no treatment and it is essentially always fatal. Public-health prevention leans on domestic-animal vaccination plus oral vaccine bait programs targeting wild foxes and raccoons — part of why bats, which aren't reached by those programs, have become the bigger relative threat.</p>
 
   <div class="fig-grid reveal">
     <div class="fig-thumb" onclick="openLB('rabies_virus')"><img id="i_rabies_virus" src="" alt="Rabies virus"><div class="fig-caption"><span class="fig-num">Fig.</span><span class="fig-text">Rabies virus — bullet-shaped rhabdovirus</span><span class="fig-source">Acute CNS Infections lecture, 2026</span></div></div>
@@ -979,26 +1182,24 @@ td.reveal-pop .cell-inner { animation: revealPop 0.3s ease; }
   <hr class="section-divider" style="margin: 30px 0;">
 
   <h3>Herpes Zoster (Shingles)</h3>
-  <p>Reactivation of latent VZV from a dorsal root ganglion or cranial sensory ganglion. During the initial chickenpox infection, virus infects skin nerve endings and travels retrograde along sensory axons to establish lifelong latency in the corresponding sensory neurons. On reactivation, it spreads back down the nerve (anterograde) to the skin (the rash), with accompanying — sometimes hemorrhagic — inflammation and necrosis of the involved sensory ganglion, which is the source of the neuropathic pain.</p>
+  <p>Reactivation of latent VZV from a dorsal root ganglion or cranial sensory ganglion. During the initial chickenpox infection, virus infects skin nerve endings and establishes lifelong latency in the corresponding sensory neurons. On reactivation, it spreads back down the nerve to the skin (the rash), with accompanying inflammation of the involved sensory ganglion (the neuritis/pain).</p>
   <div class="sign-grid reveal">
-    <div class="sign-item"><span class="sign-icon">🇺🇸</span><div class="sign-label">Current US burden</div><div class="sign-text">1–2 million cases/yr</div><div class="sign-detail">~30% of the population is expected to experience shingles at some point in their lifetime</div></div>
-    <div class="sign-item"><span class="sign-icon">📅</span><div class="sign-label">Age</div><div class="sign-text">Risk + severity rise sharply from ~50</div><div class="sign-detail">As of 2026, about half of people 85+ have already had an episode</div></div>
-    <div class="sign-item"><span class="sign-icon">🧬</span><div class="sign-label">Other risk factors</div><div class="sign-text">Immunocompromise, trauma, comorbidities</div><div class="sign-detail">Women more often than men; Caucasians more often than people of color; malignancy, long-term chemo, and chronic kidney disease all raise risk</div></div>
+    <div class="sign-item"><span class="sign-icon">📅</span><div class="sign-label">Risk factors</div><div class="sign-detail">Age, immune status, gender, race, physical trauma, comorbidities</div></div>
+    <div class="sign-item"><span class="sign-icon">🦠</span><div class="sign-label">Transmission</div><div class="sign-detail">Direct contact with lesions; airborne transmission possible</div></div>
+    <div class="sign-item"><span class="sign-icon">🩹</span><div class="sign-label">Principal symptoms</div><div class="sign-detail">Dermatomal rash + neuritis (pain)</div></div>
   </div>
-  <p><strong>Rash:</strong> begins as papules → vesicles → occasionally bullae (which can be hemorrhagic, especially in the immunocompromised or very elderly) → scabbing, typically confined to one or two contiguous dermatomes — most often thoracic or lumbar. <strong>Transmission:</strong> direct contact with lesions; airborne transmission is possible from localized disease. <strong>Principal symptoms:</strong> the dermatomal rash plus neuritis — burning/throbbing pain that can occur even without a visible rash ("zoster sine herpete").</p>
+  <p><strong>Diagnosis:</strong> usually clinical; PCR is the most-used confirmatory test. <strong>Treatment:</strong> oral acyclovir for uncomplicated cases. <strong>Prevention:</strong> Shingrix vaccine.</p>
 
-  <div class="callout callout-coral">
-    <div class="callout-label">Complications worth naming individually</div>
-    <ul style="margin-bottom:0;">
-      <li><strong>Post-herpetic neuralgia</strong> — pain persisting &gt;90 days after the rash, well beyond a typical episode</li>
-      <li><strong>Herpes zoster ophthalmicus</strong> — sight-threatening eye involvement</li>
-      <li><strong>Ramsay-Hunt syndrome</strong> (herpes zoster oticus) — facial nerve involvement near the ear → facial paralysis + hearing loss</li>
-      <li><strong>Acute retinal necrosis</strong> — can progress to vision loss</li>
-      <li>Aseptic (viral) meningitis, encephalitis, and — less commonly — Guillain-Barré syndrome in association with an outbreak</li>
-    </ul>
+  <div class="mem-eli5 reveal">
+    <div class="mem-card hook">
+      <div class="mem-card-label">🧠 Memory Hook</div>
+      <p>Chickenpox = primary infection → virus hides for life in a dorsal root (or cranial sensory) ganglion → shingles = reactivation traveling back <em>down that same single nerve</em> to the skin, which is exactly why the rash always stays in one dermatome and never crosses the midline. "Zoster" is Greek for "belt/girdle" — the classic band-like rash. Shingrix = the vaccine built to keep it asleep.</p>
+    </div>
+    <div class="mem-card eli5">
+      <div class="mem-card-label">🎈 ELI5</div>
+      <p>After chickenpox as a kid, the virus doesn't fully leave the body — it hides inside one nerve, like a bear going into hibernation. Years later, if the immune system's guard drops (stress, older age, illness), the virus wakes up and travels back down that exact nerve to the skin, causing a painful, blistering rash that stays in a single stripe on one side of the body — because it's only following that one nerve's territory.</p>
+    </div>
   </div>
-
-  <p><strong>Diagnosis:</strong> usually clinical (unilateral, dermatomally-restricted vesicular rash); PCR of lesion material is the most sensitive confirmatory test when the picture is atypical or the patient is immunocompromised — direct fluorescent antibody testing is a reasonable second choice; culture is essentially never used anymore. <strong>Treatment:</strong> oral antivirals from the acyclovir family (valacyclovir or famciclovir preferred, acyclovir also an option) for uncomplicated cases; severe neuritis adds short-acting opioids plus a prednisone taper; refractory pain may need gabapentin, tricyclic antidepressants, or anesthetic nerve blocks. <strong>Prevention:</strong> the <strong>Shingrix</strong> vaccine is a recombinant subunit vaccine — it's built around <strong>glycoprotein E</strong>, a surface protein of VZV (conceptually similar to the spike protein on SARS-CoV-2), produced by inserting the glycoprotein E gene into <strong>CHO (Chinese hamster ovary) cells</strong> rather than by growing and harvesting the actual virus. It's recommended even for people who already had chickenpox (or the varicella vaccine) as children.</p>
 
   <div class="fig-grid reveal">
     <div class="fig-thumb" onclick="openLB('shingles_compare1')"><img id="i_shingles_compare1" src="" alt="Shingles presentation comparison"><div class="fig-caption"><span class="fig-num">Fig.</span><span class="fig-text">Herpes zoster/chickenpox presentation across skin tones</span><span class="fig-source">Acute CNS Infections lecture, 2026</span></div></div>
@@ -1013,7 +1214,7 @@ td.reveal-pop .cell-inner { animation: revealPop 0.3s ease; }
   <hr class="section-divider" style="margin: 30px 0;">
 
   <h3>Brain Abscess</h3>
-  <p>Arises from contiguous spread from a sinus, ear, dental, or parotid infection, or from hematogenous spread from a distant site (a wound, pneumonia, endocarditis) — about a third are associated with otitis media or mastoiditis. The mechanism is bacterial seeding of already-devitalized or damaged tissue — infarcted tissue from septic emboli (endocarditis, congenital heart disease) or extension along veins from a nearby infection. Most commonly caused by <em>S. aureus</em> or oral (viridans-group) streptococci — between the two, they account for the bulk of cases in immunocompetent patients, with anaerobic streptococci or Gram-negative rods (e.g., <em>E. coli</em>) making up most of the rest. In <strong>immunocompromised</strong> patients the differential opens up considerably: <em>Nocardia</em> (a filamentous bacterium), <em>Toxoplasma gondii</em>, and <em>Candida</em> (mostly <em>C. albicans</em>) all become real possibilities.</p>
+  <p>Arises from contiguous or hematogenous spread from another infected site — about 33% are associated with otitis media or mastoiditis. Most commonly caused by <em>S. aureus</em> or oral (viridans-group) streptococci.</p>
   <div class="two-col reveal">
     <div>
       <h4>Predisposing conditions</h4>
@@ -1029,9 +1230,20 @@ td.reveal-pop .cell-inner { animation: revealPop 0.3s ease; }
     </div>
     <div>
       <h4>Clinical / Diagnosis / Treatment</h4>
-      <p style="font-size:14px;"><strong>Clinical:</strong> presents as an expanding intracranial mass lesion — local pain, headache, tenderness, ± seizures depending on location. Fever is often <em>absent</em> at initial presentation and may only appear later, so its absence shouldn't be reassuring. Severe cases can extend to spinal epidural abscess with paresthesias and paraplegia, which can be irreversible.</p>
-      <p style="font-size:14px;"><strong>Diagnosis:</strong> CT/MRI is preferred over lumbar puncture, because the CSF in a brain abscess is frequently sterile — the infection is walled off, not free in the CSF space. Gram stain/culture of the aspirated abscess cavity itself (rather than CSF) is what actually identifies the organism, typically targeting staph/strep unless the patient is immunocompromised.</p>
-      <p style="font-size:14px;"><strong>Treatment:</strong> empiric multi-antibiotic coverage while awaiting culture/sensitivity, plus surgical drainage if the abscess is active and not resolving on its own. Caught early, patients can recover fully; more advanced cases can leave permanent neurologic damage.</p>
+      <p style="font-size:14px;"><strong>Clinical:</strong> intracranial mass effect, headache, seizures, ± fever, focal neuro deficits, paraplegia in severe cases.</p>
+      <p style="font-size:14px;"><strong>Diagnosis:</strong> CT/MRI; Gram stain and culture of aspirate.</p>
+      <p style="font-size:14px;"><strong>Treatment:</strong> empiric antibiotic coverage while awaiting culture/sensitivity, plus surgical drainage.</p>
+    </div>
+  </div>
+
+  <div class="mem-eli5 reveal">
+    <div class="mem-card hook">
+      <div class="mem-card-label">🧠 Memory Hook</div>
+      <p>Brain abscess = a walled-off pocket of pus <em>inside</em> the brain tissue itself (contrast with meningitis = infection of the fluid <em>around</em> it). About a third come from an ear/sinus infection spreading next door — so think "the ear infection that wouldn't quit" in a patient with new headache, fever, and a seizure. "Ring-enhancing lesion" on imaging is the classic radiology buzzword: a donut-shaped rim of contrast enhancement around a darker, pus-filled center.</p>
+    </div>
+    <div class="mem-card eli5">
+      <div class="mem-card-label">🎈 ELI5</div>
+      <p>A brain abscess is a pocket of pus that forms inside the brain, often after a nearby infection (like a bad ear or sinus infection) spreads next door. It acts like a small growing mass pressing on the brain — causing headaches and sometimes seizures — and shows up on a scan as a bright ring around a darker center, like a donut.</p>
     </div>
   </div>
 
@@ -1042,9 +1254,20 @@ td.reveal-pop .cell-inner { animation: revealPop 0.3s ease; }
   <hr class="section-divider" style="margin: 30px 0;">
 
   <h3>Whipple's Disease</h3>
-  <p>Caused by <strong>Tropheryma whipplei</strong> — a Gram(+) rod (actinomycete), environmental (found in soil and sewage, no known animal reservoir), and commonly detected in humans asymptomatically in general. It's a rare disease, but it turns up often enough in USMLE-style vignettes to be worth knowing. <strong>Course:</strong> it often begins with years of vague, easy-to-dismiss symptoms — migratory polyarthralgia, fatigue, low-grade fever — before progressing to GI manifestations (abdominal pain, weight loss, diarrhea), and only later to more generalized, multi-system involvement (cardiovascular, pulmonary, and neurologic). <strong>CNS involvement occurs late</strong> and in only ~10% of cases: dementia, memory impairment, confusion, cerebellar ataxia, myoclonus, ophthalmoplegia. Predominantly (85%) seen in middle-aged Caucasian men, and more often in populations with poorer hygiene. Pathogenesis is not fully understood — the organism initially infects macrophages and can spread widely (intestinal epithelium, capillary/lymphatic endothelium, colon, liver, brain, heart, lung, synovium, kidney, bone marrow, skin). Host immune deficiency is a major risk factor, along with a genetic association with the HLA-B27 haplotype.</p>
-  <p><strong>Diagnosis (neuro involvement):</strong> consider in patients with the four cardinal manifestations (arthralgia, diarrhea, abdominal pain, weight loss) once more common conditions have been excluded — often a lengthy process in itself. Routine labs aren't very specific: CBC may show mild anemia; CRP/ESR are elevated, reflecting chronic inflammation rather than pointing to Whipple's specifically. PCR of CSF can help identify <em>T. whipplei</em> if organism numbers are sufficient. The classic finding — central to diagnosis, though obtained from a small bowel biopsy rather than the CNS — is <strong>PAS-positive foamy macrophages</strong>, staining cell-wall components of the organism.</p>
-  <p><strong>Treatment (CNS involvement):</strong> IV ceftriaxone (or penicillin) for up to 4 weeks, followed by oral TMP-SMX for at least 1 year <span style="font-size:13px; color:var(--muted);">(lecture states up to 4 weeks IV / ≥1 year oral; outline states 2 weeks IV / 1 year oral)</span>. <strong>Prognosis</strong> is generally good if treatment is started early; left untreated, the disease can progress and become fatal.</p>
+  <p>Caused by <strong>Tropheryma whipplei</strong> — a Gram(+) rod (actinomycete), environmental (commonly detected in sewage), and commonly found in humans generally. Multisystem disease: principal manifestations are weight loss, arthralgia, abdominal pain, and diarrhea. <strong>CNS involvement occurs late</strong> (in ~10% of cases): dementia, memory impairment, confusion, cerebellar ataxia, myoclonus, ophthalmoplegia. Predominantly (85%) seen in middle-aged Caucasian men. Pathogenesis is not fully understood — the organism initially infects macrophages and can spread widely (intestinal epithelium, capillary/lymphatic endothelium, colon, liver, brain, heart, lung, synovium, kidney, bone marrow, skin). Host immune deficiency is a major risk factor, along with a genetic association with the HLA-B27 haplotype.</p>
+  <p><strong>Diagnosis (neuro involvement):</strong> consider in patients with the four cardinal manifestations (arthralgia, diarrhea, abdominal pain, weight loss) once more common conditions are excluded; PCR of CSF; the classic finding — central to diagnosis — is <strong>PAS-positive macrophages</strong> on small bowel biopsy.</p>
+  <p><strong>Treatment (CNS involvement):</strong> ceftriaxone (or PCN) for 2 weeks, followed by TMP-SMX for 1 year.</p>
+
+  <div class="mem-eli5 reveal">
+    <div class="mem-card hook">
+      <div class="mem-card-label">🧠 Memory Hook</div>
+      <p>The classic tetrad spells "<strong>ADAW</strong>": <strong>A</strong>rthralgia, <strong>D</strong>iarrhea, <strong>A</strong>bdominal pain, <strong>W</strong>eight loss — GI/joint symptoms come first, CNS involvement is late (~10%) and includes dementia, ataxia, myoclonus, and ophthalmoplegia. The one diagnostic image to lock in: <strong>PAS-positive macrophages</strong> on small bowel biopsy. Demographic pearl: 85% middle-aged Caucasian men.</p>
+    </div>
+    <div class="mem-card eli5">
+      <div class="mem-card-label">🎈 ELI5</div>
+      <p>Whipple's disease is a rare gut infection that mostly causes joint pain, diarrhea, belly pain, and weight loss — but in a small number of patients it eventually spreads to the brain and causes confusion, memory problems, and trouble with coordination. Doctors confirm it by finding a very specific, easy-to-spot pattern of infected cells on a biopsy of the small intestine.</p>
+    </div>
+  </div>
 
   <div class="fig-grid reveal">
     <div class="fig-thumb" onclick="openLB('twhippelii_em')"><img id="i_twhippelii_em" src="" alt="Tropheryma whipplei"><div class="fig-caption"><span class="fig-num">Fig.</span><span class="fig-text">Tropheryma whipplei</span><span class="fig-source">Acute CNS Infections lecture, 2026</span></div></div>
@@ -1167,6 +1390,125 @@ td.reveal-pop .cell-inner { animation: revealPop 0.3s ease; }
   <button class="lb-nav lb-next" onclick="shiftLB(1)">&#8250;</button>
   <div id="lb-cap"></div>
   <div id="lb-counter"></div>
+</div>
+
+<div id="hyOverlay" class="hy-overlay" onclick="if(event.target===this){toggleHY();}">
+  <div class="hy-panel">
+    <div class="hy-panel-head">
+      <h2>⚡ High-Yield Exam Summary</h2>
+      <button class="hy-close-btn" onclick="toggleHY()">✕ Close</button>
+    </div>
+    <p class="hy-panel-sub">One condensed page, mapped to all 13 LOs — tables and bolded facts only. Full detail is in the sections above.</p>
+
+    <div class="hy-grid">
+
+      <div class="hy-block">
+        <h4><span class="hy-num">1</span>Classification &amp; Meninges</h4>
+        <p><strong>Triad:</strong> fever, headache, altered mental status. <strong>Meningitis</strong> = coverings; <strong>encephalitis</strong> = brain tissue; <strong>meningoencephalitis</strong> = both.</p>
+        <p><strong>Layers (out→in):</strong> Dura (tough, 2 sublayers) → Arachnoid → <em>subarachnoid space (CSF)</em> → Pia. "Leptomeninges" = arachnoid + SAS + pia — where infectious meningitis lives.</p>
+        <p><strong>Pachymeningitis</strong> (dura itself) is a different disease: chronic headache, cranial nerve palsies, dural thickening on MRI.</p>
+      </div>
+
+      <div class="hy-block">
+        <h4><span class="hy-num">2</span>Bacterial Meningitis — Big Six</h4>
+        <table class="hy-mini-table">
+          <thead><tr><th>Organism</th><th>ID</th><th>Peak group</th></tr></thead>
+          <tbody>
+            <tr><td>S. pneumo</td><td>G(+) diplococci, α-hemolytic, optochin(+)</td><td>#1 overall</td></tr>
+            <tr><td>N. meningitidis</td><td>G(–) diplococci</td><td>Only epidemic + only rash</td></tr>
+            <tr><td>H. flu b</td><td>G(–) coccobacilli</td><td>Kids &lt;6 (pre-vax)</td></tr>
+            <tr><td>GBS</td><td>G(+) chains, unencapsulated</td><td>#1 neonatal</td></tr>
+            <tr><td>Listeria</td><td>G(+) rods, no capsule</td><td>Neonates, pregnant, elderly, immunosupp.</td></tr>
+            <tr><td>E. coli K1</td><td>G(–) rods</td><td>#2 neonatal</td></tr>
+          </tbody>
+        </table>
+        <p><strong>Mortality:</strong> meningitis alone 10–30%; meningococcemia &gt;50%. <strong>Capsule</strong> = main virulence factor for the 3 vaccine-targeted bugs.</p>
+      </div>
+
+      <div class="hy-block">
+        <h4><span class="hy-num">3</span>Viral / Fungal / Parasitic Agents</h4>
+        <p><strong>Viral (most common overall):</strong> Enterovirus (#1, fecal-oral), HSV-2 (only <em>primary</em> infection), Mumps, LCMV (rodent urine), Arboviruses.</p>
+        <p><strong>Fungal (immunocompromised only):</strong> Cryptococcus (worldwide, AIDS), Histo/Blasto/Cocci (geography-linked), Candida (endogenous).</p>
+        <p><strong>Parasitic:</strong> Naegleria (warm freshwater→nose, almost always fatal), Acanthamoeba (contact lens), Angiostrongylus (snails/slugs, eosinophilic), Baylisascaris (raccoon feces).</p>
+      </div>
+
+      <div class="hy-block">
+        <h4><span class="hy-num">4</span>CSF Findings by Etiology</h4>
+        <table class="hy-mini-table">
+          <thead><tr><th>Etiology</th><th>Cells</th><th>Glucose</th><th>Protein</th></tr></thead>
+          <tbody>
+            <tr><td>Viral</td><td>Lymphocytic</td><td>Normal</td><td>Normal/mild ↑</td></tr>
+            <tr><td>Bacterial</td><td>Neutrophilic</td><td>&lt;40 (ratio&lt;0.4)</td><td>&gt;45</td></tr>
+            <tr><td>Fungal</td><td>Lymphocytic</td><td>Normal/↓</td><td>Normal/↑</td></tr>
+            <tr><td>Parasitic</td><td>Neutro (Naegleria) / Eos (Angio)</td><td>↓</td><td>&gt;45</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="hy-block">
+        <h4><span class="hy-num">5</span>Bacterial vs. Viral — Quick Clues</h4>
+        <p><strong>Bacterial:</strong> glucose &lt;34, CSF:serum ratio &lt;0.23, protein &gt;220, WBC &gt;2,000 (mostly neutrophils), lactate &gt;3.5, ↑CRP/procalcitonin — more toxic-appearing, rash rare <em>except N. meningitidis</em>.</p>
+        <p><strong>Viral:</strong> near-normal glucose, lymphocytic, milder course, rash more common (flat, blanching — unlike meningococcal petechiae).</p>
+      </div>
+
+      <div class="hy-block">
+        <h4><span class="hy-num">6</span>Meningitis Treatment</h4>
+        <table class="hy-mini-table">
+          <thead><tr><th>Age</th><th>Empiric regimen</th></tr></thead>
+          <tbody>
+            <tr><td>Newborn–1mo</td><td>Ampicillin + Cefotaxime + Gentamicin</td></tr>
+            <tr><td>1mo–50yo</td><td>Cefotaxime/Ceftriaxone + Vanc + Dexamethasone</td></tr>
+            <tr><td>&gt;50yo</td><td>+ Ampicillin (Listeria coverage returns)</td></tr>
+          </tbody>
+        </table>
+        <p><strong>Dexamethasone</strong> = anti-inflammatory, not antimicrobial — blunts the host's own damaging cytokine response.</p>
+      </div>
+
+      <div class="hy-block">
+        <h4><span class="hy-num">7</span>Encephalitis</h4>
+        <p><strong>HSV-1</strong> = #1 <em>sporadic</em> cause (no vector); <strong>West Nile</strong> = #1 in the <em>US</em> (mosquito); <strong>Japanese encephalitis</strong> = #1 <em>worldwide</em>.</p>
+        <p><strong>Measles — 4 syndromes on a timeline:</strong> primary (7 days) → post-infectious (weeks, immune-mediated) → MIBE (1 year, usually fatal) → SSPE (6–10 years, almost always fatal).</p>
+        <p><strong>Non-viral:</strong> Toxoplasma (cat feces), Taenia solium (neurocysticercosis), Toxocara (larva migrans).</p>
+      </div>
+
+      <div class="hy-block">
+        <h4><span class="hy-num">8</span>Prion Disease</h4>
+        <p>Misfolded protein, <strong>no nucleic acid</strong> — no immune response, no cure. PrP<sup>C</sup> (normal, alpha-helical) → PrP<sup>Sc</sup> (pathologic, beta-sheet) — self-templating chain reaction. <strong>Spongiform</strong> histology.</p>
+        <p><strong>CJD forms:</strong> sporadic (most common), variant (BSE/"mad cow" meat), familial, iatrogenic. Rapid dementia, myoclonus, ataxia, death within a year.</p>
+      </div>
+
+      <div class="hy-block">
+        <h4><span class="hy-num">9</span>PML — JC Virus</h4>
+        <p><strong>JC virus</strong> (polyomavirus) — 80%+ seropositive, silent until severe immunosuppression (AIDS, natalizumab, transplant). Causes <strong>demyelination</strong>.</p>
+        <p><strong>No direct antiviral.</strong> Only treatment: restore immune function (ART, or stop the offending drug).</p>
+      </div>
+
+      <div class="hy-block">
+        <h4><span class="hy-num">10</span>Rabies</h4>
+        <p><strong>Rhabdovirus</strong>, bullet-shaped, ss(–)RNA. <strong>Retrograde neural spread</strong>: bite site → spinal ganglia → brain → back out to salivary glands. <strong>Negri bodies</strong> = classic histology.</p>
+        <p>Long incubation → post-exposure prophylaxis (vaccine + immunoglobulin) works <em>before</em> symptoms. <strong>~100% fatal</strong> once symptomatic.</p>
+      </div>
+
+      <div class="hy-block">
+        <h4><span class="hy-num">11</span>Herpes Zoster (Shingles)</h4>
+        <p>Reactivation of latent <strong>VZV</strong> from a dorsal root/cranial sensory ganglion (established during chickenpox). Travels back down <em>one</em> nerve → <strong>single-dermatome</strong> rash + neuritis.</p>
+        <p><strong>Tx:</strong> oral acyclovir. <strong>Prevention:</strong> Shingrix vaccine.</p>
+      </div>
+
+      <div class="hy-block">
+        <h4><span class="hy-num">12</span>Brain Abscess</h4>
+        <p>Pocket of pus <em>in</em> brain tissue (vs. meningitis = fluid around it). ~33% from otitis/mastoiditis (contiguous spread); also hematogenous. Most often <strong>S. aureus</strong> or oral streptococci.</p>
+        <p><strong>Imaging:</strong> ring-enhancing lesion. <strong>Tx:</strong> empiric antibiotics + surgical drainage.</p>
+      </div>
+
+      <div class="hy-block">
+        <h4><span class="hy-num">13</span>Whipple's Disease</h4>
+        <p><strong>Tropheryma whipplei</strong> — G(+) rod (actinomycete). Tetrad "<strong>ADAW</strong>": Arthralgia, Diarrhea, Abdominal pain, Weight loss. 85% middle-aged Caucasian men.</p>
+        <p><strong>CNS involvement late</strong> (~10%): dementia, ataxia, myoclonus, ophthalmoplegia. Diagnosis: <strong>PAS-positive macrophages</strong> on small bowel biopsy. Tx: ceftriaxone → TMP-SMX × 1 year.</p>
+      </div>
+
+    </div>
+  </div>
 </div>
 
 <script>
@@ -1480,6 +1822,93 @@ function initQuizTables() {
   });
 }
 document.addEventListener('DOMContentLoaded', initQuizTables);
+
+function toggleHY() {
+  var ov = document.getElementById('hyOverlay');
+  var isOpen = ov.classList.toggle('open');
+  document.body.style.overflow = isOpen ? 'hidden' : '';
+}
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    var ov = document.getElementById('hyOverlay');
+    if (ov && ov.classList.contains('open')) toggleHY();
+  }
+});
+
+function initHYQuizTables() {
+  document.querySelectorAll('table.hy-mini-table').forEach(table => {
+    if (table.closest('.hy-quiz-wrap')) return;
+    const wrap = document.createElement('div');
+    wrap.className = 'hy-quiz-wrap';
+    const bar = document.createElement('div');
+    bar.className = 'quiz-bar';
+    bar.innerHTML = `
+      <span class="quiz-label">📝 Quiz</span>
+      <button class="qz-toggle">Quiz Mode</button>
+      <button class="qz-reveal">Reveal All</button>
+      <button class="qz-hide">Hide All</button>
+      <div class="quiz-progress-track"><div class="quiz-progress-fill"></div></div>
+    `;
+    table.parentElement.insertBefore(wrap, table);
+    wrap.appendChild(bar);
+    wrap.appendChild(table);
+
+    const cells = Array.from(table.querySelectorAll('td')).filter(td => td.cellIndex !== 0);
+    cells.forEach(td => {
+      if (td.querySelector('.cell-inner')) return;
+      const inner = document.createElement('span');
+      inner.className = 'cell-inner';
+      while (td.firstChild) inner.appendChild(td.firstChild);
+      td.appendChild(inner);
+      const mask = document.createElement('span');
+      mask.className = 'cell-mask';
+      mask.textContent = 'Tap to reveal';
+      td.appendChild(mask);
+    });
+
+    let quizOn = false;
+    const toggleBtn = bar.querySelector('.qz-toggle');
+    const revealBtn = bar.querySelector('.qz-reveal');
+    const hideBtn = bar.querySelector('.qz-hide');
+    const fill = bar.querySelector('.quiz-progress-fill');
+
+    function updateProgress() {
+      const total = cells.length;
+      const revealed = cells.filter(td => !td.classList.contains('quiz-hidden')).length;
+      fill.style.width = total ? (revealed / total * 100) + '%' : '0%';
+    }
+
+    function setQuiz(on) {
+      quizOn = on;
+      toggleBtn.classList.toggle('active', on);
+      if (on) {
+        cells.forEach(td => td.classList.add('quiz-hidden'));
+      } else {
+        cells.forEach(td => td.classList.remove('quiz-hidden'));
+      }
+      updateProgress();
+    }
+
+    toggleBtn.addEventListener('click', () => setQuiz(!quizOn));
+    revealBtn.addEventListener('click', () => { cells.forEach(td => td.classList.remove('quiz-hidden')); updateProgress(); });
+    hideBtn.addEventListener('click', () => { if (!quizOn) setQuiz(true); else cells.forEach(td => td.classList.add('quiz-hidden')); updateProgress(); });
+
+    cells.forEach(td => {
+      td.addEventListener('click', () => {
+        if (!quizOn) return;
+        if (td.classList.contains('quiz-hidden')) {
+          td.classList.remove('quiz-hidden');
+          td.classList.add('reveal-pop');
+          setTimeout(() => td.classList.remove('reveal-pop'), 320);
+          updateProgress();
+        }
+      });
+    });
+  });
+}
+document.addEventListener('DOMContentLoaded', initHYQuizTables);
+if (document.readyState !== 'loading') initHYQuizTables();
+
 if (document.readyState !== 'loading') initQuizTables();
 
 </script>
