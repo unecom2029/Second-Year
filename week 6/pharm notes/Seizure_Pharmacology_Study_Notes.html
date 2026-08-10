@@ -234,7 +234,7 @@ body:not(.rat-mode) .rat-plo-header p { color: var(--muted); }
 
 /* ---------- COMPARE GRID ---------- */
 .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin: 20px 0; }
-.compare-card { border-radius: 12px; padding: 20px; border: 1px solid var(--border); }
+.compare-card { min-width: 0; border-radius: 12px; padding: 20px; border: 1px solid var(--border); }
 .compare-card .card-emoji { font-size: 1.6rem; display: block; margin-bottom: 8px; }
 .compare-card h4 { font-size: 1.05rem; margin-bottom: 8px; }
 .compare-card.antiresorptive { background: linear-gradient(160deg, var(--blue-bg), var(--paper)); border-color: var(--accent2); }
@@ -258,7 +258,8 @@ ul.notes-list li::before { content: '›'; position: absolute; left: 0; color: v
 table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.92rem; }
 th { background: var(--ink); color: var(--paper); text-align: left; padding: 10px 14px; font-family: 'JetBrains Mono', monospace;
   font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; }
-td { padding: 10px 14px; border-bottom: 1px solid var(--border); }
+td { padding: 10px 14px; border-bottom: 1px solid var(--border); overflow-wrap: anywhere; }
+th { overflow-wrap: anywhere; }
 tr:nth-child(even) td { background: var(--cream); }
 
 /* ---------- EXAM Q ---------- */
@@ -283,7 +284,7 @@ img.slide-img { width: 100%; display: block; border-radius: 10px; border: 1px so
 
 /* ---------- DRUG GRID / CARD ---------- */
 .drug-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; margin: 20px 0; }
-.drug-card { background: var(--paper); border: 1px solid var(--border); border-top: 4px solid var(--accent2);
+.drug-card { min-width: 0; background: var(--paper); border: 1px solid var(--border); border-top: 4px solid var(--accent2);
   border-radius: 10px; padding: 16px 18px; }
 .drug-card h4 { font-size: 1.02rem; margin-bottom: 4px; }
 .drug-card .generic { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--accent2);
@@ -291,7 +292,7 @@ img.slide-img { width: 100%; display: block; border-radius: 10px; border: 1px so
 
 /* ---------- HALLMARKS GRID ---------- */
 .hallmarks-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; margin: 20px 0; }
-.hallmark-card { background: var(--paper); border: 1px solid var(--border); border-radius: 10px; padding: 16px;
+.hallmark-card { min-width: 0; background: var(--paper); border: 1px solid var(--border); border-radius: 10px; padding: 16px;
   border-top: 4px solid var(--accent2); }
 .hallmark-card:nth-child(5n+1) { border-top-color: var(--accent2); }
 .hallmark-card:nth-child(5n+2) { border-top-color: var(--accent); }
@@ -304,7 +305,7 @@ img.slide-img { width: 100%; display: block; border-radius: 10px; border: 1px so
 
 /* ---------- P53 GRID ---------- */
 .p53-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin: 20px 0; }
-.p53-card { background: var(--cream); border-radius: 10px; padding: 14px; text-align: center; }
+.p53-card { min-width: 0; background: var(--cream); border-radius: 10px; padding: 14px; text-align: center; }
 .p53-card .icon { font-size: 1.6rem; margin-bottom: 6px; }
 .p53-card h4 { font-size: 0.88rem; margin-bottom: 4px; }
 .p53-card p { font-size: 0.8rem; color: var(--muted); margin: 0; }
@@ -426,7 +427,7 @@ footer { text-align: center; padding: 40px 24px 120px; font-family: 'JetBrains M
 
 /* ---------- MOA GRID (drug mechanism legend) ---------- */
 .moa-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin: 18px 0; }
-.moa-item { background: var(--cream); border-radius: 10px; padding: 12px 14px; border-left: 4px solid var(--accent2); }
+.moa-item { min-width: 0; background: var(--cream); border-radius: 10px; padding: 12px 14px; border-left: 4px solid var(--accent2); }
 body.rat-mode .moa-item { background: var(--rat-mode-surface); border-left-color: var(--rat-mode-accent2); }
 .moa-item .moa-name { font-weight: 600; font-size: 0.88rem; display: block; margin-bottom: 3px; }
 .moa-item .moa-desc { font-size: 0.78rem; color: var(--muted); }
@@ -455,9 +456,138 @@ body.rat-mode .low-yield-flag { color: var(--rat-mode-muted); border-color: var(
   .hero h1 { font-size: 1.9rem; }
   .section-title { font-size: 1.5rem; }
 }
+
+/* ---------- HIGH-YIELD SUMMARY: TOP ANNOUNCE BAR ---------- */
+.hy-announce-bar { background: linear-gradient(90deg, var(--accent2), var(--accent)); padding: 9px 20px;
+  text-align: center; position: sticky; top: 0; z-index: 70; }
+.hy-top-summary-btn { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.16);
+  border: 1px solid rgba(255,255,255,0.55); color: #fff; font-family: 'JetBrains Mono', monospace;
+  font-size: 0.74rem; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase;
+  padding: 8px 18px; border-radius: 24px; cursor: pointer; transition: background 0.15s, transform 0.1s; }
+.hy-top-summary-btn:hover { background: rgba(255,255,255,0.32); }
+.hy-top-summary-btn:active { transform: scale(0.97); }
+.toc-bar { top: 50px; }
+@media (max-width: 640px) {
+  .hy-announce-bar { padding: 8px 12px; }
+  .hy-top-summary-btn { font-size: 0.62rem; padding: 8px 12px; white-space: normal; }
+  .toc-bar { top: 45px; }
+  /* Grids with a minmax()-based auto-fit track (plus, in one case, a spanning
+     card) can compute a too-narrow second column on small phones and overflow
+     the viewport. Force a single column below this breakpoint. */
+  .drug-grid, .hallmarks-grid, .p53-grid, .moa-grid, .compare-grid {
+    grid-template-columns: 1fr !important;
+  }
+  /* A card with an inline grid-column: span 2 (Valproic Acid) would otherwise
+     force a narrow implicit 2nd column even after the line above collapses
+     the grid to one explicit column. */
+  .drug-grid > [style*="span"] { grid-column: 1 !important; }
+}
+
+/* ---------- HIGH-YIELD SUMMARY: MODAL ---------- */
+body.hy-modal-open { overflow: hidden; }
+.hy-modal-backdrop { position: fixed; inset: 0; background: rgba(10,8,4,0.72); z-index: 300;
+  display: none; align-items: flex-start; justify-content: center; padding: 34px 16px; overflow-y: auto; }
+.hy-modal-backdrop.open { display: flex; }
+.hy-modal { background: var(--paper); color: var(--ink); border-radius: 14px; max-width: 1000px; width: 100%;
+  margin: 0 auto; box-shadow: 0 20px 60px rgba(0,0,0,0.45); overflow: hidden; }
+.hy-modal-header { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap;
+  background: var(--ink); color: var(--paper); padding: 16px 22px; }
+.hy-modal-header h2 { font-family: 'Playfair Display', serif; font-size: 1.28rem; margin: 0; color: var(--hero-heading); }
+.hy-modal-header .hy-modal-sub { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; letter-spacing: 0.07em;
+  text-transform: uppercase; color: var(--hero-meta-label); margin-top: 4px; display: block; }
+.hy-modal-actions { display: flex; gap: 10px; flex-shrink: 0; }
+.hy-print-btn, .hy-close-btn { font-family: 'JetBrains Mono', monospace; font-size: 0.66rem; font-weight: 700;
+  letter-spacing: 0.04em; text-transform: uppercase; border-radius: 20px; padding: 9px 16px; cursor: pointer; border: none; }
+.hy-print-btn { background: var(--gold); color: var(--ink); }
+.hy-print-btn:hover { filter: brightness(1.1); }
+.hy-close-btn { background: rgba(255,255,255,0.12); color: var(--paper); border: 1px solid rgba(255,255,255,0.3); }
+.hy-close-btn:hover { background: rgba(255,255,255,0.22); }
+.hy-modal-body { padding: 20px 24px 30px; max-height: 78vh; overflow-y: auto; }
+.hy-summary-section { margin-bottom: 22px; }
+.hy-summary-section:last-child { margin-bottom: 0; }
+.hy-summary-section h3 { font-family: 'Playfair Display', serif; font-size: 1.02rem; color: var(--accent);
+  border-bottom: 2px solid var(--border); padding-bottom: 6px; margin-bottom: 10px; }
+.hy-summary-section h4 { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--accent2); margin: 14px 0 6px; }
+.hy-mini-table { font-size: 0.78rem; margin: 8px 0 14px; }
+.hy-mini-table th { font-size: 0.6rem; padding: 7px 9px; }
+.hy-mini-table td { padding: 7px 9px; font-size: 0.78rem; }
+.hy-pharm-table { font-size: 0.7rem; margin: 8px 0 14px; }
+.hy-pharm-table th { font-size: 0.56rem; padding: 5px 7px; }
+.hy-pharm-table td { padding: 5px 7px; font-size: 0.7rem; vertical-align: top; }
+.hy-pharm-table td:nth-child(1) { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; color: var(--accent2); white-space: nowrap; }
+.hy-pharm-table td:nth-child(2) { font-weight: 700; white-space: nowrap; }
+.hy-vocab-note { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--muted); margin: 4px 0 12px; line-height: 1.5; }
+.hy-bullets { margin: 0; padding-left: 20px; font-size: 0.82rem; }
+.hy-bullets li { margin-bottom: 6px; }
+.hy-steps { margin: 8px 0 14px; padding-left: 22px; font-size: 0.84rem; }
+.hy-steps li { margin-bottom: 6px; }
+.hy-ladder { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem; margin: 8px 0 6px; }
+.hy-ladder-step { background: var(--cream); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; }
+.hy-ladder-arrow { color: var(--accent); font-weight: 700; }
+
+/* ---------- PRINT: SUMMARY MODAL ONLY ---------- */
+@media print {
+  body, html { height: auto !important; overflow: visible !important; background: #fff !important; }
+  body > *:not(.hy-modal-backdrop) { display: none !important; }
+  .hy-modal-backdrop:not(.open) { display: none !important; }
+  .hy-modal-backdrop.open {
+    display: block !important; position: static !important; inset: auto !important;
+    background: #fff !important; padding: 0 !important; margin: 0 !important;
+    overflow: visible !important; height: auto !important; width: auto !important;
+  }
+  .hy-modal { max-width: 100% !important; width: 100% !important; margin: 0 !important;
+    box-shadow: none !important; border-radius: 0 !important; background: #fff !important; color: #000 !important; overflow: visible !important; }
+  .hy-modal-header { padding: 4px 0 6px !important; background: #fff !important; color: #000 !important; border-bottom: 1.5px solid #000 !important; }
+  .hy-modal-header h2 { font-size: 13pt !important; }
+  .hy-modal-header h2, .hy-modal-header .hy-modal-sub { color: #000 !important; }
+  .hy-modal-actions { display: none !important; }
+  .hy-modal-body { max-height: none !important; overflow: visible !important; padding: 4px 0 0 !important; }
+
+  .hy-summary-section { margin-bottom: 6pt !important; }
+  .hy-summary-section h3 {
+    page-break-after: avoid; font-size: 10.5pt !important; margin: 0 0 3pt !important;
+    padding-bottom: 2pt !important; border-bottom-width: 1px !important;
+  }
+  .hy-summary-section h4 { font-size: 7.5pt !important; margin: 5pt 0 2pt !important; }
+  .hy-summary-section h3, .hy-summary-section h4 { color: #000 !important; }
+  .hy-vocab-note, .hy-bullets, .hy-steps { margin: 2pt 0 5pt !important; font-size: 7.6pt !important; line-height: 1.35 !important; }
+  .hy-steps { padding-left: 14pt !important; }
+  .hy-bullets { padding-left: 12pt !important; }
+  .hy-steps li, .hy-bullets li { margin-bottom: 2pt !important; }
+
+  .hy-mini-table, .hy-ladder { page-break-inside: avoid; }
+  .hy-pharm-table tr { page-break-inside: avoid; }
+  .hy-mini-table, .hy-pharm-table { margin: 2pt 0 5pt !important; }
+
+  /* Status-epilepticus ladder: drop the boxed/flex layout for print so it
+     flows as a single compact line instead of jumping to its own page. */
+  .hy-ladder { display: block !important; margin: 2pt 0 4pt !important; font-size: 7.6pt !important; }
+  .hy-ladder-step {
+    display: inline !important; border: none !important; background: none !important;
+    padding: 0 !important; border-radius: 0 !important;
+  }
+  .hy-ladder-arrow { display: inline !important; margin: 0 4pt !important; color: #000 !important; }
+
+  .tq-bar { display: none !important; }
+  table, th, td { background: #fff !important; color: #000 !important; border-color: #999 !important; }
+  th { background: #e6e6e6 !important; }
+  table { margin: 0 !important; }
+  th, td { padding: 3px 5px !important; line-height: 1.25 !important; }
+  .hy-pharm-table, .hy-pharm-table th, .hy-pharm-table td { font-size: 6.4pt !important; padding: 2px 4px !important; }
+  .hy-pharm-table td:nth-child(1), .hy-pharm-table td:nth-child(2) { color: #000 !important; }
+  .hy-mini-table th, .hy-mini-table td { font-size: 7.4pt !important; padding: 3px 5px !important; }
+
+  @page { size: landscape; margin: 0.3in; }
+}
 </style>
 </head>
 <body>
+
+<div class="hy-announce-bar">
+  <button type="button" class="hy-top-summary-btn" onclick="openHySummary()">📋 See One-Page Summary (High-Yield)</button>
+</div>
 
 <div class="rat-banner">⚡ RAT Mode Active — Showing PLO-focused content only: Seizure Classification · Drug Selection · Anticonvulsant Pharmacology</div>
 
@@ -1466,6 +1596,108 @@ body.rat-mode .low-yield-flag { color: var(--rat-mode-muted); border-color: var(
 
 <footer>Seizure Pharmacology · Kyle R. Scully, PhD · UNE COM Medical Neuroanatomy · Take-Away pearls courtesy Dr. Filippakis</footer>
 
+<div class="hy-modal-backdrop" id="hySummaryBackdrop">
+  <div class="hy-modal">
+    <div class="hy-modal-header">
+      <div>
+        <h2>📋 One-Page Summary — High-Yield</h2>
+        <span class="hy-modal-sub">Seizure Classification · Drug Selection · ASM Pharmacology (MOA / Indication / AE / CI / DDI)</span>
+      </div>
+      <div class="hy-modal-actions">
+        <button type="button" class="hy-print-btn" onclick="printHySummary()">🖨️ Print</button>
+        <button type="button" class="hy-close-btn" onclick="closeHySummary()">✕ Close</button>
+      </div>
+    </div>
+    <div class="hy-modal-body">
+
+      <div class="hy-summary-section">
+        <h3>1 · Differentiate Seizure Types by Presentation</h3>
+        <table class="hy-mini-table">
+          <tr><th>Type</th><th>Clinical Clues</th><th>Mechanism / EEG</th></tr>
+          <tr>
+            <td>Focal</td>
+            <td>Aura possible; +/− impaired awareness; automatisms; may spread (Jacksonian march) or secondarily generalize</td>
+            <td>Paroxysmal depolarizing shift at one cortical focus</td>
+          </tr>
+          <tr>
+            <td>Generalized — Tonic-Clonic</td>
+            <td>No aura; LOC; stiffening → rhythmic jerking → unresponsive/groggy after</td>
+            <td>↓GABA surround inhibition (tonic) → E/I oscillation (clonic) → rebound ↑GABA (postictal)</td>
+          </tr>
+          <tr>
+            <td>Generalized — Absence</td>
+            <td>Brief "zoning out," subtle automatisms (lip smack/blink), NO postictal confusion — mimics ADHD</td>
+            <td>3 Hz spike-and-wave; thalamocortical T-type Ca²⁺ burst loop, awake state</td>
+          </tr>
+        </table>
+        <p class="hy-vocab-note">Vocabulary: old "simple" (no LOC) / "complex" (LOC) focal seizure = new "without" / "with impaired awareness." One seizure ≠ epilepsy diagnosis — only ~15% convert, with a normal EEG and negative family history.</p>
+      </div>
+
+      <div class="hy-summary-section">
+        <h3>2 · Select the Appropriate Intervention</h3>
+        <ol class="hy-steps">
+          <li><strong>Monotherapy first, always.</strong> Limits AEs and DDIs.</li>
+          <li>If it fails → try a <strong>second monotherapy</strong> before adding an adjunct.</li>
+          <li>Reserve <strong>adjunct therapy</strong> for seizures refractory to monotherapy trials.</li>
+          <li>Follow <strong>plasma levels</strong> for older ASMs (phenytoin, carbamazepine, valproate); newer agents correlate less reliably.</li>
+        </ol>
+        <table class="hy-mini-table">
+          <tr><th>Presentation</th><th>Drug of Choice</th></tr>
+          <tr><td>Focal seizures</td><td>Carbamazepine, lamotrigine, lacosamide, levetiracetam, phenytoin</td></tr>
+          <tr><td>Generalized tonic-clonic</td><td>Valproate (1st, avoid if childbearing potential), lamotrigine, levetiracetam</td></tr>
+          <tr><td>Absence</td><td>Ethosuximide (1st, absence-only) or valproate (also 1st-line, broader coverage)</td></tr>
+          <tr><td>Lennox-Gastaut</td><td>Rufinamide, levetiracetam</td></tr>
+          <tr><td>Neuropathic pain / adjunct</td><td>Gabapentin, pregabalin (no CYP interactions)</td></tr>
+        </table>
+        <h4>Status Epilepticus (≥5 min continuous, or 2+ seizures w/o recovering consciousness)</h4>
+        <div class="hy-ladder">
+          <div class="hy-ladder-step">1 · Benzodiazepine (IV/IO lorazepam, diazepam, or midazolam)</div>
+          <span class="hy-ladder-arrow">→</span>
+          <div class="hy-ladder-step">2 · "Big 3": levetiracetam, fosphenytoin, or valproate (~50% response by 60 min — ESETT)</div>
+          <span class="hy-ladder-arrow">→</span>
+          <div class="hy-ladder-step">3 · General anesthetics (propofol, barbiturates)</div>
+        </div>
+        <p class="hy-vocab-note">Valproate is preferred for <strong>absence</strong> status epilepticus (hits T-type Ca²⁺, the actual driver). Na⁺ blockers and barbiturates can <strong>worsen</strong> absence/myoclonic seizures — mechanism mismatch.</p>
+      </div>
+
+      <div class="hy-summary-section">
+        <h3>3 · ASM Pharmacology — Indication / MOA / AE / CI / DDI</h3>
+                <table class="hy-pharm-table">
+          <thead>
+          <tr><th>Class</th><th>Drug</th><th>MOA</th><th>Key Indication</th><th>Key AE / Boxed Warning</th><th>Contraindication / Caution</th><th>Key DDI</th></tr>
+          </thead>
+          <tbody>
+          <tr><td>Na⁺ blocker</td><td>Phenytoin</td><td>↑ Na⁺ channel inactivation</td><td>Focal; status epilepticus (1st-line prophylaxis)</td><td>Gingival hyperplasia, SJS, fetal hydantoin syndrome</td><td>Zero-order kinetics — toxicity lingers</td><td>Induces CYPs — many DDIs</td></tr>
+          <tr><td>Na⁺ blocker</td><td>Fosphenytoin</td><td>Prodrug → phenytoin</td><td>IV/IM alternative to phenytoin</td><td>Boxed: hypotension/arrhythmia w/ rapid infusion</td><td>Same as phenytoin</td><td>Same as phenytoin</td></tr>
+          <tr><td>Na⁺ blocker</td><td>Carbamazepine</td><td>↑ Na⁺ inactivation</td><td>Focal, GTC; trigeminal neuralgia (1st-line)</td><td>SJS, SIADH/hyponatremia, agranulocytosis</td><td>HLA-B*1502+, marrow suppression, MAOI</td><td>Autoinduces CYP3A4 (dose ↑ over time)</td></tr>
+          <tr><td>Na⁺ blocker</td><td>Lamotrigine</td><td>↑ Na⁺ inactivation</td><td>Focal, GTC, absence (3rd-line)</td><td>SJS if titrated fast; suicidality</td><td>Must titrate slowly — no exceptions</td><td>Valproate doubles t½; inducers halve it</td></tr>
+          <tr><td>Na⁺ blocker</td><td>Lacosamide</td><td>Slow Na⁺ inactivation (no direct block)</td><td>Focal (adjunct)</td><td>↑ PR interval, diplopia</td><td>Conduction disease</td><td>CYP substrate only — minimal DDIs</td></tr>
+          <tr><td>Ca²⁺ blocker</td><td>Ethosuximide</td><td>↓ T-type Ca²⁺ current</td><td>Absence ONLY (1st-line)</td><td>SJS, hematologic (leukopenia)</td><td>Ineffective for focal/GTC — auto-wrong-answer</td><td>↓ clearance with valproate</td></tr>
+          <tr><td>Ca²⁺ blocker</td><td>Valproic Acid</td><td>↓ T-type Ca²⁺, ↑ Na⁺ inactivation, ↑ GABA</td><td>1st-line generalized &amp; absence; focal alternative</td><td>Pancreatitis, hepatotoxicity, teratogen (10–20× spina bifida), weight gain</td><td><strong>Pregnancy — off the table, no exceptions</strong></td><td>CYP INHIBITOR — ↑ phenytoin, carbamazepine, phenobarbital, lamotrigine</td></tr>
+          <tr><td>Ca²⁺ blocker</td><td>Gabapentin / Pregabalin</td><td>↓ HVA Ca²⁺ (α2δ subunit)</td><td>Adjunct focal/GTC; neuropathic pain, fibromyalgia (pregabalin)</td><td>Sedation, weight gain</td><td>—</td><td>No significant CYP DDIs</td></tr>
+          <tr><td>GABA</td><td>Benzodiazepines</td><td>↑ frequency of Cl⁻ channel opening</td><td>Status epilepticus (1st-line, all types)</td><td>Sedation, resp. depression, 1st-trimester cleft/cardiac teratogen</td><td>—</td><td>Antidote: flumazenil</td></tr>
+          <tr><td>GABA</td><td>Barbiturates (Phenobarbital)</td><td>↑ duration of Cl⁻ opening — no ceiling at high dose</td><td>Neonatal seizures (evidence shifting to levetiracetam), status epilepticus</td><td>Resp/cardiac depression (dangerous in OD — no ceiling)</td><td>Porphyria (induces ALA synthase)</td><td>Broad CYP inducer</td></tr>
+          <tr><td>GABA</td><td>Vigabatrin</td><td>Irreversible GABA-transaminase inhibitor</td><td>Refractory focal epilepsy; infantile spasms</td><td>Boxed: permanent vision loss (&gt;30%)</td><td>—</td><td>CYP2C inducer → ↓ phenytoin levels</td></tr>
+          <tr><td>GABA</td><td>Tiagabine</td><td>Inhibits GAT1 transporter (↓ GABA reuptake)</td><td>Adjunct focal seizures</td><td>Anxiety, tremor, rare psychosis</td><td>—</td><td>—</td></tr>
+          <tr><td>Glutamate</td><td>Felbamate</td><td>NMDA NR2B antagonist</td><td>Refractory epilepsy only</td><td>Fatal aplastic anemia, liver failure</td><td>—</td><td>—</td></tr>
+          <tr><td>Glutamate</td><td>Rufinamide</td><td>↑ Na⁺ inactivation + mGluR5 antagonism (high dose)</td><td>Lennox-Gastaut syndrome</td><td>Diplopia, somnolence</td><td>—</td><td>Induces CYP3A4; inhibits CYP2E1</td></tr>
+          <tr><td>Other</td><td>Levetiracetam</td><td>Binds SV2A (↓ glutamate/GABA release)</td><td>Broad-spectrum: focal, generalized, Lennox-Gastaut</td><td>Suicidality, behavioral/mood change</td><td>—</td><td>None significant — cleanest DDI profile in class</td></tr>
+          <tr><td>Other</td><td>Brivaracetam</td><td>SV2A (levetiracetam analog)</td><td>Focal seizures (age &gt;1 month)</td><td>Suicidality, ataxia, bronchospasm</td><td>—</td><td>CYP2C19 metabolism</td></tr>
+          <tr><td>Other</td><td>Topiramate</td><td>Multi-target: Na⁺, GABA<sub>A</sub>, AMPA, weak carbonic anhydrase</td><td>Focal, GTC, migraine; Lennox-Gastaut adjunct</td><td>Kidney stones, metabolic acidosis, "Dopamax" word-finding/cognitive slowing</td><td>—</td><td>Induces CYP3A4; inhibits CYP2C19; lithium interaction</td></tr>
+          </tbody>
+        </table>
+        <ul class="hy-bullets">
+          <li><strong>SJS trio:</strong> carbamazepine, lamotrigine, phenytoin — screen HLA-B*1502 in patients of Asian descent before starting.</li>
+          <li><strong>Bone health:</strong> CYP-inducing ASMs (phenytoin, carbamazepine, phenobarbital) ↑ vitamin D catabolism → fracture risk; valproate also linked despite being an inhibitor.</li>
+          <li><strong>Pregnancy/contraception:</strong> enzyme-inducing ASMs ↓ hormonal contraceptive efficacy via CYP3A4 (copper IUD unaffected); lamotrigine + estrogen contraceptives interact bidirectionally (↓ lamotrigine levels, ↓ seizure control).</li>
+          <li><strong>Suicidality:</strong> FDA class-wide warning across all ASMs — baseline mood-disorder comorbidity in epilepsy is already ~35%.</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 <div class="lightbox" id="lightbox" aria-hidden="true">
   <img id="lightboxImg" alt="Zoomed slide image">
 </div>
@@ -1575,6 +1807,22 @@ function changeFontSize(delta) {
   document.body.style.fontSize = currentFontSize + 'px';
 }
 
+/* ---------- High-Yield Summary Modal ---------- */
+function openHySummary() {
+  document.getElementById('hySummaryBackdrop').classList.add('open');
+  document.body.classList.add('hy-modal-open');
+}
+function closeHySummary() {
+  document.getElementById('hySummaryBackdrop').classList.remove('open');
+  document.body.classList.remove('hy-modal-open');
+}
+function printHySummary() {
+  window.print();
+}
+document.getElementById('hySummaryBackdrop').addEventListener('click', function(e) {
+  if (e.target === this) closeHySummary();
+});
+
 /* ---------- Lightbox ---------- */
 const lightbox = document.getElementById('lightbox');
 const lightboxImg = document.getElementById('lightboxImg');
@@ -1593,7 +1841,7 @@ document.querySelectorAll('.slide-img').forEach(img => {
 });
 lightbox.addEventListener('click', closeLightbox);
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'Escape') { closeLightbox(); closeHySummary(); }
 });
 
 /* ---------- Table Quiz ---------- */

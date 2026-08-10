@@ -211,7 +211,8 @@ ul.notes-list li::before { content: '›'; position: absolute; left: 0; color: v
 table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.92rem; }
 th { background: var(--ink); color: var(--paper); text-align: left; padding: 10px 12px;
   font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; letter-spacing: 0.04em; text-transform: uppercase; }
-td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; overflow-wrap: anywhere; }
+th { overflow-wrap: anywhere; }
 tr:nth-child(even) td { background: var(--cream); }
 
 /* ============ EXAM Q ============ */
@@ -342,12 +343,126 @@ footer { text-align: center; padding: 40px 24px 100px; font-family: 'JetBrains M
   .rat-toggle { bottom: 12px; right: 12px; }
 }
 
+/* ---------- HIGH-YIELD SUMMARY: TOP ANNOUNCE BAR ---------- */
+.hy-announce-bar { background: linear-gradient(90deg, var(--accent2), var(--accent)); padding: 9px 20px;
+  text-align: center; position: sticky; top: 0; z-index: 70; }
+.hy-top-summary-btn { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.16);
+  border: 1px solid rgba(255,255,255,0.55); color: #fff; font-family: 'JetBrains Mono', monospace;
+  font-size: 0.74rem; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase;
+  padding: 8px 18px; border-radius: 24px; cursor: pointer; transition: background 0.15s, transform 0.1s; }
+.hy-top-summary-btn:hover { background: rgba(255,255,255,0.32); }
+.hy-top-summary-btn:active { transform: scale(0.97); }
+.toc-bar { top: 50px; }
+@media (max-width: 640px) {
+  .hy-announce-bar { padding: 8px 12px; }
+  .hy-top-summary-btn { font-size: 0.62rem; padding: 8px 12px; white-space: normal; }
+  .toc-bar { top: 46px; }
+}
+
+/* ---------- HIGH-YIELD SUMMARY: MODAL ---------- */
+body.hy-modal-open { overflow: hidden; }
+.hy-modal-backdrop { position: fixed; inset: 0; background: rgba(10,8,4,0.72); z-index: 300;
+  display: none; align-items: flex-start; justify-content: center; padding: 34px 16px; overflow-y: auto; }
+.hy-modal-backdrop.open { display: flex; }
+.hy-modal { background: var(--paper); color: var(--ink); border-radius: 14px; max-width: 1000px; width: 100%;
+  margin: 0 auto; box-shadow: 0 20px 60px rgba(0,0,0,0.45); overflow: hidden; }
+.hy-modal-header { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap;
+  background: var(--ink); color: var(--paper); padding: 16px 22px; }
+.hy-modal-header h2 { font-family: 'Playfair Display', serif; font-size: 1.28rem; margin: 0; color: var(--hero-heading); }
+.hy-modal-header .hy-modal-sub { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; letter-spacing: 0.07em;
+  text-transform: uppercase; color: var(--hero-meta-label); margin-top: 4px; display: block; }
+.hy-modal-actions { display: flex; gap: 10px; flex-shrink: 0; }
+.hy-print-btn, .hy-close-btn { font-family: 'JetBrains Mono', monospace; font-size: 0.66rem; font-weight: 700;
+  letter-spacing: 0.04em; text-transform: uppercase; border-radius: 20px; padding: 9px 16px; cursor: pointer; border: none; }
+.hy-print-btn { background: var(--gold); color: #2b1d05; }
+.hy-print-btn:hover { filter: brightness(1.1); }
+.hy-close-btn { background: rgba(255,255,255,0.12); color: var(--paper); border: 1px solid rgba(255,255,255,0.3); }
+.hy-close-btn:hover { background: rgba(255,255,255,0.22); }
+.hy-modal-body { padding: 20px 24px 30px; max-height: 78vh; overflow-y: auto; }
+.hy-summary-section { margin-bottom: 22px; }
+.hy-summary-section:last-child { margin-bottom: 0; }
+.hy-summary-section h3 { font-family: 'Playfair Display', serif; font-size: 1.02rem; color: var(--accent);
+  border-bottom: 2px solid var(--border); padding-bottom: 6px; margin-bottom: 10px; }
+.hy-summary-section h4 { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--accent2); margin: 14px 0 6px; }
+.hy-mini-table { font-size: 0.78rem; margin: 8px 0 14px; }
+.hy-mini-table th { font-size: 0.6rem; padding: 7px 9px; }
+.hy-mini-table td { padding: 7px 9px; font-size: 0.78rem; }
+.hy-pharm-table { font-size: 0.7rem; margin: 8px 0 14px; }
+.hy-pharm-table th { font-size: 0.56rem; padding: 5px 7px; }
+.hy-pharm-table td { padding: 5px 7px; font-size: 0.7rem; vertical-align: top; }
+.hy-pharm-table td:nth-child(1) { font-weight: 700; white-space: nowrap; }
+.hy-vocab-note { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--muted); margin: 4px 0 12px; line-height: 1.5; }
+.hy-bullets { margin: 0; padding-left: 20px; font-size: 0.82rem; }
+.hy-bullets li { margin-bottom: 6px; }
+.hy-steps { margin: 8px 0 14px; padding-left: 22px; font-size: 0.84rem; }
+.hy-steps li { margin-bottom: 6px; }
+.hy-ladder { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem; margin: 8px 0 6px; }
+.hy-ladder-step { background: var(--cream); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; }
+.hy-ladder-arrow { color: var(--accent); font-weight: 700; }
+
+/* ---------- PRINT: SUMMARY MODAL ONLY ---------- */
+@media print {
+  body, html { height: auto !important; overflow: visible !important; background: #fff !important; }
+  body > *:not(.hy-modal-backdrop) { display: none !important; }
+  .hy-modal-backdrop:not(.open) { display: none !important; }
+  .hy-modal-backdrop.open {
+    display: block !important; position: static !important; inset: auto !important;
+    background: #fff !important; padding: 0 !important; margin: 0 !important;
+    overflow: visible !important; height: auto !important; width: auto !important;
+  }
+  .hy-modal { max-width: 100% !important; width: 100% !important; margin: 0 !important;
+    box-shadow: none !important; border-radius: 0 !important; background: #fff !important; color: #000 !important; overflow: visible !important; }
+  .hy-modal-header { padding: 4px 0 6px !important; background: #fff !important; color: #000 !important; border-bottom: 1.5px solid #000 !important; }
+  .hy-modal-header h2 { font-size: 13pt !important; }
+  .hy-modal-header h2, .hy-modal-header .hy-modal-sub { color: #000 !important; }
+  .hy-modal-actions { display: none !important; }
+  .hy-modal-body { max-height: none !important; overflow: visible !important; padding: 4px 0 0 !important; }
+
+  .hy-summary-section { margin-bottom: 3pt !important; }
+  .hy-summary-section h3 {
+    page-break-after: avoid; font-size: 10pt !important; margin: 0 0 2pt !important;
+    padding-bottom: 1.5pt !important; border-bottom-width: 1px !important;
+  }
+  .hy-summary-section h4 { font-size: 7.2pt !important; margin: 3pt 0 1.5pt !important; }
+  .hy-summary-section h3, .hy-summary-section h4 { color: #000 !important; }
+  .hy-vocab-note, .hy-bullets, .hy-steps { margin: 1pt 0 3pt !important; font-size: 7.2pt !important; line-height: 1.2 !important; }
+  .hy-steps { padding-left: 14pt !important; }
+  .hy-bullets { padding-left: 12pt !important; }
+  .hy-steps li, .hy-bullets li { margin-bottom: 1pt !important; }
+
+  .hy-mini-table, .hy-ladder { page-break-inside: avoid; }
+  .hy-pharm-table tr { page-break-inside: avoid; }
+  .hy-mini-table, .hy-pharm-table { margin: 1pt 0 3pt !important; }
+
+  /* Ladder-style diagrams: drop the boxed/flex layout for print so they flow
+     as a compact line instead of jumping to their own mostly-empty page. */
+  .hy-ladder { display: block !important; margin: 1pt 0 2pt !important; font-size: 7.2pt !important; }
+  .hy-ladder-step {
+    display: inline !important; border: none !important; background: none !important;
+    padding: 0 !important; border-radius: 0 !important;
+  }
+  .hy-ladder-arrow { display: inline !important; margin: 0 4pt !important; color: #000 !important; }
+
+  .tq-bar { display: none !important; }
+  table, th, td { background: #fff !important; color: #000 !important; border-color: #999 !important; }
+  th { background: #e6e6e6 !important; }
+  table { margin: 0 !important; }
+  th, td { padding: 2.5px 5px !important; line-height: 1.2 !important; }
+  .hy-pharm-table, .hy-pharm-table th, .hy-pharm-table td { font-size: 6.1pt !important; padding: 1.5px 4px !important; line-height: 1.1 !important; }
+  .hy-pharm-table td:nth-child(1) { color: #000 !important; }
+  .hy-mini-table th, .hy-mini-table td { font-size: 7.2pt !important; padding: 2.5px 5px !important; }
+
+  @page { size: landscape; margin: 0.3in; }
+}
 </style>
 </head>
 <body>
 
-
-
+<div class="hy-announce-bar">
+  <button type="button" class="hy-top-summary-btn" onclick="openHySummary()">📋 See One-Page Summary (High-Yield)</button>
+</div>
 
 
 <div class="hero">
@@ -915,6 +1030,83 @@ Alzheimer Disease Pharmacology Study Notes · Source: Scott D. Ochs, PharmD, UNE
   </div>
 </div>
 
+<div class="hy-modal-backdrop" id="hySummaryBackdrop">
+  <div class="hy-modal">
+    <div class="hy-modal-header">
+      <div>
+        <h2>📋 One-Page Summary — High-Yield</h2>
+        <span class="hy-modal-sub">Pathophysiology &amp; Targets · Staging &amp; Drug Selection · Pharmacology (MOA / Indication / AE / CI / DDI)</span>
+      </div>
+      <div class="hy-modal-actions">
+        <button type="button" class="hy-print-btn" onclick="printHySummary()">🖨️ Print</button>
+        <button type="button" class="hy-close-btn" onclick="closeHySummary()">✕ Close</button>
+      </div>
+    </div>
+    <div class="hy-modal-body">
+
+      <div class="hy-summary-section">
+        <h3>1 · Pathophysiology — Three Hypotheses, Three Drug Targets</h3>
+        <table class="hy-mini-table">
+          <tr><th>Hypothesis</th><th>Core Idea</th><th>Drug Target</th></tr>
+          <tr><td>Amyloid cascade</td><td>Aβ generation initiates the neurodegenerative cascade; plaques form <em>between</em> neurons</td><td>Anti-amyloid monoclonal antibodies</td></tr>
+          <tr><td>Cholinergic hypothesis</td><td>Loss of nicotinic receptors; ↓ synaptic ACh, serotonin, norepinephrine</td><td>Cholinesterase inhibitors</td></tr>
+          <tr><td>Glutamate / excitotoxicity</td><td>Neuronal loss → excess glutamate → free radicals → further neuronal loss</td><td>NMDA receptor blocker (memantine)</td></tr>
+        </table>
+        <p class="hy-vocab-note">Amyloid plaques = <strong>between</strong> neurons (β-amyloid). Neurofibrillary tangles = <strong>within</strong> neurons (hyperphosphorylated tau) — tangle density tracks disease severity. Biggest risk factor: <strong>age</strong>. APOE*4 (late-onset) accelerates amyloid deposition; early-onset AD maps to chromosomes 1, 14, 21. AD is <strong>not</strong> primarily dopaminergic (contrast with Parkinson disease) — the losses are cholinergic/serotonergic/noradrenergic.</p>
+      </div>
+
+      <div class="hy-summary-section">
+        <h3>2 · Stage by MMSE → Select the Right Drug</h3>
+        <table class="hy-mini-table">
+          <tr><th>Stage</th><th>MMSE</th><th>Clinical Picture</th><th>Drug</th></tr>
+          <tr><td>Mild</td><td>21–26</td><td>Finance/food-prep decline; may deny memory problems; still recognizes family</td><td>Cholinesterase inhibitor</td></tr>
+          <tr><td>Moderate</td><td>10–20</td><td>Needs ADL help; disoriented to time; agitation, paranoia, delusions common</td><td>ChEI (± add memantine near "severe" end)</td></tr>
+          <tr><td>Severe</td><td>0–9</td><td>Loses speech, gait, self-feeding; incontinent; needs 24/7 care</td><td>Memantine (± continuing ChEI)</td></tr>
+        </table>
+        <p class="hy-vocab-note"><strong>Cholinesterase inhibitors → mild-to-moderate. Memantine → moderate-to-severe.</strong> Deliberate overlap at "moderate" — combination therapy once a ChEI patient progresses toward severe. 4 A's of cognitive symptoms: <strong>Amnesia, Aphasia, Apraxia, Agnosia</strong> (plus disorientation and executive dysfunction).</p>
+        <h4>Benchmark for "Is This Drug Actually Helping?"</h4>
+        <div class="hy-ladder">
+          <div class="hy-ladder-step">Untreated decline: ~2–4 MMSE points / year</div>
+          <span class="hy-ladder-arrow">vs.</span>
+          <div class="hy-ladder-step">Clinically meaningful response: decline kept &lt;2 points / year</div>
+        </div>
+        <p class="hy-vocab-note"><strong>Statistically significant ≠ clinically meaningful</strong> — the theme of the entire evidence base. ChEIs improve ADAS-Cog by only ~2.7 of 70 points (rock-solid p-value, tiny effect); more patients stop ChEIs for adverse effects (29%) than stop placebo (18%). Combination therapy (ChEI + memantine) is statistically better still but only marginally, and costly.</p>
+      </div>
+
+      <div class="hy-summary-section">
+        <h3>3 · Drug Pharmacology — Indication / MOA / AE / CI / DDI</h3>
+        <table class="hy-pharm-table">
+          <thead>
+          <tr><th>Class</th><th>Drug</th><th>MOA</th><th>Key Indication</th><th>Key AE / Boxed Warning</th><th>Contraindication / Caution</th><th>Key DDI</th></tr>
+          </thead>
+          <tbody>
+          <tr><td>ChEI</td><td>Donepezil (Aricept)</td><td>Reversible, selective AChE inhibitor</td><td>Mild-to-moderate AD</td><td>Nausea, anorexia, vomiting, diarrhea, bradycardia, syncope</td><td>—</td><td>CYP2D6/3A4 substrate; avoid anticholinergics (TCAs, oxybutynin/tolterodine, diphenhydramine)</td></tr>
+          <tr><td>ChEI</td><td>Rivastigmine (Exelon)</td><td>Reversible AChE <em>and</em> BuChE inhibitor</td><td>Mild-to-moderate AD</td><td>Same class GI/cholinergic AEs</td><td>—</td><td>Hydrolyzed (non-CYP) — fewer metabolic interactions</td></tr>
+          <tr><td>ChEI</td><td>Galantamine (Razadyne)</td><td>Reversible, competitive AChE inhibitor; also allosteric nicotinic modulator</td><td>Mild-to-moderate AD</td><td>Same class GI/cholinergic AEs</td><td>—</td><td>CYP2D6/3A4 substrate</td></tr>
+          <tr><td>NMDA blocker</td><td>Memantine (Namenda)</td><td>Uncompetitive NMDA channel blocker</td><td>Moderate-to-severe AD (± continuing a ChEI)</td><td>Dizziness, confusion, hallucinations</td><td>Reduce dose if CrCl &lt; 30 mL/min</td><td>No clinically significant DDIs</td></tr>
+          <tr><td>Anti-amyloid mAb</td><td>Donanemab (Kisunla)</td><td>IgG mAb vs. soluble/insoluble amyloid-β; reduces plaque burden</td><td>Early AD; can stop once PET shows minimal plaque</td><td>Hemosiderosis, microhemorrhage, brain edema (ARIA), headache, falls</td><td>—</td><td>No head-to-head vs. lecanemab; neither stops/reverses decline</td></tr>
+          <tr><td>Anti-amyloid mAb</td><td>Lecanemab (Leqembi)</td><td>IgG mAb vs. amyloid-β</td><td>Early AD</td><td>Same ARIA-type AEs</td><td>—</td><td>Dosed more frequently than donanemab</td></tr>
+          <tr><td>Atypical antipsychotic (on-label)</td><td>Brexpiprazole (Rexulti)</td><td>5-HT1A &amp; D2/D3 partial agonist</td><td>Only FDA-approved drug specifically for AD agitation</td><td>Weight gain, akathisia, sedation; boxed: ↑ mortality in elderly dementia psychosis</td><td>Elderly dementia-related psychosis (class boxed warning)</td><td>~$1,400/mo — no proven advantage over aripiprazole</td></tr>
+          <tr><td>Atypical antipsychotic (off-label)</td><td>Aripiprazole, risperidone, olanzapine</td><td>D2/5-HT2A antagonism (varies by agent)</td><td>Off-label AD agitation/psychosis</td><td>Same class boxed warning</td><td>Same</td><td>Aripiprazole ~$15/mo — comparable efficacy to brexpiprazole</td></tr>
+          <tr><td>SSRI / other antidepressant</td><td>Citalopram, escitalopram, sertraline, etc.; mirtazapine, trazodone</td><td>Serotonin reuptake inhibition (varies)</td><td>Depression in AD</td><td>—</td><td>Preferred over TCAs</td><td>Avoid TCAs — anticholinergic burden undercuts ChEIs</td></tr>
+          <tr><td>Anticonvulsant</td><td>Carbamazepine, valproic acid</td><td>—</td><td>Agitation or aggression</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>Not recommended</td><td>Vitamin E ≥400 IU/day</td><td>Antioxidant — scavenges free radicals</td><td>No convincing benefit shown (3 RCTs)</td><td>↑ mortality risk, ↑ bleeding/hemorrhagic stroke</td><td>—</td><td>—</td></tr>
+          <tr><td>Not recommended</td><td>NSAIDs</td><td>Anti-inflammatory</td><td>No benefit shown despite plausible mechanism</td><td>GI bleed, gastritis risk</td><td>—</td><td>—</td></tr>
+          </tbody>
+        </table>
+        <ul class="hy-bullets">
+          <li><strong>All 3 ChEIs are reversible.</strong> Classic <em>irreversible</em> AChE inhibitors are organophosphates/nerve agents — poisons, not AD therapeutics.</li>
+          <li><strong>Boxed warning, whole antipsychotic class:</strong> elderly patients with dementia-related psychosis treated with an antipsychotic (typical or atypical) have increased mortality — lowest dose, shortest duration.</li>
+          <li><strong>Aducanumab</strong> (the original anti-amyloid mAb) was approved despite an FDA advisory committee voting <strong>8-to-1 against</strong> it for insufficient efficacy evidence — it has since been removed from the U.S. market.</li>
+          <li>Nonpharmacologic care (stable low-stress environment, security objects, daytime activity, <strong>individualized exercise programs</strong>) is genuinely evidence-supported — try it before medicating noncognitive symptoms.</li>
+          <li>Most common cause of death in AD: <strong>pneumonia</strong>. Typical survival 4–8 years from diagnosis. No current drug prolongs life, cures, or reverses AD.</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 <div class="lightbox" id="lightbox" aria-hidden="true">
   <img id="lightboxImg" alt="Zoomed slide image">
 </div>
@@ -1095,6 +1287,22 @@ function initTableQuiz() {
   });
 }
 
+/* ============ HIGH-YIELD SUMMARY MODAL ============ */
+function openHySummary() {
+  document.getElementById('hySummaryBackdrop').classList.add('open');
+  document.body.classList.add('hy-modal-open');
+}
+function closeHySummary() {
+  document.getElementById('hySummaryBackdrop').classList.remove('open');
+  document.body.classList.remove('hy-modal-open');
+}
+function printHySummary() {
+  window.print();
+}
+document.getElementById('hySummaryBackdrop').addEventListener('click', function(e) {
+  if (e.target === this) closeHySummary();
+});
+
 /* ============ LIGHTBOX ============ */
 const lightbox = document.getElementById('lightbox');
 const lightboxImg = document.getElementById('lightboxImg');
@@ -1113,7 +1321,7 @@ document.querySelectorAll('.slide-img').forEach(img => {
 });
 lightbox.addEventListener('click', closeLightbox);
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'Escape') { closeLightbox(); closeHySummary(); }
 });
 
 </script>
