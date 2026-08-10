@@ -403,6 +403,23 @@ body.hy-modal-open { overflow: hidden; }
 .hy-ladder-step { background: var(--cream); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; }
 .hy-ladder-arrow { color: var(--accent); font-weight: 700; }
 
+/* ---- Summary-modal readability upgrade: section badges, callouts, inline highlights ---- */
+.hy-summary-section h3 { display: flex; align-items: baseline; gap: 10px; }
+.hy-sec-num {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; font-weight: 700;
+  background: var(--accent); color: #fff; border-radius: 6px; padding: 3px 9px; flex-shrink: 0;
+  letter-spacing: 0.02em;
+}
+.hy-summary-section .callout { margin: 10px 0 14px; padding: 11px 15px; }
+.hy-summary-section .callout-title { font-size: 0.68rem; margin-bottom: 5px; }
+.hy-summary-section .callout p, .hy-summary-section .callout li { font-size: 0.78rem; line-height: 1.5; }
+.hy-summary-section .callout p:last-child, .hy-summary-section .callout ul:last-child { margin-bottom: 0; }
+.hy-summary-section .callout ul { margin: 0; padding-left: 18px; }
+.hy-hl {
+  background: var(--highlight); padding: 1px 6px; border-radius: 4px; font-weight: 700;
+  color: var(--ink); white-space: nowrap;
+}
+
 /* ---------- PRINT: SUMMARY MODAL ONLY ---------- */
 @media print {
   body, html { height: auto !important; overflow: visible !important; background: #fff !important; }
@@ -446,6 +463,16 @@ body.hy-modal-open { overflow: hidden; }
     padding: 0 !important; border-radius: 0 !important;
   }
   .hy-ladder-arrow { display: inline !important; margin: 0 3pt !important; color: #000 !important; }
+
+  .hy-sec-num { font-size: 6.2pt !important; padding: 1px 4px !important; border-radius: 3px !important; }
+  .hy-summary-section .callout {
+    margin: 1.5pt 0 !important; padding: 3pt 5pt !important; border-radius: 3px !important;
+    border-width: 1px !important; page-break-inside: avoid;
+  }
+  .hy-summary-section .callout-title { font-size: 6.2pt !important; margin-bottom: 1pt !important; }
+  .hy-summary-section .callout p, .hy-summary-section .callout li { font-size: 6.6pt !important; line-height: 1.15 !important; }
+  .hy-summary-section .callout ul { padding-left: 10pt !important; }
+  .hy-hl { background: none !important; padding: 0 !important; font-weight: 700 !important; text-decoration: underline; }
 
   .tq-bar { display: none !important; }
   table, th, td { background: #fff !important; color: #000 !important; border-color: #999 !important; }
@@ -1211,7 +1238,7 @@ Parkinson Disease Pharmacology Study Notes · Source: Scott D. Ochs, PharmD, UNE
     <div class="hy-modal-header">
       <div>
         <h2>📋 One-Page Summary — High-Yield</h2>
-        <span class="hy-modal-sub">Neurochemical Basis &amp; MOA · On/Off Management · Levodopa Risk/Benefit · Pharmacology (Indication / AE / CI / DDI)</span>
+        <span class="hy-modal-sub">Neurochemical Basis, Non-Motor Sx &amp; Goals · MOA by Class · On/Off Management · Drug Pharmacology (Indication / AE / CI / DDI)</span>
       </div>
       <div class="hy-modal-actions">
         <button type="button" class="hy-print-btn" onclick="printHySummary()">🖨️ Print</button>
@@ -1221,17 +1248,37 @@ Parkinson Disease Pharmacology Study Notes · Source: Scott D. Ochs, PharmD, UNE
     <div class="hy-modal-body">
 
       <div class="hy-summary-section">
-        <h3>1 · Neurochemical Basis — Direct &amp; Indirect Pathways</h3>
+        <h3><span class="hy-sec-num">1</span> Neurochemical Basis — Direct &amp; Indirect Pathways</h3>
         <table class="hy-mini-table">
           <tr><th>Pathway</th><th>Receptor</th><th>Normal Job of Dopamine</th><th>In PD (Dopamine Lost)</th></tr>
           <tr><td>Direct</td><td>D1 (Gs)</td><td>↑GABA to GPi/SNr → inhibits the inhibitor → thalamus freed → movement proceeds</td><td>Under-driven — less "go" signal for movement</td></tr>
           <tr><td>Indirect</td><td>D2 (Gi)</td><td>Suppresses a chain (GPe → STN → GPi/SNr) that would otherwise block movement</td><td>Loses its brake → chronically <strong>overactive</strong> → thalamus locked down → bradykinesia</td></tr>
         </table>
-        <p class="hy-vocab-note">Core lesion: dopaminergic neuron loss in the <strong>substantia nigra</strong> + <strong>Lewy bodies</strong> in survivors (definitive diagnosis is postmortem). Symptoms emerge only after <strong>~50% neuron loss</strong> (~70–80% striatal dopamine loss) — large reserve capacity. Classic triad: <strong>Tremor, Rigidity, Bradykinesia</strong> (TRAP elsewhere adds Postural instability). <strong>Drug-induced parkinsonism:</strong> any D2 blocker (antipsychotics, metoclopramide, prochlorperazine) can mimic it.</p>
+        <p class="hy-vocab-note">Core lesion: dopaminergic neuron loss in the <strong>substantia nigra</strong> + <strong>Lewy bodies</strong> in survivors (definitive diagnosis is postmortem). Symptoms emerge only after <span class="hy-hl">~50% neuron loss</span> (~70–80% striatal dopamine loss) — large reserve capacity. Classic triad: <strong>Tremor, Rigidity, Bradykinesia</strong> (TRAP elsewhere adds Postural instability). <strong>Drug-induced parkinsonism:</strong> any D2 blocker (antipsychotics, metoclopramide, prochlorperazine) can mimic it.</p>
+
+        <div class="callout callout-mnemonic">
+          <div class="callout-title">🧠 Memory Hook — The "Double Negative"</div>
+          <p>Both pathways work by inhibiting an inhibitor. <strong>Direct = D1 = "Drive"</strong> (dopamine directly enables movement). <strong>Indirect = D2 = "Interrupt the interrupter"</strong> — dopamine's job is keeping the movement-blocking chain suppressed. In PD you lose dopamine on both, but losing the <strong>brake on the indirect pathway</strong> matters far more — it goes chronically overactive and locks the thalamus down.</p>
+        </div>
+
+        <div class="callout callout-clinical">
+          <div class="callout-title">🩺 Non-Motor Symptoms — Don't Forget These</div>
+          <ul>
+            <li>Cognitive dysfunction/dementia; psychosis (hallucinations, delusions)</li>
+            <li>Mood — depression, anxiety, apathy</li>
+            <li>Sleep disturbance, fatigue; <strong>olfactory dysfunction</strong> (often an early, pre-motor clue)</li>
+            <li>Autonomic dysfunction — orthostatic hypotension in up to <span class="hy-hl">60%</span> of PD patients</li>
+          </ul>
+        </div>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">🚫 Goals of Treatment — What Therapy Can't Do</div>
+          <p>Every drug in this lecture is <strong>symptomatic management only</strong> — none reverse the disease or halt its progression. Goals: improve motor/non-motor symptoms, preserve function (ADLs) for a period of years, improve quality of life, minimize AEs.</p>
+        </div>
       </div>
 
       <div class="hy-summary-section">
-        <h3>2 · MOA by Drug Class — Where Each One Acts</h3>
+        <h3><span class="hy-sec-num">2</span> MOA by Drug Class — Where Each One Acts</h3>
         <table class="hy-mini-table">
           <tr><th>Class</th><th>Site of Action</th><th>MOA Summary</th></tr>
           <tr><td>Levodopa/carbidopa</td><td>Periphery + brain</td><td>Levodopa = DA precursor, crosses BBB; carbidopa blocks peripheral LAAD (never enters brain) — spares levodopa for CNS entry</td></tr>
@@ -1242,11 +1289,20 @@ Parkinson Disease Pharmacology Study Notes · Source: Scott D. Ochs, PharmD, UNE
           <tr><td>Amantadine</td><td>Multi-site</td><td>↑DA release, ↓DA reuptake, NMDA blockade, <em>and</em> anticholinergic — 4 mechanisms in one drug</td></tr>
           <tr><td>Anticholinergics</td><td>Striatal ACh interneurons</td><td>Blocks acetylcholine to rebalance DA/ACh tone lost in PD; best for tremor specifically</td></tr>
         </table>
-        <p class="hy-vocab-note"><strong>Carbidopa &amp; COMT-I act in the periphery</strong> (protect levodopa on the way in). <strong>MAO-B-I act in the brain</strong> (protect dopamine once it's there). Dopamine agonists skip the conversion step and hit the receptor directly.</p>
+
+        <div class="callout callout-mnemonic">
+          <div class="callout-title">🧠 Memory Hook — Where Each Class Works</div>
+          <p><strong>Carbidopa &amp; COMT-I act in the periphery</strong> (protect levodopa on the way in). <strong>MAO-B-I act in the brain</strong> (protect dopamine once it's there). Dopamine agonists skip the conversion step and hit the receptor directly. Carbidopa's one job: it <strong>never enters the brain</strong> — if it did, it would block the LAAD activity the brain needs for dopamine synthesis.</p>
+        </div>
+
+        <div class="callout callout-purple">
+          <div class="callout-title">☕ FYI — Neuroprotection (Not Actionable)</div>
+          <p>Caffeine and nicotine both show an <em>inverse</em> epidemiologic association with PD risk (caffeine is an A2A antagonist — same target as istradefylline). These are associations from observational studies, <strong>not</strong> evidence-based recommendations — don't prescribe coffee or cigarettes.</p>
+        </div>
       </div>
 
       <div class="hy-summary-section">
-        <h3>3 · Managing the "On/Off" Phenomenon &amp; Motor Complications</h3>
+        <h3><span class="hy-sec-num">3</span> Managing the "On/Off" Phenomenon &amp; Motor Complications</h3>
         <table class="hy-mini-table">
           <tr><th>Complication</th><th>What It Looks Like</th><th>Management</th></tr>
           <tr><td>End-of-dose "wearing off"</td><td>Fluctuations timed to the end of each dose interval</td><td>↑ dosing frequency; add a MAO-B-I or COMT-I; add a dopamine agonist</td></tr>
@@ -1270,10 +1326,15 @@ Parkinson Disease Pharmacology Study Notes · Source: Scott D. Ochs, PharmD, UNE
           <div class="hy-ladder-step">6 · Reduce levodopa (last resort)</div>
         </div>
         <p class="hy-vocab-note">Evaluate for another cause first (electrolytes, hypoxemia, infection). If an antipsychotic becomes necessary, choose <strong>low D2-affinity</strong> agents (clozapine or quetiapine) so you don't undo the rest of therapy.</p>
+
+        <div class="callout callout-mnemonic">
+          <div class="callout-title">🧠 Memory Hook — Wearing-Off vs. On-Off</div>
+          <p><strong>Wearing-off</strong> = predictable, timed to the end of the dose interval (fix: shorten intervals or add an adjunct). <strong>On-off</strong> = random and severe, not tied to timing (needs apomorphine rescue for acute episodes). Same toolkit treats both — the difference is <em>predictability</em>, not severity.</p>
+        </div>
       </div>
 
       <div class="hy-summary-section">
-        <h3>4 · Drug Pharmacology — Indication / MOA / AE / CI / DDI</h3>
+        <h3><span class="hy-sec-num">4</span> Drug Pharmacology — Indication / MOA / AE / CI / DDI</h3>
         <table class="hy-pharm-table">
           <thead>
           <tr><th>Drug</th><th>MOA</th><th>Key Indication</th><th>Key AE / Boxed Warning</th><th>Contraindication / Caution</th><th>Key DDI</th></tr>
@@ -1292,10 +1353,10 @@ Parkinson Disease Pharmacology Study Notes · Source: Scott D. Ochs, PharmD, UNE
           </tbody>
         </table>
         <ul class="hy-bullets">
-          <li><strong>All patients eventually need levodopa</strong> — the question is only ever <em>when</em> to start it. Benefit is typically robust for 2–5 years before motor complications accumulate. Start low, go slow.</li>
+          <li><strong>All patients eventually need levodopa</strong> — the question is only ever <em>when</em> to start it. Benefit is typically robust for <span class="hy-hl">2–5 years</span> before motor complications accumulate. Start low, go slow.</li>
           <li><strong>Never withdraw levodopa abruptly</strong> — risk of neuroleptic malignant syndrome (also triggerable by dopamine-receptor-blocking antipsychotics).</li>
           <li><strong>Impulse control disorders</strong> (gambling, compulsive shopping, hypersexuality) — counsel every patient started on a dopamine agonist, especially combined with levodopa.</li>
-          <li><strong>Apomorphine ≠ opioid</strong> despite the name resemblance to morphine — it's a rescue-therapy dopamine agonist.</li>
+          <li><span class="hy-hl">Apomorphine ≠ opioid</span> despite the name resemblance to morphine — it's a rescue-therapy dopamine agonist.</li>
           <li>Non-ergot agonists (pramipexole, ropinirole, rotigotine) are preferred; <strong>ergot agonists (bromocriptine)</strong> carry fibrosis/valvulopathy risk and are rarely used for PD today.</li>
         </ul>
       </div>

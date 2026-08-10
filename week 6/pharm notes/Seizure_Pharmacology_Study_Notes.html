@@ -527,6 +527,23 @@ body.hy-modal-open { overflow: hidden; }
 .hy-ladder-step { background: var(--cream); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; }
 .hy-ladder-arrow { color: var(--accent); font-weight: 700; }
 
+/* ---- Summary-modal readability upgrade: section badges, callouts, inline highlights ---- */
+.hy-summary-section h3 { display: flex; align-items: baseline; gap: 10px; }
+.hy-sec-num {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; font-weight: 700;
+  background: var(--accent); color: #fff; border-radius: 6px; padding: 3px 9px; flex-shrink: 0;
+  letter-spacing: 0.02em;
+}
+.hy-summary-section .callout { margin: 10px 0 14px; padding: 11px 15px; }
+.hy-summary-section .callout-title { font-size: 0.68rem; margin-bottom: 5px; }
+.hy-summary-section .callout p, .hy-summary-section .callout li { font-size: 0.78rem; line-height: 1.5; }
+.hy-summary-section .callout p:last-child, .hy-summary-section .callout ul:last-child, .hy-summary-section .callout ol:last-child { margin-bottom: 0; }
+.hy-summary-section .callout ul, .hy-summary-section .callout ol { margin: 0; padding-left: 18px; }
+.hy-hl {
+  background: var(--highlight); padding: 1px 6px; border-radius: 4px; font-weight: 700;
+  color: var(--ink); white-space: nowrap;
+}
+
 /* ---------- PRINT: SUMMARY MODAL ONLY ---------- */
 @media print {
   body, html { height: auto !important; overflow: visible !important; background: #fff !important; }
@@ -570,6 +587,16 @@ body.hy-modal-open { overflow: hidden; }
   }
   .hy-ladder-arrow { display: inline !important; margin: 0 4pt !important; color: #000 !important; }
 
+  .hy-sec-num { font-size: 6.2pt !important; padding: 1px 4px !important; border-radius: 3px !important; }
+  .hy-summary-section .callout {
+    margin: 1.5pt 0 !important; padding: 3pt 5pt !important; border-radius: 3px !important;
+    border-width: 1px !important; page-break-inside: avoid;
+  }
+  .hy-summary-section .callout-title { font-size: 6.2pt !important; margin-bottom: 1pt !important; }
+  .hy-summary-section .callout p, .hy-summary-section .callout li { font-size: 6.6pt !important; line-height: 1.15 !important; }
+  .hy-summary-section .callout ul, .hy-summary-section .callout ol { padding-left: 10pt !important; }
+  .hy-hl { background: none !important; padding: 0 !important; font-weight: 700 !important; text-decoration: underline; }
+
   .tq-bar { display: none !important; }
   table, th, td { background: #fff !important; color: #000 !important; border-color: #999 !important; }
   th { background: #e6e6e6 !important; }
@@ -589,13 +616,11 @@ body.hy-modal-open { overflow: hidden; }
   <button type="button" class="hy-top-summary-btn" onclick="openHySummary()">📋 See One-Page Summary (High-Yield)</button>
 </div>
 
-<div class="rat-banner">⚡ RAT Mode Active — Showing PLO-focused content only: Seizure Classification · Drug Selection · Anticonvulsant Pharmacology</div>
-
 <div class="hero">
   <div class="container">
     <div class="hero-tag">Kyle R. Scully, PhD · UNE COM · Medical Neuroanatomy</div>
     <h1>Seizure <span>Pharmacology</span></h1>
-    <p class="hero-sub">From ion channel to bedside — how a network goes synchronous, how we classify what we see, and how each anticonvulsant class pulls the circuit back into balance. Built from both the slide deck and the live small-group discussion, with 🧠 memory hooks and 👶 ELI5 boxes woven in on the genuinely testable stuff. Toggle <strong>RAT Mode</strong> below for a PLO-only pass.</p>
+    <p class="hero-sub">From ion channel to bedside — how a network goes synchronous, how we classify what we see, and how each anticonvulsant class pulls the circuit back into balance. Built from both the slide deck and the live small-group discussion, with 🧠 memory hooks and 👶 ELI5 boxes woven in on the genuinely testable stuff.</p>
     <div class="hero-meta">
       <div class="hero-meta-item"><span class="label">Drug Classes</span><span class="value">5 Mechanisms</span></div>
       <div class="hero-meta-item"><span class="label">Agents Covered</span><span class="value">20+ ASMs</span></div>
@@ -1601,7 +1626,7 @@ body.hy-modal-open { overflow: hidden; }
     <div class="hy-modal-header">
       <div>
         <h2>📋 One-Page Summary — High-Yield</h2>
-        <span class="hy-modal-sub">Seizure Classification · Drug Selection · ASM Pharmacology (MOA / Indication / AE / CI / DDI)</span>
+        <span class="hy-modal-sub">Seizure Classification &amp; Pattern Recognition · ASM Principles &amp; Drug Selection · ASM Pharmacology (MOA / Indication / AE / CI / DDI)</span>
       </div>
       <div class="hy-modal-actions">
         <button type="button" class="hy-print-btn" onclick="printHySummary()">🖨️ Print</button>
@@ -1611,7 +1636,7 @@ body.hy-modal-open { overflow: hidden; }
     <div class="hy-modal-body">
 
       <div class="hy-summary-section">
-        <h3>1 · Differentiate Seizure Types by Presentation</h3>
+        <h3><span class="hy-sec-num">1</span> Differentiate Seizure Types by Presentation</h3>
         <table class="hy-mini-table">
           <tr><th>Type</th><th>Clinical Clues</th><th>Mechanism / EEG</th></tr>
           <tr>
@@ -1630,11 +1655,32 @@ body.hy-modal-open { overflow: hidden; }
             <td>3 Hz spike-and-wave; thalamocortical T-type Ca²⁺ burst loop, awake state</td>
           </tr>
         </table>
-        <p class="hy-vocab-note">Vocabulary: old "simple" (no LOC) / "complex" (LOC) focal seizure = new "without" / "with impaired awareness." One seizure ≠ epilepsy diagnosis — only ~15% convert, with a normal EEG and negative family history.</p>
+        <p class="hy-vocab-note">Vocabulary: old "simple" (no LOC) / "complex" (LOC) focal seizure = new "without" / "with impaired awareness." One seizure ≠ epilepsy diagnosis — only <span class="hy-hl">~15%</span> convert, with a normal EEG and negative family history.</p>
+
+        <div class="callout callout-purple">
+          <div class="callout-title">🧠 Memory Hook — Classification Drives Everything</div>
+          <p>Focal vs. generalized is the <strong>first fork in the road</strong> — it determines the entire downstream drug differential. Get this classification wrong and every subsequent drug choice is wrong too.</p>
+        </div>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ Don't Be Fooled</div>
+          <p><strong>A normal EEG does NOT rule out epilepsy</strong> — interictal EEG can be normal between events. And watch for <strong>PNES</strong> (psychogenic nonepileptic seizures): eyes closed, waxing-waning course, long duration, no postictal confusion — diagnose with video-EEG, not an ASM trial.</p>
+        </div>
       </div>
 
       <div class="hy-summary-section">
-        <h3>2 · Select the Appropriate Intervention</h3>
+        <h3><span class="hy-sec-num">2</span> Select the Appropriate Intervention</h3>
+
+        <div class="callout callout-key">
+          <div class="callout-title">🔑 ASM Principles — Set Expectations Correctly</div>
+          <p>ASM therapy is <strong>palliative, not curative</strong> — about <span class="hy-hl">~30%</span> of epilepsy isn't well controlled by current pharmacotherapy. Nearly 30 ASMs have reached market since phenobarbital (1912), yet seizure-freedom rates have plateaued: <strong>newer agents improve tolerability, not efficacy</strong>. Every ASM sorts into one of <strong>5 mechanism buckets</strong> — Na⁺ blockers, Ca²⁺ blockers, GABA<sub>A</sub> potentiators, glutamate inhibitors, other — learn the bucket first.</p>
+        </div>
+
+        <div class="callout callout-purple">
+          <div class="callout-title">🧠 Memory Hook — 4 Targets for Focal, 2 for Absence</div>
+          <p><strong>Focal seizures</strong> — four molecular targets converge on enhancing inhibition/limiting spread: GABA<sub>A</sub> potentiation (barbiturates/benzos), Na⁺ inactivation (phenytoin/carbamazepine/lamotrigine), NMDA blockade (felbamate), HVA Ca²⁺ inhibition (gabapentin). <strong>Absence seizures</strong> — only two targets matter: GABA<sub>A</sub> in the thalamic reticular nucleus, and T-type Ca²⁺ blockade (ethosuximide, valproate).</p>
+        </div>
+
         <ol class="hy-steps">
           <li><strong>Monotherapy first, always.</strong> Limits AEs and DDIs.</li>
           <li>If it fails → try a <strong>second monotherapy</strong> before adding an adjunct.</li>
@@ -1658,10 +1704,18 @@ body.hy-modal-open { overflow: hidden; }
           <div class="hy-ladder-step">3 · General anesthetics (propofol, barbiturates)</div>
         </div>
         <p class="hy-vocab-note">Valproate is preferred for <strong>absence</strong> status epilepticus (hits T-type Ca²⁺, the actual driver). Na⁺ blockers and barbiturates can <strong>worsen</strong> absence/myoclonic seizures — mechanism mismatch.</p>
+
+        <div class="callout callout-clinical">
+          <div class="callout-title">🎯 High-Yield Pattern Recognition</div>
+          <ul>
+            <li><strong>JME pattern:</strong> morning myoclonus + GTC = juvenile myoclonic epilepsy. Do <strong>NOT</strong> use carbamazepine or phenytoin (same Na⁺-blocker mismatch as absence/myoclonic seizures generally).</li>
+            <li><strong>Drug-resistant epilepsy:</strong> failed 2 appropriately-chosen ASMs → refer for surgical evaluation.</li>
+          </ul>
+        </div>
       </div>
 
       <div class="hy-summary-section">
-        <h3>3 · ASM Pharmacology — Indication / MOA / AE / CI / DDI</h3>
+        <h3><span class="hy-sec-num">3</span> ASM Pharmacology — Indication / MOA / AE / CI / DDI</h3>
                 <table class="hy-pharm-table">
           <thead>
           <tr><th>Class</th><th>Drug</th><th>MOA</th><th>Key Indication</th><th>Key AE / Boxed Warning</th><th>Contraindication / Caution</th><th>Key DDI</th></tr>
@@ -1687,10 +1741,11 @@ body.hy-modal-open { overflow: hidden; }
           </tbody>
         </table>
         <ul class="hy-bullets">
-          <li><strong>SJS trio:</strong> carbamazepine, lamotrigine, phenytoin — screen HLA-B*1502 in patients of Asian descent before starting.</li>
+          <li><strong>SJS trio:</strong> carbamazepine, lamotrigine, phenytoin — screen <span class="hy-hl">HLA-B*1502</span> in patients of Asian descent before starting. Mortality of progression to toxic epidermal necrolysis is ~20% — don't dismiss early rash + systemic symptoms as a routine allergy.</li>
           <li><strong>Bone health:</strong> CYP-inducing ASMs (phenytoin, carbamazepine, phenobarbital) ↑ vitamin D catabolism → fracture risk; valproate also linked despite being an inhibitor.</li>
-          <li><strong>Pregnancy/contraception:</strong> enzyme-inducing ASMs ↓ hormonal contraceptive efficacy via CYP3A4 (copper IUD unaffected); lamotrigine + estrogen contraceptives interact bidirectionally (↓ lamotrigine levels, ↓ seizure control).</li>
+          <li><strong>Pregnancy/contraception:</strong> enzyme-inducing ASMs ↓ hormonal contraceptive efficacy via CYP3A4 (copper IUD unaffected); lamotrigine + estrogen contraceptives interact bidirectionally (↓ lamotrigine levels, ↓ seizure control). <span class="hy-hl">Valproate = most teratogenic ASM</span> — avoid in childbearing age wherever an alternative exists.</li>
           <li><strong>Suicidality:</strong> FDA class-wide warning across all ASMs — baseline mood-disorder comorbidity in epilepsy is already ~35%.</li>
+          <li><strong>Phenytoin's signature:</strong> zero-order kinetics + gingival hyperplasia + CYP enzyme induction — the classic testable triad.</li>
         </ul>
       </div>
 
@@ -1732,14 +1787,10 @@ body.hy-modal-open { overflow: hidden; }
   <button class="theme-btn" id="themeBtn" onclick="toggleThemePanel()" title="Switch theme">
     <span>🎨</span><span>Theme</span>
   </button>
-  <button class="rat-btn off" id="ratBtn" onclick="toggleRat()">
-    <span id="ratIcon">⚡</span><span id="ratLabel">RAT Mode</span>
-  </button>
 </div>
 
 <script>
 const STORAGE_THEME_KEY = 'seizure-pharm-theme';
-const STORAGE_RAT_KEY = 'seizure-pharm-rat-mode';
 
 /* ---------- Theme Switcher ---------- */
 let themePanelOpen = false;
@@ -1773,32 +1824,6 @@ document.addEventListener('click', function(e) {
     panel.classList.remove('open');
   }
 });
-
-/* ---------- RAT Mode ---------- */
-let ratActive = false;
-function applyRatState(nextState) {
-  ratActive = !!nextState;
-  const body = document.body;
-  const btn = document.getElementById('ratBtn');
-  const icon = document.getElementById('ratIcon');
-  const label = document.getElementById('ratLabel');
-  if (ratActive) {
-    body.classList.add('rat-mode');
-    btn.classList.replace('off', 'on');
-    icon.textContent = '✕';
-    label.textContent = 'Exit RAT';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  } else {
-    body.classList.remove('rat-mode');
-    btn.classList.replace('on', 'off');
-    icon.textContent = '⚡';
-    label.textContent = 'RAT Mode';
-  }
-  localStorage.setItem(STORAGE_RAT_KEY, ratActive ? '1' : '0');
-}
-function toggleRat() {
-  applyRatState(!ratActive);
-}
 
 /* ---------- Font Size Control ---------- */
 let currentFontSize = 16;
@@ -1974,7 +1999,6 @@ function initTableQuiz() {
 function initVisualState() {
   var savedTheme = localStorage.getItem(STORAGE_THEME_KEY) || 'paper';
   setTheme(savedTheme, null, true);
-  applyRatState(localStorage.getItem(STORAGE_RAT_KEY) === '1');
 }
 document.addEventListener('DOMContentLoaded', function() {
   initVisualState();

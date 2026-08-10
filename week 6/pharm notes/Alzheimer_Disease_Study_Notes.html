@@ -402,6 +402,23 @@ body.hy-modal-open { overflow: hidden; }
 .hy-ladder-step { background: var(--cream); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; }
 .hy-ladder-arrow { color: var(--accent); font-weight: 700; }
 
+/* ---- Summary-modal readability upgrade: section badges, callouts, inline highlights ---- */
+.hy-summary-section h3 { display: flex; align-items: baseline; gap: 10px; }
+.hy-sec-num {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; font-weight: 700;
+  background: var(--accent); color: #fff; border-radius: 6px; padding: 3px 9px; flex-shrink: 0;
+  letter-spacing: 0.02em;
+}
+.hy-summary-section .callout { margin: 10px 0 14px; padding: 11px 15px; }
+.hy-summary-section .callout-title { font-size: 0.68rem; margin-bottom: 5px; }
+.hy-summary-section .callout p, .hy-summary-section .callout li { font-size: 0.78rem; line-height: 1.5; }
+.hy-summary-section .callout p:last-child, .hy-summary-section .callout ul:last-child { margin-bottom: 0; }
+.hy-summary-section .callout ul { margin: 0; padding-left: 18px; }
+.hy-hl {
+  background: var(--highlight); padding: 1px 6px; border-radius: 4px; font-weight: 700;
+  color: var(--ink); white-space: nowrap;
+}
+
 /* ---------- PRINT: SUMMARY MODAL ONLY ---------- */
 @media print {
   body, html { height: auto !important; overflow: visible !important; background: #fff !important; }
@@ -444,6 +461,16 @@ body.hy-modal-open { overflow: hidden; }
     padding: 0 !important; border-radius: 0 !important;
   }
   .hy-ladder-arrow { display: inline !important; margin: 0 4pt !important; color: #000 !important; }
+
+  .hy-sec-num { font-size: 6.2pt !important; padding: 1px 4px !important; border-radius: 3px !important; }
+  .hy-summary-section .callout {
+    margin: 1.5pt 0 !important; padding: 3pt 5pt !important; border-radius: 3px !important;
+    border-width: 1px !important; page-break-inside: avoid;
+  }
+  .hy-summary-section .callout-title { font-size: 6.2pt !important; margin-bottom: 1pt !important; }
+  .hy-summary-section .callout p, .hy-summary-section .callout li { font-size: 6.6pt !important; line-height: 1.15 !important; }
+  .hy-summary-section .callout ul { padding-left: 10pt !important; }
+  .hy-hl { background: none !important; padding: 0 !important; font-weight: 700 !important; text-decoration: underline; }
 
   .tq-bar { display: none !important; }
   table, th, td { background: #fff !important; color: #000 !important; border-color: #999 !important; }
@@ -1035,7 +1062,7 @@ Alzheimer Disease Pharmacology Study Notes · Source: Scott D. Ochs, PharmD, UNE
     <div class="hy-modal-header">
       <div>
         <h2>📋 One-Page Summary — High-Yield</h2>
-        <span class="hy-modal-sub">Pathophysiology &amp; Targets · Staging &amp; Drug Selection · Pharmacology (MOA / Indication / AE / CI / DDI)</span>
+        <span class="hy-modal-sub">Pathophysiology, Targets &amp; Goals · Staging &amp; Drug Selection · Pharmacology (MOA / Indication / AE / CI / DDI)</span>
       </div>
       <div class="hy-modal-actions">
         <button type="button" class="hy-print-btn" onclick="printHySummary()">🖨️ Print</button>
@@ -1045,36 +1072,60 @@ Alzheimer Disease Pharmacology Study Notes · Source: Scott D. Ochs, PharmD, UNE
     <div class="hy-modal-body">
 
       <div class="hy-summary-section">
-        <h3>1 · Pathophysiology — Three Hypotheses, Three Drug Targets</h3>
+        <h3><span class="hy-sec-num">1</span> Pathophysiology — Three Hypotheses, Three Drug Targets</h3>
         <table class="hy-mini-table">
           <tr><th>Hypothesis</th><th>Core Idea</th><th>Drug Target</th></tr>
           <tr><td>Amyloid cascade</td><td>Aβ generation initiates the neurodegenerative cascade; plaques form <em>between</em> neurons</td><td>Anti-amyloid monoclonal antibodies</td></tr>
           <tr><td>Cholinergic hypothesis</td><td>Loss of nicotinic receptors; ↓ synaptic ACh, serotonin, norepinephrine</td><td>Cholinesterase inhibitors</td></tr>
           <tr><td>Glutamate / excitotoxicity</td><td>Neuronal loss → excess glutamate → free radicals → further neuronal loss</td><td>NMDA receptor blocker (memantine)</td></tr>
         </table>
-        <p class="hy-vocab-note">Amyloid plaques = <strong>between</strong> neurons (β-amyloid). Neurofibrillary tangles = <strong>within</strong> neurons (hyperphosphorylated tau) — tangle density tracks disease severity. Biggest risk factor: <strong>age</strong>. APOE*4 (late-onset) accelerates amyloid deposition; early-onset AD maps to chromosomes 1, 14, 21. AD is <strong>not</strong> primarily dopaminergic (contrast with Parkinson disease) — the losses are cholinergic/serotonergic/noradrenergic.</p>
+        <p class="hy-vocab-note">Amyloid plaques = <strong>between</strong> neurons (β-amyloid). Neurofibrillary tangles = <strong>within</strong> neurons (hyperphosphorylated tau) — tangle density tracks disease severity. Biggest risk factor: <strong>age</strong>. APOE*4 (late-onset) accelerates amyloid deposition; early-onset AD maps to chromosomes 1, 14, 21.</p>
+
+        <div class="callout callout-mnemonic">
+          <div class="callout-title">🧠 Memory Hook — 3 Hypotheses, 3 Drug Classes</div>
+          <p>Every drug class maps directly onto one of the three hypotheses: <strong>Amyloid → monoclonal antibodies. Cholinergic loss → cholinesterase inhibitors. Glutamate excitotoxicity → memantine.</strong> If you know the hypothesis, you know why the class exists.</p>
+        </div>
+
+        <div class="callout callout-purple">
+          <div class="callout-title">🆚 Contrast With Parkinson Disease</div>
+          <p>AD is <strong>not</strong> primarily dopaminergic — the key losses are <strong>acetylcholine, serotonin, and norepinephrine</strong>, a very different profile from PD's relatively selective dopamine loss.</p>
+        </div>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">🚫 Goals of Pharmacotherapy — What Drugs Don't Do</div>
+          <p>Current treatments do <strong>not</strong> prolong life, cure AD, or clearly halt the underlying pathology. Realistic goals: preserve function/delay nursing home placement, and treat psychiatric/behavioral symptoms. AD affects <span class="hy-hl">~5.4M</span> Americans; most cases occur after age 65.</p>
+        </div>
       </div>
 
       <div class="hy-summary-section">
-        <h3>2 · Stage by MMSE → Select the Right Drug</h3>
+        <h3><span class="hy-sec-num">2</span> Stage by MMSE → Select the Right Drug</h3>
         <table class="hy-mini-table">
           <tr><th>Stage</th><th>MMSE</th><th>Clinical Picture</th><th>Drug</th></tr>
           <tr><td>Mild</td><td>21–26</td><td>Finance/food-prep decline; may deny memory problems; still recognizes family</td><td>Cholinesterase inhibitor</td></tr>
           <tr><td>Moderate</td><td>10–20</td><td>Needs ADL help; disoriented to time; agitation, paranoia, delusions common</td><td>ChEI (± add memantine near "severe" end)</td></tr>
           <tr><td>Severe</td><td>0–9</td><td>Loses speech, gait, self-feeding; incontinent; needs 24/7 care</td><td>Memantine (± continuing ChEI)</td></tr>
         </table>
-        <p class="hy-vocab-note"><strong>Cholinesterase inhibitors → mild-to-moderate. Memantine → moderate-to-severe.</strong> Deliberate overlap at "moderate" — combination therapy once a ChEI patient progresses toward severe. 4 A's of cognitive symptoms: <strong>Amnesia, Aphasia, Apraxia, Agnosia</strong> (plus disorientation and executive dysfunction).</p>
+        <div class="callout callout-mnemonic">
+          <div class="callout-title">🧠 Memory Hook — ChEI vs. Memantine</div>
+          <p><strong>Cholinesterase inhibitors → mild-to-moderate. Memantine → moderate-to-severe.</strong> Deliberate overlap at "moderate" — combination therapy once a ChEI patient progresses toward severe.</p>
+        </div>
+
+        <div class="callout callout-clinical">
+          <div class="callout-title">🧠 Memory Hook — The 4 A's</div>
+          <p>Classic cognitive-symptom mnemonic: <strong>Amnesia, Aphasia, Apraxia, Agnosia</strong> — plus disorientation and executive dysfunction on top.</p>
+        </div>
+
         <h4>Benchmark for "Is This Drug Actually Helping?"</h4>
         <div class="hy-ladder">
           <div class="hy-ladder-step">Untreated decline: ~2–4 MMSE points / year</div>
           <span class="hy-ladder-arrow">vs.</span>
           <div class="hy-ladder-step">Clinically meaningful response: decline kept &lt;2 points / year</div>
         </div>
-        <p class="hy-vocab-note"><strong>Statistically significant ≠ clinically meaningful</strong> — the theme of the entire evidence base. ChEIs improve ADAS-Cog by only ~2.7 of 70 points (rock-solid p-value, tiny effect); more patients stop ChEIs for adverse effects (29%) than stop placebo (18%). Combination therapy (ChEI + memantine) is statistically better still but only marginally, and costly.</p>
+        <p class="hy-vocab-note"><span class="hy-hl">Statistically significant ≠ clinically meaningful</span> — the theme of the entire evidence base. ChEIs improve ADAS-Cog by only ~2.7 of 70 points (rock-solid p-value, tiny effect); more patients stop ChEIs for adverse effects (29%) than stop placebo (18%). Combination therapy (ChEI + memantine) is statistically better still but only marginally, and costly.</p>
       </div>
 
       <div class="hy-summary-section">
-        <h3>3 · Drug Pharmacology — Indication / MOA / AE / CI / DDI</h3>
+        <h3><span class="hy-sec-num">3</span> Drug Pharmacology — Indication / MOA / AE / CI / DDI</h3>
         <table class="hy-pharm-table">
           <thead>
           <tr><th>Class</th><th>Drug</th><th>MOA</th><th>Key Indication</th><th>Key AE / Boxed Warning</th><th>Contraindication / Caution</th><th>Key DDI</th></tr>
@@ -1094,12 +1145,16 @@ Alzheimer Disease Pharmacology Study Notes · Source: Scott D. Ochs, PharmD, UNE
           <tr><td>Not recommended</td><td>NSAIDs</td><td>Anti-inflammatory</td><td>No benefit shown despite plausible mechanism</td><td>GI bleed, gastritis risk</td><td>—</td><td>—</td></tr>
           </tbody>
         </table>
+        <div class="callout callout-mnemonic">
+          <div class="callout-title">🧠 Memory Hook — Reversible vs. Irreversible</div>
+          <p>All three cholinesterase inhibitors used for AD are <strong>reversible</strong>. The classic <em>irreversible</em> AChE inhibitors are organophosphates and nerve gases — poisons, not AD therapeutics. If a question describes an irreversible AChE inhibitor, it's not an AD drug.</p>
+        </div>
+
         <ul class="hy-bullets">
-          <li><strong>All 3 ChEIs are reversible.</strong> Classic <em>irreversible</em> AChE inhibitors are organophosphates/nerve agents — poisons, not AD therapeutics.</li>
-          <li><strong>Boxed warning, whole antipsychotic class:</strong> elderly patients with dementia-related psychosis treated with an antipsychotic (typical or atypical) have increased mortality — lowest dose, shortest duration.</li>
+          <li><strong>Boxed warning, whole antipsychotic class:</strong> elderly patients with dementia-related psychosis treated with an antipsychotic (typical or atypical) have <span class="hy-hl">increased mortality</span> — lowest dose, shortest duration.</li>
           <li><strong>Aducanumab</strong> (the original anti-amyloid mAb) was approved despite an FDA advisory committee voting <strong>8-to-1 against</strong> it for insufficient efficacy evidence — it has since been removed from the U.S. market.</li>
           <li>Nonpharmacologic care (stable low-stress environment, security objects, daytime activity, <strong>individualized exercise programs</strong>) is genuinely evidence-supported — try it before medicating noncognitive symptoms.</li>
-          <li>Most common cause of death in AD: <strong>pneumonia</strong>. Typical survival 4–8 years from diagnosis. No current drug prolongs life, cures, or reverses AD.</li>
+          <li>Most common cause of death in AD: <span class="hy-hl">pneumonia</span>. Typical survival 4–8 years from diagnosis. No current drug prolongs life, cures, or reverses AD.</li>
         </ul>
       </div>
 
