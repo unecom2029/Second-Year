@@ -140,6 +140,9 @@ body.nbme-lock{overflow:hidden}
 .qpg{height:6px;background:color-mix(in srgb,var(--teal) 10%,transparent)}
 .qpf{height:100%;background:linear-gradient(90deg,var(--teal),var(--teal-glow));transition:width .5s cubic-bezier(.4,0,.2,1);border-radius:0 999px 999px 0}
 .qbd{padding:28px 34px 26px}
+.q-review-grid{display:grid;gap:24px}
+.q-review-grid.has-feedback{grid-template-columns:minmax(0,1.18fr) minmax(320px,.82fr);align-items:start}
+.q-feedback .exb{margin-top:0}
 .qnum{display:inline-flex;align-items:center;padding:6px 11px;border-radius:999px;background:rgba(18,32,60,.045);font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--mist);letter-spacing:1.8px;text-transform:uppercase;margin-bottom:14px;font-weight:700}
 .qnum.marked{background:var(--gold-bg);color:var(--amber)}
 .qstem{font-family:'Crimson Pro',serif;font-size:var(--stem-size);line-height:1.35;margin-bottom:22px;font-weight:600;color:var(--ink);letter-spacing:-.15px}
@@ -238,6 +241,10 @@ body.nbme-lock{overflow:hidden}
 #nbFinishBanner{flex-shrink:0}
 .nb-question-scroll{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;padding:26px clamp(24px,6vw,92px) 70px}
 .nb-question-card,.nb-review-wrap{width:min(980px,100%);margin:0 auto}
+.nb-question-card.has-feedback{width:min(1320px,100%)}
+.nb-question-layout{display:grid;gap:24px}
+.nb-question-layout.has-feedback{grid-template-columns:minmax(0,1.12fr) minmax(320px,.88fr);align-items:start}
+.nb-question-side .exb{margin-top:0}
 .nb-question-label{margin-bottom:16px;color:#5b6570;font-weight:700;font-size:calc(var(--ui-meta-size) * 1.16);letter-spacing:.02em}
 .nb-question-stem{font-size:calc(var(--stem-size) * .72);line-height:1.58;user-select:text}
 .nb-question-stem mark,.nb-answer-copy mark{background:#fff173;color:inherit;padding:0 1px}
@@ -372,6 +379,7 @@ body.nbme-lock{overflow:hidden}
   .score-panel{flex:1 1 200px}
   .mode-toggle,.tool-panel{flex:1 1 100%}
   .timer-card{flex:1 1 160px}
+  .q-review-grid.has-feedback,.nb-question-layout.has-feedback{grid-template-columns:1fr}
   .nb-header{grid-template-columns:1fr}
   .nb-status-box{border-right:none;border-bottom:1px solid rgba(255,255,255,.2)}
   .nb-nav-controls{border-top:1px solid rgba(255,255,255,.18)}
@@ -1346,14 +1354,19 @@ function buildClassicQuestion(){
   var feedbackHTML=ans?buildExplanationHTML(q,ans):'';
   var qnumClass='qnum'+(marked[CQ]?' marked':'');
   var qnumText=`Question ${CQ+1} of ${total}${marked[CQ]?' • Flagged':''}`;
-  return `<div class="qcd">
-    <div class="qpg"><div class="qpf" style="width:${progress}%"></div></div>
-    <div class="qbd">
+  var mainHTML=`<div class="q-main">
       <div class="${qnumClass}">${qnumText}</div>
       <div class="qstem" id="stemEl" data-stem-html="1">${getStemHTML(CQ)}</div>
       <div class="ach" id="achEl">${choicesHTML}</div>
       ${submitHTML}
-      ${feedbackHTML}
+    </div>`;
+  var layoutHTML=ans
+    ? `<div class="q-review-grid has-feedback">${mainHTML}<aside class="q-feedback">${feedbackHTML}</aside></div>`
+    : `<div class="q-review-grid">${mainHTML}</div>`;
+  return `<div class="qcd">
+    <div class="qpg"><div class="qpf" style="width:${progress}%"></div></div>
+    <div class="qbd">
+      ${layoutHTML}
     </div>
     <div class="qnv">
       <button class="nb" onclick="prevQ()"${CQ===0?' disabled':''}>← Prev</button>
@@ -1392,12 +1405,19 @@ function buildNbmeQuestion(){
   }).join('');
   var submitHTML=!ans?`<div class="nb-submit-row"><button class="nb-submit-btn" onclick="submitAns()"${sel!==undefined?'':' disabled'}>${submitLabel}</button></div>`:'';
   var feedbackHTML=ans?buildExplanationHTML(q,ans):'';
-  return `<div class="nb-question-card">
+  var mainHTML=`<div class="nb-question-main">
     <div class="nb-question-label">QUESTION ${CQ+1}</div>
     <div class="nb-question-stem" id="nbStemEl" data-stem-html="1">${getStemHTML(CQ)}</div>
     <div class="nb-answers">${answersHTML}</div>
     ${submitHTML}
-    ${feedbackHTML}
+  </div>`;
+  var layoutClass=ans?'nb-question-layout has-feedback':'nb-question-layout';
+  var sideHTML=ans?`<aside class="nb-question-side">${feedbackHTML}</aside>`:'';
+  return `<div class="nb-question-card${ans?' has-feedback':''}">
+    <div class="${layoutClass}">
+      ${mainHTML}
+      ${sideHTML}
+    </div>
   </div>`;
 }
 function buildNbmeReview(){
