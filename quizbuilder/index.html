@@ -453,6 +453,12 @@ body.nbme-lock{overflow:hidden}
       </div>
     </div>
 
+    <div class="field">
+      <label class="lbl">Target question count</label>
+      <input class="inp" id="questionCount" type="number" min="1" max="25" step="1" value="15" oninput="handleQuestionCountInput()" onblur="handleQuestionCountBlur()">
+      <div class="field-note">Cap: 25 questions. Increasing the number of questions may cause degraded question quality from your AI.</div>
+    </div>
+
     <!-- Prompt to copy -->
     <div class="lbl" style="margin-bottom:8px">Your AI prompt</div>
     <div class="prompt-wrap">
@@ -466,11 +472,6 @@ body.nbme-lock{overflow:hidden}
     <div class="field">
       <label class="lbl">Quiz name (optional)</label>
       <input class="inp" id="quizName" placeholder="e.g. Ferland — Confidence Intervals — Bank 1" oninput="refreshPromptText()">
-    </div>
-    <div class="field">
-      <label class="lbl">Target question count</label>
-      <input class="inp" id="questionCount" type="number" min="1" max="25" step="1" value="10" oninput="handleQuestionCountInput()" onblur="handleQuestionCountBlur()">
-      <div class="field-note">Cap: 25 questions. Increasing the number of questions may cause degraded question quality from your AI.</div>
     </div>
     <div class="field">
       <label class="lbl">Quiz interface</label>
@@ -708,7 +709,7 @@ var LETTERS=['A','B','C','D','E'];
 var PRELOADED_QUIZ_NAME="__QUIZ_BUILDER_PRELOADED_NAME__";
 var PRELOADED_QUESTIONS_JSON="__QUIZ_BUILDER_PRELOADED_QUESTIONS__";
 var PRELOADED_UI_MODE="__QUIZ_BUILDER_PRELOADED_UI_MODE__";
-var DEFAULT_QUESTION_COUNT=10;
+var DEFAULT_QUESTION_COUNT=15;
 var MAX_AI_QUESTION_COUNT=25;
 var DOWNLOAD_TEMPLATE='';
 var LAB_SECTIONS=[{"title":"Serum","rows":[{"name":"Alanine aminotransferase (ALT)","us":"10–40 U/L","si":"10–40 U/L"},{"name":"Aspartate aminotransferase (AST)","us":"12–38 U/L","si":"12–38 U/L"},{"name":"Alkaline phosphatase","us":"25–100 U/L","si":"25–100 U/L"},{"name":"Amylase","us":"25–125 U/L","si":"25–125 U/L"},{"name":"Bilirubin, total // direct","us":"0.1–1.0 mg/dL // 0.0–0.3 mg/dL","si":"2–17 µmol/L // 0–5 µmol/L"},{"name":"Calcium","us":"8.4–10.2 mg/dL","si":"2.1–2.6 mmol/L"},{"group":"Cholesterol"},{"name":"Total","us":"Normal: &lt;200 mg/dL // High: &gt;240 mg/dL","si":"&lt;5.2 mmol/L // &gt;6.2 mmol/L"},{"name":"HDL","us":"40–60 mg/dL","si":"1.0–1.6 mmol/L"},{"name":"LDL","us":"&lt;160 mg/dL","si":"&lt;4.2 mmol/L"},{"name":"Triglycerides","us":"Normal: &lt;150 mg/dL // Borderline: 151–199 mg/dL","si":"&lt;1.70 mmol/L // 1.71–2.25 mmol/L"},{"name":"Cortisol","us":"0800 h: 5–23 µg/dL // 1600 h: 3–15 µg/dL","si":"138–635 nmol/L // 82–413 nmol/L"},{"name":"","us":"2000 h: &lt;50% of 0800 h","si":"Fraction of 0800 h: &lt;0.50"},{"name":"Creatine kinase","us":"Male: 25–90 U/L","si":"25–90 U/L"},{"name":"","us":"Female: 10–70 U/L","si":"10–70 U/L"},{"name":"Creatinine","us":"0.6–1.2 mg/dL","si":"53–106 µmol/L"},{"name":"Urea nitrogen","us":"7–18 mg/dL","si":"2.5–6.4 mmol/L"},{"name":"Creatinine clearance","us":"Male: 97–137 mL/min","si":"97–137 mL/min"},{"name":"","us":"Female: 88–128 mL/min","si":"88–128 mL/min"},{"group":"Electrolytes, serum"},{"name":"Sodium (Na<sup>+</sup>)","us":"136–146 mEq/L","si":"136–146 mmol/L"},{"name":"Potassium (K<sup>+</sup>)","us":"3.5–5.0 mEq/L","si":"3.5–5.0 mmol/L"},{"name":"Chloride (Cl<sup>−</sup>)","us":"95–105 mEq/L","si":"95–105 mmol/L"},{"name":"Bicarbonate (HCO<sub>3</sub><sup>−</sup>)","us":"22–28 mEq/L","si":"22–28 mmol/L"},{"name":"Magnesium (Mg<sup>2+</sup>)","us":"1.5–2.0 mg/dL","si":"0.75–1.0 mmol/L"},{"name":"Ferritin","us":"Male: 20–250 ng/mL","si":"20–250 µg/L"},{"name":"","us":"Female: 10–120 ng/mL","si":"10–120 µg/L"},{"name":"Follicle-stimulating hormone","us":"Male: 4–25 mIU/mL","si":"4–25 U/L"},{"name":"","us":"Female: premenopause 4–30 mIU/mL","si":"4–30 U/L"},{"name":"","us":"midcycle peak 10–90 mIU/mL","si":"10–90 U/L"},{"name":"","us":"postmenopause 40–250 mIU/mL","si":"40–250 U/L"},{"name":"Glucose","us":"Fasting: 70–100 mg/dL","si":"3.8–5.6 mmol/L"},{"name":"","us":"Random, non-fasting: &lt;140 mg/dL","si":"&lt;7.77 mmol/L"},{"name":"Growth hormone - arginine stimulation","us":"Fasting: &lt;5 ng/mL","si":"&lt;5 µg/L"},{"name":"","us":"Provocative stimuli: &gt;7 ng/mL","si":"&gt;7 µg/L"},{"name":"Iron","us":"Male: 65–175 µg/dL","si":"11.6–31.3 µmol/L"},{"name":"","us":"Female: 50–170 µg/dL","si":"9.0–30.4 µmol/L"},{"name":"Total iron-binding capacity","us":"250–400 µg/dL","si":"44.8–71.6 µmol/L"},{"name":"Transferrin","us":"200–360 mg/dL","si":"2.0–3.6 g/L"},{"name":"Lactate dehydrogenase","us":"45–200 U/L","si":"45–200 U/L"},{"name":"Lipase","us":"13–60 U/L","si":"13–60 U/L"},{"name":"Luteinizing hormone","us":"Male: 6–23 mIU/mL","si":"6–23 U/L"},{"name":"","us":"Female: follicular phase 5–30 mIU/mL","si":"5–30 IU/L"},{"name":"","us":"midcycle 75–150 mIU/mL","si":"75–150 IU/L"},{"name":"","us":"postmenopause 30–200 mIU/mL","si":"30–200 IU/L"},{"name":"Osmolality","us":"275–295 mOsmol/kg H<sub>2</sub>O","si":"275–295 mOsmol/kg H<sub>2</sub>O"},{"name":"Intact parathyroid hormone (PTH)","us":"10–60 pg/mL","si":"10–60 ng/L"},{"name":"Phosphorus (inorganic)","us":"3.0–4.5 mg/dL","si":"1.0–1.5 mmol/L"},{"name":"Prolactin (hPRL)","us":"Male: &lt;17 ng/mL","si":"&lt;17 µg/L"},{"name":"","us":"Female: &lt;25 ng/mL","si":"&lt;25 µg/L"},{"group":"Proteins"},{"name":"Total","us":"6.0–7.8 g/dL","si":"60–78 g/L"},{"name":"Albumin","us":"3.5–5.5 g/dL","si":"35–55 g/L"},{"name":"Globulin","us":"2.3–3.5 g/dL","si":"23–35 g/L"},{"name":"Troponin I","us":"≤0.04 ng/mL","si":"≤0.04 µg/L"},{"name":"TSH","us":"0.4–4.0 μU/mL","si":"0.4–4.0 mIU/L"},{"name":"Thyroidal iodine (<sup>123</sup>I) uptake","us":"8%–30% of administered dose/24 h","si":"0.08–0.30/24 h"},{"name":"Thyroxine (T<sub>4</sub>)","us":"5–12 µg/dL","si":"64–155 nmol/L"},{"name":"Free T<sub>4</sub>","us":"0.9–1.7 ng/dL","si":"12.0–21.9 pmol/L"},{"name":"Triiodothyronine (T<sub>3</sub>) (RIA)","us":"100–200 ng/dL","si":"1.5–3.1 nmol/L"},{"name":"Triiodothyronine (T<sub>3</sub>) resin uptake","us":"25%–35%","si":"0.25–0.35"},{"name":"Uric acid","us":"3.0–8.2 mg/dL","si":"0.18–0.48 mmol/L"},{"group":"Immunoglobulins"},{"name":"IgA","us":"76–390 mg/dL","si":"0.76–3.90 g/L"},{"name":"IgE","us":"0–380 IU/mL","si":"0–380 kIU/L"},{"name":"IgG","us":"650–1500 mg/dL","si":"6.5–15.0 g/L"},{"name":"IgM","us":"50–300 mg/dL","si":"0.5–3.0 g/L"},{"group":"Gases, arterial blood (room air)"},{"name":"pH","us":"7.35–7.45","si":"[H<sup>+</sup>] 36–44 nmol/L"},{"name":"Pco<sub>2</sub>","us":"33–45 mm Hg","si":"4.4–5.9 kPa"},{"name":"Po<sub>2</sub>","us":"75–105 mm Hg","si":"10.0–14.0 kPa"}]},{"title":"Cerebrospinal Fluid","rows":[{"name":"Cell count","us":"0–5/mm<sup>3</sup>","si":"0–5 x 10<sup>6</sup>/L"},{"name":"Chloride","us":"118–132 mEq/L","si":"118–132 mmol/L"},{"name":"Gamma globulin","us":"3%–12% total proteins","si":"0.03–0.12"},{"name":"Glucose","us":"40–70 mg/dL","si":"2.2–3.9 mmol/L"},{"name":"Pressure","us":"70–180 mm H<sub>2</sub>O","si":"70–180 mm H<sub>2</sub>O"},{"name":"Proteins, total","us":"&lt;40 mg/dL","si":"&lt;0.40 g/L"}]},{"title":"Hematologic","rows":[{"name":"Erythrocyte count (RBC)","us":"Male: 4.3–5.9 million/mm<sup>3</sup>","si":"4.3–5.9 x 10<sup>12</sup>/L"},{"name":"","us":"Female: 3.5–5.5 million/mm<sup>3</sup>","si":"3.5–5.5 x 10<sup>12</sup>/L"},{"name":"Erythrocyte sedimentation rate (Westergren)","us":"Male: 0–15 mm/h","si":"0–15 mm/h"},{"name":"","us":"Female: 0–20 mm/h","si":"0–20 mm/h"},{"name":"Hematocrit","us":"Male: 41%–53%","si":"0.41–0.53"},{"name":"","us":"Female: 36%–46%","si":"0.36–0.46"},{"name":"Hemoglobin, blood","us":"Male: 13.5–17.5 g/dL","si":"135–175 g/L"},{"name":"","us":"Female: 12.0–16.0 g/dL","si":"120–160 g/L"},{"name":"Hemoglobin A<sub>1c</sub>","us":"≤6%","si":"≤42 mmol/mol"},{"name":"Leukocyte count (WBC)","us":"4500–11,000/mm<sup>3</sup>","si":"4.5–11.0 x 10<sup>9</sup>/L"},{"name":"Neutrophils, segmented","us":"54%–62%","si":"0.54–0.62"},{"name":"Neutrophils, bands","us":"3%–5%","si":"0.03–0.05"},{"name":"Eosinophils","us":"1%–3%","si":"0.01–0.03"},{"name":"Basophils","us":"0%–0.75%","si":"0.00–0.0075"},{"name":"Lymphocytes","us":"25%–33%","si":"0.25–0.33"},{"name":"Monocytes","us":"3%–7%","si":"0.03–0.07"},{"name":"CD4+ T-lymphocyte count","us":"≥500/mm<sup>3</sup>","si":"≥0.5 x 10<sup>9</sup>/L"},{"name":"Platelet count","us":"150,000–400,000/mm<sup>3</sup>","si":"150–400 x 10<sup>9</sup>/L"},{"name":"Reticulocyte count","us":"0.5%–1.5%","si":"0.005–0.015"},{"name":"D-Dimer","us":"≤250 ng/mL","si":"≤1.4 nmol/L"},{"name":"Partial thromboplastin time (aPTT) (activated)","us":"25–40 seconds","si":"25–40 seconds"},{"name":"Prothrombin time (PT)","us":"11–15 seconds","si":"11–15 seconds"},{"name":"Mean corpuscular hemoglobin (MCH)","us":"25–35 pg/cell","si":"0.39–0.54 fmol/cell"},{"name":"Mean corpuscular hemoglobin concentration (MCHC)","us":"31%–36% Hb/cell","si":"4.8–5.6 mmol Hb/L"},{"name":"Mean corpuscular volume (MCV)","us":"80–100 µm<sup>3</sup>","si":"80–100 fL"},{"group":"Volume"},{"name":"Plasma","us":"Male: 25–43 mL/kg","si":"0.025–0.043 L/kg"},{"name":"","us":"Female: 28–45 mL/kg","si":"0.028–0.045 L/kg"},{"name":"Red cell","us":"Male: 20–36 mL/kg","si":"0.020–0.036 L/kg"},{"name":"","us":"Female: 19–31 mL/kg","si":"0.019–0.031 L/kg"}]},{"title":"Urine","rows":[{"name":"Calcium","us":"100–300 mg/24 h","si":"2.5–7.5 mmol/24 h"},{"name":"Osmolality","us":"50–1200 mOsmol/kg H<sub>2</sub>O","si":"50–1200 mOsmol/kg H<sub>2</sub>O"},{"name":"Oxalate","us":"8–40 µg/mL","si":"90–445 µmol/L"},{"name":"Proteins, total","us":"&lt;150 mg/24 h","si":"&lt;0.15 g/24 h"},{"name":"17-Hydroxycorticosteroids","us":"Male: 3.0–10.0 mg/24 h","si":"8.2–27.6 µmol/24 h"},{"name":"","us":"Female: 2.0–8.0 mg/24 h","si":"5.5–22.0 µmol/24 h"},{"name":"17-Ketosteroids, total","us":"Male: 8–20 mg/24 h","si":"28–70 µmol/24 h"},{"name":"","us":"Female: 6–15 mg/24 h","si":"21–52 µmol/24 h"}]},{"title":"Body Mass Index (BMI)","rows":[{"name":"","us":"<br>Adult: 19–25 kg/m<sup>2</sup>","si":"<br>Adult: 19–25 kg/m<sup>2</sup>"}]}];
@@ -736,7 +737,7 @@ function buildPrompt(){
   var quizNameRule=quizName
     ? '- Use this exact top-level "name": '+JSON.stringify(quizName)
     : '- If the setup name field is blank, infer a concise quiz title from the content';
-  return `You are a medical school question writer. You have TWO modes:
+  return `You are a medical school professor writing exam-style questions. You have TWO modes:
 
 MODE 1 — GENERATE: If I give you notes or lecture content, write quiz questions from it.
 MODE 2 — CONVERT: If I give you already-written questions in any format, convert them into the format below without changing the medical content.
@@ -779,6 +780,28 @@ ${quizNameRule}
 - If converting questions with fewer than 5 choices, add distractors to reach 5
 - Keep all answer choices similar in length so the correct answer is not guessable by length
 - Output ONLY the JSON object
+
+Professor-style writing notes:
+- Each vignette should usually follow this rhythm:
+  Age/sex/setting + chief complaint
+  1-2 sentences of relevant history, risk factors, or timeline
+  2-4 physical exam findings written like a clipped checklist
+  The final ask should test mechanism, localization, genetics, downstream consequence, or next step, not just the diagnosis alone
+- The diagnosis should usually be inferable from the exam checklist alone by pattern recognition, but the actual question should ask one rung higher
+- Distractors must come from the same answer category as the correct answer
+  Example: artery vs. other arteries, gene vs. other genes, nerve root vs. adjacent nerve roots, dementia subtype vs. other dementia subtypes
+- When appropriate, prefer 2-3 stacked questions built from the same clinical stem
+  Example chain: presentation -> diagnosis -> localization/genetics -> mechanism -> treatment
+- High-yield domains to emphasize:
+  UMN vs LMN vs NMJ vs myopathy localization by pattern
+  Exact genetics such as chromosome, repeat type, and gene name
+  Vascular localization, especially Circle of Willis style anatomy
+  Mechanism-of-injury to nerve or plexus localization
+  CSF profile pattern recognition
+  Vignette-to-histopathology pairing
+- Reuse high-yield concepts with slight vignette variations when the same theme is strongly emphasized in the source material
+- Keep the stem voice like a real med school professor:
+  clipped exam findings, subtle pattern-recognition clues, no giveaway diagnosis wording, occasional grounded real-world detail if it helps the vignette feel authentic
 
 MY CONTENT:
 `;
