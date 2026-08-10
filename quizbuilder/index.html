@@ -243,16 +243,17 @@ body.nbme-lock{overflow:hidden}
 .nb-rail-btn.current.marked::before{color:#ffd75e}
 .nb-stage{position:relative;display:flex;flex-direction:column;min-width:0;min-height:0;overflow:hidden;background:#fff}
 #nbFinishBanner{flex-shrink:0}
-.nb-question-scroll{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;padding:26px clamp(24px,6vw,92px) 70px}
+.nb-question-scroll{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;padding:26px clamp(24px,6vw,92px) 112px}
 .nb-question-card,.nb-review-wrap{width:min(980px,100%);margin:0 auto}
 .nb-question-card.has-feedback{width:min(1580px,100%)}
 .nb-question-layout{display:grid;gap:24px}
 .nb-question-layout.has-feedback{grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);align-items:start}
 .nb-question-side{min-width:0;align-self:start}
-.nb-question-side .exb{margin-top:0;max-height:calc(var(--app-vh) - clamp(180px,24vh,260px));overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:rgba(18,32,60,.28) rgba(18,32,60,.08)}
+.nb-question-side .exb{margin-top:0;max-height:calc(var(--app-vh) - clamp(260px,34vh,380px));overflow:auto;overscroll-behavior:contain;scroll-padding-bottom:clamp(88px,12vh,136px);scrollbar-width:thin;scrollbar-color:rgba(18,32,60,.28) rgba(18,32,60,.08)}
 .nb-question-side .exb::-webkit-scrollbar{width:10px}
 .nb-question-side .exb::-webkit-scrollbar-track{background:rgba(18,32,60,.08);border-radius:999px}
 .nb-question-side .exb::-webkit-scrollbar-thumb{background:rgba(18,32,60,.28);border-radius:999px}
+.nb-question-side .exb::after{content:'';display:block;height:clamp(88px,12vh,136px);background:transparent}
 .nb-question-label{margin-bottom:16px;color:#5b6570;font-weight:700;font-size:calc(var(--ui-meta-size) * 1.16);letter-spacing:.02em}
 .nb-question-stem{font-size:calc(var(--stem-size) * .72);line-height:1.58;user-select:text}
 .nb-question-stem mark,.nb-answer-copy mark{background:#fff173;color:inherit;padding:0 1px}
@@ -948,6 +949,16 @@ function triggerQuizDownload(blob,fileName){
   document.body.removeChild(a);
   setTimeout(function(){URL.revokeObjectURL(url);},1000);
 }
+function isSafariLikeBrowser(){
+  var ua=navigator.userAgent||'';
+  return /Safari/i.test(ua)&&!/Chrome|Chromium|CriOS|Edg|OPR|Firefox|FxiOS|Android/i.test(ua);
+}
+function getDownloadFallbackPrompt(fileName){
+  if(isSafariLikeBrowser()){
+    return 'This browser cannot open a save-location picker from this local quiz page, so Safari will use its normal download flow instead.\n\nIf you want macOS to ask where to save each quiz, open Safari > Settings > General and set "File download location" to "Ask for each download".\n\nDownload "'+fileName+'" now?';
+  }
+  return 'This browser does not support choosing a save location directly from this quiz page.\n\nI can still download "'+fileName+'" using your browser\'s normal download flow.\n\nContinue?';
+}
 async function downloadQuiz(){
   var payload=getQuizPayload();
   if(!payload){
@@ -976,9 +987,10 @@ async function downloadQuiz(){
       if(err&&err.name==='AbortError')return;
     }
   }
+  if(!window.confirm(getDownloadFallbackPrompt(fileName)))return;
   triggerQuizDownload(blob,fileName);
   document.getElementById('errMsg').className='err-msg';
-  showToast('Downloaded a standalone copy of your quiz.','ok');
+  showToast(isSafariLikeBrowser()?'Safari download started. Use "Ask for each download" in Safari settings to choose the save location each time.':'Browser download started.','ok');
 }
 function hydratePreloadedQuiz(){
   var hasPreloadedQuestions=PRELOADED_QUESTIONS_JSON!=="__QUIZ_BUILDER_PRELOADED_QUESTIONS__";
