@@ -13,7 +13,7 @@ The One-Pager is optional — build it when the user wants a condensed pre-exam 
 
 The page is self-contained: no build tools, no frameworks, just one `.html` file with embedded CSS, fonts, and JS.
 
-> **Two variants now exist.** Sections 2–12 below are **Variant 1** — the original system, organized strictly by numbered Learning Objectives, with a 5-theme switcher (Paper/Night/Ocean/Forest/Sepia) and a component vocabulary tuned for pharmacology/pathology content (drug grids, hallmark grids, REMS badges, potency bars). **Section 13 is Variant 2** — a lighter-weight system built for `Introduction_to_Therapy_Study_Notes.html`, better suited to lecture content that isn't cleanly split into 2–3 LOs: a single light/dark toggle instead of five named themes, and a component vocabulary built around generic "modality cards," mnemonics, and click-to-reveal cases rather than drug-specific components. Both variants share the same underlying philosophy (self-contained file, base64 images, lightbox, table quiz, optional HY one-pager) — pick whichever fits the lecture's actual content shape, and don't mix components from both within one file.
+> **Two variants now exist.** Sections 2–12 below are **Variant 1** — the original system, organized strictly by numbered Learning Objectives, with an 8-theme switcher (Paper/Night/Ocean/Forest/Sepia/Lavender/Rose/Slate) and a component vocabulary tuned for pharmacology/pathology content (drug grids, hallmark grids, REMS badges, potency bars). **Section 13 is Variant 2** — a lighter-weight system built for `Introduction_to_Therapy_Study_Notes.html`, better suited to lecture content that isn't cleanly split into 2–3 LOs: a single light/dark toggle instead of named themes, and a component vocabulary built around generic "modality cards," mnemonics, and click-to-reveal cases rather than drug-specific components. Both variants share the same underlying philosophy (self-contained file, base64 images, lightbox, table quiz, optional HY one-pager) — pick whichever fits the lecture's actual content shape, and don't mix components from both within one file. **Section 14 is the Study Tools System** — an optional active-recall/progress layer (Recall Mode, per-section reviewed/confidence tracking, TOC scrollspy, collapsible sections, next-question jumper, pinned compare strip, keyboard shortcuts) first built for `Eating_Disorders_Study_Notes.html` on top of Variant 1; it's designed as an add-on layer and can be applied to either variant.
 
 ---
 
@@ -73,7 +73,7 @@ Define all colors as variables so themes can override them cleanly:
 
 ## 3. Theme System
 
-The page supports 5 visual themes via a `data-theme` attribute on the `<html>` element. **Paper is the default** — it's what renders when no `data-theme` attribute is present, and it's the theme every file should load with before the person picks something else.
+The page supports 8 visual themes via a `data-theme` attribute on the `<html>` element. **Paper is the default** — it's what renders when no `data-theme` attribute is present, and it's the theme every file should load with before the person picks something else.
 
 ### Available Themes
 
@@ -84,6 +84,9 @@ The page supports 5 visual themes via a `data-theme` attribute on the `<html>` e
 | Ocean | Light blue + deep navy | `ocean` |
 | Forest | Soft green + deep green | `forest` |
 | Sepia | Warm tan + brown | `sepia` |
+| Lavender | Soft violet + deep purple | `lavender` |
+| Rose | Blush pink + wine red / teal accent2 | `rose` |
+| Slate | Cool gray + steel blue / burnt orange accent | `slate` |
 
 ### Theme CSS Structure
 Each theme overrides **all** `:root` CSS variables — not just the core palette, but also the hero, floating-ui, quiz-overlay, and dark-panel vars. Example (Night theme, abbreviated):
@@ -253,7 +256,30 @@ Four light themes (Paper, Ocean, Forest, Sepia) were originally shipped with too
   --blue-bg: #cfdedd; --purple-bg: #e3d3e0; --hero-bg: #3f2814;
   --panel-dark-bg: #3a2414; --panel-dark-text: #f7ecd9;
 }
+[data-theme="lavender"] {
+  --ink: #241a33; --paper: #f6f3fb; --cream: #e7def4;
+  --accent: #b03a5b; --accent2: #6a4fa0; --gold: #b8862a; --muted: #6b5f80; --border: #d3c6e8;
+  --highlight: #f3e2b0; --highlight2: #e0d2f4; --green-bg: #d8eedd; --red-bg: #f7d8dd;
+  --blue-bg: #dcd8f6; --purple-bg: #e6dbfa; --hero-bg: #241a33;
+  --panel-dark-bg: #241a33; --panel-dark-text: #f6f3fb;
+}
+[data-theme="rose"] {
+  --ink: #33161f; --paper: #fdf3f5; --cream: #f7dde3;
+  --accent: #b02444; --accent2: #2c6a72; --gold: #c07a2a; --muted: #84606c; --border: #ecc4cf;
+  --highlight: #fbe4a8; --highlight2: #f4cfd9; --green-bg: #d7efdc; --red-bg: #f9d3d6;
+  --blue-bg: #d3e8ec; --purple-bg: #ecd9ec; --hero-bg: #3a1220;
+  --panel-dark-bg: #33161f; --panel-dark-text: #fdf3f5;
+}
+[data-theme="slate"] {
+  --ink: #1c2229; --paper: #f4f5f7; --cream: #e3e7ec;
+  --accent: #cf4520; --accent2: #33607a; --gold: #a8862a; --muted: #5c6a76; --border: #c8d0d8;
+  --highlight: #f2e3ac; --highlight2: #d5e2ec; --green-bg: #d6ead9; --red-bg: #f4d8d0;
+  --blue-bg: #d3e2ef; --purple-bg: #dfd9ec; --hero-bg: #1c2530;
+  --panel-dark-bg: #1c2530; --panel-dark-text: #f4f5f7;
+}
 ```
+
+> **Contrast notes for the three newest themes:** all three are light themes, so pitfall #3 from the checklist applies directly. Rose deliberately uses a *teal* `--accent2` (#2c6a72) rather than a pink-family color so links/`<strong>` don't melt into the warm pink page; Slate does the same with a burnt-orange `--accent` (#cf4520) against its cool grays so warnings still pop. Lavender's `--accent2` is the purple itself (#6a4fa0), which is far enough from its near-black violet ink to hold contrast.
 
 `--hero-heading`, `--hero-sub`, `--hero-meta-*`, `--floating-ui-*`, and `--quiz-overlay*` still need to be set per theme as before (unchanged pattern from the example above) — only the core palette and the new `--panel-dark-*` pair are shown here for brevity.
 
@@ -666,7 +692,7 @@ Two inline elements for genetics/genomics content. Can be adapted for other doma
 
 ### 5.19 Floating Controls Stack (fixed bottom-right)
 
-Font Size control and Theme switcher live together in one fixed stack. If the file also has a High-Yield One-Pager (Section 12), its button lives in the hero instead, not in this stack.
+Font Size control and Theme switcher live together in one fixed stack. If the file also has a High-Yield One-Pager (Section 12), its button lives in the hero instead, not in this stack. If the file also has the Study Tools System (Section 14), its buttons live in a *separate* hover-expand menu fixed **bottom-left** — the two stacks never share a corner, so neither covers the other.
 
 ```html
 <div class="floating-stack">
@@ -740,7 +766,8 @@ An interactive self-testing feature. A quiz toolbar (`.tq-bar`) is **automatical
 5. On Start: selected column cells are wrapped in `.tq-cell-content` (content blurred) and the cell gets `.quiz-hidden-cell` class + a "tap to reveal" overlay
 6. Clicking a hidden cell removes the class and restores the original HTML
 7. A live `N / total revealed` score shows in the toolbar; displays 🎉 on completion
-8. **↺ Reset** restores all cells and returns the toolbar to its initial state
+8. **🔀 Shuffle rows** (shown alongside Start) randomizes the data-row order via Fisher-Yates so answers can't be memorized by table position — the original row order is captured on first shuffle and restored by Reset (see Section 14.10 for the code)
+9. **↺ Reset** restores all cells, restores original row order, and returns the toolbar to its initial state
 
 ### Required CSS
 ```css
@@ -1361,3 +1388,223 @@ Don't just read the CSS/JS back and reason about it — actually drive the page 
 - Open the lightbox, step through `ArrowRight`/`ArrowLeft`, close with `Escape`, and confirm `document.documentElement.scrollWidth` never exceeds the viewport width — check this at **320px, 390px, 768px, and desktop**, not just desktop.
 - For any fixed-position modal (the HY summary, the lightbox): pull `getBoundingClientRect()` for the modal card and a representative child, and confirm the child's `right` edge is within the parent's — a visually-plausible screenshot can still be hiding an overflow that a fixed-position ancestor is silently letting bleed past the viewport edge (pitfall 3 above looked fine in a screenshot at first glance; only bounding-box numbers caught it).
 - Export the HY one-pager to PDF and check the actual page count, same as Variant 1's 12.6 — re-check after *every* print-CSS edit, don't assume one tweak fixed it without re-exporting.
+
+---
+
+## 14. Study Tools System (Optional Active-Recall / Progress Layer)
+
+> First built for `Eating_Disorders_Study_Notes.html` (Lee Wolfrum, DO — Eating Disorders), layered on top of Variant 1. This is an **add-on layer**, not a third variant: it assumes the base file already exists (sections with stable `id`s, a sticky TOC bar, `.exam-q` blocks, the table quiz) and injects everything else at runtime via JS — no manual per-section HTML edits needed beyond the TOC. It can be applied to either variant.
+
+The design intent: convert a passive reading document into a retrieval-practice tool. Every feature below maps to a specific study behavior — Recall Mode = active recall, reviewed/confidence tracking = a self-sorting review queue for the second pass, collapse = header-prompted recall, the compare strip = anchoring the discrimination task, Next-Q = a pure question-pass the night before the exam.
+
+### 14.0 Prerequisites & Conventions
+
+- Every `.section` needs a stable `id`, listed in one JS constant: `const SECTION_IDS = ['overview','anorexia', ...];` — everything else keys off this array.
+- All persistent state goes to `localStorage` under **file-unique keys** (same rule as the theme key in 5.19): e.g. `'eating-disorders-progress'`, `'eating-disorders-compare-strip'`.
+- All new floating UI must be added to the print-hide rule:
+```css
+@media print{
+  .floating-left, .progress-bar, .compare-strip, .sec-tools, .recall-note{display:none !important;}
+  .section.collapsed .sec-body-outer{grid-template-rows:1fr !important;} /* print expanded even if collapsed on screen */
+}
+```
+- Wrap ALL animations behind reduced-motion:
+```css
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{animation:none !important; transition:none !important;}
+  html{scroll-behavior:auto;}
+}
+```
+- **Animation philosophy:** strictly functional only — answer fade-in on reveal, a brief flash on a just-revealed recall fact, smooth collapse, a pulse on the jumped-to question. No scroll-triggered entrance effects: they slow scanning without aiding encoding.
+
+### 14.1 Reading Progress Bar
+
+3px fixed gradient bar at the very top of the viewport; width = scroll percentage.
+
+```css
+.progress-bar{position:fixed; top:0; left:0; height:3px; width:0%; z-index:200;
+  background:linear-gradient(90deg, var(--accent2), var(--accent)); transition:width .1s linear;}
+```
+```js
+window.addEventListener('scroll', function(){
+  const h = document.documentElement;
+  const max = h.scrollHeight - h.clientHeight;
+  bar.style.width = (max > 0 ? (h.scrollTop / max) * 100 : 0) + '%';
+  backtop.classList.toggle('show', h.scrollTop > 600);
+}, {passive:true});
+```
+
+### 14.2 TOC Scrollspy + Progress Chip + Collapse-All
+
+The sticky TOC (5.2) gains three things: an active-section underline, a per-section ✓ colored by confidence, and a right-aligned tools cluster.
+
+**HTML — each TOC link gets a hidden check, and a `.toc-tools` span goes at the end of the nav:**
+```html
+<a href="#anorexia">Anorexia Nervosa<span class="toc-check">✓</span></a>
+...
+<span class="toc-tools">
+  <button class="toc-chip" id="progressChip" onclick="jumpToNextTodo()">0/6 reviewed</button>
+  <button class="toc-chip" id="collapseAllBtn" onclick="toggleAllSections()">⊟ Collapse all</button>
+</span>
+```
+
+**CSS (key parts):** active link underline animates via a `::after` pseudo-element (`width:0% → 100%`); `.toc-check` is `display:none` until the link has `.done`; `conf-1/2/3` classes color the check red/yellow/green. `.toc-tools{margin-left:auto;}` inside the flex nav pushes it right.
+
+**Scrollspy JS — IntersectionObserver with an offset band so the "active" section is the one near the top of the viewport, not whatever touches the edge:**
+```js
+function initScrollspy(){
+  if (typeof IntersectionObserver === 'undefined') return; // test-env guard
+  const obs = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if (en.isIntersecting) { /* clear all .active, set on links[en.target.id] */ }
+    });
+  }, {rootMargin:'-20% 0px -70% 0px'});
+  SECTION_IDS.forEach(id => { const s = document.getElementById(id); if (s) obs.observe(s); });
+}
+```
+Also add `.section{scroll-margin-top:58px;}` so anchor jumps don't hide the section title under the sticky bar.
+
+**The progress chip doubles as a review queue.** `jumpToNextTodo()` picks, in priority order: first unreviewed section → first 🔴 shaky → first 🟡 okay, expands it if collapsed, and scrolls to it. On a second study pass, clicking the chip repeatedly walks exactly the sections that need work.
+
+### 14.3 Per-Section Progress: Reviewed ✓ + Confidence 🔴🟡🟢
+
+A `.sec-tools` row is **injected by JS** directly after each `.section-title` — never hand-written into the HTML (keeps the base document clean and the feature portable):
+
+```
+[✓ Reviewed]  Confidence [🔴 Shaky] [🟡 Okay] [🟢 Solid]              [▾ Collapse]
+```
+
+State shape in localStorage: `{"anorexia":{"reviewed":true,"conf":1}, ...}`. Clicking a confidence button a second time clears it (toggle-off). One `renderProgress()` function is the single source of truth — it repaints the section buttons, the TOC checks/colors, and the chip count from the stored object; every mutation just writes state and calls it.
+
+### 14.4 Collapsible Sections (animated, no fixed heights)
+
+Section bodies are wrapped at runtime in a two-layer grid for smooth height animation without measuring content:
+
+```js
+const outer = document.createElement('div'); outer.className = 'sec-body-outer';
+const inner = document.createElement('div'); inner.className = 'sec-body-inner';
+outer.appendChild(inner);
+while (note.nextSibling) inner.appendChild(note.nextSibling); // move everything after the tools row
+container.appendChild(outer);
+```
+```css
+.sec-body-outer{display:grid; grid-template-rows:1fr; transition:grid-template-rows .35s ease;}
+.sec-body-inner{overflow:hidden; min-height:0;}
+.section.collapsed .sec-body-outer{grid-template-rows:0fr;}
+```
+
+The `1fr → 0fr` grid-row trick animates to/from auto height with zero JS measurement. The per-section button and the TOC's Collapse-all both call the same `toggleSection(sec, force)`. **Study use:** collapse all, then expand only sections you can't reconstruct from the header — the collapsed state is itself a recall prompt.
+
+### 14.5 Recall Mode (global blur-to-reveal)
+
+The core active-recall feature. A body class hides every `<strong>` inside section bodies behind a highlight block; each is individually click-to-reveal with a running `revealed/total` counter on the toggle button.
+
+```css
+body.recall-mode .sec-body-inner :is(p,li,td,h4) strong:not(.rc-open){
+  color:transparent; background:var(--highlight2); border-radius:4px; cursor:pointer;
+  box-shadow:inset 0 0 0 1px var(--border); padding:0 2px;}
+body.recall-mode .exam-q strong{color:var(--gold) !important; background:none !important; box-shadow:none !important;}
+strong.rc-open{animation:rcReveal .35s ease;}
+```
+
+Rules learned building it:
+- **Exclude `.exam-q` and `.tq-bar` content** from blurring — questions must stay readable, and the exam-q's own click-to-reveal must not fight with recall reveals.
+- The reveal click handler runs on the **capture phase** with `stopPropagation()`, so revealing a `<strong>` inside a clickable parent doesn't also trigger the parent.
+- Reveals are one-way per session (click reveals; toggling Recall Mode off resets all `rc-open`).
+- Turning Recall Mode ON while everything is collapsed auto-expands (`if (recallMode && allCollapsed) toggleAllSections();`) — blurred content inside collapsed sections is a dead end.
+- A dashed hint banner (`.recall-note`, injected per section, `display:none` unless `body.recall-mode`) tells the reader how the mode works.
+- This feature is why disciplined `<strong>` usage matters when writing content (only bold genuinely testable facts): the bolding IS the recall deck.
+
+### 14.6 Next-Question Jumper
+
+A button (and the `Q` shortcut) that scrolls to the next **unanswered** `.exam-q` below the current viewport position (wrapping to the first unanswered, then to the first overall), expands its section if collapsed, centers it, and pulses it:
+
+```css
+.exam-q.q-flash{outline:3px solid var(--gold); animation:qPulse 1.2s ease 1;}
+@keyframes qPulse{0%{box-shadow:0 0 0 0 rgba(201,146,42,.55);} 70%{box-shadow:0 0 0 14px rgba(201,146,42,0);} 100%{box-shadow:none;}}
+```
+
+The button shows a live `answered/total` count. Restart the flash animation reliably with the reflow trick: `el.classList.remove('q-flash'); void el.offsetWidth; el.classList.add('q-flash');`. Count updates hook off delegated clicks on `.exam-q` (with a `setTimeout(0)` so the reveal class lands first).
+
+### 14.7 Pinned Compare Strip
+
+A fixed, dismissable panel (bottom-left, above the tools menu) holding the single hardest discrimination task in the lecture as a dense `.cs-table` — for Eating Disorders: AN vs BN vs BED across BMI, driving factor, F:M/onset, first-line tx, med contraindications. It stays open while scrolling any section; open/closed state persists in localStorage and is restored on load.
+
+**Content rule:** the strip is not a mini-TOC — it's the one comparison the exam will test. Pick the discrimination axis the lecturer emphasized, keep it to ~5 rows, and reuse the `hy-mini-table` sizing idiom (tiny font, tight padding). Width: `min(560px, calc(100vw - 40px))`.
+
+### 14.8 Floating Study-Tools Menu (bottom-LEFT, hover-expand)
+
+All study-tool buttons live in a single collapsed trigger to save screen real estate — only one **🧰 Study** pill is visible at rest; hovering (desktop) or tapping (touch) expands the stack upward:
+
+```html
+<div class="floating-left" id="floatingLeft">
+  <div class="tools-menu">
+    <button class="tool-btn backtop" id="backtopBtn" ...>↑ Top</button>
+    <button class="tool-btn" id="compareBtn" ...>⚖ Compare</button>
+    <button class="tool-btn" id="nextQBtn" ...>❓ Next Q <span id="qCount"></span></button>
+    <button class="tool-btn" id="recallBtn" ...>🙈 Recall Mode <span id="rcCount"></span></button>
+  </div>
+  <button class="tool-btn tools-trigger" id="toolsTrigger" onclick="toggleToolsMenu()">🧰 Study<span class="dot"></span></button>
+</div>
+```
+```css
+.tools-menu{opacity:0; pointer-events:none; transform:translateY(10px); transition:opacity .22s, transform .22s;}
+.floating-left:hover .tools-menu, .floating-left:focus-within .tools-menu,
+.floating-left.open .tools-menu{opacity:1; pointer-events:auto; transform:translateY(0);}
+```
+
+- `:hover` covers mouse users, `:focus-within` covers keyboard users, and a `.open` class toggled by tapping the trigger covers touch (with a document-level click handler closing it on outside tap).
+- A small gold **activity dot** on the trigger (`.tools-trigger.busy .dot`) shows whenever Recall Mode or the compare strip is active, so a "mode is on" signal survives the menu collapsing. One `syncToolsDot()` is called from both toggles.
+- Buttons that carry live counters (`Next Q 2/6`, `Recall 12/49`) keep them inside the menu — the counters are only relevant while interacting with the tools.
+- The back-to-top button additionally requires `.show` (scrollY > 600) AND the menu being open/hovered.
+- Bottom-left deliberately mirrors 5.19's bottom-right stack (font/theme) — display controls right, study controls left.
+
+### 14.9 Keyboard Shortcuts
+
+| Key | Action |
+|---|---|
+| `j` / `k` | Next / previous section (smooth scroll) |
+| `Q` | Jump to next unanswered exam question |
+| `R` | Reveal the answer of the exam-q nearest the viewport center |
+
+Guards: ignore when a modifier key is held, when focus is in an input/textarea/select, and when the HY modal is open. Current-section detection for j/k uses `window.scrollY + window.innerHeight * 0.3` against each section's `offsetTop` — no observer needed. List the shortcuts in the footer so they're discoverable.
+
+### 14.10 Quiz Row Shuffle (extends Section 7)
+
+A `🔀 Shuffle rows` button in the `.tq-bar` (shown whenever the column picker is open) that Fisher-Yates-shuffles the data rows in the DOM, so answers can't be memorized positionally:
+
+```js
+let originalRowOrder = null;
+shuffleBtn.addEventListener('click', function(){
+  const parent = table.querySelector('tbody') || table;
+  const rows = Array.from(parent.querySelectorAll('tr')).filter(r => !r.querySelector('th'));
+  if (!originalRowOrder) originalRowOrder = rows.slice();   // capture once, before first shuffle
+  const shuffled = rows.slice();
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  shuffled.forEach(r => parent.appendChild(r));            // re-appending moves, doesn't clone
+});
+```
+Reset re-appends `originalRowOrder` to restore the document order. Filter on "row contains a `<th>`" rather than row index so header rows survive whether or not the table has a `<tbody>`.
+
+### 14.11 Storage Keys Used by This Layer
+
+| Key | Shape | Written by |
+|---|---|---|
+| `<file>-progress` | `{sectionId: {reviewed:bool, conf:0-3}}` | Reviewed / confidence buttons |
+| `<file>-compare-strip` | `'1'` / `'0'` | Compare strip toggle |
+| `<file>-theme`, `<file>-font-scale` | (pre-existing, Section 5.19) | Theme / font controls |
+
+Recall-mode reveals, quiz state, and collapse state are deliberately **not** persisted — they're per-session study activities, and restoring them stale would be confusing.
+
+### 14.12 Verifying This Layer (same "don't just eyeball it" rule as 12.6 / 13.7)
+
+Drive the file headlessly (jsdom or Playwright) and assert, at minimum:
+- `.sec-tools` and `.sec-body-inner` counts equal `SECTION_IDS.length` after load (the runtime injection/wrapping worked on every section).
+- Clicking Reviewed / a confidence button updates the section button state, the TOC link's classes (`done`, `conf-N`), the chip text, AND the localStorage JSON — all four, from one click.
+- Recall Mode: target count > 0; clicking a blurred `<strong>` increments the counter and adds `rc-open`; toggling the mode off clears every `rc-open`; strongs inside `.exam-q` are NOT in the target list.
+- Revealing an `.exam-q` updates the Next-Q counter; `jumpToNextQ()` on a collapsed section expands it.
+- Quiz shuffle changes row order and Reset restores the original first data row.
+- jsdom gotchas: pass a real `url:` option (opaque origins throw on `localStorage`) and guard `IntersectionObserver` (`typeof … === 'undefined'`) — the guard is also cheap insurance in exotic browsers.

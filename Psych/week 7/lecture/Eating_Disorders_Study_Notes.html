@@ -113,6 +113,54 @@ strong{color:var(--accent2);}
 
   --quiz-overlay:rgba(47,95,107,0.45); --quiz-overlay-hover:rgba(47,95,107,0.68);
 }
+[data-theme="lavender"]{
+  --ink:#241a33; --paper:#f6f3fb; --cream:#e7def4;
+  --accent:#b03a5b; --accent2:#6a4fa0; --gold:#b8862a; --muted:#6b5f80; --border:#d3c6e8;
+  --highlight:#f3e2b0; --highlight2:#e0d2f4; --green-bg:#d8eedd; --red-bg:#f7d8dd;
+  --blue-bg:#dcd8f6; --purple-bg:#e6dbfa; --hero-bg:#241a33;
+  --panel-dark-bg:#241a33; --panel-dark-text:#f6f3fb;
+
+  --hero-heading:#f3eefc; --hero-sub:#c3b6d8;
+  --hero-meta-bg:rgba(255,255,255,0.08); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#9c8bbd; --hero-meta-value:#f0e8fc;
+
+  --floating-ui-bg:#2e2244; --floating-ui-fg:#f3eefc;
+  --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.25);
+
+  --quiz-overlay:rgba(106,79,160,0.48); --quiz-overlay-hover:rgba(106,79,160,0.72);
+}
+[data-theme="rose"]{
+  --ink:#33161f; --paper:#fdf3f5; --cream:#f7dde3;
+  --accent:#b02444; --accent2:#2c6a72; --gold:#c07a2a; --muted:#84606c; --border:#ecc4cf;
+  --highlight:#fbe4a8; --highlight2:#f4cfd9; --green-bg:#d7efdc; --red-bg:#f9d3d6;
+  --blue-bg:#d3e8ec; --purple-bg:#ecd9ec; --hero-bg:#3a1220;
+  --panel-dark-bg:#33161f; --panel-dark-text:#fdf3f5;
+
+  --hero-heading:#fbeef1; --hero-sub:#d8aeba;
+  --hero-meta-bg:rgba(255,255,255,0.08); --hero-meta-border:rgba(255,255,255,0.14);
+  --hero-meta-label:#bd8a9a; --hero-meta-value:#fbeef1;
+
+  --floating-ui-bg:#3a1220; --floating-ui-fg:#fbeef1;
+  --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.26);
+
+  --quiz-overlay:rgba(44,106,114,0.46); --quiz-overlay-hover:rgba(44,106,114,0.7);
+}
+[data-theme="slate"]{
+  --ink:#1c2229; --paper:#f4f5f7; --cream:#e3e7ec;
+  --accent:#cf4520; --accent2:#33607a; --gold:#a8862a; --muted:#5c6a76; --border:#c8d0d8;
+  --highlight:#f2e3ac; --highlight2:#d5e2ec; --green-bg:#d6ead9; --red-bg:#f4d8d0;
+  --blue-bg:#d3e2ef; --purple-bg:#dfd9ec; --hero-bg:#1c2530;
+  --panel-dark-bg:#1c2530; --panel-dark-text:#f4f5f7;
+
+  --hero-heading:#eef2f6; --hero-sub:#a9b8c6;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.12);
+  --hero-meta-label:#8496a6; --hero-meta-value:#eef2f6;
+
+  --floating-ui-bg:#26313e; --floating-ui-fg:#eef2f6;
+  --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.26);
+
+  --quiz-overlay:rgba(51,96,122,0.48); --quiz-overlay-hover:rgba(51,96,122,0.72);
+}
 :root strong{color:var(--accent2);}
 
 /* ============================================================
@@ -396,6 +444,135 @@ th{font-size:.78rem;}
 }
 
 /* ============================================================
+   READING PROGRESS BAR
+   ============================================================ */
+.progress-bar{position:fixed; top:0; left:0; height:3px; width:0%; z-index:200;
+  background:linear-gradient(90deg, var(--accent2), var(--accent)); transition:width .1s linear;}
+
+/* ============================================================
+   TOC SCROLLSPY + PROGRESS CHIP
+   ============================================================ */
+.section{scroll-margin-top:58px;}
+.toc-bar nav{align-items:center;}
+.toc-bar a{position:relative; padding-bottom:2px;}
+.toc-bar a::after{content:''; position:absolute; left:0; bottom:-3px; height:2px; width:0%;
+  background:var(--accent); transition:width .25s ease;}
+.toc-bar a.active{color:var(--hero-heading);}
+.toc-bar a.active::after{width:100%;}
+.toc-bar a .toc-check{display:none; margin-left:4px; font-size:.8em;}
+.toc-bar a.done .toc-check{display:inline;}
+.toc-bar a.conf-1 .toc-check{color:#e05555;} .toc-bar a.conf-2 .toc-check{color:#e0b04a;} .toc-bar a.conf-3 .toc-check{color:#54c06a;}
+.toc-tools{margin-left:auto; display:flex; align-items:center; gap:8px; flex:none;}
+.toc-chip{font-family:'JetBrains Mono',monospace; font-size:.66rem; letter-spacing:.05em; color:var(--hero-sub);
+  background:var(--hero-meta-bg); border:1px solid var(--hero-meta-border); border-radius:20px;
+  padding:4px 11px; cursor:pointer; white-space:nowrap; transition:color .15s;}
+.toc-chip:hover{color:var(--hero-heading);}
+
+/* ============================================================
+   SECTION TOOLS (reviewed + confidence) & COLLAPSE
+   ============================================================ */
+.sec-tools{display:flex; align-items:center; flex-wrap:wrap; gap:10px; margin:-6px 0 16px;
+  font-family:'JetBrains Mono',monospace; font-size:.68rem;}
+.sec-reviewed{display:inline-flex; align-items:center; gap:6px; cursor:pointer; user-select:none;
+  border:1px solid var(--border); border-radius:20px; padding:4px 12px; background:var(--paper);
+  color:var(--muted); letter-spacing:.04em; text-transform:uppercase; transition:all .2s;}
+.sec-reviewed.on{background:var(--green-bg); color:#1d6b32; border-color:#54c06a; font-weight:700;}
+.sec-reviewed .rv-box{display:inline-flex; width:13px; height:13px; border:1.5px solid currentColor;
+  border-radius:3px; align-items:center; justify-content:center; font-size:.62rem; line-height:1;}
+.conf-row{display:inline-flex; align-items:center; gap:4px;}
+.conf-label{color:var(--muted); letter-spacing:.05em; text-transform:uppercase; font-size:.62rem; margin-right:2px;}
+.conf-btn{border:1px solid var(--border); background:var(--paper); border-radius:20px; padding:3px 10px;
+  cursor:pointer; font-family:inherit; font-size:.68rem; opacity:.55; transition:all .18s; line-height:1.3;}
+.conf-btn:hover{opacity:.9;}
+.conf-btn.sel{opacity:1; font-weight:700; transform:scale(1.06);}
+.conf-btn.sel.c1{background:var(--red-bg); border-color:#e05555;}
+.conf-btn.sel.c2{background:var(--highlight); border-color:#e0b04a;}
+.conf-btn.sel.c3{background:var(--green-bg); border-color:#54c06a;}
+.sec-collapse-btn{margin-left:auto; border:1px solid var(--border); background:var(--paper); color:var(--muted);
+  border-radius:20px; padding:4px 12px; cursor:pointer; font-family:inherit; font-size:.64rem;
+  letter-spacing:.05em; text-transform:uppercase; transition:all .2s;}
+.sec-collapse-btn:hover{color:var(--ink);}
+.sec-body-outer{display:grid; grid-template-rows:1fr; transition:grid-template-rows .35s ease;}
+.sec-body-inner{overflow:hidden; min-height:0;}
+.section.collapsed .sec-body-outer{grid-template-rows:0fr;}
+.section.collapsed .section-title{margin-bottom:6px; opacity:.75;}
+.section.collapsed{padding-bottom:22px;}
+
+/* ============================================================
+   RECALL MODE
+   ============================================================ */
+body.recall-mode .sec-body-inner :is(p,li,td,h4) strong:not(.rc-open){
+  color:transparent; background:var(--highlight2); border-radius:4px; cursor:pointer;
+  text-shadow:none; box-shadow:inset 0 0 0 1px var(--border); padding:0 2px; transition:background .15s;}
+body.recall-mode .sec-body-inner :is(p,li,td,h4) strong:not(.rc-open):hover{background:var(--highlight);}
+body.recall-mode .exam-q strong{color:var(--gold) !important; background:none !important; box-shadow:none !important; cursor:inherit; padding:0;}
+body.recall-mode .tq-bar strong{color:inherit; background:none; box-shadow:none;}
+strong.rc-open{animation:rcReveal .35s ease;}
+@keyframes rcReveal{from{background:var(--highlight); opacity:.3;} to{opacity:1;}}
+.recall-note{display:none; font-family:'JetBrains Mono',monospace; font-size:.66rem; color:var(--muted);
+  background:var(--highlight); border:1px dashed var(--gold); border-radius:8px; padding:6px 12px; margin:0 0 14px;}
+body.recall-mode .recall-note{display:inline-block;}
+
+/* ============================================================
+   FLOATING LEFT STACK (study tools — hover-expand menu)
+   ============================================================ */
+.floating-left{position:fixed; bottom:20px; left:20px; z-index:100; display:flex; flex-direction:column;
+  align-items:flex-start; gap:8px;}
+.tools-menu{display:flex; flex-direction:column; align-items:flex-start; gap:8px;
+  opacity:0; pointer-events:none; transform:translateY(10px); transition:opacity .22s ease, transform .22s ease;}
+.floating-left:hover .tools-menu, .floating-left:focus-within .tools-menu, .floating-left.open .tools-menu{
+  opacity:1; pointer-events:auto; transform:translateY(0);}
+.tools-trigger{position:relative;}
+.tools-trigger .dot{position:absolute; top:-2px; right:-2px; width:10px; height:10px; border-radius:50%;
+  background:var(--gold); display:none; box-shadow:0 0 0 2px var(--floating-ui-bg);}
+.tools-trigger.busy .dot{display:block;}
+.tool-btn{display:flex; align-items:center; gap:6px; background:var(--floating-ui-bg); color:var(--floating-ui-fg);
+  border:none; padding:9px 14px; border-radius:30px; box-shadow:var(--floating-ui-shadow); cursor:pointer;
+  font-family:'JetBrains Mono',monospace; font-size:.68rem; letter-spacing:.04em; transition:transform .15s;}
+.tool-btn:hover{transform:translateY(-2px);}
+.tool-btn.on{outline:2px solid var(--gold);}
+.backtop{opacity:0; pointer-events:none; transition:opacity .25s;}
+.floating-left:hover .backtop.show, .floating-left:focus-within .backtop.show, .floating-left.open .backtop.show{
+  opacity:1; pointer-events:auto;}
+
+/* ============================================================
+   STICKY COMPARE STRIP (AN vs BN vs BED)
+   ============================================================ */
+.compare-strip{position:fixed; bottom:70px; left:20px; z-index:110; background:var(--paper); color:var(--ink);
+  border:1px solid var(--border); border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.3);
+  width:min(560px, calc(100vw - 40px)); padding:12px 14px 10px; opacity:0; pointer-events:none;
+  transform:translateY(10px); transition:opacity .22s, transform .22s;}
+.compare-strip.open{opacity:1; pointer-events:auto; transform:translateY(0);}
+.compare-strip h4{font-size:.85rem; margin:0 0 8px; display:flex; align-items:center; justify-content:space-between;}
+.compare-strip h4 button{border:none; background:var(--accent); color:#fff; border-radius:14px; font-size:.62rem;
+  font-family:'JetBrains Mono',monospace; padding:3px 9px; cursor:pointer;}
+.cs-table{width:100%; border-collapse:collapse; font-size:.66rem; line-height:1.35; margin:0;}
+.cs-table th, .cs-table td{border:1px solid var(--border); padding:3px 6px; text-align:left; vertical-align:top;}
+.cs-table th{background:var(--panel-dark-bg); color:var(--panel-dark-text); font-size:.58rem; text-transform:uppercase;
+  font-family:'JetBrains Mono',monospace;}
+.cs-table td:first-child{font-weight:700; color:var(--accent2); white-space:nowrap;}
+.cs-table tr:nth-child(even) td{background:var(--cream);}
+
+/* ============================================================
+   EXAM-Q ANSWER + NEXT-Q ANIMATIONS
+   ============================================================ */
+.exam-q .answer{animation:none;}
+.exam-q.revealed .answer{animation:ansIn .35s ease;}
+@keyframes ansIn{from{opacity:0; transform:translateY(-6px);} to{opacity:1; transform:translateY(0);}}
+.exam-q.q-flash{outline:3px solid var(--gold); animation:qPulse 1.2s ease 1;}
+@keyframes qPulse{0%{box-shadow:0 0 0 0 rgba(201,146,42,.55);} 70%{box-shadow:0 0 0 14px rgba(201,146,42,0);} 100%{box-shadow:none;}}
+
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{animation:none !important; transition:none !important;}
+  html{scroll-behavior:auto;}
+}
+
+@media print{
+  .floating-left, .progress-bar, .compare-strip, .sec-tools, .recall-note{display:none !important;}
+  .section.collapsed .sec-body-outer{grid-template-rows:1fr !important;}
+}
+
+/* ============================================================
    RESPONSIVE
    ============================================================ */
 @media (max-width:640px){
@@ -403,6 +580,9 @@ th{font-size:.78rem;}
   .container{padding:0 18px;}
   .toc-bar nav{padding:10px 18px;}
   .section-title{font-size:1.4rem;}
+  .floating-left{bottom:14px; left:12px;}
+  .tool-btn{padding:8px 11px; font-size:.62rem;}
+  .compare-strip{bottom:64px; left:12px;}
 }
 </style>
 </head>
@@ -424,14 +604,20 @@ th{font-size:.78rem;}
   </div>
 </div>
 
+<div class="progress-bar" id="progressBar"></div>
+
 <div class="toc-bar">
   <nav>
-    <a href="#overview">Shared Framework</a>
-    <a href="#anorexia">Anorexia Nervosa</a>
-    <a href="#bulimia">Bulimia Nervosa</a>
-    <a href="#binge-eating">Binge Eating Disorder</a>
-    <a href="#pica-bdd">Pica &amp; BDD</a>
-    <a href="#differentiating">Differentiating the Disorders</a>
+    <a href="#overview">Shared Framework<span class="toc-check">✓</span></a>
+    <a href="#anorexia">Anorexia Nervosa<span class="toc-check">✓</span></a>
+    <a href="#bulimia">Bulimia Nervosa<span class="toc-check">✓</span></a>
+    <a href="#binge-eating">Binge Eating Disorder<span class="toc-check">✓</span></a>
+    <a href="#pica-bdd">Pica &amp; BDD<span class="toc-check">✓</span></a>
+    <a href="#differentiating">Differentiating the Disorders<span class="toc-check">✓</span></a>
+    <span class="toc-tools">
+      <button class="toc-chip" id="progressChip" onclick="jumpToNextTodo()" title="Click to jump to the next unreviewed or shaky section">0/6 reviewed</button>
+      <button class="toc-chip" id="collapseAllBtn" onclick="toggleAllSections()" title="Collapse or expand all sections">⊟ Collapse all</button>
+    </span>
   </nav>
 </div>
 
@@ -1014,6 +1200,15 @@ th{font-size:.78rem;}
     <div class="theme-option" data-theme="sepia" onclick="setTheme('sepia',this)">
       <div class="theme-swatch" style="background:linear-gradient(135deg,#faf3e8,#8b4513)"></div>Sepia
     </div>
+    <div class="theme-option" data-theme="lavender" onclick="setTheme('lavender',this)">
+      <div class="theme-swatch" style="background:linear-gradient(135deg,#f6f3fb,#6a4fa0)"></div>Lavender
+    </div>
+    <div class="theme-option" data-theme="rose" onclick="setTheme('rose',this)">
+      <div class="theme-swatch" style="background:linear-gradient(135deg,#fdf3f5,#b02444)"></div>Rose
+    </div>
+    <div class="theme-option" data-theme="slate" onclick="setTheme('slate',this)">
+      <div class="theme-swatch" style="background:linear-gradient(135deg,#f4f5f7,#33607a)"></div>Slate
+    </div>
   </div>
   <div class="font-btn-row">
     <span class="font-label">Text</span>
@@ -1026,7 +1221,32 @@ th{font-size:.78rem;}
   </button>
 </div>
 
-<footer>Eating Disorders — Study Notes · Lee Wolfrum, DO · UNE College of Medicine</footer>
+<!-- ============================================================ STICKY COMPARE STRIP ============================================================ -->
+<div class="compare-strip" id="compareStrip">
+  <h4>⚖ AN vs BN vs BED — Quick Discriminators <button onclick="toggleCompareStrip()">✕ Close</button></h4>
+  <table class="cs-table">
+    <tr><th>Feature</th><th>Anorexia</th><th>Bulimia</th><th>BED</th></tr>
+    <tr><td>BMI</td><td>Low (defines severity: 18.5–17 / –16 / –15 / &lt;15)</td><td>Normal–high</td><td>Often obesity-associated</td></tr>
+    <tr><td>Driving factor</td><td>Restrict to keep losing weight</td><td>Binge → compensate to avoid gain</td><td>Binge, no compensation</td></tr>
+    <tr><td>F:M / Onset</td><td>10:1 · 12–14 &amp; ~18</td><td>10:1 · often &gt;18</td><td>2:1</td></tr>
+    <tr><td>1st-line tx</td><td>Medical stabilization → CBT</td><td>CBT (± IPT, Maudsley, DBT)</td><td>CBT, IPT, DBT</td></tr>
+    <tr><td>Med notes</td><td>None FDA-approved; appetite stimulants off-label</td><td>SSRI/SNRI · <strong>avoid bupropion &amp; lithium</strong></td><td>Vyvanse (FDA-approved), sertraline, topiramate</td></tr>
+  </table>
+</div>
+
+<!-- ============================================================ FLOATING STUDY TOOLS (LEFT, hover-expand) ============================================================ -->
+<div class="floating-left" id="floatingLeft">
+  <div class="tools-menu">
+    <button class="tool-btn backtop" id="backtopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑ Top</button>
+    <button class="tool-btn" id="compareBtn" onclick="toggleCompareStrip()" title="Pin the AN/BN/BED comparison strip">⚖ Compare</button>
+    <button class="tool-btn" id="nextQBtn" onclick="jumpToNextQ()" title="Jump to next unanswered exam question (shortcut: Q)">❓ Next Q <span id="qCount"></span></button>
+    <button class="tool-btn" id="recallBtn" onclick="toggleRecallMode()" title="Hide every bolded fact — click each to reveal (self-test mode)">🙈 Recall Mode <span id="rcCount"></span></button>
+  </div>
+  <button class="tool-btn tools-trigger" id="toolsTrigger" onclick="toggleToolsMenu()" title="Study tools — hover or tap to open">🧰 Study<span class="dot"></span></button>
+</div>
+
+<footer>Eating Disorders — Study Notes · Lee Wolfrum, DO · UNE College of Medicine<br>
+<span style="opacity:.65;">⌨ shortcuts — <b>j / k</b> next·prev section · <b>Q</b> next question · <b>R</b> reveal nearest answer</span></footer>
 
 <script>
 /* ============================================================
@@ -1148,6 +1368,22 @@ function initTableQuiz(){
     const resetBtn = document.createElement('button');
     resetBtn.className = 'tq-reset'; resetBtn.textContent = '↺ Reset'; resetBtn.style.display = 'none';
 
+    const shuffleBtn = document.createElement('button');
+    shuffleBtn.className = 'tq-start'; shuffleBtn.textContent = '🔀 Shuffle rows'; shuffleBtn.style.display = 'none';
+    shuffleBtn.title = 'Randomize row order so answers aren\'t memorized by position';
+    let originalRowOrder = null;
+    shuffleBtn.addEventListener('click', function(){
+      const parent = table.querySelector('tbody') || table;
+      const rows = Array.from(parent.querySelectorAll('tr')).filter(function(r){ return !r.querySelector('th'); });
+      if (!originalRowOrder) originalRowOrder = rows.slice();
+      const shuffled = rows.slice();
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      shuffled.forEach(function(r){ parent.appendChild(r); });
+    });
+
     const scoreEl = document.createElement('span');
     scoreEl.className = 'tq-score'; scoreEl.style.display = 'none';
 
@@ -1168,6 +1404,7 @@ function initTableQuiz(){
       const showing = colsWrap.style.display !== 'none';
       colsWrap.style.display = showing ? 'none' : 'flex';
       startBtn.style.display = showing ? 'none' : 'inline-block';
+      shuffleBtn.style.display = showing ? 'none' : 'inline-block';
       toggleBtn.classList.toggle('active', !showing);
     });
 
@@ -1220,11 +1457,17 @@ function initTableQuiz(){
       colsWrap.querySelectorAll('.tq-col-btn').forEach(function(b){ b.classList.remove('sel'); });
       toggleBtn.classList.remove('active');
       startBtn.disabled = true;
+      shuffleBtn.style.display = 'none';
+      if (originalRowOrder) {
+        const parent = table.querySelector('tbody') || table;
+        originalRowOrder.forEach(function(r){ parent.appendChild(r); });
+      }
     });
 
     bar.appendChild(toggleBtn);
     bar.appendChild(colsWrap);
     bar.appendChild(startBtn);
+    bar.appendChild(shuffleBtn);
     bar.appendChild(resetBtn);
     bar.appendChild(scoreEl);
     table.parentNode.insertBefore(bar, table);
@@ -1256,6 +1499,289 @@ document.addEventListener('DOMContentLoaded', function(){
   document.addEventListener('keydown', function(e){
     if (e.key === 'Escape' && hyModal.classList.contains('open')) closeHY();
   });
+});
+
+/* ============================================================
+   STUDY SYSTEM — progress, recall mode, scrollspy, collapse,
+   next-Q jumper, compare strip, shortcuts
+   ============================================================ */
+const STORAGE_PROGRESS_KEY = 'eating-disorders-progress';
+const STORAGE_STRIP_KEY = 'eating-disorders-compare-strip';
+const SECTION_IDS = ['overview','anorexia','bulimia','binge-eating','pica-bdd','differentiating'];
+const CONF_META = [null, ['🔴 Shaky','c1'], ['🟡 Okay','c2'], ['🟢 Solid','c3']];
+
+function loadProgress(){
+  try { return JSON.parse(localStorage.getItem(STORAGE_PROGRESS_KEY)) || {}; } catch(e){ return {}; }
+}
+function saveProgress(p){ try { localStorage.setItem(STORAGE_PROGRESS_KEY, JSON.stringify(p)); } catch(e){} }
+let progress = loadProgress();
+
+/* ---- Wrap each section body for collapse animation + inject tools ---- */
+function initSections(){
+  SECTION_IDS.forEach(function(id){
+    const sec = document.getElementById(id);
+    if (!sec) return;
+    const container = sec.querySelector('.container');
+    const title = container.querySelector('.section-title');
+
+    // tools row
+    const tools = document.createElement('div');
+    tools.className = 'sec-tools';
+    const rv = document.createElement('button');
+    rv.className = 'sec-reviewed';
+    rv.innerHTML = '<span class="rv-box"></span><span>Reviewed</span>';
+    rv.addEventListener('click', function(){
+      progress[id] = progress[id] || {};
+      progress[id].reviewed = !progress[id].reviewed;
+      saveProgress(progress);
+      renderProgress();
+    });
+    const confRow = document.createElement('span');
+    confRow.className = 'conf-row';
+    confRow.innerHTML = '<span class="conf-label">Confidence</span>';
+    for (let c = 1; c <= 3; c++) {
+      const b = document.createElement('button');
+      b.className = 'conf-btn ' + CONF_META[c][1];
+      b.textContent = CONF_META[c][0];
+      b.addEventListener('click', function(){
+        progress[id] = progress[id] || {};
+        progress[id].conf = (progress[id].conf === c) ? 0 : c;
+        saveProgress(progress);
+        renderProgress();
+      });
+      confRow.appendChild(b);
+    }
+    const clp = document.createElement('button');
+    clp.className = 'sec-collapse-btn';
+    clp.textContent = '▾ Collapse';
+    clp.addEventListener('click', function(){ toggleSection(sec); });
+    tools.appendChild(rv); tools.appendChild(confRow); tools.appendChild(clp);
+    title.insertAdjacentElement('afterend', tools);
+
+    // recall-mode hint (shown only in recall mode)
+    const note = document.createElement('div');
+    note.className = 'recall-note';
+    note.textContent = '🙈 Recall Mode — key facts are hidden. Try to say each one out loud, then click to check.';
+    tools.insertAdjacentElement('afterend', note);
+
+    // wrap everything after the note into collapsible body
+    const outer = document.createElement('div'); outer.className = 'sec-body-outer';
+    const inner = document.createElement('div'); inner.className = 'sec-body-inner';
+    outer.appendChild(inner);
+    while (note.nextSibling) inner.appendChild(note.nextSibling);
+    container.appendChild(outer);
+  });
+}
+
+function toggleSection(sec, force){
+  const collapse = (force !== undefined) ? force : !sec.classList.contains('collapsed');
+  sec.classList.toggle('collapsed', collapse);
+  const btn = sec.querySelector('.sec-collapse-btn');
+  if (btn) btn.textContent = collapse ? '▸ Expand' : '▾ Collapse';
+}
+let allCollapsed = false;
+function toggleAllSections(){
+  allCollapsed = !allCollapsed;
+  SECTION_IDS.forEach(function(id){
+    const sec = document.getElementById(id);
+    if (sec) toggleSection(sec, allCollapsed);
+  });
+  document.getElementById('collapseAllBtn').textContent = allCollapsed ? '⊞ Expand all' : '⊟ Collapse all';
+}
+
+/* ---- Render progress state everywhere (section tools + TOC + chip) ---- */
+function renderProgress(){
+  let reviewedCount = 0;
+  SECTION_IDS.forEach(function(id){
+    const st = progress[id] || {};
+    const sec = document.getElementById(id);
+    if (!sec) return;
+    const rv = sec.querySelector('.sec-reviewed');
+    rv.classList.toggle('on', !!st.reviewed);
+    rv.querySelector('.rv-box').textContent = st.reviewed ? '✓' : '';
+    if (st.reviewed) reviewedCount++;
+    sec.querySelectorAll('.conf-btn').forEach(function(b, i){
+      b.classList.toggle('sel', st.conf === i + 1);
+    });
+    const link = document.querySelector('.toc-bar a[href="#' + id + '"]');
+    if (link) {
+      link.classList.toggle('done', !!st.reviewed);
+      link.classList.remove('conf-1','conf-2','conf-3');
+      if (st.conf) link.classList.add('conf-' + st.conf);
+    }
+  });
+  document.getElementById('progressChip').textContent = reviewedCount + '/' + SECTION_IDS.length + ' reviewed';
+}
+
+/* Jump to the next section that needs work: unreviewed first, then shaky/okay confidence */
+function jumpToNextTodo(){
+  const todo = SECTION_IDS.find(function(id){ const st = progress[id] || {}; return !st.reviewed; })
+    || SECTION_IDS.find(function(id){ const st = progress[id] || {}; return st.conf === 1; })
+    || SECTION_IDS.find(function(id){ const st = progress[id] || {}; return st.conf === 2; });
+  if (todo) {
+    const sec = document.getElementById(todo);
+    toggleSection(sec, false);
+    sec.scrollIntoView({behavior:'smooth'});
+  }
+}
+
+/* ---- Scrollspy ---- */
+function initScrollspy(){
+  if (typeof IntersectionObserver === 'undefined') return;
+  const links = {};
+  document.querySelectorAll('.toc-bar a[href^="#"]').forEach(function(a){
+    links[a.getAttribute('href').slice(1)] = a;
+  });
+  const obs = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if (en.isIntersecting) {
+        Object.values(links).forEach(function(a){ a.classList.remove('active'); });
+        const a = links[en.target.id];
+        if (a) a.classList.add('active');
+      }
+    });
+  }, {rootMargin:'-20% 0px -70% 0px'});
+  SECTION_IDS.forEach(function(id){
+    const sec = document.getElementById(id);
+    if (sec) obs.observe(sec);
+  });
+}
+
+/* ---- Reading progress bar + back-to-top ---- */
+function initScrollUI(){
+  const bar = document.getElementById('progressBar');
+  const backtop = document.getElementById('backtopBtn');
+  window.addEventListener('scroll', function(){
+    const h = document.documentElement;
+    const max = h.scrollHeight - h.clientHeight;
+    bar.style.width = (max > 0 ? (h.scrollTop / max) * 100 : 0) + '%';
+    backtop.classList.toggle('show', h.scrollTop > 600);
+  }, {passive:true});
+}
+
+/* ---- Recall Mode ---- */
+let recallMode = false;
+function recallTargets(){
+  return Array.from(document.querySelectorAll('.sec-body-inner p strong, .sec-body-inner li strong, .sec-body-inner td strong, .sec-body-inner h4 strong'))
+    .filter(function(s){ return !s.closest('.exam-q') && !s.closest('.tq-bar'); });
+}
+function updateRecallCount(){
+  const el = document.getElementById('rcCount');
+  if (!recallMode) { el.textContent = ''; return; }
+  const t = recallTargets();
+  const open = t.filter(function(s){ return s.classList.contains('rc-open'); }).length;
+  el.textContent = open + '/' + t.length;
+}
+function toggleRecallMode(){
+  recallMode = !recallMode;
+  document.body.classList.toggle('recall-mode', recallMode);
+  document.getElementById('recallBtn').classList.toggle('on', recallMode);
+  if (!recallMode) recallTargets().forEach(function(s){ s.classList.remove('rc-open'); });
+  if (recallMode && allCollapsed) toggleAllSections();
+  updateRecallCount();
+  if (typeof syncToolsDot === 'function') syncToolsDot();
+}
+document.addEventListener('click', function(e){
+  if (!recallMode) return;
+  const s = e.target.closest('strong');
+  if (s && s.closest('.sec-body-inner') && !s.closest('.exam-q') && !s.closest('.tq-bar')) {
+    if (!s.classList.contains('rc-open')) {
+      s.classList.add('rc-open');
+      updateRecallCount();
+      e.preventDefault(); e.stopPropagation();
+    }
+  }
+}, true);
+
+/* ---- Next-Q jumper ---- */
+function examQs(){ return Array.from(document.querySelectorAll('.exam-q')); }
+function updateQCount(){
+  const qs = examQs();
+  const answered = qs.filter(function(q){ return q.classList.contains('revealed'); }).length;
+  document.getElementById('qCount').textContent = answered + '/' + qs.length;
+}
+function jumpToNextQ(){
+  const qs = examQs();
+  let next = qs.find(function(q){
+    return !q.classList.contains('revealed') && q.getBoundingClientRect().top > 80;
+  }) || qs.find(function(q){ return !q.classList.contains('revealed'); });
+  if (!next) next = qs[0];
+  if (!next) return;
+  const sec = next.closest('.section');
+  if (sec) toggleSection(sec, false);
+  next.scrollIntoView({behavior:'smooth', block:'center'});
+  next.classList.remove('q-flash'); void next.offsetWidth; next.classList.add('q-flash');
+  setTimeout(function(){ next.classList.remove('q-flash'); }, 1400);
+}
+document.addEventListener('click', function(e){
+  if (e.target.closest('.exam-q')) setTimeout(updateQCount, 0);
+});
+
+/* ---- Compare strip ---- */
+function syncToolsDot(){
+  const busy = recallMode || document.getElementById('compareStrip').classList.contains('open');
+  document.getElementById('toolsTrigger').classList.toggle('busy', busy);
+}
+function toggleToolsMenu(){
+  document.getElementById('floatingLeft').classList.toggle('open');
+}
+document.addEventListener('click', function(e){
+  const fl = document.getElementById('floatingLeft');
+  if (fl.classList.contains('open') && !fl.contains(e.target)) fl.classList.remove('open');
+});
+function toggleCompareStrip(force){
+  const strip = document.getElementById('compareStrip');
+  const open = (force !== undefined) ? force : !strip.classList.contains('open');
+  strip.classList.toggle('open', open);
+  document.getElementById('compareBtn').classList.toggle('on', open);
+  syncToolsDot();
+  try { localStorage.setItem(STORAGE_STRIP_KEY, open ? '1' : '0'); } catch(e){}
+}
+
+/* ---- Keyboard shortcuts: j/k sections, Q next question, R reveal nearest answer ---- */
+function currentSectionIndex(){
+  const mid = window.scrollY + window.innerHeight * 0.3;
+  let idx = 0;
+  SECTION_IDS.forEach(function(id, i){
+    const sec = document.getElementById(id);
+    if (sec && sec.offsetTop <= mid) idx = i;
+  });
+  return idx;
+}
+document.addEventListener('keydown', function(e){
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  if (/^(input|textarea|select)$/i.test(e.target.tagName)) return;
+  if (document.getElementById('hyModal').classList.contains('open')) return;
+  const k = e.key.toLowerCase();
+  if (k === 'j' || k === 'k') {
+    const i = currentSectionIndex();
+    const next = k === 'j' ? Math.min(i + 1, SECTION_IDS.length - 1) : Math.max(i - 1, 0);
+    document.getElementById(SECTION_IDS[next]).scrollIntoView({behavior:'smooth'});
+  } else if (k === 'q') {
+    jumpToNextQ();
+  } else if (k === 'r') {
+    const mid = window.innerHeight / 2;
+    let best = null, bestDist = Infinity;
+    examQs().forEach(function(q){
+      const r = q.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > window.innerHeight) return;
+      const d = Math.abs((r.top + r.bottom) / 2 - mid);
+      if (d < bestDist) { bestDist = d; best = q; }
+    });
+    if (best && !best.classList.contains('revealed')) {
+      best.classList.add('revealed');
+      updateQCount();
+    }
+  }
+});
+
+document.addEventListener('DOMContentLoaded', function(){
+  initSections();
+  renderProgress();
+  initScrollspy();
+  initScrollUI();
+  updateQCount();
+  try { if (localStorage.getItem(STORAGE_STRIP_KEY) === '1') toggleCompareStrip(true); } catch(e){}
 });
 </script>
 

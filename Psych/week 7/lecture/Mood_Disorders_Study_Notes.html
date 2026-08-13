@@ -311,6 +311,7 @@ tr:nth-child(even) td { background: var(--cream); }
 .tq-col-btn.sel { background: var(--accent2); color: #fff; border-color: var(--accent2); }
 .tq-start { font-family: 'JetBrains Mono', monospace; font-size: .65rem; background: #2e7d32; color: #fff; border: none; border-radius: 20px; padding: 5px 12px; cursor: pointer; }
 .tq-start:disabled { opacity: .35; cursor: not-allowed; }
+.tq-shuffle { font-family: 'JetBrains Mono', monospace; font-size: .65rem; background: var(--gold); color: #2a1a00; border: none; border-radius: 20px; padding: 5px 12px; cursor: pointer; }
 .tq-reset { font-family: 'JetBrains Mono', monospace; font-size: .65rem; background: #b5341a; color: #fff; border: none; border-radius: 20px; padding: 5px 13px; cursor: pointer; }
 .tq-score { font-family: 'JetBrains Mono', monospace; font-size: .72rem; color: var(--muted); }
 .tq-score.done { color: #2e7d32; font-weight: 700; }
@@ -386,6 +387,69 @@ tr:nth-child(even) td { background: var(--cream); }
 
 footer { text-align: center; padding: 40px 20px 100px; font-family: 'JetBrains Mono', monospace; font-size: .74rem; color: var(--muted); }
 strong { color: var(--accent2); }
+
+/* Study tools */
+.progress-bar { position: fixed; top: 0; left: 0; height: 3px; width: 0%; z-index: 260; background: linear-gradient(90deg, var(--accent2), var(--accent)); transition: width .1s linear; }
+.toc-bar nav a { position: relative; }
+.toc-bar nav a.active::after { content: ""; position: absolute; left: 12px; right: 12px; bottom: 4px; height: 2px; border-radius: 3px; background: var(--gold); }
+.toc-check { display: none; margin-left: 5px; font-weight: 700; color: var(--gold); }
+.toc-bar nav a.done .toc-check { display: inline; }
+.toc-bar nav a.conf-1 .toc-check { color: #d1495b; }
+.toc-bar nav a.conf-2 .toc-check { color: var(--gold); }
+.toc-bar nav a.conf-3 .toc-check { color: #2e7d32; }
+.toc-tools { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; padding-left: 8px; }
+.toc-chip { border: 1px solid rgba(255,255,255,.18); background: rgba(255,255,255,.08); color: var(--hero-heading); border-radius: 18px; padding: 5px 10px; font-family: 'JetBrains Mono', monospace; font-size: .66rem; cursor: pointer; white-space: nowrap; }
+.toc-chip:hover { background: rgba(255,255,255,.16); }
+.section { scroll-margin-top: 58px; }
+.sec-tools { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin: 2px 0 16px; padding: 8px 10px; background: var(--cream); border: 1px solid var(--border); border-radius: 10px; }
+.sec-tool-label { font-family: 'JetBrains Mono', monospace; font-size: .64rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.study-btn { border: 1px solid var(--border); background: var(--paper); color: var(--ink); border-radius: 18px; padding: 5px 10px; font-family: 'JetBrains Mono', monospace; font-size: .66rem; cursor: pointer; }
+.study-btn:hover { border-color: var(--accent2); }
+.study-btn.is-active { background: var(--accent2); border-color: var(--accent2); color: #fff; }
+.conf-btn.conf-1.is-active { background: #d1495b; border-color: #d1495b; color: #fff; }
+.conf-btn.conf-2.is-active { background: var(--gold); border-color: var(--gold); color: #2a1a00; }
+.conf-btn.conf-3.is-active { background: #2e7d32; border-color: #2e7d32; color: #fff; }
+.collapse-btn { margin-left: auto; }
+.sec-body-outer { display: grid; grid-template-rows: 1fr; transition: grid-template-rows .32s ease; }
+.sec-body-inner { overflow: hidden; min-height: 0; }
+.section.collapsed .sec-body-outer { grid-template-rows: 0fr; }
+.section.collapsed .sec-body-inner { visibility: hidden; }
+.recall-note { display: none; margin: 0 0 14px; padding: 8px 10px; border: 1px dashed var(--gold); border-radius: 8px; background: var(--highlight); color: var(--ink); font-family: 'JetBrains Mono', monospace; font-size: .68rem; }
+body.recall-mode .recall-note { display: block; }
+body.recall-mode .sec-body-inner :is(p,li,td,h3,h4) :is(strong,b):not(.rc-open):not(.rc-skip) { color: transparent !important; background: var(--highlight2); border-radius: 4px; cursor: pointer; box-shadow: inset 0 0 0 1px var(--border); padding: 0 2px; }
+body.recall-mode :is(strong,b).rc-open { animation: rcReveal .35s ease; }
+@keyframes rcReveal { from { background: var(--highlight); } to { background: transparent; } }
+.floating-left { position: fixed; bottom: 20px; left: 20px; z-index: 125; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+.tools-menu { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; opacity: 0; pointer-events: none; transform: translateY(10px); transition: opacity .22s, transform .22s; }
+.floating-left:hover .tools-menu, .floating-left:focus-within .tools-menu, .floating-left.open .tools-menu { opacity: 1; pointer-events: auto; transform: translateY(0); }
+.tool-btn { display: inline-flex; align-items: center; gap: 6px; background: var(--floating-ui-bg); color: var(--floating-ui-fg); border: none; border-radius: 22px; padding: 8px 12px; box-shadow: var(--floating-ui-shadow); font-family: 'JetBrains Mono', monospace; font-size: .68rem; cursor: pointer; }
+.tool-btn:hover { filter: brightness(1.12); }
+.backtop { display: none; }
+.backtop.show { display: inline-flex; }
+.tools-trigger { position: relative; }
+.tools-trigger .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--gold); display: none; }
+.tools-trigger.busy .dot { display: inline-block; }
+.compare-strip { position: fixed; left: 20px; bottom: 86px; width: min(560px, calc(100vw - 40px)); max-height: 54vh; overflow: auto; background: var(--paper); color: var(--ink); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 12px 32px rgba(0,0,0,.22); padding: 14px; z-index: 124; display: none; }
+.compare-strip.open { display: block; }
+.compare-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 8px; }
+.compare-head h3 { margin: 0; font-size: 1rem; color: var(--accent2); }
+.compare-close { border: none; background: var(--cream); color: var(--ink); border-radius: 50%; width: 26px; height: 26px; cursor: pointer; }
+.cs-table { width: 100%; border-collapse: collapse; margin: 0; font-size: .78rem; }
+.cs-table th, .cs-table td { border: 1px solid var(--border); padding: 6px 8px; vertical-align: top; }
+.cs-table th { background: var(--panel-dark-bg); color: var(--panel-dark-text); }
+.exam-q.q-flash, .qbox.q-flash { outline: 3px solid var(--gold); animation: qPulse 1.15s ease 1; }
+@keyframes qPulse { 0% { box-shadow: 0 0 0 0 rgba(201,146,42,.55); } 70% { box-shadow: 0 0 0 14px rgba(201,146,42,0); } 100% { box-shadow: none; } }
+@media (max-width: 720px) {
+  .floating-left { bottom: 14px; left: 12px; }
+  .compare-strip { left: 12px; bottom: 78px; width: calc(100vw - 24px); }
+  .collapse-btn { margin-left: 0; }
+  .toc-tools { width: 100%; margin-left: 0; }
+}
+@media print {
+  .floating-left, .progress-bar, .compare-strip, .sec-tools, .recall-note { display: none !important; }
+  .section.collapsed .sec-body-outer { grid-template-rows: 1fr !important; }
+  .section.collapsed .sec-body-inner { visibility: visible !important; }
+}
 
 /* Readability */
 .hero-sub { font-size: 1.12rem; max-width: 700px; line-height: 1.72; }
@@ -1970,6 +2034,9 @@ th { font-size: .78rem; }
 <script>
 const STORAGE_THEME_KEY = 'mood-disorders-theme';
 const STORAGE_FONT_KEY = 'mood-disorders-font-scale';
+const STORAGE_STUDY_KEY = 'mood-disorders-progress';
+const STORAGE_COMPARE_KEY = 'mood-disorders-compare-strip';
+const STUDY_SECTION_IDS = ['episodes101','depressive','bipolar','suicide','depTx','antidepressants','serotonin','bpTx','stabilizers','antipsychotics','quickref','drugref'];
 const DEFAULT_FONT_SCALE = 1.08;
 const MIN_FONT_SCALE = 0.9;
 const MAX_FONT_SCALE = 1.45;
@@ -2127,6 +2194,12 @@ function initTableQuiz() {
     startBtn.style.display = 'none';
     bar.appendChild(startBtn);
 
+    const shuffleBtn = document.createElement('button');
+    shuffleBtn.className = 'tq-shuffle';
+    shuffleBtn.textContent = '🔀 Shuffle rows';
+    shuffleBtn.style.display = 'none';
+    bar.appendChild(shuffleBtn);
+
     const resetBtn = document.createElement('button');
     resetBtn.className = 'tq-reset';
     resetBtn.textContent = '↺ Reset';
@@ -2140,6 +2213,7 @@ function initTableQuiz() {
 
     let hiddenCells = [];
     let revealedCount = 0;
+    let originalRowOrder = null;
 
     function updateScore() {
       const total = hiddenCells.length;
@@ -2152,10 +2226,26 @@ function initTableQuiz() {
       }
     }
 
+    function rowParent() {
+      return table.tBodies[0] || table;
+    }
+
+    function dataRows() {
+      return Array.from(rowParent().children).filter(row => row.tagName === 'TR' && !row.querySelector('th'));
+    }
+
+    function restoreRowOrder() {
+      if (!originalRowOrder) return;
+      const parent = rowParent();
+      originalRowOrder.forEach(row => parent.appendChild(row));
+      originalRowOrder = null;
+    }
+
     toggleBtn.onclick = () => {
       const active = toggleBtn.classList.toggle('active');
       colsWrap.style.display = active ? 'flex' : 'none';
       startBtn.style.display = active ? 'inline-block' : 'none';
+      shuffleBtn.style.display = active ? 'inline-block' : 'none';
       toggleBtn.textContent = active ? '✕ Cancel quiz' : '🧩 Quiz this table';
       if (!active) resetQuiz();
     };
@@ -2170,9 +2260,23 @@ function initTableQuiz() {
       });
       hiddenCells = [];
       revealedCount = 0;
+      restoreRowOrder();
       resetBtn.style.display = 'none';
       scoreEl.style.display = 'none';
     }
+
+    shuffleBtn.onclick = () => {
+      const rows = dataRows();
+      if (rows.length < 2) return;
+      if (!originalRowOrder) originalRowOrder = rows.slice();
+      const shuffled = rows.slice();
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      const parent = rowParent();
+      shuffled.forEach(row => parent.appendChild(row));
+    };
 
     startBtn.onclick = () => {
       hiddenCells = [];
@@ -2206,9 +2310,435 @@ function initTableQuiz() {
   });
 }
 
+/* ---- Study Tools ---- */
+function initStudyTools() {
+  if (document.body.dataset.studyToolsReady === '1') return;
+  document.body.dataset.studyToolsReady = '1';
+
+  const sectionIds = STUDY_SECTION_IDS.filter(id => document.getElementById(id));
+  const studySections = sectionIds.map(id => document.getElementById(id));
+  const nav = document.querySelector('.toc-bar nav');
+  if (!studySections.length || !nav) return;
+
+  const progressBar = document.createElement('div');
+  progressBar.className = 'progress-bar';
+  document.body.prepend(progressBar);
+
+  const linkMap = {};
+  sectionIds.forEach(id => {
+    const link = Array.from(nav.querySelectorAll('a')).find(a => a.getAttribute('href') === '#' + id);
+    if (!link) return;
+    linkMap[id] = link;
+    if (!link.querySelector('.toc-check')) {
+      const check = document.createElement('span');
+      check.className = 'toc-check';
+      check.textContent = '✓';
+      link.appendChild(check);
+    }
+  });
+
+  const tocTools = document.createElement('span');
+  tocTools.className = 'toc-tools';
+  const progressChip = document.createElement('button');
+  progressChip.className = 'toc-chip';
+  progressChip.type = 'button';
+  const collapseAllBtn = document.createElement('button');
+  collapseAllBtn.className = 'toc-chip';
+  collapseAllBtn.type = 'button';
+  collapseAllBtn.textContent = 'Collapse all';
+  tocTools.append(progressChip, collapseAllBtn);
+  nav.appendChild(tocTools);
+
+  let progress = loadProgress();
+  let compareStrip;
+  let compareBtn;
+  let recallBtn;
+  let recallCount;
+  let nextQCount;
+  let toolsTrigger;
+
+  function loadProgress() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_STUDY_KEY) || '{}') || {};
+    } catch (err) {
+      return {};
+    }
+  }
+
+  function saveProgress() {
+    localStorage.setItem(STORAGE_STUDY_KEY, JSON.stringify(progress));
+  }
+
+  function ensureSectionState(id) {
+    if (!progress[id]) progress[id] = { reviewed: false, conf: 0 };
+    return progress[id];
+  }
+
+  function setupSection(sec) {
+    const host = sec.querySelector(':scope > .container') || sec;
+    const title = host.querySelector('.section-title') || host.querySelector('h2');
+    if (!title || host.querySelector('.sec-tools')) return;
+    const id = sec.id;
+
+    const tools = document.createElement('div');
+    tools.className = 'sec-tools';
+    tools.innerHTML = [
+      '<button class="study-btn review-btn" type="button">✓ Reviewed</button>',
+      '<span class="sec-tool-label">Confidence</span>',
+      '<button class="study-btn conf-btn conf-1" type="button" data-conf="1">Shaky</button>',
+      '<button class="study-btn conf-btn conf-2" type="button" data-conf="2">Okay</button>',
+      '<button class="study-btn conf-btn conf-3" type="button" data-conf="3">Solid</button>',
+      '<button class="study-btn collapse-btn" type="button">Collapse</button>'
+    ].join('');
+    title.insertAdjacentElement('afterend', tools);
+
+    const recallNote = document.createElement('div');
+    recallNote.className = 'recall-note';
+    recallNote.textContent = 'Recall mode is on: click hidden bold terms to reveal them.';
+    tools.insertAdjacentElement('afterend', recallNote);
+
+    const outer = document.createElement('div');
+    outer.className = 'sec-body-outer';
+    const inner = document.createElement('div');
+    inner.className = 'sec-body-inner';
+    outer.appendChild(inner);
+    let node = recallNote.nextSibling;
+    while (node) {
+      const next = node.nextSibling;
+      inner.appendChild(node);
+      node = next;
+    }
+    host.appendChild(outer);
+
+    tools.querySelector('.review-btn').addEventListener('click', () => {
+      const state = ensureSectionState(id);
+      state.reviewed = !state.reviewed;
+      saveProgress();
+      renderProgress();
+    });
+    tools.querySelectorAll('.conf-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const state = ensureSectionState(id);
+        const value = Number(btn.dataset.conf);
+        state.conf = state.conf === value ? 0 : value;
+        saveProgress();
+        renderProgress();
+      });
+    });
+    tools.querySelector('.collapse-btn').addEventListener('click', () => {
+      toggleSection(sec);
+    });
+  }
+
+  function renderProgress() {
+    let reviewed = 0;
+    studySections.forEach(sec => {
+      const id = sec.id;
+      const state = ensureSectionState(id);
+      if (state.reviewed) reviewed++;
+      const tools = sec.querySelector('.sec-tools');
+      if (tools) {
+        tools.querySelector('.review-btn').classList.toggle('is-active', !!state.reviewed);
+        tools.querySelectorAll('.conf-btn').forEach(btn => {
+          btn.classList.toggle('is-active', Number(btn.dataset.conf) === state.conf);
+        });
+      }
+      const link = linkMap[id];
+      if (link) {
+        link.classList.toggle('done', !!state.reviewed);
+        link.classList.remove('conf-1','conf-2','conf-3');
+        if (state.conf) link.classList.add('conf-' + state.conf);
+      }
+    });
+    progressChip.textContent = reviewed + '/' + studySections.length + ' reviewed';
+    updateCollapseAllLabel();
+  }
+
+  function toggleSection(sec, force) {
+    const collapsed = typeof force === 'boolean' ? force : !sec.classList.contains('collapsed');
+    sec.classList.toggle('collapsed', collapsed);
+    const btn = sec.querySelector('.collapse-btn');
+    if (btn) btn.textContent = collapsed ? 'Expand' : 'Collapse';
+    updateCollapseAllLabel();
+  }
+
+  function updateCollapseAllLabel() {
+    const shouldExpand = studySections.every(sec => sec.classList.contains('collapsed'));
+    collapseAllBtn.textContent = shouldExpand ? 'Expand all' : 'Collapse all';
+  }
+
+  function toggleAllSections() {
+    const shouldCollapse = studySections.some(sec => !sec.classList.contains('collapsed'));
+    studySections.forEach(sec => toggleSection(sec, shouldCollapse));
+  }
+
+  function expandSectionFor(el) {
+    const sec = el.closest('.section');
+    if (sec && sec.classList.contains('collapsed')) toggleSection(sec, false);
+  }
+
+  function jumpToNextTodo() {
+    const target = studySections.find(sec => !ensureSectionState(sec.id).reviewed)
+      || studySections.find(sec => ensureSectionState(sec.id).conf === 1)
+      || studySections.find(sec => ensureSectionState(sec.id).conf === 2)
+      || studySections[0];
+    if (!target) return;
+    toggleSection(target, false);
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function setActiveSection(id) {
+    Object.values(linkMap).forEach(link => link.classList.remove('active'));
+    if (linkMap[id]) linkMap[id].classList.add('active');
+  }
+
+  function initScrollspy() {
+    if (typeof IntersectionObserver === 'undefined') {
+      window.addEventListener('scroll', () => {
+        let current = studySections[0];
+        studySections.forEach(sec => {
+          if (sec.getBoundingClientRect().top < 140) current = sec;
+        });
+        if (current) setActiveSection(current.id);
+      }, { passive: true });
+      return;
+    }
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) setActiveSection(entry.target.id);
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    studySections.forEach(sec => observer.observe(sec));
+  }
+
+  function updateProgressBar() {
+    const doc = document.documentElement;
+    const max = doc.scrollHeight - doc.clientHeight;
+    progressBar.style.width = (max > 0 ? (doc.scrollTop / max) * 100 : 0) + '%';
+    const backtop = document.getElementById('studyBacktop');
+    if (backtop) backtop.classList.toggle('show', doc.scrollTop > 600);
+  }
+
+  function createCompareStrip() {
+    compareStrip = document.createElement('div');
+    compareStrip.className = 'compare-strip';
+    compareStrip.innerHTML = [
+      '<div class="compare-head"><h3>Mood Pattern Anchors</h3><button class="compare-close" type="button" aria-label="Close compare strip">×</button></div>',
+      '<table class="cs-table">',
+      '<tr><th>Anchor</th><th>Fast distinction</th></tr>',
+      '<tr><td>Mania</td><td>&ge;7 days, hospitalization, psychosis, or marked impairment; one episode qualifies for Bipolar I.</td></tr>',
+      '<tr><td>Hypomania</td><td>&ge;4 days without psychosis or marked impairment; with MDE history, think Bipolar II.</td></tr>',
+      '<tr><td>MDD</td><td>&ge;2 weeks, 5+ SIG E CAPS, including depressed mood or anhedonia.</td></tr>',
+      '<tr><td>PDD / Cyclothymia</td><td>&ge;2 years of chronic subthreshold depressive symptoms or hypomania-lite plus depression-lite.</td></tr>',
+      '<tr><td>Treatment phase</td><td>Mania: lithium, valproate, carbamazepine, or SGA. Bipolar depression: lamotrigine, quetiapine, or olanzapine-fluoxetine.</td></tr>',
+      '</table>'
+    ].join('');
+    document.body.appendChild(compareStrip);
+    compareStrip.querySelector('.compare-close').addEventListener('click', () => toggleCompare(false));
+    compareStrip.classList.toggle('open', localStorage.getItem(STORAGE_COMPARE_KEY) === '1');
+  }
+
+  function createFloatingMenu() {
+    const floating = document.createElement('div');
+    floating.className = 'floating-left';
+    floating.id = 'floatingLeft';
+    floating.innerHTML = [
+      '<div class="tools-menu">',
+      '<button class="tool-btn backtop" id="studyBacktop" type="button">Top</button>',
+      '<button class="tool-btn" id="compareBtn" type="button">Compare</button>',
+      '<button class="tool-btn" id="nextQBtn" type="button">Next Q <span id="qCount"></span></button>',
+      '<button class="tool-btn" id="recallBtn" type="button">Recall Mode <span id="rcCount"></span></button>',
+      '</div>',
+      '<button class="tool-btn tools-trigger" id="toolsTrigger" type="button">Study <span class="dot"></span></button>'
+    ].join('');
+    document.body.appendChild(floating);
+    compareBtn = document.getElementById('compareBtn');
+    recallBtn = document.getElementById('recallBtn');
+    recallCount = document.getElementById('rcCount');
+    nextQCount = document.getElementById('qCount');
+    toolsTrigger = document.getElementById('toolsTrigger');
+
+    document.getElementById('studyBacktop').addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    compareBtn.addEventListener('click', () => toggleCompare());
+    document.getElementById('nextQBtn').addEventListener('click', jumpToNextQ);
+    recallBtn.addEventListener('click', toggleRecallMode);
+    toolsTrigger.addEventListener('click', event => {
+      event.stopPropagation();
+      floating.classList.toggle('open');
+    });
+    document.addEventListener('click', event => {
+      if (!floating.contains(event.target)) floating.classList.remove('open');
+    });
+  }
+
+  function toggleCompare(force) {
+    const open = typeof force === 'boolean' ? force : !compareStrip.classList.contains('open');
+    compareStrip.classList.toggle('open', open);
+    localStorage.setItem(STORAGE_COMPARE_KEY, open ? '1' : '0');
+    syncToolsDot();
+  }
+
+  function syncToolsDot() {
+    if (!toolsTrigger) return;
+    const busy = document.body.classList.contains('recall-mode') || (compareStrip && compareStrip.classList.contains('open'));
+    toolsTrigger.classList.toggle('busy', busy);
+  }
+
+  function markRecallSkips() {
+    document.querySelectorAll('.exam-q :is(strong,b), .qbox :is(strong,b), .sec-tools :is(strong,b), .tq-bar :is(strong,b), .hy-modal :is(strong,b), svg :is(strong,b)').forEach(el => {
+      el.classList.add('rc-skip');
+    });
+  }
+
+  function recallTargets() {
+    return Array.from(document.querySelectorAll('.sec-body-inner :is(p,li,td,h3,h4) :is(strong,b)')).filter(el => {
+      return !el.classList.contains('rc-skip') && !el.closest('.exam-q,.qbox,.sec-tools,.tq-bar,.quiz-toggle-row,.hy-modal,svg');
+    });
+  }
+
+  function updateRecallCount() {
+    if (!recallCount) return;
+    const targets = recallTargets();
+    const opened = targets.filter(el => el.classList.contains('rc-open')).length;
+    recallCount.textContent = opened + '/' + targets.length;
+  }
+
+  function toggleRecallMode() {
+    const turningOn = !document.body.classList.contains('recall-mode');
+    document.body.classList.toggle('recall-mode', turningOn);
+    recallBtn.classList.toggle('is-active', turningOn);
+    if (turningOn && studySections.every(sec => sec.classList.contains('collapsed'))) toggleAllSections();
+    if (!turningOn) recallTargets().forEach(el => el.classList.remove('rc-open'));
+    updateRecallCount();
+    syncToolsDot();
+  }
+
+  function questions() {
+    return Array.from(document.querySelectorAll('.exam-q, .qbox')).filter(q => !q.closest('.hy-modal'));
+  }
+
+  function questionAnswered(q) {
+    return q.dataset.studyAnswered === '1' || q.dataset.answered === '1';
+  }
+
+  function revealQuestion(q) {
+    if (!q) return;
+    if (q.classList.contains('qbox')) {
+      q.dataset.answered = '1';
+      q.querySelectorAll('.opt').forEach(opt => {
+        if (opt.dataset.correct === 'true') opt.classList.add('correct');
+      });
+      const explain = q.querySelector('.explain');
+      if (explain) explain.classList.add('show');
+    } else {
+      q.dataset.studyAnswered = '1';
+    }
+    updateQuestionCount();
+    flashQuestion(q);
+  }
+
+  function updateQuestionCount() {
+    if (!nextQCount) return;
+    const qs = questions();
+    const answered = qs.filter(questionAnswered).length;
+    nextQCount.textContent = answered + '/' + qs.length;
+  }
+
+  function flashQuestion(q) {
+    expandSectionFor(q);
+    q.classList.remove('q-flash');
+    void q.offsetWidth;
+    q.classList.add('q-flash');
+    q.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  function jumpToNextQ() {
+    const qs = questions();
+    if (!qs.length) return;
+    const y = window.scrollY + 90;
+    const target = qs.find(q => !questionAnswered(q) && q.offsetTop > y)
+      || qs.find(q => !questionAnswered(q))
+      || qs[0];
+    flashQuestion(target);
+  }
+
+  function revealNearestQ() {
+    const qs = questions();
+    if (!qs.length) return;
+    const center = window.innerHeight / 2;
+    let nearest = qs[0];
+    let best = Infinity;
+    qs.forEach(q => {
+      const rect = q.getBoundingClientRect();
+      const dist = Math.abs((rect.top + rect.bottom) / 2 - center);
+      if (dist < best) {
+        best = dist;
+        nearest = q;
+      }
+    });
+    revealQuestion(nearest);
+  }
+
+  function goSection(delta) {
+    const y = window.scrollY + window.innerHeight * 0.3;
+    let idx = 0;
+    studySections.forEach((sec, i) => {
+      if (sec.offsetTop <= y) idx = i;
+    });
+    idx = Math.min(studySections.length - 1, Math.max(0, idx + delta));
+    toggleSection(studySections[idx], false);
+    studySections[idx].scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  studySections.forEach(setupSection);
+  markRecallSkips();
+  createCompareStrip();
+  createFloatingMenu();
+  renderProgress();
+  updateQuestionCount();
+  updateRecallCount();
+  syncToolsDot();
+  initScrollspy();
+  updateProgressBar();
+
+  progressChip.addEventListener('click', jumpToNextTodo);
+  collapseAllBtn.addEventListener('click', toggleAllSections);
+  window.addEventListener('scroll', updateProgressBar, { passive: true });
+  document.addEventListener('click', event => {
+    if (document.body.classList.contains('recall-mode')) {
+      const term = event.target.closest('strong,b');
+      if (term && recallTargets().includes(term)) {
+        event.preventDefault();
+        event.stopPropagation();
+        term.classList.add('rc-open');
+        updateRecallCount();
+        return;
+      }
+    }
+    const q = event.target.closest('.exam-q, .qbox');
+    if (!q || q.closest('.hy-modal')) return;
+    if (q.classList.contains('qbox')) {
+      setTimeout(updateQuestionCount, 0);
+    } else {
+      q.dataset.studyAnswered = '1';
+      updateQuestionCount();
+    }
+  }, true);
+  document.addEventListener('keydown', event => {
+    const tag = (event.target && event.target.tagName || '').toLowerCase();
+    if (event.metaKey || event.ctrlKey || event.altKey || tag === 'input' || tag === 'textarea' || tag === 'select') return;
+    if (document.body.classList.contains('hy-mode') || document.querySelector('.lightbox.active')) return;
+    if (event.key === 'j') { event.preventDefault(); goSection(1); }
+    if (event.key === 'k') { event.preventDefault(); goSection(-1); }
+    if (event.key.toLowerCase() === 'q') { event.preventDefault(); jumpToNextQ(); }
+    if (event.key.toLowerCase() === 'r') { event.preventDefault(); revealNearestQ(); }
+  });
+}
+
 document.addEventListener('DOMContentLoaded', function() {
   initVisualState();
   initTableQuiz();
+  initStudyTools();
 });
 </script>
 </body>
