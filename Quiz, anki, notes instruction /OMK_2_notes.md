@@ -9,7 +9,7 @@ A single-file HTML study document for a medical school lecture, organized around
 - **Normal mode** — full notes covering all LOs for the lecture
 - **High-Yield One-Pager** — an optional modal overlay that condenses the whole file into a dense, printable 1–2 page cheat sheet organized by learning objective, with its own Print/Save-PDF button (see Section 12)
 
-The One-Pager is optional — build it when the user wants a condensed pre-exam summary; otherwise the full notes stand alone.
+The One-Pager is mandatory — build it when the user wants a condensed pre-exam summary; otherwise the full notes stand alone.
 
 The page is self-contained: no build tools, no frameworks, just one `.html` file with embedded CSS, fonts, and JS.
 
