@@ -227,6 +227,19 @@ body,.sb,.auth-card,.mn,.tt,.modal-card,.chip,.qbd,.cd,.r-box,.box,.panel,.auth-
   background:var(--white);border:1px solid rgba(27,42,74,.08);box-shadow:0 8px 20px rgba(18,32,60,.05);
   font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:700;color:var(--navy)
 }
+.resource-tabs{display:flex;flex-wrap:wrap;gap:10px}
+.resource-tab{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 16px;border-radius:999px;
+  border:1px solid rgba(27,42,74,.12);background:rgba(255,255,255,.78);color:var(--navy);
+  font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;
+  cursor:pointer;transition:var(--tr);box-shadow:0 8px 18px rgba(18,32,60,.05)
+}
+.resource-tab:hover{transform:translateY(-1px);background:var(--white);box-shadow:0 12px 22px rgba(18,32,60,.08)}
+.resource-tab.on{
+  background:linear-gradient(135deg,var(--teal),var(--teal-deep));border-color:transparent;color:#fff;
+  box-shadow:0 14px 26px rgba(26,122,109,.24)
+}
+.resource-panel{display:grid;gap:16px}
 .resource-groups{display:grid;gap:26px}
 .resource-group{
   display:grid;gap:16px;padding-top:6px
@@ -1520,7 +1533,7 @@ OCS:{systems:[
 
 /* ═══ ENGINE ═══ */
 var HUB_LAST_VIEW_KEY='une_study_hub_last_view_v1';
-var CC='OMK',CW=7,CV='overview',EW={};
+var CC='OMK',CW=7,CV='overview',EW={},RG={};
 var AQ=null,CQ=0,AQS={},NC=0,NI=0;
 var TI=null,TS=0,TR=false;
 var CDminutes=10,CDrem=0,CDrun=false,CDint=null;
@@ -1636,6 +1649,9 @@ function canViewItem(item){
   if(!email)return false;
   return item.allowedUsers.some(function(allowed){return normEmail(allowed)===email});
 }
+function getVisibleWeekItems(wk){
+  return (wk&&wk.items?wk.items:[]).filter(canViewItem);
+}
 function getVisibleNotes(wk){
   return (wk&&wk.notes?wk.notes:[]).filter(canViewItem);
 }
@@ -1709,6 +1725,38 @@ function getLinkIcon(link){
   if(label.indexOf('quiz')!==-1)return '🧪';
   return '↗';
 }
+function getResourceGroupStateKey(category,week){
+  return category+':'+week;
+}
+function getOrderedResourceGroupKeys(grouped){
+  var preferred=['notes','cases','disease-indexes','application-sessions','resources'];
+  var keys=Object.keys(grouped||{}),ordered=[];
+  preferred.forEach(function(key){
+    if(grouped&&grouped[key])ordered.push(key);
+  });
+  keys.forEach(function(key){
+    if(ordered.indexOf(key)===-1)ordered.push(key);
+  });
+  return ordered;
+}
+function getActiveResourceGroup(category,week,groupOrder){
+  var stateKey=getResourceGroupStateKey(category,week);
+  return groupOrder.indexOf(RG[stateKey])!==-1?RG[stateKey]:groupOrder[0];
+}
+function setResourceGroup(groupKey){
+  var wk=getWeekMeta(CC,CW);
+  var visibleItems=getVisibleWeekItems(wk);
+  if(!visibleItems.length)return;
+  var grouped={};
+  visibleItems.forEach(function(item){
+    var key=(item&&item.group)||'resources';
+    if(!grouped[key])grouped[key]=[];
+  });
+  var groupOrder=getOrderedResourceGroupKeys(grouped);
+  if(groupOrder.indexOf(groupKey)===-1)return;
+  RG[getResourceGroupStateKey(CC,CW)]=groupKey;
+  rMN();
+}
 function renderHeroLinks(links){
   var visible=(links||[]).filter(function(link){return !!(link&&link.href);});
   if(!visible.length)return '';
@@ -1740,33 +1788,37 @@ function go(w,v){CW=+w;CV='overview';EW={};EW[getSystemIndexForWeek(CC,CW)]=true
 function goPT(i){var groups=getSystemGroups(CC);var firstWeek=(groups[0]&&groups[0].weeks&&groups[0].weeks[0])||1;CW=firstWeek;CV='overview';EW={};EW[getSystemIndexForWeek(CC,CW)]=true;persistLastHubView();syncSB();rMN();document.querySelector('.sb').classList.remove('mo')}
 
 function renderWeekItems(wk){
-var items=(wk&&wk.items)||[];
+var items=getVisibleWeekItems(wk);
 if(!items.length)return '';
-var grouped={},groupOrder=[];
+var grouped={};
 items.forEach(function(item){
   var groupKey=(item&&item.group)||'resources';
-  if(!grouped[groupKey]){
-    grouped[groupKey]=[];
-    groupOrder.push(groupKey);
-  }
+  if(!grouped[groupKey])grouped[groupKey]=[];
   grouped[groupKey].push(item);
 });
-var h='<section class="system-section"><div class="system-section-hd"><div class="system-section-copy"><h3>This Week\'s Resources</h3><p>Week 1 is split into cases and disease indexes so you can jump straight to the kind of review you want.</p></div><div class="system-count">'+items.length+'</div></div><div class="resource-groups">';
-groupOrder.forEach(function(groupKey){
-  var meta=getResourceGroupMeta(groupKey);
-  var groupItems=grouped[groupKey]||[];
-  h+='<div class="resource-group"><div class="resource-group-hd"><div><div class="resource-group-kicker">Section</div><h4>'+meta.label+'</h4><p>'+meta.copy+'</p></div><div class="resource-group-count">'+groupItems.length+'</div></div><div class="resource-grid">';
-  groupItems.forEach(function(item){
-    var links=item.links||[];
-    var btns='';
-    links.forEach(function(link){
-      btns+='<a class="resource-btn '+getLinkTone(link)+'" href="'+link.href+'" target="_blank"><span>'+getLinkIcon(link)+'</span><span>'+link.label+'</span></a>';
-    });
-    h+='<article class="resource-card"><div class="resource-card-top"><span class="resource-icon">'+(item.icon||'📘')+'</span><div><div class="resource-eyebrow">'+getResourceTypeLabel(item)+'</div><h4 class="resource-title">'+formatResourceTitle(item.title)+'</h4><div class="resource-sub">'+DATA[CC].fullName+'</div></div></div><div class="resource-actions">'+btns+'</div></article>';
+var groupOrder=getOrderedResourceGroupKeys(grouped);
+var activeGroup=getActiveResourceGroup(CC,CW,groupOrder);
+var activeMeta=getResourceGroupMeta(activeGroup);
+var activeItems=grouped[activeGroup]||[];
+var h='<section class="system-section"><div class="system-section-hd"><div class="system-section-copy"><h3>This Week\'s Resources</h3><p>'+(groupOrder.length>1?'Use the tabs to jump straight to the section you want.':'Open the material first, then use the linked study tools to reinforce it.')+'</p></div><div class="system-count">'+items.length+'</div></div>';
+if(groupOrder.length>1){
+  h+='<div class="resource-tabs">';
+  groupOrder.forEach(function(groupKey){
+    var meta=getResourceGroupMeta(groupKey);
+    h+='<button class="resource-tab'+(groupKey===activeGroup?' on':'')+'" type="button" onclick="setResourceGroup(\''+groupKey+'\')">'+meta.label+'</button>';
   });
-  h+='</div></div>';
+  h+='</div>';
+}
+h+='<div class="resource-panel"><div class="resource-groups"><div class="resource-group"><div class="resource-group-hd"><div><div class="resource-group-kicker">Section</div><h4>'+activeMeta.label+'</h4><p>'+activeMeta.copy+'</p></div><div class="resource-group-count">'+activeItems.length+'</div></div><div class="resource-grid">';
+activeItems.forEach(function(item){
+  var links=getVisibleLinks(item.links);
+  var btns='';
+  links.forEach(function(link){
+    btns+='<a class="resource-btn '+getLinkTone(link)+'" href="'+link.href+'" target="_blank"><span>'+getLinkIcon(link)+'</span><span>'+link.label+'</span></a>';
+  });
+  h+='<article class="resource-card"><div class="resource-card-top"><span class="resource-icon">'+(item.icon||'📘')+'</span><div><div class="resource-eyebrow">'+getResourceTypeLabel(item)+'</div><h4 class="resource-title">'+formatResourceTitle(item.title)+'</h4><div class="resource-sub">'+DATA[CC].fullName+'</div></div></div><div class="resource-actions">'+btns+'</div></article>';
 });
-return h+'</div></section>';
+return h+'</div></div></div></div></section>';
 }
 
 function rMN(){var wk=DATA[CC].weeks[CW],cn=DATA[CC].fullName,sys=getSystemMeta(CC,CW);
