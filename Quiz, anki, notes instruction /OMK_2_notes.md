@@ -5,12 +5,11 @@
 
 ## 1. What These Notes Are
 
-A single-file HTML study document for a medical school lecture. It has up to three display modes, depending on what the lecture needs:
-- **Normal mode** — full notes covering all PLOs (Program-Level Objectives) and LOs (Learning Objectives)
-- **RAT Mode** — a focused view showing only PLO content, used for Readiness Assessment Test prep (see the RAT Mode subsections at the end of Section 5)
+A single-file HTML study document for a medical school lecture, organized around Learning Objectives (LOs). It has one primary display mode, plus an optional condensed view:
+- **Normal mode** — full notes covering all LOs for the lecture
 - **High-Yield One-Pager** — an optional modal overlay that condenses the whole file into a dense, printable 1–2 page cheat sheet organized by learning objective, with its own Print/Save-PDF button (see Section 12)
 
-RAT Mode and the High-Yield One-Pager are **not mutually exclusive but usually one or the other is used per file**, not both. RAT Mode works by hiding/showing existing DOM content in place; the One-Pager is a self-contained modal with its own hand-written condensed content. If a user says "forget the RAT mode" for a given lecture, skip those RAT Mode subsections entirely and consider offering the One-Pager (Section 12) instead — it accomplishes a similar "day-before-the-exam" goal without the added CSS/JS complexity of a second display state layered over every section.
+The One-Pager is optional — build it when the user wants a condensed pre-exam summary; otherwise the full notes stand alone.
 
 The page is self-contained: no build tools, no frameworks, just one `.html` file with embedded CSS, fonts, and JS.
 
@@ -26,7 +25,7 @@ JetBrains Mono — labels, badges, captions, monospaced UI
 ```
 
 ### CSS Custom Properties (`:root`)
-Define all colors as variables so RAT mode and themes can override them cleanly:
+Define all colors as variables so themes can override them cleanly:
 
 ```css
 :root {
@@ -45,17 +44,6 @@ Define all colors as variables so RAT mode and themes can override them cleanly:
   --blue-bg: #e3f0fb;    /* concept callout background */
   --purple-bg: #f0ebff;  /* purple callout background */
 
-  /* RAT Mode dark palette (also reused by Night theme) */
-  --rat-bg: #0f1923;
-  --rat-surface: #162030;
-  --rat-border: #1e3048;
-  --rat-accent: #e8b84b;   /* gold — primary highlight in dark mode */
-  --rat-accent2: #4aa8d8;  /* blue — secondary highlight */
-  --rat-text: #dce8f0;
-  --rat-muted: #9fb9cd;
-  --rat-green: #3dba7a;
-  --rat-red: #e05252;
-
   /* Hero-specific vars (override per-theme for correct contrast) */
   --hero-heading: #f5ede0;
   --hero-sub: #c9bcad;
@@ -73,17 +61,9 @@ Define all colors as variables so RAT mode and themes can override them cleanly:
   --quiz-overlay: rgba(44,111,173,0.5);
   --quiz-overlay-hover: rgba(44,111,173,0.78);
 
-  /* Semantic RAT mode aliases — use these in component RAT-mode overrides */
-  --rat-mode-bg: #0f1923;
-  --rat-mode-surface: #162030;
-  --rat-mode-surface-alt: #0f1923;
-  --rat-mode-border: #1e3048;
-  --rat-mode-text: #dce8f0;
-  --rat-mode-text-soft: #c8d8e8;
-  --rat-mode-muted: #9fb9cd;
-  --rat-mode-accent: #e8b84b;
-  --rat-mode-accent2: #4aa8d8;
-  --rat-mode-success: #3dba7a;
+  /* Dark-panel components (table headers, exam-q box) — see Section 3 */
+  --panel-dark-bg: #1a1209;
+  --panel-dark-text: #faf7f2;
 }
 ```
 
@@ -91,20 +71,20 @@ Define all colors as variables so RAT mode and themes can override them cleanly:
 
 ## 3. Theme System
 
-The page supports 5 visual themes via a `data-theme` attribute on the `<html>` element. This is separate from RAT Mode — themes persist across both normal and RAT mode.
+The page supports 5 visual themes via a `data-theme` attribute on the `<html>` element. **Paper is the default** — it's what renders when no `data-theme` attribute is present, and it's the theme every file should load with before the person picks something else.
 
 ### Available Themes
 
 | Theme | Key Colors | `data-theme` value |
 |---|---|---|
-| Paper (Default) | Warm cream + dark ink | *(no attribute)* |
+| **Paper (Default)** | Warm cream + dark ink | *(no attribute — omit `data-theme` entirely)* |
 | Night | Dark navy + gold/blue | `night` |
 | Ocean | Light blue + deep navy | `ocean` |
 | Forest | Soft green + deep green | `forest` |
 | Sepia | Warm tan + brown | `sepia` |
 
 ### Theme CSS Structure
-Each theme overrides **all** `:root` CSS variables — not just the core palette, but also the hero, floating-ui, quiz-overlay, and rat-mode semantic aliases. Example (Night theme, abbreviated):
+Each theme overrides **all** `:root` CSS variables — not just the core palette, but also the hero, floating-ui, quiz-overlay, and dark-panel vars. Example (Night theme, abbreviated):
 
 ```css
 [data-theme="night"] {
@@ -132,26 +112,16 @@ Each theme overrides **all** `:root` CSS variables — not just the core palette
   --quiz-overlay: rgba(74,168,216,0.42);
   --quiz-overlay-hover: rgba(74,168,216,0.62);
 
-  /* RAT mode semantic aliases */
-  --rat-mode-bg: #08111a;
-  --rat-mode-surface: #101b27;
-  --rat-mode-surface-alt: #0b1520;
-  --rat-mode-border: #223247;
-  --rat-mode-text: #e0e8f0;
-  --rat-mode-text-soft: #c7d6e3;
-  --rat-mode-muted: #94abc0;
-  --rat-mode-accent: #e8b84b;
-  --rat-mode-accent2: #4aa8d8;
-  --rat-mode-success: #57c98c;
+  /* Dark-panel components — fixed regardless of theme direction, see below */
+  --panel-dark-bg: #101a26;
+  --panel-dark-text: #eef5fb;
 }
 /* Then override specific components that need more than variable swaps: */
 [data-theme="night"] .hero { background: #070e15; }
 [data-theme="night"] .toc-bar { background: #070e15; border-color: #1e3048; }
-[data-theme="night"] .drug-card, [data-theme="night"] .hallmark-card,
-[data-theme="night"] .p53-card, [data-theme="night"] .tech-card { background: #162030; border-color: #1e3048; }
 ```
 
-> **Rule:** Every theme must override all four variable groups: base palette, hero vars, floating-ui vars, and rat-mode aliases. Copy the full block from a reference file rather than writing it from scratch — it's easy to miss a variable.
+> **Rule:** Every theme must override all four variable groups: base palette, hero vars, floating-ui vars, and the `--panel-dark-*` pair. Copy the full block from a reference file rather than writing it from scratch — it's easy to miss a variable.
 
 ### Theme Switcher HTML (in fixed bottom-right controls)
 ```html
@@ -293,18 +263,18 @@ Four light themes (Paper, Ocean, Forest, Sepia) were originally shipped with too
 
 ```
 <body>
-  .rat-banner          ← hidden by default, shown in RAT mode
-  .hero                ← dark hero header with title + meta stats
+  .hero                ← dark hero header with title + meta stats (+ optional High-Yield button)
   .toc-bar             ← sticky top nav with anchor links
-  [.section × N]       ← one per PLO/LO topic
-  .rat-toggle          ← fixed bottom-right: Quiz + Theme + RAT Mode buttons
-  .theme-panel         ← popup above controls; hidden by default
-  .quiz-score-bar      ← fixed top bar; visible only during active quiz
-  .quiz-panel          ← fixed right-side quiz config panel
+  [.section × N]       ← one per LO topic
+  .hy-modal            ← optional: High-Yield One-Pager overlay (Section 12), hidden by default
   .lightbox            ← full-screen image overlay
+  .floating-stack      ← fixed bottom-right: Font Size control + Theme switcher
+  .theme-panel         ← popup above controls; hidden by default
   <footer>
-  <script>             ← toggleRat() + theme switcher + table quiz + lightbox logic
+  <script>             ← theme switcher + table quiz + lightbox (+ One-Pager logic if used)
 ```
+
+> Note: an older version of this template used a `.quiz-score-bar` / `.quiz-panel` pair of fixed global elements for the table quiz feature. That's been replaced entirely — see Section 7, "Architecture note."
 
 ---
 
@@ -318,7 +288,8 @@ Dark background (`var(--ink)`), large serif title, subtitle, and a row of stat c
   <div class="container">
     <div class="hero-tag">Instructor · Institution Name</div>
     <h1>Topic of <span>Lecture</span></h1>      <!-- span gets --accent color -->
-    <p class="hero-sub">Short description. Mention RAT Mode.</p>
+    <p class="hero-sub">Short description.</p>
+    <!-- Optional: <button class="hy-btn" onclick="openHY()">🎯 High-Yield One-Pager</button> — see Section 12 -->
     <div class="hero-meta">
       <div class="hero-meta-item">
         <span class="label">STAT LABEL</span>
@@ -331,40 +302,25 @@ Dark background (`var(--ink)`), large serif title, subtitle, and a row of stat c
 ```
 
 ### 5.2 Sticky TOC Bar
-Horizontal scrolling nav. LO-only links get `data-lo-only` so they disappear in RAT mode.
+Horizontal scrolling nav, one anchor link per section.
 
 ```html
 <div class="toc-bar">
   <nav>
-    <a href="#section-id">Section Name</a>             <!-- PLO section — always visible -->
-    <a href="#lo-section-id" data-lo-only>LO Name</a>  <!-- LO-only — hidden in RAT mode -->
+    <a href="#section-id">Section Name</a>
   </nav>
 </div>
 ```
 
 ### 5.3 Section Wrapper
-Each topic is a `.section` with a `.container` inside. LO-only sections get `data-mode="lo-only"` on the `.section` element (CSS hides these in RAT mode).
+Each topic is a `.section` with a `.container` inside.
 
 ```html
-<div class="section" id="section-id">           <!-- add data-mode="lo-only" for LO-only -->
+<div class="section" id="section-id">
   <div class="container">
 
-    <!-- Optional: RAT-mode-only summary header (hidden in normal mode) -->
-    <div data-mode="rat-only">
-      <div class="rat-plo-header">
-        <div class="rat-plo-tag">PLO N — RAT Objective</div>
-        <h2>State the PLO verbatim here</h2>
-        <p>One-sentence study tip or exam focus.</p>
-      </div>
-      <ul class="rat-checklist">
-        <li><span class="check">✓</span><div><strong>Key term →</strong> brief definition</div></li>
-      </ul>
-    </div>
-
-    <!-- Normal-mode content -->
     <div class="badge-row">
-      <div class="plo-badge">PLO N</div>   <!-- red badge -->
-      <div class="lo-badge">LO N</div>     <!-- blue badge; use badge-row when combining -->
+      <div class="lo-badge">LO N — Short Objective Name</div>
     </div>
     <p class="section-label">Category Label</p>
     <h2 class="section-title">Full Section Title</h2>
@@ -652,10 +608,10 @@ Visual horizontal bar for representing relative potency. Set width as a percenta
 ```
 
 ### 5.17 Font Size Control
-A floating A+/A− control rendered as part of the `.rat-toggle` stack. Adjusts `document.body.style.fontSize` between 12px and 24px. No external state — resets to 16px on page reload.
+A floating A+/A− control rendered as part of the fixed `.floating-stack` (bottom-right, alongside the Theme switcher). Adjusts `document.body.style.fontSize` between 12px and 24px. No external state — resets to 16px on page reload.
 
 ```html
-<!-- Inside .rat-toggle, above the theme-btn -->
+<!-- Inside .floating-stack, above the theme-btn -->
 <div class="font-btn-row">
   <span class="font-label">Text</span>
   <button class="font-btn" onclick="changeFontSize(1)" title="Increase font size">A+</button>
@@ -686,13 +642,6 @@ function changeFontSize(delta) {
 }
 ```
 
-Add RAT mode override in the `body.rat-mode` block:
-```css
-body.rat-mode .font-btn-row { background: var(--rat-mode-surface-alt) !important; color: var(--rat-mode-text) !important; }
-body.rat-mode .font-btn { color: var(--rat-mode-text) !important; }
-body.rat-mode .font-sep, body.rat-mode .font-label { color: var(--rat-mode-muted) !important; }
-```
-
 ### 5.18 Inline Text Elements (Domain-Specific)
 Two inline elements for genetics/genomics content. Can be adapted for other domains.
 
@@ -713,26 +662,15 @@ Two inline elements for genetics/genomics content. Can be adapted for other doma
 
 > These are deliberately un-themed (they inherit well from variable-based colors), so no per-theme overrides are needed. Adapt names for other domains — e.g. `.drug-code`, `.pathway-tag`.
 
+### 5.19 Floating Controls Stack (fixed bottom-right)
 
-
-### How it works
-- `body.rat-mode` is toggled by `toggleRat()` in JS
-- `[data-mode="lo-only"]` elements → `display: none` in RAT mode
-- `[data-mode="rat-only"]` elements → `display: none` by default, `display: block` in RAT mode
-- `.toc-bar nav a[data-lo-only]` links → hidden in RAT mode
-- All RAT mode color overrides live in the `body.rat-mode ...` block at the top of the CSS
-
-### What to put in `data-mode="rat-only"` blocks
-Each PLO section should have a `data-mode="rat-only"` div at the top containing:
-1. A `.rat-plo-header` with the PLO stated verbatim and a study tip
-2. A `.rat-checklist` summarizing the 4–6 most testable facts for that PLO
-
-### Toggle button (fixed bottom-right — a stacked control bar)
-The RAT Mode button sits at the bottom of a fixed stack that also includes a Font Size control and Theme switcher. All live inside `.rat-toggle`.
+Font Size control and Theme switcher live together in one fixed stack. If the file also has a High-Yield One-Pager (Section 12), its button lives in the hero instead, not in this stack.
 
 ```html
-<div class="rat-toggle">
-  <div class="rat-pill">PLOs Only Active</div>
+<div class="floating-stack">
+  <div class="theme-panel" id="themePanel">
+    <!-- see Section 3 Theme Switcher HTML -->
+  </div>
   <div class="font-btn-row">
     <span class="font-label">Text</span>
     <button class="font-btn" onclick="changeFontSize(1)" title="Increase font size">A+</button>
@@ -743,53 +681,21 @@ The RAT Mode button sits at the bottom of a fixed stack that also includes a Fon
     <span>🎨</span>
     <span>Theme</span>
   </button>
-  <button class="rat-btn off" id="ratBtn" onclick="toggleRat()">
-    <span id="ratIcon">⚡</span>
-    <span id="ratLabel">RAT Mode</span>
-  </button>
 </div>
 ```
 
-> **Note:** The separate Table Quiz button has been removed from this stack. Quiz controls are now injected inline above each table by JavaScript — see Section 7.
-
-### JS (RAT Mode — paste at end of `<body>`)
-```js
-const STORAGE_RAT_KEY = 'lecture-rat-mode'; // use a unique key per lecture file
-
-let ratActive = false;
-function applyRatState(nextState) {
-  ratActive = !!nextState;
-  const body = document.body;
-  const btn = document.getElementById('ratBtn');
-  const icon = document.getElementById('ratIcon');
-  const label = document.getElementById('ratLabel');
-  if (ratActive) {
-    body.classList.add('rat-mode');
-    btn.classList.replace('off', 'on');
-    icon.textContent = '✕';
-    label.textContent = 'Exit RAT';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  } else {
-    body.classList.remove('rat-mode');
-    btn.classList.replace('on', 'off');
-    icon.textContent = '⚡';
-    label.textContent = 'RAT Mode';
-  }
-  localStorage.setItem(STORAGE_RAT_KEY, ratActive ? '1' : '0');
-}
-function toggleRat() {
-  applyRatState(!ratActive);
-}
+```css
+.floating-stack { position: fixed; bottom: 20px; right: 20px; z-index: 100;
+  display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
 ```
 
-### Persistence: restoring state on load
-Call `initVisualState()` on `DOMContentLoaded` to restore both theme and RAT mode from `localStorage`:
+### Persistence: restoring theme on load
+Call `initVisualState()` on `DOMContentLoaded` to restore the saved theme from `localStorage`:
 
 ```js
 function initVisualState() {
   var savedTheme = localStorage.getItem(STORAGE_THEME_KEY) || 'paper';
   setTheme(savedTheme, null, true); // skipStorage=true avoids re-writing same value
-  applyRatState(localStorage.getItem(STORAGE_RAT_KEY) === '1');
 }
 document.addEventListener('DOMContentLoaded', function() {
   initVisualState();
@@ -851,13 +757,7 @@ An interactive self-testing feature. A quiz toolbar (`.tq-bar`) is **automatical
 .quiz-hidden-cell:hover::after { background: var(--quiz-overlay-hover) !important; }
 ```
 
-Also add RAT mode overrides for the quiz toolbar in the `body.rat-mode ...` block:
-```css
-body.rat-mode .tq-bar { background: var(--rat-mode-surface) !important; border-color: var(--rat-mode-border) !important; }
-body.rat-mode .tq-score { color: var(--rat-mode-muted) !important; }
-body.rat-mode .tq-col-btn { background: var(--rat-mode-bg) !important; border-color: var(--rat-mode-border) !important; color: var(--rat-mode-text) !important; }
-body.rat-mode .tq-col-btn.sel { background: var(--rat-mode-accent2) !important; border-color: var(--rat-mode-accent2) !important; color: #08111a !important; }
-```
+The toolbar already uses theme-aware variables (`--cream`, `--border`, `--paper`, `--accent2`), so it automatically adapts to whichever theme is active — no per-theme overrides needed.
 
 ### No special markup needed on tables
 The quiz JS automatically queries all `<table>` elements. No classes or `data-` attributes are required. Column labels are read from `<th>` text content.
@@ -908,26 +808,21 @@ document.addEventListener('keydown', e => {
 When adding a new topic section, go through this checklist:
 
 - [ ] `.section` has a unique `id` (for TOC anchor)
-- [ ] LO-only section? Add `data-mode="lo-only"` to `.section`
-- [ ] TOC link added in `.toc-bar nav` (with `data-lo-only` if LO-only)
-- [ ] `data-mode="rat-only"` block present for PLO sections
-- [ ] `.rat-plo-header` states the PLO verbatim
-- [ ] `.rat-checklist` has 4–6 bullet checkpoints
-- [ ] Section has `.plo-badge` or `.lo-badge` (or both, in a `.badge-row`)
+- [ ] TOC link added in `.toc-bar nav`
+- [ ] Section has a `.lo-badge` (wrap in `.badge-row` if more than one)
 - [ ] At least one callout box used per major concept
 - [ ] At least one exam question (`exam-q`) per section
 - [ ] Use `.box-warning` (not `.callout-warning`) for any US Boxed Warnings
 - [ ] Drug sections use `.drug-grid` + `.drug-card` to list individual agents
 - [ ] Add `.rems-badge` inline for any drug with an FDA REMS program
-- [ ] RAT banner text updated to name all covered PLOs
 
 When setting up a new lecture file:
 
-- [ ] `STORAGE_THEME_KEY` and `STORAGE_RAT_KEY` constants are unique to this file
+- [ ] `STORAGE_THEME_KEY` constant is unique to this file
 - [ ] `initVisualState()` and `initTableQuiz()` both called in `DOMContentLoaded`
-- [ ] All four theme variable groups overridden in each `[data-theme="..."]` block, **plus the `--panel-dark-bg`/`--panel-dark-text` pair (Section 3)**
+- [ ] All theme variable groups overridden in each `[data-theme="..."]` block, **plus the `--panel-dark-bg`/`--panel-dark-text` pair (Section 3)**
 - [ ] After writing/copying theme palettes, **render each theme and check an `.exam-q` box and a `<table>` header specifically** — this is where dark-theme bugs hide (Section 3)
-- [ ] Decide RAT Mode vs. High-Yield One-Pager (Section 12) vs. neither — don't build both unless there's a specific reason to
+- [ ] Decide whether this file gets a High-Yield One-Pager (Section 12) — optional, build it only if the user wants a condensed pre-exam summary
 - [ ] If using the One-Pager: `.hy-mini-table` excluded from `initTableQuiz()`, print output actually tested (Section 12.6), not just assumed to work
 
 ---
@@ -935,16 +830,14 @@ When setting up a new lecture file:
 ## 10. Adapting for a New Lecture
 
 1. **Update the hero** — new title, instructor, institution, relevant stats
-2. **Update the RAT banner** — list the new PLO topics (skip if this file uses the One-Pager instead of RAT Mode)
-3. **Add/remove sections** — one `<div class="section">` per PLO/LO
-4. **Pick the right components** — use drug grids for drug class breakdowns, compare grids for binary contrasts, step lists for processes, hallmark grids for enumerated concepts, p53 grid for function lists
-5. **Write RAT summaries first** — the `rat-plo-header` + `rat-checklist` for each PLO forces you to identify the most testable content before writing the full notes (or, if using the One-Pager instead, draft its LO-organized blocks first for the same reason)
-6. **Keep the color system** — don't introduce new colors; map new content onto existing callout types. Use `.box-warning` for regulatory/safety warnings, `.callout-warning` for clinical pitfalls.
-7. **Theme system is plug-and-play** — copy the full theme CSS block (all variable groups, including `--panel-dark-bg`/`--panel-dark-text`) and JS verbatim; no edits needed per lecture. Still worth a quick visual spot-check per theme (Section 3).
-8. **Change the localStorage keys** — update `STORAGE_THEME_KEY` and `STORAGE_RAT_KEY` constants to a unique per-lecture string so different files don't share state
-9. **Table Quiz is automatic** — `initTableQuiz()` requires no per-table setup; just include it and call it from `DOMContentLoaded`
-10. **Font size control** — copy the `.font-btn-row` HTML and `changeFontSize()` JS verbatim; no edits needed
-11. **If building the High-Yield One-Pager** — draft its content only after the full notes are otherwise done, since it's meant to be a condensed extraction of the real content, not written independently (Section 12)
+2. **Add/remove sections** — one `<div class="section">` per LO
+3. **Pick the right components** — use drug grids for drug class breakdowns, compare grids for binary contrasts, step lists for processes, hallmark grids for enumerated concepts, p53 grid for function lists
+4. **Keep the color system** — don't introduce new colors; map new content onto existing callout types. Use `.box-warning` for regulatory/safety warnings, `.callout-warning` for clinical pitfalls.
+5. **Theme system is plug-and-play** — copy the full theme CSS block (all variable groups, including `--panel-dark-bg`/`--panel-dark-text`) and JS verbatim; no edits needed per lecture. Still worth a quick visual spot-check per theme (Section 3).
+6. **Change the localStorage key** — update the `STORAGE_THEME_KEY` constant to a unique per-lecture string so different files don't share state
+7. **Table Quiz is automatic** — `initTableQuiz()` requires no per-table setup; just include it and call it from `DOMContentLoaded`
+8. **Font size control** — copy the `.font-btn-row` HTML and `changeFontSize()` JS verbatim; no edits needed
+9. **If building the High-Yield One-Pager** — draft its content only after the full notes are otherwise done, since it's meant to be a condensed extraction of the real content, not written independently (Section 12)
 
 ---
 
@@ -959,7 +852,7 @@ When setting up a new lecture file:
 
 ## 12. High-Yield One-Pager (Optional Feature)
 
-An alternative to RAT Mode (Section 1) for files that skip RAT Mode entirely. Instead of toggling visibility on existing sections, this is a **self-contained modal** with its own hand-written, dense, LO-organized summary — plus a working Print/Save-PDF button that outputs a clean 1–2 page document, not the whole 30+ page file.
+An optional condensed-summary feature (see Section 1). A **self-contained modal** with its own hand-written, dense, LO-organized summary — plus a working Print/Save-PDF button that outputs a clean 1–2 page document, not the whole 30+ page file.
 
 ### 12.1 The Button (place in the hero, high visibility)
 
