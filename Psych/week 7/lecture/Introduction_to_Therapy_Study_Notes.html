@@ -27,8 +27,8 @@
   --shadow:0 4px 16px rgba(43,38,33,0.08);
   --shadow-lg:0 12px 32px rgba(43,38,33,0.14);
   --radius:14px;
-  --font-scale:1;
-  --maxw:920px;
+  --font-scale:1.08;
+  --maxw:1040px;
 }
 [data-theme="dark"]{
   --cream:#1C1815;
@@ -50,14 +50,14 @@
   --shadow-lg:0 12px 32px rgba(0,0,0,0.5);
 }
 *{box-sizing:border-box;}
-html{scroll-behavior:smooth;}
+html{scroll-behavior:smooth;font-size:calc(16px * var(--font-scale));}
 body{
   margin:0;
   background:var(--cream);
   color:var(--ink);
   font-family:'Nunito',sans-serif;
-  font-size:calc(16px * var(--font-scale));
-  line-height:1.65;
+  font-size:1rem;
+  line-height:1.72;
   overflow-wrap:break-word;
   transition:background .3s,color .3s;
 }
@@ -278,6 +278,14 @@ figcaption{font-size:.82rem;color:var(--ink-soft);margin-top:8px;font-style:ital
 footer{text-align:center;padding:30px 22px 50px;color:var(--ink-soft);font-size:.82rem;}
 a{color:var(--teal-dk);}
 ::selection{background:var(--gold-tint);}
+
+/* ---------- Readability ---------- */
+.hero .sub{font-size:1.12rem;max-width:700px;line-height:1.72;}
+.lead,section p,section li,.callout,.modality-card .tagline,.qbox .qtext,.qbox .opt{font-size:1.02rem;}
+table{font-size:.98rem;}
+th{font-size:.78rem;}
+figcaption,#lightbox .lb-cap,footer{font-size:.88rem;}
+.pill,.section-tag,.hero-eyebrow,.qbox .qnum,.quiz-toggle,.hy-flag,.tl-year{font-size:.78rem;}
 
 /* ---------- HY button + summary modal ---------- */
 .hy-btn{
@@ -1057,6 +1065,35 @@ a{color:var(--teal-dk);}
   </div>
 </div>
 <script>
+const STORAGE_FONT_KEY = 'therapy-intro-font-scale';
+const DEFAULT_FONT_SCALE = 1.08;
+const MIN_FONT_SCALE = 0.9;
+const MAX_FONT_SCALE = 1.45;
+const FONT_STEP = 0.08;
+const root = document.documentElement;
+
+function syncSvgFontSizes(scale) {
+  document.querySelectorAll('svg text[font-size], svg tspan[font-size]').forEach(node => {
+    const base = node.getAttribute('data-base-font-size') || node.getAttribute('font-size');
+    if (!base) return;
+    if (!node.hasAttribute('data-base-font-size')) node.setAttribute('data-base-font-size', base);
+    const match = String(base).match(/^([0-9.]+)(.*)$/);
+    if (!match) return;
+    const size = parseFloat(match[1]);
+    const unit = match[2] || '';
+    if (Number.isNaN(size)) return;
+    node.setAttribute('font-size', `${(size * scale).toFixed(2)}${unit}`);
+  });
+}
+
+function applyFontScale(scale, skipStorage) {
+  const safeScale = Math.min(MAX_FONT_SCALE, Math.max(MIN_FONT_SCALE, Number(scale) || DEFAULT_FONT_SCALE));
+  root.style.setProperty('--font-scale', safeScale.toFixed(2));
+  syncSvgFontSizes(safeScale);
+  if (!skipStorage) localStorage.setItem(STORAGE_FONT_KEY, safeScale.toFixed(2));
+  return safeScale;
+}
+
 // Theme toggle
 const themeBtn = document.getElementById('themeToggle');
 themeBtn.addEventListener('click', () => {
@@ -1065,15 +1102,12 @@ themeBtn.addEventListener('click', () => {
 });
 
 // Font scale control
-let fontScale = 1;
-const root = document.documentElement;
+let fontScale = applyFontScale(parseFloat(localStorage.getItem(STORAGE_FONT_KEY)) || DEFAULT_FONT_SCALE, true);
 document.getElementById('fontPlus').addEventListener('click', () => {
-  fontScale = Math.min(1.35, fontScale + 0.08);
-  root.style.setProperty('--font-scale', fontScale);
+  fontScale = applyFontScale(fontScale + FONT_STEP);
 });
 document.getElementById('fontMinus').addEventListener('click', () => {
-  fontScale = Math.max(0.8, fontScale - 0.08);
-  root.style.setProperty('--font-scale', fontScale);
+  fontScale = applyFontScale(fontScale - FONT_STEP);
 });
 
 // Active nav highlight on scroll

@@ -694,7 +694,7 @@ body.nbme-lock{overflow:hidden}
 
 <script>
 // ── STATE ──
-var questions=[],answers={},selected={},marked={},stemMarkup={},choiceMarkup={},NC=0,NI=0,CQ=0;
+var questions=[],questionBank=[],answers={},selected={},marked={},stemMarkup={},choiceMarkup={},NC=0,NI=0,CQ=0;
 var quizMode='learn';
 var uiMode='classic';
 var examSubmitted=false;
@@ -853,6 +853,16 @@ function shuffle(arr){
   }
   return out;
 }
+function cloneQuestion(q){
+  return {
+    stem:String(q.stem||''),
+    choices:Array.isArray(q.choices)?q.choices.map(String):[],
+    correct:typeof q.correct==='number'?q.correct:(parseInt(q.correct,10)||0),
+    explanation:String(q.explanation||''),
+    wrongExplanations:Object.assign({},q.wrongExplanations||{}),
+    eli5:String(q.eli5||'')
+  };
+}
 function buildWrongExplanationLookup(rawChoices, rawCorrect, wrongExplanations){
   var lookup={};
   if(!wrongExplanations||typeof wrongExplanations!=='object')return lookup;
@@ -867,6 +877,29 @@ function buildWrongExplanationLookup(rawChoices, rawCorrect, wrongExplanations){
   });
   return lookup;
 }
+function randomizeQuestionChoices(q){
+  var source=cloneQuestion(q);
+  var choiceMeta=source.choices.map(function(choiceText,idx){
+    return {
+      text:String(choiceText||''),
+      isCorrect:idx===source.correct,
+      wrongExplanation:idx!==source.correct&&source.wrongExplanations[String(idx)]?String(source.wrongExplanations[String(idx)]):''
+    };
+  });
+  var realChoices=choiceMeta.filter(function(choice){return choice.text.trim();});
+  var blankChoices=choiceMeta.filter(function(choice){return !choice.text.trim();});
+  var shuffledChoices=shuffle(realChoices).concat(blankChoices);
+  var randomized={stem:source.stem,choices:[],correct:0,explanation:source.explanation,wrongExplanations:{},eli5:source.eli5};
+  shuffledChoices.forEach(function(choice,idx){
+    randomized.choices.push(choice.text);
+    if(choice.isCorrect)randomized.correct=idx;
+    else if(choice.text.trim()&&choice.wrongExplanation)randomized.wrongExplanations[String(idx)]=choice.wrongExplanation;
+  });
+  return randomized;
+}
+function randomizeQuestionsForSession(list){
+  return list.map(function(q){return randomizeQuestionChoices(q);});
+}
 function normQ(q){
   if(!q.stem||!Array.isArray(q.choices)||q.choices.length<2)return null;
   var rawChoices=q.choices.map(String);
@@ -874,21 +907,11 @@ function normQ(q){
   var rawCorrect=typeof q.correct==='number'?q.correct:(parseInt(q.correct)||0);
   if(rawCorrect<0||rawCorrect>=rawChoices.length)rawCorrect=0;
   var wrongLookup=buildWrongExplanationLookup(rawChoices, rawCorrect, q.wrongExplanations);
-  var choiceMeta=rawChoices.map(function(choiceText,idx){
-    return {
-      text:choiceText,
-      isCorrect:idx===rawCorrect,
-      wrongExplanation:idx!==rawCorrect&&wrongLookup[String(idx)]?wrongLookup[String(idx)]:''
-    };
-  });
-  var realChoices=choiceMeta.filter(function(choice){return choice.text.trim();});
-  var blankChoices=choiceMeta.filter(function(choice){return !choice.text.trim();});
-  var shuffledChoices=shuffle(realChoices).concat(blankChoices);
   var nq={stem:String(q.stem),choices:[],correct:0,explanation:String(q.explanation||''),wrongExplanations:{},eli5:String(q.eli5||'')};
-  shuffledChoices.forEach(function(choice,idx){
-    nq.choices.push(choice.text);
-    if(choice.isCorrect)nq.correct=idx;
-    else if(choice.wrongExplanation)nq.wrongExplanations[String(idx)]=choice.wrongExplanation;
+  rawChoices.forEach(function(choiceText,idx){
+    nq.choices.push(choiceText);
+    if(idx===rawCorrect)nq.correct=idx;
+    else if(wrongLookup[String(idx)])nq.wrongExplanations[String(idx)]=String(wrongLookup[String(idx)]);
   });
   return nq;
 }
@@ -990,7 +1013,8 @@ function resetQuizState(withTimerReset){
   updScore();
 }
 function startQuiz(valid,name){
-  questions=valid;
+  questionBank=valid.map(function(q){return cloneQuestion(q);});
+  questions=randomizeQuestionsForSession(questionBank);
   quizMode='learn';
   resetQuizState(true);
   applyFontSize();
@@ -1002,15 +1026,15 @@ function startQuiz(valid,name){
   renderQ();
 }
 function getQuizPayload(){
-  if(Array.isArray(questions)&&questions.length){
-    return {name:getQuizTitle(),questions:questions};
+  if(Array.isArray(questionBank)&&questionBank.length){
+    return {name:getQuizTitle(),questions:questionBank.map(function(q){return cloneQuestion(q);})};
   }
   var raw=document.getElementById('pasteArea').value.trim();
   if(!raw)return null;
   var parsedPayload=getNormalizedQuizPayloadFromRaw(raw);
   if(!parsedPayload)return null;
   var typedName=document.getElementById('quizName').value.trim();
-  return {name:typedName||parsedPayload.name||'Custom Quiz',questions:parsedPayload.questions};
+  return {name:typedName||parsedPayload.name||'Custom Quiz',questions:parsedPayload.questions.map(function(q){return cloneQuestion(q);})};
 }
 function buildDownloadFileName(name){
   var safeName=String(name||'Custom Quiz')
@@ -1883,9 +1907,11 @@ function showFinish(){
 }
 function resetQuiz(){
   if(!questions.length)return;
+  questions=randomizeQuestionsForSession(questionBank.length?questionBank:questions);
   resetQuizState(true);
   renderQ();
   scrollQuizViewportTop();
+  showToast('Answer choices reshuffled for a fresh attempt.','ok');
 }
 function exitQuiz(){
   pauseTimer();

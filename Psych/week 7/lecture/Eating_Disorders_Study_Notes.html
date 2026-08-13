@@ -13,11 +13,11 @@
    RESET & BASE
    ============================================================ */
 *{box-sizing:border-box;}
-html{scroll-behavior:smooth;}
+html{scroll-behavior:smooth;font-size:calc(16px * var(--font-scale, 1));}
 body{
   margin:0; background:var(--paper); color:var(--ink);
   font-family:'Source Serif 4', serif; font-weight:400;
-  line-height:1.65; font-size:calc(16px * var(--font-scale, 1));
+  line-height:1.75; font-size:1rem;
   -webkit-font-smoothing:antialiased;
 }
 h1,h2,h3,h4{font-family:'Playfair Display', serif; margin:0 0 .5em; line-height:1.2;}
@@ -31,8 +31,8 @@ strong{color:var(--accent2);}
    COLOR SYSTEM — Reference palette (contrast-tuned)
    ============================================================ */
 :root{
-  --content-max: 1240px; /* widened so the page fills a 16" laptop viewport without big empty gutters */
-  --font-scale: 1;
+  --content-max: 1100px;
+  --font-scale: 1.08;
 
   --ink:#1a1209; --paper:#faf7f2; --cream:#ece1cd;
   --accent:#b5341a; --accent2:#2c5f8a; --gold:#c9922a; --muted:#6b5e4e; --border:#d4cabb;
@@ -378,6 +378,13 @@ tr:nth-child(even) td{background:var(--cream);}
    FOOTER
    ============================================================ */
 footer{padding:30px 0 90px; text-align:center; font-family:'JetBrains Mono',monospace; font-size:.72rem; color:var(--muted);}
+
+/* Readability */
+.hero-sub{font-size:1.12rem;max-width:760px;line-height:1.72;}
+.section p,.section li,.callout p,.callout li,.case-block p,.compare-card p,.exam-q p{font-size:1.02rem;}
+table{font-size:.98rem;}
+th{font-size:.78rem;}
+.hero-meta-item .value,.hallmark-card p,footer{font-size:.88rem;}
 
 /* ============================================================
    PRINT
@@ -1026,6 +1033,34 @@ footer{padding:30px 0 90px; text-align:center; font-family:'JetBrains Mono',mono
    THEME SWITCHER
    ============================================================ */
 const STORAGE_THEME_KEY = 'eating-disorders-theme';
+const STORAGE_FONT_KEY = 'eating-disorders-font-scale';
+const DEFAULT_FONT_SCALE = 1.08;
+const MIN_FONT_SCALE = 0.9;
+const MAX_FONT_SCALE = 1.45;
+const FONT_STEP = 0.08;
+const root = document.documentElement;
+
+function syncSvgFontSizes(scale){
+  document.querySelectorAll('svg text[font-size], svg tspan[font-size]').forEach(function(node){
+    const base = node.getAttribute('data-base-font-size') || node.getAttribute('font-size');
+    if (!base) return;
+    if (!node.hasAttribute('data-base-font-size')) node.setAttribute('data-base-font-size', base);
+    const match = String(base).match(/^([0-9.]+)(.*)$/);
+    if (!match) return;
+    const size = parseFloat(match[1]);
+    const unit = match[2] || '';
+    if (Number.isNaN(size)) return;
+    node.setAttribute('font-size', `${(size * scale).toFixed(2)}${unit}`);
+  });
+}
+
+function applyFontScale(scale, skipStorage){
+  const safeScale = Math.min(MAX_FONT_SCALE, Math.max(MIN_FONT_SCALE, Number(scale) || DEFAULT_FONT_SCALE));
+  root.style.setProperty('--font-scale', safeScale.toFixed(2));
+  syncSvgFontSizes(safeScale);
+  if (!skipStorage) localStorage.setItem(STORAGE_FONT_KEY, safeScale.toFixed(2));
+  return safeScale;
+}
 let themePanelOpen = false;
 
 function toggleThemePanel(){
@@ -1061,15 +1096,15 @@ document.addEventListener('click', function(e){
 function initVisualState(){
   const savedTheme = localStorage.getItem(STORAGE_THEME_KEY) || 'paper';
   setTheme(savedTheme, null, true);
+  currentFontScale = applyFontScale(parseFloat(localStorage.getItem(STORAGE_FONT_KEY)) || DEFAULT_FONT_SCALE, true);
 }
 
 /* ============================================================
    FONT SIZE CONTROL
    ============================================================ */
-let currentFontSize = 16;
+let currentFontScale = DEFAULT_FONT_SCALE;
 function changeFontSize(delta){
-  currentFontSize = Math.min(24, Math.max(12, currentFontSize + delta));
-  document.body.style.fontSize = currentFontSize + 'px';
+  currentFontScale = applyFontScale(currentFontScale + (delta > 0 ? FONT_STEP : -FONT_STEP));
 }
 
 /* ============================================================

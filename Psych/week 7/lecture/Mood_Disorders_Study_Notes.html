@@ -37,6 +37,8 @@
   --floating-ui-shadow: 0 3px 12px rgba(0,0,0,0.2);
   --quiz-overlay: rgba(44,111,173,0.5);
   --quiz-overlay-hover: rgba(44,111,173,0.78);
+  --font-scale: 1.08;
+  --content-max: 980px;
 }
 
 [data-theme="night"] {
@@ -172,13 +174,14 @@
 [data-theme="sepia"] .toc-bar { background: #3f2814; border-color: #d9bd8c; }
 
 * { box-sizing: border-box; }
+html { font-size: calc(16px * var(--font-scale, 1)); }
 body {
   margin: 0; background: var(--paper); color: var(--ink);
-  font-family: 'Source Serif 4', serif; font-size: 16px; line-height: 1.7;
+  font-family: 'Source Serif 4', serif; font-size: 1rem; line-height: 1.75;
   transition: background .25s, color .25s;
 }
 h1,h2,h3,h4 { font-family: 'Playfair Display', serif; line-height: 1.25; }
-.container { max-width: 860px; margin: 0 auto; padding: 0 24px; }
+.container { max-width: var(--content-max); margin: 0 auto; padding: 0 24px; }
 a { color: var(--accent2); }
 
 /* Hero */
@@ -383,6 +386,13 @@ tr:nth-child(even) td { background: var(--cream); }
 
 footer { text-align: center; padding: 40px 20px 100px; font-family: 'JetBrains Mono', monospace; font-size: .74rem; color: var(--muted); }
 strong { color: var(--accent2); }
+
+/* Readability */
+.hero-sub { font-size: 1.12rem; max-width: 700px; line-height: 1.72; }
+.section p, .section li, .callout p, .callout li, .compare-card p, .drug-card p, .hallmark-card p, .exam-q p { font-size: 1.02rem; }
+table { font-size: .98rem; }
+th { font-size: .78rem; }
+.hero-meta-item .value, .diagram-note, .slide-caption, footer { font-size: .88rem; }
 </style>
 </head>
 <body>
@@ -1959,6 +1969,34 @@ strong { color: var(--accent2); }
 
 <script>
 const STORAGE_THEME_KEY = 'mood-disorders-theme';
+const STORAGE_FONT_KEY = 'mood-disorders-font-scale';
+const DEFAULT_FONT_SCALE = 1.08;
+const MIN_FONT_SCALE = 0.9;
+const MAX_FONT_SCALE = 1.45;
+const FONT_STEP = 0.08;
+const root = document.documentElement;
+
+function syncSvgFontSizes(scale) {
+  document.querySelectorAll('svg text[font-size], svg tspan[font-size]').forEach(function(node) {
+    var base = node.getAttribute('data-base-font-size') || node.getAttribute('font-size');
+    if (!base) return;
+    if (!node.hasAttribute('data-base-font-size')) node.setAttribute('data-base-font-size', base);
+    var match = String(base).match(/^([0-9.]+)(.*)$/);
+    if (!match) return;
+    var size = parseFloat(match[1]);
+    var unit = match[2] || '';
+    if (Number.isNaN(size)) return;
+    node.setAttribute('font-size', (size * scale).toFixed(2) + unit);
+  });
+}
+
+function applyFontScale(scale, skipStorage) {
+  var safeScale = Math.min(MAX_FONT_SCALE, Math.max(MIN_FONT_SCALE, Number(scale) || DEFAULT_FONT_SCALE));
+  root.style.setProperty('--font-scale', safeScale.toFixed(2));
+  syncSvgFontSizes(safeScale);
+  if (!skipStorage) localStorage.setItem(STORAGE_FONT_KEY, safeScale.toFixed(2));
+  return safeScale;
+}
 
 let themePanelOpen = false;
 function toggleThemePanel() {
@@ -1992,15 +2030,15 @@ document.addEventListener('click', function(e) {
   }
 });
 
-let currentFontSize = 16;
+let currentFontScale = DEFAULT_FONT_SCALE;
 function changeFontSize(delta) {
-  currentFontSize = Math.min(24, Math.max(12, currentFontSize + delta));
-  document.body.style.fontSize = currentFontSize + 'px';
+  currentFontScale = applyFontScale(currentFontScale + (delta > 0 ? FONT_STEP : -FONT_STEP));
 }
 
 function initVisualState() {
   var savedTheme = localStorage.getItem(STORAGE_THEME_KEY) || 'paper';
   setTheme(savedTheme, null, true);
+  currentFontScale = applyFontScale(parseFloat(localStorage.getItem(STORAGE_FONT_KEY)) || DEFAULT_FONT_SCALE, true);
 }
 
 /* ---- High-Yield One-Pager Modal ---- */
