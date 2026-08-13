@@ -13,6 +13,8 @@ The One-Pager is optional — build it when the user wants a condensed pre-exam 
 
 The page is self-contained: no build tools, no frameworks, just one `.html` file with embedded CSS, fonts, and JS.
 
+> **Two variants now exist.** Sections 2–12 below are **Variant 1** — the original system, organized strictly by numbered Learning Objectives, with a 5-theme switcher (Paper/Night/Ocean/Forest/Sepia) and a component vocabulary tuned for pharmacology/pathology content (drug grids, hallmark grids, REMS badges, potency bars). **Section 13 is Variant 2** — a lighter-weight system built for `Introduction_to_Therapy_Study_Notes.html`, better suited to lecture content that isn't cleanly split into 2–3 LOs: a single light/dark toggle instead of five named themes, and a component vocabulary built around generic "modality cards," mnemonics, and click-to-reveal cases rather than drug-specific components. Both variants share the same underlying philosophy (self-contained file, base64 images, lightbox, table quiz, optional HY one-pager) — pick whichever fits the lecture's actual content shape, and don't mix components from both within one file.
+
 ---
 
 ## 2. Fonts & Color System
@@ -707,6 +709,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
 ---
 
+## 6. Layout Width & Viewport Scaling (16" MacBook Pro Target)
+
+The content column width described in Section 5.11 (`.slide-img` fills a "max 860px" column) and Variant 2's `--maxw:920px` (Section 13.1) were both sized for a generic desktop layout, not tuned to any specific screen. In practice these files are read on a 16" MacBook Pro — a browser window on that screen is typically **~1400–1700px wide** in CSS pixels (native 3456×2234 / 2x scaling puts the default logical resolution around 1728×1117; a maximized or near-maximized browser window commonly sits in the 1400–1728px range). A ~860–920px centered content column on a viewport that wide leaves **large, wasted empty margins on both sides** — the page reads as narrow and letterboxed instead of filling the screen.
+
+**When building or adapting a file, size the layout so it visually fills a 16" MacBook Pro browser window without much empty space on either side:**
+
+- Widen the primary content container. Don't hardcode a single fixed `max-width` like `860px`; instead scale it to the viewport with something like:
+  ```css
+  .container { max-width: min(1200px, 94vw); margin: 0 auto; }
+  ```
+  1100–1300px reads as full and well-used on a 16" MacBook Pro while still keeping body text lines from getting uncomfortably long (long-line readability still matters for body paragraphs — don't stretch `<p>` text edge-to-edge; widen the *page*, not necessarily every text block).
+- Grid-based components (`.drug-grid`, `.hallmarks-grid`, `.compare-grid`, `.p53-grid`, `.hy-cols`, `.rr-grid`, Variant 2's `.hy-grid`) should use `auto-fit`/`auto-fill` with a `minmax()` track size (e.g. `grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));`) rather than a fixed column count — on a wide 16" screen this naturally produces more columns per row and uses the extra horizontal space, instead of leaving it blank beside a narrow fixed-width grid.
+- The `.hero`, `.toc-bar`/`.topbar`, and any full-bleed background bands should span the full viewport width (`width: 100%`, no `max-width` cap) even while the text/content *inside* them stays constrained to the narrower reading column — this keeps the page feeling edge-to-edge rather than like a strip down the middle of the screen.
+- Don't solve this by cranking up base font size or padding instead of widening the layout — that just makes existing content bigger without using the freed-up horizontal space, and can make a 16" viewport feel cramped vertically (more scrolling) instead of well-proportioned.
+- **Test at realistic 16" MacBook Pro widths, not just a phone breakpoint and a generic 1280px "desktop" check.** Render (or resize a browser preview to) roughly **1512px** and **1728px** wide and confirm: the page doesn't look like a narrow column floating in empty space, grids gain extra columns rather than staying stuck at 2–3, and nothing that was fine at 1280px overflows or looks stretched/thin at these wider sizes.
+- This applies to both Variant 1 and Variant 2 — update `.container`'s `max-width` (Variant 1) and `--maxw` (Variant 2, Section 13.1) using the same `min(…, …vw)` pattern rather than leaving either as a flat pixel value.
+
+---
+
 ## 7. Table Quiz System
 
 An interactive self-testing feature. A quiz toolbar (`.tq-bar`) is **automatically injected above every `<table>` by JavaScript** — no manual HTML needed. Users select columns to hide, start the quiz, then click blurred cells to reveal answers one by one.
@@ -824,6 +845,7 @@ When setting up a new lecture file:
 - [ ] After writing/copying theme palettes, **render each theme and check an `.exam-q` box and a `<table>` header specifically** — this is where dark-theme bugs hide (Section 3)
 - [ ] Decide whether this file gets a High-Yield One-Pager (Section 12) — optional, build it only if the user wants a condensed pre-exam summary
 - [ ] If using the One-Pager: `.hy-mini-table` excluded from `initTableQuiz()`, print output actually tested (Section 12.6), not just assumed to work
+- [ ] Container/grid widths scale to fill a 16" MacBook Pro browser window (~1512–1728px) without large empty side margins (Section 6) — checked by resizing/rendering at those widths, not just at 1280px
 
 ---
 
@@ -836,6 +858,7 @@ When setting up a new lecture file:
 5. **Theme system is plug-and-play** — copy the full theme CSS block (all variable groups, including `--panel-dark-bg`/`--panel-dark-text`) and JS verbatim; no edits needed per lecture. Still worth a quick visual spot-check per theme (Section 3).
 6. **Change the localStorage key** — update the `STORAGE_THEME_KEY` constant to a unique per-lecture string so different files don't share state
 7. **Table Quiz is automatic** — `initTableQuiz()` requires no per-table setup; just include it and call it from `DOMContentLoaded`
+7a. **Scale layout width for a 16" MacBook Pro (Section 6)** — use `min(1200px, 94vw)`-style container widths and `auto-fit`/`auto-fill` grids instead of flat pixel `max-width`s, so the page fills a ~1512–1728px browser window instead of sitting as a narrow column with empty space on both sides
 8. **Font size control** — copy the `.font-btn-row` HTML and `changeFontSize()` JS verbatim; no edits needed
 9. **If building the High-Yield One-Pager** — draft its content only after the full notes are otherwise done, since it's meant to be a condensed extraction of the real content, not written independently (Section 12)
 
@@ -1031,3 +1054,310 @@ A 40-page PDF means Mistake 1 above; a full-document printout when the modal was
 - Each `.hy-block` should be a tight cluster of 3–8 bullet points or a small table — mnemonics, duration/threshold tables, drug-class rankings, "gold standard" facts, and scenario→treatment quick-picks compress especially well.
 - **Don't just rename class-level content — include the actual named drugs/entities.** A first pass that only lists "SSRI," "SNRI," "TCA" without naming sertraline/fluoxetine/etc. defeats the purpose of a differentiation-focused study aid; go back through the full document's drug-grid cards and pull the individual names and their one-line differentiators into the one-pager.
 - End with the full-width master reference table (12.2) pulling together every named entity in the document (drug generic + brand, MOA, indications, contraindications, or the equivalent for non-pharm content) — this is worth doing even if it pushes the print output to 2 pages, since completeness matters more than a strict 1-page limit for this kind of appendix.
+
+---
+
+## 13. Variant 2 — "Modality Card" Design System
+
+> Built for `Introduction_to_Therapy_Study_Notes.html` (Lee Wolfrum, DO — Introduction to Therapy). Everything below is a complete, self-contained alternative to Sections 2–12 — use this section on its own, don't mix its components with Variant 1's in the same file.
+
+### 13.0 When to Use This Variant Instead of Variant 1
+
+Reach for Variant 2 when:
+- The source lecture doesn't have clean, numbered LOs to organize around — content gets organized by the deck's own topic flow instead (see Section 10's LO-per-section rule, which this variant deliberately drops).
+- The content is conceptual/theory-driven (history, modalities, theory comparison) rather than drug- or pathology-enumeration-driven — Variant 1's drug-grid/hallmarks-grid/p53-grid/REMS-badge/potency-bar vocabulary (5.12–5.17) doesn't map cleanly onto it.
+- A simpler light/dark toggle is preferable to maintaining five full named-theme palettes.
+
+Both variants are single self-contained `.html` files with base64-embedded images, a click-to-zoom lightbox, an interactive table-quiz feature, and an optional printable High-Yield One-Pager modal — the philosophy is identical, only the visual system and component vocabulary differ.
+
+### 13.1 Fonts & Color System
+
+**Google Fonts:** Crimson Pro (headings — 400/500/600/700, italic), Nunito (body — 400/500/600/700/800), IBM Plex Mono (labels, badges, mnemonics, mono UI).
+
+**CSS Custom Properties** — one light palette plus a single dark override block, not five named themes:
+
+```css
+:root{
+  --cream:#FBF7EF; --cream-2:#F4EDDC; --card:#FFFFFF;
+  --ink:#2B2621; --ink-soft:#5B534A; --border:#E4D8C0;
+  --teal:#2F6F6B; --teal-dk:#1F4D4A; --teal-tint:#E6F0EE;
+  --gold:#B9862F; --gold-tint:#FBF0DA;
+  --rose:#A6524A; --rose-tint:#F7E7E3;
+  --plum:#6C5279; --plum-tint:#EFE7F3;
+  --shadow:0 4px 16px rgba(43,38,33,0.08);
+  --shadow-lg:0 12px 32px rgba(43,38,33,0.14);
+  --radius:14px; --font-scale:1; --maxw:920px;
+}
+[data-theme="dark"]{
+  --cream:#1C1815; --cream-2:#221D18; --card:#28221D;
+  --ink:#EEE6D6; --ink-soft:#C4B9A4; --border:#3B3226;
+  --teal:#5EA39D; --teal-dk:#7FC2BB; --teal-tint:#20302E;
+  --gold:#E0AC55; --gold-tint:#332811;
+  --rose:#D4897F; --rose-tint:#332019;
+  --plum:#B79DC9; --plum-tint:#2A2331;
+  --shadow:0 4px 16px rgba(0,0,0,0.35);
+  --shadow-lg:0 12px 32px rgba(0,0,0,0.5);
+}
+```
+
+`--teal` is the primary accent (links, section labels, nav highlight); `--gold` is reserved for high-yield flags and mnemonics; `--rose` and `--plum` are secondary callout/card-border accents. Unlike Variant 1, there is no separate `--panel-dark-*` pair — nothing in this variant renders as an always-dark panel regardless of theme, so that whole class of bug (Section 3's "Known Pitfall") doesn't apply here.
+
+### 13.2 Theme Toggle — Simpler Than Variant 1
+
+One icon button in the topbar flips `data-theme` between `"light"` and `"dark"` on `<html>`. No theme picker panel, no `localStorage` persistence — state resets on reload. (Not persisting theme choice is a deliberate simplification, not an oversight: it also sidesteps needing browser storage inside a portable single-file document at all.)
+
+```html
+<button class="icon-btn" id="themeToggle" title="Toggle light/dark">🌓</button>
+```
+```js
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const html = document.documentElement;
+  html.setAttribute('data-theme', html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+});
+```
+
+### 13.3 Overall Page Structure
+
+```
+<body>
+  .topbar          ← sticky: brand + horizontally-scrolling pill nav + HY button + theme toggle, all one row
+  .hero            ← light gradient (not a dark hero like Variant 1) — title/subtitle/meta pills + "yield check" callout
+  <main>
+    section#id × N   ← one per topic-cluster (not strictly per-LO), each with a "SECTION NN" eyebrow tag + <h2>
+  </main>
+  #hySummary       ← optional High-Yield modal (13.6), hidden by default
+  #lightbox        ← full-screen image overlay (same concept as Variant 1 Section 8)
+  #fontctl         ← fixed bottom-right pill, A-/A+ ONLY (theme toggle lives in the topbar here, not in this stack)
+  <footer>
+  <script>         ← theme toggle, scroll-based active-nav highlight, quiz-table engine, MCQ engine, lightbox, HY modal
+```
+
+The topbar nav uses `<a href="#section-id">` pills that gain an `.active` class on scroll (via a `scroll` listener comparing each section's `getBoundingClientRect().top`), rather than Variant 1's plain `.toc-bar` links with no active-state tracking.
+
+### 13.4 Component Reference
+
+#### 13.4.1 Modality Card
+The Variant-2 analogue of `.drug-card` — a generic content card for any named concept (a therapy modality, a defense mechanism cluster, a historical figure), not pharmacology-specific.
+
+```html
+<div class="modality-card">
+  <h4>Dialectical Behavior Therapy (DBT)</h4>
+  <div class="tagline">Created by Marsha Linehan, PhD — for borderline personality disorder</div>
+  <div class="row"><b>Structure</b>A skills-based, manualized treatment built around <b>4 modules</b>: emotion regulation, mindfulness, distress tolerance, and interpersonal effectiveness.</div>
+  <div class="row"><b>Origin</b>Linehan developed DBT partly from her own lived experience with BPD.</div>
+</div>
+```
+```css
+.modality-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  padding:18px 20px;box-shadow:var(--shadow);margin:16px 0;border-top:5px solid var(--teal);}
+.modality-card .row>b:first-child{color:var(--teal-dk);font-size:.82rem;text-transform:uppercase;
+  letter-spacing:.03em;font-family:'IBM Plex Mono',monospace;font-weight:600;display:block;margin-bottom:2px;}
+```
+
+> **Pitfall — scope the label selector to `:first-child`.** The label styling (`display:block`, small caps, monospace) is meant for only the *first* `<b>` in a `.row` — the one acting as a field label ("Structure", "Origin"). An early version of this rule was written as `.modality-card .row b{display:block;...}`, matching **every** `<b>` in the row. That's harmless until a row's body text itself contains a second bold phrase for ordinary emphasis (e.g. "...built around **4 modules**: emotion regulation...") — the selector forced that inline phrase onto its own block line too, breaking the sentence apart visually. Fixed by changing the selector to `.modality-card .row>b:first-child`, which leaves any *other* `<b>` in the row as normal inline bold text.
+
+#### 13.4.2 Callout Boxes
+Five flavors, same base+modifier pattern as Variant 1 Section 5.4, different names/palette:
+
+| Modifier | Color | Use for |
+|---|---|---|
+| `callout-history` | Plum | Historical context, origin stories |
+| `callout-clinical` | Teal | Clinical pearl or practical application |
+| `callout-quote` | Cream, italic | A quoted line from the source material |
+| `callout-mnemonic` | Gold, dashed border, 🧠 icon | A memory hook / mnemonic |
+| `callout-exam` | Rose | Research-methodology or exam-relevant caveat |
+
+```html
+<div class="callout callout-mnemonic">
+  <div class="ic">🧠</div>
+  <div><b>Memory Hook:</b> DBT → BPD. If a question mentions dialectical behavior therapy, think borderline personality disorder first.</div>
+</div>
+```
+
+#### 13.4.3 Inline High-Yield Flag
+A small pill for flagging an exam-critical fact *inline*, mid-sentence or in a heading — lighter-weight than opening a whole callout box for one flagged phrase:
+
+```html
+<h3>Skinner's Operant Conditioning Quadrants <span class="hy-flag">⭐ HY</span></h3>
+```
+```css
+.hy-flag{display:inline-flex;align-items:center;gap:3px;background:var(--gold-tint);color:var(--gold);
+  border:1px solid var(--gold);font-family:'IBM Plex Mono',monospace;font-weight:700;
+  font-size:.68rem;padding:2px 8px;border-radius:20px;letter-spacing:.03em;vertical-align:middle;}
+```
+
+#### 13.4.4 Click-to-Reveal Case Box
+Native `<details>`/`<summary>` instead of a custom exam-q div (Variant 1 Section 5.10) — good for a framing clinical vignette that expands on click, with zero JS needed for the open/close mechanic itself:
+
+```html
+<details class="case">
+  <summary>A 54-year-old financial broker, recently fired</summary>
+  <div class="case-body">
+    <p>Presentation and teaching discussion go here...</p>
+  </div>
+</details>
+```
+```css
+details.case{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  margin:16px 0;box-shadow:var(--shadow);overflow:hidden;}
+details.case summary{cursor:pointer;padding:16px 20px;font-weight:700;font-family:'Crimson Pro',serif;
+  font-size:1.1rem;color:var(--teal-dk);list-style:none;display:flex;align-items:center;gap:10px;}
+details.case summary::-webkit-details-marker{display:none;}
+details.case summary::before{content:"▸";transition:transform .2s;color:var(--teal);}
+details.case[open] summary::before{transform:rotate(90deg);}
+details.case .case-body{padding:0 20px 20px;border-top:1px solid var(--border);}
+```
+
+#### 13.4.5 Comp-Table Quiz — Per-Cell Inline Approach (Different Architecture Than Variant 1 Section 7)
+Variant 1's table quiz auto-injects a column-picker toolbar above *every* `<table>` with no markup needed. Variant 2 instead marks specific tables opt-in with `class="comp-table"` and specific cells with `class="quiz-cell"` (wrapping the real content in `<span class="qc-inner">`), and puts one toggle button above each such table:
+
+```html
+<div class="quiz-toggle-row"><button class="quiz-toggle" data-target="defense-table">Take as quiz</button></div>
+<table class="comp-table" id="defense-table">
+  <tr><th>Defense</th><th>Definition</th><th>Example</th></tr>
+  <tr><td>Denial</td>
+    <td class="quiz-cell"><span class="qc-inner">Refusing to accept an unbearable piece of reality</span></td>
+    <td class="quiz-cell"><span class="qc-inner">...</span></td>
+  </tr>
+</table>
+```
+
+**Critical default-state rule — quiz mode must be OFF until the user opts in:**
+```css
+/* Plain, fully-readable table content by default */
+.comp-table .quiz-cell .qc-inner{transition:filter .2s, opacity .2s;}
+/* Only blur/hide once the table has explicitly entered quiz mode */
+.comp-table.quiz-active .quiz-cell{cursor:pointer;position:relative;background:var(--teal-tint)!important;}
+.comp-table.quiz-active .quiz-cell:not(.revealed) .qc-inner{filter:blur(5px);opacity:.35;user-select:none;}
+.comp-table.quiz-active .quiz-cell:not(.revealed)::after{
+  content:"tap to reveal";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:var(--teal);font-weight:600;
+  background:var(--teal-tint);
+}
+```
+```js
+document.querySelectorAll('.comp-table .quiz-cell').forEach(cell => {
+  cell.addEventListener('click', () => {
+    if (cell.closest('.comp-table').classList.contains('quiz-active')) cell.classList.toggle('revealed');
+  });
+});
+document.querySelectorAll('.quiz-toggle').forEach(btn => {
+  const defaultLabel = btn.textContent;
+  btn.addEventListener('click', () => {
+    const table = document.getElementById(btn.dataset.target);
+    const turningOn = !table.classList.contains('quiz-active');
+    table.classList.toggle('quiz-active', turningOn);
+    btn.classList.toggle('is-active', turningOn);
+    if (turningOn) { table.querySelectorAll('.quiz-cell').forEach(c => c.classList.remove('revealed'));
+      btn.textContent = 'Show answers / exit quiz'; }
+    else btn.textContent = defaultLabel;
+  });
+});
+```
+
+> **Pitfall — a table isn't a study reference if it defaults to hidden.** An earlier pass of this component set every `.quiz-cell` to blurred-and-hidden as its *resting* state (no `.quiz-active` gate at all) — meaning the table was unusable as a plain reference until the reader clicked something first, which defeats the point of also using it as a normal-mode note. The fix is the `.quiz-active` gate above: "hidden" is only ever a state the table opts into, never the default.
+
+#### 13.4.6 Multiple-Choice Question Box
+```html
+<div class="qbox">
+  <div class="qnum">Practice Question</div>
+  <div class="qtext">Which of the following is <b>NOT</b> an example of classical conditioning?</div>
+  <div class="opts">
+    <div class="opt" data-correct="false">A. ...</div>
+    <div class="opt" data-correct="true">B. ...</div>
+  </div>
+  <div class="explain">Answer: <b>B</b>. Explanation text.</div>
+</div>
+```
+```js
+document.querySelectorAll('.qbox').forEach(box => {
+  const opts = box.querySelectorAll('.opt'); const explain = box.querySelector('.explain');
+  opts.forEach(opt => opt.addEventListener('click', () => {
+    if (box.dataset.answered) return; box.dataset.answered = "1";
+    opts.forEach(o => { if (o.dataset.correct === "true") o.classList.add('correct');
+      else if (o === opt) o.classList.add('incorrect'); });
+    explain.classList.add('show');
+  }));
+});
+```
+
+#### 13.4.7 Rapid Review Grid
+A closing 2-column grid of short recap cards — the high-yield "last thing before the gallery" section:
+```html
+<div class="rr-grid">
+  <div class="rr-item"><b>Classical conditioning</b><br>Innate response + neutral stimulus → response transfers.</div>
+</div>
+```
+
+#### 13.4.8 Timeline
+Left-border timeline with dot markers, for chronological content (history of a field, a research timeline):
+```html
+<div class="timeline">
+  <div class="tl-item"><div class="tl-year">1977</div><div>A landmark meta-analysis found an effect size of 0.8...</div></div>
+</div>
+```
+```css
+.timeline{border-left:3px solid var(--border);margin:20px 0 20px 8px;padding-left:22px;}
+.tl-item{position:relative;margin-bottom:22px;}
+.tl-item::before{content:"";position:absolute;left:-29px;top:3px;width:12px;height:12px;
+  border-radius:50%;background:var(--teal);border:2px solid var(--cream);}
+```
+
+#### 13.4.9 Gallery + Lightbox
+Same concept as Variant 1 Section 8 (click any `img.zoomable` to open a full-screen overlay with caption), reused here for a closing figure-gallery grid. Supports arrow-key navigation between all zoomable images on the page, not just the one clicked.
+
+#### 13.4.10 Font-Size Control
+Same A-/A+ idea as Variant 1 Section 5.17, but scales via a CSS custom property multiplying the base font-size, so every `rem`-based size on the page scales together — not just the body's own pixel size:
+```css
+body{font-size:calc(16px * var(--font-scale));}
+```
+```js
+let fontScale = 1;
+document.getElementById('fontPlus').addEventListener('click', () => {
+  fontScale = Math.min(1.35, fontScale + 0.08);
+  document.documentElement.style.setProperty('--font-scale', fontScale);
+});
+```
+
+### 13.5 High-Yield One-Pager — Topic-Cluster Grid, Not LO Columns
+
+Variant 2's HY modal (`#hySummary`) uses a 2-column CSS Grid of small `.hy-card` blocks, one per **topic-cluster** (Conditioning, Skinner's Quadrants, Ego Defenses, Modality Quick-Map, ...) rather than Variant 1's 3-column-per-LO layout (12.2) — the right choice when the lecture's content isn't cleanly split into exactly 2–3 LOs to begin with. A `.hy-full` card (`grid-column:1/-1` on screen) holds the one dense appendix-style block — here, all 20 ego defenses as an internal 3-column bullet list — playing the same structural role as Variant 1's full-width master drug-reference table (12.2).
+
+The button lives in the **topbar**, not the hero, styled as a filled gold pill:
+```html
+<button class="hy-btn" id="hyOpenBtn" title="One-page high-yield summary">⭐ HIGH YIELD</button>
+```
+
+#### 13.5.1 Print CSS — a Masonry Technique for Uneven Card Heights
+
+Variant 1's print CSS (12.5) uses a plain `grid-template-columns: repeat(3, 1fr)`, which works well when the content really is 3 roughly-even LO columns. Variant 2's cards are *uneven* heights (a short "Practice Question Recap" card next to a long "Ego Defenses" card) — reusing a strict grid for print produced a real, verified bug: **the one-pager printed to 2 pages with a large empty gap on both**, because CSS Grid sizes every row by its tallest cell, wasting the shorter cells' unused space instead of letting later content flow up into it.
+
+**Fix — switch the print layout from `grid` to CSS multi-column (`column-count`), and pull the one full-width card out of the column flow with `column-span: all`:**
+```css
+@media print{
+  .hy-grid{display:block !important;column-count:3 !important;column-gap:9px !important;}
+  .hy-card{display:block !important;width:100% !important;margin:0 0 7px !important;break-inside:avoid;}
+  .hy-full{column-span:all !important;}
+  @page{size:landscape;margin:6mm;}
+}
+```
+This lets the small cards flow masonry-style — filling gaps top-to-bottom, column by column — instead of being locked into a rigid row grid, while the full-width card still breaks cleanly across all columns wherever it falls in the source order. **Verified by actually exporting to PDF and checking the page count dropped from 2 → 1**, not by re-reading the CSS — the same "don't just eyeball it" lesson as Variant 1's 12.6, applied to a different underlying bug.
+
+### 13.6 Known Pitfalls Found This Build (mirrors Variant 1 Section 3's pitfall callouts)
+
+1. **Nested `<b>` inside a component styled by a descendant selector** — see 13.4.1. Scope label-style selectors to `:first-child` whenever a component's body text might legitimately contain its own inline bold phrase.
+
+2. **`overflow-wrap: anywhere` looks like a safe global default but silently shrinks table columns.** An earlier pass added `overflow-wrap:anywhere` to `body` (to stop one long slash-joined word from overflowing a card). The visible symptom was ordinary short words like "Dissociation" or "Displacement" fracturing mid-letter (`Dissociatio` / `n`) inside a table column that had plenty of free space beside it — because `anywhere` lets Chrome's table auto-layout compute a much smaller min-content width for that column than `break-word` would, even on wide desktop viewports where there was no actual overflow risk. **Fix:** use `overflow-wrap: break-word` as the site-wide default (still prevents genuine overflow from a long unbreakable token) and only reach for `anywhere` on one specific narrow element if `break-word` truly isn't enough there.
+
+3. **CSS Grid track width can be forced wider than its container by a wide child's min-content — even inside a single explicit `1fr` column on mobile.** A `<table>` inside a grid item doesn't shrink to fit by default: a grid item's `min-width` is `auto`, which factors in the min-content size of its content, so a wide table can force the whole grid track — and the modal card holding it — to overflow the viewport. This shipped as a real, screenshotted-but-still-missed bug: a mobile screenshot of the HY modal *looked* fine at a glance, but the card was actually 418px wide inside a 358px-wide parent, bleeding off the right edge. **Fix:** `min-width: 0` on both the grid container and the grid items (`.hy-grid`, `.hy-card`) forces them to respect the explicit `1fr` track instead of expanding to fit their widest child. Confirmed via `getBoundingClientRect()` comparison (card width dropped from 418px to 298px, now inside its 358px parent), not just a second screenshot.
+
+4. **Quiz tables must default to fully visible, not default to quizzed/hidden** — see 13.4.5. If a `.quiz-cell`'s hidden/blurred state isn't gated behind an explicit `.quiz-active` opt-in class on its parent table, the table is unusable as a plain reference on first load.
+
+### 13.7 Verifying Interactive Features (same spirit as Variant 1's 12.6, applied to the whole file)
+
+Don't just read the CSS/JS back and reason about it — actually drive the page with a headless browser and assert on the result:
+- Click every `.quiz-toggle` and check `classList.contains('quiz-active')` flips both ways, and that a `.quiz-cell`'s *computed* `filter`/`opacity` (not just its class list) is actually `none`/`1` by default.
+- Click every `.qbox` option and confirm the `.correct` / `.incorrect` / `.explain.show` classes land on the right elements.
+- Open the lightbox, step through `ArrowRight`/`ArrowLeft`, close with `Escape`, and confirm `document.documentElement.scrollWidth` never exceeds the viewport width — check this at **320px, 390px, 768px, and desktop**, not just desktop.
+- For any fixed-position modal (the HY summary, the lightbox): pull `getBoundingClientRect()` for the modal card and a representative child, and confirm the child's `right` edge is within the parent's — a visually-plausible screenshot can still be hiding an overflow that a fixed-position ancestor is silently letting bleed past the viewport edge (pitfall 3 above looked fine in a screenshot at first glance; only bounding-box numbers caught it).
+- Export the HY one-pager to PDF and check the actual page count, same as Variant 1's 12.6 — re-check after *every* print-CSS edit, don't assume one tweak fixed it without re-exporting.

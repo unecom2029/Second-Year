@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eating Disorders — Study Notes</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext x='32' y='50' font-size='48' text-anchor='middle'%3E%F0%9F%8D%94%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:'Source Serif 4', serif; font-weight:400;
+  line-height:1.65; font-size:calc(16px * var(--font-scale, 1));
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:'Playfair Display', serif; margin:0 0 .5em; line-height:1.2;}
+p{margin:0 0 1em;}
+a{color:var(--accent2);}
+img{max-width:100%;}
+strong{color:var(--accent2);}
+.container{max-width:var(--content-max); margin:0 auto; padding:0 32px;}
+
+/* ============================================================
+   COLOR SYSTEM — Reference palette (contrast-tuned)
+   ============================================================ */
+:root{
+  --content-max: 1240px; /* widened so the page fills a 16" laptop viewport without big empty gutters */
+  --font-scale: 1;
+
+  --ink:#1a1209; --paper:#faf7f2; --cream:#ece1cd;
+  --accent:#b5341a; --accent2:#2c5f8a; --gold:#c9922a; --muted:#6b5e4e; --border:#d4cabb;
+  --highlight:#fbe4a0; --highlight2:#cfe4f7; --green-bg:#d7f0da; --red-bg:#f8d6d0;
+  --blue-bg:#d2e7f9; --purple-bg:#e6dbfa; --hero-bg:#1a1209;
+  --panel-dark-bg:#1a1209; --panel-dark-text:#faf7f2;
+
+  --hero-heading:#f5ede0; --hero-sub:#c9bcad;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.12);
+  --hero-meta-label:#8a7a6a; --hero-meta-value:#f0e0c8;
+
+  --floating-ui-bg:#3a3030; --floating-ui-fg:#f5ede0;
+  --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.2);
+
+  --quiz-overlay:rgba(44,95,138,0.5); --quiz-overlay-hover:rgba(44,95,138,0.78);
+}
+[data-theme="night"]{
+  --ink:#e0e8f0; --paper:#0f1923; --cream:#162030;
+  --accent:#e8b84b; --accent2:#4aa8d8; --gold:#e8b84b; --muted:#94abc0; --border:#1e3048;
+  --highlight:#3a3016; --highlight2:#12283a; --green-bg:#10281c; --red-bg:#2e1616;
+  --blue-bg:#10233a; --purple-bg:#201a38; --hero-bg:#070e15;
+  --panel-dark-bg:#101a26; --panel-dark-text:#eef5fb;
+
+  --hero-heading:#f4f9ff; --hero-sub:#b8cad8;
+  --hero-meta-bg:rgba(255,255,255,0.08); --hero-meta-border:rgba(255,255,255,0.12);
+  --hero-meta-label:#8fa4b8; --hero-meta-value:#f4f9ff;
+
+  --floating-ui-bg:#070e15; --floating-ui-fg:#f4f9ff;
+  --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.36);
+
+  --quiz-overlay:rgba(74,168,216,0.42); --quiz-overlay-hover:rgba(74,168,216,0.62);
+}
+[data-theme="ocean"]{
+  --ink:#0b2436; --paper:#eef7fb; --cream:#cdeaf5;
+  --accent:#d1495b; --accent2:#0f6fb0; --gold:#d9a441; --muted:#4f7185; --border:#a8d4e8;
+  --highlight:#ffe6ad; --highlight2:#bfe3f2; --green-bg:#c9f0dc; --red-bg:#fad9d5;
+  --blue-bg:#c3e4f6; --purple-bg:#e1d7f6; --hero-bg:#0a3a5c;
+  --panel-dark-bg:#0b2436; --panel-dark-text:#eef7fb;
+
+  --hero-heading:#eef7fb; --hero-sub:#bcd8e6;
+  --hero-meta-bg:rgba(255,255,255,0.08); --hero-meta-border:rgba(255,255,255,0.14);
+  --hero-meta-label:#8fb8cc; --hero-meta-value:#eef7fb;
+
+  --floating-ui-bg:#0a3a5c; --floating-ui-fg:#eef7fb;
+  --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.28);
+
+  --quiz-overlay:rgba(15,111,176,0.45); --quiz-overlay-hover:rgba(15,111,176,0.68);
+}
+[data-theme="forest"]{
+  --ink:#16241a; --paper:#f2f7f0; --cream:#d7ead2;
+  --accent:#a3401f; --accent2:#1f7a4d; --gold:#b8860b; --muted:#52684f; --border:#b7d4ae;
+  --highlight:#f3e6a0; --highlight2:#cbe4c4; --green-bg:#c7ecc0; --red-bg:#f7ddd0;
+  --blue-bg:#cbe6df; --purple-bg:#e1dbee; --hero-bg:#12301c;
+  --panel-dark-bg:#16241a; --panel-dark-text:#f2f7f0;
+
+  --hero-heading:#f2f7f0; --hero-sub:#bcd4b8;
+  --hero-meta-bg:rgba(255,255,255,0.08); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#8fae88; --hero-meta-value:#eef7ea;
+
+  --floating-ui-bg:#12301c; --floating-ui-fg:#f2f7f0;
+  --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.28);
+
+  --quiz-overlay:rgba(31,122,77,0.45); --quiz-overlay-hover:rgba(31,122,77,0.68);
+}
+[data-theme="sepia"]{
+  --ink:#3a2414; --paper:#f7ecd9; --cream:#ecd7ae;
+  --accent:#9c3b17; --accent2:#2f5f6b; --gold:#8b5a17; --muted:#7a614a; --border:#d9bd8c;
+  --highlight:#f0d38a; --highlight2:#d7c39a; --green-bg:#dbe3bc; --red-bg:#f0d0c0;
+  --blue-bg:#cfdedd; --purple-bg:#e3d3e0; --hero-bg:#3f2814;
+  --panel-dark-bg:#3a2414; --panel-dark-text:#f7ecd9;
+
+  --hero-heading:#f7ecd9; --hero-sub:#d9c3a0;
+  --hero-meta-bg:rgba(255,255,255,0.08); --hero-meta-border:rgba(255,255,255,0.14);
+  --hero-meta-label:#c2a67c; --hero-meta-value:#f7ecd9;
+
+  --floating-ui-bg:#3f2814; --floating-ui-fg:#f7ecd9;
+  --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.28);
+
+  --quiz-overlay:rgba(47,95,107,0.45); --quiz-overlay-hover:rgba(47,95,107,0.68);
+}
+:root strong{color:var(--accent2);}
+
+/* ============================================================
+   HERO + STICKY TOC
+   ============================================================ */
+.hero{background:var(--hero-bg); padding:44px 0 34px; color:var(--hero-heading);}
+.hero-tag{font-family:'JetBrains Mono',monospace; font-size:.72rem; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--hero-meta-label); margin-bottom:10px;}
+.hero h1{font-size:2.5rem; color:var(--hero-heading); margin-bottom:8px;}
+.hero h1 span{color:var(--accent);}
+.hero-sub{font-family:'Source Serif 4', serif; font-style:italic; font-size:1.05rem; color:var(--hero-sub); max-width:800px; margin-bottom:18px;}
+.hero-meta{display:flex; flex-wrap:wrap; gap:12px; margin-top:6px;}
+.hero-meta-item{background:var(--hero-meta-bg); border:1px solid var(--hero-meta-border); border-radius:10px;
+  padding:9px 16px; min-width:150px;}
+.hero-meta-item .label{display:block; font-family:'JetBrains Mono',monospace; font-size:.62rem; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--hero-meta-label); margin-bottom:3px;}
+.hero-meta-item .value{display:block; font-family:'JetBrains Mono',monospace; font-size:.86rem; font-weight:700; color:var(--hero-meta-value);}
+
+.toc-bar{position:sticky; top:0; z-index:90; background:var(--hero-bg); border-bottom:1px solid var(--border);
+  overflow-x:auto; white-space:nowrap;}
+.toc-bar nav{max-width:var(--content-max); margin:0 auto; padding:10px 32px; display:flex; gap:22px;}
+.toc-bar a{font-family:'JetBrains Mono',monospace; font-size:.72rem; letter-spacing:.04em; text-transform:uppercase;
+  color:var(--hero-sub); text-decoration:none; white-space:nowrap; transition:color .15s;}
+.toc-bar a:hover{color:var(--hero-heading);}
+
+/* ============================================================
+   SECTION WRAPPER + LO BADGES
+   ============================================================ */
+.section{padding:38px 0; border-bottom:1px solid var(--border);}
+.section:nth-of-type(odd){background:var(--cream);}
+.badge-row{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px;}
+.lo-badge{display:inline-block; font-family:'JetBrains Mono',monospace; font-size:.66rem; font-weight:700;
+  letter-spacing:.05em; text-transform:uppercase; background:var(--accent2); color:#fff;
+  padding:5px 12px; border-radius:20px;}
+.section-label{font-family:'JetBrains Mono',monospace; font-size:.72rem; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--muted); margin:0 0 4px;}
+.section-title{font-size:1.85rem; border-bottom:3px solid var(--accent); padding-bottom:10px; margin-bottom:18px;}
+.two-col{display:grid; grid-template-columns:1fr 1fr; gap:22px; align-items:start;}
+@media (max-width:900px){.two-col{grid-template-columns:1fr;}}
+
+/* ============================================================
+   CALLOUTS
+   ============================================================ */
+.callout{border-radius:10px; padding:16px 18px; margin:16px 0; border:1px solid var(--border);}
+.callout-title{font-family:'JetBrains Mono',monospace; font-weight:700; font-size:.82rem; letter-spacing:.02em; margin-bottom:6px;}
+.callout p{margin:0 0 6px;} .callout p:last-child{margin-bottom:0;}
+.callout-key{background:var(--highlight); border-color:var(--gold);} .callout-key .callout-title{color:var(--gold);}
+.callout-concept{background:var(--blue-bg); border-color:var(--accent2);} .callout-concept .callout-title{color:var(--accent2);}
+.callout-clinical{background:var(--green-bg); border-color:#2e7d32;} .callout-clinical .callout-title{color:#2e7d32;}
+.callout-warning{background:var(--red-bg); border-color:var(--accent);} .callout-warning .callout-title{color:var(--accent);}
+.callout-purple{background:var(--purple-bg); border-color:#6a4fa0;} .callout-purple .callout-title{color:#6a4fa0;}
+.callout-mnemonic{background:var(--highlight); border:2px dashed var(--gold);} .callout-mnemonic .callout-title{color:var(--gold);}
+
+.hy-flag{display:inline-flex; align-items:center; gap:3px; background:var(--highlight); color:var(--gold);
+  border:1px solid var(--gold); font-family:'JetBrains Mono',monospace; font-weight:700; font-size:.66rem;
+  padding:2px 9px; border-radius:20px; letter-spacing:.03em; vertical-align:middle;}
+
+/* Boxed Warning — reserved for actual FDA Boxed Warnings only */
+.box-warning{border:3px solid var(--accent); border-radius:10px; padding:16px 18px; margin:16px 0; background:var(--red-bg);}
+.bw-label{display:inline-block; font-family:'JetBrains Mono',monospace; font-weight:700; font-size:.78rem;
+  letter-spacing:.04em; text-transform:uppercase; color:var(--accent); margin-bottom:8px;}
+.box-warning p{margin:0 0 6px;}
+
+/* ============================================================
+   COMPARE GRID
+   ============================================================ */
+.compare-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:18px; margin:18px 0;}
+@media (max-width:760px){.compare-grid{grid-template-columns:1fr;}}
+.compare-card{border-radius:12px; padding:18px 20px; border:1px solid var(--border);}
+.compare-card h4{margin-bottom:8px; font-size:1.1rem;}
+.card-emoji{font-size:1.6rem; display:block; margin-bottom:6px;}
+.compare-card .notes-list{margin-top:8px;}
+
+/* ============================================================
+   STEP LIST
+   ============================================================ */
+.step-list{list-style:none; margin:18px 0; padding:0; counter-reset:step;}
+.step-list li{position:relative; padding-left:44px; margin-bottom:16px; counter-increment:step;}
+.step-list li::before{content:counter(step); position:absolute; left:0; top:0; width:30px; height:30px;
+  border-radius:50%; background:var(--accent); color:#fff; font-family:'JetBrains Mono',monospace; font-weight:700;
+  display:flex; align-items:center; justify-content:center; font-size:.9rem;}
+.step-list li strong{display:block; color:var(--ink); font-family:'Playfair Display',serif; font-weight:700; margin-bottom:2px;}
+
+/* ============================================================
+   NOTES LIST
+   ============================================================ */
+ul.notes-list{list-style:none; margin:0 0 1em; padding:0;}
+ul.notes-list li{position:relative; padding-left:20px; margin-bottom:7px;}
+ul.notes-list li::before{content:'›'; position:absolute; left:0; color:var(--accent2); font-weight:700;}
+
+/* ============================================================
+   TABLES
+   ============================================================ */
+table{width:100%; border-collapse:collapse; margin:16px 0; font-size:.92rem; overflow-wrap:break-word;}
+th,td{border:1px solid var(--border); padding:9px 12px; text-align:left; vertical-align:top;}
+th{background:var(--panel-dark-bg); color:var(--panel-dark-text); font-family:'JetBrains Mono',monospace;
+  font-size:.72rem; letter-spacing:.04em; text-transform:uppercase;}
+tr:nth-child(even) td{background:var(--cream);}
+
+/* ============================================================
+   EXAM QUESTION BLOCK
+   ============================================================ */
+.exam-q{background:var(--panel-dark-bg); color:var(--panel-dark-text); border-radius:10px; padding:18px 20px;
+  margin:18px 0; cursor:pointer; position:relative;}
+.exam-q::before{content:'EXAM Q'; display:inline-block; font-family:'JetBrains Mono',monospace; font-size:.62rem;
+  font-weight:700; letter-spacing:.08em; background:var(--accent); color:#fff; padding:3px 10px; border-radius:20px;
+  margin-bottom:10px;}
+.exam-q p{color:var(--panel-dark-text);}
+.exam-q .reveal-hint{font-family:'JetBrains Mono',monospace; font-size:.68rem; letter-spacing:.04em; opacity:.6; margin-top:4px;}
+.exam-q .answer{display:none; margin-top:12px; padding-top:12px; border-top:1px solid rgba(255,255,255,0.2);}
+.exam-q.revealed .answer{display:block;}
+.exam-q.revealed .reveal-hint{display:none;}
+.exam-q .label{font-family:'JetBrains Mono',monospace; font-size:.68rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--gold); margin-bottom:6px;}
+
+/* ============================================================
+   DRUG GRID / DRUG CARD
+   ============================================================ */
+.drug-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; margin:16px 0;}
+.drug-card{border:1px solid var(--border); border-top:4px solid var(--accent2); border-radius:10px;
+  padding:14px 16px; background:var(--cream);}
+.drug-card h4{margin-bottom:4px; font-size:1rem;}
+.drug-card .generic{font-family:'JetBrains Mono',monospace; font-size:.72rem; color:var(--muted); letter-spacing:.02em;}
+
+/* ============================================================
+   HALLMARKS GRID
+   ============================================================ */
+.hallmarks-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin:16px 0;}
+.hallmark-card{border:1px solid var(--border); border-radius:10px; padding:14px 16px; background:var(--cream); position:relative;}
+.hallmark-card:nth-child(1){border-top:4px solid var(--accent);}
+.hallmark-card:nth-child(2){border-top:4px solid var(--accent2);}
+.hallmark-card:nth-child(3){border-top:4px solid var(--gold);}
+.hallmark-card:nth-child(4){border-top:4px solid #2e7d32;}
+.hallmark-card:nth-child(5){border-top:4px solid #6a4fa0;}
+.hallmark-card:nth-child(6){border-top:4px solid var(--accent);}
+.hallmark-card:nth-child(7){border-top:4px solid var(--accent2);}
+.hallmark-card:nth-child(8){border-top:4px solid var(--gold);}
+.hallmark-num{position:absolute; top:-10px; right:12px; background:var(--ink); color:var(--paper);
+  width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  font-family:'JetBrains Mono',monospace; font-size:.7rem; font-weight:700;}
+.hallmark-card h4{font-size:.95rem; margin-bottom:4px;}
+.hallmark-card p{font-size:.86rem; margin:0; color:var(--muted);}
+
+/* ============================================================
+   CASE BLOCK (vignette framing, non-quiz)
+   ============================================================ */
+.case-block{border:1px solid var(--border); border-left:5px solid var(--accent2); border-radius:8px;
+  padding:16px 20px; margin:16px 0; background:var(--paper);}
+.case-block .case-label{font-family:'JetBrains Mono',monospace; font-size:.68rem; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--accent2); margin-bottom:6px; display:block;}
+/* ============================================================
+   FLOATING CONTROLS (Font size + Theme switcher)
+   ============================================================ */
+.floating-stack{position:fixed; bottom:20px; right:20px; z-index:100; display:flex; flex-direction:column;
+  align-items:flex-end; gap:10px;}
+.font-btn-row{display:flex; align-items:center; background:var(--floating-ui-bg); color:var(--floating-ui-fg);
+  padding:7px 10px; border-radius:30px; box-shadow:var(--floating-ui-shadow); font-family:'JetBrains Mono',monospace;
+  font-size:.62rem; letter-spacing:.1em; gap:2px;}
+.font-btn{background:none; border:none; cursor:pointer; color:var(--floating-ui-fg); font-family:'JetBrains Mono',monospace;
+  font-weight:700; font-size:1rem; padding:2px 8px; border-radius:6px; transition:background .15s; line-height:1;}
+.font-btn:hover{background:rgba(255,255,255,0.18);}
+.font-sep{color:rgba(255,255,255,0.2); padding:0 3px;}
+.font-label{font-size:.58rem; opacity:.7; padding:0 5px; text-transform:uppercase; letter-spacing:.1em;}
+.theme-btn{display:flex; align-items:center; gap:6px; background:var(--floating-ui-bg); color:var(--floating-ui-fg);
+  border:none; padding:10px 16px; border-radius:30px; box-shadow:var(--floating-ui-shadow); cursor:pointer;
+  font-family:'JetBrains Mono',monospace; font-size:.72rem; letter-spacing:.05em;}
+.theme-panel{position:absolute; bottom:56px; right:0; background:var(--paper); border:1px solid var(--border);
+  border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,0.25); padding:10px; width:190px; opacity:0; pointer-events:none;
+  transform:translateY(6px); transition:all .2s;}
+.theme-panel.open{opacity:1; pointer-events:auto; transform:translateY(0);}
+.theme-panel-title{font-family:'JetBrains Mono',monospace; font-size:.66rem; text-transform:uppercase; letter-spacing:.06em;
+  color:var(--muted); padding:2px 6px 8px;}
+.theme-option{display:flex; align-items:center; gap:8px; padding:7px 8px; border-radius:8px; cursor:pointer;
+  font-size:.82rem; color:var(--ink);}
+.theme-option:hover{background:var(--cream);}
+.theme-option.active{background:var(--highlight2); font-weight:600;}
+.theme-swatch{width:18px; height:18px; border-radius:50%; border:1px solid var(--border); flex:none;}
+
+/* ============================================================
+   TABLE QUIZ TOOLBAR
+   ============================================================ */
+.tq-bar{display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:6px; padding:8px 12px;
+  background:var(--cream); border:1px solid var(--border); border-radius:8px;}
+.tq-toggle{font-family:'JetBrains Mono',monospace; font-size:.65rem; letter-spacing:.1em; text-transform:uppercase;
+  background:var(--accent2); color:#fff; border:none; border-radius:20px; padding:5px 12px; cursor:pointer;}
+.tq-toggle.active{background:var(--accent);}
+.tq-cols{display:flex; flex-wrap:wrap; gap:5px; flex:1;}
+.tq-col-btn{font-size:.72rem; padding:3px 9px; border:1px solid var(--border); border-radius:12px;
+  background:var(--paper); cursor:pointer; font-family:'JetBrains Mono',monospace; transition:all .15s;}
+.tq-col-btn.sel{background:var(--accent2); color:#fff; border-color:var(--accent2);}
+.tq-start{font-family:'JetBrains Mono',monospace; font-size:.65rem; background:#2e7d32; color:#fff; border:none;
+  border-radius:20px; padding:5px 12px; cursor:pointer;}
+.tq-start:disabled{opacity:.35; cursor:not-allowed;}
+.tq-reset{font-family:'JetBrains Mono',monospace; font-size:.65rem; background:var(--accent); color:#fff; border:none;
+  border-radius:20px; padding:5px 13px; cursor:pointer;}
+.tq-score{font-family:'JetBrains Mono',monospace; font-size:.72rem; color:var(--muted);}
+.tq-score.done{color:#2e7d32; font-weight:700;}
+
+.quiz-hidden-cell{position:relative !important; cursor:pointer !important;}
+.quiz-hidden-cell .tq-cell-content{filter:blur(5px) !important; user-select:none !important; pointer-events:none !important; opacity:.4 !important;}
+.quiz-hidden-cell::after{content:'tap to reveal' !important; position:absolute !important; inset:0 !important;
+  display:flex !important; align-items:center !important; justify-content:center !important;
+  background:var(--quiz-overlay) !important; color:#fff !important; font-family:'JetBrains Mono',monospace !important;
+  font-size:.6rem !important; font-weight:700 !important; letter-spacing:.12em !important; text-transform:uppercase !important;
+  border-radius:4px !important;}
+.quiz-hidden-cell:hover::after{background:var(--quiz-overlay-hover) !important;}
+
+/* ============================================================
+   HIGH-YIELD ONE-PAGER BUTTON + MODAL
+   ============================================================ */
+.hy-btn{display:inline-flex; align-items:center; gap:8px; background:var(--gold); color:#2a1a00; border:none;
+  padding:12px 22px; border-radius:30px; font-family:'JetBrains Mono',monospace; font-size:.78rem; font-weight:700;
+  letter-spacing:.04em; cursor:pointer; margin:2px 0 4px; box-shadow:0 4px 14px rgba(0,0,0,0.3);
+  transition:transform .15s, box-shadow .15s;}
+.hy-btn:hover{transform:translateY(-2px); box-shadow:0 6px 18px rgba(0,0,0,0.35);}
+
+.hy-modal{position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:300; display:none;
+  align-items:flex-start; justify-content:center; overflow-y:auto; padding:30px 16px;}
+.hy-modal.open{display:flex;}
+.hy-modal-card{background:var(--paper); color:var(--ink); max-width:1100px; width:100%; border-radius:14px;
+  padding:26px 30px 34px; position:relative; box-shadow:0 20px 60px rgba(0,0,0,0.45);}
+.hy-modal-header{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px;
+  border-bottom:3px solid var(--accent2); padding-bottom:10px; flex-wrap:wrap;}
+.hy-modal-header h2{margin:0; font-size:1.4rem;}
+.hy-modal-actions{display:flex; gap:8px; flex:none;}
+.hy-action-btn{font-family:'JetBrains Mono',monospace; font-size:.66rem; letter-spacing:.05em; text-transform:uppercase;
+  border:1px solid var(--border); background:var(--cream); color:var(--ink); padding:7px 13px; border-radius:20px; cursor:pointer;}
+.hy-close-btn{background:var(--accent); color:#fff; border:none;}
+.hy-subhead{font-family:'JetBrains Mono',monospace; font-size:.68rem; color:var(--muted); margin:0 0 14px;}
+.hy-cols{display:grid; grid-template-columns:repeat(3,1fr); gap:12px;}
+@media (max-width:760px){.hy-cols{grid-template-columns:1fr;}}
+.hy-block{border:1px solid var(--border); border-radius:8px; padding:9px 11px; background:var(--cream); margin-bottom:10px;}
+.hy-block h4{margin:0 0 6px; font-size:.78rem; color:var(--accent2); border-bottom:1px solid var(--border); padding-bottom:4px;}
+.hy-block p, .hy-block li{font-size:.68rem; line-height:1.4; margin:0 0 4px;}
+.hy-block ul{margin:0; padding-left:16px;}
+.hy-lo-tag{display:block; font-family:'JetBrains Mono',monospace; font-size:.62rem; font-weight:700; color:#fff;
+  background:var(--accent2); padding:3px 9px; border-radius:10px; margin-bottom:8px; letter-spacing:.05em; text-align:center;}
+.hy-mini-table{width:100%; border-collapse:collapse; font-size:.65rem; margin-top:4px;}
+.hy-mini-table th, .hy-mini-table td{border:1px solid var(--border); padding:3px 5px; text-align:left; line-height:1.3;}
+.hy-mini-table th{background:var(--panel-dark-bg); color:var(--panel-dark-text); font-size:.58rem; text-transform:uppercase;}
+
+@media print{
+  body.hy-mode .hero, body.hy-mode .toc-bar, body.hy-mode .section,
+  body.hy-mode .floating-stack, body.hy-mode footer{display:none !important;}
+  body.hy-mode .hy-modal{position:static !important; inset:auto !important; background:none !important;
+    padding:0 !important; display:block !important; overflow:visible !important;}
+  body.hy-mode .hy-modal-card{position:static !important; max-width:100% !important; width:100% !important;
+    box-shadow:none !important; padding:4px !important;}
+  .hy-modal-actions{display:none !important;}
+  .hy-cols{grid-template-columns:repeat(3,1fr); gap:8px;}
+  .hy-modal-header h2{font-size:1.05rem;}
+  .hy-subhead{font-size:.58rem; margin-bottom:8px;}
+  .hy-block{padding:5px 7px; margin-bottom:6px;}
+  .hy-block h4{font-size:.68rem; margin-bottom:3px; padding-bottom:2px;}
+  .hy-block p, .hy-block li{font-size:.585rem; line-height:1.28; margin-bottom:2px;}
+  .hy-mini-table{font-size:.555rem;}
+  .hy-mini-table th, .hy-mini-table td{padding:1.5px 3px;}
+  .hy-lo-tag{font-size:.55rem; padding:2px 7px; margin-bottom:5px;}
+  @page{size:landscape; margin:8mm;}
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer{padding:30px 0 90px; text-align:center; font-family:'JetBrains Mono',monospace; font-size:.72rem; color:var(--muted);}
+
+/* ============================================================
+   PRINT
+   ============================================================ */
+@media print{
+  .floating-stack, .toc-bar, .tq-bar{display:none !important;}
+  .section{break-inside:avoid-page;}
+  body{font-size:11pt;}
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width:640px){
+  .hero h1{font-size:1.8rem;}
+  .container{padding:0 18px;}
+  .toc-bar nav{padding:10px 18px;}
+  .section-title{font-size:1.4rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================ HERO ============================================================ -->
+<div class="hero">
+  <div class="container">
+    <div class="hero-tag">Lee Wolfrum, DO · UNE College of Medicine — Psychiatry Discipline Director · MHBH at Spring Harbor, Medical Director</div>
+    <h1>Eating <span>Disorders</span></h1>
+    <p class="hero-sub">DSM-5 diagnostic classification, differentiation, and treatment of Anorexia Nervosa, Bulimia Nervosa, Binge Eating Disorder, Pica, and Body Dysmorphic Disorder — built for exam-style differentiation questions.</p>
+    <button class="hy-btn" onclick="openHY()">🎯 High-Yield One-Pager</button>
+    <div class="hero-meta">
+      <div class="hero-meta-item"><span class="label">Learning Objectives</span><span class="value">3</span></div>
+      <div class="hero-meta-item"><span class="label">Disorders Covered</span><span class="value">5</span></div>
+      <div class="hero-meta-item"><span class="label">Highest Yield</span><span class="value">Anorexia &amp; Bulimia</span></div>
+      <div class="hero-meta-item"><span class="label">Lecture Focus</span><span class="value">DSM-5 Diagnostic Criteria</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="toc-bar">
+  <nav>
+    <a href="#overview">Shared Framework</a>
+    <a href="#anorexia">Anorexia Nervosa</a>
+    <a href="#bulimia">Bulimia Nervosa</a>
+    <a href="#binge-eating">Binge Eating Disorder</a>
+    <a href="#pica-bdd">Pica &amp; BDD</a>
+    <a href="#differentiating">Differentiating the Disorders</a>
+  </nav>
+</div>
+
+<!-- ============================================================ SECTION 1: OVERVIEW / SHARED FRAMEWORK ============================================================ -->
+<div class="section" id="overview">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">LO 1 — Diagnostic Classification</div></div>
+    <p class="section-label">Framework</p>
+    <h2 class="section-title">Shared Diagnostic Framework</h2>
+
+    <p>Anorexia Nervosa, Bulimia Nervosa, and Binge Eating Disorder are all built from combinations of the <strong>same three symptom clusters</strong>. Learning these three first makes every individual diagnosis below a matter of "which combination, at what BMI, for how long."</p>
+
+    <div class="hallmarks-grid">
+      <div class="hallmark-card"><div class="hallmark-num">1</div><h4>Binge Eating Behaviors</h4><p>Eating a larger amount of food than most people would in a 2-hour period, <strong>plus</strong> a subjective feeling of loss of control. Culturally-normalized overeating (e.g., a holiday meal) does not count.</p></div>
+      <div class="hallmark-card"><div class="hallmark-num">2</div><h4>Calorie Deficit Behaviors</h4><p>Fasting, restricting intake, or excessive exercise used to create an energy deficit — outside of what's culturally, religiously, or athletically normalized.</p></div>
+      <div class="hallmark-card"><div class="hallmark-num">3</div><h4>Purging Behaviors</h4><p>Self-induced vomiting, laxative/enema misuse, diuretic misuse, or other medications used specifically to offset intake.</p></div>
+    </div>
+
+    <div class="callout callout-concept">
+      <div class="callout-title">🔑 What Counts as "Abnormal"?</div>
+      <p>Each cluster is only pathological when it falls <strong>outside societal, religious, or performance-related norms</strong>. An Olympic-level athlete or bodybuilder eating or restricting to match their training load is not, by itself, evidence of an eating disorder — context matters as much as the behavior itself.</p>
+    </div>
+
+    <h3>Substances Commonly Misused for Purging</h3>
+    <table>
+      <tr><th>Category</th><th>Examples / Notes</th></tr>
+      <tr><td>Stimulants</td><td>Amphetamines (e.g., Ritalin, Adderall), pseudoephedrine, caffeine — weight loss is a known side effect of increased energy expenditure.</td></tr>
+      <tr><td>Thyroid medications</td><td>Levothyroxine taken by someone with a <em>normal</em> thyroid induces an artificial hyperthyroid state, which burns extra energy.</td></tr>
+      <tr><td>Laxatives / Enemas</td><td>Products such as Miralax or fleet enemas.</td></tr>
+      <tr><td>Diuretics</td><td>Lasix is the most commonly tested example.</td></tr>
+      <tr><td>Emetics</td><td>Ipecac syrup — historically used to induce vomiting; sale is now restricted and it is rarely abused today.</td></tr>
+      <tr><td>Weight-loss-indicated drugs used without indication</td><td>Lipase inhibitors, serotonin modulators, naltrexone/bupropion, GLP-1 receptor agonists — purging-type behavior when used by someone who does not medically qualify for weight-loss treatment.</td></tr>
+    </table>
+
+    <div class="case-block">
+      <span class="case-label">Running Case — Introduced Without Vitals</span>
+      <p>A 24-year-old female presents to her primary care provider asking for medications to help with weight loss. She states she has been dieting and feels as though she is significantly overweight. She states that when stressed, she eats larger servings and will sometimes eat a half-gallon of ice cream. She has tried exercising more, diet pills, thyroid supplements, and laxatives, and has found none helpful.</p>
+    </div>
+
+    <div class="exam-q" onclick="this.classList.toggle('revealed')">
+      <p><strong>Q:</strong> This case is deliberately left vague. What single piece of missing information would most help differentiate the diagnosis, and why?</p>
+      <div class="reveal-hint">▸ Click to reveal answer</div>
+      <div class="answer">
+        <div class="label">Answer</div>
+        <p><strong>Vital signs, specifically BMI.</strong> BMI is one of the main criteria separating Anorexia (low BMI) from Bulimia/Binge Eating Disorder (normal-to-high BMI). Without it, the ice cream episode could point to binge eating, and the diet pills/laxatives to purging — but there's no way yet to know whether this is a restriction-dominant or binge-dominant picture. We'll revisit this same case with vitals added in the Anorexia and Bulimia sections below.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ SECTION 2: ANOREXIA NERVOSA ============================================================ -->
+<div class="section" id="anorexia">
+  <div class="container">
+    <div class="badge-row">
+      <div class="lo-badge">LO 1 — Diagnostic Classification</div>
+      <div class="lo-badge">LO 3 — Treatment &amp; Contraindications</div>
+    </div>
+    <p class="section-label">Restriction-Dominant Eating Disorder</p>
+    <h2 class="section-title">Anorexia Nervosa</h2>
+
+    <div class="two-col">
+      <div>
+        <h3>Epidemiology <span class="hy-flag">⭐ HY</span></h3>
+        <ul class="notes-list">
+          <li>F:M ratio <strong>10:1</strong></li>
+          <li>Bimodal peak onset: <strong>12–14</strong> and again around <strong>18</strong></li>
+          <li>High-risk groups: athletes, dancers, models, actors — anyone under heavy early scrutiny of appearance</li>
+          <li>Higher prevalence in <strong>higher</strong> socioeconomic groups (unusual among psychiatric disorders)</li>
+          <li><strong>Highest mortality of all psychiatric disorders</strong> — from medical complications, comorbid diagnoses, <em>and</em> suicide</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Risk Factors</h3>
+        <ul class="notes-list">
+          <li>Caucasian females</li>
+          <li>Eating difficulties in early childhood</li>
+          <li>Early praise for weight loss</li>
+          <li>Maternal depression</li>
+          <li>Family history of an eating disorder</li>
+          <li>"Type A" personality traits</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout callout-key">
+      <div class="callout-title">🔑 Three-Point Diagnosis</div>
+      <p><strong>1. Restriction of energy intake</strong> relative to what's normal for age, sex, and physical health.<br>
+      <strong>2. Fear of weight gain</strong> — to the point of continued weight loss or maintenance of a low body weight, with no comfort reached at a lower weight.<br>
+      <strong>3. Distortion of body image</strong> — the person believes they are overweight despite an objectively low BMI. This distortion is also what most impacts treatment engagement and self-esteem.</p>
+    </div>
+
+    <h3>Specifiers &amp; Severity (BMI-Based)</h3>
+    <table>
+      <tr><th>Specifier</th><th>Definition</th></tr>
+      <tr><td>Restricting type</td><td>Restriction of intake or use of exercise, <em>without</em> binge-eating or purging, in the past 3 months.</td></tr>
+      <tr><td>Binge-eating/purging type</td><td>Some binge-eating and/or purging behavior present in the past 3 months.</td></tr>
+      <tr><td>Partial remission</td><td>Criteria previously met; symptoms improved for a shorter recent period (roughly &lt;1 year, as a general DSM pattern).</td></tr>
+      <tr><td>Full remission</td><td>Symptoms improved and sustained long enough (roughly &gt;1 year) that relapse risk is considered lower.</td></tr>
+    </table>
+    <table>
+      <tr><th>Severity</th><th>BMI Range</th></tr>
+      <tr><td>Mild</td><td>18.5 – 17</td></tr>
+      <tr><td>Moderate</td><td>16.99 – 16</td></tr>
+      <tr><td>Severe</td><td>15.99 – 15</td></tr>
+      <tr><td>Extreme</td><td>&lt; 15</td></tr>
+    </table>
+
+    <div class="exam-q" onclick="this.classList.toggle('revealed')">
+      <p><strong>Q — Case Revisited:</strong> Same 24-year-old female. Vitals now added: BP 110/60, Pulse 60, <strong>BMI 15.5</strong>. She still reports feeling significantly overweight, occasional half-gallon ice cream episodes, and use of diet pills/thyroid supplements/laxatives. What's the diagnosis?</p>
+      <div class="reveal-hint">▸ Click to reveal answer</div>
+      <div class="answer">
+        <div class="label">Answer</div>
+        <p><strong>Anorexia Nervosa, Binge-Eating/Purging Type, Severe.</strong> A BMI of 15.5 falls in the severe range (15–15.99). The ice cream episode suggests a binge-eating pattern, and the diet pills/thyroid supplements/laxatives suggest purging-type compensatory behavior — both layered on top of a body-image distortion (feeling overweight at a BMI well below normal). The low BMI is the single biggest clue steering this toward anorexia rather than bulimia.</p>
+      </div>
+    </div>
+
+    <h3>Presentation &amp; Comorbid Diagnoses</h3>
+    <div class="two-col">
+      <ul class="notes-list">
+        <li>Low BMI, social withdrawal</li>
+        <li>Online "pro-ana" community involvement</li>
+        <li>Rituals around food</li>
+        <li>Depression, irritability, low energy (the brain and heart are the body's two highest energy consumers — both suffer first in caloric restriction)</li>
+        <li>Suicidal ideation</li>
+        <li>Persistent inability to feel satisfied with weight loss achieved</li>
+      </ul>
+      <ul class="notes-list">
+        <li>Depression</li>
+        <li>Anxiety</li>
+        <li>OCD / OCPD</li>
+        <li>Substance use disorders</li>
+        <li>Personality disorders</li>
+      </ul>
+    </div>
+
+    <h3>Physical Effects by System</h3>
+    <div class="hallmarks-grid">
+      <div class="hallmark-card"><h4>Brain</h4><p>Headaches, seizures, enlarged ventricles</p></div>
+      <div class="hallmark-card"><h4>Dental</h4><p>Caries, tooth enamel erosion (from purging)</p></div>
+      <div class="hallmark-card"><h4>Endocrine</h4><p>Low testosterone/estrogen, amenorrhea, hypothyroidism, hypercortisolemia</p></div>
+      <div class="hallmark-card"><h4>Heart</h4><p>Bradycardia, arrhythmia, QTc prolongation, hypotension, mitral valve prolapse</p></div>
+      <div class="hallmark-card"><h4>Dermatologic</h4><p>Lanugo (fine body hair), Russell's sign (knuckle calluses from induced vomiting)</p></div>
+      <div class="hallmark-card"><h4>GI</h4><p>Melanosis coli, delayed motility, SMA syndrome</p></div>
+      <div class="hallmark-card"><h4>MSK</h4><p>Osteoporosis / osteopenia</p></div>
+    </div>
+
+    <div class="callout callout-warning">
+      <div class="callout-title">⚠️ Purging Method Changes the Acid-Base Picture</div>
+      <p>Vomiting removes stomach acid → <strong>metabolic alkalosis</strong>, with decreased chloride and potassium. Laxative abuse pulls fluid/electrolytes from the gut → <strong>metabolic acidosis</strong>, with decreased sodium and increased chloride. This is a common second/third-level exam distinction.</p>
+    </div>
+
+    <div class="callout callout-mnemonic">
+      <div class="callout-title">🧠 Memory Hook</div>
+      <p>Baseline metabolic derangements: hypokalemia, hypocalcemia, hypophosphatemia, hypomagnesemia, plus thiamine (B1), folate (B9), B12, and iron deficiencies. A significant thiamine/folate deficiency in severe anorexia can present as a <strong>Wernicke-Korsakoff-type picture</strong> (confusion, ataxia, memory disturbance) — not just an alcohol-use-disorder finding.</p>
+    </div>
+
+    <h3>Assessment</h3>
+    <table>
+      <tr><th>Category</th><th>Includes</th></tr>
+      <tr><td>Labs / Studies</td><td>CMP, CBC, lipid panel, thyroid function tests, urine drug screen (stimulant misuse), EEG, EKG, bone density scan</td></tr>
+      <tr><td>Physical Exam</td><td>Vital signs, cardiac auscultation, echocardiogram, Russell's sign, lanugo, dental exam for caries</td></tr>
+    </table>
+
+    <h3>Treatment</h3>
+    <p>Weight restoration, generally around <strong>1 lb/week</strong>, comes first — but reintroducing food too aggressively risks <strong>refeeding syndrome</strong>.</p>
+    <div class="callout callout-warning">
+      <div class="callout-title">⚠️ Refeeding Syndrome</div>
+      <p>Reintroducing food/electrolytes/vitamins after prolonged restriction can trigger dramatic intracellular fluid and electrolyte swings. Watch for <strong>acute gastric dilation, CHF, arrhythmia, and rhabdomyolysis</strong>. Monitor labs closely and replete electrolytes proactively.</p>
+    </div>
+    <p>Once medically stabilized, treat comorbid diagnoses (depression, anxiety, etc.) and pursue therapy — largely <strong>CBT</strong>, though the lecturer notes this is an oversimplification of the real therapeutic approach.</p>
+
+    <h3>Medications (None FDA-Approved for Anorexia)</h3>
+    <div class="drug-grid">
+      <div class="drug-card"><h4>SSRIs</h4><div class="generic">Serotonergic</div><p style="font-size:.83rem;margin-top:6px;color:var(--muted);">Can increase appetite; also treats comorbid depression/anxiety.</p></div>
+      <div class="drug-card"><h4>Olanzapine</h4><div class="generic">2nd-gen antipsychotic</div><p style="font-size:.83rem;margin-top:6px;color:var(--muted);">Appetite stimulant effect.</p></div>
+      <div class="drug-card"><h4>Mirtazapine</h4><div class="generic">Atypical antidepressant</div><p style="font-size:.83rem;margin-top:6px;color:var(--muted);">Appetite stimulant; dual benefit if depression is comorbid.</p></div>
+      <div class="drug-card"><h4>Cyproheptadine</h4><div class="generic">1st-gen antihistamine</div><p style="font-size:.83rem;margin-top:6px;color:var(--muted);">Used for its appetite-stimulating side effect.</p></div>
+      <div class="drug-card"><h4>Cannabis products</h4><div class="generic">Off-label</div><p style="font-size:.83rem;margin-top:6px;color:var(--muted);">Appetite stimulant.</p></div>
+      <div class="drug-card"><h4>Calcium / estradiol replacement</h4><div class="generic">Supportive</div><p style="font-size:.83rem;margin-top:6px;color:var(--muted);">Targets bone health, not appetite directly.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ SECTION 3: BULIMIA NERVOSA ============================================================ -->
+<div class="section" id="bulimia">
+  <div class="container">
+    <div class="badge-row">
+      <div class="lo-badge">LO 1 — Diagnostic Classification</div>
+      <div class="lo-badge">LO 2 — Differentiation</div>
+      <div class="lo-badge">LO 3 — Treatment &amp; Contraindications</div>
+    </div>
+    <p class="section-label">Binge-Then-Compensate Eating Disorder</p>
+    <h2 class="section-title">Bulimia Nervosa</h2>
+
+    <div class="two-col">
+      <div>
+        <h3>Epidemiology</h3>
+        <ul class="notes-list">
+          <li>F:M ratio <strong>10:1</strong> (same as anorexia)</li>
+          <li>Onset typically <strong>later</strong> than anorexia — often not diagnosed before 18, sometimes not until the 20s</li>
+          <li>High mortality, but <strong>lower than anorexia</strong></li>
+          <li>Risk factors: history of physical/sexual abuse, family connection to eating disorders</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Diagnostic Criteria</h3>
+        <ul class="notes-list">
+          <li>Recurring episodes of binge eating</li>
+          <li>Recurrent <strong>inappropriate compensatory behaviors</strong> to prevent weight gain (laxatives, enemas, other meds, fasting, exercise, vomiting)</li>
+          <li>Occurring <strong>≥1×/week for 3 months</strong></li>
+          <li>Self-worth heavily tied to body shape and weight</li>
+          <li>Cannot be a presentation better explained exclusively by Anorexia — <strong>anorexia must be excluded first</strong></li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Specifiers — by Weekly Compensatory Behavior Frequency</h3>
+    <table>
+      <tr><th>Specifier</th><th>Compensatory Behaviors / Week</th></tr>
+      <tr><td>Mild</td><td>1–3</td></tr>
+      <tr><td>Moderate</td><td>4–7</td></tr>
+      <tr><td>Severe</td><td>8–13</td></tr>
+      <tr><td>Extreme</td><td>14+</td></tr>
+    </table>
+    <p style="font-size:.9rem;color:var(--muted);">Partial/full remission specifiers apply the same way as in anorexia.</p>
+
+    <div class="exam-q" onclick="this.classList.toggle('revealed')">
+      <p><strong>Q — Case Revisited (Bulimia Variant):</strong> Same opening presentation, but vitals now show BP 110/60, Pulse 60, <strong>BMI 24</strong>. She binges on a half-gallon of ice cream weekly (or more) after a full meal, feels out of control during the episode, and afterward sprints ½ mile <strong>4 times per week</strong>. Diagnosis?</p>
+      <div class="reveal-hint">▸ Click to reveal answer</div>
+      <div class="answer">
+        <div class="label">Answer</div>
+        <p><strong>Bulimia Nervosa, Moderate.</strong> BMI 24 is normal-to-high, which excludes anorexia. The weekly ice-cream episodes with a subjective loss of control meet binge-eating criteria, and the compensatory exercise (sprinting) occurring 4×/week places this in the moderate specifier range (4–7 compensatory behaviors/week).</p>
+      </div>
+    </div>
+
+    <h3>Comorbid Diagnoses</h3>
+    <ul class="notes-list">
+      <li>Mood disorders — <strong>50–70%</strong></li>
+      <li>Anxiety disorders — <strong>15–65%</strong></li>
+      <li>Substance use disorders — <strong>25%</strong></li>
+      <li>Personality disorders — <strong>20–80%</strong></li>
+    </ul>
+
+    <h3>Assessment</h3>
+    <p>Similar workup to anorexia, but findings are typically less severe. Look for Russell's sign and dental decay. Patients with bulimia most often present at a <strong>normal-to-overweight</strong> BMI — a key distinguishing feature from anorexia.</p>
+
+    <h3>Treatment</h3>
+    <p>Treat medical abnormalities, reduce binge/purge frequency, treat comorbid diagnoses. <strong>Therapy is first-line</strong> — CBT primarily, with interpersonal therapy, the Maudsley model, and DBT also used.</p>
+
+    <div class="drug-grid">
+      <div class="drug-card"><h4>SSRIs / SNRIs</h4><div class="generic">First-line antidepressants</div></div>
+      <div class="drug-card"><h4>TCAs / MAOIs</h4><div class="generic">Lesser-used alternatives</div></div>
+      <div class="drug-card"><h4>Topiramate</h4><div class="generic">Also decreases appetite/binge frequency</div></div>
+      <div class="drug-card"><h4>Ondansetron</h4><div class="generic">Antiemetic; can reduce purging</div></div>
+    </div>
+
+    <div class="box-warning">
+      <span class="bw-label">☐ US Boxed Warning</span>
+      <p><strong>Bupropion (Wellbutrin) — Contraindicated in active or recent Bulimia (or Anorexia) Nervosa.</strong> Carries a black box warning for increased seizure risk in this population, related to the electrolyte disturbances and dehydration that purging behaviors cause. On an exam, if a stem describes bulimia and asks "which medication is contraindicated," bupropion is almost always the answer.</p>
+    </div>
+    <div class="callout callout-warning">
+      <div class="callout-title">⚠️ Also Avoid: Lithium</div>
+      <p>Lithium requires a stable, consistent hydration state to avoid nephrotoxicity. Purging behaviors (especially self-induced vomiting) create a dehydration-prone state that raises the risk of lithium toxicity.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ SECTION 4: BINGE EATING DISORDER ============================================================ -->
+<div class="section" id="binge-eating">
+  <div class="container">
+    <div class="badge-row">
+      <div class="lo-badge">LO 1 — Diagnostic Classification</div>
+      <div class="lo-badge">LO 3 — Treatment &amp; Contraindications</div>
+    </div>
+    <p class="section-label">Binge Eating Without Compensation</p>
+    <h2 class="section-title">Binge Eating Disorder (BED)</h2>
+
+    <div class="two-col">
+      <div>
+        <h3>Epidemiology</h3>
+        <ul class="notes-list">
+          <li>Prevalence assessed as a <strong>12-month prevalence</strong> rate (measurement window, per lecture)</li>
+          <li>F:M ratio <strong>2:1</strong> — notably more equal than anorexia/bulimia's 10:1</li>
+          <li>Medical associations: <strong>Prader-Willi syndrome</strong> (chromosome 15 deletion), <strong>Kluver-Bucy syndrome</strong> (bilateral temporal lobe lesions)</li>
+          <li>Risk factors: childhood obesity, weight-based bullying</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Diagnostic Criteria</h3>
+        <p>Recurring episodes of binge eating, with specified associated symptoms:</p>
+        <ul class="notes-list">
+          <li>Eating rapidly</li>
+          <li>Eating past the point of fullness</li>
+          <li>Embarrassment around eating</li>
+          <li>Feelings of depression, disgust, or guilt afterward</li>
+          <li>Eating until uncomfortably full</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout callout-concept">
+      <div class="callout-title">🔎 The Key Differentiator from Bulimia</div>
+      <p>BED's criteria list has <strong>no requirement for compensatory behavior</strong> — no purging, fasting, or excessive exercise afterward. This is exactly what separates it from Bulimia, whose diagnosis specifically requires recurrent inappropriate compensatory behaviors.</p>
+    </div>
+
+    <h3>Treatment</h3>
+    <p>Therapy first-line: CBT, interpersonal therapy, DBT, self-help and behavioral programs.</p>
+    <div class="drug-grid">
+      <div class="drug-card"><h4>Lisdexamfetamine (Vyvanse)</h4><div class="generic">Stimulant</div><p style="font-size:.83rem;margin-top:6px;color:var(--muted);">Reduces binge frequency.</p></div>
+      <div class="drug-card"><h4>Sertraline</h4><div class="generic">SSRI</div></div>
+      <div class="drug-card"><h4>Topiramate</h4><div class="generic">Reduces binge frequency/appetite</div></div>
+    </div>
+    <div class="callout callout-clinical">
+      <div class="callout-title">💡 Clinical Pearl</div>
+      <p>Best outcomes come from <strong>medication + therapy combined</strong>, not either alone.</p>
+    </div>
+
+    <div class="exam-q" onclick="this.classList.toggle('revealed')">
+      <p><strong>Q:</strong> A patient binges weekly, eats rapidly and past fullness, and feels guilty afterward — but uses no laxatives, vomiting, fasting, or exercise to compensate. Bulimia or BED?</p>
+      <div class="reveal-hint">▸ Click to reveal answer</div>
+      <div class="answer">
+        <div class="label">Answer</div>
+        <p><strong>Binge Eating Disorder.</strong> The absence of any compensatory behavior rules out Bulimia, whose diagnosis requires recurrent inappropriate attempts to prevent weight gain after a binge.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ SECTION 5: PICA & BODY DYSMORPHIC DISORDER ============================================================ -->
+<div class="section" id="pica-bdd">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">LO 1 — Diagnostic Classification</div></div>
+    <p class="section-label">Lower-Yield — Know the Criteria</p>
+    <h2 class="section-title">Pica &amp; Body Dysmorphic Disorder</h2>
+    <p>The lecturer flags both as "good to know" rather than high-yield — brief exposure is enough, but the diagnostic criteria themselves are fair game.</p>
+
+    <div class="two-col">
+      <div class="callout callout-concept">
+        <div class="callout-title">Pica</div>
+        <p>Repeated eating of non-food substances (cloth, dirt, gum, hair, metal, paint, paper, soap) for <strong>≥1 month</strong>.</p>
+        <ul class="notes-list">
+          <li>Behavior must be inappropriate for the person's developmental level</li>
+          <li>Not culturally supported or socially normal</li>
+          <li>If occurring solely in the context of another mental disorder (autism, intellectual disability, schizophrenia) or medical condition (including pregnancy or iron deficiency), it must be <strong>severe enough to independently warrant clinical attention</strong> to still count as Pica</li>
+        </ul>
+      </div>
+      <div class="callout callout-concept">
+        <div class="callout-title">Body Dysmorphic Disorder (BDD)</div>
+        <p>Preoccupation with a nonexistent or slight defect in physical appearance (≥1 hour/day cumulative).</p>
+        <ul class="notes-list">
+          <li>Leads to repetitive behaviors (mirror checking, excessive grooming, skin picking) or mental acts (comparing appearance to others)</li>
+          <li>Causes clinically significant distress or psychosocial impairment</li>
+          <li><strong>Excluded if better explained by an eating disorder</strong> — someone with anorexia who fixates on body shape is diagnosed with anorexia, not a separate BDD</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exam-q" onclick="this.classList.toggle('revealed')">
+      <p><strong>Q:</strong> A patient meets full criteria for Anorexia Nervosa and also spends hours a day mirror-checking and fixating on her body shape. Does she also carry a separate BDD diagnosis?</p>
+      <div class="reveal-hint">▸ Click to reveal answer</div>
+      <div class="answer">
+        <div class="label">Answer</div>
+        <p><strong>No.</strong> BDD's criteria explicitly exclude presentations that are better explained by an eating disorder. Her appearance preoccupation is accounted for by the Anorexia Nervosa diagnosis.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ SECTION 6: DIFFERENTIATING THE DISORDERS ============================================================ -->
+<div class="section" id="differentiating">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">LO 2 — Differentiation</div></div>
+    <p class="section-label">Clinical Clarity</p>
+    <h2 class="section-title">Differentiating the Disorders</h2>
+    <p>This is, by the lecturer's own account, the most common source of confusion — both on exams and in clinical practice. The DSM criteria are black-and-white; real presentations are gray. Start with the <strong>driving factor</strong> behind the behavior.</p>
+
+    <div class="compare-grid">
+      <div class="compare-card" style="background:var(--blue-bg); border-color:var(--accent2);">
+        <span class="card-emoji">📉</span>
+        <h4>Anorexia — Restrict to Lose</h4>
+        <p>Driving factor is <strong>ongoing weight loss</strong>. Expect a low-to-very-low BMI. Core behavior is restriction, sometimes layered with binge/purge episodes — but the goal underneath is always further weight loss.</p>
+        <ul class="notes-list">
+          <li>BMI: low (specifiers are BMI-defined)</li>
+          <li>Self-view: "I am overweight," despite objective evidence otherwise</li>
+        </ul>
+      </div>
+      <div class="compare-card" style="background:var(--red-bg); border-color:var(--accent);">
+        <span class="card-emoji">🔁</span>
+        <h4>Bulimia — Binge, Then Correct</h4>
+        <p>Driving factor is <strong>avoiding weight gain</strong> after a binge episode. Expect a normal-to-high BMI. Core behavior is binge → compensate, in a repeating cycle.</p>
+        <ul class="notes-list">
+          <li>BMI: normal to elevated</li>
+          <li>Self-worth tied to body shape/weight, without the same degree of "I am overweight" distortion seen in anorexia</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout callout-purple">
+      <div class="callout-title">🧩 "Unspecified" Eating Disorder</div>
+      <p>Real presentations don't always fit neatly. A person might show a clear anorexia-pattern (restriction, fear of weight gain, body image distortion) at a BMI of 19 — technically above the anorexia cutoff — or have a binge/purge pattern where it's unclear if the driving factor is more anorexia-like or bulimia-like. Clinically, these get labeled an <strong>unspecified feeding/eating disorder</strong> rather than forced into a diagnosis that doesn't fully fit.</p>
+    </div>
+
+    <h3>How to Approach a Differentiation Question</h3>
+    <ol class="step-list">
+      <li><div><strong>Check the BMI first.</strong> Below normal (&lt;18.5) points strongly toward anorexia. Normal-to-high points away from anorexia and toward bulimia or BED.</div></li>
+      <li><div><strong>Identify the driving behavior.</strong> Is the primary goal ongoing weight loss (restriction-focused), or correcting/compensating after a binge (bulimia), or a binge with no compensation at all (BED)?</div></li>
+      <li><div><strong>Confirm frequency and duration.</strong> Bulimia and BED both need recurrent episodes; bulimia specifically needs ≥1×/week for 3 months, and anorexia's subtype (restricting vs. binge/purge) is defined over the past 3 months.</div></li>
+      <li><div><strong>Rule out exclusionary criteria.</strong> Anorexia must be excluded before diagnosing bulimia. If the picture is incomplete or mixed, consider "unspecified."</div></li>
+    </ol>
+
+    <h3>Master Comparison Table <span class="hy-flag">⭐ HY</span></h3>
+    <table>
+      <tr><th>Feature</th><th>Anorexia Nervosa</th><th>Bulimia Nervosa</th><th>Binge Eating Disorder</th></tr>
+      <tr><td>F:M ratio</td><td>10:1</td><td>10:1</td><td>2:1</td></tr>
+      <tr><td>Typical onset</td><td>12–14, and again ~18</td><td>Often after 18, into 20s</td><td>Not specified in lecture</td></tr>
+      <tr><td>Typical BMI</td><td>Low (defines severity)</td><td>Normal to high</td><td>Often associated with obesity risk factors</td></tr>
+      <tr><td>Core behavior</td><td>Restriction ± binge/purge</td><td>Binge → compensatory behavior</td><td>Binge, <strong>no</strong> compensatory behavior</td></tr>
+      <tr><td>Mortality</td><td>Highest of all psychiatric disorders</td><td>High, but lower than anorexia</td><td>Not specified in lecture</td></tr>
+      <tr><td>First-line treatment</td><td>Medical stabilization, then CBT</td><td>CBT (+ interpersonal therapy, Maudsley model, DBT)</td><td>CBT, interpersonal therapy, DBT</td></tr>
+      <tr><td>Medication note</td><td>None FDA-approved; appetite stimulants used off-label</td><td>SSRI/SNRI; avoid bupropion &amp; lithium</td><td>Vyvanse (FDA-approved), sertraline, topiramate</td></tr>
+    </table>
+
+    <div class="callout callout-key">
+      <div class="callout-title">🔑 Key Takeaways</div>
+      <ul class="notes-list">
+        <li>BMI is the fastest way to narrow the differential — low points to anorexia, normal/high moves away from it.</li>
+        <li>Ask "what's the goal of the behavior?" — losing weight (anorexia) vs. correcting a binge (bulimia) vs. no correction at all (BED).</li>
+        <li>Therapy (largely CBT) is first-line across all three disorders; medication is adjunctive.</li>
+        <li>Avoid bupropion and lithium in active bulimia/anorexia.</li>
+        <li>The DSM is black-and-white; real patients are gray — "unspecified" is a legitimate clinical category, not a cop-out.</li>
+      </ul>
+    </div>
+
+    <div class="exam-q" onclick="this.classList.toggle('revealed')">
+      <p><strong>Q:</strong> A patient has a BMI of 19, restricts intake to the point of missing two menstrual cycles, and insists she is overweight despite reassurance. She has never binged or purged. Best-fit diagnosis?</p>
+      <div class="reveal-hint">▸ Click to reveal answer</div>
+      <div class="answer">
+        <div class="label">Answer</div>
+        <p><strong>Likely an unspecified feeding/eating disorder (atypical anorexia pattern).</strong> Her behavior and body-image distortion match anorexia nervosa closely, but her BMI (19) is technically above the standard anorexia cutoff (below ~18.5). Clinically and on higher-order exam questions, this "driving factor" reasoning — restriction aimed at continued weight loss — outweighs a BMI that doesn't perfectly fit the textbook cutoff.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ HIGH-YIELD ONE-PAGER MODAL ============================================================ -->
+<div class="hy-modal" id="hyModal">
+  <div class="hy-modal-card">
+    <div class="hy-modal-header">
+      <h2>🎯 Eating Disorders — High-Yield One-Pager</h2>
+      <div class="hy-modal-actions">
+        <button class="hy-action-btn" onclick="printHY()">🖨️ Print / Save PDF</button>
+        <button class="hy-action-btn hy-close-btn" onclick="closeHY()">✕ Close</button>
+      </div>
+    </div>
+    <p class="hy-subhead">Condensed by learning objective — LO1 Diagnostic Classification · LO2 Differentiation · LO3 Treatment &amp; Contraindications</p>
+
+    <div class="hy-cols">
+      <div>
+        <span class="hy-lo-tag">LO 1 · Diagnostic Classification</span>
+        <div class="hy-block">
+          <h4>Shared Symptom Clusters</h4>
+          <ul><li><strong>Binge eating:</strong> large amount in 2 hrs + loss of control</li>
+          <li><strong>Calorie deficit:</strong> fasting/restricting/exercise, outside societal norms</li>
+          <li><strong>Purging:</strong> vomiting, laxatives, diuretics, other meds</li></ul>
+        </div>
+        <div class="hy-block">
+          <h4>Anorexia — 3-Point Dx</h4>
+          <ul><li>Restriction of energy intake</li>
+          <li>Fear of weight gain (no comfort reached at lower weight)</li>
+          <li>Distortion of body image</li>
+          <li><strong>Specifiers:</strong> restricting vs. binge/purge type (past 3 mo)</li></ul>
+        </div>
+        <div class="hy-block">
+          <h4>Anorexia Severity (BMI)</h4>
+          <ul><li>Mild 18.5–17 · Moderate 16.99–16</li>
+          <li>Severe 15.99–15 · Extreme &lt;15</li></ul>
+        </div>
+        <div class="hy-block">
+          <h4>Bulimia Dx</h4>
+          <ul><li>Recurrent binge + recurrent compensatory behavior</li>
+          <li>≥1×/week for 3 months; anorexia excluded first</li>
+          <li><strong>Specifiers (behaviors/wk):</strong> Mild 1–3 · Mod 4–7 · Severe 8–13 · Extreme 14+</li></ul>
+        </div>
+        <div class="hy-block">
+          <h4>BED &amp; Pica/BDD Dx</h4>
+          <ul><li><strong>BED:</strong> binge + rapid eating/past satiety/embarrassment/guilt — <em>no</em> compensatory behavior</li>
+          <li><strong>Pica:</strong> nonfood substances ≥1 mo, developmentally inappropriate</li>
+          <li><strong>BDD:</strong> appearance preoccupation ≥1 hr/day; excluded if better explained by an eating disorder</li></ul>
+        </div>
+      </div>
+
+      <div>
+        <span class="hy-lo-tag">LO 2 · Differentiation</span>
+        <div class="hy-block">
+          <h4>Driving Factor</h4>
+          <ul><li><strong>Anorexia:</strong> restrict to keep losing weight</li>
+          <li><strong>Bulimia:</strong> binge → compensate to avoid gain</li>
+          <li><strong>BED:</strong> binge, no compensation at all</li></ul>
+        </div>
+        <div class="hy-block">
+          <h4>BMI Quick Read</h4>
+          <ul><li>Low BMI → think Anorexia</li>
+          <li>Normal–high BMI → think Bulimia / BED</li></ul>
+        </div>
+        <div class="hy-block">
+          <h4>Epidemiology Compare</h4>
+          <ul><li>F:M — Anorexia 10:1 · Bulimia 10:1 · BED 2:1</li>
+          <li>Onset — Anorexia 12–14 &amp; ~18 · Bulimia often &gt;18</li>
+          <li>Mortality — Anorexia highest of all psych dx; Bulimia high but lower</li></ul>
+        </div>
+        <div class="hy-block">
+          <h4>Purging Acid-Base <span class="hy-flag">⭐ HY</span></h4>
+          <ul><li>Vomiting → <strong>alkalosis</strong> (↓Cl, ↓K)</li>
+          <li>Laxatives → <strong>acidosis</strong> (↓Na, ↑Cl)</li></ul>
+        </div>
+        <div class="hy-block">
+          <h4>Unspecified Eating Disorder</h4>
+          <ul><li>Use when driving-factor pattern is clear but BMI/other cutoff isn't fully met (e.g., anorexia-pattern at BMI 19)</li></ul>
+        </div>
+      </div>
+
+      <div>
+        <span class="hy-lo-tag">LO 3 · Treatment &amp; Contraindications</span>
+        <div class="hy-block">
+          <h4>Anorexia Tx</h4>
+          <ul><li>Weight restoration ~1 lb/wk; watch <strong>refeeding syndrome</strong></li>
+          <li>Therapy (CBT); no meds FDA-approved</li>
+          <li>Appetite stimulants: SSRI, olanzapine, mirtazapine, cyproheptadine, cannabis</li></ul>
+        </div>
+        <div class="hy-block">
+          <h4>Bulimia Tx &amp; Contraindications</h4>
+          <ul><li>CBT first-line (+ interpersonal, Maudsley, DBT)</li>
+          <li>SSRI/SNRI, topiramate, ondansetron</li>
+          <li><strong>Avoid bupropion</strong> (boxed warning — seizure risk) &amp; <strong>lithium</strong> (dehydration → toxicity)</li></ul>
+        </div>
+        <div class="hy-block">
+          <h4>BED Tx</h4>
+          <ul><li>CBT, interpersonal therapy, DBT</li>
+          <li>Vyvanse (FDA-approved), sertraline, topiramate</li>
+          <li>Best outcome: medication + therapy combined</li></ul>
+        </div>
+        <div class="hy-block">
+          <h4>Comorbidity Quick Hits</h4>
+          <ul><li>Anorexia: depression, anxiety, OCD/OCPD, SUD, personality d/o</li>
+          <li>Bulimia: mood 50–70% · anxiety 15–65% · SUD 25% · personality 20–80%</li></ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="hy-block" style="margin-top:4px;">
+      <h4>Master Reference — Anorexia vs. Bulimia vs. BED</h4>
+      <table class="hy-mini-table">
+        <tr><th>Feature</th><th>Anorexia</th><th>Bulimia</th><th>BED</th></tr>
+        <tr><td>F:M ratio</td><td>10:1</td><td>10:1</td><td>2:1</td></tr>
+        <tr><td>BMI</td><td>Low (defines severity)</td><td>Normal–high</td><td>Often obesity-associated</td></tr>
+        <tr><td>Core behavior</td><td>Restrict ± binge/purge</td><td>Binge → compensate</td><td>Binge, no compensation</td></tr>
+        <tr><td>1st-line tx</td><td>Medical stabilization → CBT</td><td>CBT ± interpersonal/Maudsley/DBT</td><td>CBT, interpersonal, DBT</td></tr>
+        <tr><td>Meds</td><td>None FDA-approved</td><td>SSRI/SNRI; avoid bupropion &amp; lithium</td><td>Vyvanse, sertraline, topiramate</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ FLOATING CONTROLS ============================================================ -->
+<div class="floating-stack">
+  <div class="theme-panel" id="themePanel">
+    <div class="theme-panel-title">Choose Theme</div>
+    <div class="theme-option active" data-theme="paper" onclick="setTheme('paper',this)">
+      <div class="theme-swatch" style="background:linear-gradient(135deg,#faf7f2,#1a1209)"></div>Paper (Default)
+    </div>
+    <div class="theme-option" data-theme="night" onclick="setTheme('night',this)">
+      <div class="theme-swatch" style="background:linear-gradient(135deg,#0f1923,#e8b84b)"></div>Night
+    </div>
+    <div class="theme-option" data-theme="ocean" onclick="setTheme('ocean',this)">
+      <div class="theme-swatch" style="background:linear-gradient(135deg,#e8f4fd,#1565c0)"></div>Ocean
+    </div>
+    <div class="theme-option" data-theme="forest" onclick="setTheme('forest',this)">
+      <div class="theme-swatch" style="background:linear-gradient(135deg,#f0f7f0,#2e7d32)"></div>Forest
+    </div>
+    <div class="theme-option" data-theme="sepia" onclick="setTheme('sepia',this)">
+      <div class="theme-swatch" style="background:linear-gradient(135deg,#faf3e8,#8b4513)"></div>Sepia
+    </div>
+  </div>
+  <div class="font-btn-row">
+    <span class="font-label">Text</span>
+    <button class="font-btn" onclick="changeFontSize(1)" title="Increase font size">A+</button>
+    <span class="font-sep">|</span>
+    <button class="font-btn" onclick="changeFontSize(-1)" title="Decrease font size">A−</button>
+  </div>
+  <button class="theme-btn" id="themeBtn" onclick="toggleThemePanel()" title="Switch theme">
+    <span>🎨</span><span>Theme</span>
+  </button>
+</div>
+
+<footer>Eating Disorders — Study Notes · Lee Wolfrum, DO · UNE College of Medicine</footer>
+
+<script>
+/* ============================================================
+   THEME SWITCHER
+   ============================================================ */
+const STORAGE_THEME_KEY = 'eating-disorders-theme';
+let themePanelOpen = false;
+
+function toggleThemePanel(){
+  themePanelOpen = !themePanelOpen;
+  document.getElementById('themePanel').classList.toggle('open', themePanelOpen);
+}
+function syncThemeOptions(theme){
+  document.querySelectorAll('.theme-option').forEach(function(option){
+    option.classList.toggle('active', option.dataset.theme === theme);
+  });
+}
+function setTheme(theme, el, skipStorage){
+  if (theme === 'paper') {
+    document.documentElement.removeAttribute('data-theme');
+  } else {
+    document.documentElement.setAttribute('data-theme', theme);
+  }
+  syncThemeOptions(theme);
+  if (!skipStorage) localStorage.setItem(STORAGE_THEME_KEY, theme);
+  setTimeout(function(){
+    themePanelOpen = false;
+    document.getElementById('themePanel').classList.remove('open');
+  }, 300);
+}
+document.addEventListener('click', function(e){
+  const panel = document.getElementById('themePanel');
+  const btn = document.getElementById('themeBtn');
+  if (themePanelOpen && !panel.contains(e.target) && !btn.contains(e.target)) {
+    themePanelOpen = false;
+    panel.classList.remove('open');
+  }
+});
+function initVisualState(){
+  const savedTheme = localStorage.getItem(STORAGE_THEME_KEY) || 'paper';
+  setTheme(savedTheme, null, true);
+}
+
+/* ============================================================
+   FONT SIZE CONTROL
+   ============================================================ */
+let currentFontSize = 16;
+function changeFontSize(delta){
+  currentFontSize = Math.min(24, Math.max(12, currentFontSize + delta));
+  document.body.style.fontSize = currentFontSize + 'px';
+}
+
+/* ============================================================
+   TABLE QUIZ SYSTEM
+   ============================================================ */
+function initTableQuiz(){
+  document.querySelectorAll('table').forEach(function(table){
+    if (table.classList.contains('hy-mini-table')) return; // exclude the dense HY appendix table from the quiz toolbar
+    const headerCells = table.querySelectorAll('tr:first-child th');
+    if (!headerCells.length) return;
+
+    const bar = document.createElement('div');
+    bar.className = 'tq-bar';
+
+    const toggleBtn = document.createElement('button');
+    toggleBtn.className = 'tq-toggle';
+    toggleBtn.textContent = '🧩 Quiz this table';
+
+    const colsWrap = document.createElement('div');
+    colsWrap.className = 'tq-cols';
+    colsWrap.style.display = 'none';
+
+    const selectedCols = new Set();
+    headerCells.forEach(function(th, idx){
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'tq-col-btn';
+      b.textContent = th.textContent.trim();
+      b.addEventListener('click', function(){
+        if (selectedCols.has(idx)) { selectedCols.delete(idx); b.classList.remove('sel'); }
+        else { selectedCols.add(idx); b.classList.add('sel'); }
+        startBtn.disabled = selectedCols.size === 0;
+      });
+      colsWrap.appendChild(b);
+    });
+
+    const startBtn = document.createElement('button');
+    startBtn.className = 'tq-start'; startBtn.textContent = '▶ Start'; startBtn.disabled = true;
+    startBtn.style.display = 'none';
+
+    const resetBtn = document.createElement('button');
+    resetBtn.className = 'tq-reset'; resetBtn.textContent = '↺ Reset'; resetBtn.style.display = 'none';
+
+    const scoreEl = document.createElement('span');
+    scoreEl.className = 'tq-score'; scoreEl.style.display = 'none';
+
+    let running = false;
+    let hiddenCells = [];
+
+    function updateScore(){
+      const total = hiddenCells.length;
+      const revealed = hiddenCells.filter(function(c){ return c.classList.contains('revealed-cell') && !c.classList.contains('quiz-hidden-cell'); }).length;
+      if (total === 0) { scoreEl.textContent = ''; return; }
+      const remaining = hiddenCells.filter(function(c){ return c.classList.contains('quiz-hidden-cell'); }).length;
+      const done = remaining === 0;
+      scoreEl.textContent = done ? '🎉 ' + total + ' / ' + total : (total - remaining) + ' / ' + total + ' revealed';
+      scoreEl.classList.toggle('done', done);
+    }
+
+    toggleBtn.addEventListener('click', function(){
+      const showing = colsWrap.style.display !== 'none';
+      colsWrap.style.display = showing ? 'none' : 'flex';
+      startBtn.style.display = showing ? 'none' : 'inline-block';
+      toggleBtn.classList.toggle('active', !showing);
+    });
+
+    startBtn.addEventListener('click', function(){
+      if (running) return;
+      running = true;
+      hiddenCells = [];
+      const rows = table.querySelectorAll('tr');
+      rows.forEach(function(row, rIdx){
+        if (rIdx === 0) return; // skip header row
+        const cells = row.querySelectorAll('td');
+        cells.forEach(function(cell, cIdx){
+          if (selectedCols.has(cIdx)) {
+            if (!cell.querySelector('.tq-cell-content')) {
+              const span = document.createElement('span');
+              span.className = 'tq-cell-content';
+              while (cell.firstChild) span.appendChild(cell.firstChild);
+              cell.appendChild(span);
+            }
+            cell.classList.add('quiz-hidden-cell');
+            hiddenCells.push(cell);
+          }
+        });
+      });
+      startBtn.style.display = 'none';
+      colsWrap.style.display = 'none';
+      resetBtn.style.display = 'inline-block';
+      scoreEl.style.display = 'inline';
+      updateScore();
+    });
+
+    table.addEventListener('click', function(e){
+      const cell = e.target.closest('.quiz-hidden-cell');
+      if (cell && table.contains(cell)) {
+        cell.classList.remove('quiz-hidden-cell');
+        cell.classList.add('revealed-cell');
+        updateScore();
+      }
+    });
+
+    resetBtn.addEventListener('click', function(){
+      hiddenCells.forEach(function(cell){
+        cell.classList.remove('quiz-hidden-cell', 'revealed-cell');
+      });
+      hiddenCells = [];
+      running = false;
+      resetBtn.style.display = 'none';
+      scoreEl.style.display = 'none';
+      selectedCols.clear();
+      colsWrap.querySelectorAll('.tq-col-btn').forEach(function(b){ b.classList.remove('sel'); });
+      toggleBtn.classList.remove('active');
+      startBtn.disabled = true;
+    });
+
+    bar.appendChild(toggleBtn);
+    bar.appendChild(colsWrap);
+    bar.appendChild(startBtn);
+    bar.appendChild(resetBtn);
+    bar.appendChild(scoreEl);
+    table.parentNode.insertBefore(bar, table);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  initVisualState();
+  initTableQuiz();
+});
+
+/* ============================================================
+   HIGH-YIELD ONE-PAGER MODAL
+   ============================================================ */
+function openHY(){
+  document.getElementById('hyModal').classList.add('open');
+  document.body.classList.add('hy-mode');
+  document.body.style.overflow = 'hidden';
+}
+function closeHY(){
+  document.getElementById('hyModal').classList.remove('open');
+  document.body.classList.remove('hy-mode');
+  document.body.style.overflow = '';
+}
+function printHY(){ window.print(); }
+document.addEventListener('DOMContentLoaded', function(){
+  const hyModal = document.getElementById('hyModal');
+  hyModal.addEventListener('click', function(e){ if (e.target === this) closeHY(); });
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' && hyModal.classList.contains('open')) closeHY();
+  });
+});
+</script>
+
+</body>
+</html>
