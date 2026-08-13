@@ -1,0 +1,2298 @@
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UNE COM — Custom Quiz Builder</title>
+<style>
+:root{
+  --navy:#12203C;--navy2:#1B2A4A;
+  --teal:#1A7A6D;--teal-glow:#3EC4B2;--teal-mid:#2BA393;--teal-light:#E3F5F2;--teal-deep:#125E54;
+  --green:#2D8659;--green-bg:#E8F5EE;
+  --red:#C44040;--red-bg:#FDF0F0;
+  --amber:#C07B1A;--amber-bg:#FEF5E6;
+  --gold-bg:#FDF6E3;
+  --coral:#E07A5F;
+  --ink:#1E1E20;--ink2:#3E4555;--slate:#6B7689;--mist:#A0AAB8;
+  --rule:#DBD5C9;--cream:#F6F3EC;--warm:#FBF8F3;--white:#FFFFFF;
+  --sh:0 8px 24px rgba(18,32,60,.08);--sh2:0 14px 34px rgba(18,32,60,.10);--sh3:0 28px 70px rgba(18,32,60,.12);
+  --tr:0.25s cubic-bezier(.4,0,.2,1);--r:14px;--rs:8px;
+  --stem-size:25px;--choice-size:15.5px;
+  --app-vh:100dvh;--app-vw:100vw;--viewport-scale:1;--ui-title-size:26px;--ui-control-size:13px;--ui-meta-size:12px;--ui-micro-size:10px;
+  --font-ui:Arial,Helvetica,sans-serif;--font-mono:Consolas,"Courier New",monospace;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font-ui);background:var(--cream);color:var(--ink);min-height:var(--app-vh);-webkit-font-smoothing:antialiased}
+body.nbme-lock{overflow:hidden}
+.view{display:none}.view.active{display:block}
+#viewQuizNbme{height:var(--app-vh);overflow:hidden}
+#viewQuizNbme.active{position:fixed;inset:0;z-index:40}
+
+/* ══ SETUP VIEW ══ */
+.setup-page{min-height:var(--app-vh);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px}
+.setup-card{background:var(--white);border-radius:24px;border:1px solid var(--rule);box-shadow:var(--sh3);width:min(680px,100%);overflow:hidden}
+.setup-top{background:linear-gradient(135deg,var(--navy) 0%,#1B2A4A 100%);padding:36px 36px 30px;text-align:center}
+.setup-emoji{font-size:48px;margin-bottom:14px}
+.setup-title{font-family:var(--font-ui);font-size:34px;font-weight:700;color:#fff;letter-spacing:-.15px;margin-bottom:6px}
+.setup-title em{font-style:normal;color:var(--teal-glow)}
+.setup-sub{font-size:15px;color:rgba(255,255,255,.65);line-height:1.6}
+
+.setup-body{padding:32px 36px 36px}
+
+/* instruction steps */
+.how-title{font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--mist);margin-bottom:16px}
+.steps{display:flex;flex-direction:column;gap:12px;margin-bottom:28px}
+.step{display:flex;gap:14px;align-items:flex-start;padding:14px 16px;border-radius:12px;background:var(--warm);border:1px solid var(--rule)}
+.step-num{width:28px;height:28px;border-radius:50%;background:var(--navy);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-family:var(--font-ui)}
+.step-text{font-size:14px;color:var(--ink2);line-height:1.6}
+.step-text strong{color:var(--ink);display:block;margin-bottom:2px}
+
+/* prompt copy box */
+.prompt-wrap{background:var(--navy);border-radius:12px;padding:16px 18px;position:relative;margin-bottom:8px}
+.prompt-meta{display:flex;align-items:center;gap:10px;margin-bottom:10px;padding-right:82px}
+.prompt-chip{display:inline-flex;align-items:center;min-height:28px;padding:0 10px;border-radius:999px;background:rgba(62,196,178,.14);border:1px solid rgba(62,196,178,.28);color:#D6ECFA;font-size:11.5px;font-weight:700;letter-spacing:.03em}
+.prompt-inner{font-family:var(--font-ui);font-size:12.5px;line-height:1.68;color:#D6ECFA;white-space:pre-wrap;word-break:break-word;max-height:220px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.1) transparent;padding-right:70px}
+.copy-prompt-btn{position:absolute;top:12px;right:12px;padding:6px 12px;background:rgba(62,196,178,.15);border:1px solid rgba(62,196,178,.35);border-radius:7px;color:var(--teal-glow);font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font-ui);transition:all .18s;white-space:nowrap}
+.copy-prompt-btn:hover{background:rgba(62,196,178,.28)}
+.copy-prompt-btn.ok{background:rgba(45,134,89,.2);border-color:rgba(45,134,89,.4);color:#5EC490}
+
+.divider{height:1px;background:var(--rule);margin:24px 0}
+
+/* paste area */
+.field{display:flex;flex-direction:column;gap:7px;margin-bottom:16px}
+.field:last-child{margin-bottom:0}
+.field-note{font-size:12px;line-height:1.55;color:var(--mist)}
+.paste-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.paste-tab{padding:11px 14px;border-radius:12px;border:1.5px solid rgba(18,32,60,.1);background:#fff;color:var(--slate);font-family:var(--font-ui);font-size:13px;font-weight:700;cursor:pointer;transition:var(--tr);box-shadow:0 6px 16px rgba(18,32,60,.05)}
+.paste-tab:hover{transform:translateY(-1px);border-color:rgba(26,122,109,.34);color:var(--teal)}
+.paste-tab.active{background:linear-gradient(135deg,var(--navy),#2A3562);border-color:transparent;color:#fff;box-shadow:0 12px 24px rgba(18,32,60,.18)}
+.paste-tab.has-content:not(.active){background:rgba(26,122,109,.08);border-color:rgba(26,122,109,.18);color:var(--teal-deep)}
+.paste-panels{margin-top:12px}
+.paste-panel{display:none}
+.paste-panel.active{display:flex;flex-direction:column;gap:7px}
+.paste-panel .ta{min-height:180px}
+.lbl{font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--slate)}
+.inp{padding:10px 14px;border-radius:var(--rs);border:1.5px solid var(--rule);font-family:var(--font-ui);font-size:14px;font-weight:400;color:var(--ink);background:var(--warm);outline:none;transition:border-color .18s;width:100%}
+.inp:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(62,196,178,.12);background:#fff}
+.ta{width:100%;padding:13px 15px;border-radius:var(--rs);border:1.5px solid var(--rule);font-family:var(--font-ui);font-size:13px;line-height:1.65;color:var(--ink);background:var(--warm);resize:vertical;min-height:160px;outline:none;transition:border-color .18s}
+.ta:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(62,196,178,.12);background:#fff}
+.ta::placeholder{color:var(--mist)}
+.setup-actions{display:flex;gap:12px;margin-top:18px}
+.launch-btn{width:100%;padding:16px;border-radius:16px;border:none;background:linear-gradient(135deg,var(--teal-glow),var(--teal-mid));color:var(--navy);font-family:var(--font-ui);font-size:17px;font-weight:700;cursor:pointer;letter-spacing:.15px;transition:all .2s;box-shadow:0 8px 22px rgba(62,196,178,.3);margin-top:18px}
+.launch-btn:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(62,196,178,.38)}
+.setup-actions .launch-btn{margin-top:0;flex:1}
+.ghost-btn{padding:16px 18px;border-radius:16px;border:1.5px solid rgba(18,32,60,.12);background:#fff;color:var(--navy);font-family:var(--font-ui);font-size:15px;font-weight:700;cursor:pointer;letter-spacing:.1px;transition:all .2s;box-shadow:0 8px 22px rgba(18,32,60,.08)}
+.ghost-btn:hover{transform:translateY(-2px);border-color:rgba(26,122,109,.34);color:var(--teal);box-shadow:0 14px 30px rgba(18,32,60,.12)}
+.setup-ui-toggle{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.setup-ui-btn{padding:15px 16px;border-radius:16px;border:1.5px solid rgba(18,32,60,.1);background:var(--warm);color:var(--ink);cursor:pointer;text-align:left;font-family:var(--font-ui);transition:var(--tr);box-shadow:0 8px 18px rgba(18,32,60,.05)}
+.setup-ui-btn:hover{transform:translateY(-1px);border-color:rgba(26,122,109,.34);background:#fff}
+.setup-ui-btn.active{background:linear-gradient(135deg,var(--navy),#2A3562);border-color:transparent;color:#fff;box-shadow:0 14px 30px rgba(18,32,60,.18)}
+.setup-ui-name{display:block;font-size:14px;font-weight:900;line-height:1.2}
+.setup-ui-meta{display:block;font-size:12px;line-height:1.5;color:inherit;opacity:.72;margin-top:6px}
+.err-msg{padding:10px 14px;border-radius:var(--rs);font-size:13px;font-weight:700;display:none;align-items:center;gap:8px;margin-top:10px;background:var(--red-bg);color:var(--red);border:1px solid rgba(196,64,64,.2)}
+.err-msg.show{display:flex}
+
+/* ══ QUIZ VIEW ══ */
+.quiz-page{min-height:var(--app-vh);display:flex;flex-direction:column}
+
+/* top bar */
+.qt-bar{background:linear-gradient(180deg,var(--navy) 0%,var(--navy2) 100%);display:flex;align-items:center;gap:14px;padding:0 22px;height:52px;flex-shrink:0;box-shadow:0 2px 12px rgba(18,32,60,.22)}
+.qt-name{font-family:var(--font-ui);font-size:calc(var(--ui-title-size) * .67);font-weight:700;color:#fff;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:-.1px}
+.qt-btn{padding:8px 14px;border-radius:10px;border:1.5px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.75);font-family:var(--font-ui);font-size:var(--ui-control-size);font-weight:700;cursor:pointer;transition:all .18s}
+.qt-btn:hover{background:rgba(255,255,255,.1);color:#fff}
+.qt-btn.active{background:rgba(255,255,255,.16);color:#fff;border-color:rgba(255,255,255,.34)}
+
+/* grid */
+.qin{width:min(1800px,calc(100vw - 24px));margin:0 auto;padding:22px 20px 72px;display:grid;grid-template-columns:clamp(270px,19vw,330px) minmax(0,1fr);gap:18px 26px;align-items:start}
+
+/* sidebar panels */
+.score-panel{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:0}
+.score-box{position:relative;overflow:hidden;background:color-mix(in srgb,var(--white) 88%,var(--warm) 12%);border-radius:20px;padding:16px 12px 13px;text-align:center;box-shadow:var(--sh2);border:1px solid rgba(18,32,60,.08);transition:var(--tr)}
+.score-box::before{content:'';position:absolute;left:14px;right:14px;top:0;height:4px;border-radius:0 0 999px 999px;background:linear-gradient(90deg,rgba(26,122,109,.16),rgba(62,196,178,.5));opacity:.75}
+.score-box.correct{background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(232,245,238,.98))}.score-box.correct::before{background:linear-gradient(90deg,rgba(45,134,89,.2),rgba(45,134,89,.72))}
+.score-box.incorrect{background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(253,240,240,.98))}.score-box.incorrect::before{background:linear-gradient(90deg,rgba(196,64,64,.18),rgba(196,64,64,.68))}
+.sv{font-family:var(--font-ui);font-size:34px;font-weight:700;color:var(--navy);line-height:1}
+.sl{font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--mist);font-weight:800;margin-top:7px}
+.score-box.correct .sv{color:var(--green)}.score-box.incorrect .sv{color:var(--red)}
+
+.mode-toggle{display:flex;gap:7px;padding:7px;border-radius:22px;background:rgba(255,255,255,.76);backdrop-filter:blur(8px);border:1px solid rgba(18,32,60,.08);box-shadow:var(--sh2)}
+.mode-btn{flex:1;padding:12px 14px;border-radius:16px;text-align:center;font-family:var(--font-ui);font-size:13.5px;font-weight:700;cursor:pointer;border:none;background:transparent;color:var(--slate);transition:all .22s}
+.mode-btn:hover{color:var(--navy);background:rgba(18,32,60,.04)}
+.mode-btn.active{background:linear-gradient(135deg,var(--navy),#2A3562);color:#fff;box-shadow:0 10px 22px rgba(27,42,74,.18)}
+.mode-btn .mode-icon{display:block;font-size:19px;margin-bottom:3px}
+
+.timer-card{position:relative;display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:42px 16px 16px;background:rgba(255,255,255,.84);border-radius:22px;border:1px solid rgba(18,32,60,.08);box-shadow:var(--sh2);transition:var(--tr)}
+.timer-card.run{border-color:rgba(26,122,109,.34);box-shadow:0 0 0 4px rgba(26,122,109,.08),var(--sh2)}
+.timer-card.warn{border-color:rgba(224,122,95,.4);box-shadow:0 0 0 4px rgba(224,122,95,.08),var(--sh2)}
+.timer-lbl{position:absolute;top:13px;left:15px;font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--mist);font-weight:800;padding:5px 9px;border-radius:999px;background:rgba(18,32,60,.04)}
+.timer-time{font-family:var(--font-ui);font-size:38px;font-weight:700;color:var(--navy);min-width:110px;text-align:center;letter-spacing:1px}
+.timer-card.warn .timer-time{color:var(--coral)}
+.tbtn{width:40px;height:40px;border-radius:50%;border:1.8px solid rgba(27,42,74,.24);background:rgba(255,255,255,.9);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:var(--tr);color:var(--navy);flex-shrink:0;box-shadow:0 6px 18px rgba(18,32,60,.08)}
+.tbtn:hover{background:var(--navy);color:#fff;transform:translateY(-1px) scale(1.04);border-color:var(--navy)}
+
+.tool-panel{display:flex;flex-wrap:wrap;gap:9px;padding:9px;border-radius:22px;background:rgba(255,255,255,.76);backdrop-filter:blur(8px);border:1px solid rgba(18,32,60,.08);box-shadow:var(--sh2)}
+.q-tool{flex:1 1 120px;min-width:0;padding:11px 14px;border-radius:14px;font-size:12.5px;font-weight:700;border:1.5px solid rgba(18,32,60,.08);background:rgba(255,255,255,.86);cursor:pointer;transition:var(--tr);font-family:var(--font-ui);color:var(--ink2);box-shadow:0 6px 16px rgba(18,32,60,.06);text-align:left}
+.q-tool:hover{border-color:rgba(26,122,109,.32);color:var(--teal);transform:translateY(-1px);background:#fff}
+.q-tool.active.hl-tool{background:#FFF8B8;border-color:#D3AF2B;color:#6B5C00;box-shadow:0 0 0 3px rgba(211,175,43,.12)}
+.q-tool.active.st-tool{background:var(--red-bg);border-color:rgba(196,64,64,.44);color:var(--red);box-shadow:0 0 0 3px rgba(196,64,64,.08)}
+.q-tool.lab-tool{flex-basis:100%}
+.font-tools{display:flex;align-items:center;gap:8px;flex:1 1 100%;padding:12px 14px;border-radius:14px;border:1.5px solid rgba(18,32,60,.08);background:rgba(255,255,255,.86);box-shadow:0 6px 16px rgba(18,32,60,.06)}
+.font-tools-label{font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--slate)}
+.font-tools-group{display:flex;gap:8px;margin-left:auto}
+.font-btn{min-width:42px;padding:9px 12px;border-radius:12px;border:1.5px solid rgba(18,32,60,.1);background:#fff;color:var(--navy);font-family:var(--font-ui);font-size:13px;font-weight:700;cursor:pointer;transition:var(--tr);box-shadow:0 6px 14px rgba(18,32,60,.05)}
+.font-btn:hover{transform:translateY(-1px);border-color:rgba(26,122,109,.34);color:var(--teal)}
+.font-btn.reset{min-width:54px}
+
+/* sidebar stack */
+.sidebar{display:flex;flex-direction:column;gap:14px;position:sticky;top:18px}
+
+/* question card — pixel-perfect hub match */
+.qcd{background:color-mix(in srgb,var(--white) 94%,var(--warm) 6%);border-radius:28px;overflow:hidden;box-shadow:var(--sh3);border:1px solid rgba(18,32,60,.08);animation:cardIn .42s cubic-bezier(.4,0,.2,1) both}
+@keyframes cardIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.qpg{height:6px;background:color-mix(in srgb,var(--teal) 10%,transparent)}
+.qpf{height:100%;background:linear-gradient(90deg,var(--teal),var(--teal-glow));transition:width .5s cubic-bezier(.4,0,.2,1);border-radius:0 999px 999px 0}
+.qbd{padding:28px 34px 26px}
+.q-review-grid{display:grid;gap:24px}
+.q-review-grid.has-feedback{grid-template-columns:minmax(0,.94fr) minmax(0,1.06fr);align-items:start}
+.q-feedback{min-width:0;align-self:start}
+.q-feedback .exb{margin-top:0;max-height:calc(var(--app-vh) - clamp(180px,24vh,260px));overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:rgba(18,32,60,.28) rgba(18,32,60,.08)}
+.q-feedback .exb::-webkit-scrollbar{width:10px}
+.q-feedback .exb::-webkit-scrollbar-track{background:rgba(18,32,60,.08);border-radius:999px}
+.q-feedback .exb::-webkit-scrollbar-thumb{background:rgba(18,32,60,.28);border-radius:999px}
+.qnum{display:inline-flex;align-items:center;padding:6px 11px;border-radius:999px;background:rgba(18,32,60,.045);font-family:var(--font-ui);font-size:11px;color:var(--mist);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:14px;font-weight:700}
+.qnum.marked{background:var(--gold-bg);color:var(--amber)}
+.qstem{font-family:var(--font-ui);font-size:var(--stem-size);line-height:1.45;margin-bottom:22px;font-weight:400;color:var(--ink);letter-spacing:0}
+.qstem mark{
+  background:linear-gradient(180deg,transparent 12%,#FFFAAD 12%,#FFFAAD 88%,transparent 88%);
+  padding:0;
+  margin:0;
+  border-radius:.1em;
+  color:inherit;
+  -webkit-box-decoration-break:clone;
+  box-decoration-break:clone;
+}
+.qstem s{color:var(--mist);text-decoration:line-through}
+.ach{display:grid;gap:10px}
+.ac{display:flex;align-items:flex-start;gap:14px;padding:15px 18px;border:1.5px solid rgba(18,32,60,.09);border-radius:18px;cursor:pointer;transition:var(--tr);background:color-mix(in srgb,var(--warm) 78%,var(--white) 22%);box-shadow:0 6px 18px rgba(18,32,60,.04)}
+.ac:hover:not(.dis){border-color:rgba(26,122,109,.4);background:linear-gradient(180deg,#fff,#F0F7F5);transform:translateY(-1px)}
+.ac.sel{border-color:rgba(26,122,109,.5)!important;background:linear-gradient(180deg,#fff,#EFF7F5)!important;transform:translateY(-1px)}
+.ac.cor{border-color:rgba(45,134,89,.44)!important;background:linear-gradient(180deg,#fff,#EDF8F1)!important}
+.ac.inc{border-color:rgba(196,64,64,.4)!important;background:linear-gradient(180deg,#fff,#FDF2F2)!important}
+.ac.dis{cursor:default;transform:none!important}
+.cl{width:42px;height:42px;border-radius:50%;border:1.8px solid rgba(18,32,60,.12);display:flex;align-items:center;justify-content:center;font-family:var(--font-ui);font-size:15px;font-weight:700;flex-shrink:0;transition:var(--tr);background:#fff;box-shadow:0 6px 14px rgba(18,32,60,.05)}
+.ac.sel .cl{background:var(--teal)!important;border-color:var(--teal)!important;color:#fff!important}
+.ac.cor .cl{background:var(--green)!important;border-color:var(--green)!important;color:#fff!important}
+.ac.inc .cl{background:var(--red)!important;border-color:var(--red)!important;color:#fff!important}
+.ac-txt{font-size:var(--choice-size);font-weight:400;line-height:1.55;color:var(--ink);padding-top:9px}
+.ac-txt mark{
+  background:linear-gradient(180deg,transparent 12%,#FFFAAD 12%,#FFFAAD 88%,transparent 88%);
+  padding:0;
+  margin:0;
+  border-radius:.1em;
+  color:inherit;
+  -webkit-box-decoration-break:clone;
+  box-decoration-break:clone;
+}
+.ac-txt s{color:var(--mist);text-decoration:line-through}
+.submit-row{margin-top:24px;text-align:center}
+.submit-btn{padding:15px 54px;border-radius:18px;background:linear-gradient(135deg,var(--teal),var(--teal-mid));color:#fff;font-family:var(--font-ui);font-size:17px;font-weight:700;cursor:pointer;border:none;transition:var(--tr);box-shadow:0 10px 24px rgba(26,122,109,.24);letter-spacing:.15px}
+.submit-btn:hover{transform:translateY(-2px);box-shadow:0 16px 30px rgba(26,122,109,.3)}
+.submit-btn:disabled{opacity:.25;cursor:not-allowed;transform:none;box-shadow:none}
+.exb{margin-top:26px;border-radius:22px;overflow:hidden;display:none;border:1px solid rgba(18,32,60,.08);background:#fff}
+.exb.vis{display:block;animation:fadeUp .38s cubic-bezier(.4,0,.2,1)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.exs{padding:20px 24px}.exs+.exs{border-top:1px solid rgba(18,32,60,.06)}
+.exs.exc{background:var(--green-bg);border-left:5px solid var(--green)}
+.exs.exw{background:var(--red-bg);border-left:5px solid var(--red)}
+.exs.exo{background:var(--amber-bg);border-left:5px solid var(--amber)}
+.exs.exe{background:var(--teal-light);border-left:5px solid var(--teal)}
+.exl{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;margin-bottom:10px}
+.exs.exc .exl{color:var(--green)}.exs.exw .exl{color:var(--red)}.exs.exo .exl{color:var(--amber)}.exs.exe .exl{color:var(--teal)}
+.ext{font-size:calc(var(--choice-size) * .97);line-height:1.65;color:var(--ink2)}
+.wce{margin-top:10px;padding-top:10px;border-top:1px solid rgba(196,64,64,.12)}
+.wce strong{color:var(--red);font-family:'IBM Plex Mono',monospace;font-size:12.5px}
+.qnv{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:16px 24px 20px;border-top:1px solid rgba(18,32,60,.08);background:linear-gradient(180deg,color-mix(in srgb,var(--warm) 32%,transparent),color-mix(in srgb,var(--cream) 82%,transparent))}
+.nb{padding:12px 22px;border:1.8px solid rgba(27,42,74,.2);background:#fff;border-radius:16px;cursor:pointer;font-family:var(--font-ui);font-size:15px;font-weight:700;color:var(--navy);transition:var(--tr);box-shadow:0 8px 18px rgba(18,32,60,.06)}
+.nb:hover{background:var(--navy);color:#fff;transform:translateY(-1px);border-color:var(--navy)}
+.nb.pr{background:linear-gradient(135deg,var(--navy),#2A3562);color:#fff;border-color:transparent}
+.nb.pr:hover{background:linear-gradient(135deg,var(--navy2),var(--navy))}
+.nb:disabled{opacity:.22;cursor:not-allowed;transform:none!important;box-shadow:none}
+.nav-dots{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;flex:1}
+.qd{width:10px;height:10px;border-radius:50%;background:rgba(18,32,60,.1);cursor:pointer;border:none;padding:0;transition:var(--tr)}
+.qd:hover{background:rgba(18,32,60,.28);transform:scale(1.25)}
+.qd.on{background:var(--teal-glow);box-shadow:0 0 0 3px rgba(62,196,178,.22)}
+.qd.dc{background:var(--green)}.qd.di{background:var(--red)}
+.qd.asel{background:rgba(18,32,60,.46)}
+.qd.mk{box-shadow:0 0 0 2px rgba(192,123,26,.28)}
+
+/* NBME / NBOME VIEW */
+.nb-wrap{height:var(--app-vh);min-height:var(--app-vh);display:flex;flex-direction:column;overflow:hidden;background:#0d1117}
+.nb-util{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 18px;background:#0d1117;color:#fff}
+.nb-util-name{font-family:var(--font-ui);font-size:var(--ui-title-size);line-height:1;letter-spacing:-.1px;font-weight:700}
+.nb-util-actions{display:flex;flex-wrap:wrap;gap:8px}
+.nb-util-btn{padding:8px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);color:#fff;font-family:var(--font-ui);font-size:var(--ui-control-size);font-weight:700;cursor:pointer;transition:var(--tr)}
+.nb-util-btn:hover{background:rgba(255,255,255,.14);transform:translateY(-1px)}
+.nb-app{flex:1;min-height:0;width:100%;display:grid;grid-template-rows:auto minmax(0,1fr) auto;background:#fff;overflow:hidden}
+.nb-header,.nb-footer{background:#004976;color:#fff;border-color:#003653;user-select:none}
+.nb-header{min-height:78px;display:grid;grid-template-columns:190px 1fr auto;align-items:stretch;border-bottom:3px solid #003653}
+.nb-status-box{padding:10px 14px;display:flex;flex-direction:column;justify-content:center;border-right:1px solid rgba(255,255,255,.28);line-height:1.15}
+.nb-status-box strong{font-size:calc(var(--ui-title-size) * .66)}
+.nb-status-box span{margin-top:6px;font-size:calc(var(--ui-meta-size) * 1.08);color:rgba(255,255,255,.82)}
+.nb-header-center{display:flex;align-items:center;gap:8px;padding:8px 12px;flex-wrap:wrap}
+.nb-action-btn,.nb-mode-pill{min-height:52px;padding:6px 11px;border:1px solid rgba(255,255,255,.5);border-radius:3px;display:flex;align-items:center;justify-content:center;gap:6px;background:transparent;color:#fff;cursor:pointer;font-family:Arial,Helvetica,sans-serif;font-size:var(--ui-control-size);font-weight:700;line-height:1.2;transition:background .16s ease,border-color .16s ease}
+.nb-action-btn:hover,.nb-mode-pill:hover,.nb-mode-pill.active,.nb-action-btn.active{background:#356f94}
+.nb-action-btn:disabled,.nb-mode-pill:disabled{opacity:.45;cursor:default;background:transparent}
+.nb-action-btn:disabled:hover,.nb-mode-pill:disabled:hover{background:transparent}
+.nb-action-btn.active.hl{background:#f5c84b;border-color:#fff;color:#17212b}
+.nb-action-btn.active.st{background:#f9d8de;border-color:#fff;color:#7d1830}
+.nb-item-picker{display:flex;align-items:center;gap:7px;white-space:nowrap}
+.nb-item-picker label{font-size:calc(var(--ui-meta-size) * 1.02);opacity:.86}
+.nb-item-picker select{min-width:68px;padding:7px 5px;border-radius:3px;border:1px solid rgba(255,255,255,.25);background:#fff;color:#111;font-family:Arial,Helvetica,sans-serif;font-size:var(--ui-control-size)}
+.nb-nav-controls{display:flex;align-items:stretch}
+.nb-nav-btn{min-width:88px;border:0;border-left:1px solid rgba(255,255,255,.22);background:transparent;color:#fff;padding:8px 10px;font-family:Arial,Helvetica,sans-serif;cursor:pointer;transition:background .16s ease}
+.nb-nav-btn:hover{background:#356f94}
+.nb-nav-btn:disabled{opacity:.45;cursor:default;background:transparent}
+.nb-nav-btn .icon{display:block;font-size:1.4rem;margin-bottom:4px}
+.nb-body{min-height:0;display:grid;grid-template-columns:84px minmax(0,1fr);background:#fff;overflow:hidden}
+.nb-rail{min-height:0;display:flex;flex-direction:column;gap:6px;padding:7px 6px;background:#e8edf1;border-right:1px solid #8b969f;overflow:hidden}
+.nb-rail-title{margin:3px 0 1px;color:#35424e;text-align:center;font-size:calc(var(--ui-micro-size) * 1.12);font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.nb-rail-scroll{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding-right:1px;scrollbar-width:thin;scrollbar-color:#8b969f #dce4ea}
+.nb-rail-scroll::-webkit-scrollbar{width:8px}
+.nb-rail-scroll::-webkit-scrollbar-track{background:#dce4ea;border-radius:999px}
+.nb-rail-scroll::-webkit-scrollbar-thumb{background:#8b969f;border-radius:999px}
+.nb-rail-arrow{display:inline-flex;align-items:center;justify-content:center;width:100%;height:28px;border:1px solid #8d98a1;border-radius:3px;background:#f7fafc;color:#22313d;font-size:.9rem;font-weight:900;cursor:pointer;transition:background .16s ease,border-color .16s ease,color .16s ease}
+.nb-rail-arrow:hover:not(:disabled){background:#d9e5ee;border-color:#647280}
+.nb-rail-arrow:disabled{opacity:.38;cursor:default}
+.nb-rail-btn{width:100%;height:35px;margin-bottom:5px;position:relative;border:1px solid #8d98a1;border-radius:2px;background:#fff;color:#1d2933;font-size:calc(var(--ui-control-size) * 1.06);font-weight:700;cursor:pointer}
+.nb-rail-btn:hover{background:#f4f8fb}
+.nb-rail-btn.current{background:#004976;color:#fff;border-color:#004976}
+.nb-rail-btn.answered::after{content:'';position:absolute;right:4px;bottom:4px;width:7px;height:7px;border-radius:50%;background:#257a43;box-shadow:0 0 0 1px #fff}
+.nb-rail-btn.marked::before{content:'⚑';position:absolute;left:3px;top:1px;color:#bd7400;font-size:.78rem}
+.nb-rail-btn.current.marked::before{color:#ffd75e}
+.nb-stage{position:relative;display:flex;flex-direction:column;min-width:0;min-height:0;overflow:hidden;background:#fff}
+#nbFinishBanner{flex-shrink:0}
+.nb-question-scroll{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;padding:26px clamp(24px,6vw,92px) 112px}
+.nb-question-card,.nb-review-wrap{width:min(980px,100%);margin:0 auto}
+.nb-question-card.has-feedback{width:min(1580px,100%)}
+.nb-question-layout{display:grid;gap:24px}
+.nb-question-layout.has-feedback{grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);align-items:start}
+.nb-question-side{min-width:0;align-self:start}
+.nb-question-side .exb{margin-top:0;max-height:calc(var(--app-vh) - clamp(260px,34vh,380px));overflow:auto;overscroll-behavior:contain;scroll-padding-bottom:clamp(88px,12vh,136px);scrollbar-width:thin;scrollbar-color:rgba(18,32,60,.28) rgba(18,32,60,.08)}
+.nb-question-side .exb::-webkit-scrollbar{width:10px}
+.nb-question-side .exb::-webkit-scrollbar-track{background:rgba(18,32,60,.08);border-radius:999px}
+.nb-question-side .exb::-webkit-scrollbar-thumb{background:rgba(18,32,60,.28);border-radius:999px}
+.nb-question-side .exb::after{content:'';display:block;height:clamp(88px,12vh,136px);background:transparent}
+.nb-question-label{margin-bottom:16px;color:#5b6570;font-weight:700;font-size:calc(var(--ui-meta-size) * 1.16);letter-spacing:.02em}
+.nb-question-stem{font-size:calc(var(--stem-size) * .72);line-height:1.58;user-select:text}
+.nb-question-stem mark,.nb-answer-copy mark{
+  background:linear-gradient(180deg,transparent 16%,#fff173 16%,#fff173 86%,transparent 86%);
+  color:inherit;
+  padding:0;
+  margin:0;
+  border-radius:.08em;
+  -webkit-box-decoration-break:clone;
+  box-decoration-break:clone;
+}
+.nb-question-stem s,.nb-answer-copy s{color:#717a82;text-decoration:line-through}
+.nb-stage-note{margin-top:18px;color:#5b6570;font-size:calc(var(--ui-meta-size) * 1.12);line-height:1.5}
+.nb-answers{margin-top:24px;display:grid;gap:11px}
+.nb-answer-row{display:grid;grid-template-columns:32px 1fr;align-items:start;gap:9px;padding:8px 9px;border:1px solid transparent;border-radius:3px;cursor:pointer;transition:background .16s ease,border-color .16s ease}
+.nb-answer-row:hover{background:#f3f7fa;border-color:#d7e0e7}
+.nb-answer-row.selected{background:#d9ebf7;border-color:#7fa9c4}
+.nb-answer-row.correct{background:#dff2e5;border-color:#4d9b68}
+.nb-answer-row.incorrect{background:#f8dfe2;border-color:#bd6570}
+.nb-answer-row.locked{cursor:default}
+.nb-answer-glyph{width:24px;height:24px;border:1px solid #8d98a1;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:calc(var(--ui-control-size) * 1.05);font-weight:700;background:#fff;color:#1d2933;margin-top:1px}
+.nb-answer-row.selected .nb-answer-glyph{background:#004976;border-color:#004976;color:#fff}
+.nb-answer-row.correct .nb-answer-glyph{background:#257a43;border-color:#257a43;color:#fff}
+.nb-answer-row.incorrect .nb-answer-glyph{background:#a51d2d;border-color:#a51d2d;color:#fff}
+.nb-answer-copy{font-size:calc(var(--choice-size) * 1.02);line-height:1.52;user-select:text}
+.nb-submit-row{margin-top:24px}
+.nb-submit-btn{min-width:165px;padding:10px 18px;border:1px solid #003653;border-radius:3px;background:#004976;color:#fff;font-weight:700;font-family:Arial,Helvetica,sans-serif;cursor:pointer}
+.nb-submit-btn:disabled{opacity:.55;cursor:default}
+.nb-review-wrap h2{color:#004976;font-size:1.55rem;font-family:Arial,Helvetica,sans-serif}
+.nb-review-wrap p{font-size:calc(var(--choice-size) * .95);line-height:1.5;color:#33404a}
+.nb-review-summary{display:flex;flex-wrap:wrap;gap:14px;margin:16px 0 24px}
+.nb-summary-chip{min-width:145px;padding:12px 15px;border:1px solid #aeb8c0;border-radius:3px;background:#f3f6f8}
+.nb-summary-chip strong{display:block;margin-top:5px;font-size:calc(var(--ui-title-size) * .82);color:#004976}
+.nb-review-table{width:100%;border-collapse:collapse}
+.nb-review-table th,.nb-review-table td{padding:11px;border:1px solid #aeb8c0;text-align:left;font-size:calc(var(--choice-size) * .9)}
+.nb-review-table th{background:#004976;color:#fff}
+.nb-review-table tr:nth-child(even){background:#f3f6f8}
+.nb-review-jump{color:#004976;text-decoration:underline;border:0;background:transparent;font-weight:700;padding:0;cursor:pointer}
+.nb-review-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.nb-review-back{padding:10px 16px;border:1px solid #8d99a3;border-radius:3px;background:#f3f5f7;color:#17212b;font-weight:700;cursor:pointer}
+.nb-footer{min-height:72px;display:grid;grid-template-columns:auto 1fr auto;align-items:stretch;border-top:3px solid #003653}
+.nb-timer-box{min-width:245px;display:grid;grid-template-columns:1fr auto;gap:4px 14px;align-content:center;padding:10px 18px;border-right:1px solid rgba(255,255,255,.28);font-variant-numeric:tabular-nums}
+.nb-timer-box strong{text-align:right}
+.nb-timer-box small{grid-column:1 / -1;text-align:center;opacity:.82;font-size:.68rem}
+.nb-timer-actions{grid-column:1 / -1;display:flex;gap:8px;justify-content:center;margin-top:2px}
+.nb-timer-mini{padding:7px 12px;border:1px solid rgba(255,255,255,.75);border-radius:3px;background:transparent;color:#fff;font-weight:700;cursor:pointer}
+.nb-timer-mini:hover{background:#356f94}
+.nb-timer-box.warn strong{color:#ffd45b}
+.nb-footer-center{display:flex;align-items:center;justify-content:center;gap:10px;padding:8px 12px;flex-wrap:wrap}
+.nb-score-chip{display:flex;align-items:center;gap:12px;padding:10px 12px;border:1px solid rgba(255,255,255,.2);border-radius:3px;background:rgba(255,255,255,.08);font-size:calc(var(--ui-control-size) * .98)}
+.nb-score-chip span{display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+.nb-score-chip strong{font-size:calc(var(--ui-control-size) * 1.16)}
+.nb-font-cluster{display:flex;align-items:center;gap:7px;padding:8px 10px;border:1px solid rgba(255,255,255,.2);border-radius:3px;background:rgba(255,255,255,.08)}
+.nb-font-cluster label{font-size:calc(var(--ui-meta-size) * 1.02);font-weight:700}
+.nb-font-btn{padding:7px 10px;border:1px solid rgba(255,255,255,.72);border-radius:3px;background:transparent;color:#fff;font-size:var(--ui-control-size);font-weight:700;cursor:pointer}
+.nb-font-btn:hover{background:#356f94}
+.nb-footer-tool{padding:8px 12px;border:1px solid rgba(255,255,255,.72);border-radius:3px;background:rgba(255,255,255,.08);color:#fff;font-size:var(--ui-control-size);font-weight:700;cursor:pointer;font-family:Arial,Helvetica,sans-serif}
+.nb-footer-tool:hover{background:#356f94}
+.nb-end-wrap{display:flex;align-items:center;padding:10px 13px}
+.nb-end-btn{padding:0 20px;min-height:44px;border:1px solid rgba(255,255,255,.8);border-radius:3px;background:#7d1830;color:#fff;font-size:var(--ui-control-size);font-weight:700;cursor:pointer}
+.nb-end-btn:hover:not(:disabled){background:#a82745}
+.nb-end-btn:disabled{opacity:.45;cursor:default;background:rgba(255,255,255,.14)}
+
+/* Lab values */
+.lab-modal{position:fixed;inset:0;z-index:1200;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(9,17,28,.58);backdrop-filter:blur(9px)}
+.lab-modal.open{display:flex}
+.lab-shell{width:min(1100px,96vw);max-height:92vh}
+.lab-card{display:flex;flex-direction:column;max-height:92vh;border-radius:26px;background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(246,243,236,.98));border:1px solid rgba(18,32,60,.08);box-shadow:0 28px 80px rgba(0,0,0,.22);overflow:hidden}
+.lab-header{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding:22px 24px 18px;border-bottom:1px solid rgba(18,32,60,.08)}
+.lab-kicker{font-family:var(--font-ui);font-size:11px;letter-spacing:1.3px;text-transform:uppercase;color:var(--mist);margin-bottom:8px;font-weight:700}
+.lab-title{font-family:var(--font-ui);font-size:calc(var(--stem-size) * 1.02);line-height:1.08;color:var(--navy);margin:0 0 8px;font-weight:700}
+.lab-sub{font-size:calc(var(--choice-size) * .92);line-height:1.6;color:var(--slate);max-width:68ch}
+.lab-close{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 16px;border-radius:14px;border:1px solid rgba(18,32,60,.12);background:#fff;color:var(--navy);font-family:var(--font-ui);font-size:14px;font-weight:700;cursor:pointer;transition:var(--tr)}
+.lab-close:hover{transform:translateY(-1px);border-color:rgba(26,122,109,.34);color:var(--teal)}
+.lab-controls{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:16px 24px;border-bottom:1px solid rgba(18,32,60,.08);background:rgba(255,255,255,.72)}
+.lab-toggle{display:inline-flex;gap:8px;padding:6px;border-radius:999px;background:rgba(18,32,60,.05)}
+.lab-toggle-btn{padding:10px 16px;border:none;border-radius:999px;background:transparent;color:var(--slate);font-family:var(--font-ui);font-size:calc(var(--choice-size) * .86);font-weight:700;cursor:pointer;transition:var(--tr)}
+.lab-toggle-btn.active{background:linear-gradient(135deg,var(--navy),#2A3562);color:#fff;box-shadow:0 10px 22px rgba(27,42,74,.16)}
+.lab-note{font-size:calc(var(--choice-size) * .78);line-height:1.6;color:var(--mist)}
+.lab-body{padding:18px 24px 24px;overflow:auto}
+.lab-table{width:100%;margin-bottom:18px;border-collapse:collapse;font-size:calc(var(--choice-size) * .92);background:#fff}
+.lab-table thead th{padding:9px 10px;background:#dbe6ed;border:1px solid #9eabb4;text-align:left}
+.lab-table thead th:first-child{width:48%}
+.lab-table tbody td{padding:6px 9px;border:1px solid #c6cdd3;text-align:left;vertical-align:top}
+.lab-table tbody tr:nth-child(even):not(.lab-group){background:#f6f8f9}
+.lab-table .lab-group td{padding:8px 9px;background:#edf1f4;font-weight:700}
+.lab-table .continuation{color:transparent}
+
+/* finish overlay */
+.fin{position:relative;background:linear-gradient(135deg,var(--navy),#2A3562);border-radius:24px;padding:22px 24px;text-align:center;color:#fff;box-shadow:var(--sh3);margin:0 auto 14px;max-width:min(780px,100%);transition:padding .2s ease,box-shadow .2s ease}
+.fin.min{padding:56px 24px 22px}
+.fin-toggle{position:absolute;top:14px;left:14px;display:inline-flex;align-items:center;justify-content:center;min-width:40px;height:34px;padding:0 12px;border-radius:12px;border:1.5px solid rgba(255,255,255,.25);background:rgba(255,255,255,.04);color:rgba(255,255,255,.86);font-family:var(--font-ui);font-size:18px;font-weight:700;cursor:pointer;transition:all .18s}
+.fin-toggle:hover{background:rgba(255,255,255,.12);color:#fff}
+.fin-main{display:grid;justify-items:center}
+.fin-pct{font-family:var(--font-ui);font-size:46px;font-weight:700;color:var(--teal-glow);line-height:1}
+.fin-pct-lbl{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.45);margin:4px 0 14px}
+.fin-msg{font-family:var(--font-ui);font-size:24px;font-weight:700;margin-bottom:6px}
+.fin-sub{font-size:13px;color:rgba(255,255,255,.6);margin-bottom:18px}
+.fin-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.fin-btn{padding:10px 16px;border-radius:12px;border:1.5px solid rgba(255,255,255,.25);background:transparent;color:rgba(255,255,255,.8);font-family:var(--font-ui);font-size:13px;font-weight:700;cursor:pointer;transition:all .18s}
+.fin-btn:hover{background:rgba(255,255,255,.12);color:#fff}
+
+/* final review sheet */
+.sum-sheet{margin-top:18px;background:rgba(255,255,255,.96);border:1px solid rgba(18,32,60,.08);border-radius:28px;box-shadow:var(--sh3);overflow:hidden;scroll-margin-top:20px}
+.sum-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding:26px 28px 22px;border-bottom:1px solid rgba(18,32,60,.08);background:linear-gradient(180deg,color-mix(in srgb,var(--warm) 48%,transparent),#fff)}
+.sum-kicker{font-family:var(--font-ui);font-size:11px;font-weight:700;letter-spacing:1.3px;text-transform:uppercase;color:var(--mist);margin-bottom:8px}
+.sum-title{font-family:var(--font-ui);font-size:34px;line-height:1.08;color:var(--navy);margin:0 0 8px;font-weight:700}
+.sum-sub{font-size:14px;line-height:1.6;color:var(--slate);max-width:66ch}
+.sum-actions{display:flex;gap:10px;flex-wrap:wrap}
+.sum-btn{padding:11px 16px;border-radius:14px;border:1.5px solid rgba(18,32,60,.12);background:#fff;color:var(--navy);font-family:var(--font-ui);font-size:14px;font-weight:700;cursor:pointer;transition:var(--tr);white-space:nowrap}
+.sum-btn:hover{transform:translateY(-1px);border-color:rgba(26,122,109,.34);color:var(--teal)}
+.sum-btn.primary{background:linear-gradient(135deg,var(--teal),var(--teal-mid));border-color:transparent;color:#fff;box-shadow:0 10px 24px rgba(26,122,109,.2)}
+.sum-btn.primary:hover{color:#fff;box-shadow:0 14px 28px rgba(26,122,109,.26)}
+.sum-stats{display:flex;gap:12px;flex-wrap:wrap;padding:18px 28px;border-bottom:1px solid rgba(18,32,60,.08);background:rgba(246,243,236,.72)}
+.sum-stat{min-width:150px;padding:14px 16px;border-radius:18px;border:1px solid rgba(18,32,60,.08);background:#fff;box-shadow:0 8px 20px rgba(18,32,60,.05)}
+.sum-stat-label{font-size:10px;font-weight:900;letter-spacing:1.6px;text-transform:uppercase;color:var(--mist);margin-bottom:8px}
+.sum-stat-value{font-family:var(--font-ui);font-size:32px;line-height:1;color:var(--navy);font-weight:700}
+.sum-list{display:grid;gap:14px;padding:22px 24px 26px}
+.sum-item{display:grid;grid-template-columns:150px minmax(0,1fr);gap:18px;padding:20px;border-radius:22px;border:1px solid rgba(18,32,60,.08);background:#fff;box-shadow:0 8px 22px rgba(18,32,60,.05)}
+.sum-item.correct{border-color:rgba(45,134,89,.24);background:linear-gradient(180deg,#fff,#f6fcf8)}
+.sum-item.incorrect{border-color:rgba(196,64,64,.18);background:linear-gradient(180deg,#fff,#fff8f8)}
+.sum-item.unanswered{border-color:rgba(192,123,26,.24);background:linear-gradient(180deg,#fff,#fffaf1)}
+.sum-meta{display:flex;flex-direction:column;gap:10px}
+.sum-num{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:0 16px;border-radius:999px;background:rgba(18,32,60,.06);font-family:var(--font-ui);font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--navy);width:max-content}
+.sum-state{display:inline-flex;align-items:center;justify-content:center;min-height:34px;padding:0 14px;border-radius:999px;font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;width:max-content}
+.sum-item.correct .sum-state{background:var(--green-bg);color:var(--green)}
+.sum-item.incorrect .sum-state{background:var(--red-bg);color:var(--red)}
+.sum-item.unanswered .sum-state{background:var(--amber-bg);color:var(--amber)}
+.sum-answer{font-size:13px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;color:var(--slate)}
+.sum-body{display:grid;gap:14px}
+.sum-section{padding:16px 18px;border-radius:18px;border:1px solid rgba(18,32,60,.06);background:rgba(246,243,236,.56)}
+.sum-label{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:800;letter-spacing:1.7px;text-transform:uppercase;color:var(--mist);margin-bottom:9px}
+.sum-text{font-size:calc(var(--choice-size) * .97);line-height:1.65;color:var(--ink2)}
+.sum-view{display:grid;gap:18px}
+
+/* responsive */
+@media(max-width:820px){
+  .qin{grid-template-columns:1fr;padding:16px 14px 64px}
+  .sidebar{position:static;flex-direction:row;flex-wrap:wrap}
+  .score-panel{flex:1 1 200px}
+  .mode-toggle,.tool-panel{flex:1 1 100%}
+  .timer-card{flex:1 1 160px}
+  .q-review-grid.has-feedback,.nb-question-layout.has-feedback{grid-template-columns:1fr}
+  .q-feedback .exb,.nb-question-side .exb{max-height:none;overflow:visible}
+  .nb-header{grid-template-columns:1fr}
+  .nb-status-box{border-right:none;border-bottom:1px solid rgba(255,255,255,.2)}
+  .nb-nav-controls{border-top:1px solid rgba(255,255,255,.18)}
+  .nb-nav-btn{flex:1}
+  .nb-body{grid-template-columns:1fr}
+  .nb-rail{display:none}
+  .nb-footer{grid-template-columns:1fr}
+  .nb-timer-box{border-right:none;border-bottom:1px solid rgba(255,255,255,.18)}
+  .nb-end-wrap{justify-content:center}
+  .setup-ui-toggle{grid-template-columns:1fr}
+}
+@media(max-width:480px){.qbd{padding:20px 16px}.qstem{font-size:max(21px,var(--stem-size))}.qnv{flex-direction:column;padding:14px 16px 18px}.nb{width:100%}.font-tools{flex-direction:column;align-items:stretch}.font-tools-group{margin-left:0;justify-content:space-between}.sum-head{padding:22px 18px 18px;flex-direction:column}.sum-title{font-size:28px}.sum-stats{padding:16px 18px}.sum-list{padding:18px 16px 22px}.sum-item{grid-template-columns:1fr;padding:16px}}
+@media(max-width:560px){.setup-actions{flex-direction:column}.qt-bar{height:auto;flex-wrap:wrap;padding:12px 16px}.nb-util{flex-direction:column;align-items:flex-start}}
+
+/* toast */
+.toast-wrap{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:999;pointer-events:none}
+.toast{padding:11px 20px;border-radius:999px;font-size:13.5px;font-weight:700;box-shadow:0 8px 28px rgba(0,0,0,.15);animation:toastIn .28s cubic-bezier(.2,.8,.2,1) both;white-space:nowrap}
+@keyframes toastIn{from{opacity:0;transform:translateY(14px) scale(.94)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes toastOut{to{opacity:0;transform:translateY(8px) scale(.95)}}
+.toast.ok{background:var(--navy);color:var(--teal-glow)}.toast.err{background:var(--red);color:#fff}
+</style>
+</head>
+<body>
+<div class="toast-wrap" id="toastWrap"></div>
+
+<!-- ══════════ SETUP VIEW ══════════ -->
+<div class="view active" id="viewSetup">
+<div class="setup-page">
+<div class="setup-card">
+
+  <div class="setup-top">
+    <div class="setup-emoji">🧪</div>
+    <div class="setup-title">Custom <em>Quiz Builder</em></div>
+    <div class="setup-sub">Generate a quiz from any AI and run it in the same exam format as the study hub.</div>
+  </div>
+
+  <div class="setup-body">
+    <div class="how-title">How it works</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-text">
+          <strong>Copy the prompt below</strong>
+          Paste it into ChatGPT, Claude, Gemini, or any AI — then add your notes or questions after it and send.
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-text">
+          <strong>Copy the AI's response</strong>
+          It will return a formatted list of questions. Copy the whole thing.
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-text">
+          <strong>Paste it below and launch</strong>
+          Hit Launch and the quiz opens immediately in the full exam UI.
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="lbl">Target question count</label>
+      <input class="inp" id="questionCount" type="number" min="1" max="25" step="1" value="15" oninput="handleQuestionCountInput()" onblur="handleQuestionCountBlur()">
+      <div class="field-note">Cap: 25 questions. Increasing the number of questions may cause degraded question quality from your AI.</div>
+    </div>
+
+    <!-- Prompt to copy -->
+    <div class="lbl" style="margin-bottom:8px">Your AI prompt</div>
+    <div class="prompt-wrap">
+      <button class="copy-prompt-btn" id="copyPromptBtn" onclick="copyPrompt()">📋 Copy prompt</button>
+      <div class="prompt-meta">
+        <div class="prompt-chip" id="promptCountChip">Target: 15 questions</div>
+      </div>
+      <div class="prompt-inner" id="promptText">You are a medical school professor writing exam-style questions. You have TWO modes:
+
+MODE 1 — GENERATE: If I give you notes or lecture content, write quiz questions from it.
+MODE 2 — CONVERT: If I give you already-written questions in any format, convert them into the format below without changing the medical content.
+
+Output ONLY a raw JSON object — no markdown, no backticks, no explanation.
+
+{
+  "name": "Concise quiz title here",
+  "questions": [
+    {
+      "stem": "Question text here?",
+      "choices": [
+        "A. Correct answer — stay true to the diction of the professor",
+        "B. Wrong answer — make relevant with plausible detail",
+        "C. Wrong answer — make relevant with plausible detail",
+        "D. Wrong answer — make relevant with plausible detail",
+        "E. Wrong answer — make relevant with plausible detail"
+      ],
+      "correct": 0,
+      "explanation": "Why the correct answer is right. Use arrows (→) to show mechanisms.",
+      "wrongExplanations": {
+        "1": "Why B is wrong — be specific.",
+        "2": "Why C is wrong — be specific.",
+        "3": "Why D is wrong — be specific.",
+        "4": "Why E is wrong — be specific."
+      },
+      "eli5": "Explain the concept like the student is 10. Max 3 sentences."
+    }
+  ]
+}
+
+Rules:
+- Return exactly 15 questions in the top-level "questions" array
+- Include a top-level "name" for the quiz
+- If the setup name field is blank, infer a concise quiz title from the content
+- "correct" is a NUMBER (0=A, 1=B, 2=C, 3=D, 4=E)
+- Include a wrong explanation for every wrong choice
+- Prefer using the actual choice index as the key, so if A is wrong use "0", if B is wrong use "1", etc.
+- Vary which letter is correct — don't always use 0
+- If converting questions with fewer than 5 choices, add distractors to reach 5
+- Keep all answer choices similar in length so the correct answer is not guessable by length
+- Output ONLY the JSON object
+
+Question-writing style guide:
+- If the source material is psychiatry / behavioral health, use the NBME / NBOME psych house style below.
+- Choose a profile before writing:
+  NBME profile = default for straight DSM-5 differential, lab-value clues, and USMLE-style phrasing
+  NBOME profile = use when the source includes OMM / structural findings, cranial concepts, forensic psych, or Willard-style osteopathic content
+- Mandatory quality gate: if any item is weak, ambiguous, or fails any rule below, revise it internally before returning it. Never output a draft item that fails the quality gate.
+
+NBME-style vignette construction:
+- Follow this order:
+  Opening line = age + sex + presenting complaint + who brought them in / how they arrived
+  Exact duration / chronicity = never vague
+  Symptom cluster in behavioral language, not diagnostic-label language
+  Throwaway-normal data block with 1-2 buried clue facts
+  Explicit negative findings that rule out specific distractors
+  MSE placed near the end, right before the ask
+  Optional closing patient quote if it adds diagnostic weight
+  Then the question stem
+- Common NBME stem phrasings:
+  Which of the following is the most likely diagnosis?
+  Which of the following is the most appropriate next step in management?
+  Which of the following is the most appropriate next step in diagnosis?
+  Which of the following is most appropriate at this point?
+  Which of the following is the most appropriate pharmacotherapy?
+- Every stem should contain one buried clue that determines the answer and one dramatic decoy detail that tempts a specific wrong answer.
+- Use parallel-category distractors from the same family as the correct answer. Change duration, precipitant, or one defining criterion rather than switching to unrelated categories.
+
+NBOME-style additions:
+- Same baseline as NBME, but structural / osteopathic exam findings may be used like a lab clue or as a rule-out for a somatic cause.
+- NBOME items can ask for neuroanatomic correlates, osteopathic-adjacent concepts, or management in forensic / iatrogenic scenarios.
+- NBOME stems often fold the ask into the final sentence instead of using a separate line.
+- If you use structural or neuroanatomic distractors, they must be plausible and educational, not decorative.
+
+Shared construction rules:
+- The diagnosis should usually be inferable from the exam checklist alone, but the actual question should often ask one rung higher: mechanism, localization, genetics, downstream consequence, next step, or treatment.
+- Distractors must come from the same answer category as the correct answer.
+  Example: artery vs other arteries, gene vs other genes, dementia subtype vs other dementia subtypes.
+- When appropriate, prefer 2-3 stacked questions from the same clinical stem.
+  Example chain: presentation -&gt; diagnosis -&gt; localization / genetics -&gt; mechanism -&gt; treatment.
+- Use explicit negative history only when it rules out a listed distractor.
+- For psych items, make duration load-bearing whenever possible.
+- Communication / ethics items should usually follow:
+  acknowledge / validate -&gt; assess safety directly -&gt; address the patient before third parties unless the patient is a minor or lacks capacity
+
+Mandatory quality checks before returning the batch:
+- Exact duration present
+- Behavioral wording instead of diagnostic-label wording
+- At least one explicit negative finding
+- One buried clue and one separate dramatic decoy
+- All distractors plausible if the buried clue is missed
+- At least one distractor from the same diagnostic or pharmacologic family
+- Correct answer is not uniquely longest or uniquely shortest
+- Correct-answer letters are varied across the batch
+- Options are mutually exclusive
+- Exactly one answer is unambiguously correct
+- Stem type matches answer type:
+  diagnosis question -&gt; diagnosis answer
+  next-step question -&gt; management step
+  diagnostic-workup question -&gt; test / workup
+
+Professor-style writing notes:
+- Keep the stem voice like a real med school professor:
+  clipped exam findings, subtle pattern-recognition clues, no giveaway diagnosis wording, occasional grounded real-world detail if it helps the vignette feel authentic
+- High-yield domains to emphasize when relevant:
+  UMN vs LMN vs NMJ vs myopathy localization by pattern
+  Exact genetics such as chromosome, repeat type, and gene name
+  Vascular localization, especially Circle of Willis style anatomy
+  Mechanism-of-injury to nerve or plexus localization
+  CSF profile pattern recognition
+  Vignette-to-histopathology pairing
+- Reuse high-yield concepts with slight vignette variations when the same theme is strongly emphasized in the source material
+
+MY CONTENT:
+</div>
+    </div>
+    <p style="font-size:12px;color:var(--mist);margin-bottom:24px;margin-top:6px">Paste your notes or existing questions <em>after</em> this prompt before sending to your AI. The prompt now includes the NBME / NBOME psych question-writing guide and quality gate.</p>
+
+    <div class="divider"></div>
+
+    <div class="field">
+      <label class="lbl">Quiz name (optional)</label>
+      <input class="inp" id="quizName" placeholder="e.g. Ferland — Confidence Intervals — Bank 1" oninput="refreshPromptText()">
+    </div>
+    <div class="field">
+      <label class="lbl">Quiz interface</label>
+      <div class="setup-ui-toggle">
+        <button class="setup-ui-btn active" id="uiModeClassicBtn" type="button" onclick="selectLaunchUI('classic')">
+          <span class="setup-ui-name">UNE Study Hub Style</span>
+          <span class="setup-ui-meta">The current layout with score cards, sidebar tools, and the original study-hub feel.</span>
+        </button>
+        <button class="setup-ui-btn" id="uiModeNbmeBtn" type="button" onclick="selectLaunchUI('nbme')">
+          <span class="setup-ui-name">NBME / NBOME Style</span>
+          <span class="setup-ui-meta">Header navigation, question rail, footer timer, and an exam-stage layout modeled after the simulator.</span>
+        </button>
+      </div>
+    </div>
+    <div class="field">
+      <label class="lbl">Paste AI responses here</label>
+      <div class="field-note">If quality drops when you ask the AI for too many questions at once, split the generation into smaller batches and paste them into Sets 1-4 below. Click a set tab to open that batch. Launch will combine every valid set in order.</div>
+      <div class="paste-tabs" role="tablist" aria-label="AI response sets">
+        <button class="paste-tab active" id="pasteTab1" type="button" role="tab" aria-selected="true" aria-controls="pastePanel1" onclick="showPasteSetTab(1)">Set 1</button>
+        <button class="paste-tab" id="pasteTab2" type="button" role="tab" aria-selected="false" aria-controls="pastePanel2" onclick="showPasteSetTab(2)">Set 2</button>
+        <button class="paste-tab" id="pasteTab3" type="button" role="tab" aria-selected="false" aria-controls="pastePanel3" onclick="showPasteSetTab(3)">Set 3</button>
+        <button class="paste-tab" id="pasteTab4" type="button" role="tab" aria-selected="false" aria-controls="pastePanel4" onclick="showPasteSetTab(4)">Set 4</button>
+      </div>
+      <div class="paste-panels">
+        <div class="paste-panel active" id="pastePanel1" role="tabpanel" aria-labelledby="pasteTab1">
+          <label class="lbl" for="pasteArea1">Set 1</label>
+          <div class="field-note">Use this for your first AI batch.</div>
+          <textarea class="ta" id="pasteArea1" placeholder="Paste AI response for Set 1…" oninput="syncPasteSetTabs()"></textarea>
+        </div>
+        <div class="paste-panel" id="pastePanel2" role="tabpanel" aria-labelledby="pasteTab2" hidden="">
+          <label class="lbl" for="pasteArea2">Set 2</label>
+          <div class="field-note">Use this for your second AI batch.</div>
+          <textarea class="ta" id="pasteArea2" placeholder="Paste AI response for Set 2…" oninput="syncPasteSetTabs()"></textarea>
+        </div>
+        <div class="paste-panel" id="pastePanel3" role="tabpanel" aria-labelledby="pasteTab3" hidden="">
+          <label class="lbl" for="pasteArea3">Set 3</label>
+          <div class="field-note">Use this for your third AI batch.</div>
+          <textarea class="ta" id="pasteArea3" placeholder="Paste AI response for Set 3…" oninput="syncPasteSetTabs()"></textarea>
+        </div>
+        <div class="paste-panel" id="pastePanel4" role="tabpanel" aria-labelledby="pasteTab4" hidden="">
+          <label class="lbl" for="pasteArea4">Set 4</label>
+          <div class="field-note">Use this for your fourth AI batch.</div>
+          <textarea class="ta" id="pasteArea4" placeholder="Paste AI response for Set 4…" oninput="syncPasteSetTabs()"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="setup-actions">
+      <button class="launch-btn" onclick="launchQuiz()">🚀 Launch Quiz</button>
+      <button class="ghost-btn" onclick="downloadQuiz()">⬇ Download My Quiz</button>
+    </div>
+    <div class="err-msg" id="errMsg"></div>
+  </div>
+
+</div>
+</div>
+</div>
+
+<!-- ══════════ QUIZ VIEW ══════════ -->
+<div class="view" id="viewQuiz">
+<div class="quiz-page">
+
+  <!-- top bar -->
+  <div class="qt-bar">
+    <div class="qt-name" id="qtName">Quiz</div>
+    <button class="qt-btn" id="qtClassicUiBtn" onclick="switchQuizUI('nbme')">⇄ NBME UI</button>
+    <button class="qt-btn" id="qtMarkBtn" onclick="toggleMark()">⚑ Mark</button>
+    <button class="qt-btn" id="qtSubmitBtn" onclick="submitExam()">🧾 Submit Exam</button>
+    <button class="qt-btn" onclick="downloadQuiz()">⬇ Download Quiz</button>
+    <button class="qt-btn" onclick="resetQuiz()">↺ Reset</button>
+    <button class="qt-btn" onclick="exitQuiz()">✕ Close</button>
+  </div>
+
+  <!-- grid -->
+  <div class="qin">
+
+    <!-- LEFT SIDEBAR -->
+    <div class="sidebar">
+
+      <!-- score boxes -->
+      <div class="score-panel">
+        <div class="score-box correct"><div class="sv" id="sC">0</div><div class="sl">Correct</div></div>
+        <div class="score-box incorrect"><div class="sv" id="sI">0</div><div class="sl">Incorrect</div></div>
+        <div class="score-box"><div class="sv" id="sP">—</div><div class="sl">Score</div></div>
+      </div>
+
+      <!-- mode toggle -->
+      <div class="mode-toggle">
+        <button class="mode-btn active" id="modeLearn" onclick="setMode('learn')"><span class="mode-icon">📚</span>Learn Mode</button>
+        <button class="mode-btn" id="modeExam" onclick="setMode('exam')"><span class="mode-icon">📝</span>Exam Mode</button>
+      </div>
+
+      <!-- timer -->
+      <div class="timer-card" id="timerCard">
+        <div class="timer-lbl">TIMER</div>
+        <div class="timer-time" id="timerTime">00:00</div>
+        <button class="tbtn" id="timerPlayBtn" onclick="toggleTimer()">▶</button>
+        <button class="tbtn" onclick="resetTimer()">↺</button>
+      </div>
+
+      <!-- tools -->
+      <div class="tool-panel">
+        <button class="q-tool hl-tool" id="hlTool" onclick="toggleTool('hl')">🖊 Highlight</button>
+        <button class="q-tool st-tool" id="stTool" onclick="toggleTool('st')">✂ Strikethrough</button>
+        <button class="q-tool" onclick="clearMarks()">✖ Clear Marks</button>
+        <button class="q-tool lab-tool" onclick="openLabs()">🧪 Lab Values</button>
+        <div class="font-tools">
+          <span class="font-tools-label">Text Size</span>
+          <div class="font-tools-group">
+            <button class="font-btn" onclick="adjustFontSize(-1)" aria-label="Decrease question and answer text size">A-</button>
+            <button class="font-btn reset" onclick="resetFontSize()" aria-label="Reset question and answer text size">A</button>
+            <button class="font-btn" onclick="adjustFontSize(1)" aria-label="Increase question and answer text size">A+</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: QUESTION -->
+    <div>
+      <div id="finBanner"></div>
+      <div id="qArea"></div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<!-- ══════════ NBME / NBOME VIEW ══════════ -->
+<div class="view" id="viewQuizNbme">
+<div class="nb-wrap">
+  <div class="nb-util">
+    <div class="nb-util-name" id="nbQuizTitle">Quiz</div>
+    <div class="nb-util-actions">
+      <button class="nb-util-btn" onclick="switchQuizUI('classic')">UNE UI</button>
+      <button class="nb-util-btn" onclick="downloadQuiz()">Download</button>
+      <button class="nb-util-btn" onclick="resetQuiz()">Reset</button>
+      <button class="nb-util-btn" onclick="exitQuiz()">Close</button>
+    </div>
+  </div>
+
+  <div class="nb-app">
+    <header class="nb-header">
+      <div class="nb-status-box">
+        <strong id="nbItemIndicator">Question: 1 of 1</strong>
+        <span id="nbStatusMeta">Answered 0 of 1</span>
+      </div>
+
+      <div class="nb-header-center">
+        <button class="nb-action-btn" id="nbMarkBtn" type="button" onclick="toggleMark()">⚑ Mark</button>
+        <button class="nb-action-btn" id="nbHighlightBtn" type="button" onclick="toggleTool('hl')">Highlight</button>
+        <button class="nb-action-btn" id="nbStrikeBtn" type="button" onclick="toggleTool('st')">Strikeout</button>
+        <button class="nb-action-btn" type="button" onclick="clearMarks()">Clear</button>
+        <button class="nb-mode-pill active" id="nbModeLearn" type="button" onclick="setMode('learn')">Learn</button>
+        <button class="nb-mode-pill" id="nbModeExam" type="button" onclick="setMode('exam')">Testing</button>
+        <button class="nb-action-btn" id="nbSummaryBtn" type="button" onclick="toggleSummaryPanel()" disabled="">See Score &amp; Summary</button>
+        <div class="nb-item-picker">
+          <label for="nbItemSelect">Question</label>
+          <select id="nbItemSelect" aria-label="Jump to a question" onchange="goQ(parseInt(this.value,10))"></select>
+        </div>
+      </div>
+
+      <div class="nb-nav-controls">
+        <button class="nb-nav-btn" id="nbPrevBtn" type="button" onclick="prevQ()">
+          <span class="icon">◀</span><span>Previous</span>
+        </button>
+        <button class="nb-nav-btn" id="nbNextBtn" type="button" onclick="nextQ()">
+          <span class="icon">▶</span><span>Next</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="nb-body">
+      <aside class="nb-rail" aria-label="Question navigator">
+        <div class="nb-rail-title">Questions</div>
+        <button class="nb-rail-arrow" id="nbRailUpBtn" type="button" aria-label="Scroll question list up" onclick="scrollNbmeRail(-1)">▲</button>
+        <div class="nb-rail-scroll" id="nbRailScroll" onscroll="syncNbmeRailArrows()">
+          <div id="nbRailItems"></div>
+        </div>
+        <button class="nb-rail-arrow" id="nbRailDownBtn" type="button" aria-label="Scroll question list down" onclick="scrollNbmeRail(1)">▼</button>
+      </aside>
+
+      <section class="nb-stage">
+        <div id="nbFinishBanner"></div>
+        <div class="nb-question-scroll">
+          <div id="nbContent"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="nb-footer">
+      <div class="nb-timer-box" id="nbTimerCard">
+        <span>Elapsed Time:</span><strong id="nbTimerTime">00:00</strong>
+        <span>Status:</span><strong id="nbTimerStatus">Paused</strong>
+        <small>Same timer as the original interface</small>
+        <div class="nb-timer-actions">
+          <button class="nb-timer-mini" id="nbTimerToggle" type="button" onclick="toggleTimer()">Start</button>
+          <button class="nb-timer-mini" type="button" onclick="resetTimer()">Reset</button>
+        </div>
+      </div>
+
+      <div class="nb-footer-center">
+        <div class="nb-score-chip">
+          <span>Correct <strong id="nbScoreCorrect">0</strong></span>
+          <span>Incorrect <strong id="nbScoreIncorrect">0</strong></span>
+          <span>Score <strong id="nbScorePercent">—</strong></span>
+        </div>
+        <button class="nb-footer-tool" type="button" onclick="openLabs()">▤ Lab Values</button>
+        <div class="nb-font-cluster">
+          <label>Text</label>
+          <button class="nb-font-btn" type="button" onclick="adjustFontSize(-1)">A-</button>
+          <button class="nb-font-btn" type="button" onclick="resetFontSize()">A</button>
+          <button class="nb-font-btn" type="button" onclick="adjustFontSize(1)">A+</button>
+        </div>
+      </div>
+
+      <div class="nb-end-wrap">
+        <button class="nb-end-btn" id="nbReviewBtn" type="button" onclick="handleNbmeEndAction()">Testing Mode Only</button>
+      </div>
+    </footer>
+  </div>
+</div>
+</div>
+
+<div class="lab-modal" id="labModal" onclick="if(event.target===this)closeLabs()">
+  <div class="lab-shell">
+    <div class="lab-card">
+      <div class="lab-header">
+        <div>
+          <div class="lab-kicker">Reference Table</div>
+          <h2 class="lab-title">Laboratory Values</h2>
+          <div class="lab-sub">Shared lab reference for both quiz interfaces, imported from the NBME-style simulator so the values stay consistent.</div>
+        </div>
+        <button class="lab-close" type="button" onclick="closeLabs()">Close</button>
+      </div>
+      <div class="lab-controls">
+        <div class="lab-toggle">
+          <button class="lab-toggle-btn active" id="labUnitsUs" type="button" onclick="setLabUnits('us')">U.S. Units</button>
+          <button class="lab-toggle-btn" id="labUnitsSi" type="button" onclick="setLabUnits('si')">SI Units</button>
+        </div>
+        <div class="lab-note">Switch units without leaving the question.</div>
+      </div>
+      <div class="lab-body">
+        <div id="labTables"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── STATE ──
+var questions=[],questionBank=[],answers={},selected={},marked={},stemMarkup={},choiceMarkup={},NC=0,NI=0,CQ=0;
+var quizMode='learn';
+var uiMode='classic';
+var examSubmitted=false;
+var reviewOpen=false;
+var summaryVisible=false;
+var finishBannerMinimized=false;
+var toolMode='';
+var labUnitMode='us';
+var timerSec=0,timerRunning=false,timerInterval=null;
+var fontStep=0;
+var LETTERS=['A','B','C','D','E'];
+var PRELOADED_QUIZ_NAME="Eating Disorders — Wolfrum Lecture (20 Q Bank, NBME-style)";
+var PRELOADED_QUESTIONS_JSON="[{\"stem\":\"A 19-year-old woman is brought to the physician by her college roommate because of a 5-month history of eating only steamed vegetables and drinking black coffee, and weighing herself four times daily. She runs 8 miles every morning regardless of weather and has stopped attending the dining hall with friends. Her roommate reports that despite losing 22 lb, the patient insists her thighs are \\\"still too big.\\\" She has not had a menstrual period in 4 months. She denies any episodes of eating large amounts of food followed by vomiting or laxative use. Vital signs are temperature 35.9°C (96.6°F), pulse 48/min, and blood pressure 92/58 mm Hg. Height is 165 cm (5 ft 5 in) and weight is 43 kg (95 lb); BMI is 15.8 kg/m². Physical examination shows fine, downy hair on her forearms and back. Cardiac and abdominal examinations are otherwise unremarkable. Serum electrolytes and thyroid function tests are within the reference range. On mental status examination, she is alert and cooperative, with a restricted affect, and denies suicidal ideation. She states, \\\"I know I need to lose a little more before I'll be satisfied.\\\" Which of the following is the most likely diagnosis?\",\"choices\":[\"A. Anorexia nervosa, restricting type\",\"B. Bulimia nervosa\",\"C. Illness anxiety disorder\",\"D. Major depressive disorder, melancholic type\",\"E. Anorexia nervosa, binge-purge type\"],\"correct\":0,\"explanation\":\"The buried clue is the explicit negative history (no binge or purge behavior) combined with a severely low BMI (15.8 kg/m²) → restriction of intake, fear of weight gain despite already being underweight, and body-image distortion (\\\"still too big\\\") meet all three anorexia criteria, and the lack of binge/purge behavior specifies the restricting type. The dramatic decoy is the daily 8-mile run, which could tempt a reader toward an exercise-addiction framing, but excessive exercise is simply one form of the calorie-deficit behavior already captured under restricting-type anorexia, not a separate diagnosis.\",\"wrongExplanations\":{\"1\":\"Bulimia nervosa requires recurrent binge-eating with compensatory behavior; the stem explicitly negates this history.\",\"2\":\"Illness anxiety disorder involves preoccupation with an undiagnosed serious illness, not distortion of body weight/shape with deliberate caloric restriction.\",\"3\":\"Melancholic depression can cause weight loss but does not produce the specific fear of weight gain and body-image distortion described here.\",\"4\":\"The binge/purge subtype requires binge or purge behavior in the past 3 months, which the stem specifically excludes.\"},\"eli5\":\"She's restricting food to lose weight, is terrified of gaining it back, and still thinks she looks too big even though her BMI is dangerously low. Because she's not bingeing or purging, this is the 'restricting type' of anorexia.\"},{\"stem\":\"A 22-year-old woman presents to student health services with a 4-month history of restricting her food intake to under 800 kcal/day. She reports that approximately twice a week during this period, she has eaten an entire box of cereal in under an hour \\\"because I just lose control,\\\" after which she takes 6-8 laxative tablets. She has continued to lose weight throughout. She has no history of self-induced vomiting. Vital signs are temperature 36.1°C (97°F), pulse 52/min, and blood pressure 96/62 mm Hg. Height is 160 cm (5 ft 3 in) and weight is 40.8 kg (90 lb); BMI is 15.9 kg/m². Physical examination shows dry skin and fine lanugo hair over the back; there is no calloused skin over the knuckles. Serum electrolytes show mild hypokalemia. On mental status examination, she is cooperative, with intact insight into having \\\"a problem with food\\\" but minimal motivation to change. Which of the following is the most likely diagnosis?\",\"choices\":[\"A. Bulimia nervosa\",\"B. Anorexia nervosa, binge-purge type\",\"C. Binge eating disorder\",\"D. Unspecified feeding or eating disorder\",\"E. Anorexia nervosa, restricting type\"],\"correct\":1,\"explanation\":\"The buried clue is the combination of a BMI in the anorexia-severity range (15.9 kg/m²) with recurrent binge-and-laxative episodes over several months → this meets criteria for anorexia's binge-eating/purging type, since the low BMI takes diagnostic priority once binge/purge behavior is also present. The dramatic decoy is the absence of vomiting and knuckle calluses (a negative finding) — a reader anchoring on \\\"no Russell sign, no vomiting\\\" might default to bulimia, but bulimia requires a normal-to-high BMI, and her severely low BMI overrides that surface impression.\",\"wrongExplanations\":{\"0\":\"Bulimia is excluded once anorexia's BMI and restriction criteria are met — her BMI of 15.9 kg/m² clearly falls in the anorexia range, which takes priority.\",\"2\":\"Binge eating disorder requires the absence of compensatory behavior; laxative use after each binge is a compensatory behavior, ruling this out.\",\"3\":\"An unspecified diagnosis applies only when the presentation doesn't fit a specific category; here all criteria for a specific named subtype are met.\",\"4\":\"The restricting type requires the absence of binge-eating or purging in the past 3 months, which contradicts the twice-weekly binge/laxative pattern described.\"},\"eli5\":\"Her BMI is severely low, which points to anorexia rather than bulimia — but because she's also having binge episodes followed by laxative use, she gets the 'binge-purge' subtype rather than 'restricting.'\"},{\"stem\":\"A 16-year-old girl is evaluated by her pediatrician for a 6-month history of progressive food restriction and fear of weight gain. She has lost 15 lb over this period and reports feeling \\\"fat\\\" despite her mother's reassurance. She denies binge eating, vomiting, or laxative use. Height is 163 cm (5 ft 4 in) and weight is 40.5 kg (89 lb); BMI is 15.2 kg/m². Vital signs are otherwise notable only for a pulse of 50/min. Physical and neurologic examinations are unremarkable except for cool extremities. Serum electrolytes and glucose are within the reference range. On mental status examination, she is alert, cooperative, and future-oriented, with no suicidal ideation. Based on her BMI, which of the following severity specifiers is most appropriate for her anorexia nervosa diagnosis?\",\"choices\":[\"A. Mild\",\"B. Moderate\",\"C. Severe\",\"D. Extreme\",\"E. In partial remission\"],\"correct\":2,\"explanation\":\"The buried clue is the precise BMI value of 15.2 kg/m², which falls within the DSM-5 severe range for anorexia (BMI 15.0-15.99 kg/m²) → severe. This item tests literal BMI-to-specifier arithmetic rather than pattern recognition; the surrounding clinical detail (cool extremities, bradycardia) is atmosphere and does not itself determine severity.\",\"wrongExplanations\":{\"0\":\"Mild anorexia corresponds to a BMI of 17-18.5 kg/m², well above this patient's BMI.\",\"1\":\"Moderate anorexia corresponds to a BMI of 16-16.99 kg/m², which does not match 15.2 kg/m².\",\"3\":\"Extreme anorexia requires a BMI below 15 kg/m²; at 15.2 kg/m², she is just above that cutoff, placing her in severe rather than extreme.\",\"4\":\"Partial remission is a course specifier used after a patient has previously met full criteria and since improved — it does not apply to her initial, ongoing presentation.\"},\"eli5\":\"Anorexia severity is graded purely by BMI. Her BMI of 15.2 lands in the 15.0 to 15.99 range, which is labeled 'severe,' just above the 'extreme' cutoff below 15.\"},{\"stem\":\"A 17-year-old girl with a 1-year history of anorexia nervosa is admitted to the hospital for medical stabilization after her BMI dropped to 13.9 kg/m². She has not eaten more than 300 kcal/day for the past 3 weeks. On admission, serum potassium, phosphate, and magnesium are within the reference range. The inpatient team plans to begin nutritional rehabilitation. Which of the following is the most appropriate next step in management?\",\"choices\":[\"A. Match caloric replacement to her pre-illness intake to normalize weight quickly\",\"B. Delay all nutrition until psychiatric consultation is completed\",\"C. Begin total parenteral nutrition immediately\",\"D. Begin cautious caloric replacement with electrolyte repletion\",\"E. Restrict fluid intake before starting oral feeds\"],\"correct\":3,\"explanation\":\"The buried clue is the severity of prior starvation (BMI 13.9 kg/m², under 300 kcal/day for 3 weeks) despite currently normal electrolytes → high risk for refeeding syndrome, in which reintroducing calories too fast drives dangerous intracellular shifts of phosphate, potassium, and magnesium. The correct step is cautious, monitored refeeding with proactive repletion. The dramatic decoy is the impulse to \\\"catch her up\\\" nutritionally as fast as possible given how underweight she is — aggressive replacement is precisely what precipitates the dangerous complication being tested here.\",\"wrongExplanations\":{\"0\":\"Rapid caloric replacement matched to pre-illness intake is the classic error that precipitates refeeding syndrome in severe malnutrition.\",\"1\":\"Delaying all nutrition is not appropriate; medical stabilization and cautious refeeding proceed alongside psychiatric evaluation, not before it.\",\"2\":\"TPN is not indicated; her GI tract is not described as intolerant of oral intake, and TPN adds line-infection and metabolic risk without added benefit.\",\"4\":\"Fluid restriction is not the primary refeeding-syndrome concern; electrolyte monitoring and cautious caloric titration are the key interventions.\"},\"eli5\":\"Her body has been starved so long that feeding her too fast is actually dangerous — it can crash her phosphate, potassium, and magnesium and hurt her heart. The safe move is slow, monitored refeeding.\"},{\"stem\":\"A 20-year-old woman with a 1-year history of self-induced vomiting after most meals presents with generalized weakness. She denies laxative or diuretic use. Vital signs are within the reference range except for a pulse of 58/min. Physical examination shows calluses over the dorsum of her right hand and enamel erosion on the lingual surfaces of her upper incisors. Serum studies are obtained. Which of the following acid-base and electrolyte patterns is most likely to be present?\",\"choices\":[\"A. Metabolic acidosis with hyponatremia and hyperchloremia\",\"B. Respiratory alkalosis with hypocalcemia\",\"C. Metabolic acidosis with hyperkalemia\",\"D. Respiratory acidosis with hypercapnia\",\"E. Metabolic alkalosis with hypochloremia and hypokalemia\"],\"correct\":4,\"explanation\":\"The buried clue is the explicit negative history (no laxative or diuretic use), isolating vomiting as the sole purging mechanism → loss of gastric hydrochloric acid produces a hypochloremic, hypokalemic metabolic alkalosis. The dramatic decoy is the Russell sign and dental erosion, which vividly confirm the purging behavior itself but carry no acid-base information — the question is about the metabolic consequence, not the diagnosis.\",\"wrongExplanations\":{\"0\":\"This is the pattern seen with laxative abuse, which the stem specifically excludes.\",\"1\":\"The acid-base disturbance from vomiting is metabolic (loss of gastric acid), not a primary respiratory process.\",\"2\":\"Vomiting causes hypokalemia, not hyperkalemia, from both direct potassium loss and a compensatory renal response to alkalosis.\",\"3\":\"There is no mechanism here that would cause CO2 retention; vomiting does not cause a primary respiratory acidosis.\"},\"eli5\":\"When you vomit a lot, you lose stomach acid and potassium, which makes your blood more basic (alkalosis) with low chloride and low potassium — the opposite of laxative abuse.\"},{\"stem\":\"A 24-year-old woman with a 2-year history of anorexia nervosa is admitted for nutritional rehabilitation after presenting with a BMI of 13.2 kg/m². Dextrose-containing intravenous fluids are started. Twelve hours later, she develops new-onset confusion, unsteady gait, and impaired lateral gaze bilaterally on examination. Vital signs are stable. Blood glucose is within the reference range. Which of the following is the most appropriate next step in management?\",\"choices\":[\"A. Administer intravenous thiamine before further dextrose\",\"B. Obtain an MRI of the brain for suspected cerebellar infarction\",\"C. Discontinue intravenous fluids and observe\",\"D. Order an electroencephalogram for suspected status epilepticus\",\"E. Increase the dextrose infusion rate for suspected hypoglycemia\"],\"correct\":0,\"explanation\":\"The buried clue is the timing: new confusion, ataxia, and ophthalmoplegia shortly after starting dextrose in a chronically malnourished patient → this is Wernicke encephalopathy unmasked by carbohydrate administration in a thiamine-depleted patient, since glucose metabolism consumes thiamine as a cofactor. The dramatic decoy is the temptation to image the brain for a stroke given the acute neurologic change — but the classic triad in this clinical context is a treatable metabolic emergency that should not wait for imaging.\",\"wrongExplanations\":{\"1\":\"Neuroimaging may eventually be reasonable to exclude other causes, but should not delay empiric thiamine in a case this classic for Wernicke encephalopathy.\",\"2\":\"Simply stopping fluids does not address the underlying thiamine deficiency driving her symptoms.\",\"3\":\"There is no description of seizure activity; the triad described is classic for Wernicke encephalopathy, not a seizure disorder.\",\"4\":\"Her glucose is already normal; increasing dextrose would further deplete thiamine stores and worsen the encephalopathy.\"},\"eli5\":\"Giving sugar-containing IV fluids to someone who's been starving can use up their last bit of vitamin B1, triggering confusion and clumsy eye movements. The fix is thiamine right away, not more sugar or a scan first.\"},{\"stem\":\"A 26-year-old woman with bulimia nervosa, diagnosed 8 months ago, returns to her psychiatrist for follow-up. She continues to have twice-weekly binge-eating episodes followed by self-induced vomiting despite weekly cognitive behavioral therapy. She reports low mood, poor concentration, and anhedonia over the past 6 weeks that have not improved with therapy alone. Vital signs and physical examination are unremarkable except for mild dental erosion. She and her psychiatrist discuss starting an antidepressant. Which of the following medications is contraindicated in this patient?\",\"choices\":[\"A. Sertraline\",\"B. Bupropion\",\"C. Topiramate\",\"D. Ondansetron\",\"E. Fluoxetine\"],\"correct\":1,\"explanation\":\"The buried clue is the active bulimia diagnosis with ongoing purging behavior → bupropion carries a boxed warning against use in current or recent bulimia/anorexia because purging-related electrolyte disturbances and dehydration lower the seizure threshold, and bupropion itself increases seizure risk in a dose-dependent way. The dramatic decoy is her comorbid depressive symptoms, which might tempt a reader toward whichever antidepressant they consider \\\"first-line\\\" in general practice without checking for an eating-disorder-specific contraindication.\",\"wrongExplanations\":{\"0\":\"Sertraline (an SSRI) is a reasonable, commonly used choice for comorbid depression in bulimia nervosa.\",\"2\":\"Topiramate is actually used adjunctively in bulimia to help reduce binge frequency; it is not contraindicated.\",\"3\":\"Ondansetron is used off-label in bulimia to help reduce purging and is not contraindicated.\",\"4\":\"Fluoxetine is an SSRI with an FDA indication specifically for bulimia nervosa and is not contraindicated.\"},\"eli5\":\"Bupropion can lower the seizure threshold, and purging already raises seizure risk from electrolyte swings — so doctors avoid bupropion in anyone with active or recent bulimia or anorexia.\"},{\"stem\":\"A 25-year-old woman presents to her primary care physician for a routine visit. During the interview, she discloses that for the past 4 months, she has eaten an entire pizza and a carton of ice cream within a 2-hour period, several times per week, \\\"feeling like I can't stop once I start.\\\" Afterward, she induces vomiting because she is \\\"terrified of gaining weight.\\\" She reports that her self-esteem is \\\"completely tied to how thin I look.\\\" She denies any history of low body weight or amenorrhea. Vital signs are within the reference range. Height is 165 cm (5 ft 5 in) and weight is 65 kg (143 lb); BMI is 23.9 kg/m². Physical examination shows calluses over the knuckles of her dominant hand. On mental status examination, she is cooperative and future-oriented, with no suicidal ideation. Which of the following is the most likely diagnosis?\",\"choices\":[\"A. Anorexia nervosa\",\"B. Major depressive disorder\",\"C. Bulimia nervosa\",\"D. Binge eating disorder\",\"E. Unspecified eating disorder\"],\"correct\":2,\"explanation\":\"The buried clue is the normal BMI (23.9 kg/m²) combined with recurrent binge-vomit cycles and self-worth tied to body shape → bulimia nervosa. The dramatic decoy is the Russell sign (knuckle calluses), a vivid finding a reader might reflexively associate with anorexia — but the finding only confirms self-induced vomiting and is compatible with either diagnosis; it is the BMI, not the exam finding, that excludes anorexia here.\",\"wrongExplanations\":{\"0\":\"Anorexia (any subtype) requires a significantly low body weight; her BMI of 23.9 kg/m² is within the normal range, excluding this diagnosis.\",\"1\":\"Atypical-featured depression can cause increased appetite and weight gain, but it does not account for the recurrent purging behavior or self-worth tied specifically to body shape.\",\"3\":\"Binge eating disorder requires the absence of compensatory behavior; her self-induced vomiting after each binge is a compensatory behavior, ruling this out.\",\"4\":\"An unspecified diagnosis is reserved for presentations that don't meet full criteria for a specific disorder; she meets full criteria for bulimia nervosa.\"},\"eli5\":\"She's binging and then making herself vomit because she's terrified of gaining weight, and her BMI is normal — that combination is textbook bulimia, not anorexia.\"},{\"stem\":\"A 21-year-old woman is evaluated for bulimia nervosa. She reports that over the past 2 months, she has had binge-eating episodes followed by self-induced vomiting on 5 occasions per week. She has no other compensatory behaviors. Based on the frequency of her compensatory behaviors, which of the following severity specifiers is most appropriate?\",\"choices\":[\"A. Mild\",\"B. Severe\",\"C. Extreme\",\"D. Moderate\",\"E. In full remission\"],\"correct\":3,\"explanation\":\"The buried clue is the stated frequency of 5 compensatory episodes per week, which falls within the DSM-5 moderate range for bulimia (4-7 episodes/week) → moderate. As with the anorexia BMI-arithmetic item, this question tests literal frequency-to-specifier mapping rather than pattern recognition.\",\"wrongExplanations\":{\"0\":\"Mild bulimia corresponds to 1-3 compensatory episodes per week, fewer than the 5 described.\",\"1\":\"Severe bulimia corresponds to 8-13 episodes per week, more than the 5 described.\",\"2\":\"Extreme bulimia requires 14 or more compensatory episodes per week.\",\"4\":\"Full remission applies only after previously meeting full criteria and then sustaining improvement; this patient has ongoing, active symptoms.\"},\"eli5\":\"Bulimia severity is graded by how many compensatory episodes happen per week. Five times a week lands in the 4-7 range, which is 'moderate.'\"},{\"stem\":\"A 34-year-old man presents to his physician because of a 7-month history of eating unusually large amounts of food, particularly at night, \\\"way more than anyone else would eat in that time,\\\" accompanied by a sense of being unable to control his eating. These episodes occur approximately 4 times per week. He reports intense embarrassment about his eating and often eats alone because of it. He does not induce vomiting, use laxatives, fast, or exercise in response to these episodes. Height is 178 cm (5 ft 10 in) and weight is 104 kg (229 lb); BMI is 32.8 kg/m². Physical examination is notable only for obesity; there is no lanugo or knuckle callus formation. Which of the following is the most likely diagnosis?\",\"choices\":[\"A. Bulimia nervosa\",\"B. Anorexia nervosa, binge-purge type\",\"C. Night eating syndrome\",\"D. Major depressive disorder\",\"E. Binge eating disorder\"],\"correct\":4,\"explanation\":\"The buried clue is the explicit negative history of any compensatory behavior → the recurrent binge pattern with embarrassment and loss of control, with no compensatory behavior at all, meets criteria for binge eating disorder. The dramatic decoy is the nighttime timing of his episodes, which might tempt a reader toward a circadian-eating framing, but timing alone is not a diagnostic criterion for any listed disorder.\",\"wrongExplanations\":{\"0\":\"Bulimia nervosa specifically requires recurrent inappropriate compensatory behavior, which this patient explicitly does not have.\",\"1\":\"Anorexia requires a significantly low body weight; his BMI of 32.8 kg/m² indicates obesity, the opposite finding.\",\"2\":\"Night eating syndrome features evening hyperphagia and nocturnal awakenings to eat, generally without the discrete loss-of-control binge episodes and distress described here.\",\"3\":\"MDD can affect appetite, but does not specifically produce discrete binge episodes with loss of control as the primary presenting problem.\"},\"eli5\":\"He's having big binge-eating episodes with real loss of control, but he never compensates afterward — no compensation at all is exactly what makes this binge eating disorder rather than bulimia.\"},{\"stem\":\"A 29-year-old woman with binge eating disorder, diagnosed 3 months ago, has had minimal improvement in binge frequency despite 12 weeks of weekly cognitive behavioral therapy. She and her psychiatrist discuss adding pharmacotherapy. She has no history of hypertension, cardiac arrhythmia, or substance use disorder. Which of the following is the most appropriate pharmacotherapy?\",\"choices\":[\"A. Lisdexamfetamine\",\"B. Bupropion\",\"C. Naltrexone monotherapy\",\"D. Lithium\",\"E. Clozapine\"],\"correct\":0,\"explanation\":\"The buried clue is the explicit negative history of cardiovascular disease and substance use disorder, pre-emptively clearing the main relative cautions for stimulant therapy → lisdexamfetamine is the only FDA-approved option for binge eating disorder among these choices. The dramatic decoy is the general instinct to reach for an antidepressant or mood stabilizer for a psychiatric eating complaint, when the specifically-indicated, evidence-based option here is a stimulant.\",\"wrongExplanations\":{\"1\":\"Bupropion is not indicated for binge eating disorder and, notably, carries a specific contraindication in bulimia/anorexia because of seizure risk.\",\"2\":\"Naltrexone (often combined with bupropion) is used for weight management and alcohol/opioid use disorder, not as a primary binge eating disorder treatment.\",\"3\":\"Lithium is used for bipolar disorder and has no established role in binge eating disorder.\",\"4\":\"Clozapine is reserved for treatment-resistant schizophrenia and is inappropriate and unnecessarily high-risk here.\"},\"eli5\":\"Vyvanse (lisdexamfetamine) is the medication that's actually FDA-approved for binge eating disorder, and this patient doesn't have any of the heart or substance-use issues that would make a stimulant risky.\"},{\"stem\":\"A 9-year-old boy with a history of neonatal hypotonia and mild intellectual disability is brought to the pediatrician because of insatiable hunger and rapid weight gain over the past 2 years despite a controlled home diet. His parents report he will eat food from the trash if not supervised. Genetic testing reveals a deletion on the paternally inherited chromosome 15. Which of the following eating-related diagnoses is this patient at increased risk for as he grows older?\",\"choices\":[\"A. Anorexia nervosa\",\"B. Binge eating disorder\",\"C. Bulimia nervosa\",\"D. Pica\",\"E. Body dysmorphic disorder\"],\"correct\":1,\"explanation\":\"The buried clue is the paternal chromosome 15 deletion combined with hyperphagia and hypotonia → Prader-Willi syndrome, which is specifically associated with an increased risk of binge eating disorder due to persistent, biologically driven hyperphagia and impaired satiety signaling. The dramatic decoy is the dramatic, almost bizarre eating behavior (eating from the trash), which might tempt a reader toward pica — but eating discarded food out of insatiable hunger reflects hyperphagia, not ingestion of genuinely non-nutritive substances.\",\"wrongExplanations\":{\"0\":\"Anorexia involves restriction and fear of weight gain, the opposite of the hyperphagia-driven weight gain described here.\",\"2\":\"Bulimia's hallmark compensatory behavior is not a feature associated with Prader-Willi syndrome's eating pathology.\",\"3\":\"Pica requires eating non-nutritive substances; eating discarded (but still food) items driven by hyperphagia does not meet this definition.\",\"4\":\"Body dysmorphic disorder is unrelated to the appetite-dysregulation pathophysiology of Prader-Willi syndrome.\"},\"eli5\":\"This boy's genetics point to Prader-Willi syndrome, which causes a never-satisfied hunger drive — and that same hyperphagia is exactly what puts these patients at higher risk for binge eating disorder.\"},{\"stem\":\"A 58-year-old man is brought to the emergency department after a witnessed cardiac arrest with 12 minutes of hypoxia before resuscitation. Two weeks later, his family reports that he has become markedly placid, attempts to eat non-food objects and excessive amounts of food indiscriminately, and has made repeated inappropriate sexual comments to hospital staff, which is out of character for him. MRI of the brain shows bilateral signal changes most pronounced in the medial temporal lobes. Which of the following best explains this patient's new behavioral pattern?\",\"choices\":[\"A. Bilateral orbitofrontal cortex injury\",\"B. Bilateral dorsolateral prefrontal injury\",\"C. Bilateral amygdala and medial temporal lobe injury\",\"D. Bilateral hippocampal injury with isolated amnesia\",\"E. Bilateral caudate nucleus injury\"],\"correct\":2,\"explanation\":\"The buried clue is the imaging finding of bilateral medial temporal lobe signal change (a classic hypoxic-injury site for the amygdala) paired with hyperorality, placidity, and hypersexuality → this triad is Kluver-Bucy syndrome, historically described after bilateral amygdala/temporal lobe injury. The dramatic decoy is the inappropriate sexual comments, which might tempt a reader toward a frontal-lobe disinhibition syndrome — but the imaging localization to the medial temporal lobes, plus the accompanying hyperorality, point specifically to Kluver-Bucy rather than isolated frontal disinhibition.\",\"wrongExplanations\":{\"0\":\"Orbitofrontal injury classically causes disinhibition and personality change but not the specific hyperorality seen here, and imaging localizes to the temporal, not frontal, lobes.\",\"1\":\"Dorsolateral prefrontal injury classically produces executive dysfunction and apathy, not this behavioral triad.\",\"3\":\"Isolated hippocampal injury would primarily cause amnesia without the hyperorality or hypersexuality described.\",\"4\":\"Caudate injury is more associated with movement disorders (e.g., chorea) than this behavioral triad.\"},\"eli5\":\"Damage to both amygdalae/temporal lobes (here from a period without oxygen) can cause Kluver-Bucy syndrome: the person becomes unusually calm, tries to eat almost anything, and loses normal social filters.\"},{\"stem\":\"A 27-year-old woman who is 22 weeks pregnant tells her obstetrician that for the past 2 months, she has had strong urges to eat ice chips and, more recently, pieces of chalk from a chalkboard at her workplace, which she has acted on several times per week. She reports no other change in appetite. Laboratory studies show a hemoglobin of 9.8 g/dL and a low serum ferritin. She has no history of developmental disability or psychotic disorder. Which of the following is the most appropriate next step in management?\",\"choices\":[\"A. Reassure her that this is a normal variant of pregnancy craving\",\"B. Refer for psychiatric hospitalization\",\"C. Obtain a head CT for a structural cause\",\"D. Begin oral iron supplementation and evaluate for pica\",\"E. Recommend no treatment, since this is culturally normal behavior\"],\"correct\":3,\"explanation\":\"The buried clue is the combination of a specific non-food substance (chalk) eaten repeatedly with objective iron-deficiency anemia → this meets the severity and specificity threshold for a pica diagnosis even in the context of pregnancy and iron deficiency, and the correct step addresses both the underlying deficiency and the behavior. The dramatic decoy is that pica is often dismissed as a benign pregnancy phenomenon — the decoy tempts a reader toward blanket reassurance, when the specific substance (chalk) and degree of anemia here cross the threshold for active management.\",\"wrongExplanations\":{\"0\":\"Mild ice craving alone can be a normal pregnancy variant, but eating chalk specifically and repeatedly, with objective anemia, crosses the threshold requiring evaluation rather than simple reassurance.\",\"1\":\"Psychiatric hospitalization is not indicated for pica in the absence of any acute safety concern or medical emergency.\",\"2\":\"There is no neurologic finding suggesting a structural brain lesion; her presentation is explained by pica associated with iron deficiency.\",\"4\":\"Eating chalk is not a culturally sanctioned practice, and repeated ingestion with anemia warrants clinical attention rather than dismissal.\"},\"eli5\":\"Craving and eating chalk, not just ice, along with real iron deficiency is enough to call this pica, not just normal pregnancy cravings — the right move is to treat the iron deficiency and address the behavior.\"},{\"stem\":\"A 24-year-old man presents to his physician because of a 1-year history of spending \\\"hours a day\\\" checking his reflection in mirrors and repeatedly asking his roommates whether his nose looks \\\"crooked and huge.\\\" He has seen two plastic surgeons, both of whom told him his nose appears normal. He reports significant distress and has turned down a job promotion because it would require more in-person client meetings. He has no history of dieting, caloric restriction, or fear of weight gain, and his weight has been stable. Height is 178 cm (5 ft 10 in) and weight is 77 kg (170 lb); BMI is 24.3 kg/m². Which of the following is the most likely diagnosis?\",\"choices\":[\"A. Anorexia nervosa\",\"B. Obsessive-compulsive disorder\",\"C. Illness anxiety disorder\",\"D. Social anxiety disorder\",\"E. Body dysmorphic disorder\"],\"correct\":4,\"explanation\":\"The buried clue is the explicit negative history of dieting, restriction, and fear of weight gain with a stable, normal BMI → this rules out anorexia, leaving body dysmorphic disorder (preoccupation with a nonexistent/slight defect, significant distress, repetitive checking) as the diagnosis. The dramatic decoy is the repetitive mirror-checking and reassurance-seeking, which strongly resembles OCD's compulsions — but the content of his preoccupation is specifically about physical appearance, which is definitionally body dysmorphic disorder rather than OCD.\",\"wrongExplanations\":{\"0\":\"Anorexia requires food restriction and fear of weight gain with low body weight; his BMI is normal and he has no dieting history, explicitly excluding this diagnosis.\",\"1\":\"OCD can feature checking compulsions, but when the exclusive content of the preoccupation is a perceived physical defect, body dysmorphic disorder is the more specific, correct diagnosis.\",\"2\":\"Illness anxiety disorder involves preoccupation with having an undiagnosed medical illness, not with the appearance of a body part.\",\"3\":\"Social anxiety disorder involves fear of negative evaluation in social situations generally, not a focal preoccupation with a perceived physical defect.\"},\"eli5\":\"He's fixated on a nose flaw that doesn't actually exist, checks mirrors constantly, and it's ruining his life — but he's not restricting food or afraid of gaining weight, so this is body dysmorphic disorder, not anorexia.\"},{\"stem\":\"A 20-year-old woman presents for evaluation after her mother expresses concern about her eating habits. Over the past 5 months, she has progressively restricted her caloric intake and now eats fewer than 900 kcal/day. She reports an intense fear of gaining weight and states, \\\"I still feel like I take up too much space,\\\" despite having lost 18 lb. She denies any binge-eating or purging behavior. Height is 168 cm (5 ft 6 in) and weight is 55 kg (121 lb); BMI is 19.5 kg/m². Menstrual cycles have remained regular. Physical examination is unremarkable. On mental status examination, she is cooperative, with mildly anxious affect, and denies suicidal ideation. Which of the following is the most likely diagnosis?\",\"choices\":[\"A. Unspecified feeding or eating disorder\",\"B. Anorexia nervosa, restricting subtype\",\"C. Bulimia nervosa\",\"D. Binge eating disorder\",\"E. Major depressive disorder\"],\"correct\":0,\"explanation\":\"The buried clue is the precise BMI of 19.5 kg/m², which is within the normal range and does not meet the low-body-weight requirement for anorexia despite an otherwise textbook symptom pattern → the correct category is an unspecified feeding or eating disorder, used when the picture strongly resembles a specific disorder but a required criterion is not met. The dramatic decoy is the vivid, textbook-sounding anorexia language (\\\"take up too much space,\\\" significant recent weight loss), designed to pull a reader toward anorexia nervosa without checking the actual BMI value against the diagnostic threshold.\",\"wrongExplanations\":{\"1\":\"Anorexia requires a significantly low body weight; a BMI of 19.5 kg/m² is within the normal range, so this criterion is not met despite the otherwise matching symptom pattern.\",\"2\":\"Bulimia nervosa requires recurrent binge-eating and compensatory behavior, both explicitly denied here.\",\"3\":\"Binge eating disorder requires recurrent binge episodes, which are absent in this vignette.\",\"4\":\"There is no described disturbance in mood, sleep, energy, or interest beyond her eating-related anxiety; this is specifically an eating-pattern disturbance.\"},\"eli5\":\"She has the fear-of-weight-gain and body-image-distortion pattern of anorexia, but her BMI is actually normal — so instead of anorexia, this gets labeled an 'unspecified feeding or eating disorder' because one required piece (very low body weight) is missing.\"},{\"stem\":\"A 23-year-old woman with a history of eating disorder symptoms is evaluated for fatigue and palpitations. She denies any history of thyroid disease. Physical examination shows a fine resting tremor and a pulse of 108/min. Laboratory studies show a suppressed TSH and an elevated free T4. Which of the following substances, if used by this patient without a medical indication, most likely explains these findings?\",\"choices\":[\"A. Loratadine\",\"B. Levothyroxine\",\"C. Metoprolol\",\"D. Omeprazole\",\"E. Sertraline\",\"F. Ibuprofen\",\"G. Amitriptyline\"],\"correct\":1,\"explanation\":\"The buried clue is the biochemical pattern of a suppressed TSH with elevated free T4 in a patient with no history of thyroid disease → this pattern indicates exogenous thyroid hormone (levothyroxine) intake, which patients with eating disorders sometimes misuse to artificially accelerate metabolism and promote weight loss. The dramatic decoy is the tremor and tachycardia, which could suggest a misused stimulant — but stimulants would not specifically produce a suppressed TSH with elevated free T4; that lab pattern is diagnostic of thyroid hormone excess specifically.\",\"wrongExplanations\":{\"0\":\"Loratadine (an antihistamine) has no effect on thyroid function tests.\",\"2\":\"Metoprolol is a beta-blocker and would not cause a suppressed TSH or elevated free T4; if anything, it would blunt the tachycardia seen here.\",\"3\":\"Omeprazole (a proton pump inhibitor) has no relevant effect on thyroid function.\",\"4\":\"Sertraline (an SSRI) does not characteristically cause this thyroid function pattern.\",\"5\":\"Ibuprofen has no relevant effect on thyroid function tests.\",\"6\":\"Amitriptyline (a tricyclic antidepressant) has no relevant effect on thyroid function tests.\"},\"eli5\":\"Her thyroid blood tests look like someone with too much thyroid hormone, but she doesn't have thyroid disease — which means she's likely taking levothyroxine on her own to speed up her metabolism and lose weight.\"},{\"stem\":\"A 22-year-old woman with a 1-year history of bulimia nervosa presents for a follow-up visit. She reports ongoing self-induced vomiting approximately 4 times per week. Vital signs are within the reference range. Serum potassium is 2.9 mEq/L. She reports occasional palpitations over the past week but no chest pain or syncope. Which of the following is the most appropriate next step in diagnosis?\",\"choices\":[\"A. Bone density scan\",\"B. Upper endoscopy\",\"C. Electrocardiogram\",\"D. Thyroid-stimulating hormone level\",\"E. Urine toxicology screening\"],\"correct\":2,\"explanation\":\"The buried clue is the combination of significant hypokalemia (2.9 mEq/L) with new palpitations → concern for a potassium-related cardiac arrhythmia (including QTc prolongation), making an electrocardiogram the necessary, most urgent next diagnostic step. The dramatic decoy is her chronic bulimia diagnosis itself, which might tempt a reader toward a bulimia-associated but non-urgent test rather than addressing the acute, potentially life-threatening electrolyte-cardiac issue in front of them right now.\",\"wrongExplanations\":{\"0\":\"A bone density scan evaluates for chronic osteopenia/osteoporosis, a longer-term anorexia-associated complication, and does not address her acute hypokalemia and palpitations.\",\"1\":\"Upper endoscopy might eventually be considered for esophageal complications of chronic vomiting but does not address the acute cardiac risk from hypokalemia.\",\"3\":\"A TSH level would be relevant if thyroid hormone misuse were suspected, but it does not address her current palpitations and low potassium.\",\"4\":\"A urine toxicology screen might be part of a broader stimulant-misuse workup but is not the most urgent step given her acute electrolyte and cardiac symptoms.\"},\"eli5\":\"Her potassium is low and she's having heart palpitations — that combination means the most important next test is an EKG to check for a dangerous heart rhythm problem.\"},{\"stem\":\"A 23-year-old woman is brought to the physician's office by her mother, who is worried because her daughter has lost a significant amount of weight over the past 4 months and \\\"barely eats anything anymore.\\\" The mother does most of the talking during the initial minutes of the visit while the patient sits quietly, looking down. When the physician asks the patient directly how she is feeling, she becomes tearful and says, \\\"I don't even know why I'm here, nothing is wrong with me.\\\" Which of the following is the most appropriate response by the physician at this point?\",\"choices\":[\"A. Ask the mother to describe the patient's eating behavior in detail\",\"B. Proceed directly to obtaining vital signs and weight\",\"C. Tell the patient that her mother is right to be concerned\",\"D. Acknowledge her distress; ask directly about self-harm\",\"E. Ask the mother to step out to obtain a family history\"],\"correct\":3,\"explanation\":\"The buried clue is the patient's tearfulness and defensive minimization immediately after being addressed directly → the physician should first validate her evident distress, then move directly to assessing safety (suicidal ideation), since eating disorders carry substantial suicide risk. The dramatic decoy is the mother's presence and clear concern, which might tempt a reader toward continuing to gather information through the mother rather than centering the interview on the patient herself, who is a competent adult in the room.\",\"wrongExplanations\":{\"0\":\"Continuing to gather history through the mother, rather than engaging the patient directly, triangulates communication away from the patient, who is a competent adult and should be centered in the conversation.\",\"1\":\"Proceeding straight to a physical measurement without first acknowledging her emotional state and assessing safety skips over the more urgent psychological priority.\",\"2\":\"Validating the mother's concern to the patient before assessing her own perspective and safety feels confrontational and does not address safety first.\",\"4\":\"Asking the mother to step out is reasonable at some point, but it is not the most immediately appropriate action given the patient's visible distress right now.\"},\"eli5\":\"When a patient looks upset and shuts down after being asked how she's doing, the right first move is to gently acknowledge that it seems hard for her and then ask directly if she's had thoughts of hurting herself.\"},{\"stem\":\"A 26-year-old woman with a 3-year history of anorexia nervosa, restricting type, is seen for routine follow-up. Her BMI has been stable at 17.8 kg/m² for the past 6 months with ongoing outpatient therapy. She reports that she washes her hands \\\"at least 30 times a day\\\" and spends over 2 hours arranging her food into a specific pattern before she is able to eat, behaviors that have been present since adolescence and are not related to caloric content or weight concerns. She finds these behaviors distressing but feels unable to stop them. Which of the following is the most likely explanation for these additional behaviors?\",\"choices\":[\"A. A normal ritualistic feature of anorexia nervosa\",\"B. Emerging psychotic disorder\",\"C. Malingering for increased attention\",\"D. Body dysmorphic disorder\",\"E. Comorbid obsessive-compulsive disorder\"],\"correct\":4,\"explanation\":\"The buried clue is the explicit statement that the rituals are \\\"not related to caloric content or weight concerns\\\" and have been present since adolescence → this content is unrelated to her eating disorder, meeting criteria for a separate, comorbid diagnosis of OCD rather than being folded into her anorexia. The dramatic decoy is the food-arranging behavior, which sounds eating-disorder-adjacent on the surface and might tempt a reader to lump it in with her anorexia rituals — but the stem specifically excludes a weight/caloric motivation, which is the detail that separates it out as OCD.\",\"wrongExplanations\":{\"0\":\"Anorexia-related food rituals are typically tied to caloric or weight concerns; these behaviors are explicitly stated to be unrelated to that content, making a separate diagnosis more appropriate.\",\"1\":\"There is no description of psychotic symptoms; repetitive, distressing behaviors the patient recognizes as excessive are typical of OCD, not psychosis.\",\"2\":\"Malingering implies conscious fabrication for external gain; her distress and inability to stop the behaviors argue against intentional feigning.\",\"3\":\"Body dysmorphic disorder involves preoccupation with a perceived physical defect, not generalized handwashing and food-arranging rituals unrelated to appearance.\"},\"eli5\":\"Her anorexia is stable, but she also has separate handwashing and arranging rituals that have nothing to do with food or weight — since she's distressed and can't stop, that points to a second diagnosis, OCD, on top of her anorexia.\"}]";
+var PRELOADED_UI_MODE="nbme";
+var DEFAULT_QUESTION_COUNT=15;
+var MAX_AI_QUESTION_COUNT=25;
+var DOWNLOAD_TEMPLATE='';
+var LAB_SECTIONS=[{"title":"Serum","rows":[{"name":"Alanine aminotransferase (ALT)","us":"10–40 U/L","si":"10–40 U/L"},{"name":"Aspartate aminotransferase (AST)","us":"12–38 U/L","si":"12–38 U/L"},{"name":"Alkaline phosphatase","us":"25–100 U/L","si":"25–100 U/L"},{"name":"Amylase","us":"25–125 U/L","si":"25–125 U/L"},{"name":"Bilirubin, total // direct","us":"0.1–1.0 mg/dL // 0.0–0.3 mg/dL","si":"2–17 µmol/L // 0–5 µmol/L"},{"name":"Calcium","us":"8.4–10.2 mg/dL","si":"2.1–2.6 mmol/L"},{"group":"Cholesterol"},{"name":"Total","us":"Normal: &lt;200 mg/dL // High: &gt;240 mg/dL","si":"&lt;5.2 mmol/L // &gt;6.2 mmol/L"},{"name":"HDL","us":"40–60 mg/dL","si":"1.0–1.6 mmol/L"},{"name":"LDL","us":"&lt;160 mg/dL","si":"&lt;4.2 mmol/L"},{"name":"Triglycerides","us":"Normal: &lt;150 mg/dL // Borderline: 151–199 mg/dL","si":"&lt;1.70 mmol/L // 1.71–2.25 mmol/L"},{"name":"Cortisol","us":"0800 h: 5–23 µg/dL // 1600 h: 3–15 µg/dL","si":"138–635 nmol/L // 82–413 nmol/L"},{"name":"","us":"2000 h: &lt;50% of 0800 h","si":"Fraction of 0800 h: &lt;0.50"},{"name":"Creatine kinase","us":"Male: 25–90 U/L","si":"25–90 U/L"},{"name":"","us":"Female: 10–70 U/L","si":"10–70 U/L"},{"name":"Creatinine","us":"0.6–1.2 mg/dL","si":"53–106 µmol/L"},{"name":"Urea nitrogen","us":"7–18 mg/dL","si":"2.5–6.4 mmol/L"},{"name":"Creatinine clearance","us":"Male: 97–137 mL/min","si":"97–137 mL/min"},{"name":"","us":"Female: 88–128 mL/min","si":"88–128 mL/min"},{"group":"Electrolytes, serum"},{"name":"Sodium (Na<sup>+</sup>)","us":"136–146 mEq/L","si":"136–146 mmol/L"},{"name":"Potassium (K<sup>+</sup>)","us":"3.5–5.0 mEq/L","si":"3.5–5.0 mmol/L"},{"name":"Chloride (Cl<sup>−</sup>)","us":"95–105 mEq/L","si":"95–105 mmol/L"},{"name":"Bicarbonate (HCO<sub>3</sub><sup>−</sup>)","us":"22–28 mEq/L","si":"22–28 mmol/L"},{"name":"Magnesium (Mg<sup>2+</sup>)","us":"1.5–2.0 mg/dL","si":"0.75–1.0 mmol/L"},{"name":"Ferritin","us":"Male: 20–250 ng/mL","si":"20–250 µg/L"},{"name":"","us":"Female: 10–120 ng/mL","si":"10–120 µg/L"},{"name":"Follicle-stimulating hormone","us":"Male: 4–25 mIU/mL","si":"4–25 U/L"},{"name":"","us":"Female: premenopause 4–30 mIU/mL","si":"4–30 U/L"},{"name":"","us":"midcycle peak 10–90 mIU/mL","si":"10–90 U/L"},{"name":"","us":"postmenopause 40–250 mIU/mL","si":"40–250 U/L"},{"name":"Glucose","us":"Fasting: 70–100 mg/dL","si":"3.8–5.6 mmol/L"},{"name":"","us":"Random, non-fasting: &lt;140 mg/dL","si":"&lt;7.77 mmol/L"},{"name":"Growth hormone - arginine stimulation","us":"Fasting: &lt;5 ng/mL","si":"&lt;5 µg/L"},{"name":"","us":"Provocative stimuli: &gt;7 ng/mL","si":"&gt;7 µg/L"},{"name":"Iron","us":"Male: 65–175 µg/dL","si":"11.6–31.3 µmol/L"},{"name":"","us":"Female: 50–170 µg/dL","si":"9.0–30.4 µmol/L"},{"name":"Total iron-binding capacity","us":"250–400 µg/dL","si":"44.8–71.6 µmol/L"},{"name":"Transferrin","us":"200–360 mg/dL","si":"2.0–3.6 g/L"},{"name":"Lactate dehydrogenase","us":"45–200 U/L","si":"45–200 U/L"},{"name":"Lipase","us":"13–60 U/L","si":"13–60 U/L"},{"name":"Luteinizing hormone","us":"Male: 6–23 mIU/mL","si":"6–23 U/L"},{"name":"","us":"Female: follicular phase 5–30 mIU/mL","si":"5–30 IU/L"},{"name":"","us":"midcycle 75–150 mIU/mL","si":"75–150 IU/L"},{"name":"","us":"postmenopause 30–200 mIU/mL","si":"30–200 IU/L"},{"name":"Osmolality","us":"275–295 mOsmol/kg H<sub>2</sub>O","si":"275–295 mOsmol/kg H<sub>2</sub>O"},{"name":"Intact parathyroid hormone (PTH)","us":"10–60 pg/mL","si":"10–60 ng/L"},{"name":"Phosphorus (inorganic)","us":"3.0–4.5 mg/dL","si":"1.0–1.5 mmol/L"},{"name":"Prolactin (hPRL)","us":"Male: &lt;17 ng/mL","si":"&lt;17 µg/L"},{"name":"","us":"Female: &lt;25 ng/mL","si":"&lt;25 µg/L"},{"group":"Proteins"},{"name":"Total","us":"6.0–7.8 g/dL","si":"60–78 g/L"},{"name":"Albumin","us":"3.5–5.5 g/dL","si":"35–55 g/L"},{"name":"Globulin","us":"2.3–3.5 g/dL","si":"23–35 g/L"},{"name":"Troponin I","us":"≤0.04 ng/mL","si":"≤0.04 µg/L"},{"name":"TSH","us":"0.4–4.0 μU/mL","si":"0.4–4.0 mIU/L"},{"name":"Thyroidal iodine (<sup>123</sup>I) uptake","us":"8%–30% of administered dose/24 h","si":"0.08–0.30/24 h"},{"name":"Thyroxine (T<sub>4</sub>)","us":"5–12 µg/dL","si":"64–155 nmol/L"},{"name":"Free T<sub>4</sub>","us":"0.9–1.7 ng/dL","si":"12.0–21.9 pmol/L"},{"name":"Triiodothyronine (T<sub>3</sub>) (RIA)","us":"100–200 ng/dL","si":"1.5–3.1 nmol/L"},{"name":"Triiodothyronine (T<sub>3</sub>) resin uptake","us":"25%–35%","si":"0.25–0.35"},{"name":"Uric acid","us":"3.0–8.2 mg/dL","si":"0.18–0.48 mmol/L"},{"group":"Immunoglobulins"},{"name":"IgA","us":"76–390 mg/dL","si":"0.76–3.90 g/L"},{"name":"IgE","us":"0–380 IU/mL","si":"0–380 kIU/L"},{"name":"IgG","us":"650–1500 mg/dL","si":"6.5–15.0 g/L"},{"name":"IgM","us":"50–300 mg/dL","si":"0.5–3.0 g/L"},{"group":"Gases, arterial blood (room air)"},{"name":"pH","us":"7.35–7.45","si":"[H<sup>+</sup>] 36–44 nmol/L"},{"name":"Pco<sub>2</sub>","us":"33–45 mm Hg","si":"4.4–5.9 kPa"},{"name":"Po<sub>2</sub>","us":"75–105 mm Hg","si":"10.0–14.0 kPa"}]},{"title":"Cerebrospinal Fluid","rows":[{"name":"Cell count","us":"0–5/mm<sup>3</sup>","si":"0–5 x 10<sup>6</sup>/L"},{"name":"Chloride","us":"118–132 mEq/L","si":"118–132 mmol/L"},{"name":"Gamma globulin","us":"3%–12% total proteins","si":"0.03–0.12"},{"name":"Glucose","us":"40–70 mg/dL","si":"2.2–3.9 mmol/L"},{"name":"Pressure","us":"70–180 mm H<sub>2</sub>O","si":"70–180 mm H<sub>2</sub>O"},{"name":"Proteins, total","us":"&lt;40 mg/dL","si":"&lt;0.40 g/L"}]},{"title":"Hematologic","rows":[{"name":"Erythrocyte count (RBC)","us":"Male: 4.3–5.9 million/mm<sup>3</sup>","si":"4.3–5.9 x 10<sup>12</sup>/L"},{"name":"","us":"Female: 3.5–5.5 million/mm<sup>3</sup>","si":"3.5–5.5 x 10<sup>12</sup>/L"},{"name":"Erythrocyte sedimentation rate (Westergren)","us":"Male: 0–15 mm/h","si":"0–15 mm/h"},{"name":"","us":"Female: 0–20 mm/h","si":"0–20 mm/h"},{"name":"Hematocrit","us":"Male: 41%–53%","si":"0.41–0.53"},{"name":"","us":"Female: 36%–46%","si":"0.36–0.46"},{"name":"Hemoglobin, blood","us":"Male: 13.5–17.5 g/dL","si":"135–175 g/L"},{"name":"","us":"Female: 12.0–16.0 g/dL","si":"120–160 g/L"},{"name":"Hemoglobin A<sub>1c</sub>","us":"≤6%","si":"≤42 mmol/mol"},{"name":"Leukocyte count (WBC)","us":"4500–11,000/mm<sup>3</sup>","si":"4.5–11.0 x 10<sup>9</sup>/L"},{"name":"Neutrophils, segmented","us":"54%–62%","si":"0.54–0.62"},{"name":"Neutrophils, bands","us":"3%–5%","si":"0.03–0.05"},{"name":"Eosinophils","us":"1%–3%","si":"0.01–0.03"},{"name":"Basophils","us":"0%–0.75%","si":"0.00–0.0075"},{"name":"Lymphocytes","us":"25%–33%","si":"0.25–0.33"},{"name":"Monocytes","us":"3%–7%","si":"0.03–0.07"},{"name":"CD4+ T-lymphocyte count","us":"≥500/mm<sup>3</sup>","si":"≥0.5 x 10<sup>9</sup>/L"},{"name":"Platelet count","us":"150,000–400,000/mm<sup>3</sup>","si":"150–400 x 10<sup>9</sup>/L"},{"name":"Reticulocyte count","us":"0.5%–1.5%","si":"0.005–0.015"},{"name":"D-Dimer","us":"≤250 ng/mL","si":"≤1.4 nmol/L"},{"name":"Partial thromboplastin time (aPTT) (activated)","us":"25–40 seconds","si":"25–40 seconds"},{"name":"Prothrombin time (PT)","us":"11–15 seconds","si":"11–15 seconds"},{"name":"Mean corpuscular hemoglobin (MCH)","us":"25–35 pg/cell","si":"0.39–0.54 fmol/cell"},{"name":"Mean corpuscular hemoglobin concentration (MCHC)","us":"31%–36% Hb/cell","si":"4.8–5.6 mmol Hb/L"},{"name":"Mean corpuscular volume (MCV)","us":"80–100 µm<sup>3</sup>","si":"80–100 fL"},{"group":"Volume"},{"name":"Plasma","us":"Male: 25–43 mL/kg","si":"0.025–0.043 L/kg"},{"name":"","us":"Female: 28–45 mL/kg","si":"0.028–0.045 L/kg"},{"name":"Red cell","us":"Male: 20–36 mL/kg","si":"0.020–0.036 L/kg"},{"name":"","us":"Female: 19–31 mL/kg","si":"0.019–0.031 L/kg"}]},{"title":"Urine","rows":[{"name":"Calcium","us":"100–300 mg/24 h","si":"2.5–7.5 mmol/24 h"},{"name":"Osmolality","us":"50–1200 mOsmol/kg H<sub>2</sub>O","si":"50–1200 mOsmol/kg H<sub>2</sub>O"},{"name":"Oxalate","us":"8–40 µg/mL","si":"90–445 µmol/L"},{"name":"Proteins, total","us":"&lt;150 mg/24 h","si":"&lt;0.15 g/24 h"},{"name":"17-Hydroxycorticosteroids","us":"Male: 3.0–10.0 mg/24 h","si":"8.2–27.6 µmol/24 h"},{"name":"","us":"Female: 2.0–8.0 mg/24 h","si":"5.5–22.0 µmol/24 h"},{"name":"17-Ketosteroids, total","us":"Male: 8–20 mg/24 h","si":"28–70 µmol/24 h"},{"name":"","us":"Female: 6–15 mg/24 h","si":"21–52 µmol/24 h"}]},{"title":"Body Mass Index (BMI)","rows":[{"name":"","us":"<br>Adult: 19–25 kg/m<sup>2</sup>","si":"<br>Adult: 19–25 kg/m<sup>2</sup>"}]}];
+
+// ── PROMPT ──
+var PROMPT='';
+function getRequestedQuestionCount(){
+  var input=document.getElementById('questionCount');
+  if(!input)return DEFAULT_QUESTION_COUNT;
+  var raw=String(input.value||'').trim();
+  if(!raw)return DEFAULT_QUESTION_COUNT;
+  var parsed=parseInt(raw,10);
+  if(!Number.isFinite(parsed))return DEFAULT_QUESTION_COUNT;
+  return Math.max(1,Math.min(MAX_AI_QUESTION_COUNT,parsed));
+}
+function normalizeQuestionCountInput(){
+  var input=document.getElementById('questionCount');
+  var count=getRequestedQuestionCount();
+  if(input)input.value=String(count);
+  return count;
+}
+function buildPrompt(){
+  var count=getRequestedQuestionCount();
+  var quizName=document.getElementById('quizName').value.trim();
+  var quizNameRule=quizName
+    ? '- Use this exact top-level "name": '+JSON.stringify(quizName)
+    : '- If the setup name field is blank, infer a concise quiz title from the content';
+  return `You are a medical school professor writing exam-style questions. You have TWO modes:
+
+MODE 1 — GENERATE: If I give you notes or lecture content, write quiz questions from it.
+MODE 2 — CONVERT: If I give you already-written questions in any format, convert them into the format below without changing the medical content.
+
+Output ONLY a raw JSON object — no markdown, no backticks, no explanation.
+
+{
+  "name": "Concise quiz title here",
+  "questions": [
+    {
+      "stem": "Question text here?",
+      "choices": [
+        "A. Correct answer — stay true to the diction of the professor",
+        "B. Wrong answer — make relevant with plausible detail",
+        "C. Wrong answer — make relevant with plausible detail",
+        "D. Wrong answer — make relevant with plausible detail",
+        "E. Wrong answer — make relevant with plausible detail"
+      ],
+      "correct": 0,
+      "explanation": "Why the correct answer is right. Use arrows (→) to show mechanisms.",
+      "wrongExplanations": {
+        "1": "Why B is wrong — be specific.",
+        "2": "Why C is wrong — be specific.",
+        "3": "Why D is wrong — be specific.",
+        "4": "Why E is wrong — be specific."
+      },
+      "eli5": "Explain the concept like the student is 10. Max 3 sentences."
+    }
+  ]
+}
+
+Rules:
+- Return exactly ${count} questions in the top-level "questions" array
+- Include a top-level "name" for the quiz
+${quizNameRule}
+- "correct" is a NUMBER (0=A, 1=B, 2=C, 3=D, 4=E)
+- Include a wrong explanation for every wrong choice
+- Prefer using the actual choice index as the key, so if A is wrong use "0", if B is wrong use "1", etc.
+- Vary which letter is correct — don't always use 0
+- If converting questions with fewer than 5 choices, add distractors to reach 5
+- Keep all answer choices similar in length so the correct answer is not guessable by length
+- Output ONLY the JSON object
+
+Question-writing style guide:
+- If the source material is psychiatry / behavioral health, use the NBME / NBOME psych house style below.
+- Choose a profile before writing:
+  NBME profile = default for straight DSM-5 differential, lab-value clues, and USMLE-style phrasing
+  NBOME profile = use when the source includes OMM / structural findings, cranial concepts, forensic psych, or Willard-style osteopathic content
+- Mandatory quality gate: if any item is weak, ambiguous, or fails any rule below, revise it internally before returning it. Never output a draft item that fails the quality gate.
+
+NBME-style vignette construction:
+- Follow this order:
+  Opening line = age + sex + presenting complaint + who brought them in / how they arrived
+  Exact duration / chronicity = never vague
+  Symptom cluster in behavioral language, not diagnostic-label language
+  Throwaway-normal data block with 1-2 buried clue facts
+  Explicit negative findings that rule out specific distractors
+  MSE placed near the end, right before the ask
+  Optional closing patient quote if it adds diagnostic weight
+  Then the question stem
+- Common NBME stem phrasings:
+  Which of the following is the most likely diagnosis?
+  Which of the following is the most appropriate next step in management?
+  Which of the following is the most appropriate next step in diagnosis?
+  Which of the following is most appropriate at this point?
+  Which of the following is the most appropriate pharmacotherapy?
+- Every stem should contain one buried clue that determines the answer and one dramatic decoy detail that tempts a specific wrong answer.
+- Use parallel-category distractors from the same family as the correct answer. Change duration, precipitant, or one defining criterion rather than switching to unrelated categories.
+
+NBOME-style additions:
+- Same baseline as NBME, but structural / osteopathic exam findings may be used like a lab clue or as a rule-out for a somatic cause.
+- NBOME items can ask for neuroanatomic correlates, osteopathic-adjacent concepts, or management in forensic / iatrogenic scenarios.
+- NBOME stems often fold the ask into the final sentence instead of using a separate line.
+- If you use structural or neuroanatomic distractors, they must be plausible and educational, not decorative.
+
+Shared construction rules:
+- The diagnosis should usually be inferable from the exam checklist alone, but the actual question should often ask one rung higher: mechanism, localization, genetics, downstream consequence, next step, or treatment.
+- Distractors must come from the same answer category as the correct answer.
+  Example: artery vs other arteries, gene vs other genes, dementia subtype vs other dementia subtypes.
+- When appropriate, prefer 2-3 stacked questions from the same clinical stem.
+  Example chain: presentation -> diagnosis -> localization / genetics -> mechanism -> treatment.
+- Use explicit negative history only when it rules out a listed distractor.
+- For psych items, make duration load-bearing whenever possible.
+- Communication / ethics items should usually follow:
+  acknowledge / validate -> assess safety directly -> address the patient before third parties unless the patient is a minor or lacks capacity
+
+Mandatory quality checks before returning the batch:
+- Exact duration present
+- Behavioral wording instead of diagnostic-label wording
+- At least one explicit negative finding
+- One buried clue and one separate dramatic decoy
+- All distractors plausible if the buried clue is missed
+- At least one distractor from the same diagnostic or pharmacologic family
+- Correct answer is not uniquely longest or uniquely shortest
+- Correct-answer letters are varied across the batch
+- Options are mutually exclusive
+- Exactly one answer is unambiguously correct
+- Stem type matches answer type:
+  diagnosis question -> diagnosis answer
+  next-step question -> management step
+  diagnostic-workup question -> test / workup
+
+Professor-style writing notes:
+- Keep the stem voice like a real med school professor:
+  clipped exam findings, subtle pattern-recognition clues, no giveaway diagnosis wording, occasional grounded real-world detail if it helps the vignette feel authentic
+- High-yield domains to emphasize when relevant:
+  UMN vs LMN vs NMJ vs myopathy localization by pattern
+  Exact genetics such as chromosome, repeat type, and gene name
+  Vascular localization, especially Circle of Willis style anatomy
+  Mechanism-of-injury to nerve or plexus localization
+  CSF profile pattern recognition
+  Vignette-to-histopathology pairing
+- Reuse high-yield concepts with slight vignette variations when the same theme is strongly emphasized in the source material
+
+MY CONTENT:
+`;
+}
+function refreshPromptText(){
+  var count=getRequestedQuestionCount();
+  PROMPT=buildPrompt();
+  document.getElementById('promptCountChip').textContent='Target: '+count+' question'+(count===1?'':'s');
+  document.getElementById('promptText').textContent=PROMPT;
+}
+function handleQuestionCountInput(){
+  refreshPromptText();
+}
+function handleQuestionCountBlur(){
+  normalizeQuestionCountInput();
+  refreshPromptText();
+}
+refreshPromptText();
+DOWNLOAD_TEMPLATE=document.documentElement.outerHTML;
+
+function copyPrompt(){
+  navigator.clipboard.writeText(PROMPT).then(function(){
+    var b=document.getElementById('copyPromptBtn');
+    b.textContent='✅ Copied!';
+    b.classList.add('ok');
+    showToast('Prompt copied! Add your content after it.','ok');
+    setTimeout(function(){
+      b.textContent='📋 Copy prompt';
+      b.classList.remove('ok');
+    },2500);
+  });
+}
+
+// ── PARSE ──
+function parseRaw(raw){
+  raw=raw.trim().replace(/^```(?:json)?\s*/i,'').replace(/\s*```\s*$/,'').trim();
+  try{return JSON.parse(raw);}catch(e){}
+  var objectMatch=raw.match(/\{[\s\S]*\}/);
+  if(objectMatch){try{return JSON.parse(objectMatch[0]);}catch(e){}}
+  var arrayMatch=raw.match(/\[[\s\S]*\]/);
+  if(arrayMatch){try{return JSON.parse(arrayMatch[0]);}catch(e){}}
+  return null;
+}
+function shuffle(arr){
+  var out=arr.slice();
+  for(var i=out.length-1;i>0;i--){
+    var j=Math.floor(Math.random()*(i+1));
+    var tmp=out[i];
+    out[i]=out[j];
+    out[j]=tmp;
+  }
+  return out;
+}
+function cloneQuestion(q){
+  return {
+    stem:String(q.stem||''),
+    choices:Array.isArray(q.choices)?q.choices.map(String):[],
+    correct:typeof q.correct==='number'?q.correct:(parseInt(q.correct,10)||0),
+    explanation:String(q.explanation||''),
+    wrongExplanations:Object.assign({},q.wrongExplanations||{}),
+    eli5:String(q.eli5||'')
+  };
+}
+function buildWrongExplanationLookup(rawChoices, rawCorrect, wrongExplanations){
+  var lookup={};
+  if(!wrongExplanations||typeof wrongExplanations!=='object')return lookup;
+  var wrongChoiceIndices=[];
+  rawChoices.forEach(function(_,idx){if(idx!==rawCorrect)wrongChoiceIndices.push(idx);});
+  var directHits=wrongChoiceIndices.filter(function(idx){return !!wrongExplanations[String(idx)];}).length;
+  var orderedHits=wrongChoiceIndices.filter(function(_,orderPos){return !!wrongExplanations[String(orderPos+1)];}).length;
+  var useOrdered=orderedHits>directHits;
+  wrongChoiceIndices.forEach(function(idx,orderPos){
+    var chosenKey=useOrdered?String(orderPos+1):String(idx);
+    if(wrongExplanations[chosenKey])lookup[String(idx)]=String(wrongExplanations[chosenKey]);
+  });
+  return lookup;
+}
+function randomizeQuestionChoices(q){
+  var source=cloneQuestion(q);
+  var choiceMeta=source.choices.map(function(choiceText,idx){
+    return {
+      text:String(choiceText||''),
+      isCorrect:idx===source.correct,
+      wrongExplanation:idx!==source.correct&&source.wrongExplanations[String(idx)]?String(source.wrongExplanations[String(idx)]):''
+    };
+  });
+  var realChoices=choiceMeta.filter(function(choice){return choice.text.trim();});
+  var blankChoices=choiceMeta.filter(function(choice){return !choice.text.trim();});
+  var shuffledChoices=shuffle(realChoices).concat(blankChoices);
+  var randomized={stem:source.stem,choices:[],correct:0,explanation:source.explanation,wrongExplanations:{},eli5:source.eli5};
+  shuffledChoices.forEach(function(choice,idx){
+    randomized.choices.push(choice.text);
+    if(choice.isCorrect)randomized.correct=idx;
+    else if(choice.text.trim()&&choice.wrongExplanation)randomized.wrongExplanations[String(idx)]=choice.wrongExplanation;
+  });
+  return randomized;
+}
+function randomizeQuestionsForSession(list){
+  return list.map(function(q){return randomizeQuestionChoices(q);});
+}
+function normQ(q){
+  if(!q.stem||!Array.isArray(q.choices)||q.choices.length<2)return null;
+  var rawChoices=q.choices.map(String);
+  while(rawChoices.length<5)rawChoices.push('');
+  var rawCorrect=typeof q.correct==='number'?q.correct:(parseInt(q.correct)||0);
+  if(rawCorrect<0||rawCorrect>=rawChoices.length)rawCorrect=0;
+  var wrongLookup=buildWrongExplanationLookup(rawChoices, rawCorrect, q.wrongExplanations);
+  var nq={stem:String(q.stem),choices:[],correct:0,explanation:String(q.explanation||''),wrongExplanations:{},eli5:String(q.eli5||'')};
+  rawChoices.forEach(function(choiceText,idx){
+    nq.choices.push(choiceText);
+    if(idx===rawCorrect)nq.correct=idx;
+    else if(wrongLookup[String(idx)])nq.wrongExplanations[String(idx)]=String(wrongLookup[String(idx)]);
+  });
+  return nq;
+}
+function getNormalizedQuizPayloadFromRaw(raw){
+  var parsed=parseRaw(raw);
+  if(!parsed)return null;
+  var rawQuestions=Array.isArray(parsed)?parsed:(parsed&&typeof parsed==='object'&&Array.isArray(parsed.questions)?parsed.questions:null);
+  if(!rawQuestions)return null;
+  var valid=[];
+  rawQuestions.forEach(function(q){var nq=normQ(q);if(nq)valid.push(nq);});
+  if(!valid.length)return null;
+  var parsedName='';
+  if(parsed&&typeof parsed==='object'&&!Array.isArray(parsed)){
+    parsedName=String(parsed.name||parsed.quizName||parsed.title||'').trim();
+  }
+  return {name:parsedName,questions:valid};
+}
+function getNormalizedQuestionsFromRaw(raw){
+  var payload=getNormalizedQuizPayloadFromRaw(raw);
+  return payload?payload.questions:null;
+}
+function getPasteAreaIds(){
+  return ['pasteArea1','pasteArea2','pasteArea3','pasteArea4'];
+}
+var activePasteSetTab=1;
+function showPasteSetTab(setNumber){
+  activePasteSetTab=Math.max(1,Math.min(4,parseInt(setNumber,10)||1));
+  syncPasteSetTabs();
+}
+function syncPasteSetTabs(){
+  getPasteAreaIds().forEach(function(id,idx){
+    var setNumber=idx+1;
+    var tab=document.getElementById('pasteTab'+setNumber);
+    var panel=document.getElementById('pastePanel'+setNumber);
+    var textarea=document.getElementById(id);
+    var isActive=setNumber===activePasteSetTab;
+    var hasContent=!!(textarea&&textarea.value.trim());
+    if(tab){
+      tab.classList.toggle('active',isActive);
+      tab.classList.toggle('has-content',hasContent);
+      tab.setAttribute('aria-selected',isActive?'true':'false');
+    }
+    if(panel){
+      panel.classList.toggle('active',isActive);
+      panel.hidden=!isActive;
+    }
+  });
+}
+function getPastedSetEntries(){
+  return getPasteAreaIds().map(function(id,idx){
+    var el=document.getElementById(id);
+    return {id:id,setNumber:idx+1,raw:el?el.value.trim():''};
+  }).filter(function(entry){return !!entry.raw;});
+}
+function getCombinedPastedQuizPayload(){
+  var entries=getPastedSetEntries();
+  if(!entries.length){
+    return {error:'Paste at least one AI response into Set 1, 2, 3, or 4 first.'};
+  }
+  var combinedQuestions=[];
+  var firstParsedName='';
+  entries.forEach(function(entry){
+    var parsedPayload=getNormalizedQuizPayloadFromRaw(entry.raw);
+    if(!parsedPayload){
+      throw new Error('__SET_PARSE_ERROR__'+entry.setNumber);
+    }
+    if(!firstParsedName&&parsedPayload.name)firstParsedName=parsedPayload.name;
+    combinedQuestions=combinedQuestions.concat(parsedPayload.questions);
+  });
+  var typedName=document.getElementById('quizName').value.trim();
+  var combinedName=typedName||(
+    entries.length>1
+      ? (firstParsedName?firstParsedName+' — Combined':'Combined Custom Quiz')
+      : (firstParsedName||'Custom Quiz')
+  );
+  return {payload:{name:combinedName,questions:combinedQuestions}};
+}
+
+// ── UI MODE ──
+function selectLaunchUI(mode){
+  uiMode=mode==='nbme'?'nbme':'classic';
+  syncLaunchUIButtons();
+}
+function switchQuizUI(mode){
+  var next=mode==='nbme'?'nbme':'classic';
+  if(uiMode===next)return;
+  uiMode=next;
+  syncLaunchUIButtons();
+  if(questions.length){
+    switchView(getQuizViewId());
+    renderQ();
+    showToast(next==='nbme'?'NBME / NBOME layout enabled.':'UNE layout enabled.','ok');
+  }
+}
+function getQuizViewId(){
+  return uiMode==='nbme'?'viewQuizNbme':'viewQuiz';
+}
+function syncLaunchUIButtons(){
+  var classicBtn=document.getElementById('uiModeClassicBtn');
+  var nbmeBtn=document.getElementById('uiModeNbmeBtn');
+  classicBtn.classList.toggle('active',uiMode==='classic');
+  nbmeBtn.classList.toggle('active',uiMode==='nbme');
+}
+
+// ── LAB VALUES ──
+function renderLabs(){
+  document.getElementById('labUnitsUs').classList.toggle('active',labUnitMode==='us');
+  document.getElementById('labUnitsSi').classList.toggle('active',labUnitMode==='si');
+  document.getElementById('labTables').innerHTML=LAB_SECTIONS.map(function(section){
+    var rows=section.rows.map(function(row){
+      if(row.group)return `<tr class="lab-group"><td colspan="2">${row.group}</td></tr>`;
+      return `<tr><td class="${row.name?'':'continuation'}">${row.name||'—'}</td><td>${labUnitMode==='si'?row.si:row.us}</td></tr>`;
+    }).join('');
+    return `<table class="lab-table"><thead><tr><th>${section.title}</th><th>${labUnitMode==='si'?'SI Reference':'Reference Range'}</th></tr></thead><tbody>${rows}</tbody></table>`;
+  }).join('');
+}
+function openLabs(){
+  renderLabs();
+  document.getElementById('labModal').classList.add('open');
+}
+function closeLabs(){
+  document.getElementById('labModal').classList.remove('open');
+}
+function setLabUnits(unit){
+  labUnitMode=unit==='si'?'si':'us';
+  renderLabs();
+}
+
+// ── QUIZ LIFECYCLE ──
+function setQuizTitle(name){
+  document.getElementById('qtName').textContent=name;
+  document.getElementById('nbQuizTitle').textContent=name;
+}
+function getQuizTitle(){
+  return document.getElementById('qtName').textContent.trim()||document.getElementById('quizName').value.trim()||'Custom Quiz';
+}
+function resetQuizState(withTimerReset){
+  answers={};
+  selected={};
+  marked={};
+  stemMarkup={};
+  choiceMarkup={};
+  NC=0;
+  NI=0;
+  CQ=0;
+  examSubmitted=false;
+  reviewOpen=false;
+  summaryVisible=false;
+  finishBannerMinimized=false;
+  toolMode='';
+  if(withTimerReset)resetTimer();else updTimer();
+  syncToolButtons();
+  syncModeButtons();
+  syncMarkButtons();
+  updScore();
+}
+function startQuiz(valid,name){
+  questionBank=valid.map(function(q){return cloneQuestion(q);});
+  questions=randomizeQuestionsForSession(questionBank);
+  quizMode='learn';
+  resetQuizState(true);
+  applyFontSize();
+  document.getElementById('quizName').value=name||'Custom Quiz';
+  setQuizTitle(name||'Custom Quiz');
+  document.getElementById('errMsg').className='err-msg';
+  renderItemSelectors();
+  switchView(getQuizViewId());
+  renderQ();
+}
+function getQuizPayload(){
+  if(Array.isArray(questionBank)&&questionBank.length){
+    return {name:getQuizTitle(),questions:questionBank.map(function(q){return cloneQuestion(q);})};
+  }
+  try{
+    var combinedResult=getCombinedPastedQuizPayload();
+    if(!combinedResult||combinedResult.error||!combinedResult.payload)return null;
+    return {
+      name:combinedResult.payload.name,
+      questions:combinedResult.payload.questions.map(function(q){return cloneQuestion(q);})
+    };
+  }catch(err){
+    return null;
+  }
+}
+function buildDownloadFileName(name){
+  var safeName=String(name||'Custom Quiz')
+    .replace(/\.html?$/i,'')
+    .replace(/[<>:"/\\|?*\u0000-\u001f]/g,' ')
+    .replace(/\s+/g,' ')
+    .trim()
+    .replace(/\.+$/,'');
+  if(!safeName)safeName='Custom Quiz';
+  return safeName.slice(0,96)+'.html';
+}
+function toEmbeddedJSONString(value){
+  return JSON.stringify(value).replace(/<\/script/gi,'<\\/script').replace(/\u2028/g,'\\u2028').replace(/\u2029/g,'\\u2029');
+}
+function buildDownloadHTML(payload){
+  return DOWNLOAD_TEMPLATE
+    .replace('"__QUIZ_BUILDER_PRELOADED_NAME__"', toEmbeddedJSONString(payload.name||'Custom Quiz'))
+    .replace('"__QUIZ_BUILDER_PRELOADED_QUESTIONS__"', toEmbeddedJSONString(JSON.stringify(payload.questions||[])))
+    .replace('"__QUIZ_BUILDER_PRELOADED_UI_MODE__"', toEmbeddedJSONString('nbme'));
+}
+function triggerQuizDownload(blob,fileName){
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  a.href=url;
+  a.download=fileName;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(function(){URL.revokeObjectURL(url);},1000);
+}
+function isSafariLikeBrowser(){
+  var ua=navigator.userAgent||'';
+  return /Safari/i.test(ua)&&!/Chrome|Chromium|CriOS|Edg|OPR|Firefox|FxiOS|Android/i.test(ua);
+}
+function getDownloadFallbackPrompt(fileName){
+  if(isSafariLikeBrowser()){
+    return 'This browser cannot open a save-location picker from this local quiz page, so Safari will use its normal download flow instead.\n\nIf you want macOS to ask where to save each quiz, open Safari > Settings > General and set "File download location" to "Ask for each download".\n\nDownload "'+fileName+'" now?';
+  }
+  return 'This browser does not support choosing a save location directly from this quiz page.\n\nI can still download "'+fileName+'" using your browser\'s normal download flow.\n\nContinue?';
+}
+async function downloadQuiz(){
+  var payload=getQuizPayload();
+  if(!payload){
+    showErr('Paste a valid quiz first so I have something to save.');
+    return;
+  }
+  var html=buildDownloadHTML(payload);
+  var blob=new Blob([html],{type:'text/html'});
+  var fileName=buildDownloadFileName(payload.name);
+  if(typeof window.showSaveFilePicker==='function'){
+    try{
+      var handle=await window.showSaveFilePicker({
+        suggestedName:fileName,
+        types:[{
+          description:'HTML Quiz File',
+          accept:{'text/html':['.html']}
+        }]
+      });
+      var writable=await handle.createWritable();
+      await writable.write(blob);
+      await writable.close();
+      document.getElementById('errMsg').className='err-msg';
+      showToast('Saved your quiz file.','ok');
+      return;
+    }catch(err){
+      if(err&&err.name==='AbortError')return;
+    }
+  }
+  if(!window.confirm(getDownloadFallbackPrompt(fileName)))return;
+  triggerQuizDownload(blob,fileName);
+  document.getElementById('errMsg').className='err-msg';
+  showToast(isSafariLikeBrowser()?'Safari download started. Use "Ask for each download" in Safari settings to choose the save location each time.':'Browser download started.','ok');
+}
+function hydratePreloadedQuiz(){
+  var hasPreloadedQuestions=PRELOADED_QUESTIONS_JSON!=="__QUIZ_BUILDER_PRELOADED_QUESTIONS__";
+  if(PRELOADED_UI_MODE!=="__QUIZ_BUILDER_PRELOADED_UI_MODE__")selectLaunchUI(PRELOADED_UI_MODE);
+  else if(hasPreloadedQuestions)selectLaunchUI('nbme');
+  if(PRELOADED_QUIZ_NAME!=="__QUIZ_BUILDER_PRELOADED_NAME__")document.getElementById('quizName').value=PRELOADED_QUIZ_NAME;
+  if(PRELOADED_QUESTIONS_JSON==="__QUIZ_BUILDER_PRELOADED_QUESTIONS__")return;
+  try{
+    var preloaded=JSON.parse(PRELOADED_QUESTIONS_JSON);
+    if(!Array.isArray(preloaded)||!preloaded.length)return;
+    document.getElementById('pasteArea1').value=JSON.stringify(preloaded,null,2);
+    showPasteSetTab(1);
+    startQuiz(preloaded,PRELOADED_QUIZ_NAME||'Custom Quiz');
+    showToast('Saved quiz loaded.','ok');
+  }catch(e){}
+}
+function launchQuiz(){
+  try{
+    var combinedResult=getCombinedPastedQuizPayload();
+    if(combinedResult.error){showErr(combinedResult.error);return;}
+    startQuiz(combinedResult.payload.questions,combinedResult.payload.name);
+  }catch(err){
+    if(err&&typeof err.message==='string'&&err.message.indexOf('__SET_PARSE_ERROR__')===0){
+      var setNumber=err.message.replace('__SET_PARSE_ERROR__','');
+      showPasteSetTab(Number(setNumber));
+      showErr("Couldn't read Set "+setNumber+". Make sure you copied the full AI response for that set.");
+      return;
+    }
+    showErr("Couldn't read the pasted sets. Make sure each AI response is complete JSON in the expected format.");
+  }
+}
+
+// ── STATE HELPERS ──
+function stripChoiceLabel(text){
+  return String(text||'').replace(/^[A-E]\.\s*/i,'');
+}
+function getStemHTML(index){
+  return stemMarkup[index]!=null?stemMarkup[index]:questions[index].stem;
+}
+function ensureChoiceMarkup(index){
+  if(!choiceMarkup[index])choiceMarkup[index]=[];
+  return choiceMarkup[index];
+}
+function getChoiceHTML(index,choiceIndex){
+  var arr=ensureChoiceMarkup(index);
+  return arr[choiceIndex]!=null?arr[choiceIndex]:stripChoiceLabel(questions[index].choices[choiceIndex]);
+}
+function getSelectedChoice(index){
+  if(answers[index]&&answers[index].s!==null&&answers[index].s!==undefined)return answers[index].s;
+  return selected[index];
+}
+function getAnsweredCount(){
+  return examSubmitted?questions.length:(quizMode==='exam'?Object.keys(selected).length:Object.keys(answers).length);
+}
+function getMarkedCount(){
+  return Object.keys(marked).filter(function(key){return !!marked[key];}).length;
+}
+function isQuizComplete(){
+  return (quizMode==='learn'&&questions.length&&Object.keys(answers).length===questions.length)||(quizMode==='exam'&&examSubmitted);
+}
+function updateScoreCounts(){
+  NC=0;
+  NI=0;
+  Object.keys(answers).forEach(function(key){
+    if(answers[key].r==='c')NC++;
+    else NI++;
+  });
+}
+function getScorePercent(){
+  var denom=(quizMode==='exam'&&examSubmitted)?questions.length:(NC+NI);
+  return denom?Math.round(NC/denom*100):'—';
+}
+function getAnswerStateMeta(ans){
+  if(!ans)return {label:'Pending',className:'unanswered'};
+  if(ans.r==='c')return {label:'Correct',className:'correct'};
+  if(ans.r==='u')return {label:'No Answer',className:'unanswered'};
+  return {label:'Incorrect',className:'incorrect'};
+}
+function buildSummaryStatsHTML(){
+  var percent=getScorePercent();
+  return `<div class="sum-stats">
+    <div class="sum-stat"><div class="sum-stat-label">Score</div><div class="sum-stat-value">${percent==='—'?'—':percent+'%'}</div></div>
+    <div class="sum-stat"><div class="sum-stat-label">Correct</div><div class="sum-stat-value">${NC}</div></div>
+    <div class="sum-stat"><div class="sum-stat-label">Incorrect</div><div class="sum-stat-value">${NI}</div></div>
+    <div class="sum-stat"><div class="sum-stat-label">Questions</div><div class="sum-stat-value">${questions.length}</div></div>
+  </div>`;
+}
+function buildReviewSheetItemsHTML(){
+  return questions.map(function(q,index){
+    var ans=answers[index];
+    var meta=getAnswerStateMeta(ans);
+    var correctLetter=LETTERS[q.correct]||String.fromCharCode(65+q.correct);
+    return `<article class="sum-item ${meta.className}">
+      <div class="sum-meta">
+        <div class="sum-num">Question ${index+1}</div>
+        <div class="sum-state">${meta.label}</div>
+        <div class="sum-answer">Correct Answer: ${correctLetter}</div>
+      </div>
+      <div class="sum-body">
+        <div class="sum-section">
+          <div class="sum-label">Correct Answer Explanation</div>
+          <div class="sum-text">${q.explanation||'No explanation provided.'}</div>
+        </div>
+        <div class="sum-section">
+          <div class="sum-label">ELI5</div>
+          <div class="sum-text">${q.eli5||'No ELI5 summary provided.'}</div>
+        </div>
+      </div>
+    </article>`;
+  }).join('');
+}
+function buildReviewSheetHTML(forPrint){
+  var title=getQuizTitle();
+  var actionHTML=forPrint?'':`<div class="sum-actions"><button class="sum-btn" type="button" onclick="hideSummarySheet()">← Back to Questions</button><button class="sum-btn primary" type="button" onclick="printSummarySheet()">🖨 Print Summary</button></div>`;
+  return `<section class="sum-sheet" id="summarySheet">
+    <div class="sum-head">
+      <div>
+        <div class="sum-kicker">Quiz Review Sheet</div>
+        <h2 class="sum-title">${title}</h2>
+        <div class="sum-sub">Question-by-question review showing only the correct-answer explanation and the ELI5 summary for quick post-quiz review.</div>
+      </div>
+      ${actionHTML}
+    </div>
+    ${buildSummaryStatsHTML()}
+    <div class="sum-list">${buildReviewSheetItemsHTML()}</div>
+  </section>`;
+}
+function getSummaryPrintStyles(){
+  return `
+    body{margin:0;padding:28px;background:#fff;color:#1E1E20;font-family:Arial,Helvetica,sans-serif}
+    .sum-sheet{border:1px solid #d8dce3;border-radius:18px;overflow:hidden}
+    .sum-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding:22px 24px 18px;border-bottom:1px solid #e4e7ec;background:#f8fafc}
+    .sum-kicker{font-family:Consolas,monospace;font-size:11px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:#6B7689;margin-bottom:8px}
+    .sum-title{font-size:30px;line-height:1.08;color:#12203C;margin:0 0 8px}
+    .sum-sub{font-size:14px;line-height:1.6;color:#3E4555;max-width:68ch}
+    .sum-stats{display:flex;gap:12px;flex-wrap:wrap;padding:18px 24px;border-bottom:1px solid #e4e7ec;background:#fbf8f3}
+    .sum-stat{min-width:140px;padding:14px 16px;border-radius:14px;border:1px solid #e4e7ec;background:#fff}
+    .sum-stat-label{font-size:10px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:#6B7689;margin-bottom:8px}
+    .sum-stat-value{font-size:30px;line-height:1;color:#12203C;font-weight:700}
+    .sum-list{display:grid;gap:14px;padding:22px 24px}
+    .sum-item{display:grid;grid-template-columns:150px minmax(0,1fr);gap:18px;padding:18px;border-radius:16px;border:1px solid #e4e7ec;background:#fff;break-inside:avoid-page;page-break-inside:avoid}
+    .sum-item.correct{background:#f6fcf8}
+    .sum-item.incorrect{background:#fff8f8}
+    .sum-item.unanswered{background:#fffaf1}
+    .sum-meta{display:flex;flex-direction:column;gap:10px}
+    .sum-num,.sum-state{display:inline-flex;align-items:center;justify-content:center;width:max-content}
+    .sum-num{min-height:38px;padding:0 14px;border-radius:999px;background:#eef2f6;font-family:Consolas,monospace;font-size:12px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:#12203C}
+    .sum-state{min-height:30px;padding:0 12px;border-radius:999px;font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+    .sum-item.correct .sum-state{background:#E8F5EE;color:#2D8659}
+    .sum-item.incorrect .sum-state{background:#FDF0F0;color:#C44040}
+    .sum-item.unanswered .sum-state{background:#FEF5E6;color:#C07B1A}
+    .sum-answer{font-size:13px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;color:#3E4555}
+    .sum-body{display:grid;gap:12px}
+    .sum-section{padding:14px 16px;border-radius:14px;border:1px solid #eceff3;background:#faf7f1}
+    .sum-label{font-family:Consolas,monospace;font-size:10px;font-weight:800;letter-spacing:1.6px;text-transform:uppercase;color:#6B7689;margin-bottom:8px}
+    .sum-text{font-size:14px;line-height:1.62;color:#1E1E20}
+  `;
+}
+function printSummarySheet(){
+  if(!isQuizComplete())return;
+  var printWindow=window.open('','_blank','noopener,noreferrer,width=1120,height=900');
+  if(!printWindow){
+    showToast('Allow pop-ups so I can open the printable review sheet.','err');
+    return;
+  }
+  printWindow.document.open();
+  printWindow.document.write(`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>${getQuizTitle()} — Review Sheet</title><style>${getSummaryPrintStyles()}</style></head><body>${buildReviewSheetHTML(true)}</body></html>`);
+  printWindow.document.close();
+  printWindow.focus();
+  setTimeout(function(){
+    printWindow.print();
+  },250);
+}
+function buildNbmeCompletionViewHTML(){
+  var finishHTML=buildFinishHTML({allowMinimize:true});
+  return `<div class="sum-view" id="completionViewTop">${finishHTML}${buildNbmeQuestion()}</div>`;
+}
+function buildSummaryViewHTML(){
+  var finishHTML=buildFinishHTML({allowMinimize:true});
+  return `<div class="sum-view" id="summaryViewTop">${finishHTML}${buildReviewSheetHTML(false)}</div>`;
+}
+function scrollQuizViewportTop(){
+  window.scrollTo({top:0,behavior:'smooth'});
+  var nbScroller=document.querySelector('.nb-question-scroll');
+  if(nbScroller)nbScroller.scrollTo({top:0,behavior:'smooth'});
+}
+function scrollNbmeRail(direction){
+  var scroller=document.getElementById('nbRailScroll');
+  if(!scroller)return;
+  scroller.scrollBy({top:direction*180,behavior:'smooth'});
+}
+function syncNbmeRailArrows(){
+  var scroller=document.getElementById('nbRailScroll');
+  var upBtn=document.getElementById('nbRailUpBtn');
+  var downBtn=document.getElementById('nbRailDownBtn');
+  if(!scroller||!upBtn||!downBtn)return;
+  var maxScroll=Math.max(0,scroller.scrollHeight-scroller.clientHeight);
+  var hasOverflow=maxScroll>4;
+  upBtn.style.visibility=hasOverflow?'visible':'hidden';
+  downBtn.style.visibility=hasOverflow?'visible':'hidden';
+  upBtn.disabled=!hasOverflow||scroller.scrollTop<=2;
+  downBtn.disabled=!hasOverflow||scroller.scrollTop>=maxScroll-2;
+}
+function keepCurrentRailItemVisible(){
+  var scroller=document.getElementById('nbRailScroll');
+  if(!scroller)return;
+  var current=scroller.querySelector('.nb-rail-btn.current');
+  if(current)current.scrollIntoView({block:'nearest'});
+}
+function toggleSummaryPanel(){
+  if(!isQuizComplete())return;
+  if(summaryVisible)hideSummarySheet();
+  else viewSummarySheet();
+}
+function viewSummarySheet(){
+  if(!isQuizComplete())return;
+  finishBannerMinimized=false;
+  summaryVisible=true;
+  renderQ();
+  var target=document.getElementById(uiMode==='nbme'?'summaryViewTop':'summarySheet');
+  if(!target)return;
+  target.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function hideSummarySheet(){
+  if(!summaryVisible)return;
+  summaryVisible=false;
+  renderQ();
+  scrollQuizViewportTop();
+}
+function minimizeFinishBanner(){
+  if(finishBannerMinimized)return;
+  finishBannerMinimized=true;
+  renderQ();
+}
+function expandFinishBanner(){
+  if(!finishBannerMinimized)return;
+  finishBannerMinimized=false;
+  renderQ();
+}
+function toggleFinishBanner(){
+  finishBannerMinimized=!finishBannerMinimized;
+  renderQ();
+}
+function buildFinishHTML(options){
+  options=options||{};
+  var allowMinimize=!!options.allowMinimize;
+  var total=questions.length||1;
+  var pct=Math.round(NC/total*100);
+  var msg=pct>=80?'🎉 Strong work!':pct>=60?'📈 Getting there.':'📚 Keep reviewing.';
+  var summaryBtn=summaryVisible
+    ? '<button class="fin-btn" onclick="hideSummarySheet()">← Back to Questions</button>'
+    : '<button class="fin-btn" onclick="viewSummarySheet()">📋 View Summary</button>';
+  var toggleBtn=allowMinimize?`<button class="fin-toggle" type="button" aria-label="${finishBannerMinimized?'Expand score card':'Minimize score card'}" title="${finishBannerMinimized?'Expand':'Minimize'}" onclick="toggleFinishBanner()">${finishBannerMinimized?'+':'−'}</button>`:'';
+  var mainHTML=finishBannerMinimized?'':`<div class="fin-main">
+    <div class="fin-pct">${pct}%</div>
+    <div class="fin-pct-lbl">Final Score</div>
+    <div class="fin-msg">${msg}</div>
+    <div class="fin-sub">${NC} correct · ${NI} incorrect · ${questions.length} questions</div>
+  </div>`;
+  return `<div class="fin${finishBannerMinimized?' min':''}">
+    ${toggleBtn}
+    ${mainHTML}
+    <div class="fin-btns">
+      ${summaryBtn}
+      <button class="fin-btn" onclick="printSummarySheet()">🖨 Print Summary</button>
+      <button class="fin-btn" onclick="resetQuiz()">↺ Retake</button>
+      <button class="fin-btn" onclick="exitQuiz()">✕ Exit</button>
+    </div>
+  </div>`;
+}
+function renderFinishBanners(){
+  var html=isQuizComplete()?buildFinishHTML({allowMinimize:true}):'';
+  document.getElementById('finBanner').innerHTML=html;
+  document.getElementById('nbFinishBanner').innerHTML='';
+}
+
+// ── RENDERING ──
+function renderItemSelectors(){
+  var options=questions.map(function(_,i){return `<option value="${i}">${i+1}</option>`;}).join('');
+  document.getElementById('nbItemSelect').innerHTML=options;
+}
+function syncModeButtons(){
+  document.getElementById('modeLearn').classList.toggle('active',quizMode==='learn');
+  document.getElementById('modeExam').classList.toggle('active',quizMode==='exam');
+  document.getElementById('nbModeLearn').classList.toggle('active',quizMode==='learn');
+  document.getElementById('nbModeExam').classList.toggle('active',quizMode==='exam');
+  document.getElementById('qtSubmitBtn').style.display=quizMode==='exam'&&!examSubmitted?'':'none';
+  var endBtn=document.getElementById('nbReviewBtn');
+  if(quizMode!=='exam'){
+    endBtn.textContent='Testing Mode Only';
+    endBtn.disabled=true;
+  }else if(examSubmitted){
+    endBtn.textContent='Exam Submitted';
+    endBtn.disabled=true;
+  }else{
+    endBtn.textContent=reviewOpen?'Submit Exam':'Review / End Block';
+    endBtn.disabled=false;
+  }
+}
+function syncSummaryButtons(){
+  var btn=document.getElementById('nbSummaryBtn');
+  if(!btn)return;
+  var complete=isQuizComplete();
+  btn.disabled=!complete;
+  btn.classList.toggle('active',complete&&summaryVisible);
+  btn.textContent=complete?(summaryVisible?'Hide Summary':'See Score & Summary'):'See Score & Summary';
+}
+function syncToolButtons(){
+  document.getElementById('hlTool').classList.toggle('active',toolMode==='hl');
+  document.getElementById('stTool').classList.toggle('active',toolMode==='st');
+  document.getElementById('nbHighlightBtn').classList.toggle('active',toolMode==='hl');
+  document.getElementById('nbHighlightBtn').classList.toggle('hl',toolMode==='hl');
+  document.getElementById('nbStrikeBtn').classList.toggle('active',toolMode==='st');
+  document.getElementById('nbStrikeBtn').classList.toggle('st',toolMode==='st');
+}
+function syncMarkButtons(){
+  var isMarked=!!marked[CQ];
+  document.getElementById('qtMarkBtn').classList.toggle('active',isMarked);
+  document.getElementById('qtMarkBtn').textContent=isMarked?'⚑ Marked':'⚑ Mark';
+  document.getElementById('nbMarkBtn').classList.toggle('active',isMarked);
+  document.getElementById('nbMarkBtn').textContent=isMarked?'⚑ Marked':'⚑ Mark';
+}
+function updScore(){
+  document.getElementById('sC').textContent=NC;
+  document.getElementById('sI').textContent=NI;
+  document.getElementById('sP').textContent=getScorePercent()==='—'?'—':getScorePercent()+'%';
+  document.getElementById('nbScoreCorrect').textContent=NC;
+  document.getElementById('nbScoreIncorrect').textContent=NI;
+  document.getElementById('nbScorePercent').textContent=getScorePercent()==='—'?'—':getScorePercent()+'%';
+}
+function buildExplanationHTML(q,ans){
+  if(!ans)return '';
+  var correctLetter=LETTERS[q.correct];
+  var selectedLetter=(ans.s!==null&&ans.s!==undefined)?LETTERS[ans.s]:'';
+  var myWrong='';
+  if(ans.s===null){
+    myWrong='<div class="exs exw"><div class="exl">✗ No Answer Selected</div><div class="ext">This question was left unanswered before the quiz was submitted.</div></div>';
+  }else if(ans.s!==q.correct&&q.wrongExplanations&&q.wrongExplanations[String(ans.s)]){
+    myWrong=`<div class="exs exw"><div class="exl">✗ Why ${selectedLetter} is Wrong</div><div class="ext">${q.wrongExplanations[String(ans.s)]}</div></div>`;
+  }
+  var others='';
+  if(q.wrongExplanations){
+    var otherKeys=Object.keys(q.wrongExplanations).filter(function(key){
+      return +key!==q.correct&&(ans.s===null||+key!==ans.s)&&q.wrongExplanations[key];
+    });
+    if(otherKeys.length){
+      others=`<div class="exs exo"><div class="exl">✗ Other Wrong Choices</div><div class="ext">${otherKeys.map(function(key){
+        return `<div class="wce"><strong>${LETTERS[+key]}:</strong> ${q.wrongExplanations[key]}</div>`;
+      }).join('')}</div></div>`;
+    }
+  }
+  var eli5=q.eli5?`<div class="exs exe"><div class="exl">💡 ELI5</div><div class="ext">${q.eli5}</div></div>`:'';
+  return `<div class="exb vis">
+    <div class="exs exc"><div class="exl">✓ Why ${correctLetter} is Correct</div><div class="ext">${q.explanation}</div></div>
+    ${myWrong}${others}${eli5}
+  </div>`;
+}
+function buildClassicDots(){
+  return questions.map(function(_,i){
+    var classes=['qd'];
+    if(i===CQ)classes.push('on');
+    if(answers[i])classes.push(answers[i].r==='c'?'dc':'di');
+    else if(selected[i]!==undefined)classes.push('asel');
+    if(marked[i])classes.push('mk');
+    return `<button class="${classes.join(' ')}" onclick="goQ(${i})" title="Q${i+1}"></button>`;
+  }).join('');
+}
+function buildClassicQuestion(){
+  var q=questions[CQ];
+  var total=questions.length;
+  var ans=answers[CQ];
+  var sel=getSelectedChoice(CQ);
+  var isExam=quizMode==='exam';
+  var progress=((CQ+1)/total*100).toFixed(1);
+  var choicesHTML=q.choices.map(function(choice,ci){
+    var classes=['ac'];
+    if(ans){
+      classes.push('dis');
+      if(ci===q.correct)classes.push('cor');
+      else if(ans.s!==null&&ci===ans.s)classes.push('inc');
+    }else if(sel===ci){
+      classes.push('sel');
+    }
+    return `<div class="${classes.join(' ')}" onclick="pick(${ci})">
+      <div class="cl">${LETTERS[ci]||String.fromCharCode(65+ci)}</div>
+      <div class="ac-txt" data-choice-html="${ci}">${getChoiceHTML(CQ,ci)}</div>
+    </div>`;
+  }).join('');
+  var submitLabel=isExam?'Submit Question':'Submit Answer';
+  var submitHTML=!ans?`<div class="submit-row"><button class="submit-btn" onclick="submitAns()"${sel!==undefined?'':' disabled'}>${submitLabel}</button></div>`:'';
+  var feedbackHTML=ans?buildExplanationHTML(q,ans):'';
+  var qnumClass='qnum'+(marked[CQ]?' marked':'');
+  var qnumText=`Question ${CQ+1} of ${total}${marked[CQ]?' • Flagged':''}`;
+  var mainHTML=`<div class="q-main">
+      <div class="${qnumClass}">${qnumText}</div>
+      <div class="qstem" id="stemEl" data-stem-html="1">${getStemHTML(CQ)}</div>
+      <div class="ach" id="achEl">${choicesHTML}</div>
+      ${submitHTML}
+    </div>`;
+  var layoutHTML=ans
+    ? `<div class="q-review-grid has-feedback">${mainHTML}<aside class="q-feedback">${feedbackHTML}</aside></div>`
+    : `<div class="q-review-grid">${mainHTML}</div>`;
+  return `<div class="qcd">
+    <div class="qpg"><div class="qpf" style="width:${progress}%"></div></div>
+    <div class="qbd">
+      ${layoutHTML}
+    </div>
+    <div class="qnv">
+      <button class="nb" onclick="prevQ()"${CQ===0?' disabled':''}>← Prev</button>
+      <div class="nav-dots">${buildClassicDots()}</div>
+      <button class="nb pr" onclick="nextQ()"${CQ===total-1?' disabled':''}>Next →</button>
+    </div>
+  </div>`;
+}
+function buildNbmeRail(){
+  return questions.map(function(_,i){
+    var classes=['nb-rail-btn'];
+    if(i===CQ&&!reviewOpen)classes.push('current');
+    if(answers[i]||selected[i]!==undefined)classes.push('answered');
+    if(marked[i])classes.push('marked');
+    return `<button class="${classes.join(' ')}" type="button" onclick="goQ(${i})" aria-label="Go to question ${i+1}">${i+1}</button>`;
+  }).join('');
+}
+function buildNbmeQuestion(){
+  var q=questions[CQ];
+  var ans=answers[CQ];
+  var sel=getSelectedChoice(CQ);
+  var isExam=quizMode==='exam';
+  var submitLabel=isExam?'Submit Question':'Submit Answer';
+  var answersHTML=q.choices.map(function(choice,ci){
+    var classes=['nb-answer-row'];
+    if(ans)classes.push('locked');
+    if(sel===ci)classes.push('selected');
+    if(ans){
+      if(ci===q.correct)classes.push('correct');
+      else if(ans.s!==null&&ci===ans.s)classes.push('incorrect');
+    }
+    return `<div class="${classes.join(' ')}" onclick="pick(${ci})">
+      <div class="nb-answer-glyph">${LETTERS[ci]||String.fromCharCode(65+ci)}</div>
+      <div class="nb-answer-copy"><strong>${LETTERS[ci]||String.fromCharCode(65+ci)}.</strong> <span data-choice-html="${ci}">${getChoiceHTML(CQ,ci)}</span></div>
+    </div>`;
+  }).join('');
+  var submitHTML=!ans?`<div class="nb-submit-row"><button class="nb-submit-btn" onclick="submitAns()"${sel!==undefined?'':' disabled'}>${submitLabel}</button></div>`:'';
+  var feedbackHTML=ans?buildExplanationHTML(q,ans):'';
+  var mainHTML=`<div class="nb-question-main">
+    <div class="nb-question-label">QUESTION ${CQ+1}</div>
+    <div class="nb-question-stem" id="nbStemEl" data-stem-html="1">${getStemHTML(CQ)}</div>
+    <div class="nb-answers">${answersHTML}</div>
+    ${submitHTML}
+  </div>`;
+  var layoutClass=ans?'nb-question-layout has-feedback':'nb-question-layout';
+  var sideHTML=ans?`<aside class="nb-question-side">${feedbackHTML}</aside>`:'';
+  return `<div class="nb-question-card${ans?' has-feedback':''}">
+    <div class="${layoutClass}">
+      ${mainHTML}
+      ${sideHTML}
+    </div>
+  </div>`;
+}
+function buildNbmeReview(){
+  var answered=Object.keys(selected).length;
+  var incomplete=questions.length-answered;
+  var flagged=getMarkedCount();
+  var rows=questions.map(function(q,i){
+    var answer=selected[i]===undefined?'—':LETTERS[selected[i]];
+    return `<tr>
+      <td><button class="nb-review-jump" type="button" onclick="goQ(${i})">${i+1}</button></td>
+      <td>${selected[i]===undefined?'Incomplete':'Answered'}</td>
+      <td>${answer}</td>
+      <td>${marked[i]?'Yes':'No'}</td>
+    </tr>`;
+  }).join('');
+  return `<div class="nb-review-wrap">
+    <h2>Review This Block</h2>
+    <p>Check your completion status before you submit the exam. Select a question number to jump back to it.</p>
+    <div class="nb-review-summary">
+      <div class="nb-summary-chip">Answered<strong>${answered}</strong></div>
+      <div class="nb-summary-chip">Incomplete<strong>${incomplete}</strong></div>
+      <div class="nb-summary-chip">Marked<strong>${flagged}</strong></div>
+    </div>
+    <table class="nb-review-table">
+      <thead><tr><th>Question</th><th>Status</th><th>Selected Answer</th><th>Marked</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <div class="nb-review-actions">
+      <button class="nb-review-back" type="button" onclick="reviewOpen=false;renderQ()">Back to Questions</button>
+    </div>
+  </div>`;
+}
+function renderClassicView(){
+  document.getElementById('qtSubmitBtn').style.display=quizMode==='exam'&&!examSubmitted?'':'none';
+  document.getElementById('qArea').innerHTML=(isQuizComplete()&&summaryVisible)?buildReviewSheetHTML(false):buildClassicQuestion();
+}
+function renderNbmeView(){
+  var total=questions.length;
+  var answered=getAnsweredCount();
+  var statusMeta;
+  if(quizMode==='exam'&&!examSubmitted){
+    statusMeta=answered+' answered • '+getMarkedCount()+' marked';
+  }else{
+    statusMeta='Correct '+NC+' • Incorrect '+NI+' • Score '+(getScorePercent()==='—'?'—':getScorePercent()+'%');
+  }
+  document.getElementById('nbItemIndicator').textContent=reviewOpen?'Block Review':'Question: '+(CQ+1)+' of '+total;
+  document.getElementById('nbStatusMeta').textContent=statusMeta;
+  document.getElementById('nbItemSelect').value=String(CQ);
+  document.getElementById('nbPrevBtn').disabled=CQ===0||reviewOpen;
+  document.getElementById('nbNextBtn').disabled=CQ===total-1||reviewOpen;
+  document.getElementById('nbRailItems').innerHTML=buildNbmeRail();
+  if(isQuizComplete()&&summaryVisible)document.getElementById('nbContent').innerHTML=buildSummaryViewHTML();
+  else if(isQuizComplete())document.getElementById('nbContent').innerHTML=buildNbmeCompletionViewHTML();
+  else document.getElementById('nbContent').innerHTML=(reviewOpen&&quizMode==='exam'&&!examSubmitted)?buildNbmeReview():buildNbmeQuestion();
+  keepCurrentRailItemVisible();
+  syncNbmeRailArrows();
+}
+function renderQ(){
+  if(!questions.length)return;
+  renderFinishBanners();
+  syncModeButtons();
+  syncSummaryButtons();
+  syncToolButtons();
+  syncMarkButtons();
+  updScore();
+  renderItemSelectors();
+  if(uiMode==='nbme')renderNbmeView();
+  else renderClassicView();
+}
+
+// ── QUIZ ACTIONS ──
+function pick(ci){
+  if(answers[CQ])return;
+  summaryVisible=false;
+  selected[CQ]=ci;
+  reviewOpen=false;
+  renderQ();
+}
+function submitAns(){
+  if(selected[CQ]===undefined||examSubmitted)return;
+  if(quizMode==='exam'){
+    reviewOpen=false;
+    summaryVisible=false;
+    if(CQ<questions.length-1){
+      CQ++;
+      renderQ();
+      scrollQuizViewportTop();
+    }else{
+      renderQ();
+      showToast('Last question saved. Use Review / End Block or Submit Exam when you are ready.','ok');
+    }
+    return;
+  }
+  if(answers[CQ])return;
+  var ok=selected[CQ]===questions[CQ].correct;
+  answers[CQ]={s:selected[CQ],r:ok?'c':'i'};
+  updateScoreCounts();
+  renderQ();
+  if(quizMode==='learn'&&Object.keys(answers).length===questions.length)setTimeout(showFinish,300);
+}
+function submitExam(){
+  if(quizMode!=='exam'||examSubmitted)return;
+  var unanswered=questions.length-Object.keys(selected).length;
+  var msg=unanswered>0?'You still have '+unanswered+' unanswered question'+(unanswered===1?'':'s')+'. Submit anyway?':'Submit your exam now?';
+  if(!window.confirm(msg))return;
+  answers={};
+  NC=0;
+  NI=0;
+  questions.forEach(function(q,idx){
+    if(selected[idx]===undefined){
+      answers[idx]={s:null,r:'u'};
+      NI++;
+    }else{
+      var ok=selected[idx]===q.correct;
+      answers[idx]={s:selected[idx],r:ok?'c':'i'};
+      if(ok)NC++;else NI++;
+    }
+  });
+  examSubmitted=true;
+  reviewOpen=false;
+  toolMode='';
+  renderQ();
+  showFinish();
+  showToast('Exam submitted.','ok');
+}
+function handleNbmeEndAction(){
+  if(quizMode!=='exam'||examSubmitted)return;
+  if(reviewOpen)submitExam();
+  else{
+    reviewOpen=true;
+    renderQ();
+  }
+}
+function prevQ(){if(CQ>0){CQ--;reviewOpen=false;summaryVisible=false;renderQ();}}
+function nextQ(){if(CQ<questions.length-1){CQ++;reviewOpen=false;summaryVisible=false;renderQ();}}
+function goQ(i){
+  if(i<0||i>=questions.length)return;
+  CQ=i;
+  reviewOpen=false;
+  summaryVisible=false;
+  renderQ();
+}
+function toggleMark(){
+  if(!questions.length)return;
+  summaryVisible=false;
+  if(marked[CQ])delete marked[CQ];
+  else marked[CQ]=true;
+  renderQ();
+}
+function setMode(mode){
+  if(mode===quizMode)return;
+  var hasProgress=Object.keys(selected).length>0||Object.keys(answers).length>0||examSubmitted;
+  if(hasProgress&&!window.confirm('Switching modes will reset your current quiz progress. Continue?')){
+    syncModeButtons();
+    return;
+  }
+  quizMode=mode;
+  resetQuizState(false);
+  renderQ();
+  showToast(mode==='learn'?'Learning mode enabled.':'Testing mode enabled.','ok');
+}
+
+// ── TOOLS ──
+function toggleTool(mode){
+  toolMode=toolMode===mode?'':mode;
+  syncToolButtons();
+}
+function getCurrentAnnotationRoot(){
+  return document.querySelector(uiMode==='nbme'?'#nbContent':'#qArea');
+}
+function persistCurrentAnnotationsFromDOM(){
+  var root=getCurrentAnnotationRoot();
+  if(!root)return;
+  var stem=root.querySelector('[data-stem-html]');
+  if(stem)stemMarkup[CQ]=stem.innerHTML;
+  var nodes=root.querySelectorAll('[data-choice-html]');
+  if(nodes.length){
+    var arr=ensureChoiceMarkup(CQ);
+    nodes.forEach(function(node){
+      arr[Number(node.getAttribute('data-choice-html'))]=node.innerHTML;
+    });
+  }
+}
+function stripAnnotationTags(html){
+  var wrap=document.createElement('div');
+  wrap.innerHTML=html;
+  wrap.querySelectorAll('mark,s').forEach(function(node){
+    node.replaceWith(document.createTextNode(node.textContent));
+  });
+  return wrap.innerHTML;
+}
+function clearMarks(){
+  if(!questions.length)return;
+  stemMarkup[CQ]=stripAnnotationTags(getStemHTML(CQ));
+  var cleaned=[];
+  questions[CQ].choices.forEach(function(_,idx){
+    cleaned[idx]=stripAnnotationTags(getChoiceHTML(CQ,idx));
+  });
+  choiceMarkup[CQ]=cleaned;
+  renderQ();
+  showToast('Annotations cleared.','ok');
+}
+function applyFontSize(){
+  var root=document.documentElement;
+  var viewportScale=parseFloat(getComputedStyle(root).getPropertyValue('--viewport-scale'))||1;
+  var stemBase=25*viewportScale;
+  var choiceBase=15.5*viewportScale;
+  var stemSize=stemBase+(fontStep*2.5*viewportScale);
+  var choiceSize=choiceBase+(fontStep*1.2*viewportScale);
+  root.style.setProperty('--stem-size',stemSize.toFixed(1)+'px');
+  root.style.setProperty('--choice-size',choiceSize.toFixed(1)+'px');
+}
+function adjustFontSize(delta){
+  fontStep=Math.max(-2,Math.min(4,fontStep+delta));
+  applyFontSize();
+}
+function resetFontSize(){
+  fontStep=0;
+  applyFontSize();
+}
+function selectionIntersectsNode(range,node){
+  if(typeof range.intersectsNode==='function'){
+    try{return range.intersectsNode(node);}catch(e){}
+  }
+  var nodeRange=document.createRange();
+  nodeRange.selectNodeContents(node);
+  return !(
+    range.compareBoundaryPoints(Range.END_TO_START,nodeRange)<=0||
+    range.compareBoundaryPoints(Range.START_TO_END,nodeRange)>=0
+  );
+}
+function getScopedAnnotationSegments(range,root){
+  return Array.from(root.querySelectorAll('[data-stem-html],[data-choice-html]')).map(function(scope){
+    if(!selectionIntersectsNode(range,scope))return null;
+    var scopedRange=document.createRange();
+    scopedRange.selectNodeContents(scope);
+    if(range.compareBoundaryPoints(Range.START_TO_START,scopedRange)>0){
+      scopedRange.setStart(range.startContainer,range.startOffset);
+    }
+    if(range.compareBoundaryPoints(Range.END_TO_END,scopedRange)<0){
+      scopedRange.setEnd(range.endContainer,range.endOffset);
+    }
+    if(scopedRange.collapsed)return null;
+    return {scope:scope,range:scopedRange};
+  }).filter(Boolean);
+}
+function collectTextNodesInRange(range,scope){
+  var nodes=[];
+  var walker=document.createTreeWalker(scope,NodeFilter.SHOW_TEXT,{
+    acceptNode:function(node){
+      if(!node.textContent)return NodeFilter.FILTER_REJECT;
+      return selectionIntersectsNode(range,node)?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT;
+    }
+  });
+  var current;
+  while((current=walker.nextNode()))nodes.push(current);
+  return nodes;
+}
+function wrapSelectedTextNode(node,range,mode){
+  var start=0;
+  var end=node.textContent.length;
+  if(node===range.startContainer&&range.startContainer.nodeType===Node.TEXT_NODE)start=range.startOffset;
+  if(node===range.endContainer&&range.endContainer.nodeType===Node.TEXT_NODE)end=range.endOffset;
+  if(start>=end)return 0;
+  if(start>0){
+    node=node.splitText(start);
+    end-=start;
+  }
+  if(end<node.textContent.length)node.splitText(end);
+  var wrapper=document.createElement(mode==='hl'?'mark':'s');
+  node.parentNode.insertBefore(wrapper,node);
+  wrapper.appendChild(node);
+  return 1;
+}
+function normalizeAnnotationWrappers(scope,tagName){
+  Array.from(scope.querySelectorAll(tagName)).forEach(function(node){
+    while(node.nextSibling&&node.nextSibling.nodeType===Node.ELEMENT_NODE&&node.nextSibling.tagName===node.tagName){
+      var sibling=node.nextSibling;
+      while(sibling.firstChild)node.appendChild(sibling.firstChild);
+      sibling.remove();
+    }
+  });
+}
+function applyTextAnnotation(range,root,mode){
+  var applied=0;
+  getScopedAnnotationSegments(range,root).forEach(function(segment){
+    collectTextNodesInRange(segment.range,segment.scope).forEach(function(node){
+      applied+=wrapSelectedTextNode(node,segment.range,mode);
+    });
+    if(applied){
+      normalizeAnnotationWrappers(segment.scope,mode==='hl'?'MARK':'S');
+    }
+  });
+  return applied>0;
+}
+document.addEventListener('mouseup',function(){
+  if(!toolMode||!questions.length)return;
+  var selection=window.getSelection();
+  if(!selection||selection.isCollapsed||!selection.rangeCount)return;
+  var range=selection.getRangeAt(0);
+  var container=range.commonAncestorContainer;
+  var root=getCurrentAnnotationRoot();
+  if(!root||!root.contains(container))return;
+  try{
+    if(!applyTextAnnotation(range,root,toolMode))return;
+    selection.removeAllRanges();
+    persistCurrentAnnotationsFromDOM();
+  }catch(e){}
+});
+
+// ── TIMER ──
+function formatTimer(totalSeconds){
+  var hours=Math.floor(totalSeconds/3600);
+  var minutes=Math.floor((totalSeconds%3600)/60);
+  var seconds=totalSeconds%60;
+  if(hours>0)return hours+':'+String(minutes).padStart(2,'0')+':'+String(seconds).padStart(2,'0');
+  return String(minutes).padStart(2,'0')+':'+String(seconds).padStart(2,'0');
+}
+function toggleTimer(){
+  if(timerRunning)pauseTimer();
+  else startTimer();
+}
+function startTimer(){
+  if(timerRunning)return;
+  timerRunning=true;
+  clearInterval(timerInterval);
+  timerInterval=setInterval(function(){
+    timerSec++;
+    updTimer();
+  },1000);
+  updTimer();
+}
+function pauseTimer(){
+  timerRunning=false;
+  clearInterval(timerInterval);
+  updTimer();
+}
+function resetTimer(){
+  pauseTimer();
+  timerSec=0;
+  updTimer();
+}
+function updTimer(){
+  var timeText=formatTimer(timerSec);
+  document.getElementById('timerTime').textContent=timeText;
+  document.getElementById('nbTimerTime').textContent=timeText;
+  document.getElementById('timerPlayBtn').textContent=timerRunning?'⏸':'▶';
+  document.getElementById('nbTimerToggle').textContent=timerRunning?'Pause':'Start';
+  document.getElementById('nbTimerStatus').textContent=timerRunning?'Running':'Paused';
+  document.getElementById('timerCard').classList.toggle('run',timerRunning);
+  document.getElementById('nbTimerCard').classList.toggle('run',timerRunning);
+  document.getElementById('timerCard').classList.toggle('warn',timerSec>90);
+  document.getElementById('nbTimerCard').classList.toggle('warn',timerSec>90);
+}
+
+// ── FINISH / RESET ──
+function showFinish(){
+  summaryVisible=false;
+  renderQ();
+  scrollQuizViewportTop();
+}
+function resetQuiz(){
+  if(!questions.length)return;
+  questions=randomizeQuestionsForSession(questionBank.length?questionBank:questions);
+  resetQuizState(true);
+  renderQ();
+  scrollQuizViewportTop();
+  showToast('Answer choices reshuffled for a fresh attempt.','ok');
+}
+function exitQuiz(){
+  pauseTimer();
+  reviewOpen=false;
+  switchView('viewSetup');
+}
+
+// ── VIEW ──
+function syncViewportSize(){
+  var root=document.documentElement;
+  var width=window.innerWidth||1280;
+  var height=window.innerHeight||800;
+  var widthNormalized=(Math.min(Math.max(width,1200),1800)-1200)/600;
+  var heightNormalized=(Math.min(Math.max(height,760),1200)-760)/440;
+  var viewportScale=Math.max(.94,Math.min(1.24,1+(widthNormalized*.18)+(heightNormalized*.06)));
+  root.style.setProperty('--app-vh',height+'px');
+  root.style.setProperty('--app-vw',width+'px');
+  root.style.setProperty('--viewport-scale',viewportScale.toFixed(3));
+  root.style.setProperty('--ui-title-size',(26*viewportScale).toFixed(1)+'px');
+  root.style.setProperty('--ui-control-size',(13*viewportScale).toFixed(1)+'px');
+  root.style.setProperty('--ui-meta-size',(12*viewportScale).toFixed(1)+'px');
+  root.style.setProperty('--ui-micro-size',(10*viewportScale).toFixed(1)+'px');
+  applyFontSize();
+}
+function switchView(id){
+  document.querySelectorAll('.view').forEach(function(view){view.classList.remove('active');});
+  document.getElementById(id).classList.add('active');
+  document.body.classList.toggle('nbme-lock',id==='viewQuizNbme');
+  syncViewportSize();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── HELPERS ──
+function showErr(msg){
+  var el=document.getElementById('errMsg');
+  el.textContent='❌ '+msg;
+  el.className='err-msg show';
+}
+function showToast(msg,type){
+  var wrap=document.getElementById('toastWrap');
+  var toast=document.createElement('div');
+  toast.className='toast '+(type||'ok');
+  toast.textContent=msg;
+  wrap.appendChild(toast);
+  setTimeout(function(){
+    toast.style.animation='toastOut .28s ease forwards';
+    setTimeout(function(){if(toast.parentNode)toast.parentNode.removeChild(toast);},300);
+  },2800);
+}
+document.addEventListener('keydown',function(event){
+  if(!questions.length||document.getElementById('viewSetup').classList.contains('active'))return;
+  if(event.target.matches('textarea,input,select'))return;
+  if(event.key==='Escape'&&document.getElementById('labModal').classList.contains('open')){
+    closeLabs();
+    return;
+  }
+  if(event.key==='ArrowRight')nextQ();
+  if(event.key==='ArrowLeft')prevQ();
+  if(!answers[CQ]&&/^[a-eA-E]$/.test(event.key))pick(event.key.toUpperCase().charCodeAt(0)-65);
+});
+window.addEventListener('resize',syncViewportSize);
+window.addEventListener('orientationchange',syncViewportSize);
+
+syncViewportSize();
+syncLaunchUIButtons();
+syncPasteSetTabs();
+syncModeButtons();
+syncToolButtons();
+updScore();
+updTimer();
+applyFontSize();
+hydratePreloadedQuiz();
+</script></body></html>
