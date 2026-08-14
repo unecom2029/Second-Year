@@ -429,6 +429,7 @@ body.recall-mode :is(strong,b).rc-open{animation:rcReveal .35s ease;}
     </nav>
     <div class="tools">
       <button class="hy-btn" id="hyOpenBtn" title="One-page high-yield summary">⭐ HIGH YIELD</button>
+      <button class="icon-btn" type="button" onclick="printHY()" title="Print high-yield summary" aria-label="Print high-yield summary">🖨️</button>
       <button class="icon-btn" id="themeToggle" title="Toggle light/dark">🌓</button>
     </div>
   </div>
@@ -1304,7 +1305,18 @@ const hySummary = document.getElementById('hySummary');
 document.getElementById('hyOpenBtn').addEventListener('click', () => hySummary.classList.add('open'));
 document.getElementById('hyClose').addEventListener('click', () => hySummary.classList.remove('open'));
 hySummary.addEventListener('click', (e) => { if (e.target === hySummary) hySummary.classList.remove('open'); });
-document.getElementById('hyPrint').addEventListener('click', () => window.print());
+function printHY(){
+  const wasOpen = hySummary.classList.contains('open');
+  const afterPaint = window.requestAnimationFrame || function(cb){ setTimeout(cb, 50); };
+  if (!wasOpen) hySummary.classList.add('open');
+  afterPaint(function(){
+    afterPaint(function(){
+      window.print();
+      if (!wasOpen) hySummary.classList.remove('open');
+    });
+  });
+}
+document.getElementById('hyPrint').addEventListener('click', printHY);
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && hySummary.classList.contains('open')) hySummary.classList.remove('open');
 });

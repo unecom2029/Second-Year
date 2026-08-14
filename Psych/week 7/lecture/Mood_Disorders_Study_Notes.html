@@ -446,7 +446,7 @@ body.recall-mode :is(strong,b).rc-open { animation: rcReveal .35s ease; }
   .toc-tools { width: 100%; margin-left: 0; }
 }
 @media print {
-  .floating-left, .progress-bar, .compare-strip, .sec-tools, .recall-note { display: none !important; }
+  .floating-left, .floating-stack, .progress-bar, .compare-strip, .sec-tools, .recall-note { display: none !important; }
   .section.collapsed .sec-body-outer { grid-template-rows: 1fr !important; }
   .section.collapsed .sec-body-inner { visibility: visible !important; }
 }
@@ -2024,6 +2024,9 @@ th { font-size: .78rem; }
     <span class="font-sep">|</span>
     <button class="font-btn" onclick="changeFontSize(-1)" title="Decrease font size">A−</button>
   </div>
+  <button class="theme-btn" type="button" onclick="printHY()" title="Print high-yield summary">
+    <span>🖨️</span><span>Print HY</span>
+  </button>
   <button class="theme-btn" id="themeBtn" onclick="toggleThemePanel()" title="Switch theme">
     <span>🎨</span><span>Theme</span>
   </button>
@@ -2122,7 +2125,16 @@ function closeHY() {
   document.body.style.overflow = '';
 }
 function printHY() {
-  window.print();
+  const modal = document.getElementById('hyModal');
+  const wasOpen = modal.classList.contains('open');
+  const afterPaint = window.requestAnimationFrame || function(cb){ setTimeout(cb, 50); };
+  if (!wasOpen) openHY();
+  afterPaint(function(){
+    afterPaint(function(){
+      window.print();
+      if (!wasOpen) closeHY();
+    });
+  });
 }
 document.addEventListener('DOMContentLoaded', function() {
   const hyModal = document.getElementById('hyModal');

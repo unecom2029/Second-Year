@@ -1216,6 +1216,9 @@ body.recall-mode .recall-note{display:inline-block;}
     <span class="font-sep">|</span>
     <button class="font-btn" onclick="changeFontSize(-1)" title="Decrease font size">A−</button>
   </div>
+  <button class="theme-btn" type="button" onclick="printHY()" title="Print high-yield summary">
+    <span>🖨️</span><span>Print HY</span>
+  </button>
   <button class="theme-btn" id="themeBtn" onclick="toggleThemePanel()" title="Switch theme">
     <span>🎨</span><span>Theme</span>
   </button>
@@ -1492,7 +1495,18 @@ function closeHY(){
   document.body.classList.remove('hy-mode');
   document.body.style.overflow = '';
 }
-function printHY(){ window.print(); }
+function printHY(){
+  const modal = document.getElementById('hyModal');
+  const wasOpen = modal.classList.contains('open');
+  const afterPaint = window.requestAnimationFrame || function(cb){ setTimeout(cb, 50); };
+  if (!wasOpen) openHY();
+  afterPaint(function(){
+    afterPaint(function(){
+      window.print();
+      if (!wasOpen) closeHY();
+    });
+  });
+}
 document.addEventListener('DOMContentLoaded', function(){
   const hyModal = document.getElementById('hyModal');
   hyModal.addEventListener('click', function(e){ if (e.target === this) closeHY(); });

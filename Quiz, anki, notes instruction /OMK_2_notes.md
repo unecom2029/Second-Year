@@ -68,7 +68,7 @@ Define all colors as variables so themes can override them cleanly:
   --panel-dark-text: #faf7f2;
 }
 ```
-
+Make sure these pages can be printable or exported as a pdf
 ---
 
 ## 3. Theme System

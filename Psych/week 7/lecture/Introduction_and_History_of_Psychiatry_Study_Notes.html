@@ -438,6 +438,7 @@ body.recall-mode .recall-note{display:block;}
   </nav>
   <div class="topbar-actions">
     <button class="hy-btn" id="hyOpenBtn" title="One-page high-yield summary">⭐ HIGH YIELD</button>
+    <button class="icon-btn" type="button" onclick="printHY()" title="Print high-yield summary" aria-label="Print high-yield summary">🖨️</button>
     <button class="icon-btn" id="themeToggle" title="Toggle light/dark">🌓</button>
   </div>
 </div>
@@ -1437,7 +1438,18 @@ function closeHY() {
   document.body.classList.remove('hy-mode');
   document.body.style.overflow = '';
 }
-function printHY() { window.print(); }
+function printHY() {
+  const modal = document.getElementById('hySummary');
+  const wasOpen = modal.classList.contains('open');
+  const afterPaint = window.requestAnimationFrame || function(cb){ setTimeout(cb, 50); };
+  if (!wasOpen) openHY();
+  afterPaint(function(){
+    afterPaint(function(){
+      window.print();
+      if (!wasOpen) closeHY();
+    });
+  });
+}
 document.getElementById('hyOpenBtn').addEventListener('click', openHY);
 document.addEventListener('DOMContentLoaded', function() {
   const hyModal = document.getElementById('hySummary');
