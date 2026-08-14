@@ -227,19 +227,6 @@ body,.sb,.auth-card,.mn,.tt,.modal-card,.chip,.qbd,.cd,.r-box,.box,.panel,.auth-
   background:var(--white);border:1px solid rgba(27,42,74,.08);box-shadow:0 8px 20px rgba(18,32,60,.05);
   font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:700;color:var(--navy)
 }
-.resource-tabs{display:flex;flex-wrap:wrap;gap:10px}
-.resource-tab{
-  display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 16px;border-radius:999px;
-  border:1px solid rgba(27,42,74,.12);background:rgba(255,255,255,.78);color:var(--navy);
-  font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;
-  cursor:pointer;transition:var(--tr);box-shadow:0 8px 18px rgba(18,32,60,.05)
-}
-.resource-tab:hover{transform:translateY(-1px);background:var(--white);box-shadow:0 12px 22px rgba(18,32,60,.08)}
-.resource-tab.on{
-  background:linear-gradient(135deg,var(--teal),var(--teal-deep));border-color:transparent;color:#fff;
-  box-shadow:0 14px 26px rgba(26,122,109,.24)
-}
-.resource-panel{display:grid;gap:16px}
 .resource-groups{display:grid;gap:26px}
 .resource-group{
   display:grid;gap:16px;padding-top:6px
@@ -1484,7 +1471,9 @@ OMK:{
         {label:"Open",href:"Neuro/week 6/cases/case_11-4_athetosis_annotated.html",style:"open"}
       ]}
     ]},
-    7:{label:"Week 7",weekNum:7,heroLinks:[],items:[
+    7:{label:"Week 7",weekNum:7,heroLinks:[
+      {label:"Psychiatry_Key_Drug_List_",href:"Psych/Psychiatry_Key_Drug_List_2026_Study_System.html",style:"open"}
+    ],items:[
       {title:"Introduction and History of Psychiatry",icon:"📜",group:"notes",typeLabel:"Study Notes",links:[
         {label:"Open",href:"Psych/week 7/lecture/Introduction_and_History_of_Psychiatry_Study_Notes.html",style:"open"},
         {label:"Quiz",href:"Psych/week 7/quiz/Introduction to Therapy — History, Conditioning, and Modalities.html",style:"dl"}
@@ -1502,8 +1491,12 @@ OMK:{
         {label:"Quiz",href:"Psych/week 7/quiz/Eating Disorders — Wolfrum Lecture (20 Q Bank, NBME-style).html",style:"dl"}
       ]}
     ]},
-    8:{label:"Week 8",weekNum:8,heroLinks:[],items:[]},
-    9:{label:"Week 9",weekNum:9,heroLinks:[],items:[]}
+    8:{label:"Week 8",weekNum:8,heroLinks:[
+      {label:"Psychiatry_Key_Drug_List_",href:"Psych/Psychiatry_Key_Drug_List_2026_Study_System.html",style:"open"}
+    ],items:[]},
+    9:{label:"Week 9",weekNum:9,heroLinks:[
+      {label:"Psychiatry_Key_Drug_List_",href:"Psych/Psychiatry_Key_Drug_List_2026_Study_System.html",style:"open"}
+    ],items:[]}
   }
 },
 OCS:{
@@ -1539,7 +1532,7 @@ OCS:{systems:[
 
 /* ═══ ENGINE ═══ */
 var HUB_LAST_VIEW_KEY='une_study_hub_last_view_v1';
-var CC='OMK',CW=7,CV='overview',EW={},RG={};
+var CC='OMK',CW=7,CV='overview',EW={};
 var AQ=null,CQ=0,AQS={},NC=0,NI=0;
 var TI=null,TS=0,TR=false;
 var CDminutes=10,CDrem=0,CDrun=false,CDint=null;
@@ -1745,24 +1738,6 @@ function getOrderedResourceGroupKeys(grouped){
   });
   return ordered;
 }
-function getActiveResourceGroup(category,week,groupOrder){
-  var stateKey=getResourceGroupStateKey(category,week);
-  return groupOrder.indexOf(RG[stateKey])!==-1?RG[stateKey]:groupOrder[0];
-}
-function setResourceGroup(groupKey){
-  var wk=getWeekMeta(CC,CW);
-  var visibleItems=getVisibleWeekItems(wk);
-  if(!visibleItems.length)return;
-  var grouped={};
-  visibleItems.forEach(function(item){
-    var key=(item&&item.group)||'resources';
-    if(!grouped[key])grouped[key]=[];
-  });
-  var groupOrder=getOrderedResourceGroupKeys(grouped);
-  if(groupOrder.indexOf(groupKey)===-1)return;
-  RG[getResourceGroupStateKey(CC,CW)]=groupKey;
-  rMN();
-}
 function renderHeroLinks(links){
   var visible=(links||[]).filter(function(link){return !!(link&&link.href);});
   if(!visible.length)return '';
@@ -1803,28 +1778,22 @@ items.forEach(function(item){
   grouped[groupKey].push(item);
 });
 var groupOrder=getOrderedResourceGroupKeys(grouped);
-var activeGroup=getActiveResourceGroup(CC,CW,groupOrder);
-var activeMeta=getResourceGroupMeta(activeGroup);
-var activeItems=grouped[activeGroup]||[];
-var h='<section class="system-section"><div class="system-section-hd"><div class="system-section-copy"><h3>This Week\'s Resources</h3><p>'+(groupOrder.length>1?'Use the tabs to jump straight to the section you want.':'Open the material first, then use the linked study tools to reinforce it.')+'</p></div><div class="system-count">'+items.length+'</div></div>';
-if(groupOrder.length>1){
-  h+='<div class="resource-tabs">';
-  groupOrder.forEach(function(groupKey){
-    var meta=getResourceGroupMeta(groupKey);
-    h+='<button class="resource-tab'+(groupKey===activeGroup?' on':'')+'" type="button" onclick="setResourceGroup(\''+groupKey+'\')">'+meta.label+'</button>';
+var h='<section class="system-section"><div class="system-section-hd"><div class="system-section-copy"><h3>This Week\'s Resources</h3><p>'+(groupOrder.length>1?'Sections are grouped below so you can scan each resource type at a glance.':'Open the material first, then use the linked study tools to reinforce it.')+'</p></div><div class="system-count">'+items.length+'</div></div><div class="resource-groups">';
+groupOrder.forEach(function(groupKey){
+  var meta=getResourceGroupMeta(groupKey);
+  var groupItems=grouped[groupKey]||[];
+  h+='<div class="resource-group"><div class="resource-group-hd"><div><div class="resource-group-kicker">Section</div><h4>'+meta.label+'</h4><p>'+meta.copy+'</p></div><div class="resource-group-count">'+groupItems.length+'</div></div><div class="resource-grid">';
+  groupItems.forEach(function(item){
+    var links=getVisibleLinks(item.links);
+    var btns='';
+    links.forEach(function(link){
+      btns+='<a class="resource-btn '+getLinkTone(link)+'" href="'+link.href+'" target="_blank"><span>'+getLinkIcon(link)+'</span><span>'+link.label+'</span></a>';
+    });
+    h+='<article class="resource-card"><div class="resource-card-top"><span class="resource-icon">'+(item.icon||'📘')+'</span><div><div class="resource-eyebrow">'+getResourceTypeLabel(item)+'</div><h4 class="resource-title">'+formatResourceTitle(item.title)+'</h4><div class="resource-sub">'+DATA[CC].fullName+'</div></div></div><div class="resource-actions">'+btns+'</div></article>';
   });
-  h+='</div>';
-}
-h+='<div class="resource-panel"><div class="resource-groups"><div class="resource-group"><div class="resource-group-hd"><div><div class="resource-group-kicker">Section</div><h4>'+activeMeta.label+'</h4><p>'+activeMeta.copy+'</p></div><div class="resource-group-count">'+activeItems.length+'</div></div><div class="resource-grid">';
-activeItems.forEach(function(item){
-  var links=getVisibleLinks(item.links);
-  var btns='';
-  links.forEach(function(link){
-    btns+='<a class="resource-btn '+getLinkTone(link)+'" href="'+link.href+'" target="_blank"><span>'+getLinkIcon(link)+'</span><span>'+link.label+'</span></a>';
-  });
-  h+='<article class="resource-card"><div class="resource-card-top"><span class="resource-icon">'+(item.icon||'📘')+'</span><div><div class="resource-eyebrow">'+getResourceTypeLabel(item)+'</div><h4 class="resource-title">'+formatResourceTitle(item.title)+'</h4><div class="resource-sub">'+DATA[CC].fullName+'</div></div></div><div class="resource-actions">'+btns+'</div></article>';
+  h+='</div></div>';
 });
-return h+'</div></div></div></div></section>';
+return h+'</div></section>';
 }
 
 function rMN(){var wk=DATA[CC].weeks[CW],cn=DATA[CC].fullName,sys=getSystemMeta(CC,CW);
