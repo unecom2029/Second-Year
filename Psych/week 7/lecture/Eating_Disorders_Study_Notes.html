@@ -1219,6 +1219,9 @@ body.recall-mode .recall-note{display:inline-block;}
   <button class="theme-btn" type="button" onclick="printHY()" title="Print high-yield summary">
     <span>🖨️</span><span>Print HY</span>
   </button>
+  <button class="theme-btn" type="button" onclick="printFullPage()" title="Print entire page / save PDF">
+    <span>📄</span><span>Print Page</span>
+  </button>
   <button class="theme-btn" id="themeBtn" onclick="toggleThemePanel()" title="Switch theme">
     <span>🎨</span><span>Theme</span>
   </button>
@@ -1504,6 +1507,20 @@ function printHY(){
     afterPaint(function(){
       window.print();
       if (!wasOpen) closeHY();
+    });
+  });
+}
+function printFullPage(){
+  const modal = document.getElementById('hyModal');
+  const wasOpen = modal.classList.contains('open');
+  const afterPaint = window.requestAnimationFrame || function(cb){ setTimeout(cb, 50); };
+  if (wasOpen) closeHY();
+  document.body.classList.add('full-print');
+  afterPaint(function(){
+    afterPaint(function(){
+      window.print();
+      document.body.classList.remove('full-print');
+      if (wasOpen) openHY();
     });
   });
 }

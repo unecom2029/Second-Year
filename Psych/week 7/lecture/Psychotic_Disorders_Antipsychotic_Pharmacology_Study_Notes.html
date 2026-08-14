@@ -238,13 +238,15 @@ tr:nth-child(even) td{background:var(--cream-2);}
 .hy-full .hy-cols3{columns:3; column-gap:16px;}
 .hy-full .hy-cols3 li{break-inside:avoid; margin-bottom:5px;}
 @media print{
-  body *{visibility:hidden;}
-  #hySummary, #hySummary *{visibility:visible;}
-  #hySummary{position:absolute; inset:0; background:#fff; padding:0;}
-  .hy-modal-close,.hy-print-btn{display:none!important;}
-  .hy-grid{display:block !important;column-count:3 !important;column-gap:9px !important;}
-  .hy-card{display:block !important;width:100% !important;margin:0 0 7px !important;break-inside:avoid;}
-  .hy-full{column-span:all !important;}
+  body.hy-mode *{visibility:hidden;}
+  body.hy-mode #hySummary, body.hy-mode #hySummary *{visibility:visible;}
+  body.hy-mode #hySummary{position:absolute; inset:0; background:#fff; padding:0;}
+  body.hy-mode .hy-modal-close, body.hy-mode .hy-print-btn{display:none!important;}
+  body.hy-mode .hy-grid{display:block !important;column-count:3 !important;column-gap:9px !important;}
+  body.hy-mode .hy-card{display:block !important;width:100% !important;margin:0 0 7px !important;break-inside:avoid;}
+  body.hy-mode .hy-full{column-span:all !important;}
+  body.full-print .topbar, body.full-print #hySummary, body.full-print .lightbox{display:none!important;}
+  body.full-print{background:#fff;color:#000;}
   @page{size:landscape;margin:6mm;}
 }
 
@@ -306,6 +308,7 @@ footer .kbd{font-family:'IBM Plex Mono',monospace; background:var(--cream-2); bo
   </div>
   <button class="hy-btn" id="hyOpenBtn" title="One-page high-yield summary">⭐ HIGH YIELD</button>
   <button class="icon-btn" type="button" onclick="printHY()" title="Print high-yield summary" aria-label="Print high-yield summary">🖨️</button>
+  <button class="icon-btn" type="button" onclick="printFullPage()" title="Print entire page / save PDF" aria-label="Print entire page or save PDF">📄</button>
   <button class="icon-btn" id="themeToggle" title="Toggle light/dark">🌓</button>
 </div>
 
@@ -1953,8 +1956,8 @@ document.addEventListener('keydown', e => {
 /* ================= HIGH-YIELD MODAL ================= */
 function toggleHY(open){
   const modal = document.getElementById('hySummary');
-  if (open){ modal.classList.add('open'); modal.setAttribute('aria-hidden','false'); }
-  else { modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); }
+  if (open){ modal.classList.add('open'); modal.setAttribute('aria-hidden','false'); document.body.classList.add('hy-mode'); }
+  else { modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); document.body.classList.remove('hy-mode'); }
 }
 function printHY(){
   const modal = document.getElementById('hySummary');
@@ -1965,6 +1968,20 @@ function printHY(){
     afterPaint(function(){
       window.print();
       if (!wasOpen) toggleHY(false);
+    });
+  });
+}
+function printFullPage(){
+  const modal = document.getElementById('hySummary');
+  const wasOpen = modal.classList.contains('open');
+  const afterPaint = window.requestAnimationFrame || function(cb){ setTimeout(cb, 50); };
+  if (wasOpen) toggleHY(false);
+  document.body.classList.add('full-print');
+  afterPaint(function(){
+    afterPaint(function(){
+      window.print();
+      document.body.classList.remove('full-print');
+      if (wasOpen) toggleHY(true);
     });
   });
 }

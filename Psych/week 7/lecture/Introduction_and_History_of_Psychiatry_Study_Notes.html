@@ -439,6 +439,7 @@ body.recall-mode .recall-note{display:block;}
   <div class="topbar-actions">
     <button class="hy-btn" id="hyOpenBtn" title="One-page high-yield summary">⭐ HIGH YIELD</button>
     <button class="icon-btn" type="button" onclick="printHY()" title="Print high-yield summary" aria-label="Print high-yield summary">🖨️</button>
+    <button class="icon-btn" type="button" onclick="printFullPage()" title="Print entire page / save PDF" aria-label="Print entire page or save PDF">📄</button>
     <button class="icon-btn" id="themeToggle" title="Toggle light/dark">🌓</button>
   </div>
 </div>
@@ -1447,6 +1448,20 @@ function printHY() {
     afterPaint(function(){
       window.print();
       if (!wasOpen) closeHY();
+    });
+  });
+}
+function printFullPage() {
+  const modal = document.getElementById('hySummary');
+  const wasOpen = modal.classList.contains('open');
+  const afterPaint = window.requestAnimationFrame || function(cb){ setTimeout(cb, 50); };
+  if (wasOpen) closeHY();
+  document.body.classList.add('full-print');
+  afterPaint(function(){
+    afterPaint(function(){
+      window.print();
+      document.body.classList.remove('full-print');
+      if (wasOpen) openHY();
     });
   });
 }
