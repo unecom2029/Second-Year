@@ -69,6 +69,7 @@ Define all colors as variables so themes can override them cleanly:
 }
 ```
 Make sure these pages can be printable or exported as a pdf
+add flavicon related to the lecture (can be from image from given class notes (preferred) or emoji
 ---
 
 ## 3. Theme System

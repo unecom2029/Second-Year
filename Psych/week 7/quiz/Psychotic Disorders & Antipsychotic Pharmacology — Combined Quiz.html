@@ -368,6 +368,26 @@ body.nbme-lock{overflow:hidden}
 .lab-table .lab-group td{padding:8px 9px;background:#edf1f4;font-weight:700}
 .lab-table .continuation{color:transparent}
 
+/* High-yield learning popup */
+.hy-modal{position:fixed;inset:0;z-index:1250;display:none;align-items:flex-start;justify-content:center;padding:26px 14px;background:rgba(9,17,28,.64);backdrop-filter:blur(9px);overflow-y:auto}
+.hy-modal.open{display:flex}
+.hy-shell{width:min(1180px,96vw)}
+.hy-modal-card{position:relative;margin:auto 0;padding:24px 26px 32px;border-radius:24px;background:linear-gradient(180deg,#fffdf8,#f6f3ec);border:1px solid rgba(18,32,60,.1);box-shadow:0 28px 80px rgba(0,0,0,.24);color:var(--ink)}
+.hy-modal-card h2{font-size:calc(var(--stem-size) * 1.05);line-height:1.1;color:var(--navy);margin:0 44px 6px 0}
+.hy-subtitle{color:var(--slate);margin:0 0 12px;font-size:calc(var(--choice-size) * .92);line-height:1.55}
+.hy-modal-close{position:absolute;top:16px;right:18px;display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;border:1px solid rgba(18,32,60,.12);background:#fff;color:var(--navy);cursor:pointer;font-size:1rem;font-weight:800;box-shadow:0 8px 18px rgba(18,32,60,.08);transition:var(--tr)}
+.hy-modal-close:hover{transform:translateY(-1px);border-color:rgba(26,122,109,.32);color:var(--teal)}
+.hy-source-chip{display:inline-flex;align-items:center;gap:8px;margin-bottom:16px;padding:9px 14px;border-radius:999px;background:rgba(26,122,109,.09);border:1px solid rgba(26,122,109,.16);color:var(--teal-deep);font-size:12px;font-weight:800;letter-spacing:.03em;text-transform:uppercase}
+.hy-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.hy-card{min-width:0;background:#fff;border:1px solid rgba(18,32,60,.1);border-radius:14px;padding:13px 15px;font-size:calc(var(--choice-size) * .88);line-height:1.5;box-shadow:0 8px 22px rgba(18,32,60,.06)}
+.hy-card h4{font-size:calc(var(--choice-size) * .84);color:var(--teal-deep);margin:0 0 7px;font-weight:900;text-transform:uppercase;letter-spacing:.04em}
+.hy-card ul{margin:0;padding-left:18px}
+.hy-card li{margin-bottom:4px}
+.hy-full{grid-column:1/-1}
+.hy-full .hy-cols3{columns:3;column-gap:18px}
+.hy-full .hy-cols3 li{break-inside:avoid;margin-bottom:6px}
+@media (max-width:900px){.hy-grid{grid-template-columns:1fr}.hy-full .hy-cols3{columns:1}.hy-modal-card{padding:22px 18px 28px}}
+
 /* finish overlay */
 .fin{position:relative;background:linear-gradient(135deg,var(--navy),#2A3562);border-radius:24px;padding:22px 24px;text-align:center;color:#fff;box-shadow:var(--sh3);margin:0 auto 14px;max-width:min(780px,100%);transition:padding .2s ease,box-shadow .2s ease}
 .fin.min{padding:56px 24px 22px}
@@ -752,6 +772,7 @@ MY CONTENT:
   <div class="qt-bar">
     <div class="qt-name" id="qtName">Quiz</div>
     <button class="qt-btn" id="qtClassicUiBtn" onclick="switchQuizUI('nbme')">⇄ NBME UI</button>
+    <button class="qt-btn" id="learnHyBtn" onclick="openHySummary()">⭐ High Yield</button>
     <button class="qt-btn" id="qtMarkBtn" onclick="toggleMark()">⚑ Mark</button>
     <button class="qt-btn" id="qtSubmitBtn" onclick="submitExam()">🧾 Submit Exam</button>
     <button class="qt-btn" onclick="downloadQuiz()">⬇ Download Quiz</button>
@@ -842,6 +863,7 @@ MY CONTENT:
         <button class="nb-action-btn" type="button" onclick="clearMarks()">Clear</button>
         <button class="nb-mode-pill active" id="nbModeLearn" type="button" onclick="setMode('learn')">Learn</button>
         <button class="nb-mode-pill" id="nbModeExam" type="button" onclick="setMode('exam')">Testing</button>
+        <button class="nb-action-btn" id="nbLearnHyBtn" type="button" onclick="openHySummary()">⭐ High Yield</button>
         <button class="nb-action-btn" id="nbSummaryBtn" type="button" onclick="toggleSummaryPanel()" disabled="">See Score &amp; Summary</button>
         <div class="nb-item-picker">
           <label for="nbItemSelect">Question</label>
@@ -909,6 +931,109 @@ MY CONTENT:
     </footer>
   </div>
 </div>
+</div>
+
+<div class="hy-modal" id="hySummaryModal" aria-hidden="true" onclick="if(event.target===this)closeHySummary()">
+  <div class="hy-shell">
+    <div class="hy-modal-card">
+      <button class="hy-modal-close" type="button" aria-label="Close high-yield summary" onclick="closeHySummary()">✕</button>
+      <h2>⭐ High-Yield One-Pager</h2>
+      <p class="hy-subtitle">Psychotic Disorders &amp; Antipsychotic Pharmacology — condensed pre-exam summary copied from the lecture notes.</p>
+      <div class="hy-source-chip">Learning Mode Resource</div>
+      <div class="hy-grid">
+        <div class="hy-card"><h4>Psychosis — Core Definition</h4><ul>
+          <li>Loss of touch with reality testing; never normal, seen in all cultures</li>
+          <li>Need ≥1: hallucinations, delusions, disorganized speech, disorganized behavior (incl. catatonia), negative symptoms</li>
+          <li>Illusion = misperceived real stimulus ≠ hallucination (no stimulus)</li>
+        </ul></div>
+        <div class="hy-card"><h4>4 Dopamine Tracts</h4><ul>
+          <li>Mesolimbic ↑ → positive symptoms</li>
+          <li>Mesocortical ↓ → negative symptoms</li>
+          <li>Nigrostriatal blockade → EPS</li>
+          <li>Tuberoinfundibular blockade → ↑prolactin</li>
+        </ul></div>
+        <div class="hy-card"><h4>Timeline Trio</h4><ul>
+          <li>Brief psychotic: 1 day – 1 month</li>
+          <li>Schizophreniform: 1 – 6 months</li>
+          <li>Schizophrenia: &gt; 6 months (+ postmorbid decline, 2+ of 5 A–E criteria)</li>
+        </ul></div>
+        <div class="hy-card"><h4>Schizoaffective vs. Delusional D/O</h4><ul>
+          <li>Schizoaffective: baseline psychosis + mood episodes, PLUS ≥2wk psychosis-alone window</li>
+          <li>Delusional D/O: plausible fixed delusion, preserved function, no insight <em>into the delusion only</em></li>
+          <li>6 delusion subtypes: persecutory, somatic, erotomanic, grandiose, jealous, mixed</li>
+        </ul></div>
+        <div class="hy-card"><h4>Typical vs. Atypical</h4><ul>
+          <li>Typical: D &gt; S blockade; high/med/low potency</li>
+          <li>Atypical: S &gt; D blockade</li>
+          <li>High potency = high EPS / low ACH; Low potency = low EPS / high ACH</li>
+        </ul></div>
+        <div class="hy-card"><h4>PINES vs. DONES</h4><ul>
+          <li>-pines (olanzapine, quetiapine, asenapine): sedating, metabolic risk</li>
+          <li>-dones (risperidone, ziprasidone, paliperidone, iloperidone): "watered-down typicals," more EPS</li>
+          <li>PIPs = aripiprazole family (partial agonists); RIP = clozapine (last resort)</li>
+        </ul></div>
+        <div class="hy-card"><h4>EPS Timeline &amp; Tx</h4><ul>
+          <li>Dystonia (acute) → IM anticholinergic</li>
+          <li>Akathisia (acute/subacute) → propranolol</li>
+          <li>Pseudoparkinsonism (acute/subacute) → anticholinergic/amantadine</li>
+          <li>Tardive dyskinesia (chronic) → withdraw/switch agent (NOT anticholinergics)</li>
+          <li>D2 occupancy: ~70% efficacy threshold, ~78–80% EPS threshold</li>
+        </ul></div>
+        <div class="hy-card"><h4>Receptor → Side Effect</h4><ul>
+          <li>H1 → sedation</li>
+          <li>α1 → orthostatic hypotension</li>
+          <li>M1 → dry mouth/blurred vision/urinary retention</li>
+          <li>D2 (nigrostriatal) → EPS</li>
+          <li>D2 (tuberoinfundibular) → galactorrhea/amenorrhea/gynecomastia</li>
+        </ul></div>
+        <div class="hy-card"><h4>Clozapine — Gold Standard</h4><ul>
+          <li>Most effective; only proven-antisuicidal antipsychotic</li>
+          <li>Unique risks: agranulocytosis (1–2%), seizures, sialorrhea, myocarditis</li>
+          <li>No EPS/TD; mandatory ANC/WBC REMS monitoring</li>
+          <li>Superior in CUtLASS Band 2 (treatment-resistant disease)</li>
+        </ul></div>
+        <div class="hy-card"><h4>Acute Agitation</h4><ul>
+          <li>"B-52": Benadryl 50mg + Haldol 5mg + Ativan 2mg IM, PRN</li>
+          <li>NMS red flag: rigidity + hyperthermia + diaphoresis → stop the antipsychotic first</li>
+        </ul></div>
+        <div class="hy-card"><h4>Smoking &amp; CYP1A2</h4><ul>
+          <li>Smoking induces CYP1A2 → ↓ clozapine/olanzapine levels</li>
+          <li>Quitting/hospitalization removes induction → levels can rise ~50%</li>
+          <li>Resuming smoking after discharge → breakthrough psychosis despite compliance</li>
+        </ul></div>
+        <div class="hy-card"><h4>Key Numbers</h4><ul>
+          <li>Relapse: 20%/yr oral vs. ~5%/yr LAI vs. 70% (1yr) / 90% (2yr) unmedicated</li>
+          <li>95% of psychotic-disorder patients smoke</li>
+          <li>Diabetes risk 2–4× baseline in psychiatric patients on APs</li>
+          <li>NMS mortality/dementia boxed warning: 1.6–1.7× death risk</li>
+        </ul></div>
+        <div class="hy-card"><h4>First-Line Consensus</h4><ul>
+          <li>1st: SGA (all 5 major guideline bodies agree)</li>
+          <li>2nd: SGA/FGA</li>
+          <li>3rd: Clozapine</li>
+          <li>4th: Clozapine augmentation</li>
+          <li>CATIE: FGA (perphenazine) ≈ SGA for routine use, more cost-effective</li>
+        </ul></div>
+        <div class="hy-full hy-card">
+          <h4>Side-Effect Rankings — Lowest → Highest Risk (Master Reference)</h4>
+          <ul class="hy-cols3">
+            <li><b>Metabolic syndrome:</b> lowest = Abilify/Geodon/Latuda/Vraylar; highest = Zyprexa/Clozaril</li>
+            <li><b>QT prolongation:</b> lowest = Latuda/Abilify; highest (typicals) = thioridazine/mesoridazine; highest (atypical) = ziprasidone</li>
+            <li><b>Prolactin elevation:</b> lowest = aripiprazole/clozapine; highest = paliperidone/risperidone</li>
+            <li><b>Any EPS:</b> lowest = clozapine/olanzapine/quetiapine; highest = chlorpromazine/haloperidol</li>
+            <li><b>Orthostatic hypotension:</b> lowest = aripiprazole/asenapine/olanzapine/ziprasidone; highest = quetiapine/clozapine</li>
+            <li><b>Sedation:</b> lowest = paliperidone/iloperidone/aripiprazole; highest = chlorpromazine/clozapine</li>
+            <li><b>Weight gain most:</b> clozapine &amp; olanzapine</li>
+            <li><b>T2DM risk most:</b> clozapine &amp; olanzapine</li>
+            <li><b>Agranulocytosis:</b> unique to clozapine (1–2%)</li>
+            <li><b>Galactorrhea:</b> risperidone/paliperidone &amp; high-potency typicals</li>
+            <li><b>Antisuicidal:</b> clozapine (antipsychotics); lithium (mood stabilizers) — only two psychiatric drugs with this property</li>
+            <li><b>Smoking/CYP1A2:</b> affects clozapine &amp; olanzapine specifically</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="lab-modal" id="labModal" onclick="if(event.target===this)closeLabs()">
@@ -1338,6 +1463,24 @@ function closeLabs(){
 function setLabUnits(unit){
   labUnitMode=unit==='si'?'si':'us';
   renderLabs();
+}
+
+// ── HIGH-YIELD SUMMARY ──
+function openHySummary(){
+  if(quizMode!=='learn'){
+    showToast('High-yield summary is available in Learn mode.','warn');
+    return;
+  }
+  var modal=document.getElementById('hySummaryModal');
+  if(!modal)return;
+  modal.classList.add('open');
+  modal.setAttribute('aria-hidden','false');
+}
+function closeHySummary(){
+  var modal=document.getElementById('hySummaryModal');
+  if(!modal)return;
+  modal.classList.remove('open');
+  modal.setAttribute('aria-hidden','true');
 }
 
 // ── QUIZ LIFECYCLE ──
@@ -1822,6 +1965,11 @@ function syncModeButtons(){
   document.getElementById('nbModeLearn').classList.toggle('active',quizMode==='learn');
   document.getElementById('nbModeExam').classList.toggle('active',quizMode==='exam');
   document.getElementById('qtSubmitBtn').style.display=quizMode==='exam'&&!examSubmitted?'':'none';
+  var showLearnTools=quizMode==='learn';
+  var learnHyBtn=document.getElementById('learnHyBtn');
+  var nbLearnHyBtn=document.getElementById('nbLearnHyBtn');
+  if(learnHyBtn)learnHyBtn.style.display=showLearnTools?'':'none';
+  if(nbLearnHyBtn)nbLearnHyBtn.style.display=showLearnTools?'':'none';
   var endBtn=document.getElementById('nbReviewBtn');
   if(quizMode!=='exam'){
     endBtn.textContent='Testing Mode Only';
@@ -2150,6 +2298,7 @@ function setMode(mode){
     return;
   }
   quizMode=mode;
+  if(mode!=='learn')closeHySummary();
   resetQuizState(false);
   renderQ();
   showToast(mode==='learn'?'Learning mode enabled.':'Testing mode enabled.','ok');
@@ -2455,6 +2604,10 @@ function showToast(msg,type){
 document.addEventListener('keydown',function(event){
   if(!questions.length||document.getElementById('viewSetup').classList.contains('active'))return;
   if(event.target&&typeof event.target.matches==='function'&&event.target.matches('textarea,input,select'))return;
+  if(event.key==='Escape'&&document.getElementById('hySummaryModal').classList.contains('open')){
+    closeHySummary();
+    return;
+  }
   if(event.key==='Escape'&&document.getElementById('labModal').classList.contains('open')){
     closeLabs();
     return;
