@@ -99,7 +99,7 @@ body.nbme-lock{overflow:hidden}
 .setup-ui-btn.active{background:linear-gradient(135deg,var(--navy),#2A3562);border-color:transparent;color:#fff;box-shadow:0 14px 30px rgba(18,32,60,.18)}
 .setup-ui-name{display:block;font-size:14px;font-weight:900;line-height:1.2}
 .setup-ui-meta{display:block;font-size:12px;line-height:1.5;color:inherit;opacity:.72;margin-top:6px}
-.err-msg{padding:10px 14px;border-radius:var(--rs);font-size:13px;font-weight:700;display:none;align-items:center;gap:8px;margin-top:10px;background:var(--red-bg);color:var(--red);border:1px solid rgba(196,64,64,.2)}
+.err-msg{padding:10px 14px;border-radius:var(--rs);font-size:13px;font-weight:700;line-height:1.45;display:none;align-items:flex-start;gap:8px;margin-top:10px;background:var(--red-bg);color:var(--red);border:1px solid rgba(196,64,64,.2)}
 .err-msg.show{display:flex}
 
 /* ══ QUIZ VIEW ══ */
@@ -1688,13 +1688,14 @@ function getQuizBuilderCompatibilityRules(){
   return `════════ CUSTOM QUIZ BUILDER COMPATIBILITY — REQUIRED ════════
 The response must import directly into the Custom Quiz Builder. Every question MUST be a single-best-answer multiple-choice item with this exact shape:
 - "stem": non-empty string
-- "choices": array of 4 or 5 non-empty strings, each already prefixed with its letter ("A. ...", "B. ...")
+- "choices": array of exactly 5 non-empty strings, each already prefixed with its letter ("A. ...", "B. ...", "C. ...", "D. ...", "E. ..."). Every professor style must use 5 answer choices, even if earlier style notes mention 4 choices.
 - "correct": one NUMBER only, 0-based to the choices array. Never use a letter, array, boolean, or multiple correct answers.
 - "explanation": non-empty string explaining why the correct choice is right.
 - "wrongExplanations": object with one key for every wrong choice index and no key for the correct index.
 - "eli5": non-empty string, max 3 sentences.
 Do NOT output check-all-that-apply, select-all, true/false, fill-in-the-blank, free-response, table-only, image-only, or multi-correct items. If the source prompt style mentions one of those formats, convert it into a normal single-best-answer MCQ that still follows the professor's voice.
 Do NOT rely on external images or figures. If testing figure-style content, describe the relevant points/values in the stem and keep the answer as one numbered correct choice.
+Answer-length anti-pattern: never make the correct answer uniquely longest, uniquely shortest, most technical-sounding, or most hedged. Across the batch, vary answer lengths so the correct choice is sometimes shorter, sometimes medium-length, and sometimes longer.
 Output exactly one raw JSON object with top-level "name" and "questions". No markdown fences, no prose before or after the JSON.`;
 }
 function insertCompatibilityRules(promptText){
@@ -1704,13 +1705,24 @@ function insertCompatibilityRules(promptText){
   if(text.indexOf('\nMY CONTENT:')!==-1)return text.replace(/\nMY CONTENT:\s*$/,'\n'+rules+'\nMY CONTENT:');
   return text+rules;
 }
+function forceFiveChoicePromptText(promptText){
+  return String(promptText||'')
+    .replace(/- "choices" has 4 OR 5 entries[\s\S]*?Never pad to 5 with a filler option — an unearned 5th choice is worse than 4 clean ones\./g,'- "choices" has exactly 5 entries (A-E) for every question. Never output 4 choices.')
+    .replace(/- "choices" is usually 4, occasionally 5 if a genuine 5th real distractor exists in the same category — never pad\./g,'- "choices" has exactly 5 entries (A-E) for every question. Never output 4 choices.')
+    .replace(/- "choices" has 5 entries for practice-register batches, 4 entries for exam-register batches — default to 5 unless told this is an exam\/RAT-format batch\./g,'- "choices" has exactly 5 entries (A-E) for every question. Never output 4 choices.')
+    .replace(/- "choices" has 5 entries by default\. Use exactly 4 ONLY for TME-combination questions \(see below\) or short conceptual items where a genuine 5th confusable doesn't exist\./g,'- "choices" has exactly 5 entries (A-E) for every question. Never output 4 choices.')
+    .replace(/- "choices" has 4 or 5 entries — default to 4; use 5 only when a genuine 5th plausible distractor exists\. Never pad\./g,'- "choices" has exactly 5 entries (A-E) for every question. Never output 4 choices.')
+    .replace(/- 5 choices \(A-E\) by default\. 4 choices ONLY for TME-combination questions or a short conceptual item with no real 5th confusable\./g,'- 5 choices (A-E) for every question. Never output 4 choices.')
+    .replace(/- 4-5 choices, one category per item, never mixed categories\./g,'- Exactly 5 choices, one category per item, never mixed categories.')
+    .replace(/Options: 4-5 choices, never padded/g,'Options: exactly 5 choices, never padded');
+}
 function applyPromptControls(templateText){
   var count=getRequestedQuestionCount();
   var quizName=document.getElementById('quizName').value.trim();
   var quizNameRule=quizName
     ? '- Use this exact top-level "name": '+JSON.stringify(quizName)
     : '- If "name" is blank, infer a concise title from the content.';
-  return insertCompatibilityRules(String(templateText||'').trim()
+  return insertCompatibilityRules(forceFiveChoicePromptText(String(templateText||'').trim())
     .replace(/- Return exactly N questions(?: in "questions")?(?: \(N given with the content; default 15 if not specified\)| \(default 15 if not specified\))?\./g,'- Return exactly '+count+' questions in "questions".')
     .replace(/- If (?:"name"|the name field) is blank, infer a concise (?:quiz )?title from the content\./g,quizNameRule));
 }
@@ -1720,7 +1732,7 @@ function buildTemplatePrompt(style){
   return templateEl?applyPromptControls(templateEl.textContent):insertCompatibilityRules(buildBoardsPrompt());
 }
 function buildPrompt(){
-  return promptStyle==='boards'?insertCompatibilityRules(buildBoardsPrompt()):buildTemplatePrompt(promptStyle);
+  return promptStyle==='boards'?insertCompatibilityRules(forceFiveChoicePromptText(buildBoardsPrompt())):buildTemplatePrompt(promptStyle);
 }
 function refreshPromptText(){
   var count=getRequestedQuestionCount();
@@ -2172,6 +2184,9 @@ function hydratePreloadedQuiz(){
     showToast('Saved quiz loaded.','ok');
   }catch(e){}
 }
+function getFormatCorrectionPrompt(){
+  return 'Correction prompt to send your AI: Please rewrite your last answer so it works in my quiz builder. Return ONLY raw JSON with top-level "name" and "questions". Each question needs "stem", "choices" with exactly 5 lettered options A-E, "correct" as one 0-based number, "explanation", "wrongExplanations" keyed by wrong choice numbers, and "eli5". Do not make the correct answer uniquely longest, uniquely shortest, most technical-sounding, or most hedged. No markdown, no extra text.';
+}
 function launchQuiz(){
   try{
     var combinedResult=getCombinedPastedQuizPayload();
@@ -2182,10 +2197,10 @@ function launchQuiz(){
     if(err&&typeof err.message==='string'&&err.message.indexOf('__SET_PARSE_ERROR__')===0){
       var setNumber=err.message.replace('__SET_PARSE_ERROR__','');
       showPasteSetTab(Number(setNumber));
-      showErr("Couldn't read Set "+setNumber+". Make sure you copied the full AI response for that set.");
+      showErr("Couldn't read Set "+setNumber+". Make sure you copied the full AI response for that set. If the AI used the wrong format, ask it to fix the format. "+getFormatCorrectionPrompt());
       return;
     }
-    showErr("Couldn't read the pasted sets. Make sure each AI response is complete JSON in the expected format.");
+    showErr("Couldn't read the pasted sets. Make sure each AI response is complete JSON in the expected format. If the AI used the wrong format, ask it to fix the format. "+getFormatCorrectionPrompt());
   }
 }
 
