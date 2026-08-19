@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2 System Rubric — Cardiovascular, Pulmonary, Regional OSE &amp; Special Tests</title>
+<style>
+  :root{
+    --ink:#1a1a1a;
+    --paper:#ffffff;
+    --line:#333333;
+    --line-light:#999999;
+    --header-yellow:#fdf1a8;
+    --header-yellow-border:#d8c453;
+    --accent:#0d5c73;
+    --accent-light:#e6f2f5;
+    --hover-bg:#fff9e0;
+    --star-color:#1a7a3c;
+    --p-color:#b8860b;
+    --zero-color:#b02a2a;
+    --muted:#5a5a5a;
+    --popover-bg:#fffdf6;
+    --popover-border:#0d5c73;
+    --shadow: 0 8px 28px rgba(0,0,0,0.25);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family: Georgia, "Times New Roman", serif;
+    color:var(--ink);
+    background:#e9e6dd;
+    line-height:1.35;
+    padding: 24px 12px 80px;
+  }
+  .sheet{
+    max-width: 1180px;
+    margin: 0 auto;
+    background: var(--paper);
+    border: 1px solid var(--line-light);
+    box-shadow: 0 2px 18px rgba(0,0,0,0.15);
+    padding: 28px 30px 40px;
+  }
+  h1.doc-title{
+    font-size: 1.5rem;
+    text-align:center;
+    margin: 4px 0 18px;
+    letter-spacing:.2px;
+  }
+  .subtitle{
+    text-align:center;
+    color:var(--muted);
+    font-size:.85rem;
+    margin-top:-10px;
+    margin-bottom:18px;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  .demo-fields{
+    display:flex;
+    flex-wrap:wrap;
+    gap: 18px 28px;
+    margin-bottom: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size:.92rem;
+  }
+  .demo-fields label{
+    display:flex;
+    align-items:baseline;
+    gap:6px;
+    flex:1 1 260px;
+  }
+  .demo-fields input[type=text]{
+    flex:1;
+    border:none;
+    border-bottom: 1px solid var(--ink);
+    background:transparent;
+    font-family: Georgia, serif;
+    font-size:1rem;
+    padding:2px 4px;
+  }
+  .demo-fields input[type=text]:focus{ outline: 1px solid var(--accent); }
+
+  table.rubric{
+    width:100%;
+    border-collapse: collapse;
+    margin-bottom: 4px;
+    font-family: Georgia, serif;
+    font-size:.92rem;
+  }
+  table.rubric td, table.rubric th{
+    border: 1px solid var(--line);
+    padding: 6px 8px;
+    vertical-align: top;
+  }
+  tr.section-header td{
+    background: var(--header-yellow);
+    border-color: var(--header-yellow-border);
+    font-weight:700;
+    font-size:.98rem;
+    padding: 7px 8px;
+  }
+  tr.subnote td{
+    font-size:.82rem;
+    color:var(--muted);
+    font-style:italic;
+    background:#f7f7f2;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  .col-check{
+    width: 34px;
+    text-align:center;
+    white-space:nowrap;
+    padding: 12px 6px !important;
+    cursor:pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .col-check-header{
+    width:34px;
+    text-align:center;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight:700;
+  }
+  .row-num{
+    width: 26px;
+    text-align:right;
+    color:var(--muted);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size:.82rem;
+    padding-right:4px !important;
+  }
+  .grading-key{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size:.83rem;
+    background:#f4f4ee;
+    border:1px solid var(--line-light);
+    padding:10px 14px;
+    margin: 14px 0 18px;
+    line-height:1.55;
+  }
+  .grading-key b{ color:var(--accent); }
+
+  /* checkbox visuals */
+  .grade-box{
+    width:19px;
+    height:19px;
+    cursor:pointer;
+    accent-color: var(--accent);
+  }
+  .grade-box.star{ accent-color: var(--star-color); }
+  .grade-box.p{ accent-color: var(--p-color); }
+  .grade-box.zero{ accent-color: var(--zero-color); }
+
+  /* interactive test cell */
+  .testcell{
+    position:relative;
+  }
+  .hoverable{
+    cursor: help;
+    border-bottom: 1.5px dotted var(--accent);
+    transition: background .12s ease;
+    display:inline;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .hoverable:hover, .hoverable.active{
+    background: var(--hover-bg);
+  }
+  .hoverable::after{
+    content: "ⓘ";
+    font-size: .68em;
+    color: var(--accent);
+    vertical-align: super;
+    margin-left: 3px;
+    opacity:.75;
+  }
+  .no-source::after{
+    content: " ⓘ*";
+  }
+
+  .page-break-note{
+    text-align:center;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size:.78rem;
+    color:var(--muted);
+    margin: 30px 0 14px;
+    border-top: 1px dashed var(--line-light);
+    padding-top: 10px;
+  }
+
+  .totals-row{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size:.85rem;
+    margin: 10px 0;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+  .totals-row input[type=text]{
+    width:70px;
+    border:none;
+    border-bottom:1px solid var(--ink);
+    background:transparent;
+    font-family: Georgia, serif;
+    padding:2px 4px;
+  }
+  .comments-block{
+    margin: 14px 0 6px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size:.85rem;
+  }
+  .comments-block label{ display:block; margin-bottom:4px; font-weight:700; }
+  .comments-block textarea{
+    width:100%;
+    min-height: 70px;
+    border:1px solid var(--line-light);
+    padding:8px;
+    font-family: Georgia, serif;
+    font-size: .92rem;
+    resize:vertical;
+  }
+
+  footer.legend{
+    margin-top: 26px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line-light);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size:.78rem;
+    color: var(--muted);
+    text-align:center;
+  }
+
+  /* ===== Popover ===== */
+  #popover{
+    position: fixed;
+    z-index: 1000;
+    max-width: 420px;
+    width: min(420px, 92vw);
+    max-height: 78vh;
+    overflow-y: auto;
+    background: var(--popover-bg);
+    border: 2px solid var(--popover-border);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    padding: 14px 16px 16px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: .86rem;
+    line-height:1.5;
+    display:none;
+  }
+  #popover.open{ display:block; }
+  #popover h4, #sidePanelContent h4{
+    margin: 0 0 8px;
+    font-size: 1.02rem;
+    color: var(--accent);
+    font-family: Georgia, serif;
+    padding-right: 22px;
+  }
+  #popover .pop-close{
+    position:absolute;
+    top:8px; right:10px;
+    cursor:pointer;
+    font-size:1.1rem;
+    color: var(--muted);
+    background:none;
+    border:none;
+    line-height:1;
+    padding:2px 4px;
+  }
+  #popover .pop-close:hover{ color: var(--zero-color); }
+  #popover .pop-label, #sidePanelContent .pop-label{
+    font-weight:700;
+    color:#333;
+    margin-top:10px;
+    margin-bottom:3px;
+    font-size:.78rem;
+    text-transform:uppercase;
+    letter-spacing:.03em;
+  }
+  #popover .pop-label:first-of-type, #sidePanelContent .pop-label:first-of-type{ margin-top:0; }
+  #popover ul, #sidePanelContent ul{ margin:2px 0 0; padding-left: 18px; }
+  #popover li, #sidePanelContent li{ margin-bottom: 4px; }
+  #popover .pop-normal, #sidePanelContent .pop-normal{ background:#eef8ee; border-left:3px solid var(--star-color); padding:6px 8px; margin-top:4px; }
+  #popover .pop-fallback, #sidePanelContent .pop-fallback{
+    background:#fbe9e9; border-left:3px solid var(--zero-color); padding:6px 8px; margin-bottom:8px; font-style:italic; font-size:.8rem;
+  }
+  #popover .pop-images, #sidePanelContent .pop-images{
+    display:flex; flex-wrap:wrap; gap:8px; margin-top:10px;
+  }
+  #popover .pop-images figure, #sidePanelContent .pop-images figure{
+    margin:0; flex: 1 1 160px; max-width:190px;
+  }
+  #popover .pop-images img, #sidePanelContent .pop-images img{
+    width:100%; height:auto; border:1px solid #ccc; border-radius:4px; display:block;
+    background:#fafafa; cursor:zoom-in;
+  }
+  #popover .pop-images img:hover, #sidePanelContent .pop-images img:hover{ border-color: var(--accent); }
+  #popover .pop-images figcaption, #sidePanelContent .pop-images figcaption{
+    font-size:.68rem; color:var(--muted); margin-top:3px; line-height:1.3;
+  }
+  #popover .pop-images .zoom-hint, #sidePanelContent .pop-images .zoom-hint{
+    display:block; color:var(--accent); font-weight:600; margin-top:2px;
+  }
+
+  /* ===== Layout: rubric + sticky side panel ===== */
+  .layout{
+    display:block;
+    max-width: 1180px;
+    margin: 0 auto;
+  }
+  #sidePanel{
+    display:none;
+    flex: 0 0 360px;
+    position: sticky;
+    top: 20px;
+    max-height: calc(100vh - 40px);
+  }
+  @media (min-width: 1300px){
+    .layout{
+      display:flex;
+      align-items:flex-start;
+      gap: 26px;
+      max-width: 1580px;
+    }
+    .layout .sheet{ flex: 1 1 auto; min-width:0; margin:0; }
+    #sidePanel{ display:block; }
+  }
+  #sidePanelInner{
+    background: var(--popover-bg);
+    border: 2px solid var(--popover-border);
+    border-radius: 8px;
+    box-shadow: 0 2px 14px rgba(0,0,0,0.12);
+    padding: 16px 18px 18px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: .86rem;
+    line-height: 1.5;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+  }
+  .side-placeholder{
+    color: var(--muted);
+    font-style: italic;
+    font-size: .85rem;
+    padding: 6px 2px;
+  }
+  .side-placeholder.hidden{ display:none; }
+
+  #overlay{
+    position:fixed; inset:0; background:transparent; z-index:999; display:none;
+  }
+  #overlay.open{ display:block; }
+
+  #lightbox{
+    position:fixed; inset:0; z-index:2000; display:none;
+    background:rgba(10,10,10,0.9);
+    align-items:center; justify-content:center;
+    flex-direction:column;
+    padding: 40px 20px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #lightbox.open{ display:flex; }
+  #lightbox img{
+    max-width:100%; max-height:calc(100% - 46px); object-fit:contain;
+    border-radius:4px; box-shadow:0 10px 40px rgba(0,0,0,0.5);
+    touch-action: pinch-zoom;
+  }
+  #lightbox figcaption{
+    color:#f0f0f0; font-family: Arial, Helvetica, sans-serif; font-size:.85rem;
+    margin-top:12px; text-align:center; max-width:80vw;
+  }
+  #lightboxCloseBtn{
+    position:fixed; top:16px; right:20px; z-index:2001;
+    background:rgba(255,255,255,0.12); color:#fff; border:none;
+    width:44px; height:44px; border-radius:50%;
+    font-size:1.5rem; line-height:1; cursor:pointer;
+  }
+  #lightboxCloseBtn:hover{ background:rgba(255,255,255,0.25); }
+
+  @media (max-width: 720px){
+    .sheet{ padding: 16px 12px 40px; }
+    table.rubric{ font-size:.82rem; }
+    .demo-fields{ flex-direction:column; gap:10px; }
+    .demo-fields label{ flex:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+<div class="sheet">
+  <h1 class="doc-title">2 System Rubric — Cardiovascular, Pulmonary, Regional OSE, and Special Tests</h1>
+  <p class="subtitle">Interactive study version — hover or tap any underlined test description for step-by-step technique notes and reference photos. Checkboxes are local/visual only (nothing is saved or submitted).</p>
+
+  <div class="demo-fields">
+    <label>Student Physician Name <input type="text"></label>
+    <label>Faculty Facilitator Name <input type="text"></label>
+    <label>Date <input type="text"></label>
+  </div>
+
+  <table class="rubric">
+    <tr class="section-header"><td colspan="5">Communication, Professionalism, and Patient Care <span style="font-weight:400; font-style:italic;">(faculty to circle or check boxes below — graded M / NI / U)</span></td></tr>
+    <tr>
+      <th class="col-check-header">M</th>
+      <th class="col-check-header">NI</th>
+      <th class="col-check-header">U</th>
+      <th></th>
+      <th class="row-num"></th>
+    </tr>
+    <tr>
+      <td class="col-check"><input class="grade-box" type="checkbox" name="comm1" value="M"></td>
+      <td class="col-check"><input class="grade-box" type="checkbox" name="comm1" value="NI"></td>
+      <td class="col-check"><input class="grade-box" type="checkbox" name="comm1" value="U"></td>
+      <td>Introduced self, asked the patient's name, preferred way to be addressed, DOB, and Age</td>
+      <td class="row-num"></td>
+    </tr>
+    <tr>
+      <td class="col-check"><input class="grade-box" type="checkbox" name="comm2" value="M"></td>
+      <td class="col-check"><input class="grade-box" type="checkbox" name="comm2" value="NI"></td>
+      <td class="col-check"><input class="grade-box" type="checkbox" name="comm2" value="U"></td>
+      <td>Sanitized hands with air dry or washed hands at sink for 20 seconds, before AND after touching the patient and when appropriate</td>
+      <td class="row-num"></td>
+    </tr>
+    <tr>
+      <td class="col-check"><input class="grade-box" type="checkbox" name="comm3" value="M"></td>
+      <td class="col-check"><input class="grade-box" type="checkbox" name="comm3" value="NI"></td>
+      <td class="col-check"><input class="grade-box" type="checkbox" name="comm3" value="U"></td>
+      <td>Obtained consent for the patient exam, acknowledged the patient's ability to relinquish consent at any time</td>
+      <td class="row-num"></td>
+    </tr>
+    <tr>
+      <td class="col-check"><input class="grade-box" type="checkbox" name="comm4" value="M"></td>
+      <td class="col-check"><input class="grade-box" type="checkbox" name="comm4" value="NI"></td>
+      <td class="col-check"><input class="grade-box" type="checkbox" name="comm4" value="U"></td>
+      <td>Supported the patient with comfort and empathy measures during exam</td>
+      <td class="row-num"></td>
+    </tr>
+    <tr>
+      <td class="col-check"><input class="grade-box" type="checkbox" name="comm5" value="M"></td>
+      <td class="col-check"><input class="grade-box" type="checkbox" name="comm5" value="NI"></td>
+      <td class="col-check"><input class="grade-box" type="checkbox" name="comm5" value="U"></td>
+      <td>Spoke only to the patient during the exam, explained what was necessary, and used non-medical jargon to explain things</td>
+      <td class="row-num"></td>
+    </tr>
+    <tr>
+      <td class="col-check"><input class="grade-box" type="checkbox" name="comm6" value="M"></td>
+      <td class="col-check"><input class="grade-box" type="checkbox" name="comm6" value="NI"></td>
+      <td class="col-check"><input class="grade-box" type="checkbox" name="comm6" value="U"></td>
+      <td>Was respectful and professional in manner and demeanor throughout the exam to the patient and the faculty facilitator proctor</td>
+      <td class="row-num"></td>
+    </tr>
+  </table>
+
+  <div class="grading-key">
+    <b>Grading key for all remaining rows</b> (columns: <b>*</b>, <b>P</b>, <b>0</b>):<br>
+    <b>*</b> = Correctly performed tests BL (bilaterally) if indicated and not prompted<br>
+    <b>P</b> = Correctly performed tests with a Prompt OR test only Partially performed correctly or not BL when indicated<br>
+    <b>0</b> = Incorrectly performed test OR didn't perform the test<br>
+    <span style="color:var(--muted)">(Note: Give Student the Main Header; There are 2 FREE Prompts without points taken off for other lines)</span>
+  </div>
+
+  <table class="rubric" id="mainTable">
+    <tr class="section-header"><td colspan="5">Cardiovascular Systems Exams <span style="font-weight:400;font-style:italic;">(please ask patient permission if removing garments in sensitive areas)</span></td></tr>
+    <tr>
+      <th class="col-check-header">*</th><th class="col-check-header">P</th><th class="col-check-header">0</th>
+      <th style="font-family:Arial, Helvetica, sans-serif;">Test / Maneuver</th><th class="row-num"></th>
+    </tr>
+    <tr data-row="1">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r1" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r1" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r1" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="1">UE Visualization and Palpation for Edema and Capillary Refill BL</span></td>
+      <td class="row-num">1</td>
+    </tr>
+    <tr data-row="2">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r2" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r2" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r2" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="2">Palpates for UE Distal Pulses: Radial BL</span></td>
+      <td class="row-num">2</td>
+    </tr>
+    <tr data-row="3">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r3" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r3" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r3" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="3">LE Visualization and Palpation for Edema and Capillary Refill BL</span></td>
+      <td class="row-num">3</td>
+    </tr>
+    <tr data-row="4">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r4" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r4" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r4" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="4">Palpates for LE Distal Pulses: Dorsalis Pedis &amp; Posterior Tibial BL</span></td>
+      <td class="row-num">4</td>
+    </tr>
+    <tr data-row="5">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r5" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r5" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r5" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="5">Auscultate the Carotids BEFORE Palpation BL</span></td>
+      <td class="row-num">5</td>
+    </tr>
+    <tr data-row="6">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r6" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r6" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r6" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="6">Palpates the Carotid Pulses BL</span></td>
+      <td class="row-num">6</td>
+    </tr>
+    <tr data-row="7">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r7" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r7" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r7" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="7">Appropriately Drapes the Chest: Obtains consent to move &amp; open gown and it is done well</span></td>
+      <td class="row-num">7</td>
+    </tr>
+    <tr data-row="8">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r8" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r8" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r8" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="8">Visual Inspection of the Skin, Trachea, Chest, and Breathing</span></td>
+      <td class="row-num">8</td>
+    </tr>
+    <tr data-row="9">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r9" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r9" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r9" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="9">Auscultates the 4 Major Listening Points of the Heart on the skin</span></td>
+      <td class="row-num">9</td>
+    </tr>
+    <tr data-row="10">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r10" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r10" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r10" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="10">Palpates for Point of Maximum Impulse (PMI) on the skin at the heart apex: Check in supine or on an angle AND in left lateral decubitus positions</span></td>
+      <td class="row-num">10</td>
+    </tr>
+
+    <tr class="section-header"><td colspan="5">Pulmonary System Exams <span style="font-weight:400;font-style:italic;">(please ask patient permission if removing garments in sensitive areas)</span></td></tr>
+    <tr data-row="11">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r11" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r11" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r11" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="11">Auscultates Posterior Lungs (thorax): 7 points bilaterally posterior in an organized ladder on the skin BL</span></td>
+      <td class="row-num">11</td>
+    </tr>
+    <tr data-row="12">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r12" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r12" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r12" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="12">Percusses Posterior Lungs (thorax): 7 points bilaterally posterior in an organized ladder on the skin BL</span></td>
+      <td class="row-num">12</td>
+    </tr>
+    <tr data-row="13">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r13" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r13" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r13" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="13">Auscultates the Anterior Lungs (thorax): 6 points bilaterally anterior in an organized ladder on the skin BL</span></td>
+      <td class="row-num">13</td>
+    </tr>
+    <tr data-row="14">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r14" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r14" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r14" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="14">Percusses the Anterior Lungs (thorax): 6 points bilaterally anterior in an organized ladder on the skin BL</span></td>
+      <td class="row-num">14</td>
+    </tr>
+
+    <tr class="section-header"><td colspan="5">OSE TART and Boney Regional Testing</td></tr>
+    <tr data-row="15">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r15" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r15" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r15" value="0"></td>
+      <td class="testcell"><span class="hoverable no-source" data-key="15">Thoracic Spine Complaint: Screens for Symmetry, Palpates for TART, AND Segmental Diagnosis of Thoracic Spine T1-T12 with N/Flex/Ext</span></td>
+      <td class="row-num">15</td>
+    </tr>
+  </table>
+
+  <div class="totals-row">
+    Put the Total number of checks in the <b>P</b> or <b>0</b> columns from this page 1 in the line below:
+    <input type="text">
+  </div>
+  <div class="comments-block">
+    <label>Comments</label>
+    <textarea></textarea>
+  </div>
+
+  <div class="page-break-note">— Page 2 —</div>
+
+  <table class="rubric">
+    <tr class="section-header"><td colspan="5">Special Tests for Cardiovascular and Pulmonary Systems <span style="font-weight:400;font-style:italic;">— Faculty to Choose 3 Exams for the Student to Explain Why the Test is Done, What is a Normal vs Abnormal Result, and Perform</span></td></tr>
+    <tr>
+      <th class="col-check-header">*</th><th class="col-check-header">P</th><th class="col-check-header">0</th>
+      <th style="font-family:Arial, Helvetica, sans-serif;">Test / Maneuver</th><th class="row-num"></th>
+    </tr>
+    <tr data-row="16">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r16" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r16" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r16" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="16">Assesses Jugular Venous Distention (JVD): Must be right side of neck with the bed at a 30-degree angle, patient's head turned to the left</span></td>
+      <td class="row-num">16</td>
+    </tr>
+    <tr data-row="17">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r17" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r17" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r17" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="17">Auscultates for Murmurs: The patient is leaning forward, &amp; holding breath in exhalation AND with the patient in the left lateral decubitus position</span></td>
+      <td class="row-num">17</td>
+    </tr>
+    <tr data-row="18">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r18" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r18" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r18" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="18">Palpates all 4 Major Listening Points for Lifts, Heaves, and Thrills: Using hypothenar area of hand, palm, and fingertips</span></td>
+      <td class="row-num">18</td>
+    </tr>
+    <tr data-row="19">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r19" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r19" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r19" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="19">Checks for Brachial, Femoral, AND Popliteal Pulses BL</span></td>
+      <td class="row-num">19</td>
+    </tr>
+    <tr data-row="20">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r20" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r20" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r20" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="20">Allen's Test to Assess for Blood Flow of the Hands BL</span></td>
+      <td class="row-num">20</td>
+    </tr>
+    <tr data-row="21">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r21" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r21" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r21" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="21">Palpates the Thyroid BL AND have the patient swallow</span></td>
+      <td class="row-num">21</td>
+    </tr>
+    <tr data-row="22">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r22" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r22" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r22" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="22">Palpates/Assesses Aorta Size and Pulsations</span></td>
+      <td class="row-num">22</td>
+    </tr>
+    <tr data-row="23">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r23" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r23" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r23" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="23">Checks for a DVT BL</span></td>
+      <td class="row-num">23</td>
+    </tr>
+    <tr data-row="24">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r24" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r24" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r24" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="24">Tactile Fremitus: Palpates Anterior and Posterior on the skin BL</span></td>
+      <td class="row-num">24</td>
+    </tr>
+    <tr data-row="25">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r25" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r25" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r25" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="25">Whispered Pectoriloquy: Auscultates Anterior and Posterior on the skin BL</span></td>
+      <td class="row-num">25</td>
+    </tr>
+    <tr data-row="26">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r26" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r26" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r26" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="26">Bronchophony: Auscultates Anterior and Posterior on the skin BL</span></td>
+      <td class="row-num">26</td>
+    </tr>
+    <tr data-row="27">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r27" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r27" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r27" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="27">Egophony: Auscultates Anterior and Posterior on the skin BL</span></td>
+      <td class="row-num">27</td>
+    </tr>
+    <tr data-row="28">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r28" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r28" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r28" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="28">Diaphragmatic Excursion with Percussion on the skin BL</span></td>
+      <td class="row-num">28</td>
+    </tr>
+    <tr data-row="29">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r29" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r29" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r29" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="29">Palpates Respiratory Excursion on the skin BL</span></td>
+      <td class="row-num">29</td>
+    </tr>
+    <tr data-row="30">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r30" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r30" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r30" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="30">Palpates for Head/Neck, Supraclavicular, Infraclavicular, &amp; Axillary Lymphadenopathy BL</span></td>
+      <td class="row-num">30</td>
+    </tr>
+    <tr data-row="31">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r31" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r31" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r31" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="31">Mouth Exam: Inspects AND Palpates Entire Oral Cavity using a light, gloves on AND gauze</span></td>
+      <td class="row-num">31</td>
+    </tr>
+  </table>
+
+  <div class="totals-row">
+    Put the Total number of checks in the <b>P</b> or <b>0</b> columns from this page 2 in the line below:
+    <input type="text">
+  </div>
+  <div class="totals-row">
+    <b>Total Score as calculated from both sides:</b>
+    <input type="text">
+  </div>
+  <div class="comments-block">
+    <label>Additional Comments</label>
+    <textarea></textarea>
+  </div>
+
+  <footer class="legend">
+    Personal study aid — content adapted from OCS 2 course lecture/lab notes for self-quizzing. Rows marked <span style="color:var(--zero-color)">ⓘ*</span> had no exact source match in the study notes and use a general instructional summary instead. Not a clinical document.
+  </footer>
+</div>
+
+<aside id="sidePanel">
+  <div id="sidePanelInner">
+    <div class="side-placeholder" id="sidePlaceholder">Hover (or tap) any underlined test on the left to see step-by-step instructions and reference photos here.</div>
+    <div id="sidePanelContent"></div>
+  </div>
+</aside>
+</div>
+
+<div id="overlay"></div>
+<div id="popover" role="dialog" aria-modal="false">
+  <button class="pop-close" id="popCloseBtn" aria-label="Close">&times;</button>
+  <div id="popContent"></div>
+</div>
+
+<div id="lightbox" role="dialog" aria-modal="true" aria-label="Enlarged image">
+  <button id="lightboxCloseBtn" aria-label="Close enlarged image">&times;</button>
+  <img id="lightboxImg" src="" alt="">
+  <figcaption id="lightboxCaption"></figcaption>
+</div>
+
+<script>
+const DATA = {
+  1: {
+    name: "UE Visualization &amp; Palpation — Edema / Capillary Refill",
+    purpose: "Screens the upper extremities for signs of cardiovascular/circulatory compromise.",
+    steps: [
+      "Visualize and palpate the entire arms, hands, and fingers, bilaterally.",
+      "Look for cyanosis, edema, clubbing, skin lesions, scars, rashes, and bruising.",
+      "Check capillary refill: press a fingertip/nail bed until it blanches, release, and count seconds until color returns.",
+      "Verbalize to the patient: \"I'm checking your skin and blood vessels.\""
+    ],
+    normal: "Normal = capillary refill under about 2–3 seconds, no edema/cyanosis/clubbing. Abnormal = refill over 3 seconds (poor perfusion), edema, or cyanosis.",
+    images: [{src:"assets/pitting_edema_grading.jpg", caption:"Pitting edema grading by depth and recovery time (same grading scale applies to UE and LE edema)."}]
+  },
+  2: {
+    name: "UE Distal Pulses — Radial",
+    purpose: "Assesses upper extremity arterial pulse rate, rhythm, and quality.",
+    steps: [
+      "Palpate the radial pulse at the volar wrist, lateral to the flexor tendons, using your index/middle fingertips — not your thumb (which carries its own pulse).",
+      "Assess bilaterally; note rate, rhythm, and amplitude, and compare sides."
+    ],
+    normal: "Normal = regular rhythm, symmetric amplitude bilaterally.",
+    images: [{src:"assets/radial_pulse_palpation.jpg", caption:"Radial pulse palpation with 2 fingertips at the volar wrist. (Wikimedia Commons)"}]
+  },
+  3: {
+    name: "LE Visualization &amp; Palpation — Edema / Capillary Refill",
+    purpose: "Screens the lower extremities for signs of cardiovascular/circulatory compromise.",
+    steps: [
+      "Visualize and palpate the entire legs, feet, and toes, bilaterally.",
+      "Look for cyanosis, edema, clubbing, skin lesions, scars, rashes, and bruising.",
+      "Check capillary refill at the toes.",
+      "Verbalize to the patient what you're doing."
+    ],
+    normal: "Grade pitting edema 0–4+ by depth and recovery time. Unilateral edema raises concern for DVT (see row 23); bilateral edema suggests heart failure or venous insufficiency.",
+    images: [{src:"assets/pitting_edema_grading.jpg", caption:"Pitting edema grading by depth and recovery time."}]
+  },
+  4: {
+    name: "LE Distal Pulses — Dorsalis Pedis &amp; Posterior Tibial",
+    purpose: "Assesses lower extremity arterial perfusion.",
+    steps: [
+      "Palpate the dorsalis pedis pulse on the dorsum of the foot, lateral to the extensor hallucis longus tendon.",
+      "Palpate the posterior tibial pulse just posterior to the medial malleolus.",
+      "Use fingertips, not your thumb. Test bilaterally."
+    ],
+    normal: "Normal = palpable, symmetric, regular pulses. Weak/absent pulses suggest peripheral arterial disease — if abnormal, follow up with brachial/femoral/popliteal pulses (row 19).",
+    images: [{src:"assets/pulse_sites_overview.jpg", caption:"Arterial pulse sites, including dorsalis pedis (dorsum of foot) and posterior tibial (behind medial malleolus). (Wikimedia Commons / OpenStax A&P)"}]
+  },
+  5: {
+    name: "Auscultate the Carotids (BEFORE Palpation)",
+    purpose: "Screens for a carotid bruit (turbulent flow suggesting stenosis) before palpating, which could dislodge plaque or provoke a vagal response.",
+    steps: [
+      "Auscultate one carotid artery at a time with the diaphragm, along the medial border of the SCM: upper, middle, and lower carotid artery (3 spots).",
+      "Have the patient briefly hold their breath while you auscultate each spot — this eliminates high-pitched tracheal breath sounds that could be mistaken for a bruit.",
+      "Repeat all 3 spots on the other side."
+    ],
+    normal: "Normal = no bruit. A bruit suggests carotid stenosis.",
+    images: [{src:"assets/carotid_auscultation_landmarks.jpg", caption:"The 3 carotid auscultation points (upper, middle, lower). (Source: Douglas Gillard, DC — course slide)"}]
+  },
+  6: {
+    name: "Palpate the Carotid Pulses",
+    purpose: "Assesses carotid pulse quality — performed AFTER auscultation so a bruit isn't missed or a reflex response provoked.",
+    steps: [
+      "Palpate one carotid artery at a time (never both simultaneously) low in the neck, gently, using fingertips along the medial border of the SCM."
+    ],
+    normal: "Normal = symmetric, regular upstroke. Never palpate both carotids at once — this can reduce cerebral blood flow or trigger a baroreceptor/vagal reflex (bradycardia).",
+    images: [{src:"assets/carotid_pulse_palpation.jpg", caption:"Carotid pulse palpation — one side at a time, low in the neck along the SCM border. (Wikimedia Commons)"}]
+  },
+  7: {
+    name: "Appropriately Drapes the Chest",
+    purpose: "Maintains patient modesty and comfort while allowing access for the chest exam.",
+    steps: [
+      "Obtain verbal consent before moving or opening the gown.",
+      "Open the gown from the top or the side — whichever preserves modesty while giving exam access.",
+      "Keep the patient covered elsewhere and perform the drape smoothly and professionally."
+    ]
+  },
+  8: {
+    name: "Visual Inspection — Skin, Trachea, Chest &amp; Breathing",
+    purpose: "Screens the chest, trachea, and breathing pattern before touching.",
+    steps: [
+      "Lower the gown to observe the anterior, lateral, and posterior rib cage.",
+      "Look for symmetry, skin color/lesions, chest shape, and tracheal position.",
+      "Observe respiratory rate, rhythm, depth, and effort.",
+      "Tell the patient you are looking at their chest to make sure everything looks healthy and normal."
+    ]
+  },
+  9: {
+    name: "Auscultate the 4 Major Listening Points of the Heart",
+    purpose: "Screens heart sounds at the 4 classic valve auscultation areas.",
+    steps: [
+      "With the stethoscope diaphragm directly on skin, listen in sequence at: right 2nd intercostal space (aortic), left 2nd intercostal space (pulmonic), left lower sternal border (tricuspid), and left 5th intercostal space midclavicular line/apex (mitral).",
+      "Say, \"I'd like to listen to your heart now.\"",
+      "At each point: state rate and rhythm, identify S1/S2, and screen for extra sounds, murmurs, or gallops using both the diaphragm and bell."
+    ],
+    images: [{src:"assets/heart_auscultation_landmarks.jpg", caption:"Heart borders, valve locations, and the 4 auscultation posts plus Erb's point."}]
+  },
+  10: {
+    name: "Point of Maximum Impulse (PMI)",
+    purpose: "Locates the point of maximal cardiac impulse; a PMI displaced lateral to the midclavicular line (MCL) suggests LV enlargement.",
+    steps: [
+      "Palpate at the heart apex (~5th ICS, midclavicular line) on the skin, under the drape if possible (or at the bra line).",
+      "Check with the patient supine or on an angle, AND again in the left lateral decubitus position (brings the apex closer to the chest wall).",
+      "Can have the patient exhale and hold their breath to help palpate."
+    ],
+    normal: "Normal = PMI at or medial to the MCL, about the size of a quarter. A PMI displaced laterally to the MCL is a strong sign of LV dysfunction/enlargement.",
+    images: [{src:"assets/heart_auscultation_landmarks.jpg", caption:"Reference for apex/MCL landmark used to locate the PMI."}]
+  },
+  11: {
+    name: "Auscultates Posterior Lungs — 7-Point Ladder",
+    purpose: "Screens the posterior lung fields for adventitious or absent breath sounds using a systematic ladder pattern.",
+    steps: [
+      "With the stethoscope diaphragm directly on skin (not over clothing), have the patient breathe deeply through an open mouth.",
+      "Auscultate in a side-to-side ladder pattern across 7 posterior points bilaterally, comparing left vs. right at the SAME level before moving down (avoid diagonal laddering — the opposite side is the patient's own internal control).",
+      "Listen through a full respiratory cycle at each point; note intensity, pitch, and any adventitious sounds (crackles, wheezes, rhonchi, pleural rub)."
+    ],
+    normal: "Normal = vesicular breath sounds bilaterally with no added sounds. Abnormal = crackles (pneumonia, CHF, fibrosis), wheezes (asthma/COPD), rhonchi (secretions/obstruction), pleural rub (pleuritis), or absent/distant sounds (effusion, pneumothorax).",
+    images: [
+      {src:"assets/posterior_lung_ladder_pattern.png", caption:"7-point posterior percussion/auscultation ladder — compare left/right at the same level, not diagonally. (Source: Bates' Guide to Physical Examination, via Week 4 Pulmonary course slide)"},
+      {src:"assets/lung_lobe_auscultation_locations.png", caption:"Which lobe you're actually listening to, anterior and posterior — findings often correlate with the underlying lobe. (Source: Bates' Guide to Physical Examination, via Week 4 Pulmonary course slide)"}
+    ]
+  },
+  12: {
+    name: "Percusses Posterior Lungs — 7-Point Ladder",
+    purpose: "Screens lung density across the posterior fields using the same 7-point ladder as auscultation.",
+    steps: [
+      "Percuss using the same side-to-side ladder pattern across the 7 posterior points bilaterally, comparing left vs. right at each level.",
+      "Place the pleximeter (non-dominant) finger firmly in an intercostal space and strike briskly with the tip of the opposite middle finger.",
+      "Note the percussion note (resonant, dull/flat, hyperresonant, tympanic) at each point."
+    ],
+    normal: "Normal = resonant and symmetric throughout. Abnormal = dull/flat (pneumonia, effusion, mass) or hyperresonant (COPD, or pneumothorax if unilateral).",
+    images: [
+      {src:"assets/posterior_lung_ladder_pattern.png", caption:"7-point posterior percussion/auscultation ladder, used for percussion the same way as auscultation. (Source: Bates' Guide to Physical Examination, via Week 4 Pulmonary course slide)"},
+      {src:"assets/percussion_notes_table.png", caption:"The 5 percussion notes — flat, dull, resonant, hyperresonant, tympanic — with intensity, pitch, and pathologic examples. (Source: Bates' Guide to Physical Examination, via Week 4 Pulmonary course slide)"}
+    ]
+  },
+  13: {
+    name: "Auscultates Anterior Lungs — 6-Point Ladder",
+    purpose: "Screens the anterior lung fields for adventitious or absent breath sounds using a systematic 6-point ladder.",
+    steps: [
+      "With the diaphragm directly on skin, have the patient breathe deeply through an open mouth.",
+      "Auscultate in a side-to-side ladder pattern across 6 anterior points bilaterally — from above the clavicles down through the lower anterior fields — comparing left vs. right at each level.",
+      "Listen through a full respiratory cycle at each point; note intensity, pitch, and any adventitious sounds."
+    ],
+    normal: "Normal = vesicular breath sounds peripherally (bronchovesicular near the 1st–2nd interspaces/sternum is expected there). Abnormal = bronchial-quality sounds in a peripheral field (consolidation), crackles, wheezes, rhonchi, or absent/distant sounds.",
+    images: [
+      {src:"assets/anterior_lung_auscultation_points.svg", caption:"Anterior thoracic auscultation landmarks. (Author: Põnn, Wikimedia Commons, CC BY 2.5)"},
+      {src:"assets/lung_lobe_auscultation_locations.png", caption:"Anterior lobe correlation for auscultation findings. (Source: Bates' Guide to Physical Examination, via Week 4 Pulmonary course slide)"}
+    ]
+  },
+  14: {
+    name: "Percusses Anterior Lungs — 6-Point Ladder",
+    purpose: "Screens lung density across the anterior fields using the same 6-point ladder as auscultation.",
+    steps: [
+      "Percuss using the same side-to-side ladder pattern across the 6 anterior points bilaterally, comparing left vs. right at each level.",
+      "Place the pleximeter finger firmly in an intercostal space and strike briskly with the opposite middle finger.",
+      "Note the percussion note at each point; interpret in the clinical context."
+    ],
+    normal: "Normal = resonant and symmetric throughout, except normal cardiac/liver dullness and the gastric tympanic bubble at the expected locations. Abnormal = dullness/flatness (pneumonia, effusion, mass) or hyperresonance (COPD, or pneumothorax if unilateral).",
+    images: [
+      {src:"assets/anterior_lung_auscultation_points.svg", caption:"Anterior thoracic landmarks, used for percussion the same way as auscultation. (Author: Põnn, Wikimedia Commons, CC BY 2.5)"},
+      {src:"assets/percussion_notes_table.png", caption:"The 5 percussion notes — flat, dull, resonant, hyperresonant, tympanic. (Source: Bates' Guide to Physical Examination, via Week 4 Pulmonary course slide)"}
+    ]
+  },
+  15: {
+    name: "Thoracic Spine — OSE Screen &amp; TART / Segmental Diagnosis",
+    fallback: "No matching content was found in the provided study notes for this OMM/OSE topic — the summary below uses standard TART/segmental-diagnosis principles rather than a specific course source.",
+    purpose: "Screens the thoracic spine for somatic dysfunction using standard osteopathic TART criteria and segmental motion testing.",
+    steps: [
+      "Screen for symmetry first: observe shoulder height, scapular position, and thoracic curve from behind the standing/seated patient.",
+      "Palpate for TART at each thoracic segment T1–T12: Tissue texture change (temperature, bogginess, ropiness), Asymmetry (of transverse/spinous processes), Restriction of motion, and Tenderness to palpation.",
+      "Perform segmental diagnosis: assess each segment's motion preference/restriction in Neutral, Flexion, and Extension (N/Flex/Ext) with side-bending and rotation to identify the dysfunctional segment and name the dysfunction (e.g., NSₗRₗ)."
+    ]
+  },
+  16: {
+    name: "Jugular Venous Distention (JVD)",
+    purpose: "Estimates right atrial/central venous pressure using the internal jugular venous column.",
+    steps: [
+      "Right side of the neck, bed at 30–45°, patient's head turned slightly to the left, using tangential lighting.",
+      "Identify the internal jugular pulsation — non-palpable, biphasic, and varies with respiration/position (unlike the carotid, which is palpable and doesn't vary).",
+      "Measure the vertical height of the venous column above the sternal angle with a ruler."
+    ],
+    normal: "Normal JVP is typically &lt;8 cm total distance above the right atrium. Elevated JVP suggests right heart failure, tricuspid regurgitation, constrictive/restrictive physiology, tamponade, or SVC/IVC obstruction.",
+    images: [{src:"assets/jvp_assessment.jpg", caption:"JVP positioning and measurement technique."}]
+  },
+  17: {
+    name: "Auscultate for Murmurs",
+    purpose: "Detects and characterizes murmurs using patient positioning that accentuates specific valve pathology.",
+    steps: [
+      "Have the patient sit up, lean forward, and hold their breath in exhalation — listen at the left lower sternal border/apex with the diaphragm for aortic regurgitation/insufficiency.",
+      "AND have the patient lie in the left lateral decubitus position — listen at the apex with the bell (diaphragm acceptable) for S3, S4, and mitral stenosis murmurs.",
+      "Describe any murmur using SCRIPT: Site (loudest location), Configuration (crescendo/decrescendo), Radiation (aortic → neck, mitral → axilla), Intensity (grade), Pitch/quality, Timing (systolic/diastolic)."
+    ],
+    normal: "Systolic grading 1–6 (grade 4 = loud with a palpable thrill). Diastolic grading 1–4 (grade 4 = loud/thrill).",
+    images: [
+      {src:"assets/systolic_murmur_grading.jpg", caption:"Systolic murmur grading, I–VI."},
+      {src:"assets/diastolic_murmur_grading.jpg", caption:"Diastolic murmur grading, I–IV."}
+    ]
+  },
+  18: {
+    name: "Palpate for Lifts, Heaves &amp; Thrills",
+    purpose: "Palpates for precordial vibrations/movements associated with valvular or ventricular pathology.",
+    steps: [
+      "At all 4 major auscultation points, palpate using the hypothenar area of the hand and palm first, for lifts and heaves (sustained precordial movements suggesting ventricular hypertrophy).",
+      "Then use the fingertips for thrills (a palpable vibration from a loud, turbulent murmur, typically grade ≥4/6)."
+    ],
+    images: [{src:"assets/heart_auscultation_landmarks.jpg", caption:"The 4 auscultation points, used as the landmarks for this palpation exam too."}]
+  },
+  19: {
+    name: "Brachial, Femoral &amp; Popliteal Pulses",
+    purpose: "Follow-up pulse exam performed if UE/LE pulses were abnormal, or pain/edema/PAD is suspected.",
+    steps: [
+      "Brachial pulse: antecubital fossa, medial to the biceps tendon.",
+      "Femoral pulse: inguinal crease, midway between the ASIS and pubic symphysis.",
+      "Popliteal pulse: behind the knee — often deep, so press fingertips firmly into the popliteal fossa with the knee slightly flexed.",
+      "Compare bilaterally at each site."
+    ],
+    images: [{src:"assets/pulse_sites_overview.jpg", caption:"Arterial pulse sites, including brachial (antecubital fossa), femoral (inguinal crease), and popliteal (behind the knee). (Wikimedia Commons / OpenStax A&P)"}]
+  },
+  20: {
+    name: "Allen's Test",
+    purpose: "Assesses collateral/arterial blood flow to the hand via the radial and ulnar arteries — performed if the hand appears pale or lacks color.",
+    steps: [
+      "Patient rests the hand palm-up.",
+      "Patient makes a fist while you compress BOTH the radial and ulnar arteries simultaneously.",
+      "Ask the patient to open the hand — the palm should look pale.",
+      "Release ONE artery (e.g., ulnar) and watch for the palm to flush with color within about 3–5 seconds.",
+      "Repeat, releasing the other artery. Test bilaterally."
+    ],
+    normal: "Normal = palm flushes with color within 3–5 seconds after releasing either artery, confirming adequate collateral flow. Delayed/absent flush suggests inadequate collateral circulation through that artery.",
+    images: [{src:"assets/allens_test_sequence.jpg", caption:"Allen's test sequence: compress both arteries, patient makes a fist until pale, then release one artery and watch for flush. (Source: Amboss)"}]
+  },
+  21: {
+    name: "Palpate the Thyroid",
+    purpose: "Screens thyroid size, symmetry, and nodularity — relevant for tachycardia/palpitations as well as a general HEENT screen.",
+    steps: [
+      "Explain and obtain consent.",
+      "Visualize/assess the position of the trachea vs. the thyroid, cricoid cartilage, and suprasternal notch for location/symmetry, with the patient's head slightly extended.",
+      "Anterior approach: use one hand (finger pads or thumb) to retract the SCM, then palpate each thyroid lobe while the patient swallows, checking symmetry and nodules.",
+      "Posterior approach: stand behind the patient, use finger pads to palpate the thyroid bilaterally with the patient's head slightly flexed (relaxes the SCM), and have the patient swallow to feel the gland move."
+    ],
+    normal: "Normal = not enlarged, non-tender, symmetric, no nodules, moves with swallow. Abnormal = goiter, nodule, tenderness, bruit, or asymmetry.",
+    images: [{src:"assets/thyroid_palpation_technique.jpg", caption:"Thyroid palpation technique with swallow after locating tracheal landmarks."}]
+  },
+  22: {
+    name: "Aorta — Size &amp; Pulsations",
+    purpose: "Screens for abdominal aortic aneurysm (AAA), especially with abdominal/back pain or a smoking history.",
+    steps: [
+      "With the patient supine, identify the aortic pulsations by pressing deeply and slightly to the left of the abdominal midline in the epigastric region.",
+      "Estimate the width with a hand placed on each side of the pulsation."
+    ],
+    normal: "Normal = aorta ≤3 cm wide. A wide, pulsatile mass ± bruit is concerning for AAA.",
+    images: [{src:"assets/abdominal_aortic_renal_iliac_auscultation_sites.jpg", caption:"Abdominal auscultation/landmark region (aortic, renal, iliac) — from abdominal exam notes; no dedicated palpation-technique photo was found."}]
+  },
+  23: {
+    name: "Checks for a DVT",
+    purpose: "Screens for signs of deep vein thrombosis (DVT) in the lower extremity.",
+    steps: [
+      "Inspect both legs for unilateral swelling, erythema, and warmth; compare calf circumference if asymmetry is suspected.",
+      "Palpate the calf for tenderness, warmth, or a palpable cord.",
+      "Homans sign (commonly taught, but of limited diagnostic value): with the knee extended, passively and rapidly dorsiflex the foot and ask about calf pain; some versions repeat this with the knee flexed while palpating the calf.",
+      "Test bilaterally and correlate with other DVT risk factors/signs (e.g. Wells criteria) rather than relying on Homans sign alone."
+    ],
+    normal: "Normal = no swelling, tenderness, or warmth, and a negative Homans sign bilaterally. Abnormal = unilateral swelling, warmth, tenderness, or a palpable cord raises concern for DVT. Homans sign alone is neither sensitive nor specific — positive in less than a third of confirmed DVT cases, and present in over half of patients WITHOUT a DVT — so it should never be relied on in isolation.",
+    images: [{src:"assets/dvt_homans_sign_check.jpg", caption:"Homans sign: with the knee extended, the examiner passively and rapidly dorsiflexes the patient's foot while assessing for calf pain. Limited sensitivity/specificity — correlate with other findings. (Source: OrthoFixar)"}]
+  },
+  24: {
+    name: "Tactile Fremitus",
+    purpose: "Assesses vibration transmission through the chest wall to screen for consolidation vs. air/fluid separating lung from chest wall.",
+    steps: [
+      "Place the ulnar surfaces or palms of both hands symmetrically on the chest wall, directly on skin.",
+      "Ask the patient to repeat \"99\" or \"1-1-1\" in a normal voice while you feel for vibration.",
+      "Move systematically through matched points, comparing side-to-side at each level, covering both the posterior and anterior chest."
+    ],
+    normal: "Normal = symmetric palpable vibration. Increased fremitus suggests consolidation/pneumonia — solid lung transmits vibration better (a \"bullhorn\" effect). Decreased fremitus suggests pleural effusion, pneumothorax, or obstruction (air/fluid separates lung from the chest wall).",
+    images: [{src:"assets/fremitus_excursion_hand_placement.png", caption:"Posterior hand placement for respiratory expansion and tactile fremitus, with a 4-point ladder. (Source: Bates' Guide to Physical Examination, via Week 4 Pulmonary course slide)"}]
+  },
+  25: {
+    name: "Whispered Pectoriloquy",
+    purpose: "Tests for enhanced transmission of a whispered voice through consolidated lung.",
+    steps: [
+      "With the diaphragm on skin, ask the patient to whisper \"99\" or \"1-2-3\" while you auscultate.",
+      "Use the same ladder pattern as breath-sound auscultation, covering both the anterior and posterior chest, comparing side-to-side."
+    ],
+    normal: "Normal = whispered words sound muffled and indistinct (effectively absent) through normal lung. Abnormal (positive) = words become louder and clearer over an area — suggests consolidation or a mass; markedly decreased/absent over a pleural effusion or pneumothorax.",
+    images: [{src:"assets/posterior_lung_ladder_pattern.png", caption:"Auscultation ladder pattern — the same point sequence is used for breath sounds, whispered pectoriloquy, bronchophony, and egophony. (Source: Bates' Guide to Physical Examination, via Week 4 Pulmonary course slide)"}]
+  },
+  26: {
+    name: "Bronchophony",
+    purpose: "Tests for enhanced transmission of the spoken voice through consolidated lung.",
+    steps: [
+      "With the diaphragm on skin, ask the patient to say \"99\" in a normal speaking voice while you auscultate.",
+      "Use the same ladder pattern as breath-sound auscultation, covering both the anterior and posterior chest, comparing side-to-side."
+    ],
+    normal: "Normal = spoken voice sounds muffled and indistinct through normal lung. Abnormal (positive) = the voice becomes louder and clearer over an area — suggests consolidation or a tumor-infiltrated area of lung.",
+    images: [{src:"assets/posterior_lung_ladder_pattern.png", caption:"Auscultation ladder pattern shared by breath sounds, whispered pectoriloquy, bronchophony, and egophony. (Source: Bates' Guide to Physical Examination, via Week 4 Pulmonary course slide)"}]
+  },
+  27: {
+    name: "Egophony",
+    purpose: "Tests for the classic \"E-to-A\" voice change over consolidated lung.",
+    steps: [
+      "With the diaphragm on skin, ask the patient to say a long \"E\" (or \"key\") repeatedly while you auscultate.",
+      "Use the same ladder pattern as breath-sound auscultation, covering both the anterior and posterior chest, comparing side-to-side."
+    ],
+    normal: "Normal = the \"E\" sound stays a muffled E. Abnormal (positive) = the \"E\" sounds like a nasal \"A\" (egophony) — suggests consolidation or tumor-infiltrated lung; sounds are typically decreased/absent, not egophonic, over a pleural effusion or pneumothorax.",
+    images: [{src:"assets/posterior_lung_ladder_pattern.png", caption:"Auscultation ladder pattern shared by breath sounds, whispered pectoriloquy, bronchophony, and egophony. (Source: Bates' Guide to Physical Examination, via Week 4 Pulmonary course slide)"}]
+  },
+  28: {
+    name: "Diaphragmatic Excursion (with Percussion)",
+    purpose: "Measures diaphragm descent to screen for hyperinflation, effusion, or phrenic nerve dysfunction.",
+    steps: [
+      "Percuss posteriorly to find the lower border of resonance (top of the diaphragm) at full exhalation; mark or note the level.",
+      "Have the patient take a deep breath and hold it; percuss down again to find the new resonance border at full inhalation.",
+      "Measure the distance between the two levels; compare bilaterally."
+    ],
+    normal: "Normal excursion is roughly 3–5 cm (some sources cite 4–6 cm). Reduced excursion or asymmetry suggests effusion, consolidation, COPD hyperinflation, or phrenic nerve dysfunction.",
+    images: [
+      {src:"assets/fremitus_excursion_hand_placement.png", caption:"Posterior chest landmarks used for excursion and fremitus testing. (Source: Bates' Guide to Physical Examination, via Week 4 Pulmonary course slide)"},
+      {src:"assets/percussion_notes_table.png", caption:"The 5 percussion notes, used to identify the diaphragm's resonance border. (Source: Bates' Guide to Physical Examination, via Week 4 Pulmonary course slide)"}
+    ]
+  },
+  29: {
+    name: "Palpates Respiratory Excursion",
+    purpose: "Assesses symmetry of chest wall/diaphragm movement during breathing.",
+    steps: [
+      "Stand behind the patient; place both hands flat on the posterolateral chest wall with thumbs together near the spine at about the level of T9–T10, pulling a small fold of skin between the thumbs.",
+      "Ask the patient to take a deep breath; watch the thumbs move apart symmetrically."
+    ],
+    normal: "Normal = thumbs separate symmetrically and equally. Asymmetric or lagging movement on one side suggests pneumonia, effusion, phrenic nerve paralysis, pulmonary fibrosis, bronchial obstruction, or pneumothorax on that side.",
+    images: [{src:"assets/fremitus_excursion_hand_placement.png", caption:"Hand placement for posterior respiratory expansion — thumbs together near the spine, watching for symmetric separation on a deep breath. (Source: Bates' Guide to Physical Examination, via Week 4 Pulmonary course slide)"}]
+  },
+  30: {
+    name: "Head/Neck, Supraclavicular, Infraclavicular &amp; Axillary Lymph Node Palpation",
+    purpose: "Screens the head/neck and upper-extremity/thoracic lymphatic chains (including the axilla) for reactive or concerning lymphadenopathy.",
+    steps: [
+      "Using the pads of the index and middle fingers in a gentle rotary motion, palpate systematically: preauricular, posterior auricular, occipital, tonsillar, submandibular, submental, superficial and posterior cervical chains, deep cervical chain, and supraclavicular nodes.",
+      "Palpate the infraclavicular (apical) nodes just below the clavicle, along the deltopectoral groove.",
+      "Palpate the axillary nodes: support the patient's relaxed arm with your hand (this relaxes the pectoral muscles for deeper access), then reach your fingers up into the apex of the axilla and sweep firmly down along the chest wall, checking the central (deep within the axilla), anterior/pectoral, posterior/subscapular, and lateral (brachial) node groups.",
+      "Assess and compare bilaterally for mobility, consistency, tenderness, size, and shape at every basin."
+    ],
+    normal: "Normal = nodes not palpable, or soft/mobile/non-tender and &lt;1 cm. Abnormal = hard, fixed, &gt;1 cm, or supraclavicular nodes — supraclavicular nodes carry higher risk for malignancy from the abdomen, GU tract, or lungs (Virchow's node, left side). Axillary nodes drain the arm, breast, and thorax, so palpable axillary nodes should prompt a check of those regions.",
+    images: [
+      {src:"assets/lymph_node_exam.jpg", caption:"Head and neck lymph node regions and drainage pattern — preauricular, posterior auricular, occipital, tonsillar, submandibular, submental, cervical chains, supraclavicular. (Source: Week 2 HEENT course slide)"},
+      {src:"assets/axillary_infraclavicular_node_groups.png", caption:"Axillary and infraclavicular (apical) lymph node groups — lateral, central (deep within axilla), posterior (subscapular), anterior (pectoral), apical (infraclavicular), and supraclavicular. (Source: Week 7 OCS Sensitive Exams & Lymph Nodes course slide)"}
+    ]
+  },
+  31: {
+    name: "Mouth Exam",
+    purpose: "Screens the oral cavity for lesions, infection, and other abnormalities.",
+    steps: [
+      "Explain and obtain consent.",
+      "With gloves on, a light source, and gauze (to grasp/retract the tongue if needed), inspect AND palpate the entire oral cavity: lips, teeth, gums, tongue (top, sides, underneath), palate, tonsils, and pharynx.",
+      "Have the patient say \"ah\" and stick out/move their tongue."
+    ],
+    normal: "Normal = moist pink mucosa, intact dentition, no ulcers/masses. Abnormal = nonhealing ulcer, induration, leukoplakia/erythroplakia, exudate.",
+    images: [{src:"assets/mouth_throat_exam.jpg", caption:"Mouth/throat exam — lips, teeth, gums, tongue, palate, tonsils, pharynx."}]
+  }
+};
+
+// ---------- checkbox single-select-per-row behavior ----------
+document.querySelectorAll('input.grade-box').forEach(cb=>{
+  cb.addEventListener('change', function(){
+    if(!this.checked) return;
+    document.querySelectorAll('input[name="'+this.name+'"]').forEach(sib=>{
+      if(sib!==this) sib.checked=false;
+    });
+  });
+});
+
+// enlarge the tap target: tapping anywhere in a checkbox cell toggles its checkbox (helps on iPad/touch)
+document.querySelectorAll('td.col-check').forEach(td=>{
+  td.addEventListener('click', function(e){
+    if(e.target.tagName === 'INPUT') return;
+    const box = this.querySelector('input.grade-box');
+    if(box){ box.checked = !box.checked; box.dispatchEvent(new Event('change', {bubbles:true})); }
+  });
+});
+
+// ---------- popover logic ----------
+const popover = document.getElementById('popover');
+const popContent = document.getElementById('popContent');
+const overlay = document.getElementById('overlay');
+const popCloseBtn = document.getElementById('popCloseBtn');
+const sidePanelContent = document.getElementById('sidePanelContent');
+const sidePlaceholder = document.getElementById('sidePlaceholder');
+let activeEl = null;
+const isTouch = window.matchMedia('(hover: none)').matches;
+const wideQuery = window.matchMedia('(min-width: 1300px)');
+function isWide(){ return wideQuery.matches; }
+
+function buildContent(key){
+  const d = DATA[key];
+  if(!d) return '<p>No content available.</p>';
+  let html = '<h4>'+d.name+'</h4>';
+  if(d.fallback){
+    html += '<div class="pop-fallback">'+d.fallback+'</div>';
+  }
+  if(d.purpose){
+    html += '<div class="pop-label">Purpose</div><div>'+d.purpose+'</div>';
+  }
+  if(d.steps && d.steps.length){
+    html += '<div class="pop-label">How to Perform</div><ul>'+d.steps.map(s=>'<li>'+s+'</li>').join('')+'</ul>';
+  }
+  if(d.normal){
+    html += '<div class="pop-label">Normal vs. Abnormal</div><div class="pop-normal">'+d.normal+'</div>';
+  }
+  if(d.images && d.images.length){
+    html += '<div class="pop-images">'+d.images.map(im=>
+      '<figure><img src="'+im.src+'" alt="'+im.caption.replace(/"/g,'&quot;')+'" data-caption="'+im.caption.replace(/"/g,'&quot;')+'" title="Tap to enlarge" loading="lazy" onerror="this.parentElement.innerHTML=\'&lt;div style=&quot;padding:10px;font-size:.7rem;color:#b02a2a;border:1px dashed #b02a2a;&quot;&gt;Image failed to load: '+im.src+'&lt;/div&gt;\'"><figcaption>'+im.caption+' <span class="zoom-hint">🔍 tap to enlarge</span></figcaption></figure>'
+    ).join('')+'</div>';
+  }
+  return html;
+}
+
+function positionPopover(target){
+  const rect = target.getBoundingClientRect();
+  const margin = 10;
+  popover.style.display='block'; // measure
+  const pw = popover.offsetWidth;
+  const ph = popover.offsetHeight;
+  let left = rect.left;
+  let top = rect.bottom + margin;
+
+  // horizontal clamp
+  if(left + pw > window.innerWidth - margin){
+    left = window.innerWidth - pw - margin;
+  }
+  if(left < margin) left = margin;
+
+  // vertical: if not enough room below, place above
+  if(top + ph > window.innerHeight - margin){
+    const above = rect.top - ph - margin;
+    if(above > margin){
+      top = above;
+    } else {
+      // clamp within viewport, allow internal scroll
+      top = margin;
+    }
+  }
+  popover.style.left = left+'px';
+  popover.style.top = top+'px';
+}
+
+function openPopover(target){
+  const key = target.getAttribute('data-key');
+  popContent.innerHTML = buildContent(key);
+  document.querySelectorAll('.hoverable.active').forEach(e=>e.classList.remove('active'));
+  target.classList.add('active');
+  activeEl = target;
+  popover.classList.add('open');
+  overlay.classList.add('open');
+  positionPopover(target);
+}
+
+// side panel: no open/close race, just swap content in place — nothing to blink
+function showInPanel(target){
+  const key = target.getAttribute('data-key');
+  sidePanelContent.innerHTML = buildContent(key);
+  sidePlaceholder.classList.add('hidden');
+  document.querySelectorAll('.hoverable.active').forEach(e=>e.classList.remove('active'));
+  target.classList.add('active');
+}
+
+function closePopover(){
+  popover.classList.remove('open');
+  popover.style.display = '';
+  overlay.classList.remove('open');
+  if(activeEl) activeEl.classList.remove('active');
+  activeEl = null;
+}
+
+let closeTimer = null;
+function scheduleClose(){
+  clearTimeout(closeTimer);
+  closeTimer = setTimeout(closePopover, 220);
+}
+function cancelClose(){
+  clearTimeout(closeTimer);
+}
+
+document.querySelectorAll('.hoverable').forEach(el=>{
+  if(!isTouch){
+    el.addEventListener('mouseenter', ()=>{
+      if(isWide()){ showInPanel(el); return; }
+      cancelClose(); openPopover(el);
+    });
+    el.addEventListener('mouseleave', ()=>{
+      if(isWide()) return; // side panel keeps showing the last-hovered test, nothing to close
+      scheduleClose();
+    });
+    el.addEventListener('focus', ()=>{
+      if(isWide()){ showInPanel(el); return; }
+      cancelClose(); openPopover(el);
+    });
+    el.addEventListener('blur', ()=>{
+      if(isWide()) return;
+      scheduleClose();
+    });
+  }
+  el.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    if(isWide()){ showInPanel(el); return; }
+    if(activeEl===el && popover.classList.contains('open')){
+      closePopover();
+    } else {
+      openPopover(el);
+    }
+  });
+});
+
+overlay.addEventListener('click', closePopover);
+popCloseBtn.addEventListener('click', closePopover);
+document.addEventListener('keydown', (e)=>{ if(e.key==='Escape'){ closeLightbox(); closePopover(); } });
+
+// ---------- lightbox (click-to-enlarge images) ----------
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightboxImg');
+const lightboxCaption = document.getElementById('lightboxCaption');
+const lightboxCloseBtn = document.getElementById('lightboxCloseBtn');
+
+function openLightbox(src, alt, caption){
+  lightboxImg.src = src;
+  lightboxImg.alt = alt || '';
+  lightboxCaption.textContent = caption || '';
+  lightbox.classList.add('open');
+}
+function closeLightbox(){
+  lightbox.classList.remove('open');
+  lightboxImg.src = '';
+}
+
+document.addEventListener('click', (e)=>{
+  const img = e.target.closest('#popContent .pop-images img, #sidePanelContent .pop-images img');
+  if(!img) return;
+  e.stopPropagation();
+  openLightbox(img.src, img.alt, img.getAttribute('data-caption') || '');
+});
+
+lightboxCloseBtn.addEventListener('click', closeLightbox);
+lightbox.addEventListener('click', (e)=>{ if(e.target===lightbox) closeLightbox(); });
+window.addEventListener('scroll', ()=>{ if(popover.classList.contains('open') && activeEl) positionPopover(activeEl); }, true);
+window.addEventListener('resize', ()=>{ if(popover.classList.contains('open') && activeEl) positionPopover(activeEl); });
+wideQuery.addEventListener('change', (e)=>{
+  if(e.matches) closePopover(); // switched into side-panel mode — drop the floating card
+});
+
+// keep popover open while hovering the popover itself (desktop), close on leaving it
+if(!isTouch){
+  popover.addEventListener('mouseenter', cancelClose);
+  popover.addEventListener('mouseleave', scheduleClose);
+}
+</script>
+
+</body>
+</html>
