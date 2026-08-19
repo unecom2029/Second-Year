@@ -1119,7 +1119,11 @@ function syncActiveNav(){
   }
   navPills.forEach(p => p.classList.toggle('active', p.getAttribute('href') === '#' + current.id));
   const activeEl = document.querySelector('.nav-pill.active');
-  if (activeEl) activeEl.scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'});
+  if (activeEl){
+    const navScroll = document.getElementById('navScroll');
+    const target = activeEl.offsetLeft - navScroll.clientWidth/2 + activeEl.offsetWidth/2;
+    navScroll.scrollTo({left: target, behavior:'smooth'});
+  }
 }
 window.addEventListener('scroll', () => { window.requestAnimationFrame(syncActiveNav); }, {passive:true});
 syncActiveNav();
