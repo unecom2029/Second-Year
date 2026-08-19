@@ -312,6 +312,59 @@
       border-radius: 4px;
     }
     .quiz-hidden-cell:hover::after { background: var(--quiz-overlay-hover); }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0 0; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 38px;
+      border: 1px solid var(--hero-meta-border);
+      border-radius: 22px;
+      background: var(--hero-meta-bg);
+      color: var(--hero-heading);
+      cursor: pointer;
+      padding: 8px 16px;
+      font: 700 0.72rem "JetBrains Mono", monospace;
+      text-transform: uppercase;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .btn.primary { background: var(--gold); color: #241500; border-color: var(--gold); }
+    .btn.close-btn { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .hy-modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      z-index: 260;
+      background: rgba(0,0,0,0.78);
+      padding: 26px 14px;
+      overflow-y: auto;
+    }
+    .hy-modal.open { display: flex; justify-content: center; align-items: flex-start; }
+    .hy-card {
+      width: min(1160px, 96vw);
+      background: var(--paper);
+      color: var(--ink);
+      border-radius: 10px;
+      box-shadow: 0 22px 70px rgba(0,0,0,0.48);
+      padding: 20px;
+    }
+    .hy-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 3px solid var(--accent2);
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+    }
+    .hy-header h2 { margin: 0; font-size: 1.45rem; }
+    .hy-cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .hy-block { background: var(--cream); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 10px; }
+    .hy-block h4 { margin: 0 0 6px; font-size: 1rem; }
+    .hy-block ul { margin: 0; padding-left: 1.1rem; }
+    .hy-block li { margin: 0.25rem 0; }
     .floating-stack {
       position: fixed;
       right: 18px;
@@ -387,6 +440,7 @@
       .step-list li { grid-template-columns: 32px 1fr; }
       .floating-stack { right: 10px; bottom: 10px; }
       .font-btn-row, .theme-btn { font-size: 0.64rem; }
+      .hy-cols { grid-template-columns: 1fr; }
     }
     @media print {
       .toc-bar, .floating-stack, .lightbox, .tq-bar, .answer-toggle { display: none !important; }
@@ -394,10 +448,15 @@
       .hero { background: #fff; color: #000; padding: 0 0 12px; border-bottom: 2px solid #000; }
       .hero-sub, .hero-tag, .hero-meta-item .label, .hero-meta-item .value { color: #000; }
       .hero-meta-item { border-color: #999; background: #fff; }
+      .hero-actions { display: none !important; }
       .section { break-inside: avoid; padding: 18px 0; }
       .exam-q .answer { display: block !important; }
       .slide-img { max-width: 6.8in; box-shadow: none; }
       a { color: #000; text-decoration: underline; }
+      body.hy-mode > header, body.hy-mode > .toc-bar, body.hy-mode > .section, body.hy-mode > footer, body.hy-mode > .floating-stack, body.hy-mode > .lightbox { display: none !important; }
+      body.hy-mode .hy-modal { position: static !important; display: block !important; background: transparent !important; padding: 0 !important; overflow: visible !important; }
+      body.hy-mode .hy-card { width: 100% !important; box-shadow: none !important; padding: 0 !important; }
+      body.hy-mode .hy-header .btn { display: none !important; }
     }
   </style>
 </head>
@@ -412,6 +471,9 @@
         <div class="hero-meta-item"><span class="label">Core exam</span><span class="value">Inspection, palpation, percussion, auscultation</span></div>
         <div class="hero-meta-item"><span class="label">Special tests</span><span class="value">Fremitus, voice sounds, excursions</span></div>
         <div class="hero-meta-item"><span class="label">Screening</span><span class="value">USPSTF verified 2026-08-17</span></div>
+      </div>
+      <div class="hero-actions">
+        <button class="btn primary" type="button" onclick="openHY()">High-Yield One-Pager</button>
       </div>
     </div>
   </header>
@@ -743,6 +805,38 @@
     </div>
   </section>
 
+  <div class="hy-modal" id="hyModal" aria-hidden="true">
+    <div class="hy-card">
+      <div class="hy-header">
+        <h2>Week 4 Pulmonary - High-Yield One-Pager</h2>
+        <div>
+          <button class="btn primary" type="button" onclick="printHY()">Print / Save PDF</button>
+          <button class="btn close-btn" type="button" onclick="closeHY()">Close</button>
+        </div>
+      </div>
+      <div class="hy-cols">
+        <div>
+          <div class="hy-block"><h4>1. Normal breath sounds by location</h4><ul><li>Vesicular: soft, low-pitched, inspiration longer than expiration, no gap - expected over most peripheral lung fields; this is the default sound.</li><li>Bronchovesicular: intermediate pitch/intensity, inspiration about equal to expiration - expected at the 1st-2nd interspaces anteriorly and between the scapulae posteriorly, over the mainstem bronchi.</li><li>Bronchial (tubular): loud, high-pitched, expiration longer than inspiration with a brief pause - expected only over the manubrium/trachea and large central airways.</li><li>Tracheal: loudest and harshest of all - normal only directly over the trachea.</li><li>Rule of thumb: sound should soften as you move from central airways toward the periphery; anywhere that sounds "too loud/tubular" for its location is a clue, not a variant.</li></ul></div>
+          <div class="hy-block"><h4>2. Sounds in the wrong place</h4><ul><li>Bronchial or bronchovesicular quality heard over peripheral lung, where vesicular is expected, means abnormal sound transmission through solidified lung - think pneumonia, lobar consolidation, or tumor-infiltrated tissue.</li><li>Mechanism: air-filled alveoli normally filter out higher frequencies; fluid- or cell-filled (consolidated) alveoli conduct central-airway sound more efficiently out to the chest wall.</li><li>Vesicular sounds that are diminished, distant, or absent where they should be present mean something is blocking transmission - pleural air (pneumothorax), pleural fluid (effusion), or airway obstruction (mucus plug, mass, foreign body).</li><li>Always compare the same level side-to-side; asymmetry, not the sound in isolation, is what flags pathology.</li><li>Absent breath sounds plus unilateral hyperresonance plus trachea deviated away from that side = tension pneumothorax until proven otherwise.</li></ul></div>
+          <div class="hy-block"><h4>3. Crackles (rales): fine vs coarse</h4><ul><li>Discontinuous popping sounds from collapsed airways/alveoli snapping open, or fluid/secretions bubbling.</li><li>Fine crackles: high-pitched, brief, late-inspiratory, "Velcro"-like - classic for pulmonary fibrosis/interstitial lung disease and early or mild CHF pulmonary edema.</li><li>Coarse crackles: lower-pitched, longer, louder, early inspiratory or biphasic - classic for pneumonia, bronchiectasis, and heavy secretions.</li><li>Crackles that clear with cough usually reflect secretions/atelectasis; crackles that persist after cough favor fibrosis, consolidation, or true pulmonary edema.</li><li>CHF crackles are classically bilateral, symmetric, and dependent (posterior/basilar bases).</li></ul></div>
+          <div class="hy-block"><h4>4. Wheezes, rhonchi &amp; pleural rub</h4><ul><li>Wheezes: continuous, musical, high-pitched - turbulent airflow through narrowed airways; hallmark of asthma and COPD/bronchospasm.</li><li>Expiratory-only wheeze suggests mild-moderate obstruction; wheeze on both inspiration and expiration suggests more severe narrowing.</li><li>A "silent chest" in an asthma exacerbation (no wheeze, minimal air movement) is a red flag for impending respiratory failure, not reassurance.</li><li>Rhonchi: low-pitched, snoring/gurgling - from secretions or partial obstruction in larger airways (bronchitis, mucus plugging); often clears or shifts after coughing.</li><li>Focal rhonchi that persist after cough should raise concern for an obstructing lesion or mass, not simple secretions.</li><li>Pleural rub: coarse, grating, leathery, heard on both inspiration and expiration - inflamed pleura (pleuritis, pneumonia near the pleura, PE); usually localized and painful with breathing.</li></ul></div>
+        </div>
+        <div>
+          <div class="hy-block"><h4>5. Inspection</h4><ul><li>Look before you touch: respiratory rate/rhythm/depth/effort, symmetry of chest wall movement, accessory muscle use (SCM, scalenes), nasal flaring, retractions (supraclavicular, intercostal, subcostal).</li><li>Chest shape: barrel chest/increased AP diameter signals chronic air trapping (COPD/emphysema).</li><li>Color: central cyanosis (lips, tongue, mucosa) means significant hypoxemia; peripheral cyanosis can just reflect poor circulation.</li><li>Clubbing of the digits: chronic hypoxemia from lung cancer, bronchiectasis, pulmonary fibrosis, or cystic fibrosis.</li><li>Tripod positioning, inability to complete full sentences, or stridor signals impending respiratory failure - act before finishing the formal exam.</li></ul></div>
+          <div class="hy-block"><h4>6. Palpation &amp; percussion</h4><ul><li>Palpation: tracheal position at the sternal notch (should be midline), symmetric chest expansion (thumbs at the costal margin), tactile fremitus, focal tenderness.</li><li>Trachea deviates away from a tension pneumothorax (pushed by pressure); deviates toward volume loss such as atelectasis or lobar collapse.</li><li>Percussion: side-to-side ladder pattern comparing matched levels - never march diagonally down the back.</li><li>Resonant = normal aerated lung. Dull/flat = fluid or solid tissue replacing air (pneumonia, effusion, hemothorax, empyema, fibrosis, tumor).</li><li>Hyperresonant = excess air - diffuse in COPD/asthma, unilateral in pneumothorax or a large bulla. Tympanic is expected only over the gastric bubble.</li></ul></div>
+          <div class="hy-block"><h4>7. Auscultation technique &amp; tactile fremitus</h4><ul><li>Listen on bare skin, diaphragm of the stethoscope, patient breathing deeply through an open mouth, full respiratory cycle at each point, compare side-to-side.</li><li>Characterize every sound by pitch, intensity, timing (inspiratory/expiratory/both), location, and whether it changes with cough or position.</li><li>Tactile fremitus: palpate symmetric points with the ulnar edges/palms while the patient says "99" or "1-1-1" in a normal voice.</li><li>Increased fremitus = consolidation/pneumonia or tumor-infiltrated lung transmitting vibration well.</li><li>Decreased/absent fremitus = pleural effusion, pneumothorax, obstruction, or COPD hyperinflation - anything separating lung from chest wall or reducing airflow.</li></ul></div>
+          <div class="hy-block"><h4>8. Voice sounds &amp; excursion</h4><ul><li>Egophony: patient says "E"; normal is a muffled "E." Over consolidation the sound changes to a nasal "A" (E-to-A change) - same mechanism as increased fremitus.</li><li>Bronchophony: spoken "99" becomes louder and clearer over consolidation (normally muffled).</li><li>Whispered pectoriloquy: whispered "1-2-3" becomes loud and distinct over consolidation (normally inaudible/indistinct) - the most specific voice test for consolidation.</li><li>All three voice tests are decreased or absent over effusion or pneumothorax, since there is no aerated or solid lung to transmit sound.</li><li>Diaphragmatic excursion: percuss to find the diaphragm level at full exhale vs full inhale; normal is about 3-5 cm and should be symmetric. Decreased/asymmetric excursion occurs with COPD hyperinflation, large effusion, phrenic nerve paralysis, or pulmonary fibrosis.</li><li>Respiratory (chest wall) excursion: hands on the lower posterior ribs with thumbs meeting at midline - asymmetric separation localizes the side of disease (pneumonia, effusion, pneumothorax, fibrosis, bronchial obstruction).</li></ul></div>
+        </div>
+        <div>
+          <div class="hy-block"><h4>9. Consolidation vs effusion vs pneumothorax</h4><ul><li>Pneumonia/consolidation, "solid lung transmits sound": dull to percussion, increased fremitus, bronchial breath sounds where vesicular is expected, crackles, positive egophony/bronchophony/whispered pectoriloquy.</li><li>Pleural effusion, "fluid blocks sound": dull-to-flat percussion, decreased fremitus, decreased/absent breath and voice sounds, decreased chest expansion on that side.</li><li>Pneumothorax, "air blocks sound and there is no lung to hear": hyperresonant percussion, decreased fremitus, decreased/absent breath and voice sounds; the tension variant shifts the trachea away from the affected side.</li><li>Quick discriminator: effusion and pneumothorax both look "quiet" (everything decreased) - tell them apart with percussion: dull/flat means fluid, hyperresonant means air.</li><li>Pneumonia is the "loud" pattern (increased transmission); effusion/pneumothorax are the "quiet" patterns (decreased transmission) - this pairing is the single most tested concept in this unit.</li></ul></div>
+          <div class="hy-block"><h4>10. COPD, asthma &amp; CHF patterns</h4><ul><li>COPD/emphysema: barrel chest, decreased expansion, diffuse hyperresonance, distant/decreased breath sounds, prolonged expiratory phase, decreased fremitus, reduced diaphragmatic excursion - chronic smoking history.</li><li>Asthma/obstruction: accessory muscle use, possible hyperresonance from air trapping, diffuse wheezing with prolonged expiration; a silent chest in a severe attack is a crisis, not improvement.</li><li>CHF/pulmonary edema: bilateral dependent (basilar) inspiratory crackles, percussion usually resonant unless a co-existing effusion is present, no egophony and no increased fremitus - this is not a consolidation pattern.</li><li>CHF vs pneumonia: CHF crackles are bilateral, symmetric, and basilar with a normal voice-sound exam; pneumonia crackles are typically more focal/unilateral with positive egophony and increased fremitus.</li></ul></div>
+          <div class="hy-block"><h4>11. USPSTF: lung cancer screening &amp; tobacco cessation</h4><ul><li>Lung cancer screening, Grade B: annual low-dose CT for adults age 50-80 with at least a 20 pack-year smoking history who currently smoke or quit within the past 15 years - the "50-80-20-15" rule.</li><li>Stop screening once the patient has not smoked for more than 15 years, or if a health problem substantially limits life expectancy or the ability/willingness to undergo curative lung surgery.</li><li>LDCT is a screening test for asymptomatic high-risk patients; a patient with hemoptysis, unexplained weight loss, or a worrisome focal finding needs diagnostic workup, not a screening order.</li><li>Tobacco use and cessation counseling, Grade A: ask every adult, including pregnant patients, about tobacco use at every visit.</li><li>For non-pregnant adults who use tobacco, offer both behavioral counseling and pharmacotherapy; for pregnant patients, offer behavioral counseling (pharmacotherapy evidence is insufficient in pregnancy, as is evidence for e-cigarettes as a cessation tool).</li></ul></div>
+          <div class="hy-block"><h4>12. USPSTF: COPD screening &amp; vignette traps</h4><ul><li>COPD screening, Grade D: USPSTF recommends against screening asymptomatic adults for COPD - no routine spirometry just because someone has a smoking history but no symptoms.</li><li>This Grade D recommendation does not apply to patients who already have respiratory symptoms (cough, sputum, dyspnea, wheeze) - evaluate those patients rather than withholding testing.</li><li>It also does not apply to special high-risk groups, such as known alpha-1 antitrypsin deficiency or significant occupational/environmental lung exposure.</li><li>Classic exam trap: an asymptomatic ex-smoker asking for a "lung function check" - correct answer is no spirometry screening, but do assess tobacco use and lung-cancer-screening eligibility.</li><li>Grade pattern to memorize: lung cancer screening is FOR (Grade B), tobacco cessation counseling is FOR everyone (Grade A), COPD screening in asymptomatic adults is AGAINST (Grade D).</li></ul></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="floating-stack">
     <div class="theme-panel" id="themePanel">
       <div class="theme-option active" data-theme="paper"><span class="theme-swatch" style="background:linear-gradient(135deg,#faf7f2,#1a1209)"></span>Paper</div>
@@ -806,6 +900,32 @@
       currentFontSize = Math.min(22, Math.max(13, currentFontSize + delta));
       document.body.style.fontSize = currentFontSize + "px";
     }
+
+    function openHY() {
+      const modal = document.getElementById("hyModal");
+      if (!modal) return;
+      modal.classList.add("open");
+      modal.setAttribute("aria-hidden", "false");
+      document.body.classList.add("hy-mode");
+      document.body.style.overflow = "hidden";
+    }
+    function closeHY() {
+      const modal = document.getElementById("hyModal");
+      if (!modal) return;
+      modal.classList.remove("open");
+      modal.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("hy-mode");
+      document.body.style.overflow = "";
+    }
+    function printHY() { window.print(); }
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") closeHY();
+    });
+    document.querySelectorAll(".hy-modal").forEach(modal => {
+      modal.addEventListener("click", event => {
+        if (event.target === modal) closeHY();
+      });
+    });
 
     document.querySelectorAll(".answer-toggle").forEach(btn => {
       btn.addEventListener("click", () => {
