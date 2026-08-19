@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2 System Rubric — Cardiovascular, Abdominal, Regional OSE &amp; Special Tests</title>
+<style>
+  :root{
+    --ink:#1a1a1a;
+    --paper:#ffffff;
+    --line:#333333;
+    --line-light:#999999;
+    --header-yellow:#fdf1a8;
+    --header-yellow-border:#d8c453;
+    --accent:#0d5c73;
+    --accent-light:#e6f2f5;
+    --hover-bg:#fff9e0;
+    --star-color:#1a7a3c;
+    --p-color:#b8860b;
+    --zero-color:#b02a2a;
+    --muted:#5a5a5a;
+    --popover-bg:#fffdf6;
+    --popover-border:#0d5c73;
+    --shadow: 0 8px 28px rgba(0,0,0,0.25);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family: Georgia, "Times New Roman", serif;
+    color:var(--ink);
+    background:#e9e6dd;
+    line-height:1.35;
+    padding: 24px 12px 80px;
+  }
+  .sheet{
+    max-width: 1180px;
+    margin: 0 auto;
+    background: var(--paper);
+    border: 1px solid var(--line-light);
+    box-shadow: 0 2px 18px rgba(0,0,0,0.15);
+    padding: 28px 30px 40px;
+  }
+  h1.doc-title{
+    font-size: 1.5rem;
+    text-align:center;
+    margin: 4px 0 18px;
+    letter-spacing:.2px;
+  }
+  .subtitle{
+    text-align:center;
+    color:var(--muted);
+    font-size:.85rem;
+    margin-top:-10px;
+    margin-bottom:18px;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  .demo-fields{
+    display:flex;
+    flex-wrap:wrap;
+    gap: 18px 28px;
+    margin-bottom: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size:.92rem;
+  }
+  .demo-fields label{
+    display:flex;
+    align-items:baseline;
+    gap:6px;
+    flex:1 1 260px;
+  }
+  .demo-fields input[type=text]{
+    flex:1;
+    border:none;
+    border-bottom: 1px solid var(--ink);
+    background:transparent;
+    font-family: Georgia, serif;
+    font-size:1rem;
+    padding:2px 4px;
+  }
+  .demo-fields input[type=text]:focus{ outline: 1px solid var(--accent); }
+
+  table.rubric{
+    width:100%;
+    border-collapse: collapse;
+    margin-bottom: 4px;
+    font-family: Georgia, serif;
+    font-size:.92rem;
+  }
+  table.rubric td, table.rubric th{
+    border: 1px solid var(--line);
+    padding: 6px 8px;
+    vertical-align: top;
+  }
+  tr.section-header td{
+    background: var(--header-yellow);
+    border-color: var(--header-yellow-border);
+    font-weight:700;
+    font-size:.98rem;
+    padding: 7px 8px;
+  }
+  tr.subnote td{
+    font-size:.82rem;
+    color:var(--muted);
+    font-style:italic;
+    background:#f7f7f2;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  .col-check{
+    width: 34px;
+    text-align:center;
+    white-space:nowrap;
+    padding: 12px 6px !important;
+    cursor:pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .col-check-header{
+    width:34px;
+    text-align:center;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight:700;
+  }
+  .row-num{
+    width: 26px;
+    text-align:right;
+    color:var(--muted);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size:.82rem;
+    padding-right:4px !important;
+  }
+  .grading-key{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size:.83rem;
+    background:#f4f4ee;
+    border:1px solid var(--line-light);
+    padding:10px 14px;
+    margin: 14px 0 18px;
+    line-height:1.55;
+  }
+  .grading-key b{ color:var(--accent); }
+
+  /* checkbox visuals */
+  .grade-box{
+    width:19px;
+    height:19px;
+    cursor:pointer;
+    accent-color: var(--accent);
+  }
+  .grade-box.star{ accent-color: var(--star-color); }
+  .grade-box.p{ accent-color: var(--p-color); }
+  .grade-box.zero{ accent-color: var(--zero-color); }
+
+  /* interactive test cell */
+  .testcell{
+    position:relative;
+  }
+  .hoverable{
+    cursor: help;
+    border-bottom: 1.5px dotted var(--accent);
+    transition: background .12s ease;
+    display:inline;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .hoverable:hover, .hoverable.active{
+    background: var(--hover-bg);
+  }
+  .hoverable::after{
+    content: "ⓘ";
+    font-size: .68em;
+    color: var(--accent);
+    vertical-align: super;
+    margin-left: 3px;
+    opacity:.75;
+  }
+  .no-source::after{
+    content: " ⓘ*";
+  }
+
+  .page-break-note{
+    text-align:center;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size:.78rem;
+    color:var(--muted);
+    margin: 30px 0 14px;
+    border-top: 1px dashed var(--line-light);
+    padding-top: 10px;
+  }
+
+  .totals-row{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size:.85rem;
+    margin: 10px 0;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+  .totals-row input[type=text]{
+    width:70px;
+    border:none;
+    border-bottom:1px solid var(--ink);
+    background:transparent;
+    font-family: Georgia, serif;
+    padding:2px 4px;
+  }
+  .comments-block{
+    margin: 14px 0 6px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size:.85rem;
+  }
+  .comments-block label{ display:block; margin-bottom:4px; font-weight:700; }
+  .comments-block textarea{
+    width:100%;
+    min-height: 70px;
+    border:1px solid var(--line-light);
+    padding:8px;
+    font-family: Georgia, serif;
+    font-size: .92rem;
+    resize:vertical;
+  }
+
+  footer.legend{
+    margin-top: 26px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line-light);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size:.78rem;
+    color: var(--muted);
+    text-align:center;
+  }
+
+  /* ===== Popover ===== */
+  #popover{
+    position: fixed;
+    z-index: 1000;
+    max-width: 420px;
+    width: min(420px, 92vw);
+    max-height: 78vh;
+    overflow-y: auto;
+    background: var(--popover-bg);
+    border: 2px solid var(--popover-border);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    padding: 14px 16px 16px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: .86rem;
+    line-height:1.5;
+    display:none;
+  }
+  #popover.open{ display:block; }
+  #popover h4, #sidePanelContent h4{
+    margin: 0 0 8px;
+    font-size: 1.02rem;
+    color: var(--accent);
+    font-family: Georgia, serif;
+    padding-right: 22px;
+  }
+  #popover .pop-close{
+    position:absolute;
+    top:8px; right:10px;
+    cursor:pointer;
+    font-size:1.1rem;
+    color: var(--muted);
+    background:none;
+    border:none;
+    line-height:1;
+    padding:2px 4px;
+  }
+  #popover .pop-close:hover{ color: var(--zero-color); }
+  #popover .pop-label, #sidePanelContent .pop-label{
+    font-weight:700;
+    color:#333;
+    margin-top:10px;
+    margin-bottom:3px;
+    font-size:.78rem;
+    text-transform:uppercase;
+    letter-spacing:.03em;
+  }
+  #popover .pop-label:first-of-type, #sidePanelContent .pop-label:first-of-type{ margin-top:0; }
+  #popover ul, #sidePanelContent ul{ margin:2px 0 0; padding-left: 18px; }
+  #popover li, #sidePanelContent li{ margin-bottom: 4px; }
+  #popover .pop-normal, #sidePanelContent .pop-normal{ background:#eef8ee; border-left:3px solid var(--star-color); padding:6px 8px; margin-top:4px; }
+  #popover .pop-fallback, #sidePanelContent .pop-fallback{
+    background:#fbe9e9; border-left:3px solid var(--zero-color); padding:6px 8px; margin-bottom:8px; font-style:italic; font-size:.8rem;
+  }
+  #popover .pop-images, #sidePanelContent .pop-images{
+    display:flex; flex-wrap:wrap; gap:8px; margin-top:10px;
+  }
+  #popover .pop-images figure, #sidePanelContent .pop-images figure{
+    margin:0; flex: 1 1 160px; max-width:190px;
+  }
+  #popover .pop-images img, #sidePanelContent .pop-images img{
+    width:100%; height:auto; border:1px solid #ccc; border-radius:4px; display:block;
+    background:#fafafa; cursor:zoom-in;
+  }
+  #popover .pop-images img:hover, #sidePanelContent .pop-images img:hover{ border-color: var(--accent); }
+  #popover .pop-images figcaption, #sidePanelContent .pop-images figcaption{
+    font-size:.68rem; color:var(--muted); margin-top:3px; line-height:1.3;
+  }
+  #popover .pop-images .zoom-hint, #sidePanelContent .pop-images .zoom-hint{
+    display:block; color:var(--accent); font-weight:600; margin-top:2px;
+  }
+
+  /* ===== Layout: rubric + sticky side panel ===== */
+  .layout{
+    display:block;
+    max-width: 1180px;
+    margin: 0 auto;
+  }
+  #sidePanel{
+    display:none;
+    flex: 0 0 360px;
+    position: sticky;
+    top: 20px;
+    max-height: calc(100vh - 40px);
+  }
+  @media (min-width: 1300px){
+    .layout{
+      display:flex;
+      align-items:flex-start;
+      gap: 26px;
+      max-width: 1580px;
+    }
+    .layout .sheet{ flex: 1 1 auto; min-width:0; margin:0; }
+    #sidePanel{ display:block; }
+  }
+  #sidePanelInner{
+    background: var(--popover-bg);
+    border: 2px solid var(--popover-border);
+    border-radius: 8px;
+    box-shadow: 0 2px 14px rgba(0,0,0,0.12);
+    padding: 16px 18px 18px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: .86rem;
+    line-height: 1.5;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+  }
+  .side-placeholder{
+    color: var(--muted);
+    font-style: italic;
+    font-size: .85rem;
+    padding: 6px 2px;
+  }
+  .side-placeholder.hidden{ display:none; }
+
+  #overlay{
+    position:fixed; inset:0; background:transparent; z-index:999; display:none;
+  }
+  #overlay.open{ display:block; }
+
+  #lightbox{
+    position:fixed; inset:0; z-index:2000; display:none;
+    background:rgba(10,10,10,0.9);
+    align-items:center; justify-content:center;
+    flex-direction:column;
+    padding: 40px 20px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #lightbox.open{ display:flex; }
+  #lightbox img{
+    max-width:100%; max-height:calc(100% - 46px); object-fit:contain;
+    border-radius:4px; box-shadow:0 10px 40px rgba(0,0,0,0.5);
+    touch-action: pinch-zoom;
+  }
+  #lightbox figcaption{
+    color:#f0f0f0; font-family: Arial, Helvetica, sans-serif; font-size:.85rem;
+    margin-top:12px; text-align:center; max-width:80vw;
+  }
+  #lightboxCloseBtn{
+    position:fixed; top:16px; right:20px; z-index:2001;
+    background:rgba(255,255,255,0.12); color:#fff; border:none;
+    width:44px; height:44px; border-radius:50%;
+    font-size:1.5rem; line-height:1; cursor:pointer;
+  }
+  #lightboxCloseBtn:hover{ background:rgba(255,255,255,0.25); }
+
+  @media (max-width: 720px){
+    .sheet{ padding: 16px 12px 40px; }
+    table.rubric{ font-size:.82rem; }
+    .demo-fields{ flex-direction:column; gap:10px; }
+    .demo-fields label{ flex:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+<div class="sheet">
+  <h1 class="doc-title">2 System Rubric — Cardiovascular, Abdominal, Regional OSE, and Special Tests</h1>
+  <p class="subtitle">Interactive study version — hover or tap any underlined test description for step-by-step technique notes and reference photos. Checkboxes are local/visual only (nothing is saved or submitted).</p>
+
+  <div class="demo-fields">
+    <label>Student Physician Name <input type="text"></label>
+    <label>Faculty Facilitator Name <input type="text"></label>
+    <label>Date <input type="text"></label>
+  </div>
+
+  <table class="rubric">
+    <tr class="section-header"><td colspan="5">Communication and Professionalism <span style="font-weight:400; font-style:italic;">(faculty to circle or check boxes below — graded M / NI / U)</span></td></tr>
+    <tr>
+      <th class="col-check-header">M</th>
+      <th class="col-check-header">NI</th>
+      <th class="col-check-header">U</th>
+      <th></th>
+      <th class="row-num"></th>
+    </tr>
+    <tr>
+      <td class="col-check"><input class="grade-box" type="checkbox" name="comm1" value="M"></td>
+      <td class="col-check"><input class="grade-box" type="checkbox" name="comm1" value="NI"></td>
+      <td class="col-check"><input class="grade-box" type="checkbox" name="comm1" value="U"></td>
+      <td>Introduced self, asked the patient's name, preferred way to be addressed, DOB, and Age</td>
+      <td class="row-num"></td>
+    </tr>
+    <tr>
+      <td class="col-check"><input class="grade-box" type="checkbox" name="comm2" value="M"></td>
+      <td class="col-check"><input class="grade-box" type="checkbox" name="comm2" value="NI"></td>
+      <td class="col-check"><input class="grade-box" type="checkbox" name="comm2" value="U"></td>
+      <td>Sanitized hands with air dry or washed hands at sink for 20 seconds, before AND after touching the patient and when appropriate</td>
+      <td class="row-num"></td>
+    </tr>
+    <tr>
+      <td class="col-check"><input class="grade-box" type="checkbox" name="comm3" value="M"></td>
+      <td class="col-check"><input class="grade-box" type="checkbox" name="comm3" value="NI"></td>
+      <td class="col-check"><input class="grade-box" type="checkbox" name="comm3" value="U"></td>
+      <td>Obtained consent for the patient exam, acknowledged the patient's ability to relinquish consent at any time</td>
+      <td class="row-num"></td>
+    </tr>
+    <tr>
+      <td class="col-check"><input class="grade-box" type="checkbox" name="comm4" value="M"></td>
+      <td class="col-check"><input class="grade-box" type="checkbox" name="comm4" value="NI"></td>
+      <td class="col-check"><input class="grade-box" type="checkbox" name="comm4" value="U"></td>
+      <td>Supported the patient with comfort and empathy measures during exam</td>
+      <td class="row-num"></td>
+    </tr>
+    <tr>
+      <td class="col-check"><input class="grade-box" type="checkbox" name="comm5" value="M"></td>
+      <td class="col-check"><input class="grade-box" type="checkbox" name="comm5" value="NI"></td>
+      <td class="col-check"><input class="grade-box" type="checkbox" name="comm5" value="U"></td>
+      <td>Spoke only to the patient during the exam, explained what was necessary, and used non-medical jargon to explain things</td>
+      <td class="row-num"></td>
+    </tr>
+    <tr>
+      <td class="col-check"><input class="grade-box" type="checkbox" name="comm6" value="M"></td>
+      <td class="col-check"><input class="grade-box" type="checkbox" name="comm6" value="NI"></td>
+      <td class="col-check"><input class="grade-box" type="checkbox" name="comm6" value="U"></td>
+      <td>Was respectful and professional in manner and demeanor throughout the exam to student patient and faculty facilitator proctor</td>
+      <td class="row-num"></td>
+    </tr>
+  </table>
+
+  <div class="grading-key">
+    <b>Grading key for all remaining rows</b> (columns: <b>*</b>, <b>P</b>, <b>0</b>):<br>
+    <b>*</b> = Correctly performed tests BL (bilaterally) if indicated and not prompted<br>
+    <b>P</b> = Correctly performed tests with a Prompt OR test only Partially performed correctly or not BL when indicated<br>
+    <b>0</b> = Incorrectly performed test OR didn't perform the test<br>
+    <span style="color:var(--muted)">(Note: Give Student the Main Header; There are 2 FREE Prompts without points taken off for other lines)</span>
+  </div>
+
+  <table class="rubric" id="mainTable">
+    <tr class="section-header"><td colspan="5">Cardiovascular Systems Exams <span style="font-weight:400;font-style:italic;">(please ask permission if removing garments in sensitive areas)</span></td></tr>
+    <tr>
+      <th class="col-check-header">*</th><th class="col-check-header">P</th><th class="col-check-header">0</th>
+      <th style="font-family:Arial, Helvetica, sans-serif;">Test / Maneuver</th><th class="row-num"></th>
+    </tr>
+    <tr data-row="1">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r1" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r1" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r1" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="1">UE Visualization and Palpation for Edema and Capillary Refill BL</span></td>
+      <td class="row-num">1</td>
+    </tr>
+    <tr data-row="2">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r2" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r2" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r2" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="2">Palpates for UE Distal Pulses: Radial BL</span></td>
+      <td class="row-num">2</td>
+    </tr>
+    <tr data-row="3">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r3" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r3" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r3" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="3">LE Visualization and Palpation for Edema and Capillary Refill BL</span></td>
+      <td class="row-num">3</td>
+    </tr>
+    <tr data-row="4">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r4" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r4" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r4" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="4">Palpates for LE Distal Pulses: Dorsalis Pedis &amp; Posterior Tibial BL</span></td>
+      <td class="row-num">4</td>
+    </tr>
+    <tr data-row="5">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r5" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r5" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r5" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="5">Auscultate the Carotids BEFORE Palpation: One side at a time BL</span></td>
+      <td class="row-num">5</td>
+    </tr>
+    <tr data-row="6">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r6" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r6" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r6" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="6">Palpate the Carotid Pulses: One side at a time BL</span></td>
+      <td class="row-num">6</td>
+    </tr>
+    <tr data-row="7">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r7" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r7" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r7" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="7">Appropriately Drapes the Chest: Obtains consent to move &amp; open gown and it is done well</span></td>
+      <td class="row-num">7</td>
+    </tr>
+    <tr data-row="8">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r8" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r8" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r8" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="8">Visual Inspection of the Skin, Trachea, Chest, and Breathing</span></td>
+      <td class="row-num">8</td>
+    </tr>
+    <tr data-row="9">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r9" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r9" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r9" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="9">Auscultates the 4 Major Listening Points of the Heart on skin</span></td>
+      <td class="row-num">9</td>
+    </tr>
+    <tr data-row="10">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r10" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r10" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r10" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="10">Palpates for Point of Maximum Impulse (PMI) on the skin at the heart apex: Check in supine or on an angle AND in left lateral decubitus positions</span></td>
+      <td class="row-num">10</td>
+    </tr>
+
+    <tr class="section-header"><td colspan="5">Abdominal System Exams <span style="font-weight:400;font-style:italic;">(please ask permission if removing garments in sensitive areas)</span></td></tr>
+    <tr data-row="11">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r11" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r11" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r11" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="11">Appropriately Drapes the Abdomen: Obtains consent to lift up gown, drapes below the umbilicus, and it is done well</span></td>
+      <td class="row-num">11</td>
+    </tr>
+    <tr data-row="12">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r12" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r12" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r12" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="12">Visual Inspection of the Entire Skin of the Abdomen: This MUST be done to see below the umbilicus and all regions.</span></td>
+      <td class="row-num">12</td>
+    </tr>
+    <tr data-row="13">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r13" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r13" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r13" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="13">Auscultates for Bowel Sounds in 1 position anywhere AND over Aorta, Renal Arteries, and Iliac Arteries BL</span></td>
+      <td class="row-num">13</td>
+    </tr>
+    <tr data-row="14">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r14" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r14" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r14" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="14">Percusses 4 Quadrants AND Epigastric AND Suprapubic Regions</span></td>
+      <td class="row-num">14</td>
+    </tr>
+    <tr data-row="15">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r15" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r15" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r15" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="15">Percusses the Liver AND the Spleen</span></td>
+      <td class="row-num">15</td>
+    </tr>
+    <tr data-row="16">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r16" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r16" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r16" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="16">Light Palpation of 4 Quadrants AND Epigastric AND Suprapubic Regions</span></td>
+      <td class="row-num">16</td>
+    </tr>
+    <tr data-row="17">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r17" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r17" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r17" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="17">Deep Palpation of 4 Quadrants AND Epigastric AND Suprapubic Regions</span></td>
+      <td class="row-num">17</td>
+    </tr>
+    <tr data-row="18">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r18" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r18" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r18" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="18">Palpates the Liver AND the Spleen for size</span></td>
+      <td class="row-num">18</td>
+    </tr>
+
+    <tr class="section-header"><td colspan="5">OSE TART and Boney Regional Testing</td></tr>
+    <tr data-row="19">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r19" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r19" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r19" value="0"></td>
+      <td class="testcell"><span class="hoverable no-source" data-key="19">Lumbar Spine Complaint: Screens for Symmetry, Palpates for TART, AND Segmental Diagnosis of the Lumbar Spine L1-L5 with N/Flex/Ext</span></td>
+      <td class="row-num">19</td>
+    </tr>
+  </table>
+
+  <div class="totals-row">
+    Put the Total number of checks in the <b>P</b> or <b>0</b> columns from this page 1 in the line below:
+    <input type="text">
+  </div>
+  <div class="comments-block">
+    <label>Comments</label>
+    <textarea></textarea>
+  </div>
+
+  <div class="page-break-note">— Page 2 —</div>
+
+  <table class="rubric">
+    <tr class="section-header"><td colspan="5">Special Tests for Abdominal and Cardiovascular Systems <span style="font-weight:400;font-style:italic;">— Faculty to Choose 3 Exams for the Student to Explain Why the Test is Done, What is a Normal vs Abnormal Result, and Perform</span></td></tr>
+    <tr>
+      <th class="col-check-header">*</th><th class="col-check-header">P</th><th class="col-check-header">0</th>
+      <th style="font-family:Arial, Helvetica, sans-serif;">Test / Maneuver</th><th class="row-num"></th>
+    </tr>
+    <tr data-row="20">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r20" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r20" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r20" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="20">Performs Rebound Tenderness x 4 Quadrants</span></td>
+      <td class="row-num">20</td>
+    </tr>
+    <tr data-row="21">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r21" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r21" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r21" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="21">Performs Heel Strike BL</span></td>
+      <td class="row-num">21</td>
+    </tr>
+    <tr data-row="22">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r22" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r22" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r22" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="22">Assesses Rovsing's Sign</span></td>
+      <td class="row-num">22</td>
+    </tr>
+    <tr data-row="23">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r23" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r23" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r23" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="23">Assesses McBurney's Point</span></td>
+      <td class="row-num">23</td>
+    </tr>
+    <tr data-row="24">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r24" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r24" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r24" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="24">Performs Psoas Sign</span></td>
+      <td class="row-num">24</td>
+    </tr>
+    <tr data-row="25">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r25" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r25" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r25" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="25">Performs Obturator Sign</span></td>
+      <td class="row-num">25</td>
+    </tr>
+    <tr data-row="26">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r26" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r26" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r26" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="26">Performs Murphy's Sign</span></td>
+      <td class="row-num">26</td>
+    </tr>
+    <tr data-row="27">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r27" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r27" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r27" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="27">Percusses Central Tympany to Dullness</span></td>
+      <td class="row-num">27</td>
+    </tr>
+    <tr data-row="28">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r28" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r28" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r28" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="28">Performs Shifting Dullness</span></td>
+      <td class="row-num">28</td>
+    </tr>
+    <tr data-row="29">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r29" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r29" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r29" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="29">Assesses for Ventral Hernias</span></td>
+      <td class="row-num">29</td>
+    </tr>
+    <tr data-row="30">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r30" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r30" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r30" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="30">Performs CVA Tenderness BL</span></td>
+      <td class="row-num">30</td>
+    </tr>
+    <tr data-row="31">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r31" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r31" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r31" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="31">Palpates the Kidney for size BL</span></td>
+      <td class="row-num">31</td>
+    </tr>
+    <tr data-row="32">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r32" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r32" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r32" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="32">Palpates/Assesses for Aorta Size and Pulsations</span></td>
+      <td class="row-num">32</td>
+    </tr>
+    <tr data-row="33">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r33" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r33" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r33" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="33">Mouth Exam: Inspect AND Palpate Entire Oral Cavity (mouth) with light, gloves on AND gauze</span></td>
+      <td class="row-num">33</td>
+    </tr>
+    <tr data-row="34">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r34" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r34" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r34" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="34">Assesses Jugular Venous Distention (JVD): Must be right side of neck with the bed at a 30-degree angle, patient's head turned to the left</span></td>
+      <td class="row-num">34</td>
+    </tr>
+    <tr data-row="35">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r35" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r35" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r35" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="35">Auscultates for Murmurs: The patient is leaning forward, &amp; holding breath in exhalation AND with the patient in the left lateral decubitus position</span></td>
+      <td class="row-num">35</td>
+    </tr>
+    <tr data-row="36">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r36" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r36" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r36" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="36">Palpates all 4 Major Listening Points for Lifts, Heaves, and Thrills: Using hypothenar area of hand, palm, and fingertips</span></td>
+      <td class="row-num">36</td>
+    </tr>
+    <tr data-row="37">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r37" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r37" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r37" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="37">Checks for Brachial, Femoral, and Popliteal Pulses BL</span></td>
+      <td class="row-num">37</td>
+    </tr>
+    <tr data-row="38">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r38" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r38" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r38" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="38">Allen's Test to Assess for Blood Flow of the Hands BL</span></td>
+      <td class="row-num">38</td>
+    </tr>
+    <tr data-row="39">
+      <td class="col-check"><input class="grade-box star" type="checkbox" name="r39" value="*"></td>
+      <td class="col-check"><input class="grade-box p" type="checkbox" name="r39" value="P"></td>
+      <td class="col-check"><input class="grade-box zero" type="checkbox" name="r39" value="0"></td>
+      <td class="testcell"><span class="hoverable" data-key="39">Palpates the Thyroid BL AND have the patient swallow</span></td>
+      <td class="row-num">39</td>
+    </tr>
+  </table>
+
+  <div class="totals-row">
+    Put the Total number of checks in the <b>P</b> or <b>0</b> columns from this page 2 in the line below:
+    <input type="text">
+  </div>
+  <div class="totals-row">
+    <b>Total Score as calculated from both sides:</b>
+    <input type="text">
+  </div>
+  <div class="comments-block">
+    <label>Additional Comments</label>
+    <textarea></textarea>
+  </div>
+
+  <footer class="legend">
+    Personal study aid — content adapted from OCS 2 course lecture/lab notes for self-quizzing. Rows marked <span style="color:var(--zero-color)">ⓘ*</span> had no exact source match in the study notes and use a general instructional summary instead. Not a clinical document.
+  </footer>
+</div>
+
+<aside id="sidePanel">
+  <div id="sidePanelInner">
+    <div class="side-placeholder" id="sidePlaceholder">Hover (or tap) any underlined test on the left to see step-by-step instructions and reference photos here.</div>
+    <div id="sidePanelContent"></div>
+  </div>
+</aside>
+</div>
+
+<div id="overlay"></div>
+<div id="popover" role="dialog" aria-modal="false">
+  <button class="pop-close" id="popCloseBtn" aria-label="Close">&times;</button>
+  <div id="popContent"></div>
+</div>
+
+<div id="lightbox" role="dialog" aria-modal="true" aria-label="Enlarged image">
+  <button id="lightboxCloseBtn" aria-label="Close enlarged image">&times;</button>
+  <img id="lightboxImg" src="" alt="">
+  <figcaption id="lightboxCaption"></figcaption>
+</div>
+
+<script>
+const DATA = {
+  1: {
+    name: "UE Visualization &amp; Palpation — Edema / Capillary Refill",
+    purpose: "Screens the upper extremities for signs of cardiovascular/circulatory compromise.",
+    steps: [
+      "Visualize and palpate the entire arms, hands, and fingers, bilaterally.",
+      "Look for cyanosis, edema, clubbing, skin lesions, scars, rashes, and bruising.",
+      "Check capillary refill: press a fingertip/nail bed until it blanches, release, and count seconds until color returns.",
+      "Verbalize to the patient: \"I'm checking your skin and blood vessels.\""
+    ],
+    normal: "Normal = capillary refill under about 2–3 seconds, no edema/cyanosis/clubbing. Abnormal = refill over 3 seconds (poor perfusion), edema, or cyanosis.",
+    images: [{src:"assets/pitting_edema_grading.jpg", caption:"Pitting edema grading by depth and recovery time (same grading scale applies to UE and LE edema)."}]
+  },
+  2: {
+    name: "UE Distal Pulses — Radial",
+    purpose: "Assesses upper extremity arterial pulse rate, rhythm, and quality.",
+    steps: [
+      "Palpate the radial pulse at the volar wrist, lateral to the flexor tendons, using your index/middle fingertips — not your thumb (which carries its own pulse).",
+      "Assess bilaterally; note rate, rhythm, and amplitude, and compare sides."
+    ],
+    normal: "Normal = regular rhythm, symmetric amplitude bilaterally.",
+    images: [{src:"assets/radial_pulse_palpation.jpg", caption:"Radial pulse palpation with 2 fingertips at the volar wrist. (Wikimedia Commons)"}]
+  },
+  3: {
+    name: "LE Visualization &amp; Palpation — Edema / Capillary Refill",
+    purpose: "Screens the lower extremities for signs of cardiovascular/circulatory compromise.",
+    steps: [
+      "Visualize and palpate the entire legs, feet, and toes, bilaterally.",
+      "Look for cyanosis, edema, clubbing, skin lesions, scars, rashes, and bruising.",
+      "Check capillary refill at the toes.",
+      "Verbalize to the patient what you're doing."
+    ],
+    normal: "Grade pitting edema 0–4+ by depth and recovery time. Unilateral edema raises concern for DVT; bilateral edema suggests heart failure or venous insufficiency.",
+    images: [{src:"assets/pitting_edema_grading.jpg", caption:"Pitting edema grading by depth and recovery time."}]
+  },
+  4: {
+    name: "LE Distal Pulses — Dorsalis Pedis &amp; Posterior Tibial",
+    purpose: "Assesses lower extremity arterial perfusion.",
+    steps: [
+      "Palpate the dorsalis pedis pulse on the dorsum of the foot, lateral to the extensor hallucis longus tendon.",
+      "Palpate the posterior tibial pulse just posterior to the medial malleolus.",
+      "Use fingertips, not your thumb. Test bilaterally."
+    ],
+    normal: "Normal = palpable, symmetric, regular pulses. Weak/absent pulses suggest peripheral arterial disease — if abnormal, follow up with brachial/femoral/popliteal pulses (row 37).",
+    images: [{src:"assets/pulse_sites_overview.jpg", caption:"Arterial pulse sites, including dorsalis pedis (dorsum of foot) and posterior tibial (behind medial malleolus). (Wikimedia Commons / OpenStax A&amp;P)"}]
+  },
+  5: {
+    name: "Auscultate the Carotids (BEFORE Palpation, One Side at a Time)",
+    purpose: "Screens for a carotid bruit (turbulent flow suggesting stenosis) before palpating, which could dislodge plaque or provoke a vagal response.",
+    steps: [
+      "Auscultate ONE carotid artery at a time with the diaphragm, along the medial border of the SCM: upper, middle, and lower carotid artery (3 spots).",
+      "Have the patient briefly hold their breath while you auscultate each spot — this eliminates high-pitched tracheal breath sounds that could be mistaken for a bruit.",
+      "Repeat all 3 spots on the other side, one side at a time — never both simultaneously."
+    ],
+    normal: "Normal = no bruit. A bruit suggests carotid stenosis.",
+    images: [{src:"assets/carotid_auscultation_landmarks.jpg", caption:"The 3 carotid auscultation points (upper, middle, lower). (Source: Douglas Gillard, DC — course slide)"}]
+  },
+  6: {
+    name: "Palpate the Carotid Pulses (One Side at a Time)",
+    purpose: "Assesses carotid pulse quality — performed AFTER auscultation so a bruit isn't missed or a reflex response provoked.",
+    steps: [
+      "Palpate one carotid artery at a time (never both simultaneously) low in the neck, gently, using fingertips along the medial border of the SCM."
+    ],
+    normal: "Normal = symmetric, regular upstroke. Never palpate both carotids at once — this can reduce cerebral blood flow or trigger a baroreceptor/vagal reflex (bradycardia).",
+    images: [{src:"assets/carotid_pulse_palpation.jpg", caption:"Carotid pulse palpation — one side at a time, low in the neck along the SCM border. (Wikimedia Commons)"}]
+  },
+  7: {
+    name: "Appropriately Drapes the Chest",
+    purpose: "Maintains patient modesty and comfort while allowing access for the chest exam.",
+    steps: [
+      "Obtain verbal consent before moving or opening the gown.",
+      "Open the gown from the top or the side — whichever preserves modesty while giving exam access.",
+      "Keep the patient covered elsewhere and perform the drape smoothly and professionally."
+    ]
+  },
+  8: {
+    name: "Visual Inspection — Skin, Trachea, Chest &amp; Breathing",
+    purpose: "Screens the chest, trachea, and breathing pattern before touching.",
+    steps: [
+      "Lower the gown to observe the anterior, lateral, and posterior rib cage.",
+      "Look for symmetry, skin color/lesions, chest shape (e.g. barrel chest, flail segment), and tracheal position.",
+      "Observe respiratory rate, rhythm, depth, and effort — accessory muscle use, retractions, or nasal flaring are red flags.",
+      "Tell the patient you are looking at their chest to make sure everything looks healthy and normal."
+    ],
+    normal: "Normal = comfortable breathing, symmetric chest movement, no retractions/flaring, trachea midline. Abnormal = increased AP diameter (barrel chest, COPD), a flail segment with paradoxical movement, asymmetric expansion, or tracheal deviation.",
+    images: [{src:"assets/chest_inspection_barrel_flail.png", caption:"Chest inspection reference: normal AP diameter vs. barrel chest, and traumatic flail chest with paradoxical inspiratory/expiratory movement. (Source: Bates' Guide to Physical Examination, via Week 4 Pulmonary course slide)"}]
+  },
+  9: {
+    name: "Auscultate the 4 Major Listening Points of the Heart",
+    purpose: "Screens heart sounds at the 4 classic valve auscultation areas.",
+    steps: [
+      "With the stethoscope diaphragm directly on skin, listen in sequence at: right 2nd intercostal space (aortic), left 2nd intercostal space (pulmonic), left lower sternal border (tricuspid), and left 5th intercostal space midclavicular line/apex (mitral).",
+      "Say, \"I'd like to listen to your heart now.\"",
+      "At each point: state rate and rhythm, identify S1/S2, and screen for extra sounds, murmurs, or gallops using both the diaphragm and bell."
+    ],
+    images: [{src:"assets/heart_auscultation_landmarks.jpg", caption:"Heart borders, valve locations, and the 4 auscultation posts plus Erb's point."}]
+  },
+  10: {
+    name: "Point of Maximum Impulse (PMI)",
+    purpose: "Locates the point of maximal cardiac impulse; a PMI displaced lateral to the midclavicular line (MCL) suggests LV enlargement.",
+    steps: [
+      "Palpate at the heart apex (~5th ICS, midclavicular line) on the skin, under the drape if possible (or at the bra line).",
+      "Check with the patient supine or on an angle, AND again in the left lateral decubitus position (brings the apex closer to the chest wall).",
+      "Can have the patient exhale and hold their breath to help palpate."
+    ],
+    normal: "Normal = PMI at or medial to the MCL, about the size of a quarter. A PMI displaced laterally to the MCL is a strong sign of LV dysfunction/enlargement.",
+    images: [{src:"assets/heart_auscultation_landmarks.jpg", caption:"Reference for apex/MCL landmark used to locate the PMI."}]
+  },
+  11: {
+    name: "Appropriately Drapes the Abdomen",
+    purpose: "Maintains patient modesty and comfort while allowing full access for the abdominal exam, including below the umbilicus.",
+    steps: [
+      "Obtain verbal consent before lifting or opening the gown.",
+      "Expose enough of the abdomen to inspect and examine both above AND below the umbilicus (all quadrants/regions), while draping below to preserve modesty.",
+      "Keep the patient covered elsewhere and perform the drape smoothly and professionally."
+    ]
+  },
+  12: {
+    name: "Visual Inspection — Entire Skin of the Abdomen",
+    purpose: "Screens the abdominal contour and skin for signs of underlying disease before any palpation.",
+    steps: [
+      "With the abdomen fully exposed (above AND below the umbilicus), inspect contour, abdominal wall movement, skin color/lesions, striae, scars, bruising, distention, hernias/bulges, masses, and any visible aortic pulsation.",
+      "Say something like, \"I'm going to look at your stomach area to make sure everything looks healthy.\"",
+      "Look specifically for the skin/vascular stigmata of chronic liver disease: spider angiomas, palmar erythema, jaundice/scleral icterus, and caput medusae (dilated periumbilical veins from portal hypertension).",
+      "Note any ominous acute-abdomen skin signs: Grey Turner sign (flank ecchymosis — think retroperitoneal bleed/severe pancreatitis) or Cullen sign (periumbilical ecchymosis)."
+    ],
+    normal: "Normal = flat/rounded contour, no lesions/distention/pulsatile mass. Abnormal = jaundice, caput medusae, or spider angiomata (chronic liver disease); Grey Turner or Cullen sign (retroperitoneal/pancreatic hemorrhage); a firm umbilical nodule (Sister Mary Joseph nodule, a metastatic finding).",
+    images: [{src:"assets/chronic_liver_disease_stigmata.jpg", caption:"Selected skin/vascular stigmata of chronic liver disease — spider angiomas, palmar erythema, jaundice, caput medusae, and related systemic clues. (Source: UpToDate figure, via Week 6 Abdominal/GI course slide)"}]
+  },
+  13: {
+    name: "Auscultate — Bowel Sounds + Aorta / Renal / Iliac Arteries",
+    purpose: "Screens bowel motility and screens for vascular bruits — performed BEFORE percussion/palpation so bowel sounds and bruits aren't altered by touching the abdomen.",
+    steps: [
+      "With the diaphragm, listen for bowel sounds in at least one position (any quadrant) for a full cycle of sounds.",
+      "Then auscultate over the aorta (midline, epigastric to umbilical region) and both renal arteries (slightly lateral to the midline, upper abdomen) for bruits.",
+      "Auscultate over both iliac arteries (lower quadrants) for bruits.",
+      "Listen before doing any percussion or palpation."
+    ],
+    normal: "Normal bowel sounds = 5–34/min (below 5 = hypoactive, above 34 = hyperactive). No bruits should be heard. A bruit = turbulent \"whooshing\" flow; combined with a pulsatile mass it raises concern for an abdominal aortic aneurysm (AAA).",
+    images: [{src:"assets/abdominal_aortic_renal_iliac_auscultation_sites.jpg", caption:"Auscultatory locations for aortic, renal, and iliac bruits. (Source: Week 6 Abdominal/GI course slide)"}]
+  },
+  14: {
+    name: "Percussion — 4 Quadrants, Epigastric &amp; Suprapubic",
+    purpose: "Screens for the tympany-vs-dullness pattern across the abdomen — a mostly tympanitic abdomen is normal; unexpected dullness can suggest a mass, fluid, or an enlarged organ.",
+    steps: [
+      "Percuss systematically through all 4 quadrants (RUQ, LUQ, RLQ, LLQ) PLUS the epigastric region AND the suprapubic region (this course's added regions beyond the classic 4 quadrants).",
+      "State out loud whether each area is tympanitic (air-filled, the normal default) or dull (solid organ, mass, fluid, or stool).",
+      "Save the liver and spleen percussion for a separate, more focused step (see row 15)."
+    ],
+    normal: "Normal = mostly tympanitic throughout, with dullness only expected directly over solid organs (liver, spleen) or a full bladder. Diffuse or unexpected dullness can suggest ascites, a mass, or organomegaly.",
+    images: [
+      {src:"assets/abdominal_four_quadrants.jpg", caption:"Abdominal quadrants and the underlying structures in each. (Source: Bates' Guide to Physical Examination, via Week 6 Abdominal/GI course slide)"},
+      {src:"assets/abdominal_nine_regions.jpg", caption:"Nine abdominal regions; this course's rubric adds the epigastric and suprapubic (hypogastric) regions to the 4-quadrant exam. (Source: Bates' Guide to Physical Examination, via Week 6 Abdominal/GI course slide)"}
+    ]
+  },
+  15: {
+    name: "Percussion — Liver &amp; Spleen",
+    purpose: "Estimates liver span and screens for splenomegaly using percussion, which can pick up organ enlargement even before it's palpable.",
+    steps: [
+      "Liver: at the right midclavicular line (MCL), percuss down from the nipple level to the first dull note (superior border), then percuss up from the RLQ to the first dull note (inferior border). Measure the span between them.",
+      "Liver span expected: 6–12 cm at the MCL (some clinicians instead use a single top-to-bottom percussion sequence).",
+      "Spleen — Traube's space: percuss the left lower anterior chest between the 6th rib, left MCL, and anterior axillary line; expect tympany. Dullness here suggests splenic enlargement.",
+      "Spleen — Castell's sign: percuss the lowest left intercostal space in the anterior axillary line, before and during a deep inspiration. New dullness on inspiration (vs. staying tympanitic) suggests splenomegaly."
+    ],
+    normal: "Normal liver span = 6–12 cm at the MCL. Evidence check: liver percussion ≥10 cm at MCL has sensitivity 61–92% but specificity only 30–43% — percussion alone can both over- and under-call hepatomegaly. Traube's space dullness or a positive Castell's sign suggests splenomegaly.",
+    images: [
+      {src:"assets/liver_percussion_palpation_landmarks.jpg", caption:"Liver percussion/palpation landmarks — expected 6–12 cm span at the midclavicular line (MCL). (Source: Bates' Guide to Physical Examination, via Week 6 Abdominal/GI course slide)"},
+      {src:"assets/spleen_percussion_traube_castell.jpg", caption:"Spleen percussion: Traube's space and the Castell inspiratory-dullness approach. (Source: Bates' Guide to Physical Examination, via Week 6 Abdominal/GI course slide)"},
+      {src:"assets/liver_percussion_evidence_based.jpg", caption:"Evidence-based performance of liver percussion for detecting hepatomegaly. (Source: Bates' Guide to Physical Examination, via Week 6 Abdominal/GI course slide)"}
+    ]
+  },
+  16: {
+    name: "Light Palpation — 4 Quadrants, Epigastric &amp; Suprapubic",
+    purpose: "Screens superficial tenderness, muscular guarding, and gross masses before deeper palpation.",
+    steps: [
+      "With the abdomen relaxed (patient supine, knees may be flexed, arms at sides), gently depress the abdominal wall about 1 cm in each of the 4 quadrants PLUS the epigastric AND suprapubic regions.",
+      "Watch the patient's face for grimacing/discomfort even if they don't verbalize it.",
+      "Note any tenderness, voluntary guarding (patient tenses in anticipation) vs. involuntary guarding (persists despite relaxation/distraction — more concerning for peritoneal irritation).",
+      "Examine the painful area last, if one is reported."
+    ],
+    normal: "Normal = nontender, soft, no guarding. Involuntary guarding that persists despite relaxation maneuvers is more concerning for true peritoneal irritation than voluntary guarding.",
+    images: [
+      {src:"assets/abdominal_four_quadrants.jpg", caption:"Same 4 quadrants used for percussion (row 14) apply here for light palpation."},
+      {src:"assets/abdominal_nine_regions.jpg", caption:"Same epigastric/suprapubic regions used for percussion (row 14) apply here for light palpation."}
+    ]
+  },
+  17: {
+    name: "Deep Palpation — 4 Quadrants, Epigastric &amp; Suprapubic",
+    purpose: "Assesses deeper structures and masses not appreciated with light palpation.",
+    steps: [
+      "Using one hand, or one hand reinforcing the other, depress the abdominal wall more deeply (several cm) in the same 4 quadrants PLUS epigastric AND suprapubic regions.",
+      "Feel for masses, deep tenderness, and organ margins.",
+      "Again examine any painful area last, and reassess guarding.",
+      "This is also where symptom-directed maneuvers (liver/spleen/kidney/aorta palpation, or special tests) get layered in."
+    ],
+    normal: "Normal = no masses, no deep tenderness. A new mass, marked tenderness, or rebound on release should prompt further work-up (see the Special Tests section).",
+    images: [
+      {src:"assets/abdominal_four_quadrants.jpg", caption:"Same 4 quadrants used for percussion/light palpation (rows 14 &amp; 16) apply here for deep palpation."},
+      {src:"assets/abdominal_nine_regions.jpg", caption:"Same epigastric/suprapubic regions used for percussion/light palpation (rows 14 &amp; 16) apply here for deep palpation."}
+    ]
+  },
+  18: {
+    name: "Palpation — Liver &amp; Spleen (Size)",
+    purpose: "Directly feels for the liver edge and splenic tip to assess size, texture, and tenderness.",
+    steps: [
+      "Liver: place your hand below the right costal margin and ask the patient to take a deep breath — feel for the liver edge descending onto your fingers. If hepatomegaly is suspected, start LOW (even in the RLQ) and move upward so you don't miss a markedly enlarged edge that sits well below the costal margin.",
+      "A normal liver edge, if felt, is soft, smooth, and distinct, and can normally be palpable up to about 3 cm below the right costal margin without implying hepatomegaly. \"Hooking\" under the costal margin works well when the liver is normal or only mildly enlarged.",
+      "Spleen: place your left hand under the patient's left lower ribs/flank to lift, and your right hand below the left costal margin. Ask the patient to take a deep breath and feel for the splenic tip. Splenic enlargement proceeds anteriorly, downward, and medially.",
+      "About 5% of normal patients may have a palpable splenic tip — a subtle finding is not necessarily abnormal, but a convincingly palpable spleen is a strong positive."
+    ],
+    normal: "Evidence check: a palpable spleen for detecting splenomegaly has sensitivity only 17–78% but specificity 89–99% and LR+ 8.4 — a negative exam does NOT rule out splenomegaly, but a clearly palpable spleen is very useful for ruling it in.",
+    images: [
+      {src:"assets/liver_percussion_palpation_landmarks.jpg", caption:"Same liver landmarks (6–12 cm MCL span) used for percussion (row 15) apply here for palpation."},
+      {src:"assets/spleen_palpation_evidence_based.jpg", caption:"Evidence-based performance of spleen palpation for detecting splenomegaly. (Source: Bates' Guide to Physical Examination, via Week 6 Abdominal/GI course slide)"}
+    ]
+  },
+  19: {
+    name: "Lumbar Spine — OSE Screen &amp; TART / Segmental Diagnosis",
+    fallback: "No matching content was found in the provided study notes for this OMM/OSE topic — the summary below uses standard TART/segmental-diagnosis principles rather than a specific course source (the Week 3 MSK notes only list \"screen symmetry, palpate TART, and diagnose L1–L5 with neutral/flexion/extension mechanics\" as a category heading, with no further technique detail given).",
+    purpose: "Screens the lumbar spine for somatic dysfunction using standard osteopathic TART criteria and segmental motion testing.",
+    steps: [
+      "Screen for symmetry first: observe pelvic/iliac crest height, lumbar lordosis, and posture from behind the standing/seated patient.",
+      "Palpate for TART at each lumbar segment L1–L5: Tissue texture change (temperature, bogginess, ropiness), Asymmetry (of transverse/spinous processes), Restriction of motion, and Tenderness to palpation.",
+      "Perform segmental diagnosis: assess each segment's motion preference/restriction in Neutral, Flexion, and Extension (N/Flex/Ext) with side-bending and rotation to identify the dysfunctional segment and name the dysfunction (e.g., NSₗRₗ)."
+    ]
+  },
+  20: {
+    name: "Rebound Tenderness (x4 Quadrants)",
+    purpose: "Assesses for peritoneal irritation/a peritonitis pattern.",
+    steps: [
+      "Press deeply and slowly into the abdomen, then release quickly.",
+      "The rubric checks all 4 quadrants, bilaterally.",
+      "Ask the patient whether it hurts more with the press or with the release."
+    ],
+    normal: "Positive = pain on release (worse than pain on the initial press) suggests peritoneal irritation/a peritonitis pattern. Rebound and heel strike (row 21) both add evidence of peritoneal irritation."
+  },
+  21: {
+    name: "Heel Strike (Jar Sign)",
+    purpose: "A low-stimulus screen for peritoneal irritation — useful when a patient is too tender to tolerate deep palpation/rebound testing.",
+    steps: [
+      "With the patient supine, strike the heel of the foot (e.g. with your fist) so the jolt/wave of motion transmits up through the leg to the abdomen.",
+      "Test bilaterally.",
+      "Ask if this reproduces or worsens abdominal pain."
+    ],
+    normal: "Positive = abdominal pain provoked by the transmitted jolt, suggesting peritonitis/peritoneal irritation — a gentler alternative to rebound tenderness for the same underlying process."
+  },
+  22: {
+    name: "Rovsing's Sign",
+    purpose: "An indirect rebound test for appendicitis — part of the R-M-P-O appendicitis cluster (Rovsing, McBurney, Psoas, Obturator).",
+    steps: [
+      "With the patient supine, slowly and deeply press into the LEFT lower quadrant (LLQ), then gradually release the pressure.",
+      "Watch for pain referred to the RIGHT lower quadrant (RLQ), not just pain at the site being pressed."
+    ],
+    normal: "Positive = LLQ pressure/release causes pain in the RLQ (\"referred rebound tenderness\") — supports an acute appendicitis pattern. Note: this maneuver's sensitivity/specificity are not well established, and some consider it a dated test."
+  },
+  23: {
+    name: "McBurney's Point",
+    purpose: "Checks for focal tenderness at the classic surface landmark for the appendix base — part of the R-M-P-O appendicitis cluster.",
+    steps: [
+      "Identify the line from the right anterior superior iliac spine (ASIS) to the umbilicus.",
+      "McBurney's point is located about 2 inches (roughly one-third of the distance) along that line, measured from the ASIS toward the umbilicus.",
+      "Palpate directly over this point for focal tenderness."
+    ],
+    normal: "Positive = focal tenderness at McBurney's point — supports an acute appendicitis pattern (the classic point of maximal tenderness as the appendix becomes inflamed and localizes).",
+    images: [{src:"assets/mcburneys_point_location.jpg", caption:"McBurney's point (1) — along the line from the ASIS (3) to the umbilicus (2), about one-third of the way from the ASIS. (Source: Steven Fruitsmaak, Wikimedia Commons, CC BY-SA 3.0)"}]
+  },
+  24: {
+    name: "Psoas Sign",
+    purpose: "Checks for irritation of the iliopsoas muscle — positive when an inflamed (often retrocecal) appendix overlies the psoas.",
+    steps: [
+      "Supine method: place your hand just above the patient's right knee and ask them to raise/flex the thigh against your resistance.",
+      "Alternative (lateral decubitus) method: with the patient lying on their left side, passively extend the right hip backward.",
+      "Either way, watch for RLQ pain provoked by psoas muscle contraction/stretch."
+    ],
+    normal: "Positive = RLQ pain with either maneuver — supports an acute (often retrocecal) appendicitis pattern. Part of the R-M-P-O appendicitis cluster."
+  },
+  25: {
+    name: "Obturator Sign",
+    purpose: "Checks for irritation of the obturator internus muscle — positive when an inflamed appendix lies in the pelvis, in contact with the muscle.",
+    steps: [
+      "With the patient supine, flex the right hip and knee to 90°.",
+      "Internally rotate the hip (move the ankle laterally/outward while keeping the knee stable).",
+      "Watch for pain in the lower abdomen/pelvis with this internal rotation."
+    ],
+    normal: "Positive = RLQ/pelvic pain with passive internal rotation of the flexed hip — supports an acute (often pelvic) appendicitis pattern. Part of the R-M-P-O appendicitis cluster."
+  },
+  26: {
+    name: "Murphy's Sign",
+    purpose: "Screens for acute cholecystitis by provoking pain/inspiratory arrest as an inflamed gallbladder contacts the examiner's fingers.",
+    steps: [
+      "With the patient supine, hook your fingers (or place your hand) deeply under the right costal margin at the RUQ/liver edge.",
+      "Ask the patient to take a deep breath in.",
+      "As the diaphragm pushes the gallbladder down onto your fingers, watch for a sudden catch/cessation of inspiration due to pain."
+    ],
+    normal: "Positive = the patient abruptly stops inhaling because of pain (\"inspiratory arrest\") when the gallbladder meets your fingers — supports acute cholecystitis. Often paired with fever, nausea/vomiting, and possible right scapular radiation."
+  },
+  27: {
+    name: "Central Tympany → Dullness (Ascites Screen, Step 1)",
+    purpose: "First step of the shifting-dullness exam for ascites — maps where free fluid (dull) meets gas-filled bowel (tympanitic) with the patient supine.",
+    steps: [
+      "With the patient supine, start percussing at the umbilicus (central tympany, since gas-filled bowel floats centrally) and move outward toward one flank in a semicircle.",
+      "Note where the note changes from tympanitic to dull — this is the fluid level with the patient supine (free fluid sinks to the dependent flanks).",
+      "Repeat toward the other flank if needed."
+    ],
+    normal: "Normal = tympany throughout, no peripheral dullness. A peripheral (flank) dullness pattern with central tympany supports ascites — continue to row 28 (Shifting Dullness) to confirm.",
+    images: [{src:"assets/shifting_dullness_technique.png", caption:"Ascites percussion pattern: central tympany (orange, gas-filled bowel) with dependent flank dullness (blue, free fluid) — this border is the target of the central-tympany-to-dullness screen. (Source: Wolfmankurd, Wikimedia Commons, CC BY-SA 3.0)"}]
+  },
+  28: {
+    name: "Shifting Dullness (Ascites Screen, Step 2)",
+    purpose: "Confirms ascites by checking that the tympany/dullness border moves as free fluid redistributes with gravity.",
+    steps: [
+      "After marking the tympany-to-dullness border with the patient supine (row 27), have the patient roll onto one side.",
+      "Wait a few seconds for any free fluid to redistribute to the new dependent side.",
+      "Re-percuss at the same mark: if it was dull and is now tympanitic (or vice versa), the fluid has shifted."
+    ],
+    normal: "Positive = the tympany/dullness border changes with the patient's position, confirming free intraperitoneal fluid/ascites. Memory hook: fluid falls, dullness follows. Ascites is often not detectable by percussion until more than about 1500 mL has accumulated.",
+    images: [{src:"assets/shifting_dullness_technique.png", caption:"The percussion border shifts as the patient rolls — dullness (blue, dependent fluid) moves toward the new dependent side while tympany (orange, floating gas-filled bowel) reclaims the old spot. (Source: Wolfmankurd, Wikimedia Commons, CC BY-SA 3.0)"}]
+  },
+  29: {
+    name: "Ventral Hernia Screen",
+    purpose: "Checks for a defect in the abdominal wall that lets abdominal contents bulge through, typically at the umbilicus, midline, or a prior incision.",
+    steps: [
+      "With the patient supine, have them lift their head and shoulders off the table (activates the rectus abdominis), OR lift both legs, OR perform a Valsalva maneuver (bear down) — any of these raises intra-abdominal pressure.",
+      "Watch/palpate the abdominal wall (especially midline, umbilicus, and any prior surgical scars) for a visible or palpable bulge.",
+      "A reducible, nontender bulge that appears with increased intra-abdominal pressure is the classic finding."
+    ],
+    normal: "Positive = a visible/palpable bulge appears with increased intra-abdominal pressure (head/leg lift or Valsalva) — indicates a ventral (including umbilical/incisional) abdominal wall hernia."
+  },
+  30: {
+    name: "Costovertebral Angle (CVA) Tenderness",
+    purpose: "Screens for renal/upper urinary tract irritation (pyelonephritis, kidney stone).",
+    steps: [
+      "With the patient seated (or prone), locate the costovertebral angle — formed by the 12th rib and the upper lumbar vertebrae, posteriorly.",
+      "Place the palm of one hand flat over the CVA and strike it with the ulnar edge/fist of your other hand (a firm but not painful thump).",
+      "Test bilaterally and compare sides."
+    ],
+    normal: "Positive = pain beneath the tapped area — suggests pyelonephritis, a kidney stone, or other renal irritation. Absent CVA tenderness argues against an upper urinary tract source.",
+    images: [{src:"assets/posterior_kidneys_cva_landmarks.jpg", caption:"Posterior view of the kidneys and the costovertebral angle, formed by the 12th rib and the upper lumbar spine. (Source: Bates' Guide to Physical Examination, via Week 6 Abdominal/GI course slide)"}]
+  },
+  31: {
+    name: "Bimanual Kidney Palpation",
+    purpose: "Assesses kidney size/fullness and attempts to capture the lower pole — used when enlargement or a renal mass is suspected.",
+    steps: [
+      "With the patient supine, place one hand posteriorly, between the lower rib cage and the iliac crest (in the flank/renal angle).",
+      "Place your other hand anteriorly, just below the costal margin on the same side.",
+      "Press the two hands toward each other while the patient takes a deep breath, attempting to \"capture\" the lower pole of the kidney between them.",
+      "If you can't capture it, try to ballot the kidney: flex the fingers of the posterior hand at the knuckles to push the kidney anteriorly so it can be felt to \"float\" up against the anterior hand.",
+      "Test bilaterally."
+    ],
+    normal: "Kidneys are normally difficult to palpate (deep, retroperitoneal structures) — a right kidney lower pole is occasionally felt in a thin patient, especially on deep inspiration. An easily palpable or enlarged kidney raises concern for a mass or a condition like polycystic kidney disease."
+  },
+  32: {
+    name: "Aorta — Size &amp; Pulsations",
+    purpose: "Screens for abdominal aortic aneurysm (AAA), especially with abdominal/back pain or a smoking history.",
+    steps: [
+      "With the patient supine, identify the aortic pulsations by pressing deeply and slightly to the left of the abdominal midline in the epigastric region.",
+      "Estimate the width with a hand placed on each side of the pulsation."
+    ],
+    normal: "Normal = aorta ≤3 cm wide. A wide, pulsatile mass ± bruit is concerning for AAA.",
+    images: [{src:"assets/abdominal_aortic_renal_iliac_auscultation_sites.jpg", caption:"Abdominal auscultation/landmark region (aortic, renal, iliac) — from abdominal exam notes; no dedicated palpation-technique photo was found."}]
+  },
+  33: {
+    name: "Mouth Exam",
+    purpose: "Screens the oral cavity for lesions, infection, and other abnormalities.",
+    steps: [
+      "Explain and obtain consent.",
+      "With gloves on, a light source, and gauze (to grasp/retract the tongue if needed), inspect AND palpate the entire oral cavity: lips, teeth, gums, tongue (top, sides, underneath), palate, tonsils, and pharynx.",
+      "Have the patient say \"ah\" and stick out/move their tongue."
+    ],
+    normal: "Normal = moist pink mucosa, intact dentition, no ulcers/masses. Abnormal = nonhealing ulcer, induration, leukoplakia/erythroplakia, exudate.",
+    images: [{src:"assets/mouth_throat_exam.jpg", caption:"Mouth/throat exam — lips, teeth, gums, tongue, palate, tonsils, pharynx."}]
+  },
+  34: {
+    name: "Jugular Venous Distention (JVD)",
+    purpose: "Estimates right atrial/central venous pressure using the internal jugular venous column.",
+    steps: [
+      "Right side of the neck, bed at about 30° (courses/texts commonly cite a 30–45° range), patient's head turned slightly to the left, using tangential lighting.",
+      "Identify the internal jugular pulsation — non-palpable, biphasic, and varies with respiration/position (unlike the carotid, which is palpable and doesn't vary).",
+      "Measure the vertical height of the venous column above the sternal angle with a ruler."
+    ],
+    normal: "Normal JVP is typically &lt;8 cm total distance above the right atrium. Elevated JVP suggests right heart failure, tricuspid regurgitation, constrictive/restrictive physiology, tamponade, or SVC/IVC obstruction.",
+    images: [{src:"assets/jvp_assessment.jpg", caption:"JVP positioning and measurement technique."}]
+  },
+  35: {
+    name: "Auscultate for Murmurs",
+    purpose: "Detects and characterizes murmurs using patient positioning that accentuates specific valve pathology.",
+    steps: [
+      "Have the patient sit up, lean forward, and hold their breath in exhalation — listen at the left lower sternal border/apex with the diaphragm for aortic regurgitation/insufficiency.",
+      "AND have the patient lie in the left lateral decubitus position — listen at the apex with the bell (diaphragm acceptable) for S3, S4, and mitral stenosis murmurs.",
+      "Describe any murmur using SCRIPT: Site (loudest location), Configuration (crescendo/decrescendo), Radiation (aortic → neck, mitral → axilla), Intensity (grade), Pitch/quality, Timing (systolic/diastolic)."
+    ],
+    normal: "Systolic grading 1–6 (grade 4 = loud with a palpable thrill). Diastolic grading 1–4 (grade 4 = loud/thrill).",
+    images: [
+      {src:"assets/systolic_murmur_grading.jpg", caption:"Systolic murmur grading, I–VI."},
+      {src:"assets/diastolic_murmur_grading.jpg", caption:"Diastolic murmur grading, I–IV."}
+    ]
+  },
+  36: {
+    name: "Palpate for Lifts, Heaves &amp; Thrills",
+    purpose: "Palpates for precordial vibrations/movements associated with valvular or ventricular pathology.",
+    steps: [
+      "At all 4 major auscultation points, palpate using the hypothenar area of the hand and palm first, for lifts and heaves (sustained precordial movements suggesting ventricular hypertrophy).",
+      "Then use the fingertips for thrills (a palpable vibration from a loud, turbulent murmur, typically grade ≥4/6)."
+    ],
+    images: [{src:"assets/heart_auscultation_landmarks.jpg", caption:"The 4 auscultation points, used as the landmarks for this palpation exam too."}]
+  },
+  37: {
+    name: "Brachial, Femoral &amp; Popliteal Pulses",
+    purpose: "Follow-up pulse exam performed if UE/LE pulses were abnormal, or pain/edema/PAD is suspected.",
+    steps: [
+      "Brachial pulse: antecubital fossa, medial to the biceps tendon.",
+      "Femoral pulse: inguinal crease, midway between the ASIS and pubic symphysis.",
+      "Popliteal pulse: behind the knee — often deep, so press fingertips firmly into the popliteal fossa with the knee slightly flexed.",
+      "Compare bilaterally at each site."
+    ],
+    images: [{src:"assets/pulse_sites_overview.jpg", caption:"Arterial pulse sites, including brachial (antecubital fossa), femoral (inguinal crease), and popliteal (behind the knee). (Wikimedia Commons / OpenStax A&amp;P)"}]
+  },
+  38: {
+    name: "Allen's Test",
+    purpose: "Assesses collateral/arterial blood flow to the hand via the radial and ulnar arteries — performed if the hand appears pale or lacks color.",
+    steps: [
+      "Patient rests the hand palm-up.",
+      "Patient makes a fist while you compress BOTH the radial and ulnar arteries simultaneously.",
+      "Ask the patient to open the hand — the palm should look pale.",
+      "Release ONE artery (e.g., ulnar) and watch for the palm to flush with color within about 3–5 seconds.",
+      "Repeat, releasing the other artery. Test bilaterally."
+    ],
+    normal: "Normal = palm flushes with color within 3–5 seconds after releasing either artery, confirming adequate collateral flow. Delayed/absent flush suggests inadequate collateral circulation through that artery.",
+    images: [{src:"assets/allens_test_sequence.jpg", caption:"Allen's test sequence: compress both arteries, patient makes a fist until pale, then release one artery and watch for flush. (Source: Amboss)"}]
+  },
+  39: {
+    name: "Palpate the Thyroid",
+    purpose: "Screens thyroid size, symmetry, and nodularity — relevant for tachycardia/palpitations as well as a general HEENT screen.",
+    steps: [
+      "Explain and obtain consent.",
+      "Visualize/assess the position of the trachea vs. the thyroid, cricoid cartilage, and suprasternal notch for location/symmetry, with the patient's head slightly extended.",
+      "Anterior approach: use one hand (finger pads or thumb) to retract the SCM, then palpate each thyroid lobe while the patient swallows, checking symmetry and nodules.",
+      "Posterior approach: stand behind the patient, use finger pads to palpate the thyroid bilaterally with the patient's head slightly flexed (relaxes the SCM), and have the patient swallow to feel the gland move."
+    ],
+    normal: "Normal = not enlarged, non-tender, symmetric, no nodules, moves with swallow. Abnormal = goiter, nodule, tenderness, bruit, or asymmetry.",
+    images: [{src:"assets/thyroid_palpation_technique.jpg", caption:"Thyroid palpation technique with swallow after locating tracheal landmarks."}]
+  }
+};
+
+// ---------- checkbox single-select-per-row behavior ----------
+document.querySelectorAll('input.grade-box').forEach(cb=>{
+  cb.addEventListener('change', function(){
+    if(!this.checked) return;
+    document.querySelectorAll('input[name="'+this.name+'"]').forEach(sib=>{
+      if(sib!==this) sib.checked=false;
+    });
+  });
+});
+
+// enlarge the tap target: tapping anywhere in a checkbox cell toggles its checkbox (helps on iPad/touch)
+document.querySelectorAll('td.col-check').forEach(td=>{
+  td.addEventListener('click', function(e){
+    if(e.target.tagName === 'INPUT') return;
+    const box = this.querySelector('input.grade-box');
+    if(box){ box.checked = !box.checked; box.dispatchEvent(new Event('change', {bubbles:true})); }
+  });
+});
+
+// ---------- popover logic ----------
+const popover = document.getElementById('popover');
+const popContent = document.getElementById('popContent');
+const overlay = document.getElementById('overlay');
+const popCloseBtn = document.getElementById('popCloseBtn');
+const sidePanelContent = document.getElementById('sidePanelContent');
+const sidePlaceholder = document.getElementById('sidePlaceholder');
+let activeEl = null;
+const isTouch = window.matchMedia('(hover: none)').matches;
+const wideQuery = window.matchMedia('(min-width: 1300px)');
+function isWide(){ return wideQuery.matches; }
+
+function buildContent(key){
+  const d = DATA[key];
+  if(!d) return '<p>No content available.</p>';
+  let html = '<h4>'+d.name+'</h4>';
+  if(d.fallback){
+    html += '<div class="pop-fallback">'+d.fallback+'</div>';
+  }
+  if(d.purpose){
+    html += '<div class="pop-label">Purpose</div><div>'+d.purpose+'</div>';
+  }
+  if(d.steps && d.steps.length){
+    html += '<div class="pop-label">How to Perform</div><ul>'+d.steps.map(s=>'<li>'+s+'</li>').join('')+'</ul>';
+  }
+  if(d.normal){
+    html += '<div class="pop-label">Normal vs. Abnormal</div><div class="pop-normal">'+d.normal+'</div>';
+  }
+  if(d.images && d.images.length){
+    html += '<div class="pop-images">'+d.images.map(im=>
+      '<figure><img src="'+im.src+'" alt="'+im.caption.replace(/"/g,'&quot;')+'" data-caption="'+im.caption.replace(/"/g,'&quot;')+'" title="Tap to enlarge" loading="lazy" onerror="this.parentElement.innerHTML=\'&lt;div style=&quot;padding:10px;font-size:.7rem;color:#b02a2a;border:1px dashed #b02a2a;&quot;&gt;Image failed to load: '+im.src+'&lt;/div&gt;\'"><figcaption>'+im.caption+' <span class="zoom-hint">🔍 tap to enlarge</span></figcaption></figure>'
+    ).join('')+'</div>';
+  }
+  return html;
+}
+
+function positionPopover(target){
+  const rect = target.getBoundingClientRect();
+  const margin = 10;
+  popover.style.display='block'; // measure
+  const pw = popover.offsetWidth;
+  const ph = popover.offsetHeight;
+  let left = rect.left;
+  let top = rect.bottom + margin;
+
+  // horizontal clamp
+  if(left + pw > window.innerWidth - margin){
+    left = window.innerWidth - pw - margin;
+  }
+  if(left < margin) left = margin;
+
+  // vertical: if not enough room below, place above
+  if(top + ph > window.innerHeight - margin){
+    const above = rect.top - ph - margin;
+    if(above > margin){
+      top = above;
+    } else {
+      // clamp within viewport, allow internal scroll
+      top = margin;
+    }
+  }
+  popover.style.left = left+'px';
+  popover.style.top = top+'px';
+}
+
+function openPopover(target){
+  const key = target.getAttribute('data-key');
+  popContent.innerHTML = buildContent(key);
+  document.querySelectorAll('.hoverable.active').forEach(e=>e.classList.remove('active'));
+  target.classList.add('active');
+  activeEl = target;
+  popover.classList.add('open');
+  overlay.classList.add('open');
+  positionPopover(target);
+}
+
+// side panel: no open/close race, just swap content in place — nothing to blink
+function showInPanel(target){
+  const key = target.getAttribute('data-key');
+  sidePanelContent.innerHTML = buildContent(key);
+  sidePlaceholder.classList.add('hidden');
+  document.querySelectorAll('.hoverable.active').forEach(e=>e.classList.remove('active'));
+  target.classList.add('active');
+}
+
+function closePopover(){
+  popover.classList.remove('open');
+  popover.style.display = '';
+  overlay.classList.remove('open');
+  if(activeEl) activeEl.classList.remove('active');
+  activeEl = null;
+}
+
+let closeTimer = null;
+function scheduleClose(){
+  clearTimeout(closeTimer);
+  closeTimer = setTimeout(closePopover, 220);
+}
+function cancelClose(){
+  clearTimeout(closeTimer);
+}
+
+document.querySelectorAll('.hoverable').forEach(el=>{
+  if(!isTouch){
+    el.addEventListener('mouseenter', ()=>{
+      if(isWide()){ showInPanel(el); return; }
+      cancelClose(); openPopover(el);
+    });
+    el.addEventListener('mouseleave', ()=>{
+      if(isWide()) return; // side panel keeps showing the last-hovered test, nothing to close
+      scheduleClose();
+    });
+    el.addEventListener('focus', ()=>{
+      if(isWide()){ showInPanel(el); return; }
+      cancelClose(); openPopover(el);
+    });
+    el.addEventListener('blur', ()=>{
+      if(isWide()) return;
+      scheduleClose();
+    });
+  }
+  el.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    if(isWide()){ showInPanel(el); return; }
+    if(activeEl===el && popover.classList.contains('open')){
+      closePopover();
+    } else {
+      openPopover(el);
+    }
+  });
+});
+
+overlay.addEventListener('click', closePopover);
+popCloseBtn.addEventListener('click', closePopover);
+document.addEventListener('keydown', (e)=>{ if(e.key==='Escape'){ closeLightbox(); closePopover(); } });
+
+// ---------- lightbox (click-to-enlarge images) ----------
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightboxImg');
+const lightboxCaption = document.getElementById('lightboxCaption');
+const lightboxCloseBtn = document.getElementById('lightboxCloseBtn');
+
+function openLightbox(src, alt, caption){
+  lightboxImg.src = src;
+  lightboxImg.alt = alt || '';
+  lightboxCaption.textContent = caption || '';
+  lightbox.classList.add('open');
+}
+function closeLightbox(){
+  lightbox.classList.remove('open');
+  lightboxImg.src = '';
+}
+
+document.addEventListener('click', (e)=>{
+  const img = e.target.closest('#popContent .pop-images img, #sidePanelContent .pop-images img');
+  if(!img) return;
+  e.stopPropagation();
+  openLightbox(img.src, img.alt, img.getAttribute('data-caption') || '');
+});
+
+lightboxCloseBtn.addEventListener('click', closeLightbox);
+lightbox.addEventListener('click', (e)=>{ if(e.target===lightbox) closeLightbox(); });
+window.addEventListener('scroll', ()=>{ if(popover.classList.contains('open') && activeEl) positionPopover(activeEl); }, true);
+window.addEventListener('resize', ()=>{ if(popover.classList.contains('open') && activeEl) positionPopover(activeEl); });
+wideQuery.addEventListener('change', (e)=>{
+  if(e.matches) closePopover(); // switched into side-panel mode — drop the floating card
+});
+
+// keep popover open while hovering the popover itself (desktop), close on leaving it
+if(!isTouch){
+  popover.addEventListener('mouseenter', cancelClose);
+  popover.addEventListener('mouseleave', scheduleClose);
+}
+</script>
+
+</body>
+</html>
