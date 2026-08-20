@@ -111,3 +111,18 @@ Follow the same process used for the Lumbar/Pelvis/Sacrum rubric's Round 2/3 (se
 4. Visually review every crop via the Read tool before keeping it.
 5. Add `images: [{src:"assets/your_file.jpg", caption:"... (Source: ...)"}]` to the relevant row's `DATA` entry via an individual, hand-scoped `Edit` call — never a bulk find/replace across the file.
 6. Re-run the full verification pass (`node --check`, live interaction testing, image-preload `naturalWidth > 0` checks) before considering the round done.
+
+## Round 2: the predicted re-sourcing happened almost immediately
+
+Exactly as anticipated in the section above, the user supplied `UE.pdf` — OPP Vol.1, UNECOM 2025, the Upper Extremity chapter (book pages 51–63) — in the very next message. Same extraction method as the prior rounds elsewhere in this series: `pdftoppm -r 300 -png`, then the PIL content-band auto-cropper, every crop visually reviewed before keeping.
+
+**Images added, closing three of the four "big joint" rows:**
+
+- **Row 4 (SC Joint and Shoulder Girdle Screening)** — added five images covering all three motion tests the row's steps describe: `sc_joint_inf_sup.jpg` (arm-at-side vs. arm-overhead, clavicular head superior/inferior), `sc_joint_ap_1.jpg` + `sc_joint_ap_2.jpg` (horizontal adduction/abduction, clavicular head posterior/anterior), and `sc_joint_rotation_1.jpg` + `sc_joint_rotation_2.jpg` (internal/external rotation at 90° abduction). This is a complete visual walkthrough of every direction this row grades. (OPP Vol.1, pp.59–60)
+- **Row 5 (AC Joint and Glenohumeral Motion)** — added `ac_joint_testing.jpg`, a 3-photo sequence showing the adduction+external-rotation / abduction+internal-rotation testing sequence with the physician's hand monitoring the AC joint directly. Direct match for the row's steps. (OPP Vol.1, p.61)
+- **Row 7 (Radial Head Screening)** — added `radial_head_testing.jpg`, a 2-photo sequence showing the thumb-anterior/fingers-posterior contact and the pronation/supination glide test — the exact technique the row's steps and hook (the anterior/supination vs. posterior/pronation pearl) already describe in prose. (OPP Vol.1, p.62)
+- **Rows 6, 8, 9, 10, 11, 12 — still text-only.** `UE.pdf` covers functional anatomy, biomechanics, and evaluation through the radial head test, then moves directly to Strength Testing and Deep Tendon Reflex grading (p.63) — it does not include elbow flexion/extension/valgus-varus, wrist flexion/extension/deviation, radiocarpal/carpal-bone, or hand/finger screening photos. Those techniques may exist later in the same textbook's Upper Extremity chapter (this excerpt stops at p.63) or in a Wrist-and-Hand-specific chapter — worth asking for if the user wants to close the remaining gap.
+
+**Net result: 3 of 9 hoverable rows now have real technique photos (rows 4, 5, 7) — up from 0 of 9.** Rows 6 (Elbow) and 8–10 (Wrist/Radiocarpal/Hand) remain text-only.
+
+**Verification for this round:** `node --check` passed cleanly on the re-extracted script (three individual hand-scoped `Edit` calls, one per row — no bulk regex). Served locally; live JS execution confirmed all 7 new image `src` values across rows 4/5/7 resolve with zero `onerror`, and per-row image counts matched exactly what was added (row 4 has 5, rows 5 and 7 have 1 each).
