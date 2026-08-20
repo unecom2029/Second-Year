@@ -23,8 +23,10 @@
     --popover-bg:#fffdf6;
     --popover-border:#0d5c73;
     --shadow: 0 8px 28px rgba(0,0,0,0.25);
+    --font-scale: 1;
   }
   *{box-sizing:border-box;}
+  html{ font-size: calc(16px * var(--font-scale)); }
   html,body{margin:0;padding:0;}
   body{
     font-family: Georgia, "Times New Roman", serif;
@@ -58,6 +60,7 @@
 
   table.rubric{
     width:100%;
+    table-layout: fixed;
     border-collapse: collapse;
     margin-bottom: 4px;
     font-family: Georgia, serif;
@@ -78,25 +81,25 @@
 
   /* ===== 4-column per-row grading ===== */
   .grade-cell{
-    width: 25%;
     text-align:center;
     vertical-align: middle;
-    padding: 6px 6px !important;
+    padding: 5px 3px !important;
     cursor:pointer;
     -webkit-tap-highlight-color: transparent;
     font-family: Arial, Helvetica, sans-serif;
+    overflow-wrap: break-word;
   }
   .grade-cell label{
     display:flex;
     flex-direction:column;
     align-items:center;
-    gap:4px;
+    gap:3px;
     cursor:pointer;
-    padding: 4px 2px;
+    padding: 3px 1px;
   }
   .grade-box{
-    width:19px;
-    height:19px;
+    width:15px;
+    height:15px;
     cursor:pointer;
     accent-color: var(--accent);
     flex:none;
@@ -106,18 +109,20 @@
   .grade-box.g3{ accent-color: var(--grade3-color); }
   .grade-box.g4{ accent-color: var(--grade4-color); }
   .grade-text{
-    font-size:.68rem;
-    line-height:1.2;
+    font-size:.6rem;
+    line-height:1.15;
     color:var(--muted);
     text-align:center;
+    hyphens:auto;
   }
   .grade-cell.is-na{
     background:#f2f2ee;
   }
   .grade-cell.is-na .grade-text{ font-style:italic; }
 
-  colgroup col.col-grade{ width:16.5%; }
-  colgroup col.col-test{ width:34%; }
+  colgroup col.col-grade{ width:8.5%; }
+  colgroup col.col-test{ width:62%; }
+  colgroup col.col-num{ width:3%; }
 
   .testcol{
     font-family: Georgia, serif;
@@ -258,6 +263,10 @@
   #popover .pop-images .zoom-hint, #sidePanelContent .pop-images .zoom-hint{
     display:block; color:var(--accent); font-weight:600; margin-top:2px;
   }
+  #popover .pop-hook, #sidePanelContent .pop-hook{
+    background:#fff4d9; border-left:3px solid var(--grade3-color); padding:7px 9px;
+    margin-top:4px; font-size:.85rem; line-height:1.45;
+  }
 
   /* ===== Layout: rubric + sticky side panel ===== */
   .layout{
@@ -336,8 +345,34 @@
   @media (max-width: 720px){
     .sheet{ padding: 16px 12px 40px; }
     table.rubric{ font-size:.8rem; }
-    .grade-text{ font-size:.62rem; }
+    .grade-text{ font-size:.54rem; }
+    .grade-box{ width:13px; height:13px; }
   }
+
+  /* ===== Text-size control (bottom-right floating pill) ===== */
+  .floating-stack{
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1500;
+  }
+  .font-btn-row{
+    display:flex; align-items:center;
+    background: var(--ink); color:#faf7f2;
+    padding: 7px 10px; border-radius: 30px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.25);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: .62rem; letter-spacing: .08em; gap: 2px;
+  }
+  .font-btn{
+    background:none; border:none; cursor:pointer; color:#faf7f2;
+    font-weight:700; font-size:1rem; padding: 2px 9px;
+    border-radius: 6px; transition: background .15s; line-height:1;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  .font-btn:hover{ background: rgba(255,255,255,0.18); }
+  .font-sep{ color: rgba(255,255,255,0.25); padding: 0 3px; }
+  .font-label{ font-size:.58rem; opacity:.75; padding: 0 6px 0 2px; text-transform:uppercase; }
 </style>
 </head>
 <body>
@@ -354,7 +389,7 @@
   <table class="rubric" id="mainTable">
     <colgroup>
       <col class="col-grade"><col class="col-grade"><col class="col-grade"><col class="col-grade">
-      <col class="col-test"><col style="width:26px;">
+      <col class="col-test"><col class="col-num">
     </colgroup>
     <tr class="section-header"><td colspan="6">Axial Spine and Ribs — Screening and Diagnosis</td></tr>
 
@@ -496,11 +531,21 @@
   <figcaption id="lightboxCaption"></figcaption>
 </div>
 
+<div class="floating-stack">
+  <div class="font-btn-row">
+    <span class="font-label">Text</span>
+    <button class="font-btn" onclick="changeFontSize(-1)" title="Decrease text size">A−</button>
+    <span class="font-sep">|</span>
+    <button class="font-btn" onclick="changeFontSize(1)" title="Increase text size">A+</button>
+  </div>
+</div>
+
 <script>
 const DATA = {
   4: {
     name: "Head/Cervical Spine Screening (OA–C7)",
     purpose: "A fast seated screen of the entire cervical spine to find the Area of Greatest Resistance (AGR) before committing to a full 3-position segmental diagnosis. Screening is not itself the diagnosis — it just tells you where to look closest.",
+    hook: "Screen the WHOLE column before you diagnose anything — think 'read every line before circling the typo.' Stopping at the first segment that feels restricted is the #1 way to miss the real worst offender further down.",
     steps: [
       "Patient seated. Stabilize the head with one hand so the patient can relax the head and neck; grasp the target segment's articular pillars with the other hand (not the sharp lateral tips of the transverse processes).",
       "Translate each segment laterally right and left, working from the upper cervicals down to C7 — screen the whole column even if an upper segment already feels restricted.",
@@ -517,6 +562,7 @@ const DATA = {
   5: {
     name: "Head/Cervical Spine Segmental Diagnosis — OA, AA, Lower Cervical",
     purpose: "A full 3-positional (or joint-appropriate) segmental diagnosis of the OA joint, the AA joint, and the single most restricted lower cervical (C2-C7) segment found on screening — and naming each correctly using Fryette/regional convention.",
+    hook: "OA nods 'yes' (it flexes and extends, like nodding your head), AA shakes 'no' (it only rotates, like shaking your head 'no'). Below that, the lower cervical spine breaks the usual rule and sidebends/rotates the SAME way — like how turning your head to look over your shoulder naturally tips it too.",
     steps: [
       "OA (occiput-on-atlas): contact the occiput/mastoid region and stay above C1. Use a tiny translatory motion to induce OA sidebending — do not sidebend the whole neck to test it. Test flexion by gently tucking/drawing the chin, extension by lifting the finger pads toward the head.",
       "OA rule: sidebending and rotation are opposite at OA. Name it, e.g., freely sidebends right/rotates left → “OA ESrRl” (or FSrRl if freer in flexion).",
@@ -598,6 +644,17 @@ const DATA = {
   }
 };
 
+// ---------- text-size control ----------
+const FONT_SCALE_KEY = 'omm-axial-ribs-font-scale';
+let fontScale = parseFloat(localStorage.getItem(FONT_SCALE_KEY)) || 1;
+document.documentElement.style.setProperty('--font-scale', fontScale.toFixed(2));
+function changeFontSize(delta){
+  fontScale = Math.min(1.6, Math.max(0.85, +(fontScale + delta*0.1).toFixed(2)));
+  document.documentElement.style.setProperty('--font-scale', fontScale.toFixed(2));
+  localStorage.setItem(FONT_SCALE_KEY, fontScale);
+  if(popover.classList.contains('open') && activeEl) positionPopover(activeEl);
+}
+
 // ---------- single-select-per-row radio behavior (enlarged tap target) ----------
 document.querySelectorAll('td.grade-cell').forEach(td=>{
   td.addEventListener('click', function(e){
@@ -628,6 +685,9 @@ function buildContent(key){
   }
   if(d.purpose){
     html += '<div class="pop-label">Purpose</div><div>'+d.purpose+'</div>';
+  }
+  if(d.hook){
+    html += '<div class="pop-label">🧠 Memory Hook</div><div class="pop-hook">'+d.hook+'</div>';
   }
   if(d.steps && d.steps.length){
     html += '<div class="pop-label">How to Perform</div><ul>'+d.steps.map(s=>'<li>'+s+'</li>').join('')+'</ul>';

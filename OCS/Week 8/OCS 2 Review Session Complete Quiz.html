@@ -374,6 +374,14 @@ body.nbme-lock{overflow:hidden}
 /* Matched high-yield review */
 .hy-tool{border-color:rgba(192,123,26,.32);background:linear-gradient(180deg,#fff,#fff8ea);color:#7a4a07}
 .hy-tool:hover,.hy-tool.active{border-color:rgba(192,123,26,.48);background:#fff2d2;color:#6e3f04}
+.hy-tool.hy-attention,.nb-action-btn.hy-attention{animation:hyAttention 1s ease-in-out 0s 4;border-color:#f2b33d!important;background:#ffd66b!important;color:#241300!important;box-shadow:0 0 0 0 rgba(242,179,61,.5),0 12px 28px rgba(192,123,26,.26)}
+@keyframes hyAttention{
+  0%,100%{transform:translateX(0) scale(1);box-shadow:0 0 0 0 rgba(242,179,61,.55),0 12px 28px rgba(192,123,26,.22)}
+  15%{transform:translateX(-3px) scale(1.02)}
+  30%{transform:translateX(3px) scale(1.02);box-shadow:0 0 0 8px rgba(242,179,61,.2),0 16px 32px rgba(192,123,26,.28)}
+  45%{transform:translateX(-2px) scale(1.02)}
+  60%{transform:translateX(2px) scale(1.01);box-shadow:0 0 0 14px rgba(242,179,61,0),0 12px 28px rgba(192,123,26,.2)}
+}
 .hy-match-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:42px;padding:9px 14px;border:1.5px solid rgba(192,123,26,.28);border-radius:14px;background:linear-gradient(135deg,#fff8ea,#fff);color:#7a4a07;font-family:var(--font-ui);font-size:13px;font-weight:800;line-height:1.2;cursor:pointer;box-shadow:0 8px 18px rgba(192,123,26,.1);transition:var(--tr)}
 .hy-match-btn:hover{transform:translateY(-1px);border-color:rgba(192,123,26,.46);box-shadow:0 12px 24px rgba(192,123,26,.15)}
 .hy-match-btn span{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#9a650f}
@@ -1484,6 +1492,18 @@ function syncHYSummaryButtons(){
     btn.title=meta?'Open '+meta.label+' high-yield sheet':'No matched high-yield sheet found';
     btn.classList.toggle('active',!!meta&&open);
   });
+}
+function flashHYSummaryButtons(){
+  if(!getQuestionHYMeta(CQ))return;
+  var buttons=['summaryPageBtn','nbSummaryPageBtn'].map(function(id){return document.getElementById(id);}).filter(Boolean);
+  buttons.forEach(function(btn){
+    btn.classList.remove('hy-attention');
+    void btn.offsetWidth;
+    btn.classList.add('hy-attention');
+  });
+  setTimeout(function(){
+    buttons.forEach(function(btn){btn.classList.remove('hy-attention');});
+  },4300);
 }
 
 // ── QUIZ LIFECYCLE ──
@@ -2633,4 +2653,5 @@ updScore();
 updTimer();
 applyFontSize();
 hydratePreloadedQuiz();
+setTimeout(flashHYSummaryButtons,350);
 </script></body></html>
