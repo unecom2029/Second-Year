@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OCS Rubric Navigator</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #17202a;
+      --muted: #5f6c7b;
+      --line: #d9e1e8;
+      --panel: #ffffff;
+      --page: #f6f8fa;
+      --teal: #0f766e;
+      --blue: #2563eb;
+      --rose: #be123c;
+      --amber: #b45309;
+      --green: #15803d;
+      --shadow: 0 14px 36px rgba(17, 24, 39, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--page);
+      color: var(--ink);
+    }
+
+    header {
+      border-bottom: 1px solid var(--line);
+      background: #ffffff;
+    }
+
+    .wrap {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .top {
+      display: grid;
+      gap: 18px;
+      padding: 28px 0 22px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .subhead {
+      margin: 0;
+      max-width: 760px;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: minmax(220px, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      padding: 18px 0 0;
+    }
+
+    .search {
+      width: 100%;
+      min-height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 0 14px;
+      font-size: 1rem;
+      background: #ffffff;
+      color: var(--ink);
+      outline: none;
+    }
+
+    .search:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
+    }
+
+    .select {
+      min-height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 0 12px;
+      font-size: 0.95rem;
+      background: #ffffff;
+      color: var(--ink);
+    }
+
+    main {
+      padding: 24px 0 40px;
+    }
+
+    .summary {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      color: var(--muted);
+      margin-bottom: 14px;
+      font-size: 0.92rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+    }
+
+    .rubric {
+      display: grid;
+      gap: 14px;
+      min-height: 220px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .rubric[hidden] {
+      display: none;
+    }
+
+    .accent {
+      width: 52px;
+      height: 5px;
+      border-radius: 999px;
+      background: var(--blue);
+    }
+
+    .rubric[data-tone="teal"] .accent { background: var(--teal); }
+    .rubric[data-tone="rose"] .accent { background: var(--rose); }
+    .rubric[data-tone="amber"] .accent { background: var(--amber); }
+    .rubric[data-tone="green"] .accent { background: var(--green); }
+
+    h2 {
+      margin: 0;
+      font-size: 1.15rem;
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-content: start;
+    }
+
+    .tag {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 5px 9px;
+      color: var(--muted);
+      background: #fafbfc;
+      font-size: 0.8rem;
+      line-height: 1;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-top: auto;
+    }
+
+    a.button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 0 14px;
+      border-radius: 8px;
+      background: var(--ink);
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.92rem;
+    }
+
+    a.button:hover {
+      background: #000000;
+    }
+
+    .path {
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.35;
+      word-break: break-word;
+    }
+
+    .empty {
+      display: none;
+      padding: 28px;
+      border: 1px dashed var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .empty.show {
+      display: block;
+    }
+
+    @media (max-width: 680px) {
+      .controls {
+        grid-template-columns: 1fr;
+      }
+
+      .summary {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap top">
+      <div>
+        <h1>OCS Rubric Navigator</h1>
+        <p class="subhead">Choose a combined rubric, filter by system, or search by title. Each button opens the original local HTML rubric file.</p>
+      </div>
+      <div class="controls" aria-label="Rubric filters">
+        <input class="search" id="search" type="search" placeholder="Search rubrics, systems, or regions" autocomplete="off">
+        <select class="select" id="system">
+          <option value="all">All systems</option>
+          <option value="cardiovascular">Cardiovascular</option>
+          <option value="abdominal">Abdominal</option>
+          <option value="pulmonary">Pulmonary</option>
+          <option value="cranial nerve">Cranial nerve</option>
+          <option value="heent">HEENT</option>
+          <option value="musculoskeletal">Musculoskeletal</option>
+          <option value="peripheral nervous system">Peripheral nervous system</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap">
+      <div class="summary">
+        <span id="count">7 rubrics</span>
+        <span>Source: Combined rubrics folder</span>
+      </div>
+
+      <section class="grid" id="rubrics" aria-label="Available rubrics">
+        <article class="rubric" data-tone="teal" data-text="cardiovascular abdominal regional ose special tests">
+          <div class="accent"></div>
+          <h2>Cardiovascular, Abdominal, Regional OSE, and Special Tests</h2>
+          <div class="tags">
+            <span class="tag">Cardiovascular</span>
+            <span class="tag">Abdominal</span>
+            <span class="tag">Regional OSE</span>
+            <span class="tag">Special Tests</span>
+          </div>
+          <div class="actions">
+            <a class="button" target="_blank" href="file:///Users/jeeval/Documents/GitHub/Second-Year/OCS/Combined%20rubrics/2%20System%20Rubric%20-%20Cardiovascular,%20Abdominal,%20Regional%20OSE,%20and%20Special%20Tests/2%20System%20Rubric%20-%20Cardiovascular,%20Abdominal,%20Regional%20OSE,%20and%20Special%20Tests.html">Open rubric</a>
+          </div>
+          <div class="path">2 System Rubric - Cardiovascular, Abdominal...</div>
+        </article>
+
+        <article class="rubric" data-tone="green" data-text="cardiovascular pulmonary regional ose special tests">
+          <div class="accent"></div>
+          <h2>Cardiovascular, Pulmonary, Regional OSE, and Special Tests</h2>
+          <div class="tags">
+            <span class="tag">Cardiovascular</span>
+            <span class="tag">Pulmonary</span>
+            <span class="tag">Regional OSE</span>
+            <span class="tag">Special Tests</span>
+          </div>
+          <div class="actions">
+            <a class="button" target="_blank" href="file:///Users/jeeval/Documents/GitHub/Second-Year/OCS/Combined%20rubrics/2%20System%20Rubric%20-%20Cardiovascular,%20Pulmonary,%20Regional%20OSE,%20and%20Special%20Tests/2%20System%20Rubric%20-%20Cardiovascular,%20Pulmonary,%20Regional%20OSE,%20and%20Special%20Tests.html">Open rubric</a>
+          </div>
+          <div class="path">2 System Rubric - Cardiovascular, Pulmonary...</div>
+        </article>
+
+        <article class="rubric" data-tone="rose" data-text="cranial nerve cardiovascular regional ose special tests">
+          <div class="accent"></div>
+          <h2>Cranial Nerve, Cardiovascular, Regional OSE, and Special Tests</h2>
+          <div class="tags">
+            <span class="tag">Cranial Nerve</span>
+            <span class="tag">Cardiovascular</span>
+            <span class="tag">Regional OSE</span>
+            <span class="tag">Special Tests</span>
+          </div>
+          <div class="actions">
+            <a class="button" target="_blank" href="file:///Users/jeeval/Documents/GitHub/Second-Year/OCS/Combined%20rubrics/2%20System%20Rubric%20-%20Cranial%20Nerve,%20Cardiovascular,%20Regional%20OSE,%20and%20Special%20Tests/2%20System%20Rubric%20-%20Cranial%20Nerve,%20Cardiovascular,%20Regional%20OSE,%20and%20Special%20Tests.html">Open rubric</a>
+          </div>
+          <div class="path">2 System Rubric - Cranial Nerve, Cardiovascular...</div>
+        </article>
+
+        <article class="rubric" data-tone="amber" data-text="heent pulmonary regional ose special tests">
+          <div class="accent"></div>
+          <h2>HEENT, Pulmonary, Regional OSE, and Special Tests</h2>
+          <div class="tags">
+            <span class="tag">HEENT</span>
+            <span class="tag">Pulmonary</span>
+            <span class="tag">Regional OSE</span>
+            <span class="tag">Special Tests</span>
+          </div>
+          <div class="actions">
+            <a class="button" target="_blank" href="file:///Users/jeeval/Documents/GitHub/Second-Year/OCS/Combined%20rubrics/2%20System%20Rubric%20-%20HEENT,%20Pulmonary,%20Regional%20OSE,%20and%20Special%20Tests/2%20System%20Rubric%20-%20HEENT,%20Pulmonary,%20Regional%20OSE,%20and%20Special%20Tests.html">Open rubric</a>
+          </div>
+          <div class="path">2 System Rubric - HEENT, Pulmonary...</div>
+        </article>
+
+        <article class="rubric" data-tone="green" data-text="musculoskeletal knee le peripheral nervous system regional ose special tests">
+          <div class="accent"></div>
+          <h2>Musculoskeletal-Knee, LE Peripheral Nervous System, Regional OSE, and Special Tests</h2>
+          <div class="tags">
+            <span class="tag">Musculoskeletal</span>
+            <span class="tag">Knee</span>
+            <span class="tag">LE PNS</span>
+            <span class="tag">Special Tests</span>
+          </div>
+          <div class="actions">
+            <a class="button" target="_blank" href="file:///Users/jeeval/Documents/GitHub/Second-Year/OCS/Combined%20rubrics/2%20System%20Rubric%20-%20Musculoskeletal-Knee,%20LE%20Peripheral%20Nervous%20System,%20Regional%20OSE,%20and%20Special%20Tests/2%20System%20Rubric%20-%20Musculoskeletal-Knee,%20LE%20Peripheral%20Nervous%20System,%20Regional%20OSE,%20and%20Special%20Tests.html">Open rubric</a>
+          </div>
+          <div class="path">2 System Rubric - Musculoskeletal-Knee...</div>
+        </article>
+
+        <article class="rubric" data-tone="teal" data-text="musculoskeletal low back le peripheral nervous system regional ose special tests">
+          <div class="accent"></div>
+          <h2>Musculoskeletal-Low Back, LE Peripheral Nervous System, Regional OSE, and Special Tests</h2>
+          <div class="tags">
+            <span class="tag">Musculoskeletal</span>
+            <span class="tag">Low Back</span>
+            <span class="tag">LE PNS</span>
+            <span class="tag">Special Tests</span>
+          </div>
+          <div class="actions">
+            <a class="button" target="_blank" href="file:///Users/jeeval/Documents/GitHub/Second-Year/OCS/Combined%20rubrics/2%20System%20Rubric%20-%20Musculoskeletal-Low%20Back,%20LE%20Peripheral%20Nervous%20System,%20Regional%20OSE,%20and%20Special%20Tests/2%20System%20Rubric%20-%20Musculoskeletal-Low%20Back,%20LE%20Peripheral%20Nervous%20System,%20Regional%20OSE,%20and%20Special%20Tests.html">Open rubric</a>
+          </div>
+          <div class="path">2 System Rubric - Musculoskeletal-Low Back...</div>
+        </article>
+
+        <article class="rubric" data-tone="rose" data-text="musculoskeletal shoulder ue peripheral nervous system regional ose special tests">
+          <div class="accent"></div>
+          <h2>Musculoskeletal-Shoulder, UE Peripheral Nervous System, Regional OSE, and Special Tests</h2>
+          <div class="tags">
+            <span class="tag">Musculoskeletal</span>
+            <span class="tag">Shoulder</span>
+            <span class="tag">UE PNS</span>
+            <span class="tag">Special Tests</span>
+          </div>
+          <div class="actions">
+            <a class="button" target="_blank" href="file:///Users/jeeval/Documents/GitHub/Second-Year/OCS/Combined%20rubrics/2%20System%20Rubric%20-%20Musculoskeletal-Shoulder,%20UE%20Peripheral%20Nervous%20System,%20Regional%20OSE,%20and%20Special%20Tests/2%20System%20Rubric%20-%20Musculoskeletal-Shoulder,%20UE%20Peripheral%20Nervous%20System,%20Regional%20OSE,%20and%20Special%20Tests.html">Open rubric</a>
+          </div>
+          <div class="path">2 System Rubric - Musculoskeletal-Shoulder...</div>
+        </article>
+      </section>
+
+      <p class="empty" id="empty">No matching rubrics found.</p>
+    </div>
+  </main>
+
+  <script>
+    const search = document.querySelector("#search");
+    const system = document.querySelector("#system");
+    const cards = [...document.querySelectorAll(".rubric")];
+    const count = document.querySelector("#count");
+    const empty = document.querySelector("#empty");
+
+    function filterRubrics() {
+      const query = search.value.trim().toLowerCase();
+      const selected = system.value;
+      let visible = 0;
+
+      cards.forEach((card) => {
+        const text = card.dataset.text;
+        const matchesQuery = !query || text.includes(query);
+        const matchesSystem = selected === "all" || text.includes(selected);
+        const show = matchesQuery && matchesSystem;
+        card.hidden = !show;
+        if (show) visible += 1;
+      });
+
+      count.textContent = `${visible} ${visible === 1 ? "rubric" : "rubrics"}`;
+      empty.classList.toggle("show", visible === 0);
+    }
+
+    search.addEventListener("input", filterRubrics);
+    system.addEventListener("change", filterRubrics);
+  </script>
+</body>
+</html>
