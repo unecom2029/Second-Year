@@ -31,6 +31,9 @@
 }
 *{box-sizing:border-box;}
 html{scroll-behavior:smooth;}
+html,body{max-width:100%; overflow-x:hidden;}
+main,.hero,.section,.topbar,.container{min-width:0;}
+img,video,canvas,svg{max-width:100%; height:auto;}
 body{
   margin:0; background:var(--cream); color:var(--ink);
   font-family:'Nunito',sans-serif; font-size:calc(16px * var(--font-scale));
@@ -1675,6 +1678,18 @@ document.getElementById('fontMinus').addEventListener('click', () => {
 /* ================= SCROLL-BASED ACTIVE NAV ================= */
 const navPills = Array.from(document.querySelectorAll('.nav-pill'));
 const navSections = navPills.map(p => document.querySelector(p.getAttribute('href'))).filter(Boolean);
+let viewportChanging = false;
+let viewportTimer = null;
+function markViewportChanging(){
+  viewportChanging = true;
+  clearTimeout(viewportTimer);
+  viewportTimer = setTimeout(() => { viewportChanging = false; }, 220);
+}
+if (window.visualViewport){
+  window.visualViewport.addEventListener('resize', markViewportChanging, {passive:true});
+  window.visualViewport.addEventListener('scroll', markViewportChanging, {passive:true});
+}
+window.addEventListener('resize', markViewportChanging, {passive:true});
 function syncActiveNav(){
   let current = navSections[0];
   const scrollPos = window.scrollY + 140;
@@ -1683,10 +1698,12 @@ function syncActiveNav(){
   }
   navPills.forEach(p => p.classList.toggle('active', p.getAttribute('href') === '#' + current.id));
   const activeEl = document.querySelector('.nav-pill.active');
-  if (activeEl){
+  if (activeEl && !viewportChanging){
     const navScroll = document.getElementById('navScroll');
     const target = activeEl.offsetLeft - navScroll.clientWidth/2 + activeEl.offsetWidth/2;
-    navScroll.scrollTo({left: target, behavior:'smooth'});
+    if (Math.abs(navScroll.scrollLeft - target) > 8) {
+      navScroll.scrollTo({left: target, behavior:'auto'});
+    }
   }
 }
 window.addEventListener('scroll', () => { window.requestAnimationFrame(syncActiveNav); }, {passive:true});
