@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Upper Extremity, Screening and Diagnosis OMM Exam 26-27</title>
+<style>
+  :root{
+    --ink:#1a1a1a;
+    --paper:#ffffff;
+    --line:#333333;
+    --line-light:#999999;
+    --header-yellow:#fdf1a8;
+    --header-yellow-border:#d8c453;
+    --accent:#0d5c73;
+    --accent-light:#e6f2f5;
+    --hover-bg:#fff9e0;
+    --grade1-color:#1a7a3c;
+    --grade2-color:#4a7ab0;
+    --grade3-color:#b8860b;
+    --grade4-color:#b02a2a;
+    --muted:#5a5a5a;
+    --popover-bg:#fffdf6;
+    --popover-border:#0d5c73;
+    --shadow: 0 8px 28px rgba(0,0,0,0.25);
+    --font-scale: 1;
+  }
+  *{box-sizing:border-box;}
+  html{ font-size: calc(16px * var(--font-scale)); }
+  html,body{margin:0;padding:0;}
+  body{
+    font-family: Georgia, "Times New Roman", serif;
+    color:var(--ink);
+    background:#e9e6dd;
+    line-height:1.35;
+    padding: 24px 12px 80px;
+  }
+  .sheet{
+    max-width: 1180px;
+    margin: 0 auto;
+    background: var(--paper);
+    border: 1px solid var(--line-light);
+    box-shadow: 0 2px 18px rgba(0,0,0,0.15);
+    padding: 28px 30px 40px;
+  }
+  h1.doc-title{
+    font-size: 1.45rem;
+    text-align:center;
+    margin: 4px 0 6px;
+    letter-spacing:.2px;
+  }
+  .subtitle{
+    text-align:center;
+    color:var(--muted);
+    font-size:.85rem;
+    margin-top:0;
+    margin-bottom:18px;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  table.rubric{
+    width:100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    margin-bottom: 4px;
+    font-family: Georgia, serif;
+    font-size:.92rem;
+  }
+  table.rubric td, table.rubric th{
+    border: 1px solid var(--line);
+    padding: 6px 8px;
+    vertical-align: top;
+  }
+  tr.section-header td{
+    background: var(--header-yellow);
+    border-color: var(--header-yellow-border);
+    font-weight:700;
+    font-size:.98rem;
+    padding: 7px 8px;
+  }
+
+  /* ===== 4-column per-row grading ===== */
+  .grade-cell{
+    text-align:center;
+    vertical-align: middle;
+    padding: 5px 3px !important;
+    cursor:pointer;
+    -webkit-tap-highlight-color: transparent;
+    font-family: Arial, Helvetica, sans-serif;
+    overflow-wrap: break-word;
+  }
+  .grade-cell label{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:3px;
+    cursor:pointer;
+    padding: 3px 1px;
+  }
+  .grade-box{
+    width:15px;
+    height:15px;
+    cursor:pointer;
+    accent-color: var(--accent);
+    flex:none;
+  }
+  .grade-box.g1{ accent-color: var(--grade1-color); }
+  .grade-box.g2{ accent-color: var(--grade2-color); }
+  .grade-box.g3{ accent-color: var(--grade3-color); }
+  .grade-box.g4{ accent-color: var(--grade4-color); }
+  .grade-text{
+    font-size:.62rem;
+    font-weight:600;
+    line-height:1.2;
+    color:var(--muted);
+    text-align:center;
+    white-space:nowrap;
+  }
+  .grade-cell.is-na{
+    background:#f2f2ee;
+  }
+  .grade-cell.is-na .grade-text{ font-style:italic; font-weight:400; }
+
+  colgroup col.col-grade{ width:5.5%; }
+  colgroup col.col-test{ width:78%; }
+
+  .testcol{
+    font-family: Georgia, serif;
+  }
+  .row-num-badge{
+    float:right;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size:.68rem;
+    font-weight:700;
+    color:var(--muted);
+    background:#f4f4ee;
+    border:1px solid var(--line-light);
+    border-radius:9px;
+    padding:1px 7px;
+    margin:0 0 6px 8px;
+    line-height:1.4;
+  }
+  .col-head-row th{
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight:700;
+    font-size:.78rem;
+    text-align:center;
+    background:#f4f4ee;
+  }
+
+  .grading-note{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size:.82rem;
+    background:#f4f4ee;
+    border:1px solid var(--line-light);
+    padding:10px 14px;
+    margin: 14px 0 18px;
+    line-height:1.55;
+    color: var(--muted);
+  }
+  .grading-note b{ color:var(--accent); }
+
+  /* interactive test cell */
+  .testcell{
+    position:relative;
+  }
+  .hoverable{
+    cursor: help;
+    border-bottom: 1.5px dotted var(--accent);
+    transition: background .12s ease;
+    display:inline;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .hoverable:hover, .hoverable.active{
+    background: var(--hover-bg);
+  }
+  .hoverable::after{
+    content: "\24D8";
+    font-size: .68em;
+    color: var(--accent);
+    vertical-align: super;
+    margin-left: 3px;
+    opacity:.75;
+  }
+  .plain-row td.testcol{
+    font-family: Georgia, serif;
+  }
+
+  footer.legend{
+    margin-top: 26px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line-light);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size:.78rem;
+    color: var(--muted);
+    text-align:center;
+  }
+
+  /* ===== Popover ===== */
+  #popover{
+    position: fixed;
+    z-index: 1000;
+    max-width: 420px;
+    width: min(420px, 92vw);
+    max-height: 78vh;
+    overflow-y: auto;
+    background: var(--popover-bg);
+    border: 2px solid var(--popover-border);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    padding: 14px 16px 16px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: .86rem;
+    line-height:1.5;
+    display:none;
+  }
+  #popover.open{ display:block; }
+  #popover h4, #sidePanelContent h4, #readerContent h4{
+    margin: 0 0 8px;
+    font-size: 1.02rem;
+    color: var(--accent);
+    font-family: Georgia, serif;
+    padding-right: 22px;
+  }
+  #popover .pop-close{
+    position:absolute;
+    top:8px; right:10px;
+    cursor:pointer;
+    font-size:1.1rem;
+    color: var(--muted);
+    background:none;
+    border:none;
+    line-height:1;
+    padding:2px 4px;
+  }
+  #popover .pop-close:hover{ color: var(--grade4-color); }
+  #popover .pop-label, #sidePanelContent .pop-label, #readerContent .pop-label{
+    font-weight:700;
+    color:#333;
+    margin-top:10px;
+    margin-bottom:3px;
+    font-size:.78rem;
+    text-transform:uppercase;
+    letter-spacing:.03em;
+  }
+  #popover .pop-label:first-of-type, #sidePanelContent .pop-label:first-of-type, #readerContent .pop-label:first-of-type{ margin-top:0; }
+  #popover ul, #sidePanelContent ul, #readerContent ul{ margin:2px 0 0; padding-left: 18px; }
+  #popover li, #sidePanelContent li, #readerContent li{ margin-bottom: 4px; }
+  #popover .pop-normal, #sidePanelContent .pop-normal, #readerContent .pop-normal{ background:#eef8ee; border-left:3px solid var(--grade1-color); padding:6px 8px; margin-top:4px; }
+  #popover .pop-fallback, #sidePanelContent .pop-fallback, #readerContent .pop-fallback{
+    background:#fbe9e9; border-left:3px solid var(--grade4-color); padding:6px 8px; margin-bottom:8px; font-style:italic; font-size:.8rem;
+  }
+  #popover .pop-images, #sidePanelContent .pop-images, #readerContent .pop-images{
+    display:flex; flex-wrap:wrap; gap:8px; margin-top:10px;
+  }
+  #popover .pop-images figure, #sidePanelContent .pop-images figure, #readerContent .pop-images figure{
+    margin:0; flex: 1 1 160px; max-width:190px;
+  }
+  #popover .pop-images img, #sidePanelContent .pop-images img, #readerContent .pop-images img{
+    width:100%; height:auto; border:1px solid #ccc; border-radius:4px; display:block;
+    background:#fafafa; cursor:zoom-in;
+  }
+  #popover .pop-images img:hover, #sidePanelContent .pop-images img:hover, #readerContent .pop-images img:hover{ border-color: var(--accent); }
+  #popover .pop-images figcaption, #sidePanelContent .pop-images figcaption, #readerContent .pop-images figcaption{
+    font-size:.68rem; color:var(--muted); margin-top:3px; line-height:1.3;
+  }
+  #popover .pop-images .zoom-hint, #sidePanelContent .pop-images .zoom-hint, #readerContent .pop-images .zoom-hint{
+    display:block; color:var(--accent); font-weight:600; margin-top:2px;
+  }
+  #popover .pop-hook, #sidePanelContent .pop-hook, #readerContent .pop-hook{
+    background:#fff4d9; border-left:3px solid var(--grade3-color); padding:7px 9px;
+    margin-top:4px; font-size:.85rem; line-height:1.45;
+  }
+
+  /* ===== Layout: rubric + sticky side panel ===== */
+  .layout{
+    display:block;
+    max-width: 1180px;
+    margin: 0 auto;
+  }
+  #sidePanel{
+    display:none;
+    flex: 0 0 360px;
+    position: sticky;
+    top: 20px;
+    max-height: calc(100vh - 40px);
+  }
+  @media (min-width: 1300px){
+    .layout{
+      display:flex;
+      align-items:flex-start;
+      gap: 26px;
+      max-width: 1580px;
+    }
+    .layout .sheet{ flex: 1 1 auto; min-width:0; margin:0; }
+    #sidePanel{ display:block; }
+  }
+  #sidePanelInner{
+    background: var(--popover-bg);
+    border: 2px solid var(--popover-border);
+    border-radius: 8px;
+    box-shadow: 0 2px 14px rgba(0,0,0,0.12);
+    padding: 16px 18px 18px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: .86rem;
+    line-height: 1.5;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+  }
+  .side-placeholder{
+    color: var(--muted);
+    font-style: italic;
+    font-size: .85rem;
+    padding: 6px 2px;
+  }
+  .side-placeholder.hidden{ display:none; }
+
+  #overlay{
+    position:fixed; inset:0; background:transparent; z-index:999; display:none;
+  }
+  #overlay.open{ display:block; }
+
+  #lightbox{
+    position:fixed; inset:0; z-index:2000; display:none;
+    background:rgba(10,10,10,0.9);
+    align-items:center; justify-content:center;
+    flex-direction:column;
+    padding: 40px 20px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #lightbox.open{ display:flex; }
+  #lightbox img{
+    max-width:100%; max-height:calc(100% - 46px); object-fit:contain;
+    border-radius:4px; box-shadow:0 10px 40px rgba(0,0,0,0.5);
+    touch-action: pinch-zoom;
+  }
+  #lightbox figcaption{
+    color:#f0f0f0; font-family: Arial, Helvetica, sans-serif; font-size:.85rem;
+    margin-top:12px; text-align:center; max-width:80vw;
+  }
+  #lightboxCloseBtn{
+    position:fixed; top:16px; right:20px; z-index:2001;
+    background:rgba(255,255,255,0.12); color:#fff; border:none;
+    width:44px; height:44px; border-radius:50%;
+    font-size:1.5rem; line-height:1; cursor:pointer;
+  }
+  #lightboxCloseBtn:hover{ background:rgba(255,255,255,0.25); }
+
+  /* ===== Expand button (side panel + popover) ===== */
+  .expand-btn{
+    position:absolute; top:8px; right:8px;
+    width:24px; height:24px; border-radius:50%;
+    background:var(--accent-light); border:1px solid var(--accent);
+    color:var(--accent); font-family:Arial,Helvetica,sans-serif;
+    font-size:1.05rem; font-weight:700; line-height:1;
+    cursor:pointer; display:flex; align-items:center; justify-content:center;
+    padding:0;
+  }
+  .expand-btn:hover{ background:var(--accent); color:#fff; }
+  #popover .expand-btn{ right:36px; } /* leave room for the × close button */
+  #sidePanelInner{ position:relative; }
+  #sidePanelInner .expand-btn{ display:none; }
+  #sidePanelInner.has-content .expand-btn{ display:flex; }
+
+  /* ===== Reader modal (large, easy-to-read popup) ===== */
+  #readerModal{
+    position:fixed; inset:0; z-index:1800; display:none;
+    background:rgba(20,20,20,0.55);
+    align-items:flex-start; justify-content:center;
+    overflow-y:auto; padding: 5vh 16px;
+  }
+  #readerModal.open{ display:flex; }
+  #readerModal .reader-card{
+    position:relative;
+    background:var(--popover-bg);
+    border:2px solid var(--popover-border);
+    border-radius:10px;
+    box-shadow:0 20px 60px rgba(0,0,0,0.4);
+    width:min(760px, 94vw);
+    padding: 26px 30px 30px;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  #readerContent{ zoom:1.35; }
+  #readerCloseBtn{
+    position:absolute; top:14px; right:14px;
+    width:32px; height:32px; border-radius:50%;
+    background:var(--ink); color:#faf7f2; border:none;
+    font-size:1.3rem; line-height:1; cursor:pointer;
+  }
+  #readerCloseBtn:hover{ background:var(--grade4-color); }
+
+  @media (max-width: 720px){
+    .sheet{ padding: 16px 12px 40px; }
+    table.rubric{ font-size:.8rem; }
+    .grade-text{ font-size:.54rem; }
+    .grade-box{ width:13px; height:13px; }
+  }
+
+  /* ===== Text-size control (bottom-right floating pill) ===== */
+  .floating-stack{
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1500;
+  }
+  .font-btn-row{
+    display:flex; align-items:center;
+    background: var(--ink); color:#faf7f2;
+    padding: 7px 10px; border-radius: 30px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.25);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: .62rem; letter-spacing: .08em; gap: 2px;
+  }
+  .font-btn{
+    background:none; border:none; cursor:pointer; color:#faf7f2;
+    font-weight:700; font-size:1rem; padding: 2px 9px;
+    border-radius: 6px; transition: background .15s; line-height:1;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  .font-btn:hover{ background: rgba(255,255,255,0.18); }
+  .font-sep{ color: rgba(255,255,255,0.25); padding: 0 3px; }
+  .font-label{ font-size:.58rem; opacity:.75; padding: 0 6px 0 2px; text-transform:uppercase; }
+</style>
+</head>
+<body>
+
+<div class="layout">
+<div class="sheet">
+  <h1 class="doc-title">Upper Extremity, Screening and Diagnosis OMM Exam 26-27</h1>
+  <p class="subtitle">Interactive study version — hover or tap any underlined row description for step-by-step technique notes, diagnosis logic, and reference photos. Each row has its own 4 grading options as shown; selections are local/visual only (nothing is saved or submitted).</p>
+
+  <div class="grading-note">
+    <b>How grading works on this rubric:</b> unlike a single fixed */P/0 legend, <b>every row below has its own 4 grading-column labels</b>, printed directly under each radio button in that row (e.g. most rows read "100% Correct and Fluid / 88% Correct / 75% Correct / Less than 75% Correct — Must CAP Line"; the "Accuracy of..." row, the Washes Hands row, and the two summary rows at the bottom use different wording — read each row's own labels). Columns marked <b>N/A-DO NOT SELECT</b> are shaded and present only because the source rubric prints 4 columns per row even when a row only uses 2 of them.
+  </div>
+
+  <table class="rubric" id="mainTable">
+    <colgroup>
+      <col class="col-grade"><col class="col-grade"><col class="col-grade"><col class="col-grade">
+      <col class="col-test">
+    </colgroup>
+    <tr class="section-header"><td colspan="5">Upper Extremity — Screening and Diagnosis</td></tr>
+
+    <!-- Row 1 -->
+    <tr data-row="1" class="plain-row">
+      <td class="grade-cell g1-cell"><label title="100% Correct and Fluid"><input class="grade-box g1" type="radio" name="r1" value="g1"><span class="grade-text">100%<br>&amp; Fluid</span></label></td>
+      <td class="grade-cell g2-cell"><label title="88% Correct"><input class="grade-box g2" type="radio" name="r1" value="g2"><span class="grade-text">88%</span></label></td>
+      <td class="grade-cell g3-cell"><label title="75% Correct"><input class="grade-box g3" type="radio" name="r1" value="g3"><span class="grade-text">75%</span></label></td>
+      <td class="grade-cell g4-cell"><label title="Less than 75% Correct — Must CAP Line"><input class="grade-box g4" type="radio" name="r1" value="g4"><span class="grade-text">&lt;75%<br>CAP</span></label></td>
+      <td class="testcol"><span class="row-num-badge">1</span><b>COMMUNICATION:</b> Appropriately communicates to patient about the physical exam being done (uses lay terms, speaks to pt, assures understanding).</td>
+    </tr>
+
+    <!-- Row 2 -->
+    <tr data-row="2" class="plain-row">
+      <td class="grade-cell g1-cell"><label title="100% Correct and Fluid"><input class="grade-box g1" type="radio" name="r2" value="g1"><span class="grade-text">100%<br>&amp; Fluid</span></label></td>
+      <td class="grade-cell g2-cell"><label title="88% Correct"><input class="grade-box g2" type="radio" name="r2" value="g2"><span class="grade-text">88%</span></label></td>
+      <td class="grade-cell g3-cell"><label title="75% Correct"><input class="grade-box g3" type="radio" name="r2" value="g3"><span class="grade-text">75%</span></label></td>
+      <td class="grade-cell g4-cell"><label title="Less than 75% Correct — Must CAP Line"><input class="grade-box g4" type="radio" name="r2" value="g4"><span class="grade-text">&lt;75%<br>CAP</span></label></td>
+      <td class="testcol"><span class="row-num-badge">2</span>Obtains consent before doing the exam AND again with any particularly sensitive parts of the exam.</td>
+    </tr>
+
+    <!-- Row 3 -->
+    <tr data-row="3" class="plain-row">
+      <td class="grade-cell g1-cell"><label title="100% Correct"><input class="grade-box g1" type="radio" name="r3" value="g1"><span class="grade-text">100%</span></label></td>
+      <td class="grade-cell g2-cell is-na"><label title="N/A-DO NOT SELECT"><input class="grade-box g2" type="radio" name="r3" value="g2"><span class="grade-text">N/A</span></label></td>
+      <td class="grade-cell g3-cell is-na"><label title="N/A-DO NOT SELECT"><input class="grade-box g3" type="radio" name="r3" value="g3"><span class="grade-text">N/A</span></label></td>
+      <td class="grade-cell g4-cell"><label title="Less than 75% Correct — Must CAP Line"><input class="grade-box g4" type="radio" name="r3" value="g4"><span class="grade-text">&lt;75%<br>CAP</span></label></td>
+      <td class="testcol"><span class="row-num-badge">3</span><b>WASHES HANDS:</b> Prior to technique (may do at beginning of encounter) &ndash; hand sanitizer, or at least 20s with soap and water (if student is cued to do this task, then no credit will be given).</td>
+    </tr>
+
+    <!-- Row 4 -->
+    <tr data-row="4">
+      <td class="grade-cell g1-cell"><label title="100% Correct and Fluid"><input class="grade-box g1" type="radio" name="r4" value="g1"><span class="grade-text">100%<br>&amp; Fluid</span></label></td>
+      <td class="grade-cell g2-cell"><label title="88% Correct"><input class="grade-box g2" type="radio" name="r4" value="g2"><span class="grade-text">88%</span></label></td>
+      <td class="grade-cell g3-cell"><label title="75% Correct"><input class="grade-box g3" type="radio" name="r4" value="g3"><span class="grade-text">75%</span></label></td>
+      <td class="grade-cell g4-cell"><label title="Less than 75% Correct — Must CAP Line"><input class="grade-box g4" type="radio" name="r4" value="g4"><span class="grade-text">&lt;75%<br>CAP</span></label></td>
+      <td class="testcell"><span class="row-num-badge">4</span><span class="hoverable" data-key="4"><b>DEMONSTRATES CORRECT SEQUENCE/PROCEDURE FOR UPPER EXTREMITY SCREENING EXAM:</b> Accurately evaluates the SC joint for restriction in anterior/posterior, superior/inferior restriction in motion bilaterally, AND is able to discriminate between articular or soft tissue barriers.</span></td>
+    </tr>
+
+    <!-- Row 5 -->
+    <tr data-row="5">
+      <td class="grade-cell g1-cell"><label title="100% Correct and Fluid"><input class="grade-box g1" type="radio" name="r5" value="g1"><span class="grade-text">100%<br>&amp; Fluid</span></label></td>
+      <td class="grade-cell g2-cell"><label title="88% Correct"><input class="grade-box g2" type="radio" name="r5" value="g2"><span class="grade-text">88%</span></label></td>
+      <td class="grade-cell g3-cell"><label title="75% Correct"><input class="grade-box g3" type="radio" name="r5" value="g3"><span class="grade-text">75%</span></label></td>
+      <td class="grade-cell g4-cell"><label title="Less than 75% Correct — Must CAP Line"><input class="grade-box g4" type="radio" name="r5" value="g4"><span class="grade-text">&lt;75%<br>CAP</span></label></td>
+      <td class="testcell"><span class="row-num-badge">5</span><span class="hoverable" data-key="5">Accurately evaluates the AC joint for restriction in external/internal rotation bilaterally, AND is able to discriminate between articular or soft tissue barriers.</span></td>
+    </tr>
+
+    <!-- Row 6 -->
+    <tr data-row="6">
+      <td class="grade-cell g1-cell"><label title="100% Correct and Fluid"><input class="grade-box g1" type="radio" name="r6" value="g1"><span class="grade-text">100%<br>&amp; Fluid</span></label></td>
+      <td class="grade-cell g2-cell"><label title="88% Correct"><input class="grade-box g2" type="radio" name="r6" value="g2"><span class="grade-text">88%</span></label></td>
+      <td class="grade-cell g3-cell"><label title="75% Correct"><input class="grade-box g3" type="radio" name="r6" value="g3"><span class="grade-text">75%</span></label></td>
+      <td class="grade-cell g4-cell"><label title="Less than 75% Correct — Must CAP Line"><input class="grade-box g4" type="radio" name="r6" value="g4"><span class="grade-text">&lt;75%<br>CAP</span></label></td>
+      <td class="testcell"><span class="row-num-badge">6</span><span class="hoverable" data-key="6">Accurately evaluates the elbow for restriction in flexion/extension, abduction/adduction (valgus/varus) bilaterally, AND is able to discriminate between articular or soft tissue barriers.</span></td>
+    </tr>
+
+    <!-- Row 7 -->
+    <tr data-row="7">
+      <td class="grade-cell g1-cell"><label title="100% Correct and Fluid"><input class="grade-box g1" type="radio" name="r7" value="g1"><span class="grade-text">100%<br>&amp; Fluid</span></label></td>
+      <td class="grade-cell g2-cell"><label title="88% Correct"><input class="grade-box g2" type="radio" name="r7" value="g2"><span class="grade-text">88%</span></label></td>
+      <td class="grade-cell g3-cell"><label title="75% Correct"><input class="grade-box g3" type="radio" name="r7" value="g3"><span class="grade-text">75%</span></label></td>
+      <td class="grade-cell g4-cell"><label title="Less than 75% Correct — Must CAP Line"><input class="grade-box g4" type="radio" name="r7" value="g4"><span class="grade-text">&lt;75%<br>CAP</span></label></td>
+      <td class="testcell"><span class="row-num-badge">7</span><span class="hoverable" data-key="7">Accurately evaluates the radial head for restriction in posterior/anterior glide with pronation/supination bilaterally, AND is able to discriminate between articular or soft tissue barriers.</span></td>
+    </tr>
+
+    <!-- Row 8 -->
+    <tr data-row="8">
+      <td class="grade-cell g1-cell"><label title="100% Correct and Fluid"><input class="grade-box g1" type="radio" name="r8" value="g1"><span class="grade-text">100%<br>&amp; Fluid</span></label></td>
+      <td class="grade-cell g2-cell"><label title="88% Correct"><input class="grade-box g2" type="radio" name="r8" value="g2"><span class="grade-text">88%</span></label></td>
+      <td class="grade-cell g3-cell"><label title="75% Correct"><input class="grade-box g3" type="radio" name="r8" value="g3"><span class="grade-text">75%</span></label></td>
+      <td class="grade-cell g4-cell"><label title="Less than 75% Correct — Must CAP Line"><input class="grade-box g4" type="radio" name="r8" value="g4"><span class="grade-text">&lt;75%<br>CAP</span></label></td>
+      <td class="testcell"><span class="row-num-badge">8</span><span class="hoverable" data-key="8">Accurately evaluates the wrist for restriction in flexion/extension, abduction/adduction bilaterally.</span></td>
+    </tr>
+
+    <!-- Row 9 -->
+    <tr data-row="9">
+      <td class="grade-cell g1-cell"><label title="100% Correct and Fluid"><input class="grade-box g1" type="radio" name="r9" value="g1"><span class="grade-text">100%<br>&amp; Fluid</span></label></td>
+      <td class="grade-cell g2-cell"><label title="88% Correct"><input class="grade-box g2" type="radio" name="r9" value="g2"><span class="grade-text">88%</span></label></td>
+      <td class="grade-cell g3-cell"><label title="75% Correct"><input class="grade-box g3" type="radio" name="r9" value="g3"><span class="grade-text">75%</span></label></td>
+      <td class="grade-cell g4-cell"><label title="Less than 75% Correct — Must CAP Line"><input class="grade-box g4" type="radio" name="r9" value="g4"><span class="grade-text">&lt;75%<br>CAP</span></label></td>
+      <td class="testcell"><span class="row-num-badge">9</span><span class="hoverable" data-key="9">Accurately evaluates the wrist for restriction in the radiocarpal joint and carpal bones bilaterally.</span></td>
+    </tr>
+
+    <!-- Row 10 -->
+    <tr data-row="10">
+      <td class="grade-cell g1-cell"><label title="100% Correct and Fluid"><input class="grade-box g1" type="radio" name="r10" value="g1"><span class="grade-text">100%<br>&amp; Fluid</span></label></td>
+      <td class="grade-cell g2-cell"><label title="88% Correct"><input class="grade-box g2" type="radio" name="r10" value="g2"><span class="grade-text">88%</span></label></td>
+      <td class="grade-cell g3-cell"><label title="75% Correct"><input class="grade-box g3" type="radio" name="r10" value="g3"><span class="grade-text">75%</span></label></td>
+      <td class="grade-cell g4-cell"><label title="Less than 75% Correct — Must CAP Line"><input class="grade-box g4" type="radio" name="r10" value="g4"><span class="grade-text">&lt;75%<br>CAP</span></label></td>
+      <td class="testcell"><span class="row-num-badge">10</span><span class="hoverable" data-key="10">Accurately evaluates the hand for restriction in the carpal bones, metacarpals, and phalanges bilaterally.</span></td>
+    </tr>
+
+    <!-- Row 11 -->
+    <tr data-row="11">
+      <td class="grade-cell g1-cell"><label title="100% Correct and Fluid"><input class="grade-box g1" type="radio" name="r11" value="g1"><span class="grade-text">100%<br>&amp; Fluid</span></label></td>
+      <td class="grade-cell g2-cell"><label title="88% Correct"><input class="grade-box g2" type="radio" name="r11" value="g2"><span class="grade-text">88%</span></label></td>
+      <td class="grade-cell g3-cell"><label title="75% Correct"><input class="grade-box g3" type="radio" name="r11" value="g3"><span class="grade-text">75%</span></label></td>
+      <td class="grade-cell g4-cell"><label title="Less than 75% Correct — Must CAP Line"><input class="grade-box g4" type="radio" name="r11" value="g4"><span class="grade-text">&lt;75%<br>CAP</span></label></td>
+      <td class="testcell"><span class="row-num-badge">11</span><span class="hoverable" data-key="11"><b>ACCURATELY IDENTIFIES THE MOST RESTRICTED SOMATIC DYSFUNCTION OF THE UPPER EXTREMITY:</b> Correctly performs a positional diagnosis of the most restricted somatic dysfunction in the upper extremity.</span></td>
+    </tr>
+
+    <!-- Row 12 -->
+    <tr data-row="12">
+      <td class="grade-cell g1-cell"><label title="100% Correct"><input class="grade-box g1" type="radio" name="r12" value="g1"><span class="grade-text">100%</span></label></td>
+      <td class="grade-cell g2-cell"><label title="88% Correct"><input class="grade-box g2" type="radio" name="r12" value="g2"><span class="grade-text">88%</span></label></td>
+      <td class="grade-cell g3-cell"><label title="75% Correct"><input class="grade-box g3" type="radio" name="r12" value="g3"><span class="grade-text">75%</span></label></td>
+      <td class="grade-cell g4-cell"><label title="Less than 75% Correct — Must CAP Line"><input class="grade-box g4" type="radio" name="r12" value="g4"><span class="grade-text">&lt;75%<br>CAP</span></label></td>
+      <td class="testcell"><span class="row-num-badge">12</span><span class="hoverable" data-key="12">Accuracy of the Specific Upper Extremity Diagnosis.</span></td>
+    </tr>
+
+    <tr class="section-header"><td colspan="5">CAP Summary</td></tr>
+
+    <!-- Row 13 -->
+    <tr data-row="13" class="plain-row">
+      <td class="grade-cell g1-cell"><label title="NO, DOES NOT need to CAP"><input class="grade-box g1" type="radio" name="r13" value="g1"><span class="grade-text">NO<br>CAP</span></label></td>
+      <td class="grade-cell g2-cell is-na"><label title="N/A-DO NOT SELECT"><input class="grade-box g2" type="radio" name="r13" value="g2"><span class="grade-text">N/A</span></label></td>
+      <td class="grade-cell g3-cell is-na"><label title="N/A-DO NOT SELECT"><input class="grade-box g3" type="radio" name="r13" value="g3"><span class="grade-text">N/A</span></label></td>
+      <td class="grade-cell g4-cell"><label title="YES, DOES need to CAP"><input class="grade-box g4" type="radio" name="r13" value="g4"><span class="grade-text">YES<br>CAP</span></label></td>
+      <td class="testcol"><span class="row-num-badge">13</span>Did the Student have to CAP this Rubric? (Less than 75% Correct in any Line)</td>
+    </tr>
+
+    <!-- Row 14 -->
+    <tr data-row="14" class="plain-row">
+      <td class="grade-cell g1-cell"><label title="YES, CAP was completed successfully"><input class="grade-box g1" type="radio" name="r14" value="g1"><span class="grade-text">YES<br>Done</span></label></td>
+      <td class="grade-cell g2-cell"><label title="Partially Completed, student must complete CAP process"><input class="grade-box g2" type="radio" name="r14" value="g2"><span class="grade-text">Partial</span></label></td>
+      <td class="grade-cell g3-cell"><label title="N/A- SELECT IF STUDENT DID NOT HAVE TO CAP"><input class="grade-box g3" type="radio" name="r14" value="g3"><span class="grade-text">N/A</span></label></td>
+      <td class="grade-cell g4-cell"><label title="NO, CAP was NOT completed successfully"><input class="grade-box g4" type="radio" name="r14" value="g4"><span class="grade-text">NO</span></label></td>
+      <td class="testcol"><span class="row-num-badge">14</span>Was the CAP completed successfully?</td>
+    </tr>
+  </table>
+
+  <footer class="legend">
+    Personal study aid — content adapted from the "Upper Extremity, Screening and Diagnosis OMM Exam 26-27" rubric and OMM course-notes (Week 7 upper-extremity screening and clinical notes) for self-quizzing. Not a clinical document.
+  </footer>
+</div>
+
+<aside id="sidePanel">
+  <div id="sidePanelInner">
+    <button class="expand-btn" id="sideExpandBtn" title="Enlarge this panel" aria-label="Enlarge this panel">+</button>
+    <div class="side-placeholder" id="sidePlaceholder">Hover (or tap) any underlined row on the left to see step-by-step instructions, diagnosis logic, and reference photos here.</div>
+    <div id="sidePanelContent"></div>
+  </div>
+</aside>
+</div>
+
+<div id="overlay"></div>
+<div id="popover" role="dialog" aria-modal="false">
+  <button class="expand-btn" id="popExpandBtn" title="Enlarge this card" aria-label="Enlarge this card">+</button>
+  <button class="pop-close" id="popCloseBtn" aria-label="Close">&times;</button>
+  <div id="popContent"></div>
+</div>
+
+<div id="readerModal" role="dialog" aria-modal="true" aria-label="Expanded reading view">
+  <div class="reader-card">
+    <button id="readerCloseBtn" aria-label="Close expanded view">&times;</button>
+    <div id="readerContent"></div>
+  </div>
+</div>
+
+<div id="lightbox" role="dialog" aria-modal="true" aria-label="Enlarged image">
+  <button id="lightboxCloseBtn" aria-label="Close enlarged image">&times;</button>
+  <img id="lightboxImg" src="" alt="">
+  <figcaption id="lightboxCaption"></figcaption>
+</div>
+
+<div class="floating-stack">
+  <div class="font-btn-row">
+    <span class="font-label">Text</span>
+    <button class="font-btn" onclick="changeFontSize(-1)" title="Decrease text size">A−</button>
+    <span class="font-sep">|</span>
+    <button class="font-btn" onclick="changeFontSize(1)" title="Increase text size">A+</button>
+  </div>
+</div>
+
+<script>
+const DATA = {
+  4: {
+    name: "SC Joint and Shoulder Girdle Screening",
+    purpose: "A four-direction motion screen of the sternoclavicular (SC) joint that checks how the clavicular head moves as the arm swings forward/back and up/down, then asks whether any restriction found is coming from the joint itself or from surrounding soft tissue — the same articular-vs-soft-tissue question this whole exam keeps asking at every joint down the arm.",
+    hook: "Thumb in the jugular notch, fingers on the clavicle: FORWARD/BACK arm motion should rock the clavicular head POSTERIOR/ANTERIOR; UP/DOWN arm motion should rock it INFERIOR/SUPERIOR. Two different arm motions map to two different planes of clavicle motion — mixing them up is the easiest way to miss a restriction here.",
+    steps: [
+      "Contact: thumb resting in the jugular (suprasternal) notch, fingers draped over the proximal clavicle near the SC joint, bilaterally if possible for direct comparison.",
+      "Ask the patient to move the arm forward and then backward; feel the clavicular head glide posterior as the arm goes forward and anterior as the arm comes back.",
+      "Ask the patient to move the arm up and then down; feel the clavicular head glide inferior as the arm goes up and superior as the arm comes down.",
+      "Compare side to side and compare the four directions to each other, noting which direction(s) feel restricted relative to the rest.",
+      "For any restriction found, decide whether the barrier feels articular (a hard, joint-play-type end-feel right at the SC joint itself) or soft tissue (a springier, muscle/fascia/ligament-type restriction around the joint) — this call is graded separately from simply noticing 'something is tight.'",
+      "This screen sits at the very top of the kinetic chain for the whole upper extremity exam and shares anatomy with the thoracic outlet/inlet (first rib, clavicle, scalenes) — a restricted SC joint is worth cross-checking against thoracic outlet symptoms if the patient reports any."
+    ],
+    normal: "A complete screen tests and reports all four directions (forward/back, up/down) bilaterally, and any restriction found is characterized as articular vs. soft tissue rather than just 'tight' or 'restricted.' Missing a direction, testing only one side, or failing to make the articular-vs-soft-tissue call are the most common ways to lose credit even when the physical exam contact itself looks correct.",
+    images: []
+  },
+  5: {
+    name: "AC Joint and Glenohumeral Motion",
+    purpose: "Evaluates AC joint mechanics together with glenohumeral internal/external rotation and horizontal adduction/abduction, since AC joint restriction and shoulder soft-tissue restriction often present together and need to be told apart from each other.",
+    hook: "The AC joint is small and easy to blow past while you're focused on the big glenohumeral motions — deliberately split your attention: monitor the AC joint itself while you run the patient through internal/external rotation and horizontal adduction/abduction, don't just watch the arm swing.",
+    steps: [
+      "Palpate/monitor the AC joint directly (a hand or fingers resting over the joint line) while putting the shoulder through motion, rather than assessing AC and glenohumeral motion as two disconnected steps.",
+      "Test glenohumeral internal and external rotation bilaterally, comparing end-feel and range side to side.",
+      "Test shoulder horizontal adduction (arm across the chest) and horizontal abduction bilaterally.",
+      "While running these glenohumeral motions, feel for how the AC joint itself behaves — does it move appropriately with the humerus, or is there a restriction localized to the AC joint that doesn't track with the rest of the glenohumeral motion?",
+      "Decide articular vs. soft tissue for any restriction found, same as every other joint in this exam — an AC joint that doesn't glide right vs. a rotator-cuff/capsule/pec-minor soft-tissue restriction limiting rotation are different findings that call for different treatment."
+    ],
+    normal: "Correct performance monitors the AC joint directly rather than only observing gross shoulder motion, tests internal/external rotation and horizontal adduction/abduction bilaterally, and correctly separates AC-joint mechanical restriction from glenohumeral soft-tissue restriction (rotator cuff, capsule, or pec minor) when characterizing the barrier.",
+    images: []
+  },
+  6: {
+    name: "Elbow Screening",
+    purpose: "Screens the elbow for flexion/extension restriction, then adds passive valgus/varus joint play with the wrist stabilized to check the medial/lateral joint line separately from flexion-extension range.",
+    hook: "Stabilize the wrist first — if you let the wrist wobble while testing valgus/varus, you can't tell whether the play you're feeling is coming from the elbow or just from a loose wrist riding along with your hand.",
+    steps: [
+      "Test active or passive elbow flexion and extension bilaterally, comparing range and end-feel side to side.",
+      "Stabilize the wrist firmly before testing joint play — this isolates the motion you're about to test to the elbow itself.",
+      "With the wrist stabilized, test passive valgus (abduction) and varus (adduction) joint play at the elbow bilaterally, comparing the amount of give and the end-feel side to side.",
+      "Decide articular vs. soft tissue for any restriction: a hard, abrupt joint-play end-feel points articular, while a springier resistance points to muscle/fascia (e.g. the flexor/pronator or extensor/supinator compartment) or ligament."
+    ],
+    normal: "Correct performance tests both flexion/extension AND valgus/varus joint play (not just one or the other), stabilizes the wrist before the joint-play portion so the motion tested is isolated to the elbow, and makes an articular-vs-soft-tissue call on any restriction found.",
+    images: []
+  },
+  7: {
+    name: "Radial Head Screening",
+    purpose: "Palpates anterior/posterior radial head glide during pronation/supination and asks the examiner to decide between an articular radial head restriction and a pronator/supinator soft-tissue barrier — the exact worked example given in the source notes' own practice question for this rubric line.",
+    hook: "Anterior radial head is often tied to a supination restriction; posterior radial head is tied to a pronation restriction — so once you feel which way the radial head is stuck, you already have a good guess which rotation will be limited before you even test it.",
+    steps: [
+      "Palpate the radial head directly, just distal to the lateral epicondyle.",
+      "Passively pronate and supinate the forearm while monitoring anterior/posterior glide of the radial head — the radial head should glide posterior with pronation and anterior with supination.",
+      "Compare the amount of anterior vs. posterior glide bilaterally, and compare it against the patient's active pronation/supination range.",
+      "Decide articular vs. soft tissue: a true articular radial head restriction feels like the head itself won't glide past a hard barrier, while a pronator/supinator soft-tissue restriction feels like a springier muscular resistance limiting the rotation without the radial head itself being stuck.",
+      "Use the clinical pearl to sanity-check the finding: an anteriorly-positioned/restricted radial head commonly pairs with a supination restriction, and a posteriorly-positioned/restricted radial head with a pronation restriction — if the glide finding and the rotation-restriction finding don't match this pattern, double-check before finalizing."
+    ],
+    normal: "Correct performance directly palpates radial head glide (not just watching pronation/supination from a distance) during active pronation and supination, compares bilaterally, and makes an accurate articular-vs-soft-tissue call — consistent with the anterior/supination and posterior/pronation pairing pattern when applicable.",
+    images: []
+  },
+  8: {
+    name: "Wrist Screening",
+    purpose: "Screens the wrist as a whole joint for flexion/extension and abduction/adduction (radial/ulnar deviation) restriction, before the more detailed carpal-row and radiocarpal breakdown graded in the next two rows.",
+    hook: "Two motion pairs, four directions: flexion/extension is the easy one, but don't forget abduction/adduction (radial/ulnar deviation) — it's the pair students are most likely to rush past on the way to the carpal bones.",
+    steps: [
+      "Test active or passive wrist flexion and extension bilaterally, comparing range and end-feel.",
+      "Test wrist abduction (radial deviation) and adduction (ulnar deviation) bilaterally, comparing range and end-feel.",
+      "Compare all four directions to each other and side to side to identify which direction(s), if any, are restricted.",
+      "This is a whole-wrist screen — save the specific radiocarpal joint and individual carpal bone findings for the next row."
+    ],
+    normal: "A complete screen tests and reports both motion pairs (flexion/extension AND abduction/adduction) bilaterally. Testing only flexion/extension and skipping radial/ulnar deviation — or vice versa — is a common way to lose credit on an otherwise well-performed exam.",
+    images: []
+  },
+  9: {
+    name: "Radiocarpal Joint and Carpal Bone Screening",
+    purpose: "Wiggles the proximal carpal row, then the distal carpal row, looking for the single most restricted scaphoid/lunate/capitate/triquetrum/trapezium/trapezoid/hamate relationship — a fine, layered screen rather than one global 'wrist is stiff' finding.",
+    hook: "Two rows, not one pile of eight bones: wiggle the proximal row (scaphoid, lunate, triquetrum) against the radius first, then the distal row (trapezium, trapezoid, capitate, hamate) against the proximal row — you're always comparing one row's motion relative to its neighbor, not testing eight bones in isolation.",
+    steps: [
+      "Test the radiocarpal joint first: passively glide/wiggle the proximal carpal row (scaphoid, lunate, triquetrum) relative to the distal radius/ulna to assess overall radiocarpal motion.",
+      "Then test the proximal carpal row (scaphoid, lunate, triquetrum) relative to each other and to the distal row.",
+      "Then test the distal carpal row (trapezium, trapezoid, capitate, hamate) relative to the proximal row and to each other.",
+      "Across all these relationships, identify which single carpal bone (or joint) is the most restricted relative to its neighbors.",
+      "Compare bilaterally where relevant."
+    ],
+    normal: "Correct performance systematically screens the radiocarpal joint and both carpal rows (not just a global squeeze of the whole wrist), and correctly identifies which specific carpal bone/joint relationship is most restricted — a vague finding like 'the wrist is tight,' without naming a specific bone or row relationship, does not meet this row's standard.",
+    images: []
+  },
+  10: {
+    name: "Hand and Finger Screening",
+    purpose: "Stabilizes the carpals, glides the metacarpals, then screens the MCP/PIP/DIP phalanges — with particular attention when the patient has arthritis, trauma, or focal pain, since the source notes flag those as the situations where a hand/finger finding is most likely to be clinically meaningful.",
+    hook: "Work proximal to distal and always stabilize what you're not testing: anchor the carpals, glide the metacarpals against that fixed base, then work out to the finger joints one at a time — each step needs a stable platform underneath it or you're just moving the whole hand instead of isolating a joint.",
+    steps: [
+      "Stabilize the carpal bones as a fixed base.",
+      "Glide each metacarpal against the stabilized carpal row (carpometacarpal joints) to screen for restriction.",
+      "Screen the MCP, PIP, and DIP joints of each finger for flexion/extension and side-to-side (collateral) restriction.",
+      "Pay particular attention to this row when the patient has a history of arthritis, trauma, or focal hand/finger pain — these are the situations flagged in the source notes as most likely to produce a clinically meaningful finding, not just an incidental screening one.",
+      "Compare bilaterally."
+    ],
+    normal: "Correct performance stabilizes the carpals before gliding the metacarpals (rather than just squeezing the whole hand), screens the MCP/PIP/DIP joints individually rather than testing the fingers as one block, and shows appropriate extra care and thoroughness when arthritis, trauma, or focal pain is present.",
+    images: []
+  },
+  11: {
+    name: "Most Restricted Somatic Dysfunction — Positional Diagnosis",
+    purpose: "After screening the entire upper extremity (SC through fingers) bilaterally, this row grades whether the student correctly performs a positional diagnosis of the single most restricted finding — the process of naming a dysfunction with position/motion language, not yet whether the specific joint/side chosen is the objectively correct answer (that call is graded in the next row).",
+    hook: "After screening bilaterally, name ONE greatest restriction using position/motion language and tie it directly to treatment choice — that's the whole row in one sentence: pick one, describe its position, and let that description drive what you treat next.",
+    steps: [
+      "Complete the full bilateral screen (SC, AC/GH, elbow, radial head, wrist, radiocarpal/carpal rows, hand/fingers) before naming a diagnosis — don't jump to a conclusion mid-screen.",
+      "Compare the restrictions found across the whole extremity and identify the single greatest (most restricted) somatic dysfunction, not just the first one noticed or the most painful one.",
+      "Perform a positional diagnosis of that one dysfunction: describe it using position/motion language specific to the joint involved (e.g. an anteriorly-glided radial head restricted in supination, a posteriorly-positioned SC joint restricted in retraction) rather than a vague 'the elbow is tight.'",
+      "Tie the named position directly to a treatment choice — the whole point of naming the position is that it tells you which direction to correct toward, so the diagnosis should read as something you could act on immediately."
+    ],
+    normal: "Correct performance completes the full screen before naming a finding, identifies the genuinely single most restricted dysfunction (not an arbitrary or convenient one), and names it using specific position/motion language that a treatment plan could be built from directly. A vague or non-positional description ('shoulder is stiff') does not meet this row's standard even if the correct joint/side was identified.",
+    images: []
+  },
+  12: {
+    name: "Accuracy of the Specific Upper Extremity Diagnosis",
+    purpose: "Grades the accuracy of the specific diagnosis named in the previous row — including whether the barrier was correctly characterized as articular vs. soft tissue — against what is actually present on this patient, not just whether a diagnosis-shaped statement was produced.",
+    hook: "This is the row where 'restricted' isn't enough of an answer on its own: the grader is checking whether you correctly called the barrier itself — joint play, capsule/ligament, muscle/fascia, or some mix — not just whether you found something and can describe its position.",
+    steps: [
+      "Confirm the joint/side named in the previous row is objectively the correct most-restricted finding on this specific patient, not just a plausible-sounding one.",
+      "Confirm the barrier is correctly characterized as articular (joint play), capsule/ligament, muscle/fascia, or a mixed barrier — this is graded as a distinct, specific call, not folded into a generic 'restricted' label.",
+      "Cross-check the diagnosis against joint-specific patterns already screened for, e.g. the anterior-radial-head/supination-restriction and posterior-radial-head/pronation-restriction pairing, when the most-restricted finding is at the radial head.",
+      "The named diagnosis should be precise enough that a second examiner, reading only the diagnosis, would know exactly what was found and what to treat."
+    ],
+    normal: "An accurate diagnosis correctly identifies both WHICH structure/joint is most restricted and WHAT KIND of barrier is present (articular vs. capsule/ligament vs. muscle/fascia vs. mixed) — getting the joint right but the barrier type wrong (or vice versa) is a common partial-credit error, not a fully accurate diagnosis.",
+    images: []
+  }
+};
+
+// ---------- text-size control ----------
+const FONT_SCALE_KEY = 'omm-upper-extremity-font-scale';
+let fontScale = parseFloat(localStorage.getItem(FONT_SCALE_KEY)) || 1;
+document.documentElement.style.setProperty('--font-scale', fontScale.toFixed(2));
+function changeFontSize(delta){
+  fontScale = Math.min(1.6, Math.max(0.85, +(fontScale + delta*0.1).toFixed(2)));
+  document.documentElement.style.setProperty('--font-scale', fontScale.toFixed(2));
+  localStorage.setItem(FONT_SCALE_KEY, fontScale);
+  if(popover.classList.contains('open') && activeEl) positionPopover(activeEl);
+}
+
+// ---------- single-select-per-row radio behavior (enlarged tap target) ----------
+document.querySelectorAll('td.grade-cell').forEach(td=>{
+  td.addEventListener('click', function(e){
+    if(e.target.tagName === 'INPUT') return;
+    const box = this.querySelector('input.grade-box');
+    if(box){ box.checked = true; box.dispatchEvent(new Event('change', {bubbles:true})); }
+  });
+});
+
+// ---------- popover logic ----------
+const popover = document.getElementById('popover');
+const popContent = document.getElementById('popContent');
+const overlay = document.getElementById('overlay');
+const popCloseBtn = document.getElementById('popCloseBtn');
+const sidePanelContent = document.getElementById('sidePanelContent');
+const sidePlaceholder = document.getElementById('sidePlaceholder');
+let activeEl = null;
+const isTouch = window.matchMedia('(hover: none)').matches;
+const wideQuery = window.matchMedia('(min-width: 1300px)');
+function isWide(){ return wideQuery.matches; }
+
+function buildContent(key){
+  const d = DATA[key];
+  if(!d) return '<p>No content available.</p>';
+  let html = '<h4>'+d.name+'</h4>';
+  if(d.fallback){
+    html += '<div class="pop-fallback">'+d.fallback+'</div>';
+  }
+  if(d.purpose){
+    html += '<div class="pop-label">Purpose</div><div>'+d.purpose+'</div>';
+  }
+  if(d.hook){
+    html += '<div class="pop-label">🧠 Memory Hook</div><div class="pop-hook">'+d.hook+'</div>';
+  }
+  if(d.steps && d.steps.length){
+    html += '<div class="pop-label">How to Perform</div><ul>'+d.steps.map(s=>'<li>'+s+'</li>').join('')+'</ul>';
+  }
+  if(d.normal){
+    html += '<div class="pop-label">Normal vs. Abnormal / Accuracy</div><div class="pop-normal">'+d.normal+'</div>';
+  }
+  if(d.images && d.images.length){
+    html += '<div class="pop-images">'+d.images.map(im=>
+      '<figure><img src="'+im.src+'" alt="'+im.caption.replace(/"/g,'&quot;')+'" data-caption="'+im.caption.replace(/"/g,'&quot;')+'" title="Tap to enlarge" loading="lazy" onerror="this.parentElement.innerHTML=\'&lt;div style=&quot;padding:10px;font-size:.7rem;color:#b02a2a;border:1px dashed #b02a2a;&quot;&gt;Image failed to load: '+im.src+'&lt;/div&gt;\'"><figcaption>'+im.caption+' <span class="zoom-hint">🔍 tap to enlarge</span></figcaption></figure>'
+    ).join('')+'</div>';
+  }
+  return html;
+}
+
+function positionPopover(target){
+  const rect = target.getBoundingClientRect();
+  const margin = 10;
+  popover.style.display='block'; // measure
+  const pw = popover.offsetWidth;
+  const ph = popover.offsetHeight;
+  let left = rect.left;
+  let top = rect.bottom + margin;
+
+  // horizontal clamp
+  if(left + pw > window.innerWidth - margin){
+    left = window.innerWidth - pw - margin;
+  }
+  if(left < margin) left = margin;
+
+  // vertical: if not enough room below, place above
+  if(top + ph > window.innerHeight - margin){
+    const above = rect.top - ph - margin;
+    if(above > margin){
+      top = above;
+    } else {
+      // clamp within viewport, allow internal scroll
+      top = margin;
+    }
+  }
+  popover.style.left = left+'px';
+  popover.style.top = top+'px';
+}
+
+let currentKey = null;
+
+function openPopover(target){
+  const key = target.getAttribute('data-key');
+  currentKey = key;
+  popContent.innerHTML = buildContent(key);
+  document.querySelectorAll('.hoverable.active').forEach(e=>e.classList.remove('active'));
+  target.classList.add('active');
+  activeEl = target;
+  popover.classList.add('open');
+  overlay.classList.add('open');
+  positionPopover(target);
+}
+
+// side panel: no open/close race, just swap content in place — nothing to blink
+function showInPanel(target){
+  const key = target.getAttribute('data-key');
+  currentKey = key;
+  sidePanelContent.innerHTML = buildContent(key);
+  sidePlaceholder.classList.add('hidden');
+  document.getElementById('sidePanelInner').classList.add('has-content');
+  document.querySelectorAll('.hoverable.active').forEach(e=>e.classList.remove('active'));
+  target.classList.add('active');
+}
+
+function closePopover(){
+  popover.classList.remove('open');
+  popover.style.display = '';
+  overlay.classList.remove('open');
+  if(activeEl) activeEl.classList.remove('active');
+  activeEl = null;
+}
+
+let closeTimer = null;
+function scheduleClose(){
+  clearTimeout(closeTimer);
+  closeTimer = setTimeout(closePopover, 220);
+}
+function cancelClose(){
+  clearTimeout(closeTimer);
+}
+
+document.querySelectorAll('.hoverable').forEach(el=>{
+  if(!isTouch){
+    el.addEventListener('mouseenter', ()=>{
+      if(isWide()){ showInPanel(el); return; }
+      cancelClose(); openPopover(el);
+    });
+    el.addEventListener('mouseleave', ()=>{
+      if(isWide()) return; // side panel keeps showing the last-hovered test, nothing to close
+      scheduleClose();
+    });
+    el.addEventListener('focus', ()=>{
+      if(isWide()){ showInPanel(el); return; }
+      cancelClose(); openPopover(el);
+    });
+    el.addEventListener('blur', ()=>{
+      if(isWide()) return;
+      scheduleClose();
+    });
+  }
+  el.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    if(isWide()){ showInPanel(el); return; }
+    if(activeEl===el && popover.classList.contains('open')){
+      closePopover();
+    } else {
+      openPopover(el);
+    }
+  });
+});
+
+overlay.addEventListener('click', closePopover);
+popCloseBtn.addEventListener('click', closePopover);
+
+// ---------- reader modal (big, easy-to-read popup) ----------
+const readerModal = document.getElementById('readerModal');
+const readerContent = document.getElementById('readerContent');
+const readerCloseBtn = document.getElementById('readerCloseBtn');
+
+function openReader(){
+  if(!currentKey) return;
+  readerContent.innerHTML = buildContent(currentKey);
+  readerModal.classList.add('open');
+}
+function closeReader(){
+  readerModal.classList.remove('open');
+}
+document.getElementById('sideExpandBtn').addEventListener('click', (e)=>{ e.stopPropagation(); openReader(); });
+document.getElementById('popExpandBtn').addEventListener('click', (e)=>{ e.stopPropagation(); openReader(); });
+readerCloseBtn.addEventListener('click', closeReader);
+readerModal.addEventListener('click', (e)=>{ if(e.target===readerModal) closeReader(); });
+
+document.addEventListener('keydown', (e)=>{ if(e.key==='Escape'){ closeLightbox(); closeReader(); closePopover(); } });
+
+// ---------- lightbox (click-to-enlarge images) ----------
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightboxImg');
+const lightboxCaption = document.getElementById('lightboxCaption');
+const lightboxCloseBtn = document.getElementById('lightboxCloseBtn');
+
+function openLightbox(src, alt, caption){
+  lightboxImg.src = src;
+  lightboxImg.alt = alt || '';
+  lightboxCaption.textContent = caption || '';
+  lightbox.classList.add('open');
+}
+function closeLightbox(){
+  lightbox.classList.remove('open');
+  lightboxImg.src = '';
+}
+
+document.addEventListener('click', (e)=>{
+  const img = e.target.closest('#popContent .pop-images img, #sidePanelContent .pop-images img, #readerContent .pop-images img');
+  if(!img) return;
+  e.stopPropagation();
+  openLightbox(img.src, img.alt, img.getAttribute('data-caption') || '');
+});
+
+lightboxCloseBtn.addEventListener('click', closeLightbox);
+lightbox.addEventListener('click', (e)=>{ if(e.target===lightbox) closeLightbox(); });
+window.addEventListener('scroll', ()=>{ if(popover.classList.contains('open') && activeEl) positionPopover(activeEl); }, true);
+window.addEventListener('resize', ()=>{ if(popover.classList.contains('open') && activeEl) positionPopover(activeEl); });
+wideQuery.addEventListener('change', (e)=>{
+  if(e.matches) closePopover(); // switched into side-panel mode — drop the floating card
+});
+
+// keep popover open while hovering the popover itself (desktop), close on leaving it
+if(!isTouch){
+  popover.addEventListener('mouseenter', cancelClose);
+  popover.addEventListener('mouseleave', scheduleClose);
+}
+</script>
+
+</body>
+</html>
