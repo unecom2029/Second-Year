@@ -1129,5 +1129,24 @@
       initTableQuiz();
     });
   </script>
+<script>
+(function(){
+  function wantsMatchedHY(){
+    return /(?:^|[?&])hy=1(?:&|$)/.test(window.location.search)||/^#(?:hy|hy-review)$/.test(window.location.hash);
+  }
+  function openMatchedHY(){
+    if(!wantsMatchedHY())return;
+    setTimeout(function(){
+      if(typeof window.openHY==='function'){window.openHY();return;}
+      var btn=document.getElementById('hyOpen')||document.getElementById('hyOpenBtn')||document.querySelector('[onclick*="openHY"]');
+      if(btn){btn.click();return;}
+      var modal=document.getElementById('hyModal')||document.getElementById('hySummary');
+      if(modal){modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.classList.add('hy-mode');document.body.style.overflow='hidden';}
+    },120);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',openMatchedHY);
+  else openMatchedHY();
+})();
+</script>
 </body>
 </html>

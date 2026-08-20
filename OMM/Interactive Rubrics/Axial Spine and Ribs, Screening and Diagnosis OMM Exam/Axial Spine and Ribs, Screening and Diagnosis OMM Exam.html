@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Axial Spine and Ribs, Screening and Diagnosis OMM Exam 26-27</title>
+<style>
+  :root{
+    --ink:#1a1a1a;
+    --paper:#ffffff;
+    --line:#333333;
+    --line-light:#999999;
+    --header-yellow:#fdf1a8;
+    --header-yellow-border:#d8c453;
+    --accent:#0d5c73;
+    --accent-light:#e6f2f5;
+    --hover-bg:#fff9e0;
+    --grade1-color:#1a7a3c;
+    --grade2-color:#4a7ab0;
+    --grade3-color:#b8860b;
+    --grade4-color:#b02a2a;
+    --muted:#5a5a5a;
+    --popover-bg:#fffdf6;
+    --popover-border:#0d5c73;
+    --shadow: 0 8px 28px rgba(0,0,0,0.25);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family: Georgia, "Times New Roman", serif;
+    color:var(--ink);
+    background:#e9e6dd;
+    line-height:1.35;
+    padding: 24px 12px 80px;
+  }
+  .sheet{
+    max-width: 1180px;
+    margin: 0 auto;
+    background: var(--paper);
+    border: 1px solid var(--line-light);
+    box-shadow: 0 2px 18px rgba(0,0,0,0.15);
+    padding: 28px 30px 40px;
+  }
+  h1.doc-title{
+    font-size: 1.45rem;
+    text-align:center;
+    margin: 4px 0 6px;
+    letter-spacing:.2px;
+  }
+  .subtitle{
+    text-align:center;
+    color:var(--muted);
+    font-size:.85rem;
+    margin-top:0;
+    margin-bottom:18px;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  table.rubric{
+    width:100%;
+    border-collapse: collapse;
+    margin-bottom: 4px;
+    font-family: Georgia, serif;
+    font-size:.92rem;
+  }
+  table.rubric td, table.rubric th{
+    border: 1px solid var(--line);
+    padding: 6px 8px;
+    vertical-align: top;
+  }
+  tr.section-header td{
+    background: var(--header-yellow);
+    border-color: var(--header-yellow-border);
+    font-weight:700;
+    font-size:.98rem;
+    padding: 7px 8px;
+  }
+
+  /* ===== 4-column per-row grading ===== */
+  .grade-cell{
+    width: 25%;
+    text-align:center;
+    vertical-align: middle;
+    padding: 6px 6px !important;
+    cursor:pointer;
+    -webkit-tap-highlight-color: transparent;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  .grade-cell label{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:4px;
+    cursor:pointer;
+    padding: 4px 2px;
+  }
+  .grade-box{
+    width:19px;
+    height:19px;
+    cursor:pointer;
+    accent-color: var(--accent);
+    flex:none;
+  }
+  .grade-box.g1{ accent-color: var(--grade1-color); }
+  .grade-box.g2{ accent-color: var(--grade2-color); }
+  .grade-box.g3{ accent-color: var(--grade3-color); }
+  .grade-box.g4{ accent-color: var(--grade4-color); }
+  .grade-text{
+    font-size:.68rem;
+    line-height:1.2;
+    color:var(--muted);
+    text-align:center;
+  }
+  .grade-cell.is-na{
+    background:#f2f2ee;
+  }
+  .grade-cell.is-na .grade-text{ font-style:italic; }
+
+  colgroup col.col-grade{ width:16.5%; }
+  colgroup col.col-test{ width:34%; }
+
+  .testcol{
+    font-family: Georgia, serif;
+  }
+  .row-num{
+    width: 24px;
+    text-align:right;
+    color:var(--muted);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size:.78rem;
+    padding-right:4px !important;
+    vertical-align: middle !important;
+  }
+  .col-head-row th{
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight:700;
+    font-size:.78rem;
+    text-align:center;
+    background:#f4f4ee;
+  }
+
+  .grading-note{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size:.82rem;
+    background:#f4f4ee;
+    border:1px solid var(--line-light);
+    padding:10px 14px;
+    margin: 14px 0 18px;
+    line-height:1.55;
+    color: var(--muted);
+  }
+  .grading-note b{ color:var(--accent); }
+
+  /* interactive test cell */
+  .testcell{
+    position:relative;
+  }
+  .hoverable{
+    cursor: help;
+    border-bottom: 1.5px dotted var(--accent);
+    transition: background .12s ease;
+    display:inline;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .hoverable:hover, .hoverable.active{
+    background: var(--hover-bg);
+  }
+  .hoverable::after{
+    content: "ⓘ";
+    font-size: .68em;
+    color: var(--accent);
+    vertical-align: super;
+    margin-left: 3px;
+    opacity:.75;
+  }
+  .plain-row td.testcol{
+    font-family: Georgia, serif;
+  }
+
+  footer.legend{
+    margin-top: 26px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line-light);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size:.78rem;
+    color: var(--muted);
+    text-align:center;
+  }
+
+  /* ===== Popover ===== */
+  #popover{
+    position: fixed;
+    z-index: 1000;
+    max-width: 420px;
+    width: min(420px, 92vw);
+    max-height: 78vh;
+    overflow-y: auto;
+    background: var(--popover-bg);
+    border: 2px solid var(--popover-border);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    padding: 14px 16px 16px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: .86rem;
+    line-height:1.5;
+    display:none;
+  }
+  #popover.open{ display:block; }
+  #popover h4, #sidePanelContent h4{
+    margin: 0 0 8px;
+    font-size: 1.02rem;
+    color: var(--accent);
+    font-family: Georgia, serif;
+    padding-right: 22px;
+  }
+  #popover .pop-close{
+    position:absolute;
+    top:8px; right:10px;
+    cursor:pointer;
+    font-size:1.1rem;
+    color: var(--muted);
+    background:none;
+    border:none;
+    line-height:1;
+    padding:2px 4px;
+  }
+  #popover .pop-close:hover{ color: var(--grade4-color); }
+  #popover .pop-label, #sidePanelContent .pop-label{
+    font-weight:700;
+    color:#333;
+    margin-top:10px;
+    margin-bottom:3px;
+    font-size:.78rem;
+    text-transform:uppercase;
+    letter-spacing:.03em;
+  }
+  #popover .pop-label:first-of-type, #sidePanelContent .pop-label:first-of-type{ margin-top:0; }
+  #popover ul, #sidePanelContent ul{ margin:2px 0 0; padding-left: 18px; }
+  #popover li, #sidePanelContent li{ margin-bottom: 4px; }
+  #popover .pop-normal, #sidePanelContent .pop-normal{ background:#eef8ee; border-left:3px solid var(--grade1-color); padding:6px 8px; margin-top:4px; }
+  #popover .pop-fallback, #sidePanelContent .pop-fallback{
+    background:#fbe9e9; border-left:3px solid var(--grade4-color); padding:6px 8px; margin-bottom:8px; font-style:italic; font-size:.8rem;
+  }
+  #popover .pop-images, #sidePanelContent .pop-images{
+    display:flex; flex-wrap:wrap; gap:8px; margin-top:10px;
+  }
+  #popover .pop-images figure, #sidePanelContent .pop-images figure{
+    margin:0; flex: 1 1 160px; max-width:190px;
+  }
+  #popover .pop-images img, #sidePanelContent .pop-images img{
+    width:100%; height:auto; border:1px solid #ccc; border-radius:4px; display:block;
+    background:#fafafa; cursor:zoom-in;
+  }
+  #popover .pop-images img:hover, #sidePanelContent .pop-images img:hover{ border-color: var(--accent); }
+  #popover .pop-images figcaption, #sidePanelContent .pop-images figcaption{
+    font-size:.68rem; color:var(--muted); margin-top:3px; line-height:1.3;
+  }
+  #popover .pop-images .zoom-hint, #sidePanelContent .pop-images .zoom-hint{
+    display:block; color:var(--accent); font-weight:600; margin-top:2px;
+  }
+
+  /* ===== Layout: rubric + sticky side panel ===== */
+  .layout{
+    display:block;
+    max-width: 1180px;
+    margin: 0 auto;
+  }
+  #sidePanel{
+    display:none;
+    flex: 0 0 360px;
+    position: sticky;
+    top: 20px;
+    max-height: calc(100vh - 40px);
+  }
+  @media (min-width: 1300px){
+    .layout{
+      display:flex;
+      align-items:flex-start;
+      gap: 26px;
+      max-width: 1580px;
+    }
+    .layout .sheet{ flex: 1 1 auto; min-width:0; margin:0; }
+    #sidePanel{ display:block; }
+  }
+  #sidePanelInner{
+    background: var(--popover-bg);
+    border: 2px solid var(--popover-border);
+    border-radius: 8px;
+    box-shadow: 0 2px 14px rgba(0,0,0,0.12);
+    padding: 16px 18px 18px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: .86rem;
+    line-height: 1.5;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+  }
+  .side-placeholder{
+    color: var(--muted);
+    font-style: italic;
+    font-size: .85rem;
+    padding: 6px 2px;
+  }
+  .side-placeholder.hidden{ display:none; }
+
+  #overlay{
+    position:fixed; inset:0; background:transparent; z-index:999; display:none;
+  }
+  #overlay.open{ display:block; }
+
+  #lightbox{
+    position:fixed; inset:0; z-index:2000; display:none;
+    background:rgba(10,10,10,0.9);
+    align-items:center; justify-content:center;
+    flex-direction:column;
+    padding: 40px 20px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #lightbox.open{ display:flex; }
+  #lightbox img{
+    max-width:100%; max-height:calc(100% - 46px); object-fit:contain;
+    border-radius:4px; box-shadow:0 10px 40px rgba(0,0,0,0.5);
+    touch-action: pinch-zoom;
+  }
+  #lightbox figcaption{
+    color:#f0f0f0; font-family: Arial, Helvetica, sans-serif; font-size:.85rem;
+    margin-top:12px; text-align:center; max-width:80vw;
+  }
+  #lightboxCloseBtn{
+    position:fixed; top:16px; right:20px; z-index:2001;
+    background:rgba(255,255,255,0.12); color:#fff; border:none;
+    width:44px; height:44px; border-radius:50%;
+    font-size:1.5rem; line-height:1; cursor:pointer;
+  }
+  #lightboxCloseBtn:hover{ background:rgba(255,255,255,0.25); }
+
+  @media (max-width: 720px){
+    .sheet{ padding: 16px 12px 40px; }
+    table.rubric{ font-size:.8rem; }
+    .grade-text{ font-size:.62rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+<div class="sheet">
+  <h1 class="doc-title">Axial Spine and Ribs, Screening and Diagnosis OMM Exam 26-27</h1>
+  <p class="subtitle">Interactive study version — hover or tap any underlined row description for step-by-step technique notes, diagnosis logic, and reference photos. Each row has its own 4 grading options as shown; selections are local/visual only (nothing is saved or submitted).</p>
+
+  <div class="grading-note">
+    <b>How grading works on this rubric:</b> unlike a single fixed */P/0 legend, <b>every row below has its own 4 grading-column labels</b>, printed directly under each radio button in that row (e.g. most rows read "100% Correct and Fluid / 88% Correct / 75% Correct / Less than 75% Correct — Must CAP Line"; the Washes Hands row and the two summary rows at the bottom use different wording — read each row's own labels). Columns marked <b>N/A-DO NOT SELECT</b> are shaded and present only because the source rubric prints 4 columns per row even when a row only uses 2 of them.
+  </div>
+
+  <table class="rubric" id="mainTable">
+    <colgroup>
+      <col class="col-grade"><col class="col-grade"><col class="col-grade"><col class="col-grade">
+      <col class="col-test"><col style="width:26px;">
+    </colgroup>
+    <tr class="section-header"><td colspan="6">Axial Spine and Ribs — Screening and Diagnosis</td></tr>
+
+    <!-- Row 1 -->
+    <tr data-row="1" class="plain-row">
+      <td class="grade-cell g1-cell"><label><input class="grade-box g1" type="radio" name="r1" value="g1"><span class="grade-text">100% Correct and Fluid</span></label></td>
+      <td class="grade-cell g2-cell"><label><input class="grade-box g2" type="radio" name="r1" value="g2"><span class="grade-text">88% Correct</span></label></td>
+      <td class="grade-cell g3-cell"><label><input class="grade-box g3" type="radio" name="r1" value="g3"><span class="grade-text">75% Correct</span></label></td>
+      <td class="grade-cell g4-cell"><label><input class="grade-box g4" type="radio" name="r1" value="g4"><span class="grade-text">Less than 75% Correct — Must CAP Line</span></label></td>
+      <td class="testcol"><b>COMMUNICATION:</b> Appropriately communicates to patient about the physical exam being done (uses lay terms, speaks to pt, assures understanding).</td>
+      <td class="row-num">1</td>
+    </tr>
+
+    <!-- Row 2 -->
+    <tr data-row="2" class="plain-row">
+      <td class="grade-cell g1-cell"><label><input class="grade-box g1" type="radio" name="r2" value="g1"><span class="grade-text">100% Correct and Fluid</span></label></td>
+      <td class="grade-cell g2-cell"><label><input class="grade-box g2" type="radio" name="r2" value="g2"><span class="grade-text">88% Correct</span></label></td>
+      <td class="grade-cell g3-cell"><label><input class="grade-box g3" type="radio" name="r2" value="g3"><span class="grade-text">75% Correct</span></label></td>
+      <td class="grade-cell g4-cell"><label><input class="grade-box g4" type="radio" name="r2" value="g4"><span class="grade-text">Less than 75% Correct — Must CAP Line</span></label></td>
+      <td class="testcol">Obtains consent before doing the exam AND again with any particularly sensitive parts of the exam.</td>
+      <td class="row-num">2</td>
+    </tr>
+
+    <!-- Row 3 -->
+    <tr data-row="3" class="plain-row">
+      <td class="grade-cell g1-cell"><label><input class="grade-box g1" type="radio" name="r3" value="g1"><span class="grade-text">100% Correct</span></label></td>
+      <td class="grade-cell g2-cell is-na"><label><input class="grade-box g2" type="radio" name="r3" value="g2"><span class="grade-text">N/A-DO NOT SELECT</span></label></td>
+      <td class="grade-cell g3-cell is-na"><label><input class="grade-box g3" type="radio" name="r3" value="g3"><span class="grade-text">N/A-DO NOT SELECT</span></label></td>
+      <td class="grade-cell g4-cell"><label><input class="grade-box g4" type="radio" name="r3" value="g4"><span class="grade-text">Less than 75% Correct — Must CAP Line</span></label></td>
+      <td class="testcol"><b>WASHES HANDS:</b> Prior to technique (may do at beginning of encounter) &ndash; hand sanitizer, or at least 20s with soap and water (if student is cued to do this task, then no credit will be given).</td>
+      <td class="row-num">3</td>
+    </tr>
+
+    <!-- Row 4 -->
+    <tr data-row="4">
+      <td class="grade-cell g1-cell"><label><input class="grade-box g1" type="radio" name="r4" value="g1"><span class="grade-text">100% Correct and Fluid</span></label></td>
+      <td class="grade-cell g2-cell"><label><input class="grade-box g2" type="radio" name="r4" value="g2"><span class="grade-text">88% Correct</span></label></td>
+      <td class="grade-cell g3-cell"><label><input class="grade-box g3" type="radio" name="r4" value="g3"><span class="grade-text">75% Correct</span></label></td>
+      <td class="grade-cell g4-cell"><label><input class="grade-box g4" type="radio" name="r4" value="g4"><span class="grade-text">Less than 75% Correct — Must CAP Line</span></label></td>
+      <td class="testcell"><span class="hoverable" data-key="4"><b>HEAD/CERVICAL SPINE SCREENING:</b> Effectively segmentally screens the entire cervical spine (OA-C7) with appropriate contact and force vector bilaterally.</span></td>
+      <td class="row-num">4</td>
+    </tr>
+
+    <!-- Row 5 -->
+    <tr data-row="5">
+      <td class="grade-cell g1-cell"><label><input class="grade-box g1" type="radio" name="r5" value="g1"><span class="grade-text">100% Correct and Fluid</span></label></td>
+      <td class="grade-cell g2-cell"><label><input class="grade-box g2" type="radio" name="r5" value="g2"><span class="grade-text">88% Correct</span></label></td>
+      <td class="grade-cell g3-cell"><label><input class="grade-box g3" type="radio" name="r5" value="g3"><span class="grade-text">75% Correct</span></label></td>
+      <td class="grade-cell g4-cell"><label><input class="grade-box g4" type="radio" name="r5" value="g4"><span class="grade-text">Less than 75% Correct — Must CAP Line</span></label></td>
+      <td class="testcell"><span class="hoverable" data-key="5"><b>HEAD/CERVICAL SPINE SEGMENTAL DIAGNOSIS:</b> Correctly performs a 3-positional segmental diagnosis of the OA, AA, and most restricted lower cervical (C2-C7) segment AND is accurate with the diagnosis.</span></td>
+      <td class="row-num">5</td>
+    </tr>
+
+    <!-- Row 6 -->
+    <tr data-row="6">
+      <td class="grade-cell g1-cell"><label><input class="grade-box g1" type="radio" name="r6" value="g1"><span class="grade-text">100% Correct and Fluid</span></label></td>
+      <td class="grade-cell g2-cell"><label><input class="grade-box g2" type="radio" name="r6" value="g2"><span class="grade-text">88% Correct</span></label></td>
+      <td class="grade-cell g3-cell"><label><input class="grade-box g3" type="radio" name="r6" value="g3"><span class="grade-text">75% Correct</span></label></td>
+      <td class="grade-cell g4-cell"><label><input class="grade-box g4" type="radio" name="r6" value="g4"><span class="grade-text">Less than 75% Correct — Must CAP Line</span></label></td>
+      <td class="testcell"><span class="hoverable" data-key="6"><b>THORACIC SPINE SCREENING:</b> Effectively segmentally screens the entire thoracic spine (T1-T12) AND the thoracic outlet with appropriate contact and force vector bilaterally.</span></td>
+      <td class="row-num">6</td>
+    </tr>
+
+    <!-- Row 7 -->
+    <tr data-row="7">
+      <td class="grade-cell g1-cell"><label><input class="grade-box g1" type="radio" name="r7" value="g1"><span class="grade-text">100% Correct and Fluid</span></label></td>
+      <td class="grade-cell g2-cell"><label><input class="grade-box g2" type="radio" name="r7" value="g2"><span class="grade-text">88% Correct</span></label></td>
+      <td class="grade-cell g3-cell"><label><input class="grade-box g3" type="radio" name="r7" value="g3"><span class="grade-text">75% Correct</span></label></td>
+      <td class="grade-cell g4-cell"><label><input class="grade-box g4" type="radio" name="r7" value="g4"><span class="grade-text">Less than 75% Correct — Must CAP Line</span></label></td>
+      <td class="testcell"><span class="hoverable" data-key="7"><b>THORACIC SPINE SEGMENTAL DIAGNOSIS:</b> Correctly performs a 3-positional segmental diagnosis of the most restricted thoracic (T1-T12) segment AND the thoracic outlet AND is accurate with the diagnosis.</span></td>
+      <td class="row-num">7</td>
+    </tr>
+
+    <!-- Row 8 -->
+    <tr data-row="8">
+      <td class="grade-cell g1-cell"><label><input class="grade-box g1" type="radio" name="r8" value="g1"><span class="grade-text">100% Correct and Fluid</span></label></td>
+      <td class="grade-cell g2-cell"><label><input class="grade-box g2" type="radio" name="r8" value="g2"><span class="grade-text">88% Correct</span></label></td>
+      <td class="grade-cell g3-cell"><label><input class="grade-box g3" type="radio" name="r8" value="g3"><span class="grade-text">75% Correct</span></label></td>
+      <td class="grade-cell g4-cell"><label><input class="grade-box g4" type="radio" name="r8" value="g4"><span class="grade-text">Less than 75% Correct — Must CAP Line</span></label></td>
+      <td class="testcell"><span class="hoverable" data-key="8"><b>RIB CAGE SCREENING:</b> Effectively screens the entire rib cage (ribs 1-12) for respiratory (inhaled/exhaled) AND mechanical (anterior/posterior) dysfunctions with appropriate contact and force vector bilaterally.</span></td>
+      <td class="row-num">8</td>
+    </tr>
+
+    <!-- Row 9 -->
+    <tr data-row="9">
+      <td class="grade-cell g1-cell"><label><input class="grade-box g1" type="radio" name="r9" value="g1"><span class="grade-text">100% Correct and Fluid</span></label></td>
+      <td class="grade-cell g2-cell"><label><input class="grade-box g2" type="radio" name="r9" value="g2"><span class="grade-text">88% Correct</span></label></td>
+      <td class="grade-cell g3-cell"><label><input class="grade-box g3" type="radio" name="r9" value="g3"><span class="grade-text">75% Correct</span></label></td>
+      <td class="grade-cell g4-cell"><label><input class="grade-box g4" type="radio" name="r9" value="g4"><span class="grade-text">Less than 75% Correct — Must CAP Line</span></label></td>
+      <td class="testcell"><span class="hoverable" data-key="9"><b>RIB CAGE DIAGNOSIS:</b> Correctly performs a positional segmental diagnosis of the most restricted ribs AND is accurate with the diagnosis.</span></td>
+      <td class="row-num">9</td>
+    </tr>
+
+    <tr class="section-header"><td colspan="6">CAP Summary</td></tr>
+
+    <!-- Row 10 -->
+    <tr data-row="10" class="plain-row">
+      <td class="grade-cell g1-cell"><label><input class="grade-box g1" type="radio" name="r10" value="g1"><span class="grade-text">NO, DOES NOT need to CAP</span></label></td>
+      <td class="grade-cell g2-cell is-na"><label><input class="grade-box g2" type="radio" name="r10" value="g2"><span class="grade-text">N/A-DO NOT SELECT</span></label></td>
+      <td class="grade-cell g3-cell is-na"><label><input class="grade-box g3" type="radio" name="r10" value="g3"><span class="grade-text">N/A-DO NOT SELECT</span></label></td>
+      <td class="grade-cell g4-cell"><label><input class="grade-box g4" type="radio" name="r10" value="g4"><span class="grade-text">YES, DOES need to CAP</span></label></td>
+      <td class="testcol">Did the Student have to CAP this Rubric? (Less than 75% Correct in any Line)</td>
+      <td class="row-num">10</td>
+    </tr>
+
+    <!-- Row 11 -->
+    <tr data-row="11" class="plain-row">
+      <td class="grade-cell g1-cell"><label><input class="grade-box g1" type="radio" name="r11" value="g1"><span class="grade-text">YES, CAP was completed successfully</span></label></td>
+      <td class="grade-cell g2-cell"><label><input class="grade-box g2" type="radio" name="r11" value="g2"><span class="grade-text">Partially Completed, student must complete CAP process</span></label></td>
+      <td class="grade-cell g3-cell"><label><input class="grade-box g3" type="radio" name="r11" value="g3"><span class="grade-text">N/A- SELECT IF STUDENT DID NOT HAVE TO CAP</span></label></td>
+      <td class="grade-cell g4-cell"><label><input class="grade-box g4" type="radio" name="r11" value="g4"><span class="grade-text">NO, CAP was NOT completed successfully</span></label></td>
+      <td class="testcol">Was the CAP completed successfully?</td>
+      <td class="row-num">11</td>
+    </tr>
+  </table>
+
+  <footer class="legend">
+    Personal study aid — content adapted from the "Axial Spine and Ribs, Screening and Diagnosis OMM Exam 26-27" rubric and OMM course-notes (Week 1 principles/technique notes, Week 2 FPR/Still/rib lecture slides) for self-quizzing. Not a clinical document.
+  </footer>
+</div>
+
+<aside id="sidePanel">
+  <div id="sidePanelInner">
+    <div class="side-placeholder" id="sidePlaceholder">Hover (or tap) any underlined row on the left to see step-by-step instructions, diagnosis logic, and reference photos here.</div>
+    <div id="sidePanelContent"></div>
+  </div>
+</aside>
+</div>
+
+<div id="overlay"></div>
+<div id="popover" role="dialog" aria-modal="false">
+  <button class="pop-close" id="popCloseBtn" aria-label="Close">&times;</button>
+  <div id="popContent"></div>
+</div>
+
+<div id="lightbox" role="dialog" aria-modal="true" aria-label="Enlarged image">
+  <button id="lightboxCloseBtn" aria-label="Close enlarged image">&times;</button>
+  <img id="lightboxImg" src="" alt="">
+  <figcaption id="lightboxCaption"></figcaption>
+</div>
+
+<script>
+const DATA = {
+  4: {
+    name: "Head/Cervical Spine Screening (OA–C7)",
+    purpose: "A fast seated screen of the entire cervical spine to find the Area of Greatest Resistance (AGR) before committing to a full 3-position segmental diagnosis. Screening is not itself the diagnosis — it just tells you where to look closest.",
+    steps: [
+      "Patient seated. Stabilize the head with one hand so the patient can relax the head and neck; grasp the target segment's articular pillars with the other hand (not the sharp lateral tips of the transverse processes).",
+      "Translate each segment laterally right and left, working from the upper cervicals down to C7 — screen the whole column even if an upper segment already feels restricted.",
+      "Compare the ease of right vs. left translation at every level and note which segment(s) feel most resistant/asymmetric.",
+      "OA (occiput-on-C1) is usually screened separately: with the patient seated, cradle the occiput/head and side-slip it right and left to assess OA side-to-side motion.",
+      "AA (C1-C2) is a rotation-only joint and is usually better screened/diagnosed supine (see the Segmental Diagnosis row) rather than in this seated screen.",
+      "Use appropriate bilateral contact and force vectors throughout — this is what the rubric is grading, not just “touching each level.”"
+    ],
+    normal: "A good screen finds the single worst (most restricted/asymmetric) segment or region across the whole cervical spine — that becomes the target for the full segmental diagnosis in the next row. Missing part of the column (e.g. stopping before C7) or screening with the wrong contact costs credit even if the AGR you found is correct.",
+    images: [
+      {src:"assets/cervical_screen_seated.jpg", caption:"Seated cervical screen — stabilize the head with one hand, translate each segment laterally right/left with the other to find the Area of Greatest Resistance (AGR). (Source: OMM Week 2 lecture slides, “Cervical Screen”)"}
+    ]
+  },
+  5: {
+    name: "Head/Cervical Spine Segmental Diagnosis — OA, AA, Lower Cervical",
+    purpose: "A full 3-positional (or joint-appropriate) segmental diagnosis of the OA joint, the AA joint, and the single most restricted lower cervical (C2-C7) segment found on screening — and naming each correctly using Fryette/regional convention.",
+    steps: [
+      "OA (occiput-on-atlas): contact the occiput/mastoid region and stay above C1. Use a tiny translatory motion to induce OA sidebending — do not sidebend the whole neck to test it. Test flexion by gently tucking/drawing the chin, extension by lifting the finger pads toward the head.",
+      "OA rule: sidebending and rotation are opposite at OA. Name it, e.g., freely sidebends right/rotates left → “OA ESrRl” (or FSrRl if freer in flexion).",
+      "AA (atlas-on-axis): contact the posterior transverse processes of C1. Flex the head to about 45° first to lock out lower cervical motion, then test rotation only — AA has no flexion/extension/sidebending diagnosis; it is the “no” joint (rotation) as opposed to OA the “yes” joint (flexion/extension).",
+      "AA rule: name the freer rotation side only, e.g. rotates better right → “AA Rr”.",
+      "Lower cervical C2-C7: contact the articular pillars, not the sharp lateral transverse processes. Screen all the way to C7 even if an upper segment (e.g. C3/C4) already felt restricted, then perform the 3-position diagnosis (neutral → flexion → extension) on the single most restricted segment.",
+      "Lower cervical rule: translation left corresponds to right sidebending (and vice versa); sidebending and rotation couple to the SAME side here — but this is not “true” Fryette mechanics, because it's driven by the saddle-shaped uncovertebral (Luschka) joints, not facet orientation alone.",
+      "Name the lower cervical segment with position + sidebending + rotation, e.g. “C5 ESRl” (extended, sidebent left, rotated left) or “C4 FSRr”."
+    ],
+    normal: "Accurate diagnosis means the OA, AA, and lower cervical names all reflect the position of greatest EASE/freedom (not the restricted direction), and that the coupling rule used for each region is correct — opposite for OA, rotation-only for AA, same-side (uncovertebral-driven) for lower cervical.",
+    images: [
+      {src:"assets/atlantoaxial_no_joint.jpg", caption:"Atlantoaxial (AA) motion — the “no” joint: ~50% of cervical rotation occurs here, with only 10–12° of flexion/extension and 1–2° of sidebending, which is why AA is diagnosed by rotation alone. (Source: OMM Week 2 lecture slides)"},
+      {src:"assets/lower_cervical_uncovertebral_joints.jpg", caption:"Lower cervical unit motion (C2-C7) — sidebending and rotation are coupled to the same side because of vertebral body shape, facet orientation, and the uncovertebral (Luschka) joints. (Source: OMM Week 2 lecture slides)"}
+    ]
+  },
+  6: {
+    name: "Thoracic Spine Screening (T1-T12) and Thoracic Outlet",
+    purpose: "A fast seated screen of the entire thoracic spine plus the thoracic outlet/inlet region to find the Area of Greatest Resistance before full segmental diagnosis.",
+    steps: [
+      "Patient seated. Place one hand on the patient's shoulder and monitor with the other hand just lateral to the spinous processes/facets at each level.",
+      "Use the shoulder hand to add a gentle compressive force directed inferiorly and toward the segment being tested, inducing segmental motion under the monitoring hand.",
+      "Move the monitoring hand down one level at a time and repeat, screening the entire thoracic spine T1-T12 — use only enough flexion/extension to move the target segment; too much motion “leaks” into neighboring segments or the pelvis/SI joint.",
+      "Identify the Area of Greatest Resistance (AGR) across the thoracic column — the segment or group curve that feels most restricted/asymmetric compared to its neighbors.",
+      "Also screen the thoracic outlet/inlet (the costoclavicular space bounded by rib 1, the clavicle, and the manubrium) — test its sidebending and rotation independently of one another (they are not assumed to couple the way vertebral segments do)."
+    ],
+    normal: "A good screen identifies the single most restricted thoracic segment/group AND separately characterizes the thoracic outlet/inlet's motion, with appropriate bilateral contact and force vectors throughout. Course materials for this region focus mainly on the general thoracic segmental screen (below); a dedicated photo specifically illustrating thoracic-outlet screening was not found in the source slide decks, so that half of this row is covered in text only — see BUILD_NOTES.md.",
+    images: [
+      {src:"assets/thoracic_lumbar_screen_seated.jpg", caption:"Seated thoracic/lumbar screen — one hand on the shoulder to add compressive force, the other monitoring just lateral to the spinous processes, moving level by level to find the Area of Greatest Resistance. (Source: OMM Week 2 lecture slides, “Thoracic/Lumbar Screen”)"}
+    ]
+  },
+  7: {
+    name: "Thoracic Spine Segmental Diagnosis and Thoracic Outlet",
+    purpose: "A full 3-positional segmental diagnosis of the single most restricted thoracic segment (or group curve) found on screening, plus the thoracic outlet/inlet, using Fryette Type I vs. Type II mechanics.",
+    steps: [
+      "Static screen first: find posterior transverse process prominence/asymmetry with the spine in neutral.",
+      "Dynamic/3-position diagnosis: with a thumb just lateral to the spinous process/facet, test sidebending and rotation at the segment in neutral, then in flexion, then in extension.",
+      "If the asymmetry stays about the same in flexion and extension → Type I (neutral group curve, usually multiple segments, sidebending and rotation OPPOSITE) — name e.g. “T5-T8 NSrRl”.",
+      "If the asymmetry improves in one position and worsens in the other → Type II (single segment, flexed or extended, sidebending and rotation SAME direction) — name e.g. “T4 ESRr” (improves in extension = extended).",
+      "The physician can manage/localize the seated patient's torso by dropping weight through the axilla and hand to add compression, using an arm across the patient's chest/shoulders to induce flexion or extension, and combining weight-drop with body translation to induce sidebending — this is the hands-on skill that makes the 3-position test technically clean.",
+      "Thoracic outlet/inlet: name using sidebending and rotation tested independently, e.g. “Inlet SrRl” — do not assume they couple the way a vertebral segment does.",
+      "Confirm accuracy: the named diagnosis should describe the position of EASE, not the restricted direction."
+    ],
+    normal: "Correct diagnosis reflects (1) whether the segment/group is Type I or Type II based on how the asymmetry behaves in flexion vs. extension, (2) a name that captures position + sidebending + rotation of ease, and (3) a separate, accurate characterization of the thoracic outlet/inlet. As with the screening row, the source slide decks did not include a dedicated thoracic-outlet-diagnosis photo — the seated-torso-management image below illustrates the general hands-on localization skill used for the vertebral 3-position test, which is the same skill applied at the outlet/inlet; see BUILD_NOTES.md for this gap.",
+    images: [
+      {src:"assets/managing_seated_torso.jpg", caption:"Managing the seated patient's torso — compression through the axilla/hand, an arm across the chest to induce flexion/extension, and weight-drop plus translation to induce sidebending; the core hands-on skill for 3-position segmental (and outlet/inlet) diagnosis. (Source: OMM Week 2 lecture slides, “Managing the Patient's Torso”)"}
+    ]
+  },
+  8: {
+    name: "Rib Cage Screening (Ribs 1-12) — Respiratory and Mechanical",
+    purpose: "A complete screen of the entire rib cage for BOTH physiologic respiratory rib dysfunction (inhaled/exhaled, assessed with breathing) and non-physiologic mechanical rib dysfunction (anterior/posterior, assessed by static position) — these are two different naming systems and should not be mixed.",
+    steps: [
+      "Seated rib screen: same process as the thoracic screen, but the monitoring hand moves laterally to the rib angles instead of staying next to the spinous processes.",
+      "Compare the rib-angle finding to the thoracic segmental finding at the same level and note which is more restricted — treat the more restricted finding first.",
+      "Rib 1: contact the posterior first rib near the costotransverse area, and the anterior rib under the clavicle (with consent). Rib 1 has both pump-handle and bucket-handle motion; if it does not rise well on inhalation but exhales fully, it is exhaled.",
+      "Ribs 2-4: contact the upper anterior ribs for pump-handle motion (with consent — respect breast tissue and patient comfort); assess inhalation/exhalation lag.",
+      "Ribs 5-10: use lateral contacts toward the axilla for bucket-handle motion; compare sides during breathing.",
+      "Ribs 11-12: use a posterolateral caliper contact; if a side does not fully exhale, that side is inhaled.",
+      "Mechanical (non-physiologic) ribs: screen posteriorly first and confirm anteriorly if appropriate/consented. Check the related thoracic vertebra first — a posteriorly rotated transverse process can drag the rib posteriorly through costotransverse mechanics, which can be mistaken for a primary rib problem."
+    ],
+    normal: "A thorough screen covers all 12 ribs bilaterally for BOTH respiratory motion (inhaled vs. exhaled) and static mechanical position (anterior vs. posterior subluxation), with contact and force vectors appropriate to each rib group (pump-handle vs. bucket-handle vs. caliper), and correctly separates rib findings from thoracic vertebral findings.",
+    images: [
+      {src:"assets/rib_angle_screen_seated.jpg", caption:"Seated rib screen — same setup as the thoracic screen, but the monitoring hand moves laterally to the rib angles to compare rib motion against the adjacent thoracic segment. (Source: OMM Week 2 lecture slides, “Rib Screen”)"}
+    ]
+  },
+  9: {
+    name: "Rib Cage Diagnosis — Most Restricted Rib",
+    purpose: "An accurate positional/segmental diagnosis of the most restricted rib(s) found on screening, correctly distinguishing physiologic respiratory dysfunction (inhaled/exhaled) from non-physiologic mechanical dysfunction (anterior/posterior subluxation).",
+    steps: [
+      "Physiologic respiratory rib dysfunction is named by how the rib moves with breathing: poor rise/motion on inhalation with a full exhale = exhaled rib dysfunction; failure to fully exhale on one side = inhaled rib dysfunction on that side.",
+      "Non-physiologic mechanical rib dysfunction is a static positional finding, named by comparing the posterior rib angle to the anterior rib on the SAME rib: a deep/less-prominent posterior angle with a prominent anterior rib = anterior rib subluxation; a prominent posterior rib angle with a deep anterior rib = posterior rib subluxation.",
+      "To confirm you are diagnosing the same rib anteriorly and posteriorly, keep a posterior finger on the rib angle and gently move the anterior contact front/back until both contacts are clearly moving the same rib; also compare with adjacent ribs and reproduce local tenderness at that level.",
+      "Mechanical rib diagnosis requires both posterior and anterior palpation of the same rib — explain why, ask permission, start from the safer/less sensitive landmark, and use respectful draping and hand placement.",
+      "Name the finding using the correct system for what you found, e.g. “R rib 1 exhaled” (respiratory) or “rib 4 posterior” (mechanical) — do not mix the two naming systems on the same finding."
+    ],
+    normal: "An accurate diagnosis correctly identifies which rib is most restricted, uses the correct naming system for the type of dysfunction found (inhaled/exhaled for respiratory vs. anterior/posterior for mechanical), and — for mechanical findings — confirms both palpation points are on the same physical rib.",
+    images: [
+      {src:"assets/anterior_vs_posterior_rib_model.jpg", caption:"Anterior vs. posterior mechanical rib subluxation on a rib model — anterior: deep/less-prominent posterior angle with a prominent anterior rib; posterior: prominent posterior angle with a deep anterior rib. (Source: OMM Week 2 lecture slides, course rib model)"}
+    ]
+  }
+};
+
+// ---------- single-select-per-row radio behavior (enlarged tap target) ----------
+document.querySelectorAll('td.grade-cell').forEach(td=>{
+  td.addEventListener('click', function(e){
+    if(e.target.tagName === 'INPUT') return;
+    const box = this.querySelector('input.grade-box');
+    if(box){ box.checked = true; box.dispatchEvent(new Event('change', {bubbles:true})); }
+  });
+});
+
+// ---------- popover logic ----------
+const popover = document.getElementById('popover');
+const popContent = document.getElementById('popContent');
+const overlay = document.getElementById('overlay');
+const popCloseBtn = document.getElementById('popCloseBtn');
+const sidePanelContent = document.getElementById('sidePanelContent');
+const sidePlaceholder = document.getElementById('sidePlaceholder');
+let activeEl = null;
+const isTouch = window.matchMedia('(hover: none)').matches;
+const wideQuery = window.matchMedia('(min-width: 1300px)');
+function isWide(){ return wideQuery.matches; }
+
+function buildContent(key){
+  const d = DATA[key];
+  if(!d) return '<p>No content available.</p>';
+  let html = '<h4>'+d.name+'</h4>';
+  if(d.fallback){
+    html += '<div class="pop-fallback">'+d.fallback+'</div>';
+  }
+  if(d.purpose){
+    html += '<div class="pop-label">Purpose</div><div>'+d.purpose+'</div>';
+  }
+  if(d.steps && d.steps.length){
+    html += '<div class="pop-label">How to Perform</div><ul>'+d.steps.map(s=>'<li>'+s+'</li>').join('')+'</ul>';
+  }
+  if(d.normal){
+    html += '<div class="pop-label">Normal vs. Abnormal / Accuracy</div><div class="pop-normal">'+d.normal+'</div>';
+  }
+  if(d.images && d.images.length){
+    html += '<div class="pop-images">'+d.images.map(im=>
+      '<figure><img src="'+im.src+'" alt="'+im.caption.replace(/"/g,'&quot;')+'" data-caption="'+im.caption.replace(/"/g,'&quot;')+'" title="Tap to enlarge" loading="lazy" onerror="this.parentElement.innerHTML=\'&lt;div style=&quot;padding:10px;font-size:.7rem;color:#b02a2a;border:1px dashed #b02a2a;&quot;&gt;Image failed to load: '+im.src+'&lt;/div&gt;\'"><figcaption>'+im.caption+' <span class="zoom-hint">🔍 tap to enlarge</span></figcaption></figure>'
+    ).join('')+'</div>';
+  }
+  return html;
+}
+
+function positionPopover(target){
+  const rect = target.getBoundingClientRect();
+  const margin = 10;
+  popover.style.display='block'; // measure
+  const pw = popover.offsetWidth;
+  const ph = popover.offsetHeight;
+  let left = rect.left;
+  let top = rect.bottom + margin;
+
+  // horizontal clamp
+  if(left + pw > window.innerWidth - margin){
+    left = window.innerWidth - pw - margin;
+  }
+  if(left < margin) left = margin;
+
+  // vertical: if not enough room below, place above
+  if(top + ph > window.innerHeight - margin){
+    const above = rect.top - ph - margin;
+    if(above > margin){
+      top = above;
+    } else {
+      // clamp within viewport, allow internal scroll
+      top = margin;
+    }
+  }
+  popover.style.left = left+'px';
+  popover.style.top = top+'px';
+}
+
+function openPopover(target){
+  const key = target.getAttribute('data-key');
+  popContent.innerHTML = buildContent(key);
+  document.querySelectorAll('.hoverable.active').forEach(e=>e.classList.remove('active'));
+  target.classList.add('active');
+  activeEl = target;
+  popover.classList.add('open');
+  overlay.classList.add('open');
+  positionPopover(target);
+}
+
+// side panel: no open/close race, just swap content in place — nothing to blink
+function showInPanel(target){
+  const key = target.getAttribute('data-key');
+  sidePanelContent.innerHTML = buildContent(key);
+  sidePlaceholder.classList.add('hidden');
+  document.querySelectorAll('.hoverable.active').forEach(e=>e.classList.remove('active'));
+  target.classList.add('active');
+}
+
+function closePopover(){
+  popover.classList.remove('open');
+  popover.style.display = '';
+  overlay.classList.remove('open');
+  if(activeEl) activeEl.classList.remove('active');
+  activeEl = null;
+}
+
+let closeTimer = null;
+function scheduleClose(){
+  clearTimeout(closeTimer);
+  closeTimer = setTimeout(closePopover, 220);
+}
+function cancelClose(){
+  clearTimeout(closeTimer);
+}
+
+document.querySelectorAll('.hoverable').forEach(el=>{
+  if(!isTouch){
+    el.addEventListener('mouseenter', ()=>{
+      if(isWide()){ showInPanel(el); return; }
+      cancelClose(); openPopover(el);
+    });
+    el.addEventListener('mouseleave', ()=>{
+      if(isWide()) return; // side panel keeps showing the last-hovered test, nothing to close
+      scheduleClose();
+    });
+    el.addEventListener('focus', ()=>{
+      if(isWide()){ showInPanel(el); return; }
+      cancelClose(); openPopover(el);
+    });
+    el.addEventListener('blur', ()=>{
+      if(isWide()) return;
+      scheduleClose();
+    });
+  }
+  el.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    if(isWide()){ showInPanel(el); return; }
+    if(activeEl===el && popover.classList.contains('open')){
+      closePopover();
+    } else {
+      openPopover(el);
+    }
+  });
+});
+
+overlay.addEventListener('click', closePopover);
+popCloseBtn.addEventListener('click', closePopover);
+document.addEventListener('keydown', (e)=>{ if(e.key==='Escape'){ closeLightbox(); closePopover(); } });
+
+// ---------- lightbox (click-to-enlarge images) ----------
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightboxImg');
+const lightboxCaption = document.getElementById('lightboxCaption');
+const lightboxCloseBtn = document.getElementById('lightboxCloseBtn');
+
+function openLightbox(src, alt, caption){
+  lightboxImg.src = src;
+  lightboxImg.alt = alt || '';
+  lightboxCaption.textContent = caption || '';
+  lightbox.classList.add('open');
+}
+function closeLightbox(){
+  lightbox.classList.remove('open');
+  lightboxImg.src = '';
+}
+
+document.addEventListener('click', (e)=>{
+  const img = e.target.closest('#popContent .pop-images img, #sidePanelContent .pop-images img');
+  if(!img) return;
+  e.stopPropagation();
+  openLightbox(img.src, img.alt, img.getAttribute('data-caption') || '');
+});
+
+lightboxCloseBtn.addEventListener('click', closeLightbox);
+lightbox.addEventListener('click', (e)=>{ if(e.target===lightbox) closeLightbox(); });
+window.addEventListener('scroll', ()=>{ if(popover.classList.contains('open') && activeEl) positionPopover(activeEl); }, true);
+window.addEventListener('resize', ()=>{ if(popover.classList.contains('open') && activeEl) positionPopover(activeEl); });
+wideQuery.addEventListener('change', (e)=>{
+  if(e.matches) closePopover(); // switched into side-panel mode — drop the floating card
+});
+
+// keep popover open while hovering the popover itself (desktop), close on leaving it
+if(!isTouch){
+  popover.addEventListener('mouseenter', cancelClose);
+  popover.addEventListener('mouseleave', scheduleClose);
+}
+</script>
+
+</body>
+</html>
