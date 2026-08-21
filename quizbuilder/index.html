@@ -925,9 +925,17 @@ ${quizNameRule}
 6. Only then write the vignette around that plan — write the MSE and any closing patient quote LAST so they earn their place as the tiebreaker/punchline.
 Never show this planning. Only the finished items appear in output.
 
+════════ IF YOU ARE A SMALLER / LESS RELIABLE MODEL ════════
+The planning protocol above and the ANSWER BALANCE CHECK below only work if they actually run — a weaker model will often silently "claim" a hidden step and skip straight to output, which is exactly how unbalanced or low-quality batches slip through. If you are not a large frontier-scale model, don't trust yourself to do this invisibly:
+1. Before anything else, output exactly one line of plain text, nothing else on it, no braces or brackets in it: "I just need to run a check before outputting the answers."
+2. On the next lines, visibly run the ANSWER BALANCE CHECK (list every item's correct letter in order, tally A–E, fix and re-tally if uneven).
+3. Then output the final JSON object as the very next thing, with nothing after it — still no markdown fences, no backticks, no other commentary.
+If you are a large/frontier-capable model, ignore this section: do the planning and balance check silently and output only the JSON per the contract above.
+
 ════════ PROFILE SELECTION ════════
 - NBME profile (default): straight DSM-5 differential, lab-value clues, separate "Which of the following..." question line. Typical stem 90–160 words.
 - NBOME profile: use when source includes OMM/structural findings, cranial concepts, viscerosomatic reflexes, forensic psych, iatrogenic scenarios, or osteopathic content. The ask is usually folded into the final sentence ("...The most likely diagnosis is"). Typical stem 60–120 words — tighter than NBME.
+- RECALL profile: no patient at all — a bare fact/mechanism/criteria question ("Which of the following receptors...", "Which of the following benzodiazepines has the shortest half-life?", "Which of the following is a DSM-5-TR diagnostic criterion for X?"). Use for pharmacology (half-lives, receptor mechanisms), epidemiology/prevalence comparisons, and DSM criteria recognition. See ITEM FORMAT VARIETY below.
 - A batch may mix profiles if the source content mixes.
 
 ════════ NBME VIGNETTE SKELETON (follow in order) ════════
@@ -940,6 +948,15 @@ Never show this planning. Only the finished items appear in output.
 7. Optional short patient/family quote carrying outsized diagnostic weight.
 8. Fixed ask phrasings: "Which of the following is the most likely diagnosis?" / "...most appropriate next step in management?" / "...next step in diagnosis?" / "...most appropriate pharmacotherapy?" / "...most appropriate at this point?" (communication items).
 For pediatric items, drop in age-appropriate developmental milestones as reassurance or red herring.
+This 8-step skeleton is for full clinical-vignette items only — see ITEM FORMAT VARIETY for the other item shapes a real batch needs.
+
+════════ ITEM FORMAT VARIETY (calibrated from real course exams) ════════
+Not every item is a full 90–160 word ED/clinic-encounter vignette. Real exams for this content mix in three other shapes — use all of them across a batch, not just the NBME skeleton:
+- COMPACT NARRATIVE vignette (2–5 sentences, third-person descriptive voice rather than a clinical encounter — "Lucy is a 32-year-old woman who lives alone on welfare..."). Best for personality-disorder and phobia-subtype pattern recognition, where the diagnosis rests on a cluster of everyday behavioral details rather than a buried lab/vital clue.
+- ONE-LINE applied-concept stems that test a single skill with no patient history at all, e.g. "The psychiatrist asks a patient to spell 'world' backwards. Which of the following is being evaluated with this question?"
+- RECALL items (see RECALL profile above) — bare fact/mechanism/criteria questions with no patient at all.
+- DOSE-SEQUENCING items — a patient has already failed or maxed a named drug at a stated dose (state the drug, dose, and dose range/max explicitly, e.g. "fluvoxamine 300 mg PO QD (maximum dose)"), and the ask is the next appropriate step: augment, cross-taper, add adjunctive agent, or switch class. The correct answer must reflect actual next-line evidence for that residual symptom, not just any other drug in the same class.
+Target mix across a batch of 15+: roughly 55–65% full clinical vignette (NBME/NBOME skeleton), 20–30% compact narrative or one-line stems, 10–15% pure recall/dose-sequencing. Scale proportionally for other batch sizes — never force every item into the long-vignette mold just because the skeleton above is the default.
 
 ════════ NAMED TRAP PATTERNS — use across the batch ════════
 NBME signature moves:
@@ -963,7 +980,14 @@ NBOME signature moves (layer onto the same skeleton):
 - All distractors must remain plausible to a reader who missed the buried clue.
 
 ════════ BATCH BLUEPRINT ════════
-Across the batch, mix item types roughly as: 40–50% most-likely-diagnosis, 15–20% next-step management, 10–15% pharmacotherapy (including at least one contraindication/avoid item when the content supports it), 10–15% mechanism/neuroanatomic correlate or lab-workup, and 1 communication/ethics item when the content touches patient interaction. Where the source supports it, build one 2–3 question chain off the same clinical stem (presentation → diagnosis → mechanism/treatment). Do not use the same correct diagnosis more than twice per batch. Balance correct letters: for 15 questions each letter should be correct 2–4 times — tally before output and reassign by swapping option order where needed.
+Across the batch, mix item types roughly as: 40–50% most-likely-diagnosis, 15–20% next-step management, 10–15% pharmacotherapy (including at least one contraindication/avoid item, and — when the content supports it — one dose-sequencing item per ITEM FORMAT VARIETY), 10–15% mechanism/neuroanatomic/receptor-pharmacology correlate or lab-workup, and 1 communication/ethics item when the content touches patient interaction. Layer in the compact-narrative, one-line, and recall shapes from ITEM FORMAT VARIETY — do not make every item a full vignette. Where the source supports it, build one 2–3 question chain off the same clinical stem (presentation → diagnosis → mechanism/treatment). Do not use the same correct diagnosis more than twice per batch. Run the ANSWER BALANCE CHECK below before output — do not eyeball it.
+
+════════ ANSWER BALANCE CHECK (mandatory, run after drafting all items, before output) ════════
+1. List every item's correct letter in the order the items appear (e.g., C, A, D, B, E, C, A, ...).
+2. Tally the totals per letter A–E. Target: each letter within ±1 of (question count ÷ 5) — e.g., 15 questions → each letter correct 2–4 times; 20 questions → 3–5 times; for small batches (<5) just avoid the same letter twice in a row and avoid an all-C or all-B set.
+3. Also check for streaks: the same letter should not be correct for 3 consecutive items even if the raw tally is balanced.
+4. Fix any imbalance or streak by reordering the CHOICE LIST for specific items (move the correct option to a different letter slot and reshuffle the distractors around it) — never by changing which option is medically correct, and never by making an option worded to sound more/less correct because of its position.
+5. Re-tally after adjusting and repeat until both the count and streak checks pass. Only then produce the final JSON.
 
 ════════ ANTI-PATTERNS — never do these ════════
 - Diagnostic label language in the stem ("appears depressed," "has hallucinations" is fine in MSE; "is clearly manic" is not).
@@ -987,10 +1011,16 @@ EXEMPLAR 2 — NBOME profile (inline ask, duration arithmetic):
 Options: A. adjustment disorder / B. attention-deficit/hyperactivity disorder / C. conduct disorder / D. major depressive disorder / E. oppositional defiant disorder. Correct: A.
 Architecture: duration arithmetic is the buried clue — 2 months of symptoms beginning within 3 months of an identifiable stressor fits adjustment disorder, while ODD requires ≥6 months; the decoy = arguing/defiance surface-reads as ODD; the explicit negatives (no cruelty, destruction, theft; sleep and appetite intact) each rule out one listed option (conduct disorder; MDD); the previously-well-behaved baseline blocks ADHD; the ask is folded into the final sentence per NBOME style.
 
+EXEMPLAR 3 — compact narrative + recall (ITEM FORMAT VARIETY):
+"Lucy is a 32-year-old woman who lives alone on welfare in a small apartment. She has no apparent friends. Her neighbors consider her peculiar, and the neighborhood children often tease her about her appearance. Lucy's clothes appear slightly askew, and her makeup is unusual. She is generally suspicious of other people and often makes strange gestures when she passes people in the street. Her social worker reports that Lucy is always anxious during their meetings and has a very limited range of emotional expression, accompanied by unusual beliefs that she has special telepathic powers. Which of the following personality disorders is most likely?"
+Options: A. Avoidant / B. Borderline / C. Schizotypal / D. Schizoid / E. Paranoid. Correct: C.
+Architecture: no clinical encounter framing at all — third-person descriptive voice; the cluster of odd behavior + odd beliefs (magical thinking) + constricted affect + social avoidance is the whole clue, distributed across the paragraph rather than buried in one line; distractors are the adjacent Cluster A/B/C personality disorders that each explain only part of the picture (Schizoid = no odd beliefs; Paranoid = no magical thinking; Avoidant = wants friends and lacks odd beliefs).
+Paired RECALL item (no patient at all): "Which of the following personality disorders is most common in the biological relatives of patients with schizophrenia?" A. Schizoid / B. Paranoid / C. Schizotypal / D. Histrionic / E. Antisocial. Correct: C. — a bare epidemiology fact, zero vignette, tests the same concept from a different angle.
+
 ════════ QUALITY GATE — run silently on every item before output ════════
-Structure: opening line complete · exact duration present · behavioral wording · ≥1 explicit negative · MSE near the end.
-Trap: exactly one buried clue · one separate dramatic decoy · every negative rules out a listed option.
-Options: parallel category · ≥1 same-family distractor · all plausible without the clue · mutually exclusive · exactly one unambiguously correct · no length bias · letters balanced across the batch.
+Structure (full-vignette items only): opening line complete · exact duration present · behavioral wording · ≥1 explicit negative · MSE near the end. Compact-narrative/one-line/recall items are exempt from this row by design — see ITEM FORMAT VARIETY.
+Trap (full-vignette items only): exactly one buried clue · one separate dramatic decoy · every negative rules out a listed option.
+Options (every item, every format): parallel category · ≥1 same-family distractor · all plausible without the clue · mutually exclusive · exactly one unambiguously correct · no length bias · passes the ANSWER BALANCE CHECK.
 Match: stem type = answer type · management answers are conservative-first · communication items follow the hierarchy · NBOME items use structural findings correctly (confirmatory or rule-out, never decorative) and internally consistent duration math.
 If an item fails after 2–3 silent revisions, drop it and write a replacement. Never ship a failing item and never show the checklist.
 
