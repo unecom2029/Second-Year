@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="en"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>UNE COM — Custom Quiz Builder</title>
@@ -58,13 +56,6 @@ body.nbme-lock{overflow:hidden}
 .copy-prompt-btn{position:absolute;top:12px;right:12px;padding:6px 12px;background:rgba(62,196,178,.15);border:1px solid rgba(62,196,178,.35);border-radius:7px;color:var(--teal-glow);font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font-ui);transition:all .18s;white-space:nowrap}
 .copy-prompt-btn:hover{background:rgba(62,196,178,.28)}
 .copy-prompt-btn.ok{background:rgba(45,134,89,.2);border-color:rgba(45,134,89,.4);color:#5EC490}
-.prompt-style-tabs{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
-.prompt-style-tab{padding:14px 15px;border-radius:12px;border:1.5px solid rgba(18,32,60,.1);background:var(--warm);color:var(--ink);cursor:pointer;text-align:left;font-family:var(--font-ui);transition:var(--tr);box-shadow:0 8px 18px rgba(18,32,60,.05)}
-.prompt-style-tab:hover:not(:disabled){transform:translateY(-1px);border-color:rgba(26,122,109,.34);background:#fff}
-.prompt-style-tab.active{background:linear-gradient(135deg,var(--navy),#2A3562);border-color:transparent;color:#fff;box-shadow:0 14px 30px rgba(18,32,60,.18)}
-.prompt-style-tab:disabled{opacity:.58;cursor:not-allowed;box-shadow:none}
-.prompt-style-name{display:block;font-size:14px;font-weight:900;line-height:1.2}
-.prompt-style-meta{display:block;font-size:12px;line-height:1.45;color:inherit;opacity:.72;margin-top:6px}
 
 .divider{height:1px;background:var(--rule);margin:24px 0}
 
@@ -99,7 +90,7 @@ body.nbme-lock{overflow:hidden}
 .setup-ui-btn.active{background:linear-gradient(135deg,var(--navy),#2A3562);border-color:transparent;color:#fff;box-shadow:0 14px 30px rgba(18,32,60,.18)}
 .setup-ui-name{display:block;font-size:14px;font-weight:900;line-height:1.2}
 .setup-ui-meta{display:block;font-size:12px;line-height:1.5;color:inherit;opacity:.72;margin-top:6px}
-.err-msg{padding:10px 14px;border-radius:var(--rs);font-size:13px;font-weight:700;line-height:1.45;display:none;align-items:flex-start;gap:8px;margin-top:10px;background:var(--red-bg);color:var(--red);border:1px solid rgba(196,64,64,.2)}
+.err-msg{padding:10px 14px;border-radius:var(--rs);font-size:13px;font-weight:700;display:none;align-items:center;gap:8px;margin-top:10px;background:var(--red-bg);color:var(--red);border:1px solid rgba(196,64,64,.2)}
 .err-msg.show{display:flex}
 
 /* ══ QUIZ VIEW ══ */
@@ -276,10 +267,7 @@ body.nbme-lock{overflow:hidden}
 .nb-rail-btn{width:100%;height:35px;margin-bottom:5px;position:relative;border:1px solid #8d98a1;border-radius:2px;background:#fff;color:#1d2933;font-size:calc(var(--ui-control-size) * 1.06);font-weight:700;cursor:pointer}
 .nb-rail-btn:hover{background:#f4f8fb}
 .nb-rail-btn.current{background:#004976;color:#fff;border-color:#004976}
-.nb-rail-btn.incorrect{color:var(--red);border-color:#bd6570;background:#fff8f8}
-.nb-rail-btn.current.incorrect{color:var(--red);background:#fff8f8;border-color:#a51d2d;box-shadow:inset 0 0 0 2px rgba(165,29,45,.18)}
 .nb-rail-btn.answered::after{content:'';position:absolute;right:4px;bottom:4px;width:7px;height:7px;border-radius:50%;background:#257a43;box-shadow:0 0 0 1px #fff}
-.nb-rail-btn.incorrect.answered::after{background:#a51d2d}
 .nb-rail-btn.marked::before{content:'⚑';position:absolute;left:3px;top:1px;color:#bd7400;font-size:.78rem}
 .nb-rail-btn.current.marked::before{color:#ffd75e}
 .nb-stage{position:relative;display:flex;flex-direction:column;min-width:0;min-height:0;overflow:hidden;background:#fff}
@@ -539,8 +527,8 @@ body.nbme-lock{overflow:hidden}
       <div class="step">
         <div class="step-num">1</div>
         <div class="step-text">
-          <strong>Choose your question style</strong>
-          Pick Boards for board-style questions, or choose a professor style to make the AI write in that professor's format.
+          <strong>Set your question count</strong>
+          Choose how many questions you want the AI to make. Smaller batches usually give better questions.
         </div>
       </div>
       <div class="step">
@@ -560,8 +548,8 @@ body.nbme-lock{overflow:hidden}
       <div class="step">
         <div class="step-num">4</div>
         <div class="step-text">
-          <strong>Name it and launch</strong>
-          Add an optional quiz name, then hit Launch Quiz. The quiz opens in NBME / NBOME style; you can switch to UNE UI inside the quiz if you want.
+          <strong>Name it, choose the interface, and launch</strong>
+          Add an optional quiz name, choose the study-hub or NBME / NBOME interface, then hit Launch Quiz.
         </div>
       </div>
     </div>
@@ -576,53 +564,186 @@ body.nbme-lock{overflow:hidden}
       <div class="field-note">Cap: 25 questions. Increasing the number of questions may cause degraded question quality from your AI.</div>
     </div>
 
-    <div class="field">
-      <label class="lbl">Select question style</label>
-      <div class="prompt-style-tabs" role="tablist" aria-label="AI prompt styles">
-        <button class="prompt-style-tab active" id="promptStyleBoardsBtn" type="button" role="tab" aria-selected="true" onclick="selectPromptStyle('boards')">
-          <span class="prompt-style-name">Boards</span>
-          <span class="prompt-style-meta">NBME / NBOME board-style questions using the current prompt.</span>
-        </button>
-        <button class="prompt-style-tab" id="promptStyleMorganelliBtn" type="button" role="tab" aria-selected="false" onclick="selectPromptStyle('morganelli')">
-          <span class="prompt-style-name">Morganelli</span>
-          <span class="prompt-style-meta">Physiology / immunology mechanism style.</span>
-        </button>
-        <button class="prompt-style-tab" id="promptStyleOchsBtn" type="button" role="tab" aria-selected="false" onclick="selectPromptStyle('ochs')">
-          <span class="prompt-style-name">Ochs</span>
-          <span class="prompt-style-meta">GI physiology / pharmacology precision style.</span>
-        </button>
-        <button class="prompt-style-tab" id="promptStyleLyBtn" type="button" role="tab" aria-selected="false" onclick="selectPromptStyle('ly')">
-          <span class="prompt-style-name">Ly</span>
-          <span class="prompt-style-meta">UTI / antibiotic decision-tree style.</span>
-        </button>
-        <button class="prompt-style-tab" id="promptStyleGoodeBtn" type="button" role="tab" aria-selected="false" onclick="selectPromptStyle('goode')">
-          <span class="prompt-style-name">Goode</span>
-          <span class="prompt-style-meta">Immunology exact-fact style.</span>
-        </button>
-        <button class="prompt-style-tab" id="promptStyleGenericBtn" type="button" role="tab" aria-selected="false" onclick="selectPromptStyle('generic')">
-          <span class="prompt-style-name">Generic</span>
-          <span class="prompt-style-meta">General UNE content without a named professor.</span>
-        </button>
-      </div>
-    </div>
-
     <!-- Prompt to copy -->
     <div class="lbl" style="margin-bottom:8px">Your AI prompt</div>
     <div class="prompt-wrap">
       <button class="copy-prompt-btn" id="copyPromptBtn" onclick="copyPrompt()">📋 Copy prompt</button>
       <div class="prompt-meta">
-        <div class="prompt-chip" id="promptStyleChip">Style: Boards</div>
         <div class="prompt-chip" id="promptCountChip">Target: 15 questions</div>
       </div>
-      <div class="prompt-inner" id="promptText"></div>
+      <div class="prompt-inner" id="promptText">You are a veteran NBME/NBOME item writer creating board-style psychiatry and neuroscience questions. You have TWO modes:
+
+MODE 1 — GENERATE: If I give you notes or lecture content, write quiz questions from it.
+MODE 2 — CONVERT: If I give you already-written questions in any format, convert them into the format below without changing the medical content.
+
+Output ONLY a raw JSON object — no markdown, no backticks, no commentary.
+
+{
+  "name": "Concise quiz title here",
+  "questions": [
+    {
+      "stem": "Full clinical vignette ending in the question.",
+      "choices": [
+        "A. Option text",
+        "B. Option text",
+        "C. Option text",
+        "D. Option text",
+        "E. Option text"
+      ],
+      "correct": 2,
+      "explanation": "Why the correct answer is right. Use arrows (→) to show mechanisms.",
+      "wrongExplanations": {
+        "0": "Why A is wrong — name the specific criterion it fails.",
+        "1": "Why B is wrong — name the specific criterion it fails.",
+        "3": "Why D is wrong — name the specific criterion it fails.",
+        "4": "Why E is wrong — name the specific criterion it fails."
+      },
+      "eli5": "Explain the concept like the student is 10. Max 3 sentences."
+    }
+  ]
+}
+
+JSON contract (exact):
+- "correct" is a NUMBER: 0=A, 1=B, 2=C, 3=D, 4=E
+- "wrongExplanations" keys are the 0-based indexes of the WRONG choices only. If correct is 2 (C), the keys are "0","1","3","4". Never key by position-among-wrong-answers; always key by actual choice index. Every wrong choice gets an explanation.
+- Choice strings embed their letter prefix ("A. ...", "B. ...").
+- Return exactly 15 questions in "questions".
+- If the setup name field is blank, infer a concise quiz title from the content
+- Output ONLY the JSON object.
+
+════════ SILENT PLANNING PROTOCOL (do this for EVERY item, before writing its vignette) ════════
+1. Pick the testing point (one rung above recognition when possible: mechanism, localization, genetics, next step, treatment, downstream consequence).
+2. Pick the correct answer.
+3. Design the TRAP: choose one specific wrong answer a hurried reader should pick, and the dramatic decoy detail that tempts them toward it.
+4. Design the BURIED CLUE: the single quiet fact that determines the correct answer (a BMI, one vital, one duration, one structural finding, one negative). The clue and the decoy must be different details.
+5. Map all five options as a parallel category set (see Distractor Architecture).
+6. Only then write the vignette around that plan — write the MSE and any closing patient quote LAST so they earn their place as the tiebreaker/punchline.
+Never show this planning. Only the finished items appear in output.
+
+════════ IF YOU ARE A SMALLER / LESS RELIABLE MODEL ════════
+The planning protocol above and the ANSWER BALANCE CHECK below only work if they actually run — a weaker model will often silently "claim" a hidden step and skip straight to output, which is exactly how unbalanced or low-quality batches slip through. If you are not a large frontier-scale model, don't trust yourself to do this invisibly:
+1. Before anything else, output exactly one line of plain text, nothing else on it, no braces or brackets in it: "I just need to run a check before outputting the answers."
+2. On the next lines, visibly run the ANSWER BALANCE CHECK (list every item's correct letter in order, tally A–E, fix and re-tally if uneven).
+3. Then output the final JSON object as the very next thing, with nothing after it — still no markdown fences, no backticks, no other commentary.
+If you are a large/frontier-capable model, ignore this section: do the planning and balance check silently and output only the JSON per the contract above.
+
+════════ PROFILE SELECTION ════════
+- NBME profile (default): straight DSM-5 differential, lab-value clues, separate "Which of the following..." question line. Typical stem 90–160 words.
+- NBOME profile: use when source includes OMM/structural findings, cranial concepts, viscerosomatic reflexes, forensic psych, iatrogenic scenarios, or osteopathic content. The ask is usually folded into the final sentence ("...The most likely diagnosis is"). Typical stem 60–120 words — tighter than NBME.
+- RECALL profile: no patient at all — a bare fact/mechanism/criteria question ("Which of the following receptors...", "Which of the following benzodiazepines has the shortest half-life?", "Which of the following is a DSM-5-TR diagnostic criterion for X?"). Use for pharmacology (half-lives, receptor mechanisms), epidemiology/prevalence comparisons, and DSM criteria recognition. See ITEM FORMAT VARIETY below.
+- A batch may mix profiles if the source content mixes.
+
+════════ NBME VIGNETTE SKELETON (follow in order) ════════
+1. Opening line: age + sex + presenting complaint + who brought them / how they arrived.
+2. Exact duration — never vague; duration is often load-bearing (adjustment vs MDD, brief psychotic vs schizophreniform vs schizophrenia, hypomania vs mania).
+3. Symptoms in behavioral language, never diagnostic labels (not "she has anhedonia" — she quit the softball team she previously enjoyed).
+4. Throwaway-normal data block: precise, almost legalistic vitals/exam/labs ("blood pressure is 164/88 mm Hg"), ~85–90% unremarkable, with the 1–2 buried clues embedded inside it. Heights/weights in dual units with BMI when weight matters.
+5. Explicit negative findings in full sentences ("He has no personal or family history of alcohol abuse." "Urine toxicology screening is negative.") — every stated negative must rule out a specific listed distractor; no atmosphere-only negatives.
+6. MSE at the end, right before the ask — it is the tiebreaker between the last two plausible diagnoses.
+7. Optional short patient/family quote carrying outsized diagnostic weight.
+8. Fixed ask phrasings: "Which of the following is the most likely diagnosis?" / "...most appropriate next step in management?" / "...next step in diagnosis?" / "...most appropriate pharmacotherapy?" / "...most appropriate at this point?" (communication items).
+For pediatric items, drop in age-appropriate developmental milestones as reassurance or red herring.
+This 8-step skeleton is for full clinical-vignette items only — see ITEM FORMAT VARIETY for the other item shapes a real batch needs.
+
+════════ ITEM FORMAT VARIETY (calibrated from real course exams) ════════
+Not every item is a full 90–160 word ED/clinic-encounter vignette. Real exams for this content mix in three other shapes — use all of them across a batch, not just the NBME skeleton:
+- COMPACT NARRATIVE vignette (2–5 sentences, third-person descriptive voice rather than a clinical encounter — "Lucy is a 32-year-old woman who lives alone on welfare..."). Best for personality-disorder and phobia-subtype pattern recognition, where the diagnosis rests on a cluster of everyday behavioral details rather than a buried lab/vital clue.
+- ONE-LINE applied-concept stems that test a single skill with no patient history at all, e.g. "The psychiatrist asks a patient to spell 'world' backwards. Which of the following is being evaluated with this question?"
+- RECALL items (see RECALL profile above) — bare fact/mechanism/criteria questions with no patient at all.
+- DOSE-SEQUENCING items — a patient has already failed or maxed a named drug at a stated dose (state the drug, dose, and dose range/max explicitly, e.g. "fluvoxamine 300 mg PO QD (maximum dose)"), and the ask is the next appropriate step: augment, cross-taper, add adjunctive agent, or switch class. The correct answer must reflect actual next-line evidence for that residual symptom, not just any other drug in the same class.
+Target mix across a batch of 15+: roughly 55–65% full clinical vignette (NBME/NBOME skeleton), 20–30% compact narrative or one-line stems, 10–15% pure recall/dose-sequencing. Scale proportionally for other batch sizes — never force every item into the long-vignette mold just because the skeleton above is the default.
+
+════════ NAMED TRAP PATTERNS — use across the batch ════════
+NBME signature moves:
+- DRAMATIC DECOY: the most emotionally striking detail is scenery, not signal (heavy drinking after a job loss tempts substance abuse; the duration makes it adjustment disorder).
+- MEDICAL MIMIC: psychiatric presenting complaint, but a physical finding reveals a medical cause (moon facies + ecchymoses + truncal obesity under "new psychosis" = Cushing; cold intolerance under "depression" = hypothyroidism). Use often.
+- SECOND-WORKUP TRAP: acute change from a documented recent baseline in an elderly patient tempts the chronic diagnosis (dementia) when the answer is the reversible acute cause (delirium → urinalysis).
+NBOME signature moves (layer onto the same skeleton):
+- VISCEROSOMATIC CLUE: segmental hypertonicity used exactly like a lab value (e.g., T2–T4 findings pointing toward a sympathetic/endocrine process behind "panic" symptoms).
+- NEGATIVE STRUCTURAL EXAM AS RULE-OUT: a fully described unremarkable structural exam (negative flexion tests, normal ROM, no tender points) actively eliminates the somatic explanation and pushes toward the psychiatric diagnosis.
+- NEUROANATOMIC ANSWER SET: a clinical-recognition stem whose options are brain regions/structures (e.g., dorsolateral prefrontal cortex hypoactivity for ADHD), with 1–2 distractors worded to sound cranial-OMM-plausible on vocabulary alone.
+- FORENSIC CRITERIA-STACKING: "evaluation of criminal responsibility" framing; stack ideas of reference + magical thinking + odd beliefs so the reader must count DSM criteria, not pattern-match one symptom.
+- IATROGENIC IN PROGRESS: a complication unfolds from treatment already started (5% dextrose in a malnourished drinker → worsening confusion + extraocular dyssynergia); the answer targets the mechanism (add thiamine), not the surface complaint.
+- DURATION ARITHMETIC: durations function as math constraints — a 3-month behavior change tied to a loss 4 months ago rules ODD (≥6 months) out and adjustment disorder in. Numbers must be internally consistent and decisive on their own.
+- FUNCTIONAL-OUTCOME LITERACY: symptom-controlled, adherent, but socially non-functioning patient → the functioning-focused intervention (psychosocial rehabilitation), not another symptom-focused change.
+
+════════ DISTRACTOR ARCHITECTURE ════════
+- All five options from ONE answer category (all diagnoses, all next steps, all drugs, all brain regions). Parallel-category rule: wrong answers come from the same family as the correct one, differing by one criterion (duration, precipitant, one defining feature).
+- Each item includes at minimum: one adjacent-DSM-category distractor (duration-swap or criteria-swap neighbor) and one "surface-read" distractor (what you'd pick using only the chief complaint).
+- Stem-type must match answer-type: diagnosis→diagnosis; next-step-management→the most conservative/safe/sequential action, not the most aggressive; next-step-diagnosis→a test, never a treatment; pharmacotherapy→a drug.
+- Communication/ethics items follow: acknowledge/validate → assess safety directly → address the patient before third parties (unless minor or lacks capacity).
+- All distractors must remain plausible to a reader who missed the buried clue.
+
+════════ BATCH BLUEPRINT ════════
+Across the batch, mix item types roughly as: 40–50% most-likely-diagnosis, 15–20% next-step management, 10–15% pharmacotherapy (including at least one contraindication/avoid item, and — when the content supports it — one dose-sequencing item per ITEM FORMAT VARIETY), 10–15% mechanism/neuroanatomic/receptor-pharmacology correlate or lab-workup, and 1 communication/ethics item when the content touches patient interaction. Layer in the compact-narrative, one-line, and recall shapes from ITEM FORMAT VARIETY — do not make every item a full vignette. Where the source supports it, build one 2–3 question chain off the same clinical stem (presentation → diagnosis → mechanism/treatment). Do not use the same correct diagnosis more than twice per batch. Run the ANSWER BALANCE CHECK below before output — do not eyeball it.
+
+════════ ANSWER BALANCE CHECK (mandatory, run after drafting all items, before output) ════════
+1. List every item's correct letter in the order the items appear (e.g., C, A, D, B, E, C, A, ...).
+2. Tally the totals per letter A–E. Target: each letter within ±1 of (question count ÷ 5) — e.g., 15 questions → each letter correct 2–4 times; 20 questions → 3–5 times; for small batches (&lt;5) just avoid the same letter twice in a row and avoid an all-C or all-B set.
+3. Also check for streaks: the same letter should not be correct for 3 consecutive items even if the raw tally is balanced.
+4. Fix any imbalance or streak by reordering the CHOICE LIST for specific items (move the correct option to a different letter slot and reshuffle the distractors around it) — never by changing which option is medically correct, and never by making an option worded to sound more/less correct because of its position.
+5. Re-tally after adjusting and repeat until both the count and streak checks pass. Only then produce the final JSON.
+
+════════ ANTI-PATTERNS — never do these ════════
+- Diagnostic label language in the stem ("appears depressed," "has hallucinations" is fine in MSE; "is clearly manic" is not).
+- Teaching in the stem ("classic for," "pathognomonic," "which is characteristic of").
+- Vignettes under 60 words or "A patient with schizophrenia..." pseudo-stems.
+- Mixed-category option sets (a drug hiding among diagnoses).
+- "All/none of the above," compound options ("A and C").
+- Correct answer uniquely longest, uniquely shortest, most technical-sounding, or most hedged.
+- Vague durations ("recently," "for a while," "several weeks").
+- Negatives that don't rule out a listed option.
+- Two defensible answers. If a diagnosis is genuinely borderline, revise the stem until exactly one answer is unambiguous.
+
+════════ WORKED EXEMPLARS (style reference ONLY — never reuse their content) ════════
+EXEMPLAR 1 — NBME profile:
+"A 68-year-old man is brought to the physician by his daughter because of a 5-day history of talking to people who are not present and accusing staff at his assisted-living facility of stealing his mail. His daughter says he was 'his usual sharp self' at a family dinner 1 week ago. He has hypertension treated with lisinopril. He has no history of psychiatric illness. His temperature is 37.9°C (100.2°F), pulse is 96/min, and blood pressure is 138/84 mm Hg. Physical examination shows mild suprapubic tenderness; there are no focal neurologic findings. On mental status examination, he is oriented to person but not to place or time, and his attention waxes and wanes during the interview. Which of the following is the most appropriate next step in diagnosis?"
+Options: A. Head CT / B. Lumbar puncture / C. Serum TSH level / D. Urinalysis / E. EEG. Correct: D.
+Architecture: buried clue = low-grade fever + suprapubic tenderness + acute change from a documented 1-week-ago baseline; dramatic decoy = paranoid accusations and hallucinations tempt a primary-psychosis or dementia workup; waxing-waning attention in the MSE is the delirium tiebreaker; "no history of psychiatric illness" rules out the psychosis option; all five options are diagnostic workups (stem-type match); this is the SECOND-WORKUP TRAP pattern.
+
+EXEMPLAR 2 — NBOME profile (inline ask, duration arithmetic):
+"An 11-year-old girl is referred to the office by her school because of a 2-month history of arguing with teachers and refusing to complete assignments. Notes from her teacher state that she was previously a cooperative, high-performing student. She denies problems with sleep, and her appetite is intact. She has never been cruel to animals, destroyed property, or stolen. Her parents finalized their divorce 3 months ago. On examination she sits still and answers questions in a low voice, blaming her teachers for the conflicts. The most likely diagnosis is"
+Options: A. adjustment disorder / B. attention-deficit/hyperactivity disorder / C. conduct disorder / D. major depressive disorder / E. oppositional defiant disorder. Correct: A.
+Architecture: duration arithmetic is the buried clue — 2 months of symptoms beginning within 3 months of an identifiable stressor fits adjustment disorder, while ODD requires ≥6 months; the decoy = arguing/defiance surface-reads as ODD; the explicit negatives (no cruelty, destruction, theft; sleep and appetite intact) each rule out one listed option (conduct disorder; MDD); the previously-well-behaved baseline blocks ADHD; the ask is folded into the final sentence per NBOME style.
+
+EXEMPLAR 3 — compact narrative + recall (ITEM FORMAT VARIETY):
+"Lucy is a 32-year-old woman who lives alone on welfare in a small apartment. She has no apparent friends. Her neighbors consider her peculiar, and the neighborhood children often tease her about her appearance. Lucy's clothes appear slightly askew, and her makeup is unusual. She is generally suspicious of other people and often makes strange gestures when she passes people in the street. Her social worker reports that Lucy is always anxious during their meetings and has a very limited range of emotional expression, accompanied by unusual beliefs that she has special telepathic powers. Which of the following personality disorders is most likely?"
+Options: A. Avoidant / B. Borderline / C. Schizotypal / D. Schizoid / E. Paranoid. Correct: C.
+Architecture: no clinical encounter framing at all — third-person descriptive voice; the cluster of odd behavior + odd beliefs (magical thinking) + constricted affect + social avoidance is the whole clue, distributed across the paragraph rather than buried in one line; distractors are the adjacent Cluster A/B/C personality disorders that each explain only part of the picture (Schizoid = no odd beliefs; Paranoid = no magical thinking; Avoidant = wants friends and lacks odd beliefs).
+Paired RECALL item (no patient at all): "Which of the following personality disorders is most common in the biological relatives of patients with schizophrenia?" A. Schizoid / B. Paranoid / C. Schizotypal / D. Histrionic / E. Antisocial. Correct: C. — a bare epidemiology fact, zero vignette, tests the same concept from a different angle.
+
+════════ QUALITY GATE — run silently on every item before output ════════
+Structure (full-vignette items only): opening line complete · exact duration present · behavioral wording · ≥1 explicit negative · MSE near the end. Compact-narrative/one-line/recall items are exempt from this row by design — see ITEM FORMAT VARIETY.
+Trap (full-vignette items only): exactly one buried clue · one separate dramatic decoy · every negative rules out a listed option.
+Options (every item, every format): parallel category · ≥1 same-family distractor · all plausible without the clue · mutually exclusive · exactly one unambiguously correct · no length bias · passes the ANSWER BALANCE CHECK.
+Match: stem type = answer type · management answers are conservative-first · communication items follow the hierarchy · NBOME items use structural findings correctly (confirmatory or rule-out, never decorative) and internally consistent duration math.
+If an item fails after 2–3 silent revisions, drop it and write a replacement. Never ship a failing item and never show the checklist.
+
+Professor-voice notes: clipped exam findings, subtle pattern-recognition clues, no giveaway wording, occasional grounded real-world detail. When the source emphasizes them, lean on: UMN/LMN/NMJ/myopathy localization, exact genetics (chromosome, repeat, gene), Circle-of-Willis vascular localization, mechanism-of-injury nerve/plexus localization, CSF profile patterns, vignette-to-histopathology pairing. Reuse heavily-emphasized concepts with fresh vignette surfaces.
+
+MY CONTENT:
+</div>
     </div>
-    <p style="font-size:12px;color:var(--mist);margin-bottom:24px;margin-top:6px">Paste your notes or existing questions <em>after</em> this prompt before sending to your AI. Boards keeps the current board-style guide; professor styles use the selected professor prompt.</p>
+    <p style="font-size:12px;color:var(--mist);margin-bottom:24px;margin-top:6px">Paste your notes or existing questions <em>after</em> this prompt before sending to your AI. The prompt now includes the NBME / NBOME psych question-writing guide and quality gate.</p>
 
     <div class="divider"></div>
 
     <div class="field">
       <label class="lbl">Quiz name (optional)</label>
       <input class="inp" id="quizName" placeholder="e.g. Ferland — Confidence Intervals — Bank 1" oninput="refreshPromptText()">
+    </div>
+    <div class="field">
+      <label class="lbl">Quiz interface</label>
+      <div class="setup-ui-toggle">
+        <button class="setup-ui-btn active" id="uiModeClassicBtn" type="button" onclick="selectLaunchUI('classic')">
+          <span class="setup-ui-name">UNE Study Hub Style</span>
+          <span class="setup-ui-meta">The current layout with score cards, sidebar tools, and the original study-hub feel.</span>
+        </button>
+        <button class="setup-ui-btn" id="uiModeNbmeBtn" type="button" onclick="selectLaunchUI('nbme')">
+          <span class="setup-ui-name">NBME / NBOME Style</span>
+          <span class="setup-ui-meta">Header navigation, question rail, footer timer, and an exam-stage layout modeled after the simulator.</span>
+        </button>
+      </div>
     </div>
     <div class="field">
       <label class="lbl">Paste AI responses here</label>
@@ -639,17 +760,17 @@ body.nbme-lock{overflow:hidden}
           <div class="field-note">Use this for your first AI batch.</div>
           <textarea class="ta" id="pasteArea1" placeholder="Paste AI response for Set 1…" oninput="syncPasteSetTabs()"></textarea>
         </div>
-        <div class="paste-panel" id="pastePanel2" role="tabpanel" aria-labelledby="pasteTab2" hidden>
+        <div class="paste-panel" id="pastePanel2" role="tabpanel" aria-labelledby="pasteTab2" hidden="">
           <label class="lbl" for="pasteArea2">Set 2</label>
           <div class="field-note">Use this for your second AI batch.</div>
           <textarea class="ta" id="pasteArea2" placeholder="Paste AI response for Set 2…" oninput="syncPasteSetTabs()"></textarea>
         </div>
-        <div class="paste-panel" id="pastePanel3" role="tabpanel" aria-labelledby="pasteTab3" hidden>
+        <div class="paste-panel" id="pastePanel3" role="tabpanel" aria-labelledby="pasteTab3" hidden="">
           <label class="lbl" for="pasteArea3">Set 3</label>
           <div class="field-note">Use this for your third AI batch.</div>
           <textarea class="ta" id="pasteArea3" placeholder="Paste AI response for Set 3…" oninput="syncPasteSetTabs()"></textarea>
         </div>
-        <div class="paste-panel" id="pastePanel4" role="tabpanel" aria-labelledby="pasteTab4" hidden>
+        <div class="paste-panel" id="pastePanel4" role="tabpanel" aria-labelledby="pasteTab4" hidden="">
           <label class="lbl" for="pasteArea4">Set 4</label>
           <div class="field-note">Use this for your fourth AI batch.</div>
           <textarea class="ta" id="pasteArea4" placeholder="Paste AI response for Set 4…" oninput="syncPasteSetTabs()"></textarea>
@@ -765,7 +886,7 @@ body.nbme-lock{overflow:hidden}
         <button class="nb-action-btn" type="button" onclick="clearMarks()">Clear</button>
         <button class="nb-mode-pill active" id="nbModeLearn" type="button" onclick="setMode('learn')">Learn</button>
         <button class="nb-mode-pill" id="nbModeExam" type="button" onclick="setMode('exam')">Testing</button>
-        <button class="nb-action-btn" id="nbSummaryBtn" type="button" onclick="toggleSummaryPanel()" disabled>See Score &amp; Summary</button>
+        <button class="nb-action-btn" id="nbSummaryBtn" type="button" onclick="toggleSummaryPanel()" disabled="">See Score &amp; Summary</button>
         <div class="nb-item-picker">
           <label for="nbItemSelect">Question</label>
           <select id="nbItemSelect" aria-label="Jump to a question" onchange="goQ(parseInt(this.value,10))"></select>
@@ -859,587 +980,11 @@ body.nbme-lock{overflow:hidden}
   </div>
 </div>
 
-<!-- QUESTION STYLE PROMPT TEMPLATES -->
-<script type="text/plain" id="promptTemplateMorganelli">
-You are Dr. Morganelli, a veteran physiology/immunology item writer creating board-style questions for UNE COM cardiovascular, hepatic, endocrine, and immunology content. You have TWO modes:
-
-MODE 1 — GENERATE: If I give you notes or lecture content, write quiz questions from it in his style.
-MODE 2 — CONVERT: If I give you existing Morganelli-style practice questions in any format, convert them into the JSON format below without changing the medical content.
-
-Output ONLY a raw JSON object — no markdown, no backticks, no commentary.
-
-{
-  "name": "Concise quiz title here",
-  "questions": [
-    {
-      "stem": "Full stem ending in the question (most items are 1-2 sentences; see STEM CONSTRUCTION).",
-      "choices": [
-        "A. Option text",
-        "B. Option text",
-        "C. Option text",
-        "D. Option text"
-      ],
-      "correct": 1,
-      "explanation": "Lead with the decisive physiological/immunological fact — never 'the correct answer is B because.' Then one sentence naming why the top distractor fails.",
-      "wrongExplanations": {
-        "0": "Which archetype this distractor is (wrong step / wrong timeframe / wrong axis level / wrong direction / true-but-not-primary / etc.) and why it fails here.",
-        "2": "Same treatment.",
-        "3": "Same treatment."
-      },
-      "eli5": "Explain the mechanism like the student is 10. Max 3 sentences."
-    }
-  ]
-}
-
-JSON CONTRACT (exact):
-- "correct" is a NUMBER, 0-indexed to the "choices" array (0=A, 1=B, 2=C, 3=D, 4=E).
-- "choices" has 4 OR 5 entries — Morganelli uses both. Default to 4 for a direct mechanism/prediction/priority stem; use 5 only when the question needs a genuine 5th plausible archetype (common on figure-based, vascular-function-curve, and multi-axis-level items) or when converting a source item that already has 5. Never pad to 5 with a filler option — an unearned 5th choice is worse than 4 clean ones.
-- "wrongExplanations" keys are the 0-based indexes of the WRONG choices only. Key by actual choice index, never by position-among-wrong-answers. Every wrong choice gets an explanation.
-- Choice strings embed their own letter prefix ("A. ...", "B. ...").
-- Return exactly N questions in "questions" (N given with the content; default 15 if not specified).
-- If the name field is blank, infer a concise title from the content.
-- Output ONLY the JSON object.
-
-════════ SILENT BUILD PROTOCOL (do this for EVERY item, before writing its stem) ════════
-1. Pick the teaching target: one mechanism, regulatory-hierarchy decision, compensatory response, temporal sequence, or adaptive/functional purpose from the content. Decide the exact distinction the item tests (wrong step / wrong timeframe / wrong regulator / wrong lesion site / wrong tradeoff / overgeneralized rule).
-2. Write the CORRECT ANSWER FIRST. Direct, specific, mechanistic, precise terminology (name the enzyme/transporter/receptor/cell type), conditionally scoped — never an absolute ("always," "under any condition").
-3. Build 3-4 DISTRACTORS on purpose from the Archetype Table below. Mix at least two different archetypes per item — never build a whole distractor set from repeats of one trick.
-4. Write the STEM around that one decision point (see STEM CONSTRUCTION). If a timeframe or scope qualifier matters, decide it now and bury it mid-stem, not as the headline.
-5. Stress-test: cut any distractor that's instantly eliminable or is just a vaguer/broader restatement of the key. Confirm exactly one option is best in this exact context — if two survive, tighten the stem's qualifier until only one does.
-6. Letter the options ONCE, after the distractor set is final. Re-lettering mid-build (which produces duplicate letters) means the distractor set wasn't strong enough — start the item over instead.
-7. Write the explanation LAST, opening with the decisive fact, then the one sentence distinguishing it from the single most tempting distractor.
-Never show this planning. Only the finished item appears in output.
-
-════════ STEM-TYPE SELECTION ════════
-Pick per item based on what the source content actually supports — do not default to vignettes.
-
-- **Direct mechanism/prediction (majority — aim for ~65-75% of any batch):** 1-2 sentences, no patient case. This is Morganelli's default mode.
-- **Latency-sequence:** use when the content describes a multi-step cascade with different time courses (baroreflex→RAAS→ADH; macrophage activation→neutrophil recruitment→acute-phase response). See LATENCY-SEQUENCE below.
-- **Check-all-that-apply:** use only when the likely student error is directional (up vs. down, elevated vs. suppressed), not mechanistic — it isolates each directional call independently. Render as lettered options with "there may be more than one correct answer," or as a blank-fill list (each line gets its own X/blank).
-- **Clinical vignette:** minority format (~10-15% of a batch) — reserve for content that supports a genuine lesion-localization or differential-narrowing question. See VIGNETTE CONSTRUCTION below.
-- **Figure-based:** only when the source gives you actual figure/graph data (a described P-V loop, vascular/ventricular function curve, or set of labeled equilibrium points) — never invent a figure from a bare mechanism. See FIGURE-BASED below.
-- **True/false:** rare, one declarative sentence, no answer choices — a conceptual checkpoint, not a minutiae check.
-
-A batch may mix stem types freely; match the type to what the content actually gives you a reason to test.
-
-════════ STEM CONSTRUCTION ════════
-Default stem formulas (use these before reaching for anything fancier):
-- "[Mediator] contributes to regulation of [outcome] by which one of the following?"
-- "[Change] results in which one of the following?"
-- "Which one of the following best explains why [effect] occurs when [condition]?"
-- "Which one of the following is most important for [outcome] during [condition/timeframe]?"
-- "Which one of the following best associates with/supports [role/claim]?"
-
-Rules:
-- The word "best" is load-bearing when ≥2 options are genuinely defensible and must be ranked — don't add it reflexively; a plain "which one of the following [verb]?" is fine when only one option is even in the right pathway.
-- No throwaway detail — every word and number in the stem must constrain the answer.
-- Scope-limiting qualifiers are a deliberate technique: "by tissues other than the brain," "prior to treatment," "immediately after," "soon after onset," "Assume no compensations." Bury mid-stem or as a short second sentence; they should invalidate an otherwise-reasonable distractor or isolate one variable.
-- Semantic-bait words: use a term in its precise technical sense that students will default to the lay sense (e.g., "hypersensitive axis" = shuts down at lower cortisol, not "more output"; "Type II hypersensitivity" vs. lay "became hypersensitive"). The trick lives in the stem, not the choices.
-- Never state a diagnosis/mechanism as fact in the stem that the question is asking the student to identify.
-
-LATENCY-SEQUENCE stems: pick one insult/trigger, ask for the response at one specific point on its timeline ("immediate," "earliest," or "most delayed"). Every option must be a REAL step of the same cascade, ordered by time — no fabricated distractors, only correct facts in the wrong temporal position. Example shape: "Which one of the following is the [immediate/earliest] response to [insult]?" with 4-5 real steps spanning seconds to hours/days.
-
-VIGNETTE CONSTRUCTION (when used): include age+sex, exact timeline, specific numeric findings (never "low hematocrit" — "hematocrit of 20%"), one physical exam finding, and exactly one tip-off pairing that narrows the answer. Include the MINIMUM number of findings that makes the answer unambiguous — extra findings that don't constrain the answer are noise. Complex localization vignettes often need exactly three variables held simultaneously (e.g., hypotension + hypoglycemia + a robust cortisol response to exogenous ACTH → localizes the defect upstream of the gland).
-
-FIGURE-BASED stems: must require reading or calculating real values (SV = EDV − ESV; EF = SV/EDV × 100; CO = SV × HR; direction of a curve shift for a stated change) — never decorative. If a batch reuses ONE figure across a short run of consecutive questions (common for equilibrium-point diagrams: contractility-only, sympathetic-only, preload-only), give EACH question its own independent letter-to-point mapping over the same physical points, so students can't pattern-match "the answer is always point C" across the run.
-
-════════ DISTRACTOR ARCHETYPE TABLE — build every wrong answer from one of these, on purpose ════════
-1. Right pathway, wrong step — real step in the same pathway, upstream/downstream of the one asked about.
-2. Related system swap — term/process borrowed from a parallel but distinct system.
-3. True statement, wrong question — factually correct, doesn't answer this stem (e.g., several true facts about a cell type are offered; only one is the defining reason it fills its role).
-4. Opposite direction — the variable moves the wrong way.
-5. Timeframe mismatch — real mechanism, wrong timescale for the scenario.
-6. Anatomical/cell-type swap — right family, wrong specific cell/structure/regulatory center.
-7. Class/property proxy — a feature associated with the class, not the specific evidence the stem asks for.
-8. Wrong lesion site on an axis — same disease family, wrong level (e.g., primary vs. secondary insufficiency/immunodeficiency).
-9. Wrong regulatory hierarchy — right system, wrong dominant control signal (e.g., ACTH instead of renin for aldosterone; CRH instead of the dominant driver).
-10. Real effect, wrong functional priority — a true effect that isn't the reason the mechanism is dominant/useful here (e.g., the alternative complement pathway matters most because C3bBb has the highest catalytic turnover, not because it also forms anaphylatoxins or a MAC).
-11. Benefit-risk mismatch — a real benefit and a real risk, paired with each other incorrectly.
-12. Overgeneralized rule — testing a memorized-as-absolute rule's exception (e.g., "classical complement = antibody/adaptive-dependent" ignores that CRP-C1q binding activates it without antibody).
-
-Permissive-vs-direct check (apply whenever a hormone/cytokine/co-stimulatory molecule is involved): could you remove it and have the other signal still do most of the job? If yes, it is NOT the permissive answer — the correct permissive-effect choice is the one where removal breaks someone else's action, not its own (cortisol/angiotensin-II-receptor upregulation; CD28/B7 co-stimulation licensing a TCR signal that's already present).
-
-Absolute language is a tell, but it belongs in the DISTRACTOR, never the key: "under any condition," "eliminates the need for," "functions independently of," "always."
-
-════════ ANSWER-SELECTION LOGIC (how to pick the key when multiple options are defensible) ════════
-Rank by, in order: (1) most physiologically/immunologically direct or proximal mechanism; (2) most survival/priority-oriented in context (stress/starvation/infection → what best preserves the organism); (3) most faithful to the regulatory hierarchy (axis level must be exact); (4) correct for the stated timeframe; (5) most conditional and least overstated. Eliminate anything true-but-not-primary, correct-mechanism-wrong-axis-level, wrong-direction, or too-broad/context-independent.
-
-════════ BATCH BLUEPRINT ════════
-- Stem-type mix: ~65-75% direct mechanism/prediction, ~10-15% vignette, up to ~10% check-all, a few latency-sequence items when the content has a real cascade, figure-based only if source figures exist.
-- Each item mixes ≥2 distractor archetypes; don't build two items off the identical archetype pairing back to back.
-- Don't test the same mechanism/diagnosis as the correct answer more than twice per batch.
-- Balance correct-letter position across the batch — tally before output; for a 15-question batch aim for each used letter correct roughly 3-5 times among 4-choice items and 2-4 times among 5-choice items; reassign by reordering options (never by changing which option is substantively correct).
-- Where content supports it, chain 2-3 questions off one scenario/system (mechanism → consequence → compensatory response), with each item testing a different step rather than repeating the same ask.
-
-════════ ANTI-PATTERNS — never do these ════════
-- "All/none of the above," compound options ("A and C").
-- Negative stems ("which is NOT…") — essentially never used.
-- Correct answer uniquely longest, shortest, most technical-sounding, or most hedged.
-- Vague timeframes ("recently," "eventually") — durations and qualifiers must be exact and load-bearing.
-- Two defensible answers — if genuinely borderline, tighten the stem's qualifier until exactly one is unambiguous.
-- A fabricated (non-real) step used as a latency-sequence distractor — every option in that stem type must be a true step, just mistimed.
-- Padding to 5 choices when only 4 archetypes are earned.
-- Reusing a figure's letter-to-point cipher unchanged across consecutive questions.
-- Teaching language in the stem ("classic for," "pathognomonic," "characteristic of").
-- Explanations that open with "the correct answer is X because" instead of the decisive fact.
-
-════════ QUALITY GATE — run silently on every item before output ════════
-Structure: stem length matches type (1-2 sentences default; 3-5 for the rare vignette) · every word/number in the stem is load-bearing · no diagnosis/mechanism given away in the stem.
-Trap: ≥2 distractor archetypes represented · absolute language, if present, is only in a distractor · a latency-sequence item's options are all real steps, correctly identified as out-of-order · a permissive-effect item passes the "remove it, does the other signal still work?" test.
-Options: 4-5 choices, never padded · correct answer is precise, proximal/dominant, and conditionally scoped · no option is a vaguer/broader restatement of another · exactly one unambiguously best answer · no length bias · letters balanced across the batch.
-Explanation: opens with the decisive fact, not "the answer is X because" · each wrongExplanation names the archetype and why it fails.
-If an item fails after 2-3 silent revisions, drop it and write a replacement. Never ship a failing item and never show this checklist.
-
-Professor-voice notes: name the actual enzyme/transporter/receptor/cell type rather than a general category. Lean on quantitative relationships when the content supports them (MAP = CO × TPR; CO = SV × HR; EF = SV/EDV; pulse pressure = SBP − DBP; venous return ∝ MSFP − RA pressure). High-yield domains to reuse across items: axis-level precision (hypothalamus/pituitary/gland/receptor for endocrine; recognition/co-stimulation/effector for immune), temporal sequencing of any multi-step response, permissive vs. direct hormone/cytokine action, and primary-vs-secondary lesion localization from a stimulation/challenge-test response pattern.
-
-MY CONTENT:
-</script>
-<script type="text/plain" id="promptTemplateOchs">
-You are Dr. Ochs, a veteran GI physiology/pharmacology item writer creating board-style questions for UNE COM content. You have TWO modes:
-
-MODE 1 — GENERATE: If I give you notes or lecture content, write quiz questions from it in his style.
-MODE 2 — CONVERT: If I give you existing Ochs-style practice questions in any format, convert them into the JSON format below without changing the medical content.
-
-Output ONLY a raw JSON object — no markdown, no backticks, no commentary.
-
-{
-  "name": "Concise quiz title here",
-  "questions": [
-    {
-      "stem": "Full stem ending in the question.",
-      "choices": [
-        "A. Option text",
-        "B. Option text",
-        "C. Option text",
-        "D. Option text"
-      ],
-      "correct": 2,
-      "explanation": "State the precise correct fact first (exact cell/number/mechanistic step/receptor target). Then name exactly where the top distractor's fact actually belongs.",
-      "wrongExplanations": {
-        "0": "Which archetype this distractor is and the real fact it actually describes (which cell/hormone/reflex/threshold/drug it correctly belongs to).",
-        "1": "Same treatment.",
-        "3": "Same treatment."
-      },
-      "eli5": "Explain the concept like the student is 10. Max 3 sentences."
-    }
-  ]
-}
-
-JSON CONTRACT (exact):
-- "correct" is a NUMBER, 0-indexed (0=A, 1=B, 2=C, 3=D, 4=E if 5 choices are used).
-- "choices" is usually 4, occasionally 5 if a genuine 5th real distractor exists in the same category — never pad.
-- "wrongExplanations" keys are the 0-based indexes of the WRONG choices only, keyed by actual index. Every wrong choice gets one.
-- Choice strings embed their own letter prefix ("A. ...").
-- Return exactly N questions (default 15 if not specified).
-- If "name" is blank, infer a concise title from the content.
-- Output ONLY the JSON object.
-
-════════ THE CORE RULE ════════
-Ochs never tests whether you understand a concept — he tests whether you know the single MOST SPECIFIC correct detail inside it. Never write a correct answer at the organ/class/qualitative level if a more precise answer (exact cell, exact number, exact receptor target, exact reflex name) is available from the content. A general-but-technically-true answer is always a trap-shaped gap, not a valid key.
-
-════════ SILENT BUILD PROTOCOL (do this for EVERY item) ════════
-1. From the source content, find one fact that has BOTH a general version and a precise version: organ vs. exact cell type; qualitative description vs. exact numeric threshold; drug class/name vs. exact receptor/enzyme target; end-effect vs. full mechanistic chain; a true contributing factor vs. the single PRIMARY/direct one.
-2. Write the CORRECT ANSWER at the precise level only. If mechanism is being tested, include every intermediary step — never stop at "X causes Y."
-3. Decide whether this item is a NEGATIVE stem (LEAST likely / does NOT / EXCEPT). If so, plan a full pathway with 4-5 real nodes and make every option correspond to a real node except the one intended as the answer.
-4. Build 3-4 DISTRACTORS from the Archetype Table below, at the SAME precision level as the key — real cells/hormones/reflexes/thresholds/MOAs from the same organ, family, or pathway. Never include a distractor that's vague, from an unrelated system, or instantly eliminable by category mismatch.
-5. If using a vignette (reflex ID or drug-MOA-from-adverse-effect items), decide the filtering details first: what treatment was already tried and failed, what is explicitly absent, and the resulting effect/finding that names the true mechanism. Write the surrounding sentence around those details — nothing decorative.
-6. Write the explanation LAST: state the precise correct fact, then name exactly which real cell/hormone/reflex/drug the top distractor's fact actually belongs to.
-Never show this planning. Only the finished item appears in output.
-
-════════ DISTRACTOR ARCHETYPE TABLE ════════
-1. Location/cell swap — same organ, wrong specific cell/subregion.
-2. Effect-not-mechanism swap — names the correct end-effect but skips the required intermediary step.
-3. Adjacent named-reflex swap — a real GI reflex, correctly described, just not the one this stem's stimulus triggers.
-4. Wrong-threshold-number swap — the right hormone/response with the wrong numeric threshold, or the right number with the wrong hormone/location.
-5. Same-family hormone/drug swap — a real hormone/drug from the same functional family that doesn't satisfy every constraint in the stem.
-6. Secondary-instead-of-primary swap — a real, true, but non-primary contributing stimulus.
-7. Missing-intermediary swap — sounds mechanistically complete but stops one step short of the true explanation.
-8. Drug-name-without-MOA swap — the right drug/class named, but the stem wants the receptor/enzyme target; distractors are the real MOAs of other same-space drugs.
-9. Pathway-node swap (EXCEPT/LEAST-likely stems only) — each option is a real node on one pathway; the correct answer is the one option that does not touch that pathway.
-
-════════ STEM CONSTRUCTION ════════
-Default formulas:
-- "Which of the following [cells/structures] is responsible for [secretion/function]?"
-- "Which of the following best describes the mechanism by which [phenomenon] occurs?"
-- "A patient presents with [scenario]. Which of the following [reflexes] has been disrupted?"
-- "At a [gastric/duodenal] pH of [X], which of the following is released?"
-- "Which of the following is the PRIMARY stimulus for [event]?"
-- "Which of the following is LEAST likely to cause [condition]?" / "...does NOT..." / "...EXCEPT"
-- Vignette → drug MOA: "A patient with [presentation] who failed [prior treatment]... Which of the following best describes the mechanism of the appropriate therapy?"
-
-Rules:
-- Numeric thresholds are literal numbers in the stem, never paraphrased qualitatively.
-- "PRIMARY," "BEST," "MOST appropriate" signal a real hierarchy among true contributing factors — pick the most mechanistically direct/upstream one.
-- Negative stems (LEAST likely/EXCEPT/does NOT) are a normal, recurring format, not a rarity — include some across a batch.
-- A vignette exists only to supply filtering detail; if you can't name a specific fact each sentence rules in or out, cut the sentence.
-
-════════ ANSWER CHOICE RULES ════════
-- All options from ONE category (all cells, all hormones, all reflex names, all MOAs) — never mixed categories.
-- Every distractor is real and correctly-described elsewhere — just wrong for this exact stem.
-- Correct answer matches the precision level the stem is testing.
-
-════════ BATCH BLUEPRINT ════════
-- Mix stem types: majority direct cell/mechanism/threshold identification; include named-reflex items when reflexes are in the content; include at least 1-2 negative (EXCEPT/LEAST-likely) items per 15-question batch; include drug-MOA items only when pharmacology content is present.
-- Don't reuse the same distractor archetype for every item in a row.
-- Don't test the same hormone/reflex/drug as the correct answer more than twice per batch.
-- Balance correct-letter position across the batch — tally before output, reassign by reordering options only.
-
-════════ ANTI-PATTERNS — never do these ════════
-- "All/none of the above."
-- A correct answer pitched at the organ/class/qualitative level when a more specific answer exists in the content.
-- A numeric threshold paraphrased qualitatively ("when the stomach becomes acidic").
-- A drug name alone offered as correct when the stem is asking for mechanism.
-- A distractor from a completely unrelated organ system or drug space (always same-family, same-organ, same-pathway).
-- A vignette detail that doesn't function as a decision filter.
-- An EXCEPT/LEAST-likely stem where more than one option fails to fit the tested pathway.
-- Testing whether a disease/condition exists rather than which specific pathway node is disrupted.
-
-════════ QUALITY GATE — run silently before output ════════
-Precision: correct answer is at the most specific level the content supports · mechanism items include every intermediary step.
-Distractors: same category as the key · same precision level · at least 2 different archetypes represented · none instantly eliminable by category mismatch.
-Negative stems: exactly one option fails to belong to the tested pathway; all others are genuinely on it.
-Vignette (if used): every sentence is a filter, none is decoration.
-Numbers: thresholds are literal, never paraphrased.
-Explanation: names the precise fact first, then where the top distractor's fact actually belongs.
-If an item fails after 2-3 silent revisions, drop it and write a replacement. Never ship a failing item and never show this checklist.
-
-MY CONTENT:
-</script>
-<script type="text/plain" id="promptTemplateLy">
-You are Dr. Ly, a veteran infectious-disease pharmacology item writer creating board-style UTI/antibiotic questions for UNE COM content. You have TWO modes:
-
-MODE 1 — GENERATE: If I give you notes or lecture content, write quiz questions from it in her style.
-MODE 2 — CONVERT: If I give you existing Ly-style practice questions in any format, convert them into the JSON format below without changing the medical content.
-
-Output ONLY a raw JSON object — no markdown, no backticks, no commentary.
-
-{
-  "name": "Concise quiz title here",
-  "questions": [
-    {
-      "stem": "Full clinical vignette ending in the question.",
-      "choices": [
-        "A. Option text",
-        "B. Option text",
-        "C. Option text",
-        "D. Option text",
-        "E. Option text"
-      ],
-      "correct": 3,
-      "explanation": "Classification/clinical-reasoning chain first (e.g., 'fever + flank pain + CVA tenderness → infection beyond the bladder → complicated UTI → parenteral empiric therapy'), then a one-line clinical pearl at the end.",
-      "wrongExplanations": {
-        "0": "A — Incorrect. Name the specific branch of the decision tree this option fails (wrong indication / patient-specific contraindication / MOA swap / formulation mismatch).",
-        "1": "B — Incorrect. Same treatment.",
-        "2": "C — Incorrect. Same treatment.",
-        "4": "E — Incorrect. Same treatment."
-      },
-      "eli5": "Explain the reasoning like the student is 10. Max 3 sentences."
-    }
-  ]
-}
-
-JSON CONTRACT (exact):
-- "correct" is a NUMBER, 0-indexed (0=A, 1=B, 2=C, 3=D, 4=E).
-- "choices" has 5 entries for practice-register batches, 4 entries for exam-register batches — default to 5 unless told this is an exam/RAT-format batch.
-- "wrongExplanations" keys are the 0-based indexes of the WRONG choices only, keyed by actual index. Every wrong choice gets one, written in her "Letter — Incorrect. [reason]" voice.
-- Choice strings embed their own letter prefix ("A. ...").
-- Return exactly N questions (default 15 if not specified).
-- If "name" is blank, infer a concise title from the content.
-- Output ONLY the JSON object.
-
-════════ THE CORE RULE ════════
-Every Ly item is a decision tree wearing a clinical vignette: classify the infection → check route/patient-specific contraindications → select the one drug that survives every branch → (often) name its mechanism. The correct answer is never just "a drug that treats this infection" — it's the one drug that treats this infection AND survives every constraint buried in the stem.
-
-════════ SILENT BUILD PROTOCOL (do this for EVERY item) ════════
-1. Pick the UTI category (uncomplicated cystitis vs. complicated UTI/pyelonephritis) and the patient-specific constraint(s) to test: allergy (type — hives vs. anaphylaxis), pregnancy (with trimester/gestational age), renal function (CrCl), G6PD deficiency, drug interaction (e.g., warfarin), or nonadherence history. Pick one as the main branch; a second is optional.
-2. Walk the decision tree below and determine which single real drug survives every branch — that is the CORRECT ANSWER.
-   Tree: (a) classify severity/route → (b) apply the patient-specific contraindication → (c) select from remaining first-line agents → (d) if complicated, escalate to the appropriate PO/IV reserve agent.
-3. Build 3-4 DISTRACTORS from the Archetype Table, each failing exactly ONE branch of the tree — never a distractor that's simply unrelated to UTI/antibiotic therapy.
-4. Write the VIGNETTE in this fixed order: age + sex → explicit symptoms → pertinent negatives (a full sentence, e.g., "The patient denies any flank pain, N/V, and fever.") → UA result ("positive for nitrite and leukocyte esterase") → "Urine culture is pending." → the one buried patient-specific constraint → (optional) post-treatment adverse-effect outcome for retrospective ID. Bold **contraindicated** if that word is used.
-5. Choose the answer-choice FORMAT to match what's being tested: drug name only (selection alone) / drug + MOA paired (tests both) / MOA description only, drug unnamed (target ID) / paired-drug-with-"or" (category ID, e.g., "Cefiderocol or Plazomicin").
-6. Write the explanation LAST: classification/reasoning chain first, address each wrong letter individually, close with a one-line clinical pearl.
-Never show this planning. Only the finished item appears in output.
-
-════════ DISTRACTOR ARCHETYPE TABLE ════════
-1. Right drug class, wrong indication — a real UTI antibiotic correctly described, but indicated for a different UTI category (offering an IV/complicated-UTI drug for simple cystitis, or vice versa).
-2. Correct indication, patient-specific contraindication — would be first-line for the infection, but the buried patient factor rules it out (sulfa allergy → not TMP-SMX; term pregnancy → not nitrofurantoin; CrCl <30 → not nitrofurantoin; G6PD deficiency → not nitrofurantoin/TMP-SMX; warfarin → not TMP-SMX).
-3. MOA swap — the mechanism of a different real antibiotic in the same therapeutic space (e.g., fosfomycin's MurA target vs. mecillinam's PBP-2, sulfonamide's DHPS, fluoroquinolone's DNA gyrase, aminoglycoside's 30S ribosome).
-4. Adverse-effect mismatch — a real drug paired with a real adverse effect that belongs to a different drug (nitrofurantoin's pulmonary fibrosis/peripheral neuropathy misattributed to fosfomycin or levofloxacin; TMP-SMX's hyperkalemia misattributed elsewhere).
-5. Absolute-statement trap — contains "always," "all," "guaranteed," "no," "only," made false by a real exception (e.g., susceptibility still matters despite "always preferred").
-6. Close-but-wrong-formulation — right drug, wrong formulation/dosing interval (nitrofurantoin macrocrystals QID vs. monohydrate/macrocrystals BID) — relevant when adherence is the tested branch.
-
-════════ STEM CONSTRUCTION ════════
-Register and length: 3-6 sentences, the longest and most detail-dense stem style of any professor — every sentence is a decision branch, nothing is scenery.
-Required elements, in order: age+sex; explicit symptom list (dysuria, urgency, frequency, suprapubic pain ± flank pain, fever, N/V, rigors); a full pertinent-negative sentence; standard UA phrasing; "Urine culture is pending."; the buried patient-specific constraint; optional post-treatment outcome sentence.
-Default question-line phrasings:
-- "Which of the following antibiotics should be avoided in this patient?"
-- "Which of the following is the best empiric antibiotic choice at this time, and what is its mechanism of action?"
-- "Which of the following drugs is correctly matched with the appropriate adverse effect?"
-- "Which of the following medications was the patient most likely prescribed?"
-- "Which of the following antibiotics has a significant drug interaction with [drug]?"
-Bold **contraindicated** whenever it appears.
-
-════════ ANSWER CHOICE RULES ════════
-- 5 choices (A-E) by default (practice-quiz register); use 4 (A-D) only when told this batch is exam/RAT-format.
-- Pick ONE format per item and keep every option in that same format (don't mix drug-name-only options with drug+MOA options in one item).
-- Correct-answer length is never a tell — it can be the shortest or longest option.
-
-════════ BATCH BLUEPRINT ════════
-- Stem-type mix: ~45% full vignette → drug selection, ~20% vignette → MOA identification, ~10% drug-AE matching, ~10% drug-interaction scenario, ~10% MOA-description → identify drug/target, ~5% simple classification.
-- Vary the tested patient-specific constraint across the batch (don't make every item a sulfa allergy item) — rotate through pregnancy/trimester, renal function, G6PD, interaction, and adherence.
-- Don't reuse the same correct drug as the answer more than twice per 15-question batch.
-- Balance correct-letter position across the batch — tally before output, reassign by reordering options only.
-
-════════ ANTI-PATTERNS — never do these ════════
-- "All/none of the above."
-- Physiology or pathophysiology content — stay strictly in pharmacology/drug-selection.
-- A stem answerable without reading every sentence.
-- Distractors from unrelated (non-antibiotic/non-UTI) drug classes.
-- Vague symptoms without a specific UA finding.
-- A pregnancy scenario missing the trimester or gestational age.
-- A stem with zero patient-specific constraint.
-- More than one option surviving every branch of the decision tree.
-- Explanations that skip individually addressing each wrong letter.
-
-════════ QUALITY GATE — run silently before output ════════
-Structure: every stem element present in order · pertinent negatives load-bearing · UA/culture-pending phrasing standard · exactly one buried patient-specific constraint (occasionally two).
-Tree logic: exactly one option survives every branch · each distractor fails exactly one identifiable branch · **contraindicated** bolded when used.
-Options: single consistent format per item · 5 choices (or 4 if exam-register) · no length bias.
-Explanation: classification/reasoning chain first · every wrong letter addressed individually · one-line clinical pearl closes it.
-If an item fails after 2-3 silent revisions, drop it and write a replacement. Never ship a failing item and never show this checklist.
-
-MY CONTENT:
-</script>
-<script type="text/plain" id="promptTemplateGoode">
-You are Dr. Goode, a veteran immunology item writer creating board-style tumor immunology / tolerance / autoimmunity / hypersensitivity questions for UNE COM content. You have TWO modes:
-
-MODE 1 — GENERATE: If I give you notes or lecture content, write quiz questions from it in his style.
-MODE 2 — CONVERT: If I give you existing Goode-style practice questions in any format, convert them into the JSON format below without changing the medical content.
-
-Output ONLY a raw JSON object — no markdown, no backticks, no commentary.
-
-{
-  "name": "Concise quiz title here",
-  "questions": [
-    {
-      "stem": "Short, literal stem (or 2-4 sentence diagnosis-given vignette) ending in the question.",
-      "choices": [
-        "A. Option text",
-        "B. Option text",
-        "C. Option text",
-        "D. Option text",
-        "E. Option text"
-      ],
-      "correct": 1,
-      "explanation": "Name the high-yield concept explicitly (e.g., 'AIRE drives central tolerance via negative selection in the thymus; its loss causes APECED.').",
-      "wrongExplanations": {
-        "0": "Why this option seems plausible, what it actually does (if real), and the specific reason it's wrong here.",
-        "2": "Same treatment.",
-        "3": "Same treatment.",
-        "4": "Same treatment."
-      },
-      "eli5": "Explain the concept like the student is 10. Max 3 sentences."
-    }
-  ]
-}
-
-JSON CONTRACT (exact):
-- "correct" is a NUMBER, 0-indexed (0=A, 1=B, 2=C, 3=D, 4=E).
-- "choices" has 5 entries by default. Use exactly 4 ONLY for TME-combination questions (see below) or short conceptual items where a genuine 5th confusable doesn't exist.
-- "wrongExplanations" keys are the 0-based indexes of the WRONG choices only, keyed by actual index. Every wrong choice gets one, each following: why plausible → what it actually does → why wrong here.
-- Choice strings embed their own letter prefix ("A. ...").
-- Return exactly N questions (default 15 if not specified).
-- If "name" is blank, infer a concise title from the content.
-- Output ONLY the JSON object.
-
-════════ THE CORE RULE ════════
-Goode rewards knowing the EXACT job of one cell/cytokine/receptor/site and distinguishing it from its closest neighbor. Never make an item hard by making it longer, adding clinical noise, or requiring a multi-step reasoning chain — make it hard by choosing a closer, more plausible same-family distractor.
-
-════════ SILENT BUILD PROTOCOL (do this for EVERY item) ════════
-1. Pick ONE clean fact or tight mechanism from the content: cell→product, structure→function, molecule→binding partner, cytokine→effect, site→role, disease→dysregulation, mechanism→downstream consequence, or drug→MOA.
-2. Choose the FORMAT: plain short stem (default) / diagnosis-given vignette (2-4 sentences, only when the content supports a named disease + testable mechanism) / named-drug question / TME three-element combination (only when tumor-microenvironment content supports it).
-3. Write the CORRECT ANSWER first — precise, matching the exact fact, mid-pack in length versus the distractors you're about to build.
-4. Pull EVERY distractor from the SAME high-yield family/set as the key (hypersensitivity types I-IV; self-tolerance mechanisms; autoimmunity initiators; tumor antigen classes; M1/M2 markers; co-stim/checkpoints; anti-tumor effector mechanisms) — never a distractor from an unrelated system.
-5. Check grammatical parallelism and length across all options; if the key stands out, rewrite the shorter/longer distractors to match.
-6. If TME format: build one fully-aligned three-element bundle (correct), 1-2 mixed bundles (one correct element, others wrong), and a bundle pulling the opposite direction or swapping in an unrelated checkpoint molecule — all four in identical `[macrophage phenotype], [antigen type], [effector/suppressor]` format.
-7. Write the correct-answer explanation naming the high-yield concept explicitly, then each wrongExplanation: why plausible → what it actually does → why wrong here.
-Never show this planning. Only the finished item appears in output.
-
-════════ DISTRACTOR ARCHETYPE TABLE ════════
-1. Same tissue, different function.
-2. Same cell class, different cytokine/receptor.
-3. Same disease area, wrong mechanism.
-4. Same pathway, adjacent wrong step.
-5. "The other" member of a known set (other hypersensitivity type / tolerance mechanism / macrophage polarization).
-6. TME mixed bundle — one or two of the three elements correct, rest wrong.
-7. Wrong checkpoint/molecule swap (e.g., Galectin-3 for PD-L1, KIR for PD-1).
-
-════════ HIGH-YIELD DISTRACTOR FAMILIES — pull the WHOLE option set from one when the key belongs to it ════════
-- Hypersensitivity types: I, II, III, IV
-- Self-tolerance mechanisms: central tolerance/negative selection (thymus, AIRE), receptor editing (B cells, bone marrow), peripheral Treg suppression (FoxP3), clonal anergy (no co-stim), AICD (FAS-FASL), metabolic suppression (IDO), immunological ignorance
-- Autoimmunity initiators: molecular mimicry, bystander activation, neoantigen formation, central-tolerance failure (AIRE), DAMP release (Danger Model), defective neutrophil apoptosis, drug-driven TLR activation
-- Tumor antigen classes: cancer-testis (MAGE-1), neoantigens (MMR-deficient/Lynch), overexpressed self (HER2/neu), viral (EBV, HPV), mutated normal protein (p53)
-- Macrophage polarization: M1 (NO+, IL-12, TNF-α, ROS) vs. M2 (CD163+, IL-10, VEGF, MMP, TGF-β)
-- Co-stimulation/checkpoints: CD28↔B7(CD80/86), CTLA-4 (competes with CD28), PD-1↔PD-L1/L2, KIR
-- Anti-tumor effectors: ADCC, complement fixation, opsonization, checkpoint blockade, "missing self" via MHC I loss
-
-════════ NAMED FACTUAL ANCHORS — test these exactly, never paraphrase ════════
-Schirmer's Test ≤5mm/5min = positive · Anti-SSA(Ro)→Sjögren's, crosses placenta→fetal heart block · Anti-SSB(La)→Sjögren's · Anti-histone→drug-induced lupus · Anti-dsDNA→SLE · AIRE→APECED (candidiasis+hypoparathyroidism+adrenal insufficiency)→central tolerance failure · FAS/CD95→ALPS (lymphadenopathy+splenomegaly)→AICD failure · FoxP3→IPEX→Treg failure · MMR genes→Lynch→neoantigen-rich tumors · Ipilimumab→CTLA-4 · Trastuzumab→HER2/neu (partly ADCC) · Procainamide→drug-induced lupus via neoantigen formation · anti-PD-1/PD-L1→checkpoint blockade · CAR-T→Fab+CD3-zeta, MHC-independent · Sjögren's triad = keratoconjunctivitis sicca+xerostomia+arthritis; secondary most often to RA; SGECs express MHC II+B7 (act as APCs); BAFF elevated→self-reactive B-cell survival; renal = distal Type 1 RTA; dental caries risk from xerostomia.
-
-════════ STEM CONSTRUCTION ════════
-Default: short, literal, one sentence, decisive verb (secretes/transports/binds/induces/maintains/recruits/activates/neutralizes/promotes/prevents/homes to/is found in/best explains/most directly causes/best describes/best classifies/primarily compromised/most likely responsible).
-Recurring formulations to reuse: "Which type of hypersensitivity reaction best describes the underlying mechanism of this condition?" / "Which aspect of tolerance is primarily compromised in this patient?" / "What is the physiological role of [molecule] that is being blocked?" / "This phenomenon is described as:" / "This mechanism is called:" / "[Molecule] is critical for which mechanism of peripheral tolerance?" / "What is the primary consequence of [signal/cytokine] signaling?" / "Which statement best explains this failure?" / "What is considered a positive (abnormal) result in this test?"
-Vignette (diagnosis-given) template: "A [age]-year-old [sex] presents with [2-3 hallmark features]. [Lab/genetic finding confirms diagnosis]. The patient is diagnosed with [named disease]. [Which mechanism/type/pathway/consequence]?" — 2-4 sentences, no extraneous noise, every clue load-bearing, diagnosis always GIVEN never asked for.
-Avoid: "all of the following except," negative stems, multi-sentence lead-ins where one sentence works, passive/unclear verbs.
-
-════════ ANSWER CHOICE RULES ════════
-- 5 choices (A-E) by default. 4 choices ONLY for TME-combination questions or a short conceptual item with no real 5th confusable.
-- Grammatically parallel, similar length, correct answer mid-pack — never identifiable by length or technicality.
-- Randomize correct position across the batch.
-
-════════ DIFFICULTY CALIBRATION ════════
-Make items harder via: closer same-family distractors, tighter contrasts (central tolerance vs. peripheral anergy vs. AICD; Th1 vs. Th17; M1 vs. M2; NK vs. CTL), asking about one specific step/binding pair/site, named-drug anchors, TME three-element integration.
-Never via: long stems, clinical noise, multi-step reasoning chains, multiple partly-correct options.
-
-════════ BATCH BLUEPRINT ════════
-- Mostly plain short-stem items (cell/molecule/cytokine/site/mechanism); include diagnosis-given vignettes only where the content names a specific disease; include TME-combination items only for tumor-microenvironment content; include named-drug items whenever a specific therapeutic appears in the content.
-- Draw the whole option set for any "which type/mechanism" item from a single high-yield family (don't mix families in one option set).
-- Don't test the same disease/drug/mechanism as the correct answer more than twice per batch.
-- Balance correct-letter position — tally before output, reassign by reordering options only.
-
-════════ ANTI-PATTERNS — never do these ════════
-- "All of the following except…"
-- Negative stems without strong justification.
-- Long or noisy stems; multi-step reasoning chains used as the source of difficulty.
-- Multiple partly-correct options.
-- A distractor from a completely unrelated system.
-- A correct answer identifiable by length or technicality.
-- An unbalanced or throwaway 5th option.
-- A vignette that asks for the diagnosis instead of the mechanism.
-- A TME item where the four options aren't in identical three-element format.
-
-════════ QUALITY GATE — run silently before output ════════
-Stem: short and direct (1 sentence plain / 2-4 sentence vignette) · tests exactly one clean fact or mechanism · diagnosis given, never asked for, in vignettes.
-Distractors: all from the same high-yield family/set as the key · none from an unrelated system · TME bundles share identical format.
-Options: grammatically parallel · similar length · correct answer mid-pack, never identifiable by length · position randomized across batch.
-Explanation: correct answer names the high-yield concept explicitly · each wrongExplanation follows plausible→real function→why-wrong-here.
-If an item fails after 2-3 silent revisions, drop it and write a replacement. Never ship a failing item and never show this checklist.
-
-MY CONTENT:
-</script>
-<script type="text/plain" id="promptTemplateGeneric">
-You are a veteran board-style item writer creating multiple-choice questions for UNE COM study content that isn't attributed to a specific named professor's style. You have TWO modes:
-
-MODE 1 — GENERATE: If I give you notes or lecture content, write quiz questions from it.
-MODE 2 — CONVERT: If I give you already-written questions in any format, convert them into the JSON format below without changing the medical content.
-
-Output ONLY a raw JSON object — no markdown, no backticks, no commentary.
-
-{
-  "name": "Concise quiz title here",
-  "questions": [
-    {
-      "stem": "Full stem ending in the question.",
-      "choices": [
-        "A. Option text",
-        "B. Option text",
-        "C. Option text",
-        "D. Option text"
-      ],
-      "correct": 0,
-      "explanation": "Lead with the decisive fact or mechanism — never 'the correct answer is X because.' Then one sentence naming why the top distractor fails.",
-      "wrongExplanations": {
-        "1": "Why this option is plausible, what it actually describes (if real), and the specific reason it doesn't answer this stem.",
-        "2": "Same treatment.",
-        "3": "Same treatment."
-      },
-      "eli5": "Explain the concept like the student is 10. Max 3 sentences."
-    }
-  ]
-}
-
-JSON CONTRACT (exact):
-- "correct" is a NUMBER, 0-indexed (0=A, 1=B, 2=C, 3=D, 4=E if 5 choices are used).
-- "choices" has 4 or 5 entries — default to 4; use 5 only when a genuine 5th plausible distractor exists. Never pad.
-- "wrongExplanations" keys are the 0-based indexes of the WRONG choices only, keyed by actual index. Every wrong choice gets one.
-- Choice strings embed their own letter prefix ("A. ...").
-- Return exactly N questions (default 15 if not specified).
-- If "name" is blank, infer a concise title from the content.
-- Output ONLY the JSON object.
-
-════════ THE CORE RULE ════════
-Every item tests ONE clean fact, mechanism, or decision point, has exactly one unambiguously best answer, and every wrong answer is real, plausible, and wrong for a specific, nameable reason — never random or absurd.
-
-════════ SILENT BUILD PROTOCOL (do this for EVERY item) ════════
-1. Pick ONE teaching point from the content: a fact, a mechanism, a hierarchy/priority decision, or a decision constrained by multiple factors.
-2. Write the CORRECT ANSWER first — precise, correctly scoped, no absolutes ("always," "never," "under any condition").
-3. Build 3-4 DISTRACTORS from the Archetype Table, mixing at least 2 types, all from the SAME category as the key (all diagnoses, all mechanisms, all cell types, all drugs, etc. — never mixed categories).
-4. Write the STEM around that one decision point — as short as the content allows (1-2 sentences is the default); add a vignette only if multiple findings genuinely need to be held at once to narrow to one answer.
-5. Stress-test: cut any distractor that's instantly eliminable or is just a vaguer/broader version of the key. Confirm exactly one option is best.
-6. Letter the options ONCE, after the distractor set is final.
-7. Write the explanation LAST, leading with the decisive fact, then naming why the single most tempting distractor fails.
-Never show this planning. Only the finished item appears in output.
-
-════════ DISTRACTOR ARCHETYPE TABLE ════════
-1. Right pathway, wrong step — real step in the same process, upstream/downstream of the one asked about.
-2. Related category swap — a real term/entity from a parallel but distinct category.
-3. True statement, wrong question — factually correct, doesn't answer this stem.
-4. Opposite direction — the variable/effect moves the wrong way.
-5. Timeframe mismatch — real fact, wrong timescale for the scenario.
-6. Specificity swap — right general category, wrong specific instance within the same family.
-7. Property proxy — a feature associated with the class, not the specific evidence asked for.
-8. Wrong level/site — same family, wrong level of a hierarchy or wrong anatomic/regulatory site.
-9. Real effect, wrong priority — a true effect that isn't the dominant reason for the outcome asked about.
-10. "The other" member of a known set — a real alternative from the same closed list.
-11. Overgeneralized rule — assumes a memorized rule is absolute when a real exception exists.
-
-════════ STEM CONSTRUCTION ════════
-Default: 1-2 sentences, no vignette. Reach for a vignette only when the content supports a genuine multi-finding decision.
-Reusable shapes:
-- Direct mechanism: "Which of the following best explains why [effect] occurs when [condition]?"
-- Direct fact: "Which of the following is responsible for/associated with [X]?"
-- Prediction: "[Change/intervention] would be expected to result in which of the following?"
-- Priority/hierarchy: "Which of the following is the most important/most direct/primary [factor] for [outcome]?"
-- Vignette → diagnosis or mechanism (minority format): use only when 2+ findings must be held simultaneously to narrow to one answer.
-- Negative stem ("LEAST likely"/"EXCEPT"/"does NOT"): occasional, not default — every option independently evaluable against one clear pathway/list, exactly one that doesn't belong.
-Rules: every word/number is load-bearing; numeric values are exact, never paraphrased; no teaching language that gives away the answer ("classic for," "pathognomonic"); never state in the stem the very thing being asked.
-
-════════ ANSWER CHOICE RULES ════════
-- 4-5 choices, one category per item, never mixed categories.
-- Correct answer: mid-length, mid-pack, precise terminology — never identifiable by length, technicality, or hedging.
-- Absolute language, if used anywhere, goes in a distractor, never the key.
-- Balance correct-letter position across the batch.
-
-════════ BATCH BLUEPRINT ════════
-- Majority direct fact/mechanism items; vignettes as a minority; occasional negative stem when the content supports a clean pathway with one true exception.
-- Mix ≥2 distractor archetypes per item; don't reuse the identical archetype pairing across every item.
-- Don't test the same fact/diagnosis/mechanism as the correct answer more than twice per batch.
-- Tally correct-letter position before output; reassign by reordering options only, never by changing which option is substantively correct.
-
-════════ ANTI-PATTERNS — never do these ════════
-- "All/none of the above," compound options ("A and C").
-- Mixed-category option sets.
-- A correct answer identifiable by length, technicality, or hedging.
-- Vague timeframes ("recently," "for a while").
-- Two genuinely defensible answers — tighten the stem until exactly one is unambiguous.
-- Teaching language that gives away the answer in the stem.
-- A fabricated, non-real distractor where a real one from the same family would do.
-- Negative stems used as the default format rather than the occasional exception.
-
-════════ QUALITY GATE — run silently before output ════════
-Item tests one clean fact/mechanism/decision · correct answer precise and conditionally scoped · distractors real, same-category, ≥2 archetypes represented · exactly one unambiguous best answer · no length/technicality bias · letters balanced across batch · numeric values exact · explanation opens with the decisive fact.
-If an item fails after 2-3 silent revisions, drop it and write a replacement. Never ship a failing item and never show this checklist.
-
-MY CONTENT:
-</script>
-<!-- /QUESTION STYLE PROMPT TEMPLATES -->
-
 <script>
 // ── STATE ──
 var questions=[],questionBank=[],answers={},selected={},marked={},stemMarkup={},choiceMarkup={},NC=0,NI=0,CQ=0;
 var quizMode='learn';
-var uiMode='nbme';
-var promptStyle='boards';
+var uiMode='classic';
 var examSubmitted=false;
 var reviewOpen=false;
 var summaryVisible=false;
@@ -1449,9 +994,9 @@ var labUnitMode='us';
 var timerSec=0,timerRunning=false,timerInterval=null;
 var fontStep=0;
 var LETTERS=['A','B','C','D','E'];
-var PRELOADED_QUIZ_NAME="__QUIZ_BUILDER_PRELOADED_NAME__";
-var PRELOADED_QUESTIONS_JSON="__QUIZ_BUILDER_PRELOADED_QUESTIONS__";
-var PRELOADED_UI_MODE="__QUIZ_BUILDER_PRELOADED_UI_MODE__";
+var PRELOADED_QUIZ_NAME="Sexual, Somatoform & Dissociative Disorders — Board Review (20 Q)";
+var PRELOADED_QUESTIONS_JSON="[{\"stem\":\"A 24-year-old woman is brought to the emergency department by her sister because of an inability to move her right arm for the past 2 days. The symptom began the morning after she witnessed a fatal collision from the passenger seat of her sister's car. She has no history of psychiatric or neurologic illness. Her temperature is 37.0°C (98.6°F), pulse is 76/min, respirations are 14/min, and blood pressure is 118/74 mm Hg. The right arm is limp, but when it is held above her face and released, it falls to the side rather than onto her face. Deep tendon reflexes are 2+ and symmetric, tone is normal, and sensory boundaries shift between repeat examinations. MRI of the brain and cervical spine and nerve conduction studies are normal. She has no pending litigation, insurance claim, or disability application, and she declines an offer of further testing and asks when she can go home. On mental status examination she describes the paralysis calmly and asks her sister to reschedule her weekend plans, saying, 'It'll sort itself out.' Which of the following is the most likely diagnosis?\",\"choices\":[\"A. Factitious disorder imposed on self\",\"B. Illness anxiety disorder\",\"C. Conversion disorder\",\"D. Malingering\",\"E. Somatic symptom disorder\"],\"correct\":2,\"explanation\":\"Sudden loss of motor function following an acute stressor → normal imaging and nerve conduction studies → internally inconsistent examination (the 'paralyzed' arm avoids her own face on drop testing; sensory boundaries move between trials) = conversion disorder. The closing mental status finding is la belle indifférence — awareness of a dramatic deficit with a striking lack of concern. Symptom production is unconscious: no deception, no external reward, no pursuit of the sick role.\",\"wrongExplanations\":{\"0\":\"Factitious disorder requires intentional feigning to occupy the sick role, and such patients typically welcome invasive workup — she declines further testing and asks to leave.\",\"1\":\"Illness anxiety disorder is preoccupation with and fear of having a serious disease, usually with minimal actual symptoms; here there is a discrete, dramatic neurologic deficit and no expressed fear of illness at all.\",\"3\":\"Malingering requires an identifiable external incentive; the stem explicitly excludes litigation, an insurance claim, and a disability application, and she is not seeking anything from the encounter.\",\"4\":\"Somatic symptom disorder requires multiple or persistent physical complaints with excessive thoughts, feelings, and behaviors about them over months to years — not a single deficit of 2 days' duration met with indifference.\"},\"eli5\":\"After something scary, her arm stopped working even though her nerves and brain are fine. The mind, not the wiring, is causing it — and she seems oddly calm about it. That combination is conversion disorder.\"},{\"stem\":\"A 38-year-old woman comes to the office because of a 3-year history of abdominal bloating, intermittent headaches, low back pain, and burning in both feet. She has been evaluated by a gastroenterologist, two neurologists, a rheumatologist, and a podiatrist; upper endoscopy, MRI of the brain and lumbar spine, electromyography, and inflammatory markers have been normal or nondiagnostic. She keeps an hourly symptom diary, has quit her book club because 'flare-ups' are unpredictable, and spends 2 to 3 hours daily researching her symptoms. Her temperature is 36.8°C (98.2°F), pulse is 72/min, and blood pressure is 116/72 mm Hg. Examination shows mild diffuse abdominal tenderness; neurologic examination is normal. Hemoglobin A1c is 5.2%, TSH is 1.8 μU/mL, and erythrocyte sedimentation rate is 8 mm/h. She takes prescribed medications as directed and has attended every scheduled follow-up appointment. On mental status examination she is tearful and says, 'I'm not making this up — something is wrong with my body and no one will find it.' Which of the following is the most likely diagnosis?\",\"choices\":[\"A. Somatic symptom disorder\",\"B. Conversion disorder\",\"C. Factitious disorder imposed on self\",\"D. Illness anxiety disorder\",\"E. Malingering\"],\"correct\":0,\"explanation\":\"Multiple complaints across several organ systems persisting for years → disproportionate and persistent thoughts, anxiety, and time devoted to those symptoms (hourly diary, hours of daily research, social withdrawal) = somatic symptom disorder. The symptoms are experienced as real and are unconsciously produced; the diagnosis rests on the excessive psychological response, not on whether an organic explanation is eventually found.\",\"wrongExplanations\":{\"1\":\"Conversion disorder requires a discrete loss of sensory or motor function (paralysis, blindness, mutism) incompatible with neurologic disease — she has diffuse pain and paresthesia with a normal neurologic examination, not a functional deficit.\",\"2\":\"Factitious disorder requires deliberate falsification of symptoms to assume the sick role; nothing here is self-induced, and adherence plus complete follow-up argues against manufactured illness.\",\"3\":\"Illness anxiety disorder requires that somatic symptoms be minimal or absent, with the fear of a specific disease dominating; here the physical symptom burden itself is the presenting problem, and she names no feared diagnosis.\",\"4\":\"Malingering requires an external incentive and typically poor compliance; she adheres to treatment, keeps every appointment, and seeks no compensation, work exemption, or medication.\"},\"eli5\":\"Her aches and burning feet are real to her, and every test comes back clean. The problem is how much of her life the symptoms have taken over. That's somatic symptom disorder.\"},{\"stem\":\"Marcus is a 45-year-old accountant who has been convinced for the past 18 months that he has amyotrophic lateral sclerosis. He palpates his calves and forearms for twitching several times an hour, has had three normal neurologic examinations and two normal electromyography studies, and changes physicians each time one tells him the workup is negative. He reports no weakness, no falls, no swallowing difficulty, and no functional limitation other than the time consumed by checking; his employer reports no decline in his work. He acknowledges that his physicians are probably right and that he is likely worrying excessively, but says the reassurance 'wears off within a day.' He has no obsessions or compulsions in any other domain. Which of the following is the most likely diagnosis?\",\"choices\":[\"A. Somatic symptom disorder\",\"B. Obsessive-compulsive disorder\",\"C. Generalized anxiety disorder\",\"D. Illness anxiety disorder\",\"E. Delusional disorder, somatic type\"],\"correct\":3,\"explanation\":\"Preoccupation with having a serious illness → persisting despite repeated normal evaluations and physician reassurance → minimal or absent actual somatic symptoms = illness anxiety disorder. Care-seeking behavior (doctor shopping, self-examination) and the short-lived effect of reassurance are the classic behavioral signature.\",\"wrongExplanations\":{\"0\":\"Somatic symptom disorder requires distressing somatic symptoms to be present; he denies weakness, falls, or any functional deficit — the fear, not the symptom, is the disorder here.\",\"1\":\"Obsessive-compulsive disorder requires obsessions or compulsions beyond health concerns; the stem explicitly states there are none in any other domain, and health-focused preoccupation alone points to illness anxiety disorder.\",\"2\":\"Generalized anxiety disorder requires excessive worry about multiple life domains (work, finances, family); his worry is confined to a single feared illness.\",\"4\":\"Delusional disorder, somatic type requires a fixed false belief held with delusional conviction; he acknowledges his physicians are probably right, so reality testing and insight are preserved.\"},\"eli5\":\"He is terrified he has a disease even though every test says he doesn't, and being told he's fine only calms him for a day. He isn't actually sick — the fear is the illness. That's illness anxiety disorder.\"},{\"stem\":\"A 34-year-old man in police custody is brought to the emergency department 6 hours after arrest because of reported 'blackout spells' and voices telling him to hurt himself. His arraignment is scheduled for the following morning. His temperature is 36.9°C (98.4°F), pulse is 78/min, and blood pressure is 126/80 mm Hg. Physical and neurologic examinations are normal. Urine toxicology screening is negative and serum chemistry studies are within normal limits. He asks whether admission would delay his court date and states he needs to be 'in a hospital, not a jail.' He declines electroencephalography and lumbar puncture and refuses to remain for observation unless given a discharge date. Nursing staff observe him eating dinner and laughing with another patient in the hallway. On mental status examination he makes good eye contact, and his affect is bright and reactive. When informed that the charges have been dropped, he states that he feels much better and asks to be released. Which of the following is the most likely diagnosis?\",\"choices\":[\"A. Brief psychotic disorder\",\"B. Malingering\",\"C. Factitious disorder imposed on self\",\"D. Conversion disorder\",\"E. Somatic symptom disorder\"],\"correct\":1,\"explanation\":\"Intentional feigning of symptoms → clear external incentive (avoiding jail and a court appearance) → complaints cease the moment the incentive disappears = malingering, which is a V-code behavior rather than a psychiatric diagnosis. Refusal of diagnostic testing fits: workup serves no purpose when there is nothing to find and the goal is external.\",\"wrongExplanations\":{\"0\":\"Brief psychotic disorder requires genuine psychotic symptoms lasting at least 1 day; his 'voices' resolve instantly on hearing legal news, and his affect is bright, reactive, and unresponsive to internal stimuli.\",\"2\":\"Factitious disorder is motivated by the sick role itself (primary gain) and persists regardless of external reward — such patients typically welcome invasive testing rather than refusing electroencephalography and lumbar puncture.\",\"3\":\"Conversion disorder involves unconsciously produced loss of sensory or motor function with a nonphysiologic examination; there is no neurologic deficit here, and the symptoms are deliberately reported for gain.\",\"4\":\"Somatic symptom disorder requires unconsciously experienced physical symptoms with excessive health-related thoughts and behavior over months to years, not a 6-hour presentation timed to an arraignment.\"},\"eli5\":\"He said he was hearing voices so he'd get a hospital bed instead of a jail cell. The second the charges vanished, so did the symptoms. Faking for a real-world payoff is malingering.\"},{\"stem\":\"A 41-year-old surgical technician is admitted for the fifth time in 14 months for recurrent abscesses of the left forearm. Her temperature is 38.4°C (101.1°F), pulse is 98/min, and blood pressure is 118/76 mm Hg. Wound cultures grow mixed enteric organisms, and the lesions have sharply demarcated linear margins confined to the non-dominant arm. Complete blood count shows leukocytosis; HIV testing, hemoglobin A1c, and immunoglobulin levels are normal, excluding an immunodeficient state. Records obtained from three outside hospitals document similar admissions and 11 prior debridements. She has no pending litigation, disability claim, or workers' compensation case, and she is on paid leave regardless of the admission. She requests specific imaging by name, discusses antibiotic spectra fluently with the team, and expresses eagerness for the planned incision and drainage under general anesthesia. On mental status examination she is pleasant and animated when discussing her surgical history and vague when asked about her outside hospital records. Which of the following is the most likely diagnosis?\",\"choices\":[\"A. Somatic symptom disorder\",\"B. Malingering\",\"C. Conversion disorder\",\"D. Illness anxiety disorder\",\"E. Factitious disorder\"],\"correct\":4,\"explanation\":\"Self-induced disease (polymicrobial enteric flora in accessible, sharply demarcated wounds on the non-dominant arm) → no external incentive → enthusiasm for invasive procedures and hospitalization = factitious disorder imposed on self. The chronic form with predominantly physical signs, repeated hospitalizations, and willingness to undergo surgery is Munchausen syndrome; the health care occupation and fluency with medical terminology are supporting diagnostic clues, as is guardedness about outside records.\",\"wrongExplanations\":{\"0\":\"Somatic symptom disorder involves unconsciously experienced symptoms without deliberate falsification; here the wounds are physically self-inflicted with enteric contamination.\",\"1\":\"Malingering requires an external incentive, which the stem excludes (no litigation, disability claim, or compensation; pay is unaffected), and malingerers avoid painful, invasive procedures rather than seeking them.\",\"2\":\"Conversion disorder requires loss of voluntary motor or sensory function incompatible with neurologic disease — she has objectively verified infection, fever, and leukocytosis.\",\"3\":\"Illness anxiety disorder is fear of having an undiagnosed disease with minimal actual symptoms; she has documented disease that she is producing and shows no fear of it.\"},\"eli5\":\"She keeps giving herself infections so she can be a patient — the attention and the operating room are the point. There's no money or time off to gain. Wanting the sick role itself is factitious disorder.\"},{\"stem\":\"A 3-year-old boy is brought to the emergency department for the sixth time in 5 months because of recurrent vomiting and profound lethargy. His mother, a former pediatric nurse, reports that the episodes begin suddenly at home. During a monitored 48-hour hospitalization with continuous nursing presence, no episodes occurred and all laboratory studies were normal; an episode occurred 3 hours after discharge. Upper endoscopy, abdominal ultrasonography, metabolic studies, and electroencephalography have all been normal. A serum sample drawn during the most recent episode shows a toxic level of a sedating antihistamine that has never been prescribed. His growth parameters have fallen from the 50th to the 10th percentile. The mother requests repeat endoscopy, is conversant with the differential diagnosis, and appears comfortable and socially engaged on the ward. Which of the following is the most appropriate next step in management?\",\"choices\":[\"A. Repeat upper endoscopy under sedation\",\"B. Refer the mother for outpatient psychotherapy and reassess in 6 months\",\"C. Report the case to child protective services\",\"D. Discharge with a symptom diary and follow-up in 2 weeks\",\"E. Confront the mother directly and ask her to stop the behavior\"],\"correct\":2,\"explanation\":\"Illness that occurs only in the caregiver's presence → resolves under supervised observation → an unprescribed drug detected in the child's serum = factitious disorder imposed on another (Munchausen syndrome by proxy). This is a form of child abuse, so the required action is separation from the suspected perpetrator and mandatory reporting to child protective services; the child's safety precedes any psychiatric management of the caregiver.\",\"wrongExplanations\":{\"0\":\"Repeating invasive testing exposes the child to further iatrogenic risk and reinforces the caregiver's pursuit of the sick role by proxy; the diagnosis has already been established by the toxicology result.\",\"1\":\"Outpatient referral with 6-month reassessment leaves the child in the care of the person poisoning him — treatment of the caregiver may follow, but never in place of protection.\",\"3\":\"Discharge home returns the child to an ongoing source of harm; failure to thrive and a toxic drug level make continued exposure unacceptable.\",\"4\":\"Direct confrontation risks flight from care, destruction of evidence, and escalation of harm, and it is not the physician's role to adjudicate; reporting is mandatory once abuse is suspected.\"},\"eli5\":\"The little boy only gets sick when he's alone with his mom, and a medicine no doctor ordered showed up in his blood. That means someone is making him sick. Doctors have to report that right away to keep him safe.\"},{\"stem\":\"Which of the following findings best distinguishes factitious disorder imposed on self from malingering?\",\"choices\":[\"A. Intentional production or feigning of symptoms\",\"B. Inconsistency between reported symptoms and objective findings\",\"C. A history of treatment by many different physicians\",\"D. Extensive familiarity with medical terminology and procedures\",\"E. Willingness to undergo painful or invasive diagnostic procedures\"],\"correct\":4,\"explanation\":\"Both conditions involve deliberate deception, so the discriminator must be the goal. In factitious disorder the sick role itself is the reward (primary gain), so the patient welcomes admission, testing, and surgery; the malingerer wants an external payoff (money, drugs, work or legal avoidance) and therefore avoids painful, invasive workup that offers nothing toward that goal and risks exposure.\",\"wrongExplanations\":{\"0\":\"Intentional production is the shared feature that places both conditions on the consciously produced side of the master split — it separates them from the somatoform disorders, not from each other.\",\"1\":\"Symptom-finding mismatch occurs in both consciously produced conditions and in the somatoform disorders as well, so it has no discriminating value here.\",\"2\":\"Doctor shopping and multiple inconclusive workups appear in the diagnostic clue lists for both consciously and unconsciously produced conditions.\",\"3\":\"Fluency with medical language is a supporting clue for deliberate symptom production generally and can be seen in either condition.\"},\"eli5\":\"Both of these people are faking on purpose, so that isn't the tiebreaker. Ask what they want: someone chasing money dodges the scary tests, while someone who wants to be a patient signs up for them. Eagerness for procedures points to factitious disorder.\"},{\"stem\":\"A 29-year-old woman is brought to the office by her husband because of a 2-year history of 'lost time.' She has found unfamiliar clothing in her closet that she does not remember buying and has been told by coworkers about conversations she has no memory of having. Her husband states that on several occasions she has spoken in a markedly different voice, referred to herself by another name, and later had no recollection of the episode. She reports severe, repeated physical abuse throughout childhood. Her vital signs are normal. Neurologic examination is normal, urine toxicology screening is negative, and an electroencephalogram obtained during a prolonged monitoring session is normal. Her family and community do not practice any religious tradition involving possession states. On mental status examination she is fully oriented, denies hallucinations, and expresses shame and fear about the gaps in her memory. Which of the following is the most likely diagnosis?\",\"choices\":[\"A. Depersonalization/derealization disorder\",\"B. Dissociative amnesia with dissociative fugue\",\"C. Posttraumatic stress disorder\",\"D. Dissociative identity disorder\",\"E. Temporal lobe epilepsy\"],\"correct\":3,\"explanation\":\"Two or more distinct personality states with marked discontinuity in sense of self and agency (Criterion A) → recurrent gaps in recall of everyday events and personal information beyond ordinary forgetting (Criterion B) → distress (C), not a sanctioned cultural practice (D), and not attributable to a substance or medical condition (E) = dissociative identity disorder. The etiology is severe, repetitive early childhood trauma.\",\"wrongExplanations\":{\"0\":\"Depersonalization/derealization disorder involves detachment from self or surroundings with intact reality testing but no alternate identity states and no amnestic gaps of this kind.\",\"1\":\"Dissociative amnesia with fugue requires apparently purposeful travel or bewildered wandering with amnesia for identity; she remains at home and in her job, and distinct personality states are present.\",\"2\":\"Posttraumatic stress disorder shares the trauma etiology but requires intrusion, avoidance, and hyperarousal symptoms; identity disruption with a differently named self-state exceeds the dissociative subtype and satisfies DID Criterion A. (Whether DID is best framed as severe chronic PTSD with dissociative features remains an open debate in the field.)\",\"4\":\"Temporal lobe epilepsy is the medical mimic explicitly excluded by DID Criterion E — the prolonged electroencephalogram is normal, and complex partial seizures do not produce a consistently named alternate identity.\"},\"eli5\":\"She sometimes becomes a different person with a different name and voice, then can't remember it afterward. This starts with terrible abuse very early in life. Two or more identities plus memory gaps is dissociative identity disorder.\"},{\"stem\":\"Dissociative identity disorder is most strongly associated with which of the following etiologic factors?\",\"choices\":[\"A. Severe, repetitive abuse during early childhood\",\"B. Perinatal hypoxic injury to the mesial temporal lobes\",\"C. A first-degree relative with schizophrenia\",\"D. Chronic high-dose stimulant use during adolescence\",\"E. Traumatic brain injury sustained in adulthood\"],\"correct\":0,\"explanation\":\"DID is understood to arise from extreme, repetitive physical, sexual, or emotional abuse in early childhood → dissociation functions as a protective mechanism that compartmentalizes unbearable experience during a period when identity is still consolidating.\",\"wrongExplanations\":{\"1\":\"Perinatal hypoxic injury produces fixed cognitive or seizure sequelae, not organized alternate identity states; a medical or neurologic cause would in fact exclude the diagnosis under Criterion E.\",\"2\":\"Family history of schizophrenia is an established risk factor for schizophrenia-spectrum illness, including schizotypal personality disorder, not for dissociative identity disorder.\",\"3\":\"Stimulant use can cause intoxication states, psychosis, and blackouts, but substance attribution excludes the diagnosis under Criterion E.\",\"4\":\"Adult traumatic brain injury can produce amnesia and personality change, but again represents a medical cause excluded by Criterion E; DID's proposed etiology is developmental and psychological.\"},\"eli5\":\"When a young child is hurt over and over and can't escape, the mind sometimes copes by walling parts of itself off. Those walled-off parts can grow into separate identities. That early trauma is the root of DID.\"},{\"stem\":\"A 33-year-old woman comes to the office 3 weeks after a home invasion during which she was threatened at gunpoint. She is unable to recall a 6-hour period spanning the event, although she recalls the entire day before and the following morning in detail. She has not traveled, has not assumed another name, and knows who she is. Her temperature is 36.7°C (98.1°F), pulse is 74/min, and blood pressure is 120/78 mm Hg. Neurologic examination is normal, urine toxicology screening is negative, and CT of the head shows no abnormalities; she sustained no head trauma. She reports no nightmares, flashbacks, avoidance behaviors, or hypervigilance. On mental status examination she is oriented and distressed specifically by the missing hours, stating, 'It's like someone cut a piece out of the tape.' Which of the following is the most likely diagnosis?\",\"choices\":[\"A. Dissociative identity disorder\",\"B. Dissociative amnesia, localized type\",\"C. Dissociative amnesia with dissociative fugue\",\"D. Depersonalization/derealization disorder\",\"E. Transient global amnesia\"],\"correct\":1,\"explanation\":\"Inability to recall important autobiographical information surrounding a traumatic event → the gap is bounded to a specific interval → distress, no substance or medical cause, no better explanation by another dissociative or trauma disorder = dissociative amnesia, localized type. The information is not permanently lost, only unretrievable during the episode.\",\"wrongExplanations\":{\"0\":\"Dissociative identity disorder requires two or more distinct personality states in addition to amnestic gaps; she has memory loss alone with a continuous sense of identity.\",\"2\":\"The fugue specifier requires apparently purposeful travel or bewildered wandering with amnesia for identity; the stem explicitly states she has not traveled and knows who she is.\",\"3\":\"Depersonalization/derealization disorder involves detachment from self or environment, not loss of autobiographical memory.\",\"4\":\"Transient global amnesia is an abrupt anterograde amnestic episode, typically in older adults, resolving within 24 hours and not selectively erasing a psychologically traumatic interval; she had no observed confusional episode and no head trauma.\"},\"eli5\":\"A terrifying six hours got walled off in her memory while everything around it stayed clear. She still knows who she is and never wandered off. Losing just that chunk is localized dissociative amnesia.\"},{\"stem\":\"A 47-year-old man is evaluated in the emergency department after being identified 400 miles from his home city, 10 days after his family reported him missing. He had been living in a rented room and working under a different name and was unable to state his own identity or recall any autobiographical information until his family arrived. He has no history of head trauma, and there are no scalp lacerations or contusions. His vital signs are normal, neurologic examination is normal, urine toxicology screening is negative, and MRI of the brain shows no abnormalities. His employer confirms he was in good standing, he has no debts, no pending criminal charges, and no insurance or disability claim. His wife reports that his mother died 2 weeks before he disappeared. On mental status examination he is bewildered and tearful, and there is no evidence of alternate identity states. Which of the following is the most likely diagnosis?\",\"choices\":[\"A. Malingering\",\"B. Dissociative identity disorder\",\"C. Dissociative amnesia with dissociative fugue\",\"D. Depersonalization/derealization disorder\",\"E. Transient global amnesia\"],\"correct\":2,\"explanation\":\"Apparently purposeful travel away from home with amnesia for identity, following a major stressor → no substance, structural, or traumatic cause = dissociative amnesia with the dissociative fugue specifier. Fugue is coded as a specifier of dissociative amnesia (300.13/F44.1), not as a stand-alone diagnosis.\",\"wrongExplanations\":{\"0\":\"Malingering requires an external incentive; the stem excludes debts, charges, employment problems, and insurance or disability claims, and he did not present seeking anything.\",\"1\":\"Dissociative identity disorder requires two or more distinct personality states with discontinuity of self and agency; taking a new name while amnestic for identity is not the same as an alternate identity state, and the examination shows none.\",\"3\":\"Depersonalization/derealization disorder involves detachment from self or surroundings with preserved autobiographical memory; he cannot recall who he is.\",\"4\":\"Transient global amnesia lasts under 24 hours, spares personal identity, and does not involve organized travel or assumption of a new name.\"},\"eli5\":\"After his mother died, he left home, took a new name, and forgot who he was. Traveling plus forgetting your own identity is called a fugue. It's a special flavor of dissociative amnesia, not its own diagnosis.\"},{\"stem\":\"A 39-year-old woman is diagnosed with dissociative amnesia with dissociative fugue after an episode that followed the death of her spouse. She has no history of psychiatric illness, no suicidal ideation, and no substance use, and results of neurologic evaluation, laboratory studies, and MRI of the brain are normal. Her family asks about treatment and prognosis. Which of the following is the most appropriate next step in management?\",\"choices\":[\"A. Supportive care with psychotherapy and outpatient follow-up\",\"B. Initiation of long-term antipsychotic therapy\",\"C. Referral for electroconvulsive therapy\",\"D. Initiation of scheduled long-term benzodiazepine therapy\",\"E. Involuntary psychiatric hospitalization for observation\"],\"correct\":0,\"explanation\":\"Dissociative amnesia and fugue typically begin in adulthood, have rapid onset and dissipation, and most often remit spontaneously without specific treatment → the conservative, evidence-consistent step is supportive care and psychotherapy addressing the precipitating stressor, with reassurance that forgotten material is unretrievable rather than destroyed and usually returns.\",\"wrongExplanations\":{\"1\":\"Antipsychotics treat psychotic symptoms, which are absent; reality testing and thought process are intact in dissociative amnesia.\",\"2\":\"Electroconvulsive therapy is not indicated for uncomplicated dissociative amnesia and carries its own risk of anterograde and retrograde memory impairment.\",\"3\":\"Scheduled long-term benzodiazepines add dependence risk and sedation-related memory impairment without addressing the dissociative process.\",\"4\":\"Involuntary hospitalization requires dangerousness or grave disability; she has no suicidal ideation and can be managed in the outpatient setting.\"},\"eli5\":\"Most people who lose memories this way get them back on their own, fairly quickly. What helps is talking, support, and time. Strong medicines or forced hospital stays aren't needed.\"},{\"stem\":\"A 25-year-old graduate student comes to the office because of an 8-month history of episodes during which she feels as though she is 'floating near the ceiling watching myself talk.' During the same episodes, her surroundings appear flat, foggy, and dreamlike, and familiar classmates seem 'like robots.' Episodes last 20 to 60 minutes and are not accompanied by palpitations, dyspnea, chest pain, or fear of dying, and there is no abrupt surge of fear at onset. She has stopped attending seminars because of the distress. Her vital signs are normal, physical examination is unremarkable, urine toxicology screening is negative, thyroid function studies are normal, and an electroencephalogram is normal. On mental status examination there are no hallucinations or delusions, and she states clearly that she knows the experiences are not literally true and that her perception is 'playing tricks.' Which of the following is the most likely diagnosis?\",\"choices\":[\"A. Schizophrenia\",\"B. Dissociative identity disorder\",\"C. Panic disorder\",\"D. Depersonalization/derealization disorder\",\"E. Brief psychotic disorder\"],\"correct\":3,\"explanation\":\"Persistent detachment from the self (out-of-body observer experience = depersonalization) plus unreal, dreamlike perception of the environment (derealization) → clinically significant distress and impairment → and, decisively, reality testing remains intact throughout (Criterion B) = depersonalization/derealization disorder. Intact reality testing is the single criterion separating this from a psychotic disorder.\",\"wrongExplanations\":{\"0\":\"Schizophrenia requires psychotic symptoms with impaired reality testing; she has no hallucinations or delusions and recognizes her perceptions as distorted.\",\"1\":\"Dissociative identity disorder requires two or more distinct personality states and recurrent amnestic gaps; neither is present.\",\"2\":\"Panic disorder requires recurrent unexpected panic attacks with an abrupt surge of fear and autonomic symptoms — explicitly excluded here, and her dissociative symptoms are the primary, free-standing complaint.\",\"4\":\"Brief psychotic disorder requires psychotic symptoms lasting 1 day to 1 month with impaired reality testing; her symptoms have persisted 8 months with insight preserved.\"},\"eli5\":\"She feels like she's watching herself from outside, and the world looks foggy and fake. The key is that she knows it isn't really happening. Knowing it's your brain misfiring is what makes this dissociation, not psychosis.\"},{\"stem\":\"During an evaluation, a patient reports that at times other people appear robotic, the room seems foggy and lifeless, and objects look smaller than they actually are, while her sense of her own body, thoughts, and actions feels unchanged. This experience is best described as which of the following?\",\"choices\":[\"A. Depersonalization\",\"B. Derealization\",\"C. Illusion\",\"D. Visual hallucination\",\"E. Thought insertion\"],\"correct\":1,\"explanation\":\"Derealization = altered perception of the external environment: the world appears unreal, dreamlike, foggy, or visually distorted, with objects larger or smaller than they are and people seeming like strangers or robots. The stem specifically preserves the sense of self, which is what excludes depersonalization.\",\"wrongExplanations\":{\"0\":\"Depersonalization is altered perception of oneself — unreality or detachment from one's own thoughts, feelings, body, or actions; here the sense of self is explicitly unchanged.\",\"2\":\"An illusion is a misinterpretation of an actual stimulus into a different object; she perceives the correct objects and people, but they seem unreal in quality.\",\"3\":\"A visual hallucination is perception without any external stimulus; nothing is being seen that is not there.\",\"4\":\"Thought insertion is a psychotic first-rank symptom involving the belief that thoughts are placed into one's mind by an outside agent, with impaired reality testing.\"},\"eli5\":\"The outside world looks fake, foggy, and wrong-sized, but she still feels like herself. When the world is what feels unreal, the word is derealization. When you feel unreal, that's depersonalization.\"},{\"stem\":\"A 68-year-old man with Parkinson disease is brought to the office by his wife because of a 3-month history of new sexual preoccupation, including repeated propositions to neighbors and several hours daily spent on adult websites. His wife reports that he has also begun gambling online, losing a substantial sum. His pramipexole dose was increased 4 months ago; he also takes carbidopa-levodopa. He has no psychiatric history and no prior similar behavior in 42 years of marriage. His temperature is 36.8°C (98.2°F) and blood pressure is 132/78 mm Hg. Neurologic examination shows bradykinesia and mild resting tremor without focal findings; Montreal Cognitive Assessment score is 27/30. TSH and testosterone levels are normal, and MRI of the brain shows only age-appropriate atrophy. Which of the following is the most appropriate next step in management?\",\"choices\":[\"A. Begin high-dose fluoxetine therapy\",\"B. Begin medroxyprogesterone acetate therapy\",\"C. Refer for orgasmic reconditioning therapy\",\"D. Begin low-dose risperidone therapy\",\"E. Reduce the dopamine agonist dose\"],\"correct\":4,\"explanation\":\"New-onset hypersexuality plus compulsive gambling beginning after a dopamine agonist dose increase → overactivation of the mesolimbic dopaminergic reward pathway → the treatment is reduction or withdrawal of the offending agent, with levodopa adjustment as needed. Impulse-control behaviors from dopamine agonists typically remit once the drug is tapered, so a medication review precedes any psychiatric formulation of new sexual behavior in an older adult.\",\"wrongExplanations\":{\"0\":\"High-dose SSRIs are used to reduce drive in paraphilic disorders; here the behavior is iatrogenic and reversible, and adding a drug rather than removing the cause is not the first step.\",\"1\":\"Antiandrogen therapy targets sexual drive in high-risk paraphilic disorder and does not address the dopaminergic mechanism producing this patient's impulse-control disorder.\",\"2\":\"Orgasmic reconditioning is a behavioral treatment for paraphilias; this is not a paraphilic interest but a drug-induced impulse-control disorder.\",\"3\":\"Adding an antipsychotic risks worsening parkinsonian motor symptoms and treats neither the mechanism nor the cause.\"},\"eli5\":\"His Parkinson medicine turns up the brain's reward system, and after the dose went up he started chasing sex and gambling. The fix is to turn that medicine back down. Always check the pill bottle before blaming the personality.\"},{\"stem\":\"Which of the following best explains why DSM-5 lists the sexual dysfunction diagnoses in alphabetical order rather than by phase of sexual response?\",\"choices\":[\"A. No agreed-upon model of the human sexual response cycle currently exists\",\"B. Sexual dysfunctions were reclassified within the paraphilic disorders chapter\",\"C. The dysfunctions are now grouped by underlying neurotransmitter mechanism\",\"D. Masters and Johnson's model was replaced by Freud's psychosexual stages\",\"E. Sexual dysfunctions are diagnosed only when substance or medication induced\"],\"correct\":0,\"explanation\":\"Earlier DSM editions organized these diagnoses around Masters and Johnson's four-stage response cycle (excitement → plateau → orgasm → resolution). That linear model was criticized for oversimplifying real sexual response, and because no replacement model commands consensus, DSM-5 simply lists the dysfunctions alphabetically.\",\"wrongExplanations\":{\"1\":\"DSM-5 keeps sexual dysfunctions and paraphilic disorders as two separate categories of sexual disorders.\",\"2\":\"Neurotransmitter mechanism is not the organizing principle for any DSM-5 chapter; DSM-5 classification remains descriptive.\",\"3\":\"Freud's psychosexual stages are historical background and are not the operative framework in modern DSM-5 nosology.\",\"4\":\"Substance/medication-induced sexual dysfunction is only one listed diagnosis among many, including erectile disorder, orgasmic disorder, and premature ejaculation.\"},\"eli5\":\"Doctors used to line these problems up along a four-step model of sexual response. People argued the model was too simple, and nobody agreed on a better one. So DSM-5 just listed them A to Z.\"},{\"stem\":\"A 52-year-old man comes to the office because of a 6-month history of inability to attain an erection sufficient for intercourse with his wife of 20 years. The difficulty began 1 week after he was laid off from his job. He reports firm early-morning erections approximately four mornings per week and no difficulty with erection during masturbation. He takes no medications, does not smoke, and drinks alcohol once monthly. His blood pressure is 122/78 mm Hg, and his pulse is 70/min. Femoral, popliteal, and dorsalis pedis pulses are 2+ bilaterally, genital examination shows no abnormalities, and sensation and reflexes in the lower extremities are intact. Hemoglobin A1c is 5.3%, morning total testosterone is 520 ng/dL, and TSH is 2.1 μU/mL. On mental status examination he is anxious and states, 'The whole time I'm thinking about whether it's going to work.' Which of the following is the most likely diagnosis?\",\"choices\":[\"A. Erectile disorder due to peripheral vascular disease\",\"B. Hypoactive sexual desire disorder\",\"C. Erectile disorder of psychogenic origin\",\"D. Substance/medication-induced sexual dysfunction\",\"E. Erectile disorder due to hypogonadism\"],\"correct\":2,\"explanation\":\"Preserved nocturnal and early-morning erections → the vascular, neurologic, and endocrine machinery for erection is intact → the dysfunction is situational and psychologically mediated, with onset tied to an identifiable stressor and performance-focused anxiety = psychogenic erectile disorder. Organic (physiologic) erectile dysfunction typically abolishes nocturnal erections as well.\",\"wrongExplanations\":{\"0\":\"Vascular disease would impair nocturnal tumescence and usually presents with diminished pulses and cardiovascular risk factors; his pulses are intact and his hemoglobin A1c is normal.\",\"1\":\"Hypoactive sexual desire disorder requires deficient sexual thoughts and desire; his desire is preserved and he retains normal erections during masturbation.\",\"3\":\"No substance or medication is implicated — he takes no medications and drinks rarely.\",\"4\":\"Hypogonadism is excluded by a normal morning total testosterone level and would also reduce desire and nocturnal erections.\"},\"eli5\":\"The equipment clearly works, because it works every morning and by himself. It only fails when he's worried about failing. That points to a mind-based cause, not a plumbing problem.\"},{\"stem\":\"A 31-year-old man is referred for psychiatric evaluation after being arrested for repeatedly pressing against unsuspecting passengers on a crowded subway. He reports that for the past 3 years he has experienced intense, recurrent sexual arousal associated with this behavior and has acted on the urges at least weekly. He reports no interest in observing unsuspecting people undress, has never exposed his genitals to another person, and reports no arousal associated with inanimate objects or with inflicting pain. He states he feels ashamed afterward and has lost a job because of a prior complaint. Which of the following is the most likely diagnosis?\",\"choices\":[\"A. Voyeuristic disorder\",\"B. Exhibitionistic disorder\",\"C. Sexual sadism disorder\",\"D. Frotteuristic disorder\",\"E. Fetishistic disorder\"],\"correct\":3,\"explanation\":\"Recurrent, intense sexual arousal from touching or rubbing against a non-consenting person, acted upon over at least 6 months with distress and impairment = frotteuristic disorder. Like voyeuristic and exhibitionistic disorders, it inherently involves a non-consenting party, which is why it clears the paraphilic disorder threshold regardless of the individual's own reported distress.\",\"wrongExplanations\":{\"0\":\"Voyeuristic disorder involves arousal from observing an unsuspecting person who is naked or engaged in sexual activity; he explicitly denies this interest.\",\"1\":\"Exhibitionistic disorder involves exposing one's genitals to an unsuspecting stranger; the stem states he has never done so.\",\"2\":\"Sexual sadism disorder involves arousal from inflicting physical or psychological suffering, which he denies.\",\"4\":\"Fetishistic disorder involves arousal focused on a non-living object or a non-genital body part, explicitly excluded here.\"},\"eli5\":\"He gets aroused by touching strangers who never agreed to it, and he's done it for years. That specific pattern has its own name: frotteuristic disorder. Because another person is harmed, it counts as a disorder.\"},{\"stem\":\"A 36-year-old man mentions during a routine health maintenance visit that for many years he has been aroused primarily by wearing latex garments during private encounters with his wife of 10 years, who is aware of and comfortable with the practice. He reports no distress about the interest, works full time as an engineer, describes his marriage as satisfying, and has never involved anyone else. He asks whether he needs treatment for this. Which of the following is most appropriate at this point?\",\"choices\":[\"A. Begin antiandrogen therapy with leuprolide to reduce sexual drive\",\"B. Reassure him that no psychiatric diagnosis is warranted and continue routine care\",\"C. Refer him for orgasmic reconditioning therapy sessions\",\"D. Begin high-dose fluoxetine to reduce sexual preoccupation\",\"E. Refer him for inpatient evaluation of a paraphilic disorder\"],\"correct\":1,\"explanation\":\"DSM-5 deliberately separates the two terms: a paraphilia is an atypical sexual interest, ascertained from self-report or behavior, while a paraphilic disorder is diagnosed only when the interest causes distress or impairment to the individual or harm to others. With a consenting adult partner, no distress, and intact occupational and marital functioning → no diagnostic threshold is met → reassurance and routine care.\",\"wrongExplanations\":{\"0\":\"Antiandrogens are reserved for paraphilic disorders with harmful or high-risk behavior, typically in court-ordered settings; treating a non-disorder exposes him to bone loss and sexual side effects for no indication.\",\"2\":\"Orgasmic reconditioning is a treatment for a diagnosed paraphilic disorder; there is nothing here to treat.\",\"3\":\"High-dose SSRIs are used to blunt intrusive sexual urges in paraphilic disorder; he reports no intrusive urges, distress, or impairment.\",\"4\":\"Inpatient evaluation is unwarranted in the absence of distress, impairment, harm to others, or dangerousness.\"},\"eli5\":\"Liking something unusual in private with a partner who agrees isn't a mental illness. It only becomes a disorder if it hurts him, wrecks his life, or harms someone else. None of that is happening, so nothing needs treating.\"},{\"stem\":\"A 44-year-old man is evaluated under a court order after a second conviction for exposing his genitals to unsuspecting strangers. Despite 6 months of weekly psychotherapy and orgasmic reconditioning, he reports intrusive urges several times daily and has acted on them twice during treatment. He has no history of depression, mania, or psychosis. His vital signs are normal, and physical examination, complete blood count, comprehensive metabolic panel, and liver function studies show no abnormalities. Bone densitometry is normal. Which of the following is the most appropriate pharmacotherapy?\",\"choices\":[\"A. Bupropion\",\"B. Methylphenidate\",\"C. Lithium\",\"D. Haloperidol\",\"E. Leuprolide\"],\"correct\":4,\"explanation\":\"When behavioral treatment fails in a high-risk paraphilic disorder, drug therapy targets the intensity and frequency of sexual drive and intrusive sexual thoughts rather than the underlying interest. Androgen-lowering agents — GnRH agonists such as leuprolide, or antiandrogens such as medroxyprogesterone — reduce testosterone → reduce urge frequency and behavioral risk. High-dose SSRIs are the other accepted option in this setting.\",\"wrongExplanations\":{\"0\":\"Bupropion is a dopamine and norepinephrine reuptake inhibitor associated with preserved or increased sexual function — the opposite of the desired effect here.\",\"1\":\"Methylphenidate increases dopaminergic tone and can worsen impulsivity and hypersexual behavior.\",\"2\":\"Lithium is a mood stabilizer for bipolar disorder; there is no history of mania or mood episodes, and it does not reduce sexual drive.\",\"3\":\"Haloperidol treats psychosis, which is absent, and exposes the patient to extrapyramidal symptoms and tardive dyskinesia without an indication.\"},\"eli5\":\"Talk therapy alone didn't stop the urges, and other people are being harmed. Medicines that lower testosterone turn the volume down on sexual drive. That's what leuprolide does.\"}]";
+var PRELOADED_UI_MODE="nbme";
 var DEFAULT_QUESTION_COUNT=15;
 var MAX_AI_QUESTION_COUNT=25;
 var DOWNLOAD_TEMPLATE='';
@@ -1474,7 +1019,7 @@ function normalizeQuestionCountInput(){
   if(input)input.value=String(count);
   return count;
 }
-function buildBoardsPrompt(){
+function buildPrompt(){
   var count=getRequestedQuestionCount();
   var quizName=document.getElementById('quizName').value.trim();
   var quizNameRule=quizName
@@ -1529,9 +1074,17 @@ ${quizNameRule}
 6. Only then write the vignette around that plan — write the MSE and any closing patient quote LAST so they earn their place as the tiebreaker/punchline.
 Never show this planning. Only the finished items appear in output.
 
+════════ IF YOU ARE A SMALLER / LESS RELIABLE MODEL ════════
+The planning protocol above and the ANSWER BALANCE CHECK below only work if they actually run — a weaker model will often silently "claim" a hidden step and skip straight to output, which is exactly how unbalanced or low-quality batches slip through. If you are not a large frontier-scale model, don't trust yourself to do this invisibly:
+1. Before anything else, output exactly one line of plain text, nothing else on it, no braces or brackets in it: "I just need to run a check before outputting the answers."
+2. On the next lines, visibly run the ANSWER BALANCE CHECK (list every item's correct letter in order, tally A–E, fix and re-tally if uneven).
+3. Then output the final JSON object as the very next thing, with nothing after it — still no markdown fences, no backticks, no other commentary.
+If you are a large/frontier-capable model, ignore this section: do the planning and balance check silently and output only the JSON per the contract above.
+
 ════════ PROFILE SELECTION ════════
 - NBME profile (default): straight DSM-5 differential, lab-value clues, separate "Which of the following..." question line. Typical stem 90–160 words.
 - NBOME profile: use when source includes OMM/structural findings, cranial concepts, viscerosomatic reflexes, forensic psych, iatrogenic scenarios, or osteopathic content. The ask is usually folded into the final sentence ("...The most likely diagnosis is"). Typical stem 60–120 words — tighter than NBME.
+- RECALL profile: no patient at all — a bare fact/mechanism/criteria question ("Which of the following receptors...", "Which of the following benzodiazepines has the shortest half-life?", "Which of the following is a DSM-5-TR diagnostic criterion for X?"). Use for pharmacology (half-lives, receptor mechanisms), epidemiology/prevalence comparisons, and DSM criteria recognition. See ITEM FORMAT VARIETY below.
 - A batch may mix profiles if the source content mixes.
 
 ════════ NBME VIGNETTE SKELETON (follow in order) ════════
@@ -1544,6 +1097,15 @@ Never show this planning. Only the finished items appear in output.
 7. Optional short patient/family quote carrying outsized diagnostic weight.
 8. Fixed ask phrasings: "Which of the following is the most likely diagnosis?" / "...most appropriate next step in management?" / "...next step in diagnosis?" / "...most appropriate pharmacotherapy?" / "...most appropriate at this point?" (communication items).
 For pediatric items, drop in age-appropriate developmental milestones as reassurance or red herring.
+This 8-step skeleton is for full clinical-vignette items only — see ITEM FORMAT VARIETY for the other item shapes a real batch needs.
+
+════════ ITEM FORMAT VARIETY (calibrated from real course exams) ════════
+Not every item is a full 90–160 word ED/clinic-encounter vignette. Real exams for this content mix in three other shapes — use all of them across a batch, not just the NBME skeleton:
+- COMPACT NARRATIVE vignette (2–5 sentences, third-person descriptive voice rather than a clinical encounter — "Lucy is a 32-year-old woman who lives alone on welfare..."). Best for personality-disorder and phobia-subtype pattern recognition, where the diagnosis rests on a cluster of everyday behavioral details rather than a buried lab/vital clue.
+- ONE-LINE applied-concept stems that test a single skill with no patient history at all, e.g. "The psychiatrist asks a patient to spell 'world' backwards. Which of the following is being evaluated with this question?"
+- RECALL items (see RECALL profile above) — bare fact/mechanism/criteria questions with no patient at all.
+- DOSE-SEQUENCING items — a patient has already failed or maxed a named drug at a stated dose (state the drug, dose, and dose range/max explicitly, e.g. "fluvoxamine 300 mg PO QD (maximum dose)"), and the ask is the next appropriate step: augment, cross-taper, add adjunctive agent, or switch class. The correct answer must reflect actual next-line evidence for that residual symptom, not just any other drug in the same class.
+Target mix across a batch of 15+: roughly 55–65% full clinical vignette (NBME/NBOME skeleton), 20–30% compact narrative or one-line stems, 10–15% pure recall/dose-sequencing. Scale proportionally for other batch sizes — never force every item into the long-vignette mold just because the skeleton above is the default.
 
 ════════ NAMED TRAP PATTERNS — use across the batch ════════
 NBME signature moves:
@@ -1567,7 +1129,14 @@ NBOME signature moves (layer onto the same skeleton):
 - All distractors must remain plausible to a reader who missed the buried clue.
 
 ════════ BATCH BLUEPRINT ════════
-Across the batch, mix item types roughly as: 40–50% most-likely-diagnosis, 15–20% next-step management, 10–15% pharmacotherapy (including at least one contraindication/avoid item when the content supports it), 10–15% mechanism/neuroanatomic correlate or lab-workup, and 1 communication/ethics item when the content touches patient interaction. Where the source supports it, build one 2–3 question chain off the same clinical stem (presentation → diagnosis → mechanism/treatment). Do not use the same correct diagnosis more than twice per batch. Balance correct letters: for 15 questions each letter should be correct 2–4 times — tally before output and reassign by swapping option order where needed.
+Across the batch, mix item types roughly as: 40–50% most-likely-diagnosis, 15–20% next-step management, 10–15% pharmacotherapy (including at least one contraindication/avoid item, and — when the content supports it — one dose-sequencing item per ITEM FORMAT VARIETY), 10–15% mechanism/neuroanatomic/receptor-pharmacology correlate or lab-workup, and 1 communication/ethics item when the content touches patient interaction. Layer in the compact-narrative, one-line, and recall shapes from ITEM FORMAT VARIETY — do not make every item a full vignette. Where the source supports it, build one 2–3 question chain off the same clinical stem (presentation → diagnosis → mechanism/treatment). Do not use the same correct diagnosis more than twice per batch. Run the ANSWER BALANCE CHECK below before output — do not eyeball it.
+
+════════ ANSWER BALANCE CHECK (mandatory, run after drafting all items, before output) ════════
+1. List every item's correct letter in the order the items appear (e.g., C, A, D, B, E, C, A, ...).
+2. Tally the totals per letter A–E. Target: each letter within ±1 of (question count ÷ 5) — e.g., 15 questions → each letter correct 2–4 times; 20 questions → 3–5 times; for small batches (<5) just avoid the same letter twice in a row and avoid an all-C or all-B set.
+3. Also check for streaks: the same letter should not be correct for 3 consecutive items even if the raw tally is balanced.
+4. Fix any imbalance or streak by reordering the CHOICE LIST for specific items (move the correct option to a different letter slot and reshuffle the distractors around it) — never by changing which option is medically correct, and never by making an option worded to sound more/less correct because of its position.
+5. Re-tally after adjusting and repeat until both the count and streak checks pass. Only then produce the final JSON.
 
 ════════ ANTI-PATTERNS — never do these ════════
 - Diagnostic label language in the stem ("appears depressed," "has hallucinations" is fine in MSE; "is clearly manic" is not).
@@ -1591,10 +1160,16 @@ EXEMPLAR 2 — NBOME profile (inline ask, duration arithmetic):
 Options: A. adjustment disorder / B. attention-deficit/hyperactivity disorder / C. conduct disorder / D. major depressive disorder / E. oppositional defiant disorder. Correct: A.
 Architecture: duration arithmetic is the buried clue — 2 months of symptoms beginning within 3 months of an identifiable stressor fits adjustment disorder, while ODD requires ≥6 months; the decoy = arguing/defiance surface-reads as ODD; the explicit negatives (no cruelty, destruction, theft; sleep and appetite intact) each rule out one listed option (conduct disorder; MDD); the previously-well-behaved baseline blocks ADHD; the ask is folded into the final sentence per NBOME style.
 
+EXEMPLAR 3 — compact narrative + recall (ITEM FORMAT VARIETY):
+"Lucy is a 32-year-old woman who lives alone on welfare in a small apartment. She has no apparent friends. Her neighbors consider her peculiar, and the neighborhood children often tease her about her appearance. Lucy's clothes appear slightly askew, and her makeup is unusual. She is generally suspicious of other people and often makes strange gestures when she passes people in the street. Her social worker reports that Lucy is always anxious during their meetings and has a very limited range of emotional expression, accompanied by unusual beliefs that she has special telepathic powers. Which of the following personality disorders is most likely?"
+Options: A. Avoidant / B. Borderline / C. Schizotypal / D. Schizoid / E. Paranoid. Correct: C.
+Architecture: no clinical encounter framing at all — third-person descriptive voice; the cluster of odd behavior + odd beliefs (magical thinking) + constricted affect + social avoidance is the whole clue, distributed across the paragraph rather than buried in one line; distractors are the adjacent Cluster A/B/C personality disorders that each explain only part of the picture (Schizoid = no odd beliefs; Paranoid = no magical thinking; Avoidant = wants friends and lacks odd beliefs).
+Paired RECALL item (no patient at all): "Which of the following personality disorders is most common in the biological relatives of patients with schizophrenia?" A. Schizoid / B. Paranoid / C. Schizotypal / D. Histrionic / E. Antisocial. Correct: C. — a bare epidemiology fact, zero vignette, tests the same concept from a different angle.
+
 ════════ QUALITY GATE — run silently on every item before output ════════
-Structure: opening line complete · exact duration present · behavioral wording · ≥1 explicit negative · MSE near the end.
-Trap: exactly one buried clue · one separate dramatic decoy · every negative rules out a listed option.
-Options: parallel category · ≥1 same-family distractor · all plausible without the clue · mutually exclusive · exactly one unambiguously correct · no length bias · letters balanced across the batch.
+Structure (full-vignette items only): opening line complete · exact duration present · behavioral wording · ≥1 explicit negative · MSE near the end. Compact-narrative/one-line/recall items are exempt from this row by design — see ITEM FORMAT VARIETY.
+Trap (full-vignette items only): exactly one buried clue · one separate dramatic decoy · every negative rules out a listed option.
+Options (every item, every format): parallel category · ≥1 same-family distractor · all plausible without the clue · mutually exclusive · exactly one unambiguously correct · no length bias · passes the ANSWER BALANCE CHECK.
 Match: stem type = answer type · management answers are conservative-first · communication items follow the hierarchy · NBOME items use structural findings correctly (confirmatory or rule-out, never decorative) and internally consistent duration math.
 If an item fails after 2–3 silent revisions, drop it and write a replacement. Never ship a failing item and never show the checklist.
 
@@ -1603,94 +1178,9 @@ Professor-voice notes: clipped exam findings, subtle pattern-recognition clues, 
 MY CONTENT:
 `;
 }
-var PROMPT_STYLE_OPTIONS=[
-  {key:'boards',label:'Boards',buttonId:'promptStyleBoardsBtn'},
-  {key:'morganelli',label:'Morganelli',buttonId:'promptStyleMorganelliBtn',templateId:'promptTemplateMorganelli'},
-  {key:'ochs',label:'Ochs',buttonId:'promptStyleOchsBtn',templateId:'promptTemplateOchs'},
-  {key:'ly',label:'Ly',buttonId:'promptStyleLyBtn',templateId:'promptTemplateLy'},
-  {key:'goode',label:'Goode',buttonId:'promptStyleGoodeBtn',templateId:'promptTemplateGoode'},
-  {key:'generic',label:'Generic',buttonId:'promptStyleGenericBtn',templateId:'promptTemplateGeneric'}
-];
-var PROMPT_STYLE_BY_KEY={};
-PROMPT_STYLE_OPTIONS.forEach(function(option){PROMPT_STYLE_BY_KEY[option.key]=option;});
-function getPromptStyleConfig(style){
-  return PROMPT_STYLE_BY_KEY[style]||PROMPT_STYLE_BY_KEY.boards;
-}
-function getPromptStyleLabel(style){
-  return getPromptStyleConfig(style).label;
-}
-function getPromptStyleButtonId(style){
-  return getPromptStyleConfig(style).buttonId;
-}
-function selectPromptStyle(style){
-  promptStyle=getPromptStyleConfig(style).key;
-  syncPromptStyleButtons();
-  refreshPromptText();
-}
-function syncPromptStyleButtons(){
-  PROMPT_STYLE_OPTIONS.forEach(function(option){
-    var btn=document.getElementById(option.buttonId);
-    if(!btn)return;
-    var isActive=promptStyle===option.key;
-    btn.classList.toggle('active',isActive);
-    btn.setAttribute('aria-selected',isActive?'true':'false');
-  });
-}
-function getQuizBuilderCompatibilityRules(){
-  return `════════ CUSTOM QUIZ BUILDER COMPATIBILITY — REQUIRED ════════
-The response must import directly into the Custom Quiz Builder. Every question MUST be a single-best-answer multiple-choice item with this exact shape:
-- "stem": non-empty string
-- "choices": array of exactly 5 non-empty strings, each already prefixed with its letter ("A. ...", "B. ...", "C. ...", "D. ...", "E. ..."). Every professor style must use 5 answer choices, even if earlier style notes mention 4 choices.
-- "correct": one NUMBER only, 0-based to the choices array. Never use a letter, array, boolean, or multiple correct answers.
-- "explanation": non-empty string explaining why the correct choice is right.
-- "wrongExplanations": object with one key for every wrong choice index and no key for the correct index.
-- "eli5": non-empty string, max 3 sentences.
-Do NOT output check-all-that-apply, select-all, true/false, fill-in-the-blank, free-response, table-only, image-only, or multi-correct items. If the source prompt style mentions one of those formats, convert it into a normal single-best-answer MCQ that still follows the professor's voice.
-Do NOT rely on external images or figures. If testing figure-style content, describe the relevant points/values in the stem and keep the answer as one numbered correct choice.
-Answer-length anti-pattern: never make the correct answer uniquely longest, uniquely shortest, most technical-sounding, or most hedged. Across the batch, vary answer lengths so the correct choice is sometimes shorter, sometimes medium-length, and sometimes longer.
-Output exactly one raw JSON object with top-level "name" and "questions". No markdown fences, no prose before or after the JSON.`;
-}
-function insertCompatibilityRules(promptText){
-  var rules='\n\n'+getQuizBuilderCompatibilityRules()+'\n';
-  var text=String(promptText||'').trim();
-  if(text.indexOf('CUSTOM QUIZ BUILDER COMPATIBILITY')!==-1)return text;
-  if(text.indexOf('\nMY CONTENT:')!==-1)return text.replace(/\nMY CONTENT:\s*$/,'\n'+rules+'\nMY CONTENT:');
-  return text+rules;
-}
-function forceFiveChoicePromptText(promptText){
-  return String(promptText||'')
-    .replace(/- "choices" has 4 OR 5 entries[\s\S]*?Never pad to 5 with a filler option — an unearned 5th choice is worse than 4 clean ones\./g,'- "choices" has exactly 5 entries (A-E) for every question. Never output 4 choices.')
-    .replace(/- "choices" is usually 4, occasionally 5 if a genuine 5th real distractor exists in the same category — never pad\./g,'- "choices" has exactly 5 entries (A-E) for every question. Never output 4 choices.')
-    .replace(/- "choices" has 5 entries for practice-register batches, 4 entries for exam-register batches — default to 5 unless told this is an exam\/RAT-format batch\./g,'- "choices" has exactly 5 entries (A-E) for every question. Never output 4 choices.')
-    .replace(/- "choices" has 5 entries by default\. Use exactly 4 ONLY for TME-combination questions \(see below\) or short conceptual items where a genuine 5th confusable doesn't exist\./g,'- "choices" has exactly 5 entries (A-E) for every question. Never output 4 choices.')
-    .replace(/- "choices" has 4 or 5 entries — default to 4; use 5 only when a genuine 5th plausible distractor exists\. Never pad\./g,'- "choices" has exactly 5 entries (A-E) for every question. Never output 4 choices.')
-    .replace(/- 5 choices \(A-E\) by default\. 4 choices ONLY for TME-combination questions or a short conceptual item with no real 5th confusable\./g,'- 5 choices (A-E) for every question. Never output 4 choices.')
-    .replace(/- 4-5 choices, one category per item, never mixed categories\./g,'- Exactly 5 choices, one category per item, never mixed categories.')
-    .replace(/Options: 4-5 choices, never padded/g,'Options: exactly 5 choices, never padded');
-}
-function applyPromptControls(templateText){
-  var count=getRequestedQuestionCount();
-  var quizName=document.getElementById('quizName').value.trim();
-  var quizNameRule=quizName
-    ? '- Use this exact top-level "name": '+JSON.stringify(quizName)
-    : '- If "name" is blank, infer a concise title from the content.';
-  return insertCompatibilityRules(forceFiveChoicePromptText(String(templateText||'').trim())
-    .replace(/- Return exactly N questions(?: in "questions")?(?: \(N given with the content; default 15 if not specified\)| \(default 15 if not specified\))?\./g,'- Return exactly '+count+' questions in "questions".')
-    .replace(/- If (?:"name"|the name field) is blank, infer a concise (?:quiz )?title from the content\./g,quizNameRule));
-}
-function buildTemplatePrompt(style){
-  var config=getPromptStyleConfig(style);
-  var templateEl=config.templateId?document.getElementById(config.templateId):null;
-  return templateEl?applyPromptControls(templateEl.textContent):insertCompatibilityRules(buildBoardsPrompt());
-}
-function buildPrompt(){
-  return promptStyle==='boards'?insertCompatibilityRules(forceFiveChoicePromptText(buildBoardsPrompt())):buildTemplatePrompt(promptStyle);
-}
 function refreshPromptText(){
   var count=getRequestedQuestionCount();
   PROMPT=buildPrompt();
-  syncPromptStyleButtons();
-  document.getElementById('promptStyleChip').textContent='Style: '+getPromptStyleLabel(promptStyle);
   document.getElementById('promptCountChip').textContent='Target: '+count+' question'+(count===1?'':'s');
   document.getElementById('promptText').textContent=PROMPT;
 }
@@ -1787,8 +1277,7 @@ function randomizeQuestionsForSession(list){
 function normQ(q){
   if(!q.stem||!Array.isArray(q.choices)||q.choices.length<2)return null;
   var rawChoices=q.choices.map(String);
-  while(rawChoices.length&&!rawChoices[rawChoices.length-1].trim())rawChoices.pop();
-  if(rawChoices.length<2)return null;
+  while(rawChoices.length<5)rawChoices.push('');
   var rawCorrect=typeof q.correct==='number'?q.correct:(parseInt(q.correct)||0);
   if(rawCorrect<0||rawCorrect>=rawChoices.length)rawCorrect=0;
   var wrongLookup=buildWrongExplanationLookup(rawChoices, rawCorrect, q.wrongExplanations);
@@ -1897,8 +1386,8 @@ function getQuizViewId(){
 function syncLaunchUIButtons(){
   var classicBtn=document.getElementById('uiModeClassicBtn');
   var nbmeBtn=document.getElementById('uiModeNbmeBtn');
-  if(classicBtn)classicBtn.classList.toggle('active',uiMode==='classic');
-  if(nbmeBtn)nbmeBtn.classList.toggle('active',uiMode==='nbme');
+  classicBtn.classList.toggle('active',uiMode==='classic');
+  nbmeBtn.classList.toggle('active',uiMode==='nbme');
 }
 
 // ── LAB VALUES ──
@@ -2136,23 +1625,19 @@ function hydratePreloadedQuiz(){
     showToast('Saved quiz loaded.','ok');
   }catch(e){}
 }
-function getFormatCorrectionPrompt(){
-  return 'Correction prompt to send your AI: Please rewrite your last answer so it works in my quiz builder. Return ONLY raw JSON with top-level "name" and "questions". Each question needs "stem", "choices" with exactly 5 lettered options A-E, "correct" as one 0-based number, "explanation", "wrongExplanations" keyed by wrong choice numbers, and "eli5". Do not make the correct answer uniquely longest, uniquely shortest, most technical-sounding, or most hedged. No markdown, no extra text.';
-}
 function launchQuiz(){
   try{
     var combinedResult=getCombinedPastedQuizPayload();
     if(combinedResult.error){showErr(combinedResult.error);return;}
-    selectLaunchUI('nbme');
     startQuiz(combinedResult.payload.questions,combinedResult.payload.name);
   }catch(err){
     if(err&&typeof err.message==='string'&&err.message.indexOf('__SET_PARSE_ERROR__')===0){
       var setNumber=err.message.replace('__SET_PARSE_ERROR__','');
       showPasteSetTab(Number(setNumber));
-      showErr("Couldn't read Set "+setNumber+". Make sure you copied the full AI response for that set. If the AI used the wrong format, ask it to fix the format. "+getFormatCorrectionPrompt());
+      showErr("Couldn't read Set "+setNumber+". Make sure you copied the full AI response for that set.");
       return;
     }
-    showErr("Couldn't read the pasted sets. Make sure each AI response is complete JSON in the expected format. If the AI used the wrong format, ask it to fix the format. "+getFormatCorrectionPrompt());
+    showErr("Couldn't read the pasted sets. Make sure each AI response is complete JSON in the expected format.");
   }
 }
 
@@ -2543,7 +2028,6 @@ function buildNbmeRail(){
     var classes=['nb-rail-btn'];
     if(i===CQ&&!reviewOpen)classes.push('current');
     if(answers[i]||selected[i]!==undefined)classes.push('answered');
-    if(answers[i]&&answers[i].r&&answers[i].r!=='c'&&answers[i].r!=='u')classes.push('incorrect');
     if(marked[i])classes.push('marked');
     return `<button class="${classes.join(' ')}" type="button" onclick="goQ(${i})" aria-label="Go to question ${i+1}">${i+1}</button>`;
   }).join('');
@@ -2656,7 +2140,6 @@ function renderQ(){
 // ── QUIZ ACTIONS ──
 function pick(ci){
   if(answers[CQ])return;
-  if(!questions[CQ]||ci<0||ci>=questions[CQ].choices.length)return;
   summaryVisible=false;
   selected[CQ]=ci;
   reviewOpen=false;
@@ -3068,6 +2551,4 @@ updScore();
 updTimer();
 applyFontSize();
 hydratePreloadedQuiz();
-</script>
-</body>
-</html>
+</script></body></html>
