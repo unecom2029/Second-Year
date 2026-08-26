@@ -2711,6 +2711,32 @@ var AUTH_SPIDER_INPUT_TIMER=null;
 var AUTH_THANOS_INPUT_TIMER=null;
 var AUTH_ORIGAMI_INPUT_TIMER=null;
 var AUTH_TROJAN_INPUT_TIMER=null;
+var AUTH_LOGIN_EFFECTS=[
+  'original',
+  'origami',
+  'cat',
+  'gravity',
+  'pawprints',
+  'spiderman',
+  'thanos',
+  'trojan'
+];
+var AUTH_LOGIN_EFFECT_ASSETS={
+  cat:['assets/google-cat-login-arm.png'],
+  pawprints:['assets/google-cat-paw.gif','assets/google-dog-paw.gif'],
+  spiderman:['assets/google-spiderman-fab.png','assets/google-spiderman-sprite.png'],
+  thanos:['assets/google-thanos-idle.png','assets/google-thanos-snap-transparent.gif'],
+  trojan:[
+    'assets/google-odyssey-horse.png',
+    'assets/google-odyssey-horse-opens-spritesheet.png',
+    'assets/google-odyssey-soldierjump.png',
+    'assets/google-odyssey-soldier-run-spritesheet.png',
+    'assets/google-odyssey-fab.png'
+  ]
+};
+var AUTH_SELECTED_LOGIN_EFFECT=null;
+var AUTH_PRELOADED_ASSETS={};
+var AUTH_PRELOAD_IMAGES=[];
 var AUTH_GRAVITY_LOGIN_OVERRIDES={
   'kboyle8@une.edu':.5,
   'deverly@une.edu':.5,
@@ -3223,6 +3249,38 @@ function setAdminMsg(msg,type){
   el.textContent=msg;
   el.className='admin-msg'+(type?' '+type:'');
 }
+function pickAuthLoginEffect(){
+  return AUTH_LOGIN_EFFECTS[Math.floor(Math.random()*AUTH_LOGIN_EFFECTS.length)]||'original';
+}
+function preloadAuthAsset(src){
+  if(!src||AUTH_PRELOADED_ASSETS[src])return;
+  AUTH_PRELOADED_ASSETS[src]=true;
+  try{
+    var link=document.createElement('link');
+    link.rel='preload';
+    link.as='image';
+    link.href=src;
+    document.head.appendChild(link);
+  }catch(err){}
+  try{
+    var img=new Image();
+    img.decoding='async';
+    img.src=src;
+    AUTH_PRELOAD_IMAGES.push(img);
+  }catch(err){}
+}
+function preloadLoginEffectAssets(effect){
+  (AUTH_LOGIN_EFFECT_ASSETS[effect]||[]).forEach(preloadAuthAsset);
+}
+function preloadAllLoginEffectAssets(){
+  AUTH_LOGIN_EFFECTS.forEach(preloadLoginEffectAssets);
+}
+function prepareAuthLoginEffect(){
+  AUTH_SELECTED_LOGIN_EFFECT=pickAuthLoginEffect();
+  preloadLoginEffectAssets(AUTH_SELECTED_LOGIN_EFFECT);
+  var defer=window.requestIdleCallback||function(fn){return window.setTimeout(fn,240)};
+  defer(function(){preloadAllLoginEffectAssets();});
+}
 function setupAuth(){
   var form=document.getElementById('authForm');
   var input=document.getElementById('authEmail');
@@ -3233,6 +3291,7 @@ function setupAuth(){
     unlockApp();
     return;
   }
+  prepareAuthLoginEffect();
   if(form&&input){
     form.addEventListener('submit',tryAuthLogin);
     input.addEventListener('input',function(){
@@ -3369,17 +3428,9 @@ function getAuthGravityLoginChance(email){
   return AUTH_GRAVITY_LOGIN_CHANCE;
 }
 function playRandomLoginEffect(user){
-  var effects=[
-    'original',
-    'origami',
-    'cat',
-    'gravity',
-    'pawprints',
-    'spiderman',
-    'thanos',
-    'trojan'
-  ];
-  var choice=effects[Math.floor(Math.random()*effects.length)];
+  var choice=AUTH_SELECTED_LOGIN_EFFECT||pickAuthLoginEffect();
+  AUTH_SELECTED_LOGIN_EFFECT=null;
+  preloadLoginEffectAssets(choice);
   if(choice==='gravity'){
     setAuthMsg('Verified. Gravity mode engaged...','success');
     writeLastLogin(user.email);
