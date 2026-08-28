@@ -1357,6 +1357,204 @@ body:not(.auth-locked) .secrets-fab{background:rgba(255,255,255,.92);color:var(-
   .auth-login.car-login-card-hit{animation:none;opacity:.22}
   @keyframes carLoginReduced{0%{opacity:0}25%,78%{opacity:1}100%{opacity:0}}
 }
+.boxer-login-layer{position:fixed;inset:0;z-index:13205;pointer-events:none;overflow:hidden;isolation:isolate}
+.boxer-glove{
+  position:fixed;left:0;top:0;width:var(--boxer-width,min(250px,34vw));height:auto;max-width:none;object-fit:contain;opacity:0;
+  filter:drop-shadow(0 24px 28px rgba(4,9,17,.36));transform-origin:64% 74%;
+  animation:boxerGlovePunches 2.55s cubic-bezier(.18,.82,.2,1) forwards;will-change:transform,opacity;
+}
+.auth-login.boxer-card-punched{
+  animation:boxerCardImpact 1.5s cubic-bezier(.18,.82,.2,1) forwards;
+  transform-origin:50% 52%;will-change:transform,filter;
+}
+.boxer-burst{
+  position:fixed;left:var(--burst-x,50vw);top:var(--burst-y,50vh);width:12px;height:12px;border-radius:999px;
+  background:rgba(238,248,255,.98);box-shadow:0 0 18px rgba(238,248,255,.85),0 0 34px rgba(62,196,178,.38);
+  opacity:0;transform:translate(-50%,-50%) scale(.2);animation:boxerBurst .48s ease-out var(--burst-delay,0s) forwards;
+}
+.boxer-shatter-wrap{position:fixed;left:var(--boxer-card-left,0);top:var(--boxer-card-top,0);width:var(--boxer-card-width,720px);height:var(--boxer-card-height,700px);pointer-events:none}
+.boxer-shard{
+  position:absolute;overflow:hidden;box-sizing:border-box;transform-origin:center center;will-change:transform,opacity,filter;
+  clip-path:polygon(var(--p1,0 0),var(--p2,100% 7%),var(--p3,92% 100%),var(--p4,8% 92%));
+  filter:drop-shadow(0 14px 18px rgba(4,9,17,.24));
+  animation:boxerShardScatter 1.45s cubic-bezier(.12,.72,.2,1) var(--shard-delay,0s) forwards;
+}
+.boxer-shard-card{position:absolute!important;margin:0!important;box-sizing:border-box;pointer-events:none!important;transform:none!important;max-width:none!important}
+@keyframes boxerGlovePunches{
+  0%{opacity:0;transform:translate3d(112vw,68vh,0) rotate(-24deg) scale(.7)}
+  12%{opacity:1}
+  24%{transform:translate3d(calc(var(--boxer-x,58vw) + 110px),calc(var(--boxer-y,48vh) + 36px),0) rotate(-18deg) scale(.95)}
+  31%{transform:translate3d(calc(var(--boxer-x,58vw) - 10px),var(--boxer-y,48vh),0) rotate(-10deg) scale(1.08)}
+  40%{transform:translate3d(calc(var(--boxer-x,58vw) + 116px),calc(var(--boxer-y,48vh) + 28px),0) rotate(-18deg) scale(.96)}
+  48%{transform:translate3d(calc(var(--boxer-x,58vw) - 16px),calc(var(--boxer-y,48vh) - 6px),0) rotate(-8deg) scale(1.1)}
+  58%{transform:translate3d(calc(var(--boxer-x,58vw) + 104px),calc(var(--boxer-y,48vh) + 30px),0) rotate(-18deg) scale(.98)}
+  68%{opacity:1;transform:translate3d(calc(var(--boxer-x,58vw) - 30px),calc(var(--boxer-y,48vh) - 12px),0) rotate(-6deg) scale(1.14)}
+  100%{opacity:0;transform:translate3d(-34vw,calc(var(--boxer-y,48vh) - 26px),0) rotate(-34deg) scale(.88)}
+}
+@keyframes boxerCardImpact{
+  0%,23%{transform:translate3d(0,0,0) rotate(0);filter:blur(0)}
+  31%{transform:translate3d(-16px,2px,0) rotate(-.7deg)}
+  39%{transform:translate3d(7px,-1px,0) rotate(.3deg)}
+  48%{transform:translate3d(-22px,3px,0) rotate(-1deg)}
+  57%{transform:translate3d(9px,-2px,0) rotate(.5deg)}
+  68%{transform:translate3d(-34px,5px,0) rotate(-1.4deg);filter:blur(.1px)}
+  100%{transform:translate3d(0,0,0) rotate(0);filter:blur(0)}
+}
+@keyframes boxerBurst{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.2)}
+  20%{opacity:1}
+  100%{opacity:0;transform:translate(calc(-50% + var(--burst-x-out,0px)),calc(-50% + var(--burst-y-out,0px))) scale(.04)}
+}
+@keyframes boxerShardScatter{
+  0%{opacity:1;filter:blur(0) drop-shadow(0 14px 18px rgba(4,9,17,.24));transform:translate3d(0,0,0) rotate(0) scale(1)}
+  70%{opacity:.92;filter:blur(.2px) drop-shadow(0 14px 18px rgba(4,9,17,.18))}
+  100%{opacity:0;filter:blur(1.2px) drop-shadow(0 8px 10px rgba(4,9,17,.08));transform:translate3d(var(--shard-x,0),var(--shard-y,100vh),0) rotate(var(--shard-r,80deg)) scale(.86)}
+}
+@media(max-width:640px){
+  .boxer-glove{width:var(--boxer-width,min(190px,44vw))}
+}
+@media(prefers-reduced-motion:reduce){
+  .boxer-glove,.boxer-burst{animation:boxerReduced 1.1s ease forwards}
+  .auth-login.boxer-card-punched{animation:none;opacity:.22}
+  .boxer-shard{display:none}
+  @keyframes boxerReduced{0%{opacity:0}25%,78%{opacity:1}100%{opacity:0}}
+}
+.disney-login-layer{position:fixed;inset:0;z-index:13220;pointer-events:none;overflow:hidden;isolation:isolate}
+.disney-login-layer::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 50% 58%,rgba(41,160,214,.18),rgba(5,13,33,.1) 36%,rgba(2,8,22,.58) 100%);
+  opacity:0;animation:disneySkyGlow 3.25s ease forwards;
+}
+.disney-star-arc{
+  position:fixed;left:50%;top:44%;width:min(900px,94vw);height:min(410px,48vh);transform:translate(-50%,-50%);
+  overflow:visible;opacity:0;animation:disneyArcAppear 2.35s ease forwards;
+}
+.disney-star-arc path{fill:none;stroke:rgba(238,248,255,.94);stroke-width:5;stroke-linecap:round;stroke-dasharray:980;stroke-dashoffset:980;filter:drop-shadow(0 0 9px rgba(255,255,255,.95)) drop-shadow(0 0 24px rgba(75,190,255,.72));animation:disneyArcDraw 2.35s cubic-bezier(.18,.74,.2,1) forwards}
+.disney-star{
+  position:fixed;left:var(--disney-star-start-x,12vw);top:var(--disney-star-start-y,62vh);width:22px;height:22px;border-radius:50%;
+  background:radial-gradient(circle,#fff 0 22%,#fff4ba 23% 46%,rgba(255,226,95,.42) 47% 68%,rgba(255,226,95,0) 70%);
+  box-shadow:0 0 16px rgba(255,255,255,.98),0 0 34px rgba(255,219,105,.86),0 0 58px rgba(80,190,255,.6);
+  opacity:0;transform:translate(-50%,-50%) scale(.6);animation:disneyStarFly 2.35s cubic-bezier(.16,.76,.16,1) forwards;will-change:transform,opacity;
+}
+.disney-star::before,.disney-star::after{content:'';position:absolute;left:50%;top:50%;width:54px;height:5px;border-radius:999px;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.98),rgba(255,231,129,0));transform:translate(-50%,-50%) rotate(38deg)}
+.disney-star::after{width:5px;height:54px;transform:translate(-50%,-50%) rotate(38deg)}
+.disney-sparkle{
+  position:fixed;left:var(--spark-left,50vw);top:var(--spark-top,42vh);width:5px;height:5px;border-radius:50%;
+  background:#fff;box-shadow:0 0 10px rgba(255,255,255,.94),0 0 18px rgba(104,203,255,.6);
+  opacity:0;animation:disneySparkle 1.25s ease var(--spark-delay,0s) forwards;
+}
+.disney-study-logo{
+  position:fixed;left:50%;top:50%;width:min(680px,82vw);height:auto;max-height:24vh;object-fit:contain;opacity:0;
+  transform:translate(-50%,-42%) scale(.74);filter:drop-shadow(0 14px 22px rgba(4,9,17,.34)) drop-shadow(0 0 22px rgba(255,255,255,.52));
+  animation:disneyLogoReveal 1.05s cubic-bezier(.16,.9,.22,1) 2.12s forwards;
+}
+.auth-login.disney-card-fade{animation:disneyCardFade 2.95s ease forwards;will-change:transform,opacity,filter}
+@keyframes disneySkyGlow{0%{opacity:0}18%,82%{opacity:1}100%{opacity:0}}
+@keyframes disneyArcAppear{0%{opacity:0}8%,84%{opacity:1}100%{opacity:0}}
+@keyframes disneyArcDraw{0%{stroke-dashoffset:980;opacity:.2}72%{stroke-dashoffset:0;opacity:1}100%{stroke-dashoffset:0;opacity:0}}
+@keyframes disneyStarFly{
+  0%{opacity:0;transform:translate(-50%,-50%) translate3d(0,0,0) scale(.55)}
+  8%{opacity:1}
+  34%{transform:translate(-50%,-50%) translate3d(22vw,-22vh,0) scale(1)}
+  70%{opacity:1;transform:translate(-50%,-50%) translate3d(58vw,-17vh,0) scale(.78)}
+  100%{opacity:0;transform:translate(-50%,-50%) translate3d(78vw,4vh,0) scale(.2)}
+}
+@keyframes disneySparkle{0%{opacity:0;transform:translate(-50%,-50%) scale(.2)}22%,62%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(.1)}}
+@keyframes disneyLogoReveal{0%{opacity:0;transform:translate(-50%,-38%) scale(.72)}42%{opacity:1;transform:translate(-50%,-50%) scale(1.05)}100%{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+@keyframes disneyCardFade{0%,58%{opacity:1;filter:blur(0);transform:translate3d(0,0,0) scale(1)}100%{opacity:0;filter:blur(1px);transform:translate3d(0,16px,0) scale(.985)}}
+@media(max-width:640px){
+  .disney-star-arc{top:40%;height:min(330px,42vh)}
+  .disney-study-logo{width:min(520px,88vw);max-height:20vh}
+}
+@media(prefers-reduced-motion:reduce){
+  .disney-star-arc,.disney-sparkle{display:none}
+  .disney-star,.disney-study-logo{animation:disneyReduced 1.3s ease forwards}
+  .auth-login.disney-card-fade{animation:none;opacity:.24}
+  @keyframes disneyReduced{0%{opacity:0}25%,78%{opacity:1}100%{opacity:0}}
+}
+.woody-login-layer{position:fixed;inset:0;z-index:13230;pointer-events:none;overflow:hidden;isolation:isolate}
+.woody-rider{
+  position:fixed;left:0;top:var(--woody-top,56vh);width:var(--woody-width,min(330px,34vw));height:auto;max-width:none;object-fit:contain;
+  opacity:0;filter:drop-shadow(0 20px 18px rgba(4,9,17,.28));
+  transform:translate3d(-42vw,-50%,0) rotate(-2deg) scale(.96);
+  animation:woodyRideAcross 3.05s cubic-bezier(.16,.82,.18,1) forwards;will-change:transform,opacity;
+}
+.woody-ground-shadow{
+  position:fixed;left:0;top:var(--woody-ground,72vh);width:var(--woody-shadow-width,min(310px,32vw));height:24px;border-radius:50%;
+  background:radial-gradient(ellipse,rgba(3,9,18,.36),rgba(3,9,18,.14) 48%,rgba(3,9,18,0) 72%);
+  opacity:0;transform:translate3d(-42vw,-50%,0) scale(.9);
+  animation:woodyShadowAcross 3.05s cubic-bezier(.16,.82,.18,1) forwards;will-change:transform,opacity;
+}
+.woody-lasso-svg{position:fixed;inset:0;width:100vw;height:100vh;overflow:visible;opacity:0;transform:translate3d(0,0,0);animation:woodyRopeTravel 3.05s cubic-bezier(.16,.82,.18,1) forwards;will-change:transform,opacity}
+.woody-lasso-svg path{
+  fill:none;stroke:#d8a35b;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1240;stroke-dashoffset:1240;
+  filter:drop-shadow(0 2px 2px rgba(4,9,17,.3));animation:woodyRopeDraw 3.05s cubic-bezier(.16,.82,.18,1) forwards;
+}
+.woody-lasso-loop{
+  position:fixed;left:var(--lasso-x,50vw);top:var(--lasso-y,46vh);width:var(--lasso-size,138px);height:calc(var(--lasso-size,138px)*.66);
+  border:5px solid #d8a35b;border-radius:50%;opacity:0;transform:translate(-50%,-50%) rotate(-14deg) scale(.35);
+  filter:drop-shadow(0 3px 2px rgba(4,9,17,.3));animation:woodyLoopCatch 3.05s cubic-bezier(.16,.82,.18,1) forwards;will-change:transform,opacity;
+}
+.woody-dust{
+  position:fixed;left:var(--dust-left,50vw);top:var(--dust-top,58vh);width:10px;height:10px;border-radius:999px;background:rgba(226,199,150,.82);
+  box-shadow:0 0 18px rgba(226,199,150,.52);opacity:0;animation:woodyDustPuff 1.05s ease var(--dust-delay,0s) forwards;
+}
+.auth-login.woody-card-lassoed{
+  pointer-events:none;transform-origin:50% 56%;
+  animation:woodyCardYank 3.05s cubic-bezier(.16,.82,.18,1) forwards;will-change:transform,opacity,filter;
+}
+@keyframes woodyRideAcross{
+  0%{opacity:0;transform:translate3d(-44vw,-50%,0) rotate(-2deg) scale(.92)}
+  10%{opacity:1}
+  24%{transform:translate3d(calc(var(--woody-catch-x,38vw) - 16vw),calc(-50% - 3px),0) rotate(-1deg) scale(.98)}
+  54%{opacity:1;transform:translate3d(var(--woody-catch-x,38vw),calc(-50% + 2px),0) rotate(1deg) scale(1)}
+  70%{opacity:1;transform:translate3d(calc(var(--woody-catch-x,38vw) - 36vw),calc(-50% - 1px),0) rotate(-4deg) scale(.98)}
+  100%{opacity:0;transform:translate3d(calc(var(--woody-catch-x,38vw) - 124vw),calc(-50% - 16px),0) rotate(-7deg) scale(.94)}
+}
+@keyframes woodyShadowAcross{
+  0%{opacity:0;transform:translate3d(-44vw,-50%,0) scale(.74)}
+  10%,70%{opacity:.72}
+  24%{transform:translate3d(calc(var(--woody-catch-x,38vw) - 16vw),-50%,0) scale(.86)}
+  54%{transform:translate3d(var(--woody-catch-x,38vw),-50%,0) scale(.95)}
+  70%{transform:translate3d(calc(var(--woody-catch-x,38vw) - 36vw),-50%,0) scale(.82)}
+  100%{opacity:0;transform:translate3d(calc(var(--woody-catch-x,38vw) - 124vw),-50%,0) scale(.68)}
+}
+@keyframes woodyRopeShow{0%,6%{opacity:0}18%,72%{opacity:1}100%{opacity:0}}
+@keyframes woodyRopeTravel{
+  0%,50%{opacity:0;transform:translate3d(0,0,0)}
+  54%{opacity:1;transform:translate3d(0,0,0)}
+  70%{opacity:1;transform:translate3d(-36vw,-3px,0)}
+  100%{opacity:0;transform:translate3d(-124vw,-16px,0)}
+}
+@keyframes woodyRopeDraw{0%,50%{stroke-dashoffset:1240}64%,100%{stroke-dashoffset:0}}
+@keyframes woodyLoopCatch{
+  0%,50%{opacity:0;transform:translate(-50%,-50%) rotate(-34deg) scale(.25)}
+  54%{opacity:1;transform:translate(-50%,-50%) rotate(8deg) scale(.86)}
+  70%{opacity:1;transform:translate(calc(-50% - 36vw),calc(-50% - 3px)) rotate(-18deg) scale(.72)}
+  100%{opacity:0;transform:translate(calc(-50% - 124vw),calc(-50% - 16px)) rotate(-32deg) scale(.42)}
+}
+@keyframes woodyDustPuff{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.2)}
+  18%,55%{opacity:.9}
+  100%{opacity:0;transform:translate(calc(-50% + var(--dust-x,0px)),calc(-50% + var(--dust-y,-20px))) scale(1.8)}
+}
+@keyframes woodyCardYank{
+  0%,54%{opacity:1;filter:blur(0);transform:translate3d(0,0,0) rotate(0) scale(1)}
+  60%{transform:translate3d(-18px,-1px,0) rotate(-1.1deg) scale(.998)}
+  70%{opacity:1;filter:blur(.1px);transform:translate3d(-36vw,-3px,0) rotate(-4.2deg) scale(.985)}
+  100%{opacity:0;filter:blur(1px);transform:translate3d(-124vw,-16px,0) rotate(-10deg) scale(.94)}
+}
+@media(max-width:640px){
+  .woody-rider{width:var(--woody-width,min(245px,58vw))}
+  .woody-ground-shadow{width:var(--woody-shadow-width,min(220px,52vw));height:18px}
+  .woody-lasso-loop{width:var(--lasso-size,104px);height:calc(var(--lasso-size,104px)*.68)}
+}
+@media(prefers-reduced-motion:reduce){
+  .woody-lasso-svg,.woody-lasso-loop,.woody-dust,.woody-ground-shadow{display:none}
+  .woody-rider{animation:woodyReduced 1.25s ease forwards}
+  .auth-login.woody-card-lassoed{animation:none;opacity:.24}
+  @keyframes woodyReduced{0%{opacity:0}25%,78%{opacity:1}100%{opacity:0}}
+}
 .scalpel-login-layer{position:fixed;inset:0;z-index:13195;pointer-events:none;overflow:hidden;isolation:isolate}
 .scalpel-cut-half{
   position:fixed;inset:0;overflow:hidden;pointer-events:none;will-change:transform,opacity,filter;
@@ -2884,6 +3082,9 @@ var AUTH_TROJAN_INPUT_TIMER=null;
 var AUTH_CAR_INPUT_TIMER=null;
 var AUTH_SCALPEL_INPUT_TIMER=null;
 var AUTH_HAAD_INPUT_TIMER=null;
+var AUTH_BOXER_INPUT_TIMER=null;
+var AUTH_DISNEY_INPUT_TIMER=null;
+var AUTH_WOODY_INPUT_TIMER=null;
 var AUTH_LOGIN_EFFECTS=[
   'original',
   'origami',
@@ -2894,7 +3095,10 @@ var AUTH_LOGIN_EFFECTS=[
   'thanos',
   'trojan',
   'car',
-  'scalpel'
+  'scalpel',
+  'boxer',
+  'disney',
+  'woody'
 ];
 var AUTH_LOGIN_EFFECT_ASSETS={
   cat:['assets/google-cat-login-arm.png'],
@@ -2910,6 +3114,9 @@ var AUTH_LOGIN_EFFECT_ASSETS={
   ],
   car:['assets/login-car-push.png'],
   scalpel:['assets/anatomy-scalpel-login.png'],
+  boxer:['assets/boxer-glove-transparent.png'],
+  disney:['assets/study-hub-disney-transparent.png'],
+  woody:['assets/woody-ride-transparent.gif'],
   davidHeavy:['assets/david-login-rise-transparent.png'],
   haadHeavy:['assets/haad-login-rise-transparent.png']
 };
@@ -3498,6 +3705,9 @@ function setupAuth(){
       if(AUTH_CAR_INPUT_TIMER)clearTimeout(AUTH_CAR_INPUT_TIMER);
       if(AUTH_SCALPEL_INPUT_TIMER)clearTimeout(AUTH_SCALPEL_INPUT_TIMER);
       if(AUTH_HAAD_INPUT_TIMER)clearTimeout(AUTH_HAAD_INPUT_TIMER);
+      if(AUTH_BOXER_INPUT_TIMER)clearTimeout(AUTH_BOXER_INPUT_TIMER);
+      if(AUTH_DISNEY_INPUT_TIMER)clearTimeout(AUTH_DISNEY_INPUT_TIMER);
+      if(AUTH_WOODY_INPUT_TIMER)clearTimeout(AUTH_WOODY_INPUT_TIMER);
       if(typed==='cat'){
         AUTH_CAT_INPUT_TIMER=window.setTimeout(function(){
           if(normEmail(input.value)!=='cat')return;
@@ -3570,6 +3780,35 @@ function setupAuth(){
           triggerHaadHeavyLoginEasterEgg({toastLabel:'Haad assist unlocked',reset:true});
           input.value='';
           setAuthMsg('Haad preview only. No login attempted.','success');
+        },420);
+        return;
+      }
+      if(typed==='boxer'){
+        AUTH_BOXER_INPUT_TIMER=window.setTimeout(function(){
+          if(normEmail(input.value)!=='boxer')return;
+          triggerBoxerLoginEasterEgg({toastLabel:'Boxer unlocked',reset:true});
+          input.value='';
+          setAuthMsg('Boxer preview only. No login attempted.','success');
+        },420);
+        return;
+      }
+      if(typed==='disney'||typed==='studyhub'){
+        AUTH_DISNEY_INPUT_TIMER=window.setTimeout(function(){
+          var current=normEmail(input.value);
+          if(current!=='disney'&&current!=='studyhub')return;
+          triggerDisneyLoginEasterEgg({toastLabel:'Study Hub star unlocked',reset:true});
+          input.value='';
+          setAuthMsg('Study Hub star preview only. No login attempted.','success');
+        },420);
+        return;
+      }
+      if(typed==='woody'||typed==='lasso'){
+        AUTH_WOODY_INPUT_TIMER=window.setTimeout(function(){
+          var current=normEmail(input.value);
+          if(current!=='woody'&&current!=='lasso')return;
+          triggerWoodyLoginEasterEgg({toastLabel:'Lasso login unlocked',reset:true});
+          input.value='';
+          setAuthMsg('Lasso preview only. No login attempted.','success');
         },420);
         return;
       }
@@ -3649,6 +3888,24 @@ function tryAuthLogin(ev){
     triggerHaadHeavyLoginEasterEgg({toastLabel:'Haad assist unlocked',reset:true});
     if(input)input.value='';
     setAuthMsg('Haad preview only. No login attempted.','success');
+    return;
+  }
+  if(email==='boxer'){
+    triggerBoxerLoginEasterEgg({toastLabel:'Boxer unlocked',reset:true});
+    if(input)input.value='';
+    setAuthMsg('Boxer preview only. No login attempted.','success');
+    return;
+  }
+  if(email==='disney'||email==='studyhub'){
+    triggerDisneyLoginEasterEgg({toastLabel:'Study Hub star unlocked',reset:true});
+    if(input)input.value='';
+    setAuthMsg('Study Hub star preview only. No login attempted.','success');
+    return;
+  }
+  if(email==='woody'||email==='lasso'){
+    triggerWoodyLoginEasterEgg({toastLabel:'Lasso login unlocked',reset:true});
+    if(input)input.value='';
+    setAuthMsg('Lasso preview only. No login attempted.','success');
     return;
   }
   if(!/@une\.edu$/i.test(email)){
@@ -3790,6 +4047,33 @@ function playRandomLoginEffect(user){
     triggerScalpelLoginEasterEgg({
       loginMode:true,
       toastLabel:'Anatomy assist unlocked',
+      onComplete:function(){playWelcome(user);}
+    });
+    return;
+  }
+  if(choice==='boxer'){
+    setAuthMsg('Verified. Boxer transition incoming...','success');
+    triggerBoxerLoginEasterEgg({
+      loginMode:true,
+      toastLabel:'Boxer unlocked',
+      onComplete:function(){playWelcome(user);}
+    });
+    return;
+  }
+  if(choice==='disney'){
+    setAuthMsg('Verified. Study Hub star incoming...','success');
+    triggerDisneyLoginEasterEgg({
+      loginMode:true,
+      toastLabel:'Study Hub star unlocked',
+      onComplete:function(){playWelcome(user);}
+    });
+    return;
+  }
+  if(choice==='woody'){
+    setAuthMsg('Verified. Lasso assist incoming...','success');
+    triggerWoodyLoginEasterEgg({
+      loginMode:true,
+      toastLabel:'Lasso login unlocked',
       onComplete:function(){playWelcome(user);}
     });
     return;
@@ -4573,6 +4857,8 @@ var SECRET_SHORTCUTS=[
   {group:'games',key:'trojan',aliases:['odyssey'],icon:'🏛️',title:'Trojan Horse',description:'Runs the Google Odyssey horse surprise.'},
   {group:'games',key:'car',aliases:[],icon:'🚗',title:'Car Bump',description:'Drives into the login card and pushes it aside.'},
   {group:'games',key:'scalpel',aliases:['anatomy'],icon:'🔪',title:'Anatomy Split',description:'Cuts the login screen into two halves.'},
+  {group:'games',key:'disney',aliases:['studyhub'],icon:'🌠',title:'Study Hub Star',description:'Draws a shooting-star arc and reveals the Study Hub mark.'},
+  {group:'games',key:'woody',aliases:['lasso'],icon:'🤠',title:'Lasso Login',description:'Rides across the login screen and yanks the card away.'},
   {group:'media',key:'quack',aliases:[],icon:'🦆',title:'Quack Mode',description:'Duck-themed modal with the embedded anthem.'},
   {group:'media',key:'hvla',aliases:[],icon:'⚡',title:'HVLA Mode',description:'Shows the embedded HVLA Google Drive preview.'},
   {group:'media',key:'loglady',aliases:[],icon:'🪵',title:'Log Lady Mode',description:'Opens the Twin Peaks themed easter egg.'},
@@ -4659,6 +4945,8 @@ function launchSecretCommand(keyword){
     case 'trojan': triggerTrojanHorseEasterEgg({toastLabel:'Trojan horse unlocked'}); break;
     case 'car': triggerCarLoginEasterEgg({toastLabel:'Car assist unlocked',reset:true}); break;
     case 'scalpel': triggerScalpelLoginEasterEgg({toastLabel:'Anatomy assist unlocked',reset:true}); break;
+    case 'disney': triggerDisneyLoginEasterEgg({toastLabel:'Study Hub star unlocked',reset:true}); break;
+    case 'woody': triggerWoodyLoginEasterEgg({toastLabel:'Lasso login unlocked',reset:true}); break;
     case 'hvla': triggerHvlaEgg(); break;
     case 'loglady': triggerLogLadyEgg(); break;
     case 'willard': triggerWillardEgg(); break;
@@ -5285,6 +5573,246 @@ function triggerHaadHeavyLoginEasterEgg(options){
   options.localTopFactor=.58;
   options.allowCornerOverflow=true;
   triggerDavidHeavyLoginEasterEgg(options);
+}
+function triggerBoxerLoginEasterEgg(options){
+  options=options||{};
+  var overlay=document.getElementById('authOverlay');
+  var card=document.getElementById('authLoginCard');
+  if(!overlay||!card||!document.body.classList.contains('auth-locked')){
+    if(typeof options.onComplete==='function')options.onComplete();
+    return;
+  }
+  var oldLayer=document.querySelector('.boxer-login-layer');
+  if(oldLayer)oldLayer.remove();
+  card.classList.remove('boxer-card-punched');
+  card.style.visibility='';
+  void card.offsetWidth;
+  var rect=card.getBoundingClientRect();
+  var viewportW=window.innerWidth||document.documentElement.clientWidth||1280;
+  var viewportH=window.innerHeight||document.documentElement.clientHeight||720;
+  var gloveWidth=Math.max(150,Math.min(viewportW<640?viewportW*.44:viewportW*.18,250));
+  var punchX=Math.max(30,Math.min(viewportW-gloveWidth-20,rect.right-gloveWidth*.66));
+  var punchY=Math.max(70,Math.min(viewportH-gloveWidth*.72,rect.top+rect.height*.42-gloveWidth*.42));
+  var layer=document.createElement('div');
+  layer.className='boxer-login-layer';
+  layer.setAttribute('aria-hidden','true');
+  layer.style.setProperty('--boxer-width',gloveWidth+'px');
+  layer.style.setProperty('--boxer-x',punchX+'px');
+  layer.style.setProperty('--boxer-y',punchY+'px');
+  var glove=document.createElement('img');
+  glove.className='boxer-glove';
+  glove.src='assets/boxer-glove-transparent.png';
+  glove.alt='';
+  glove.decoding='async';
+  layer.appendChild(glove);
+  for(var i=0;i<18;i++){
+    var burst=document.createElement('span');
+    var hitIndex=i%3;
+    burst.className='boxer-burst';
+    burst.style.setProperty('--burst-delay',(0.75+hitIndex*.42+(Math.floor(i/3)*.018))+'s');
+    burst.style.setProperty('--burst-x',(rect.right-rect.width*.18+(Math.random()*46-23))+'px');
+    burst.style.setProperty('--burst-y',(rect.top+rect.height*(.36+.12*hitIndex)+(Math.random()*38-19))+'px');
+    burst.style.setProperty('--burst-x-out',((Math.random()-.5)*160)+'px');
+    burst.style.setProperty('--burst-y-out',((Math.random()-.5)*130)+'px');
+    layer.appendChild(burst);
+  }
+  document.body.appendChild(layer);
+  if(options.toastLabel!==false)showSecretToast(options.toastLabel||'Boxer unlocked');
+  requestAnimationFrame(function(){
+    if(layer.parentNode)card.classList.add('boxer-card-punched');
+  });
+  function makeShard(row,col,rows,cols){
+    var shardW=rect.width/cols;
+    var shardH=rect.height/rows;
+    var x=col*shardW;
+    var y=row*shardH;
+    var shard=document.createElement('div');
+    shard.className='boxer-shard';
+    shard.style.left=x+'px';
+    shard.style.top=y+'px';
+    shard.style.width=(shardW+1)+'px';
+    shard.style.height=(shardH+1)+'px';
+    shard.style.setProperty('--shard-delay',(Math.random()*.12)+'s');
+    shard.style.setProperty('--shard-x',((col-(cols-1)/2)*(80+Math.random()*38)+(Math.random()-.5)*70)+'px');
+    shard.style.setProperty('--shard-y',(window.innerHeight*.56+row*44+Math.random()*130)+'px');
+    shard.style.setProperty('--shard-r',((Math.random()>.5?1:-1)*(70+Math.random()*220))+'deg');
+    shard.style.setProperty('--p1',(Math.random()*10)+'% '+(Math.random()*10)+'%');
+    shard.style.setProperty('--p2',(90+Math.random()*10)+'% '+(Math.random()*14)+'%');
+    shard.style.setProperty('--p3',(86+Math.random()*14)+'% '+(86+Math.random()*14)+'%');
+    shard.style.setProperty('--p4',(Math.random()*14)+'% '+(84+Math.random()*16)+'%');
+    var clone=card.cloneNode(true);
+    clone.classList.add('boxer-shard-card');
+    clone.removeAttribute('id');
+    Array.prototype.slice.call(clone.querySelectorAll('[id]')).forEach(function(node){node.removeAttribute('id');});
+    clone.style.left=(-x)+'px';
+    clone.style.top=(-y)+'px';
+    clone.style.width=rect.width+'px';
+    clone.style.height=rect.height+'px';
+    shard.appendChild(clone);
+    return shard;
+  }
+  window.setTimeout(function(){
+    var wrap=document.createElement('div');
+    wrap.className='boxer-shatter-wrap';
+    wrap.style.setProperty('--boxer-card-left',rect.left+'px');
+    wrap.style.setProperty('--boxer-card-top',rect.top+'px');
+    wrap.style.setProperty('--boxer-card-width',rect.width+'px');
+    wrap.style.setProperty('--boxer-card-height',rect.height+'px');
+    var rows=4;
+    var cols=5;
+    for(var r=0;r<rows;r++){
+      for(var c=0;c<cols;c++)wrap.appendChild(makeShard(r,c,rows,cols));
+    }
+    layer.appendChild(wrap);
+    card.style.visibility='hidden';
+  },1520);
+  if(typeof options.onComplete==='function'){
+    window.setTimeout(options.onComplete,options.completeDelay||2820);
+  }
+  window.setTimeout(function(){
+    if(layer&&layer.parentNode)layer.parentNode.removeChild(layer);
+    card.classList.remove('boxer-card-punched');
+    card.style.visibility='';
+  },3400);
+}
+function triggerDisneyLoginEasterEgg(options){
+  options=options||{};
+  var overlay=document.getElementById('authOverlay');
+  var card=document.getElementById('authLoginCard');
+  if(!overlay||!card||!document.body.classList.contains('auth-locked')){
+    if(typeof options.onComplete==='function')options.onComplete();
+    return;
+  }
+  var oldLayer=document.querySelector('.disney-login-layer');
+  if(oldLayer)oldLayer.remove();
+  card.classList.remove('disney-card-fade');
+  card.style.visibility='';
+  void card.offsetWidth;
+  var layer=document.createElement('div');
+  layer.className='disney-login-layer';
+  layer.setAttribute('aria-hidden','true');
+  var arc=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  arc.setAttribute('class','disney-star-arc');
+  arc.setAttribute('viewBox','0 0 900 410');
+  arc.setAttribute('preserveAspectRatio','none');
+  var path=document.createElementNS('http://www.w3.org/2000/svg','path');
+  path.setAttribute('d','M 70 310 C 245 70, 560 28, 830 232');
+  arc.appendChild(path);
+  layer.appendChild(arc);
+  var star=document.createElement('span');
+  star.className='disney-star';
+  layer.appendChild(star);
+  var sparklePoints=[
+    [20,58,.18],[28,41,.34],[37,29,.5],[47,23,.66],[58,25,.82],[69,34,1.02],[78,48,1.2],
+    [33,52,1.38],[52,37,1.54],[65,22,1.7],[74,59,1.86],[42,66,2.04]
+  ];
+  sparklePoints.forEach(function(point){
+    var sparkle=document.createElement('span');
+    sparkle.className='disney-sparkle';
+    sparkle.style.setProperty('--spark-left',point[0]+'vw');
+    sparkle.style.setProperty('--spark-top',point[1]+'vh');
+    sparkle.style.setProperty('--spark-delay',point[2]+'s');
+    layer.appendChild(sparkle);
+  });
+  var logo=document.createElement('img');
+  logo.className='disney-study-logo';
+  logo.src='assets/study-hub-disney-transparent.png';
+  logo.alt='';
+  logo.decoding='async';
+  layer.appendChild(logo);
+  document.body.appendChild(layer);
+  if(options.toastLabel!==false)showSecretToast(options.toastLabel||'Study Hub star unlocked');
+  requestAnimationFrame(function(){
+    if(layer.parentNode)card.classList.add('disney-card-fade');
+  });
+  if(typeof options.onComplete==='function'){
+    window.setTimeout(options.onComplete,options.completeDelay||3180);
+  }
+  window.setTimeout(function(){
+    if(layer&&layer.parentNode)layer.parentNode.removeChild(layer);
+    card.classList.remove('disney-card-fade');
+    card.style.visibility='';
+  },3650);
+}
+function triggerWoodyLoginEasterEgg(options){
+  options=options||{};
+  var overlay=document.getElementById('authOverlay');
+  var card=document.getElementById('authLoginCard');
+  if(!overlay||!card||!document.body.classList.contains('auth-locked')){
+    if(typeof options.onComplete==='function')options.onComplete();
+    return;
+  }
+  var oldLayer=document.querySelector('.woody-login-layer');
+  if(oldLayer)oldLayer.remove();
+  card.classList.remove('woody-card-lassoed');
+  card.style.visibility='';
+  void card.offsetWidth;
+  var rect=card.getBoundingClientRect();
+  var viewportW=window.innerWidth||document.documentElement.clientWidth||1280;
+  var viewportH=window.innerHeight||document.documentElement.clientHeight||720;
+  var riderWidth=Math.max(210,Math.min(viewportW<640?viewportW*.58:viewportW*.28,360));
+  var riderHeight=riderWidth*1.24;
+  var groundY=Math.max(rect.top+rect.height*.72,Math.min(viewportH-38,rect.bottom-10));
+  var riderTop=Math.max(riderHeight*.5+24,Math.min(viewportH-riderHeight*.18,groundY-riderHeight*.5));
+  var catchX=Math.max(80,Math.min(viewportW-160,rect.left-80));
+  var pullX=Math.min(catchX-180,Math.max(-riderWidth*.7,rect.left-riderWidth*1.15));
+  var lassoX=Math.max(100,Math.min(viewportW-100,rect.left+rect.width*.38));
+  var lassoY=Math.max(120,Math.min(groundY-riderHeight*.28,rect.top+rect.height*.44));
+  var layer=document.createElement('div');
+  layer.className='woody-login-layer';
+  layer.setAttribute('aria-hidden','true');
+  layer.style.setProperty('--woody-width',riderWidth+'px');
+  layer.style.setProperty('--woody-shadow-width',Math.max(180,riderWidth*.88)+'px');
+  layer.style.setProperty('--woody-top',riderTop+'px');
+  layer.style.setProperty('--woody-ground',groundY+'px');
+  layer.style.setProperty('--woody-catch-x',catchX+'px');
+  layer.style.setProperty('--woody-pull-x',pullX+'px');
+  layer.style.setProperty('--lasso-x',lassoX+'px');
+  layer.style.setProperty('--lasso-y',lassoY+'px');
+  layer.style.setProperty('--lasso-size',Math.max(92,Math.min(rect.width*.2,150))+'px');
+  var shadow=document.createElement('span');
+  shadow.className='woody-ground-shadow';
+  layer.appendChild(shadow);
+  var rope=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  rope.setAttribute('class','woody-lasso-svg');
+  rope.setAttribute('viewBox','0 0 '+viewportW+' '+viewportH);
+  rope.setAttribute('preserveAspectRatio','none');
+  var ropePath=document.createElementNS('http://www.w3.org/2000/svg','path');
+  ropePath.setAttribute('d','M '+Math.round(catchX+riderWidth*.62)+' '+Math.round(riderTop-riderHeight*.22)+' C '+Math.round(catchX+riderWidth*.84)+' '+Math.round(riderTop-riderHeight*.46)+', '+Math.round(lassoX-rect.width*.18)+' '+Math.round(lassoY-rect.height*.2)+', '+Math.round(lassoX)+' '+Math.round(lassoY));
+  rope.appendChild(ropePath);
+  layer.appendChild(rope);
+  var loop=document.createElement('span');
+  loop.className='woody-lasso-loop';
+  layer.appendChild(loop);
+  var rider=document.createElement('img');
+  rider.className='woody-rider';
+  rider.src='assets/woody-ride-transparent.gif';
+  rider.alt='';
+  rider.decoding='async';
+  layer.appendChild(rider);
+  for(var i=0;i<16;i++){
+    var dust=document.createElement('span');
+    dust.className='woody-dust';
+    dust.style.setProperty('--dust-left',(rect.left+rect.width*(.18+Math.random()*.52))+'px');
+    dust.style.setProperty('--dust-top',(groundY-8+Math.random()*16)+'px');
+    dust.style.setProperty('--dust-delay',(1.18+Math.random()*1.35)+'s');
+    dust.style.setProperty('--dust-x',((Math.random()-.5)*170)+'px');
+    dust.style.setProperty('--dust-y',(-18-Math.random()*70)+'px');
+    layer.appendChild(dust);
+  }
+  document.body.appendChild(layer);
+  if(options.toastLabel!==false)showSecretToast(options.toastLabel||'Lasso login unlocked');
+  requestAnimationFrame(function(){
+    if(layer.parentNode)card.classList.add('woody-card-lassoed');
+  });
+  if(typeof options.onComplete==='function'){
+    window.setTimeout(options.onComplete,options.completeDelay||3000);
+  }
+  window.setTimeout(function(){
+    if(layer&&layer.parentNode)layer.parentNode.removeChild(layer);
+    card.classList.remove('woody-card-lassoed');
+    card.style.visibility='';
+  },3500);
 }
 function triggerScalpelLoginEasterEgg(options){
   options=options||{};
