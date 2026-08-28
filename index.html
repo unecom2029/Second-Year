@@ -1555,6 +1555,61 @@ body:not(.auth-locked) .secrets-fab{background:rgba(255,255,255,.92);color:var(-
   .auth-login.woody-card-lassoed{animation:none;opacity:.24}
   @keyframes woodyReduced{0%{opacity:0}25%,78%{opacity:1}100%{opacity:0}}
 }
+.omaira-call-layer{position:fixed;inset:0;z-index:13240;pointer-events:none;overflow:hidden;isolation:isolate}
+.omaira-call-layer::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 50% 52%,rgba(122,214,188,.14),rgba(7,15,29,.12) 36%,rgba(2,7,17,.55) 100%);
+  opacity:0;animation:omairaCallGlow 4.9s ease forwards;
+}
+.omaira-phone-wrap{
+  position:fixed;left:50%;top:50%;width:var(--omaira-phone-width,min(310px,42vw));aspect-ratio:570/1114;
+  transform:translate(-50%,-50%) scale(.72);opacity:0;filter:drop-shadow(0 28px 34px rgba(2,8,18,.38));
+  animation:omairaPhoneArrive 4.95s cubic-bezier(.18,.82,.18,1) forwards;will-change:transform,opacity,filter;
+}
+.omaira-phone-img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;z-index:2}
+.omaira-side-eye{
+  position:absolute;left:8.4%;top:10.2%;width:83.2%;height:80.8%;object-fit:cover;border-radius:7.8%;
+  opacity:0;transform:scale(.98);z-index:3;filter:saturate(1.04) contrast(1.03);
+  animation:omairaSideEyeReveal 1.45s ease 1.95s forwards;
+}
+.omaira-accept-tap{
+  position:absolute;left:70.5%;top:80.6%;width:17.4%;aspect-ratio:1;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.8),rgba(38,220,91,.8) 35%,rgba(38,220,91,0) 70%);
+  opacity:0;z-index:4;transform:translate(-50%,-50%) scale(.52);
+  animation:omairaAcceptPress .72s cubic-bezier(.2,.9,.2,1) 1.3s forwards;
+}
+.auth-login.omaira-call-card{animation:omairaCallCardFade 4.65s ease forwards;will-change:opacity,transform,filter}
+@keyframes omairaCallGlow{0%{opacity:0}18%,78%{opacity:1}100%{opacity:0}}
+@keyframes omairaPhoneArrive{
+  0%{opacity:0;transform:translate(-50%,calc(-50% + 18vh)) scale(.58) rotate(2deg)}
+  20%{opacity:1}
+  38%,82%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0)}
+  100%{opacity:0;transform:translate(-50%,calc(-50% - 4vh)) scale(.96) rotate(-1deg)}
+}
+@keyframes omairaAcceptPress{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.42)}
+  30%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}
+  58%{opacity:.9;transform:translate(-50%,-50%) scale(.72)}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(1.42)}
+}
+@keyframes omairaSideEyeReveal{
+  0%{opacity:0;transform:scale(.98)}
+  18%,100%{opacity:1;transform:scale(1)}
+}
+@keyframes omairaCallCardFade{
+  0%,42%{opacity:1;filter:blur(0);transform:translate3d(0,0,0) scale(1)}
+  100%{opacity:0;filter:blur(1.2px);transform:translate3d(0,18px,0) scale(.985)}
+}
+@media(max-width:640px){
+  .omaira-phone-wrap{width:var(--omaira-phone-width,min(260px,64vw))}
+}
+@media(prefers-reduced-motion:reduce){
+  .omaira-phone-wrap{animation:omairaReduced 1.35s ease forwards}
+  .omaira-accept-tap{display:none}
+  .omaira-side-eye{animation:omairaSideEyeReveal .35s ease .35s forwards}
+  .auth-login.omaira-call-card{animation:none;opacity:.24}
+  @keyframes omairaReduced{0%{opacity:0}25%,82%{opacity:1}100%{opacity:0}}
+}
 .scalpel-login-layer{position:fixed;inset:0;z-index:13195;pointer-events:none;overflow:hidden;isolation:isolate}
 .scalpel-cut-half{
   position:fixed;inset:0;overflow:hidden;pointer-events:none;will-change:transform,opacity,filter;
@@ -3118,7 +3173,8 @@ var AUTH_LOGIN_EFFECT_ASSETS={
   disney:['assets/study-hub-disney-transparent.png'],
   woody:['assets/woody-ride-transparent.gif'],
   davidHeavy:['assets/david-login-rise-transparent.png'],
-  haadHeavy:['assets/haad-login-rise-transparent.png']
+  haadHeavy:['assets/haad-login-rise-transparent.png'],
+  omairaCall:['assets/omaira-phone-transparent.png','assets/omaira-side-eye.gif']
 };
 var AUTH_DAVID_HEAVY_LOGIN_USERS={
   'deverly@une.edu':true,
@@ -3132,6 +3188,10 @@ var AUTH_HAAD_HEAVY_LOGIN_USERS={
   'naeemh@une.edu':true
 };
 var AUTH_HAAD_HEAVY_FORCE_UNTIL=new Date(2026,7,29).getTime();
+var AUTH_OMAIRA_CALL_LOGIN_USERS={
+  'oriveravazquez@une.edu':true
+};
+var AUTH_OMAIRA_CALL_FORCE_UNTIL=new Date(2026,7,29).getTime();
 var AUTH_SELECTED_LOGIN_EFFECT=null;
 var AUTH_PRELOADED_ASSETS={};
 var AUTH_PRELOAD_IMAGES=[];
@@ -3679,6 +3739,7 @@ function prepareAuthLoginEffect(){
   preloadLoginEffectAssets(AUTH_SELECTED_LOGIN_EFFECT);
   preloadLoginEffectAssets('davidHeavy');
   preloadLoginEffectAssets('haadHeavy');
+  preloadLoginEffectAssets('omairaCall');
   var defer=window.requestIdleCallback||function(fn){return window.setTimeout(fn,240)};
   defer(function(){preloadAllLoginEffectAssets();});
 }
@@ -3939,7 +4000,17 @@ function isHaadHeavyLoginUser(user){
 function shouldForceHaadHeavyLogin(user){
   return isHaadHeavyLoginUser(user)&&Date.now()<AUTH_HAAD_HEAVY_FORCE_UNTIL;
 }
+function isOmairaCallLoginUser(user){
+  return !!(user&&AUTH_OMAIRA_CALL_LOGIN_USERS[normEmail(user.email)]);
+}
+function shouldForceOmairaCallLogin(user){
+  return isOmairaCallLoginUser(user)&&Date.now()<AUTH_OMAIRA_CALL_FORCE_UNTIL;
+}
 function pickAuthLoginEffectForUser(user){
+  if(isOmairaCallLoginUser(user)){
+    var omairaEffects=AUTH_LOGIN_EFFECTS.concat(['omairaCall']);
+    return omairaEffects[Math.floor(Math.random()*omairaEffects.length)]||'original';
+  }
   if(isDavidHeavyLoginUser(user)){
     var targetedEffects=AUTH_LOGIN_EFFECTS.concat(['davidHeavy']);
     return targetedEffects[Math.floor(Math.random()*targetedEffects.length)]||'original';
@@ -3967,6 +4038,17 @@ function playRandomLoginEffect(user){
     setAuthMsg('Verified. Haad has the corner...','success');
     preloadLoginEffectAssets('haadHeavy');
     triggerHaadHeavyLoginEasterEgg({
+      loginMode:true,
+      toastLabel:false,
+      onComplete:function(){playWelcome(user);}
+    });
+    return;
+  }
+  if(shouldForceOmairaCallLogin(user)){
+    AUTH_SELECTED_LOGIN_EFFECT=null;
+    setAuthMsg('Verified. Incoming call...','success');
+    preloadLoginEffectAssets('omairaCall');
+    triggerOmairaCallLoginEasterEgg({
       loginMode:true,
       toastLabel:false,
       onComplete:function(){playWelcome(user);}
@@ -4074,6 +4156,15 @@ function playRandomLoginEffect(user){
     triggerWoodyLoginEasterEgg({
       loginMode:true,
       toastLabel:'Lasso login unlocked',
+      onComplete:function(){playWelcome(user);}
+    });
+    return;
+  }
+  if(choice==='omairaCall'){
+    setAuthMsg('Verified. Incoming call...','success');
+    triggerOmairaCallLoginEasterEgg({
+      loginMode:true,
+      toastLabel:false,
       onComplete:function(){playWelcome(user);}
     });
     return;
@@ -5813,6 +5904,58 @@ function triggerWoodyLoginEasterEgg(options){
     card.classList.remove('woody-card-lassoed');
     card.style.visibility='';
   },3500);
+}
+function triggerOmairaCallLoginEasterEgg(options){
+  options=options||{};
+  var overlay=document.getElementById('authOverlay');
+  var card=document.getElementById('authLoginCard');
+  if(!overlay||!card||!document.body.classList.contains('auth-locked')){
+    if(typeof options.onComplete==='function')options.onComplete();
+    return;
+  }
+  var oldLayer=document.querySelector('.omaira-call-layer');
+  if(oldLayer)oldLayer.remove();
+  card.classList.remove('omaira-call-card');
+  card.style.visibility='';
+  void card.offsetWidth;
+  var viewportW=window.innerWidth||document.documentElement.clientWidth||1280;
+  var viewportH=window.innerHeight||document.documentElement.clientHeight||720;
+  var phoneWidth=Math.max(210,Math.min(viewportW*.48,viewportH*.36,340));
+  var layer=document.createElement('div');
+  layer.className='omaira-call-layer';
+  layer.setAttribute('aria-hidden','true');
+  var wrap=document.createElement('div');
+  wrap.className='omaira-phone-wrap';
+  wrap.style.setProperty('--omaira-phone-width',phoneWidth+'px');
+  var phone=document.createElement('img');
+  phone.className='omaira-phone-img';
+  phone.src='assets/omaira-phone-transparent.png';
+  phone.alt='';
+  phone.decoding='async';
+  var sideEye=document.createElement('img');
+  sideEye.className='omaira-side-eye';
+  sideEye.src='assets/omaira-side-eye.gif';
+  sideEye.alt='';
+  sideEye.decoding='async';
+  var tap=document.createElement('span');
+  tap.className='omaira-accept-tap';
+  wrap.appendChild(phone);
+  wrap.appendChild(sideEye);
+  wrap.appendChild(tap);
+  layer.appendChild(wrap);
+  document.body.appendChild(layer);
+  if(options.toastLabel!==false)showSecretToast(options.toastLabel||'Incoming call unlocked');
+  requestAnimationFrame(function(){
+    if(layer.parentNode)card.classList.add('omaira-call-card');
+  });
+  if(typeof options.onComplete==='function'){
+    window.setTimeout(options.onComplete,options.completeDelay||4800);
+  }
+  window.setTimeout(function(){
+    if(layer&&layer.parentNode)layer.parentNode.removeChild(layer);
+    card.classList.remove('omaira-call-card');
+    card.style.visibility='';
+  },5320);
 }
 function triggerScalpelLoginEasterEgg(options){
   options=options||{};
