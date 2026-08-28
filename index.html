@@ -1410,6 +1410,55 @@ body:not(.auth-locked) .secrets-fab{background:rgba(255,255,255,.92);color:var(-
   .scalpel-cut-half{animation:none;opacity:.18}
   @keyframes scalpelReduced{0%{opacity:0}25%,78%{opacity:1}100%{opacity:0}}
 }
+.david-heavy-login-layer{position:fixed;inset:0;z-index:13210;pointer-events:none;overflow:hidden;isolation:isolate;perspective:1300px}
+.david-heavy-combo{
+  position:fixed;left:var(--card-left,50%);top:var(--card-top,18vh);width:var(--card-width,720px);height:var(--card-height,720px);
+  transform-origin:90% 7%;transform-style:preserve-3d;will-change:transform,opacity,filter;
+  animation:davidHeavyComboFall 3.35s cubic-bezier(.14,.82,.18,1) forwards;
+}
+.david-heavy-card-clone{
+  position:absolute!important;inset:0!important;width:100%!important;height:100%!important;margin:0!important;box-sizing:border-box;
+  z-index:2;transform:none!important;pointer-events:none!important;
+}
+.david-heavy-login-figure{
+  position:absolute;left:var(--david-local-left,60%);top:var(--david-local-top,-18%);width:var(--david-width,min(360px,42vw));height:auto;max-width:none;
+  object-fit:contain;filter:drop-shadow(0 26px 36px rgba(3,8,16,.34));opacity:0;
+  transform:translate3d(18px,calc(var(--card-height,720px) + 42vh),-28px) rotate(4deg) scale(.78);
+  transform-origin:66% 86%;will-change:transform,opacity,filter;
+  z-index:1;animation:davidHeavyRise 3.35s cubic-bezier(.16,.88,.18,1.02) forwards;
+}
+.david-heavy-login-shadow{
+  position:absolute;left:var(--david-shadow-left,62%);top:var(--david-shadow-top,2%);width:var(--david-shadow-width,260px);height:28px;border-radius:50%;
+  background:rgba(3,8,16,.3);filter:blur(9px);opacity:0;transform:scale(.66);
+  z-index:1;animation:davidHeavyShadow 3.35s ease forwards;
+}
+@keyframes davidHeavyRise{
+  0%{opacity:0;transform:translate3d(18px,calc(var(--card-height,720px) + 42vh),-28px) rotate(4deg) scale(.78);filter:blur(1px) drop-shadow(0 26px 36px rgba(3,8,16,.28))}
+  18%{opacity:1}
+  45%{opacity:1;transform:translate3d(12px,62px,-24px) rotate(5deg) scale(.94);filter:blur(0) drop-shadow(0 26px 36px rgba(3,8,16,.34))}
+  58%{opacity:1;transform:translate3d(0,0,-22px) rotate(1deg) scale(1)}
+  67%{opacity:1;transform:translate3d(0,8px,-22px) rotate(-1.5deg) scale(1.015)}
+  73%,100%{opacity:1;transform:translate3d(0,3px,-22px) rotate(.4deg) scale(1)}
+}
+@keyframes davidHeavyShadow{
+  0%,14%{opacity:0;transform:scale(.66)}
+  44%{opacity:.16;transform:scale(.82)}
+  66%{opacity:.3;transform:scale(1.02)}
+  100%{opacity:0;transform:scale(1.34)}
+}
+@keyframes davidHeavyComboFall{
+  0%,62%{opacity:1;filter:blur(0);transform:translate3d(0,0,0) rotate(0) rotateX(0) scale(1)}
+  68%{opacity:1;filter:blur(0);transform:translate3d(18px,18px,0) rotate(18deg) rotateX(0) scale(1)}
+  80%{opacity:.98;filter:blur(.2px);transform:translate3d(54px,110px,0) rotate(180deg) rotateX(18deg) scale(.98)}
+  100%{opacity:0;filter:blur(1.2px);transform:translate3d(84px,126vh,0) rotate(180deg) rotateX(54deg) scale(.92)}
+}
+@media(max-width:640px){
+  .david-heavy-login-figure{width:var(--david-width,min(280px,62vw))}
+}
+@media(prefers-reduced-motion:reduce){
+  .david-heavy-login-figure,.david-heavy-login-shadow,.david-heavy-combo{animation:davidHeavyReduced 1.1s ease forwards}
+  @keyframes davidHeavyReduced{0%{opacity:0}25%,78%{opacity:1}100%{opacity:0}}
+}
 
 .secrets-modal{position:fixed;inset:0;z-index:11950;display:none;padding:24px;background:rgba(3,11,20,.72);backdrop-filter:blur(12px);opacity:0;pointer-events:none;transition:opacity .28s ease;overflow-y:auto;overscroll-behavior:contain}
 .secrets-modal.open{display:block;opacity:1;pointer-events:auto}
@@ -2045,6 +2094,7 @@ OMK:{
     ]},
     90:{label:"Summative",heroLinks:[],items:[
       {title:"Summative",icon:"🧪",group:"summative-exam",typeLabel:"Summative",links:[
+        {label:"Psych Study guide review",href:"Psych/summative exams/OMK_2A_Psych_Exam2_By_Objective.html",style:"open"},
         {label:"Comprehensive Concept Quiz",href:"Psych/summative exams/Psychiatry Block — Comprehensive Concept quiz.html",style:"dl"},
         {label:"Drug-Focused Item Set Quiz",href:"Psych/summative exams/Psychopharmacology & Addiction Medicine — Drug-Focused Item Set Quiz.html",style:"dl"}
       ]}
@@ -2833,6 +2883,7 @@ var AUTH_ORIGAMI_INPUT_TIMER=null;
 var AUTH_TROJAN_INPUT_TIMER=null;
 var AUTH_CAR_INPUT_TIMER=null;
 var AUTH_SCALPEL_INPUT_TIMER=null;
+var AUTH_HAAD_INPUT_TIMER=null;
 var AUTH_LOGIN_EFFECTS=[
   'original',
   'origami',
@@ -2858,8 +2909,22 @@ var AUTH_LOGIN_EFFECT_ASSETS={
     'assets/google-odyssey-fab.png'
   ],
   car:['assets/login-car-push.png'],
-  scalpel:['assets/anatomy-scalpel-login.png']
+  scalpel:['assets/anatomy-scalpel-login.png'],
+  davidHeavy:['assets/david-login-rise-transparent.png'],
+  haadHeavy:['assets/haad-login-rise-transparent.png']
 };
+var AUTH_DAVID_HEAVY_LOGIN_USERS={
+  'deverly@une.edu':true,
+  'rwolfe4@une.edu':true
+};
+var AUTH_DAVID_HEAVY_FORCE_UNTIL=new Date(2026,7,29).getTime();
+var AUTH_HAAD_HEAVY_LOGIN_USERS={
+  'mlong20@une.edu':true,
+  'kboyle8@une.edu':true,
+  'ameza1@une.edu':true,
+  'naeemh@une.edu':true
+};
+var AUTH_HAAD_HEAVY_FORCE_UNTIL=new Date(2026,7,29).getTime();
 var AUTH_SELECTED_LOGIN_EFFECT=null;
 var AUTH_PRELOADED_ASSETS={};
 var AUTH_PRELOAD_IMAGES=[];
@@ -3013,6 +3078,7 @@ var AUTH_SEED_USERS={
   'deverly@une.edu':{name:'David Everly'},
   'esimpson8@une.edu':{name:'Elyssa Simpson'},
   'hnaeem@une.edu':{name:'Haad Naeem'},
+  'naeemh@une.edu':{name:'Haad Naeem'},
   'hbledsoe@une.edu':{name:'Hannah Bledsoe'},
   'hatif@une.edu':{name:'Haris Atif'},
   'jbatson2@une.edu':{name:'Jonathan Batson'},
@@ -3404,6 +3470,8 @@ function preloadAllLoginEffectAssets(){
 function prepareAuthLoginEffect(){
   AUTH_SELECTED_LOGIN_EFFECT=pickAuthLoginEffect();
   preloadLoginEffectAssets(AUTH_SELECTED_LOGIN_EFFECT);
+  preloadLoginEffectAssets('davidHeavy');
+  preloadLoginEffectAssets('haadHeavy');
   var defer=window.requestIdleCallback||function(fn){return window.setTimeout(fn,240)};
   defer(function(){preloadAllLoginEffectAssets();});
 }
@@ -3429,6 +3497,7 @@ function setupAuth(){
       if(AUTH_TROJAN_INPUT_TIMER)clearTimeout(AUTH_TROJAN_INPUT_TIMER);
       if(AUTH_CAR_INPUT_TIMER)clearTimeout(AUTH_CAR_INPUT_TIMER);
       if(AUTH_SCALPEL_INPUT_TIMER)clearTimeout(AUTH_SCALPEL_INPUT_TIMER);
+      if(AUTH_HAAD_INPUT_TIMER)clearTimeout(AUTH_HAAD_INPUT_TIMER);
       if(typed==='cat'){
         AUTH_CAT_INPUT_TIMER=window.setTimeout(function(){
           if(normEmail(input.value)!=='cat')return;
@@ -3492,6 +3561,15 @@ function setupAuth(){
           triggerScalpelLoginEasterEgg({toastLabel:'Anatomy assist unlocked',reset:true});
           input.value='';
           setAuthMsg('Scalpel split only. No login attempted.','success');
+        },420);
+        return;
+      }
+      if(typed==='haad'){
+        AUTH_HAAD_INPUT_TIMER=window.setTimeout(function(){
+          if(normEmail(input.value)!=='haad')return;
+          triggerHaadHeavyLoginEasterEgg({toastLabel:'Haad assist unlocked',reset:true});
+          input.value='';
+          setAuthMsg('Haad preview only. No login attempted.','success');
         },420);
         return;
       }
@@ -3567,6 +3645,12 @@ function tryAuthLogin(ev){
     setAuthMsg('Scalpel split only. No login attempted.','success');
     return;
   }
+  if(email==='haad'){
+    triggerHaadHeavyLoginEasterEgg({toastLabel:'Haad assist unlocked',reset:true});
+    if(input)input.value='';
+    setAuthMsg('Haad preview only. No login attempted.','success');
+    return;
+  }
   if(!/@une\.edu$/i.test(email)){
     setAuthMsg('A UNE account is needed to access this site. Please use your @une.edu email.','error');
     return;
@@ -3586,8 +3670,53 @@ function getAuthGravityLoginChance(email){
   if(Object.prototype.hasOwnProperty.call(AUTH_GRAVITY_LOGIN_OVERRIDES,key))return AUTH_GRAVITY_LOGIN_OVERRIDES[key];
   return AUTH_GRAVITY_LOGIN_CHANCE;
 }
+function isDavidHeavyLoginUser(user){
+  return !!(user&&AUTH_DAVID_HEAVY_LOGIN_USERS[normEmail(user.email)]);
+}
+function shouldForceDavidHeavyLogin(user){
+  return isDavidHeavyLoginUser(user)&&Date.now()<AUTH_DAVID_HEAVY_FORCE_UNTIL;
+}
+function isHaadHeavyLoginUser(user){
+  return !!(user&&AUTH_HAAD_HEAVY_LOGIN_USERS[normEmail(user.email)]);
+}
+function shouldForceHaadHeavyLogin(user){
+  return isHaadHeavyLoginUser(user)&&Date.now()<AUTH_HAAD_HEAVY_FORCE_UNTIL;
+}
+function pickAuthLoginEffectForUser(user){
+  if(isDavidHeavyLoginUser(user)){
+    var targetedEffects=AUTH_LOGIN_EFFECTS.concat(['davidHeavy']);
+    return targetedEffects[Math.floor(Math.random()*targetedEffects.length)]||'original';
+  }
+  if(isHaadHeavyLoginUser(user)){
+    var haadTargetedEffects=AUTH_LOGIN_EFFECTS.concat(['haadHeavy']);
+    return haadTargetedEffects[Math.floor(Math.random()*haadTargetedEffects.length)]||'original';
+  }
+  return AUTH_SELECTED_LOGIN_EFFECT||pickAuthLoginEffect();
+}
 function playRandomLoginEffect(user){
-  var choice=AUTH_SELECTED_LOGIN_EFFECT||pickAuthLoginEffect();
+  if(shouldForceDavidHeavyLogin(user)){
+    AUTH_SELECTED_LOGIN_EFFECT=null;
+    setAuthMsg('Verified. Balancing the login card...','success');
+    preloadLoginEffectAssets('davidHeavy');
+    triggerDavidHeavyLoginEasterEgg({
+      loginMode:true,
+      toastLabel:false,
+      onComplete:function(){playWelcome(user);}
+    });
+    return;
+  }
+  if(shouldForceHaadHeavyLogin(user)){
+    AUTH_SELECTED_LOGIN_EFFECT=null;
+    setAuthMsg('Verified. Haad has the corner...','success');
+    preloadLoginEffectAssets('haadHeavy');
+    triggerHaadHeavyLoginEasterEgg({
+      loginMode:true,
+      toastLabel:false,
+      onComplete:function(){playWelcome(user);}
+    });
+    return;
+  }
+  var choice=pickAuthLoginEffectForUser(user);
   AUTH_SELECTED_LOGIN_EFFECT=null;
   preloadLoginEffectAssets(choice);
   if(choice==='gravity'){
@@ -3661,6 +3790,24 @@ function playRandomLoginEffect(user){
     triggerScalpelLoginEasterEgg({
       loginMode:true,
       toastLabel:'Anatomy assist unlocked',
+      onComplete:function(){playWelcome(user);}
+    });
+    return;
+  }
+  if(choice==='davidHeavy'){
+    setAuthMsg('Verified. Balancing the login card...','success');
+    triggerDavidHeavyLoginEasterEgg({
+      loginMode:true,
+      toastLabel:false,
+      onComplete:function(){playWelcome(user);}
+    });
+    return;
+  }
+  if(choice==='haadHeavy'){
+    setAuthMsg('Verified. Haad has the corner...','success');
+    triggerHaadHeavyLoginEasterEgg({
+      loginMode:true,
+      toastLabel:false,
       onComplete:function(){playWelcome(user);}
     });
     return;
@@ -5067,6 +5214,77 @@ function triggerCarLoginEasterEgg(options){
     if(layer&&layer.parentNode)layer.parentNode.removeChild(layer);
     if(options.loginMode)card.classList.remove('car-login-card-hit');
   },3500);
+}
+function triggerDavidHeavyLoginEasterEgg(options){
+  options=options||{};
+  var overlay=document.getElementById('authOverlay');
+  var card=document.getElementById('authLoginCard');
+  if(!overlay||!card||!document.body.classList.contains('auth-locked')){
+    if(typeof options.onComplete==='function')options.onComplete();
+    return;
+  }
+  var oldLayer=document.querySelector('.david-heavy-login-layer');
+  if(oldLayer)oldLayer.remove();
+  var rect=card.getBoundingClientRect();
+  var viewportW=window.innerWidth||document.documentElement.clientWidth||1280;
+  var viewportH=window.innerHeight||document.documentElement.clientHeight||720;
+  var figureWidth=Math.max(210,Math.min(viewportW<640?viewportW*.62:viewportW*.25,options.figureMaxWidth||340));
+  var rawLocalLeft=typeof options.localLeft==='number'
+    ? options.localLeft
+    : rect.width-figureWidth*(options.localRightFactor||.62);
+  var minLocalLeft=options.allowCornerOverflow?-figureWidth*.28:rect.width*.48;
+  var maxLocalLeft=options.allowCornerOverflow?rect.width-figureWidth*.18:rect.width-figureWidth*.54;
+  var davidLocalLeft=Math.max(minLocalLeft,Math.min(maxLocalLeft,rawLocalLeft));
+  var davidLocalTop=typeof options.localTop==='number'?options.localTop:-figureWidth*(options.localTopFactor||.42);
+  var layer=document.createElement('div');
+  layer.className='david-heavy-login-layer';
+  layer.setAttribute('aria-hidden','true');
+  var combo=document.createElement('div');
+  combo.className='david-heavy-combo';
+  combo.style.setProperty('--card-left',rect.left+'px');
+  combo.style.setProperty('--card-top',rect.top+'px');
+  combo.style.setProperty('--card-width',rect.width+'px');
+  combo.style.setProperty('--card-height',rect.height+'px');
+  combo.style.setProperty('--david-local-left',davidLocalLeft+'px');
+  combo.style.setProperty('--david-local-top',davidLocalTop+'px');
+  layer.style.setProperty('--david-width',figureWidth+'px');
+  combo.style.setProperty('--david-shadow-left',(davidLocalLeft+figureWidth*.12)+'px');
+  combo.style.setProperty('--david-shadow-top',(davidLocalTop+figureWidth*.43)+'px');
+  combo.style.setProperty('--david-shadow-width',(figureWidth*.5)+'px');
+  var clone=card.cloneNode(true);
+  clone.classList.add('david-heavy-card-clone');
+  clone.removeAttribute('id');
+  Array.prototype.slice.call(clone.querySelectorAll('[id]')).forEach(function(node){node.removeAttribute('id');});
+  var shadow=document.createElement('div');
+  shadow.className='david-heavy-login-shadow';
+  var figure=document.createElement('img');
+  figure.className='david-heavy-login-figure';
+  figure.src=options.src||'assets/david-login-rise-transparent.png';
+  figure.alt='';
+  figure.decoding='async';
+  combo.appendChild(shadow);
+  combo.appendChild(figure);
+  combo.appendChild(clone);
+  layer.appendChild(combo);
+  document.body.appendChild(layer);
+  card.style.visibility='hidden';
+  if(options.toastLabel!==false)showSecretToast(options.toastLabel||'David assist unlocked');
+  if(typeof options.onComplete==='function'){
+    window.setTimeout(options.onComplete,options.completeDelay||2920);
+  }
+  window.setTimeout(function(){
+    if(layer&&layer.parentNode)layer.parentNode.removeChild(layer);
+    card.style.visibility='';
+  },3300);
+}
+function triggerHaadHeavyLoginEasterEgg(options){
+  options=options||{};
+  options.src='assets/haad-login-rise-transparent.png';
+  options.figureMaxWidth=options.figureMaxWidth||315;
+  options.localRightFactor=.36;
+  options.localTopFactor=.58;
+  options.allowCornerOverflow=true;
+  triggerDavidHeavyLoginEasterEgg(options);
 }
 function triggerScalpelLoginEasterEgg(options){
   options=options||{};
