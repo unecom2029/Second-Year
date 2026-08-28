@@ -2819,7 +2819,8 @@ var ADMIN_ACCOUNT={email:'jmehta@une.edu',password:'test123',name:'Jeevs'};
 var AUTH_STORAGE_KEY='une-study-hub-custom-users-v1';
 var AUTH_LAST_LOGIN_KEY='une-study-hub-last-login-v1';
 var AUTH_REMEMBER_KEY='une-study-hub-remembered-auth-v1';
-var AUTH_REMEMBER_MS=4*60*60*1000;
+    // Fixed session length: reloads should not extend the four-hour login window.
+    var AUTH_REMEMBER_MS=4*60*60*1000;
 var AUTH_GRAVITY_LOGIN_CHANCE=.22;
 var AUTH_PAW_LOGIN_CHANCE=.25;
 var AUTH_CAT_INPUT_TIMER=null;
@@ -3408,7 +3409,7 @@ function setupAuth(){
   var input=document.getElementById('authEmail');
   var rememberedUser=readRememberedAuth();
   if(rememberedUser){
-    AUTH_STATE.user=writeRememberedAuth(rememberedUser.email)||rememberedUser;
+      AUTH_STATE.user=rememberedUser;
     writeLastLogin(rememberedUser.email);
     unlockApp();
     return;
