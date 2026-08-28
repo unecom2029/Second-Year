@@ -847,7 +847,7 @@ var toolMode='';
 var labUnitMode='us';
 var timerSec=0,timerRunning=false,timerInterval=null;
 var fontStep=0;
-var LETTERS=['A','B','C','D','E'];
+var LETTERS=['A','B','C','D','E','F','G','H','I'];
 var PRELOADED_QUIZ_NAME="__QUIZ_BUILDER_PRELOADED_NAME__";
 var PRELOADED_QUESTIONS_JSON="__QUIZ_BUILDER_PRELOADED_QUESTIONS__";
 var PRELOADED_UI_MODE="__QUIZ_BUILDER_PRELOADED_UI_MODE__";
@@ -1497,7 +1497,10 @@ function launchQuiz(){
 
 // ── STATE HELPERS ──
 function stripChoiceLabel(text){
-  return String(text||'').replace(/^[A-E]\.\s*/i,'');
+  return String(text||'').replace(/^[A-I]\.\s*/i,'');
+}
+function choiceLetter(index){
+  return LETTERS[index]||String.fromCharCode(65+index);
 }
 function getStemHTML(index){
   return stemMarkup[index]!=null?stemMarkup[index]:questions[index].stem;
@@ -1554,7 +1557,7 @@ function buildReviewSheetItemsHTML(){
   return questions.map(function(q,index){
     var ans=answers[index];
     var meta=getAnswerStateMeta(ans);
-    var correctLetter=LETTERS[q.correct]||String.fromCharCode(65+q.correct);
+    var correctLetter=choiceLetter(q.correct);
     return `<article class="sum-item ${meta.className}">
       <div class="sum-meta">
         <div class="sum-num">Question ${index+1}</div>
@@ -1795,8 +1798,8 @@ function updScore(){
 }
 function buildExplanationHTML(q,ans){
   if(!ans)return '';
-  var correctLetter=LETTERS[q.correct];
-  var selectedLetter=(ans.s!==null&&ans.s!==undefined)?LETTERS[ans.s]:'';
+  var correctLetter=choiceLetter(q.correct);
+  var selectedLetter=(ans.s!==null&&ans.s!==undefined)?choiceLetter(ans.s):'';
   var myWrong='';
   if(ans.s===null){
     myWrong='<div class="exs exw"><div class="exl">✗ No Answer Selected</div><div class="ext">This question was left unanswered before the quiz was submitted.</div></div>';
@@ -1807,10 +1810,10 @@ function buildExplanationHTML(q,ans){
   if(q.wrongExplanations){
     var otherKeys=Object.keys(q.wrongExplanations).filter(function(key){
       return +key!==q.correct&&(ans.s===null||+key!==ans.s)&&q.wrongExplanations[key];
-    });
+    }).sort(function(a,b){return Number(a)-Number(b);});
     if(otherKeys.length){
       others=`<div class="exs exo"><div class="exl">✗ Other Wrong Choices</div><div class="ext">${otherKeys.map(function(key){
-        return `<div class="wce"><strong>${LETTERS[+key]}:</strong> ${q.wrongExplanations[key]}</div>`;
+        return `<div class="wce"><strong>${choiceLetter(+key)}:</strong> ${q.wrongExplanations[key]}</div>`;
       }).join('')}</div></div>`;
     }
   }
@@ -1847,7 +1850,7 @@ function buildClassicQuestion(){
       classes.push('sel');
     }
     return `<div class="${classes.join(' ')}" onclick="pick(${ci})">
-      <div class="cl">${LETTERS[ci]||String.fromCharCode(65+ci)}</div>
+      <div class="cl">${choiceLetter(ci)}</div>
       <div class="ac-txt" data-choice-html="${ci}">${getChoiceHTML(CQ,ci)}</div>
     </div>`;
   }).join('');
@@ -1902,7 +1905,7 @@ function buildNbmeQuestion(){
       else if(ans.s!==null&&ci===ans.s)classes.push('incorrect');
     }
     return `<div class="${classes.join(' ')}" onclick="pick(${ci})">
-      <div class="nb-answer-glyph">${LETTERS[ci]||String.fromCharCode(65+ci)}</div>
+      <div class="nb-answer-glyph">${choiceLetter(ci)}</div>
       <div class="nb-answer-copy"><span data-choice-html="${ci}">${getChoiceHTML(CQ,ci)}</span></div>
     </div>`;
   }).join('');
@@ -1928,7 +1931,7 @@ function buildNbmeReview(){
   var incomplete=questions.length-answered;
   var flagged=getMarkedCount();
   var rows=questions.map(function(q,i){
-    var answer=selected[i]===undefined?'—':LETTERS[selected[i]];
+    var answer=selected[i]===undefined?'—':choiceLetter(selected[i]);
     return `<tr>
       <td><button class="nb-review-jump" type="button" onclick="goQ(${i})">${i+1}</button></td>
       <td>${selected[i]===undefined?'Incomplete':'Answered'}</td>
@@ -2392,7 +2395,10 @@ document.addEventListener('keydown',function(event){
   if(event.key==='ArrowLeft')prevQ();
   if(event.key==='Enter'&&!answers[CQ]&&selected[CQ]!==undefined&&!reviewOpen){event.preventDefault();submitAns();return;}
   if((event.key==='m'||event.key==='M')&&!event.metaKey&&!event.ctrlKey){toggleMark();return;}
-  if(!answers[CQ]&&/^[a-eA-E]$/.test(event.key))pick(event.key.toUpperCase().charCodeAt(0)-65);
+  if(!answers[CQ]&&/^[a-iA-I]$/.test(event.key)){
+    var keyChoice=event.key.toUpperCase().charCodeAt(0)-65;
+    if(keyChoice<questions[CQ].choices.length)pick(keyChoice);
+  }
 });
 window.addEventListener('resize',syncViewportSize);
 window.addEventListener('orientationchange',syncViewportSize);

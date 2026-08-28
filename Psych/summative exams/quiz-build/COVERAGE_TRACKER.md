@@ -18,51 +18,60 @@ Batches 1 and 2 were retrofitted with tags on 2026-08-28.
 | 5 | Personality, Eating, Somatoform/Dissoc/Sexual | PD + ED + Somatoform | 008 014 020 023 030 031 033 034 038 039 041 067 069 077 078 089 105 | ✅ DONE (20 items, merged) |
 | 6 | Legal/Ethics/Risk + Child & Adolescent + MSE | Legal + Child + Assessment | 010 016 029 032 044 052 054 057 059 066 072 075 079 080 084 090 092 094 096 100 101 103 | ✅ DONE (20 items, merged) |
 | 7 | Top-up: limbic circuits, ADHD adjuncts, pregnancy, psychosexual | Cross-block gap closure | 025 042 074 082 084 092 104 | ✅ DONE (12 items, merged) |
+| 11 | Core concepts, new surfaces | Cross-block reinforcement | 008 017 021 023 029 032 041 048 049 051 052 053 056 057 058 063 064 067 074 075 076 079 081 084 085 086 088 089 091 093 095 096 099 100 102 | ✅ DONE (20 items, merged) |
+| 10 | Untested detail across all blocks | Cross-block sweep | 010 014 016 017 020 024 026 027 031 033 034 035 036 037 041 045 056 057 059 060 066 072 081 082 083 084 086 095 096 102 | ✅ DONE (20 items, merged) |
+| 9 | Remaining high-yield detail | Cross-block, previously untested facts | 001 005 010 013 015 026 035 036 045 048 057 059 060 063 066 072 079 081 083 086 087 103 104 105 | ✅ DONE (20 items, merged) |
+| 8 | High-yield reinforcement & hard discriminations | Cross-block, second-angle | 002 011 012 019 028 035 036 043 049 052 056 057 058 061 065 073 074 079 080 081 085 086 087 095 097 | ✅ DONE (20 items, merged) |
 
-## FINAL STATUS — 7 batches complete, 132 items
+## FINAL STATUS — 11 batches complete, 212 items · PROJECT COMPLETE
 
-**102 of 105 objectives** carry at least one dedicated item (LO tags sit at the end of each `explanation`).
+**103 of 105 objectives** covered (LO tags sit at the end of each `explanation`).
 
-### Batch 7 — top-up (items 121–132), 12 items
-Closed the four writable gaps left after Batch 6:
-- **025** limbic circuit neuroanatomy — Q1 motor loop/dyskinesias, Q2 associative loop/intrusive thoughts,
-  Q3 limbic loop/labile mood (a three-item parallel set built on one option architecture), Q4 nucleus
-  accumbens dopamine vs amygdala norepinephrine
-- **042** ADHD adjuncts — Q5 alpha-2 agonist added for residual hyperactivity when the stimulant already
-  fixed attention, Q6 atomoxetine "never worked" at 0.45 mg/kg (underdosing, not drug failure),
-  Q7 atomoxetine/viloxazine suicidality warning
-- **082** psychotropics in pregnancy — Q8 lithium held in T1 and resumed later (Ebstein timing),
-  Q9 preconception valproate transition + high-dose folate, Q10 benzodiazepine risk window at 2–8 weeks,
-  Q11 carbamazepine induction defeating oral contraceptives → IUD
-- **104** Freud's psychosexual stages — Q12 anal-retentive fixation
+### Batch 11 — core concepts, new surfaces (items 193–212), 20 items
+By this point the source's untested facts were essentially exhausted, so this batch deliberately re-tests the
+HIGHEST-yield concepts on entirely new vignette surfaces, and where possible reverses the direction of the
+question so the item cannot be answered from memory of an earlier one.
 
-### The 3 objectives with no item — and why
-The study guide marks these **✕ Not in your notes**. Writing items would mean inventing content the
-lectures do not contain:
+| Concept | Earlier item | Batch 11's new angle |
+|---|---|---|
+| NMS | B2 Q33 (stop the antipsychotic) | Q1 — caused by **metoclopramide**, no antipsychotic anywhere in the chart |
+| Lithium toxicity | B1 Q7 (NSAID), B8 Q14 (nephrogenic DI) | Q2 — gastroenteritis + thiazide, asked as **management** |
+| Serotonin syndrome | B1 Q12 (diagnosis) | Q3 — **linezolid** as the culprit, asked as agent identification |
+| Acute dystonia | B2 Q24 (antipsychotic) | Q4 — **prochlorperazine for migraine** in the ED |
+| Clozapine | B2, B8 Q16 (myocarditis) | Q6 — **ANC 900** on scheduled monitoring |
+| Delirium | B4 Q17 (rule-out ladder) | Q7 — **anticholinergic burden** from a post-op order set |
+| Bipolar phase treatment | B6 Q6 (depression → lamotrigine) | Q8 — acute mania, **which is LEAST appropriate** |
+| Mood + psychosis | B1 Q6 (schizoaffective) | Q9 — direction flipped to **MDD with psychotic features** |
+| PTSD pharmacotherapy | B3 Q12 (prazosin for nightmares) | Q10 — **no nightmares**, so SSRI first-line |
+| OCD dosing ladder | B3 Q14 (increase to max) | Q11 — **two** maxed SSRIs failed → clomipramine |
+| Anorexia | B5 Q5 (initial management) | Q12 — **refeeding syndrome in progress** on day 3 |
+| Borderline PD | B5 Q7/Q8 | Q14 — **splitting** identified through team division |
+| Antisocial pattern | B5 Q13 (age 16 → conduct disorder) | Q15 — age 28 with pre-15 history → **ASPD** |
+| Tarasoff | B6 Q1 (duty triggered) | Q17 — threshold **NOT** met → document and continue care |
+| Capacity | B6 Q20 (has capacity) | Q18 — **lacks** capacity, failing the appreciation standard |
+| Psychosis duration ladder | B2 (schizophreniform) | Q19 — **brief psychotic disorder** at 16 days |
+| Panic mimic | B3 Q2 (SVT → ECG) | Q20 — **thyrotoxicosis** → TSH |
+Plus Q5 (benzodiazepine + opioid additive respiratory depression), Q13 (bulimia severity by compensations
+per week vs anorexia by BMI), Q16 (cardiovascular ROS before a stimulant).
+
+### The 2 objectives with no item
+Both marked **✕ Not in your notes**; no substitute content has been supplied:
 - **040** differential diagnosis of the various dementias
 - **062** differential of memory impairment + forms of dementia
-- **065** left / central / right frontal CVA and psychiatric symptoms
 
-These are a genuine content hole in the source material, not a gap in the bank. If the professor confirms
-they are testable, obtain the missing lecture and they become a short supplemental batch.
+Supply the professor's summary the way LO 065 was supplied and these close in a short supplemental set.
 
-### Bank-wide metrics at 132 items
-- Answer letters: A25 · B25 · C25 · D25 · E24 · F8 — no letter correct 3 times consecutively anywhere.
-- Bloom: Analyze 44 · Apply 33 · Evaluate 25 · Understand 20 · Remember 10 (69 of 132 at Analyze/Evaluate).
+### Final bank metrics — 212 items
+- Answer letters: A39 · B40 · C40 · D41 · E40 · F12 — no letter correct 3 times consecutively anywhere.
+- Bloom: Analyze 69 · Apply 58 · Evaluate 41 · Understand 30 · Remember 14 (110 of 212 at Analyze/Evaluate).
 - 31% of items carry 6 options.
-- Every answer key LO-tagged; every `wrongExplanations` key verified against its true choice index.
+- Every answer key LO-tagged; every `wrongExplanations` key verified against its true choice index; file parses clean.
 
-### Concepts used — Batch 7 (to avoid repeats)
-Motor loop → chorea · associative loop → intrusive thoughts ("choreiform movements of the mind") ·
-limbic loop → labile mood · accumbens dopamine (augmentation) vs amygdala norepinephrine (restraint) ·
-guanfacine added for residual hyperactivity when attention is already controlled · atomoxetine underdosed
-at 0.45 mg/kg · atomoxetine/viloxazine suicidality warning · lithium held in first trimester, resumed later ·
-preconception valproate switch + folate above prenatal dosing · benzodiazepine organogenesis window
-2–8 weeks and category D/X · carbamazepine induction → OCP failure → IUD · anal-retentive fixation
-
-**Structural device spent in Batch 7** — a three-item parallel set (Q1–Q3) that reuses one 6-option
-architecture across three different clinical surfaces, with the correct loop moved to a different slot each
-time so the set teaches the discrimination rather than the position.
+### Note on further batches
+Batches 1–9 mined new content; Batch 10 swept the last of the untested facts; Batch 11 began re-cutting core
+concepts on fresh surfaces. Any further batch should follow the Batch 11 model — new vignette surfaces and
+reversed question direction on high-yield material — rather than mining new facts, which at this point would
+mean low-yield corners (DSM-IV axes, history-of-psychiatry dates) the notes themselves de-emphasize.
 
 ## LO coverage log
 
