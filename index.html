@@ -2351,7 +2351,7 @@ OMK:{
     90:{label:"Summative",heroLinks:[],items:[
       {title:"Summative",icon:"🧪",group:"summative-exam",typeLabel:"Summative",links:[
         {label:"Psych Study guide review",href:"Psych/summative exams/OMK_2A_Psych_Exam2_By_Objective.html",style:"open"},
-        {label:"Study Guide Quiz (212 Questions)",href:"Psych/summative exams/OMK 2A Psych Exam 2 — Practice Bank Quiz.html",style:"dl"},
+        {label:"Comprehensive Concept Quiz",href:"Psych/summative exams/Psychiatry Block — Comprehensive Concept quiz.html",style:"dl"},
         {label:"Drug-Focused Item Set Quiz",href:"Psych/summative exams/Psychopharmacology & Addiction Medicine — Drug-Focused Item Set Quiz.html",style:"dl"}
       ]}
     ]}
@@ -3143,6 +3143,7 @@ var AUTH_HAAD_INPUT_TIMER=null;
 var AUTH_BOXER_INPUT_TIMER=null;
 var AUTH_DISNEY_INPUT_TIMER=null;
 var AUTH_WOODY_INPUT_TIMER=null;
+var AUTH_DOLLY_INPUT_TIMER=null;
 var AUTH_LOGIN_EFFECTS=[
   'original',
   'origami',
@@ -3175,12 +3176,16 @@ var AUTH_LOGIN_EFFECT_ASSETS={
   disney:['assets/study-hub-disney-transparent.png'],
   woody:['assets/woody-ride-transparent.gif'],
   davidHeavy:['assets/david-login-rise-transparent.png'],
+  davidDolly:['assets/omaira-phone-transparent.png','assets/david-dolly-phone.webp'],
   haadHeavy:['assets/haad-login-rise-transparent.png'],
   omairaCall:['assets/omaira-phone-transparent.png','assets/omaira-side-eye.gif']
 };
 var AUTH_DAVID_HEAVY_LOGIN_USERS={
   'deverly@une.edu':true,
   'rwolfe4@une.edu':true
+};
+var AUTH_DAVID_DOLLY_LOGIN_USERS={
+  'deverly@une.edu':true
 };
 var AUTH_DAVID_HEAVY_FORCE_UNTIL=new Date(2026,7,29).getTime();
 var AUTH_HAAD_HEAVY_LOGIN_USERS={
@@ -3741,6 +3746,7 @@ function prepareAuthLoginEffect(){
   AUTH_SELECTED_LOGIN_EFFECT=pickAuthLoginEffect();
   preloadLoginEffectAssets(AUTH_SELECTED_LOGIN_EFFECT);
   preloadLoginEffectAssets('davidHeavy');
+  preloadLoginEffectAssets('davidDolly');
   preloadLoginEffectAssets('haadHeavy');
   preloadLoginEffectAssets('omairaCall');
   var defer=window.requestIdleCallback||function(fn){return window.setTimeout(fn,240)};
@@ -3772,6 +3778,7 @@ function setupAuth(){
       if(AUTH_BOXER_INPUT_TIMER)clearTimeout(AUTH_BOXER_INPUT_TIMER);
       if(AUTH_DISNEY_INPUT_TIMER)clearTimeout(AUTH_DISNEY_INPUT_TIMER);
       if(AUTH_WOODY_INPUT_TIMER)clearTimeout(AUTH_WOODY_INPUT_TIMER);
+      if(AUTH_DOLLY_INPUT_TIMER)clearTimeout(AUTH_DOLLY_INPUT_TIMER);
       if(typed==='cat'){
         AUTH_CAT_INPUT_TIMER=window.setTimeout(function(){
           if(normEmail(input.value)!=='cat')return;
@@ -3876,6 +3883,15 @@ function setupAuth(){
         },420);
         return;
       }
+      if(typed==='dolly'){
+        AUTH_DOLLY_INPUT_TIMER=window.setTimeout(function(){
+          if(normEmail(input.value)!=='dolly')return;
+          triggerDavidDollyLoginEasterEgg({toastLabel:'Dolly call unlocked',reset:true});
+          input.value='';
+          setAuthMsg('Dolly call preview only. No login attempted.','success');
+        },420);
+        return;
+      }
       if(typed==='gravity')triggerAuthGravity();
     });
     renderLoginQuote(new Date());
@@ -3972,6 +3988,12 @@ function tryAuthLogin(ev){
     setAuthMsg('Lasso preview only. No login attempted.','success');
     return;
   }
+  if(email==='dolly'){
+    triggerDavidDollyLoginEasterEgg({toastLabel:'Dolly call unlocked',reset:true});
+    if(input)input.value='';
+    setAuthMsg('Dolly call preview only. No login attempted.','success');
+    return;
+  }
   if(!/@une\.edu$/i.test(email)){
     setAuthMsg('A UNE account is needed to access this site. Please use your @une.edu email.','error');
     return;
@@ -3993,6 +4015,9 @@ function getAuthGravityLoginChance(email){
 }
 function isDavidHeavyLoginUser(user){
   return !!(user&&AUTH_DAVID_HEAVY_LOGIN_USERS[normEmail(user.email)]);
+}
+function isDavidDollyLoginUser(user){
+  return !!(user&&AUTH_DAVID_DOLLY_LOGIN_USERS[normEmail(user.email)]);
 }
 function shouldForceDavidHeavyLogin(user){
   return isDavidHeavyLoginUser(user)&&Date.now()<AUTH_DAVID_HEAVY_FORCE_UNTIL;
@@ -4016,6 +4041,7 @@ function pickAuthLoginEffectForUser(user){
   }
   if(isDavidHeavyLoginUser(user)){
     var targetedEffects=AUTH_LOGIN_EFFECTS.concat(['davidHeavy']);
+    if(isDavidDollyLoginUser(user))targetedEffects=targetedEffects.concat(['davidDolly']);
     return targetedEffects[Math.floor(Math.random()*targetedEffects.length)]||'original';
   }
   if(isHaadHeavyLoginUser(user)){
@@ -4166,6 +4192,15 @@ function playRandomLoginEffect(user){
   if(choice==='omairaCall'){
     setAuthMsg('Verified. Incoming call...','success');
     triggerOmairaCallLoginEasterEgg({
+      loginMode:true,
+      toastLabel:false,
+      onComplete:function(){playWelcome(user);}
+    });
+    return;
+  }
+  if(choice==='davidDolly'){
+    setAuthMsg('Verified. Dolly call incoming...','success');
+    triggerDavidDollyLoginEasterEgg({
       loginMode:true,
       toastLabel:false,
       onComplete:function(){playWelcome(user);}
@@ -5937,7 +5972,7 @@ function triggerOmairaCallLoginEasterEgg(options){
   phone.decoding='async';
   var sideEye=document.createElement('img');
   sideEye.className='omaira-side-eye';
-  sideEye.src='assets/omaira-side-eye.gif';
+  sideEye.src=options.sideEyeSrc||'assets/omaira-side-eye.gif';
   sideEye.alt='';
   sideEye.decoding='async';
   var tap=document.createElement('span');
@@ -5959,6 +5994,12 @@ function triggerOmairaCallLoginEasterEgg(options){
     card.classList.remove('omaira-call-card');
     card.style.visibility='';
   },5320);
+}
+function triggerDavidDollyLoginEasterEgg(options){
+  options=options||{};
+  options.sideEyeSrc='assets/david-dolly-phone.webp';
+  if(options.toastLabel===undefined)options.toastLabel='Dolly call unlocked';
+  triggerOmairaCallLoginEasterEgg(options);
 }
 function triggerScalpelLoginEasterEgg(options){
   options=options||{};
