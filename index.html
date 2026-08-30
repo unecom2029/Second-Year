@@ -1712,6 +1712,139 @@ body:not(.auth-locked) .secrets-fab{background:rgba(255,255,255,.92);color:var(-
   .david-heavy-login-figure,.david-heavy-login-shadow,.david-heavy-combo{animation:davidHeavyReduced 1.1s ease forwards}
   @keyframes davidHeavyReduced{0%{opacity:0}25%,78%{opacity:1}100%{opacity:0}}
 }
+.david-door-login-layer{position:fixed;inset:0;z-index:13255;pointer-events:none;overflow:hidden;isolation:isolate;perspective:1500px}
+.auth-login.david-door-hidden{visibility:hidden!important}
+.david-door-stage{
+  position:fixed;left:var(--card-left,50%);top:var(--card-top,18vh);width:var(--card-width,720px);height:var(--card-height,720px);
+  perspective:1400px;transform-style:preserve-3d;filter:drop-shadow(0 26px 40px rgba(2,8,18,.26));z-index:2;
+}
+.david-door-card-clone{
+  position:absolute!important;inset:0!important;width:100%!important;height:100%!important;margin:0!important;box-sizing:border-box;
+  transform-origin:100% 50%;transform-style:preserve-3d;backface-visibility:hidden;pointer-events:none!important;
+  animation:davidDoorOpen 6.35s cubic-bezier(.18,.82,.18,1) forwards;will-change:transform,opacity,filter;z-index:3;
+}
+.david-door-card-clone::after{
+  content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(270deg,rgba(0,0,0,.44),rgba(255,255,255,.04) 24%,rgba(0,0,0,0) 70%);
+  opacity:0;animation:davidDoorShade 6.35s ease forwards;
+}
+.david-door-club{
+  position:absolute;inset:0;border-radius:inherit;overflow:hidden;z-index:1;opacity:0;
+  background:
+    linear-gradient(180deg,rgba(10,8,30,.06),rgba(5,7,18,.22)),
+    url('assets/david-club-background.gif') center/cover no-repeat;
+  animation:davidClubReveal 6.35s ease forwards;
+}
+.david-door-club::before{
+  content:'';position:absolute;inset:-18% -12% auto -12%;height:74%;
+  background:
+    conic-gradient(from 210deg at 50% 0,rgba(255,255,255,0),rgba(232,203,112,.42),rgba(255,255,255,0) 18%,rgba(69,215,201,.34) 28%,rgba(255,255,255,0) 40%,rgba(242,109,145,.36) 52%,rgba(255,255,255,0) 68%);
+  opacity:.68;filter:blur(1px);mix-blend-mode:screen;animation:davidClubLights 1.05s ease-in-out infinite alternate;
+}
+.david-door-club::after{
+  content:'';position:absolute;left:14%;right:14%;bottom:10%;height:28%;
+  background:repeating-linear-gradient(90deg,rgba(255,255,255,.16) 0 2px,transparent 2px 64px),linear-gradient(180deg,rgba(69,215,201,.08),rgba(231,199,112,.18));
+  border-top:2px solid rgba(255,255,255,.16);transform:perspective(420px) rotateX(58deg);transform-origin:50% 100%;opacity:.7;
+}
+.david-door-figure{
+  position:fixed;left:0;top:0;width:var(--david-door-width,min(260px,30vw));height:auto;max-width:none;object-fit:contain;
+  filter:drop-shadow(0 26px 34px rgba(3,8,16,.34));opacity:0;transform-origin:50% 86%;
+  transform:translate3d(var(--david-door-start-x,-42vw),var(--david-door-top,42vh),0) rotate(-4deg) scale(.9);
+  animation:davidDoorFigure 6.35s cubic-bezier(.16,.88,.18,1) forwards;will-change:transform,opacity,filter;z-index:5;
+}
+.david-club-david-figure{
+  position:fixed;left:var(--david-club-dance-x,46vw);top:var(--david-club-dance-top,55vh);width:var(--david-club-dance-width,min(170px,18vw));height:auto;max-width:none;object-fit:contain;
+  opacity:0;filter:drop-shadow(0 18px 24px rgba(0,0,0,.34));transform-origin:50% 88%;
+  transform:translate(-50%,-50%) scale(.46) rotate(-6deg);
+  animation:davidClubDavidDance 6.35s ease forwards;will-change:transform,opacity;z-index:5;
+}
+.dolly-party-figure{
+  position:fixed;left:var(--dolly-party-x,50vw);top:var(--dolly-party-top,50vh);width:var(--dolly-party-width,min(170px,18vw));height:auto;max-width:none;object-fit:contain;
+  opacity:0;filter:drop-shadow(0 18px 24px rgba(0,0,0,.34));transform:translate(-50%,-50%) scale(.5) rotate(-4deg);
+  animation:dollyPartyDance 6.35s ease forwards;will-change:transform,opacity;z-index:4;
+}
+.david-door-knock{
+  position:fixed;left:var(--knock-left,35vw);top:var(--knock-top,42vh);width:74px;height:74px;border-radius:50%;
+  border:3px solid rgba(231,199,112,.78);box-shadow:0 0 0 0 rgba(231,199,112,.38),0 0 24px rgba(231,199,112,.35);
+  opacity:0;transform:translate(-50%,-50%) scale(.42);animation:davidDoorKnock 6.35s ease forwards;z-index:6;
+}
+.david-party-burst{
+  position:fixed;left:var(--party-left,50vw);top:var(--party-top,50vh);width:10px;height:10px;border-radius:999px;
+  background:var(--party-color,#e7c770);opacity:0;transform:translate(-50%,-50%) scale(.2);
+  animation:davidPartyBurst 1.9s cubic-bezier(.16,.88,.2,1) var(--party-delay,4.1s) forwards;z-index:7;
+}
+@keyframes davidDoorOpen{
+  0%,45%{opacity:1;filter:blur(0);transform:rotateY(0deg) translate3d(0,0,0) scale(1)}
+  49%{transform:rotateY(4deg) translate3d(0,0,0) scale(1)}
+  55%{transform:rotateY(-6deg) translate3d(0,0,-6px) scale(.998)}
+  70%{opacity:1;filter:blur(0);transform:rotateY(-82deg) translate3d(-18px,0,-34px) scale(.985)}
+  88%{opacity:.92;filter:blur(.1px);transform:rotateY(-104deg) translate3d(-34px,0,-58px) scale(.965)}
+  100%{opacity:0;filter:blur(1px);transform:rotateY(-116deg) translate3d(-54px,0,-82px) scale(.94)}
+}
+@keyframes davidDoorShade{0%,45%{opacity:0}64%,100%{opacity:1}}
+@keyframes davidClubReveal{0%,48%{opacity:0;filter:brightness(.65) saturate(.95)}62%,94%{opacity:1;filter:brightness(1.16) saturate(1.22)}100%{opacity:0;filter:brightness(.9) saturate(1)}}
+@keyframes davidClubLights{0%{transform:rotate(-4deg) scale(1)}100%{transform:rotate(5deg) scale(1.04)}}
+@keyframes davidDoorFigure{
+  0%{opacity:0;transform:translate3d(var(--david-door-start-x,-42vw),var(--david-door-top,42vh),0) rotate(-5deg) scale(.86)}
+  12%{opacity:1}
+  24%{opacity:1;transform:translate3d(var(--david-door-stand-x,18vw),var(--david-door-top,42vh),0) rotate(0deg) scale(1)}
+  30%{transform:translate3d(var(--david-door-knock-x,20vw),calc(var(--david-door-top,42vh) - 13px),0) rotate(6deg) scale(1.03)}
+  35%{transform:translate3d(var(--david-door-stand-x,18vw),var(--david-door-top,42vh),0) rotate(-2deg) scale(1)}
+  40%{transform:translate3d(var(--david-door-knock-x,20vw),calc(var(--david-door-top,42vh) - 12px),0) rotate(6deg) scale(1.03)}
+  45%{transform:translate3d(var(--david-door-stand-x,18vw),var(--david-door-top,42vh),0) rotate(-2deg) scale(1)}
+  50%{transform:translate3d(var(--david-door-knock-x,20vw),calc(var(--david-door-top,42vh) - 11px),0) rotate(5deg) scale(1.02)}
+  57%{opacity:1;transform:translate3d(var(--david-door-stand-x,18vw),var(--david-door-top,42vh),0) rotate(-1deg) scale(1)}
+  68%{opacity:1;filter:drop-shadow(0 18px 24px rgba(3,8,16,.22));transform:translate3d(var(--david-door-enter-x,42vw),calc(var(--david-door-top,42vh) + 4px),0) rotate(-3deg) scale(.76)}
+  74%{opacity:0;filter:blur(.8px) drop-shadow(0 8px 12px rgba(3,8,16,.12));transform:translate3d(var(--david-door-party-x,54vw),var(--david-door-party-top,52vh),0) rotate(4deg) scale(.48)}
+  100%{opacity:0;filter:blur(.8px) drop-shadow(0 8px 12px rgba(3,8,16,.12));transform:translate3d(var(--david-door-party-x,54vw),var(--david-door-party-top,52vh),0) rotate(4deg) scale(.48)}
+}
+@keyframes davidClubDavidDance{
+  0%,66%{opacity:0;transform:translate(-50%,-50%) scale(.42) rotate(-6deg)}
+  70%{opacity:1;transform:translate(-50%,-50%) scale(.74) rotate(5deg)}
+  74%{opacity:1;transform:translate(-50%,calc(-50% - 13px)) scale(.82) rotate(-9deg)}
+  78%{opacity:1;transform:translate(-50%,calc(-50% + 7px)) scale(.78) rotate(9deg)}
+  82%{opacity:1;transform:translate(-50%,calc(-50% - 12px)) scale(.83) rotate(-8deg)}
+  86%{opacity:1;transform:translate(-50%,calc(-50% + 8px)) scale(.79) rotate(8deg)}
+  90%{opacity:1;transform:translate(-50%,calc(-50% - 10px)) scale(.83) rotate(-7deg)}
+  94%{opacity:1;transform:translate(-50%,calc(-50% + 6px)) scale(.8) rotate(7deg)}
+  98%{opacity:1;transform:translate(-50%,calc(-50% - 8px)) scale(.83) rotate(-5deg)}
+  100%{opacity:0;transform:translate(-50%,calc(-50% + 13px)) scale(.72) rotate(5deg)}
+}
+@keyframes dollyPartyDance{
+  0%,60%{opacity:0;transform:translate(-50%,-50%) scale(.48) rotate(-5deg)}
+  70%{opacity:1;transform:translate(-50%,-50%) scale(.82) rotate(3deg)}
+  78%{opacity:1;transform:translate(-50%,calc(-50% - 14px)) scale(.9) rotate(-6deg)}
+  86%{opacity:1;transform:translate(-50%,calc(-50% + 8px)) scale(.88) rotate(6deg)}
+  94%{opacity:1;transform:translate(-50%,calc(-50% - 9px)) scale(.9) rotate(-4deg)}
+  100%{opacity:0;transform:translate(-50%,calc(-50% + 14px)) scale(.78) rotate(4deg)}
+}
+@keyframes davidDoorKnock{
+  0%,27%{opacity:0;transform:translate(-50%,-50%) scale(.3)}
+  31%{opacity:1;transform:translate(-50%,-50%) scale(.92)}
+  36%{opacity:0;transform:translate(-50%,-50%) scale(1.85)}
+  39%{opacity:0;transform:translate(-50%,-50%) scale(.32)}
+  42%{opacity:.95;transform:translate(-50%,-50%) scale(.9)}
+  47%{opacity:0;transform:translate(-50%,-50%) scale(1.9)}
+  50%{opacity:0;transform:translate(-50%,-50%) scale(.34)}
+  53%{opacity:.8;transform:translate(-50%,-50%) scale(.82)}
+  58%{opacity:0;transform:translate(-50%,-50%) scale(1.7)}
+  60%{opacity:0;transform:translate(-50%,-50%) scale(.3)}
+  63%{opacity:.7;transform:translate(-50%,-50%) scale(.78)}
+  68%,100%{opacity:0;transform:translate(-50%,-50%) scale(1.55)}
+}
+@keyframes davidPartyBurst{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.2)}
+  12%,72%{opacity:1}
+  100%{opacity:0;transform:translate(calc(-50% + var(--party-x,0px)),calc(-50% + var(--party-y,-80px))) rotate(var(--party-r,180deg)) scale(1)}
+}
+@media(max-width:640px){
+  .david-door-figure{width:var(--david-door-width,min(210px,42vw))}
+}
+@media(prefers-reduced-motion:reduce){
+  .david-door-card-clone,.david-door-figure,.david-club-david-figure{animation:davidDoorReduced 1.1s ease forwards}
+  .david-door-knock,.david-party-burst{display:none}
+  @keyframes davidDoorReduced{0%{opacity:0}25%,78%{opacity:1}100%{opacity:0}}
+}
 
 .secrets-modal{position:fixed;inset:0;z-index:11950;display:none;padding:24px;background:rgba(3,11,20,.72);backdrop-filter:blur(12px);opacity:0;pointer-events:none;transition:opacity .28s ease;overflow-y:auto;overscroll-behavior:contain}
 .secrets-modal.open{display:block;opacity:1;pointer-events:auto}
@@ -2351,7 +2484,7 @@ OMK:{
     90:{label:"Summative",heroLinks:[],items:[
       {title:"Summative",icon:"🧪",group:"summative-exam",typeLabel:"Summative",links:[
         {label:"Psych Study guide review",href:"Psych/summative exams/OMK_2A_Psych_Exam2_By_Objective.html",style:"open"},
-        {label:"Study Guide Quiz (212 Questions)",href:"Psych/summative exams/OMK 2A Psych Exam 2 — Practice Bank Quiz.html",style:"dl"},
+        {label:"Comprehensive Concept Quiz",href:"Psych/summative exams/Psychiatry Block — Comprehensive Concept quiz.html",style:"dl"},
         {label:"Drug-Focused Item Set Quiz",href:"Psych/summative exams/Psychopharmacology & Addiction Medicine — Drug-Focused Item Set Quiz.html",style:"dl"}
       ]}
     ]}
@@ -3144,6 +3277,8 @@ var AUTH_BOXER_INPUT_TIMER=null;
 var AUTH_DISNEY_INPUT_TIMER=null;
 var AUTH_WOODY_INPUT_TIMER=null;
 var AUTH_DOLLY_INPUT_TIMER=null;
+var AUTH_WILLARD_INPUT_TIMER=null;
+var AUTH_KNOCK_INPUT_TIMER=null;
 var AUTH_LOGIN_EFFECTS=[
   'original',
   'origami',
@@ -3177,6 +3312,8 @@ var AUTH_LOGIN_EFFECT_ASSETS={
   woody:['assets/woody-ride-transparent.gif'],
   davidHeavy:['assets/david-login-rise-transparent.png'],
   davidDolly:['assets/omaira-phone-transparent.png','assets/david-dolly-phone.webp'],
+  davidDoorParty:['assets/david-door-party.png','assets/david-club-dance.png','assets/dolly-club-party.webp','assets/david-club-background.gif'],
+  rachaelWillard:['assets/omaira-phone-transparent.png','assets/rachael-willard-phone.gif'],
   haadHeavy:['assets/haad-login-rise-transparent.png'],
   omairaCall:['assets/omaira-phone-transparent.png','assets/omaira-side-eye.gif']
 };
@@ -3187,7 +3324,14 @@ var AUTH_DAVID_HEAVY_LOGIN_USERS={
 var AUTH_DAVID_DOLLY_LOGIN_USERS={
   'deverly@une.edu':true
 };
+var AUTH_RACHAEL_WILLARD_LOGIN_USERS={
+  'rwolfe4@une.edu':true
+};
 var AUTH_DAVID_HEAVY_FORCE_UNTIL=new Date(2026,7,29).getTime();
+var AUTH_DAVID_DOOR_PARTY_FORCE_START=new Date(2026,7,30).getTime();
+var AUTH_DAVID_DOOR_PARTY_FORCE_UNTIL=new Date(2026,7,31).getTime();
+var AUTH_RACHAEL_WILLARD_FORCE_START=new Date(2026,7,30).getTime();
+var AUTH_RACHAEL_WILLARD_FORCE_UNTIL=new Date(2026,7,31).getTime();
 var AUTH_HAAD_HEAVY_LOGIN_USERS={
   'mlong20@une.edu':true,
   'kboyle8@une.edu':true,
@@ -3747,6 +3891,8 @@ function prepareAuthLoginEffect(){
   preloadLoginEffectAssets(AUTH_SELECTED_LOGIN_EFFECT);
   preloadLoginEffectAssets('davidHeavy');
   preloadLoginEffectAssets('davidDolly');
+  preloadLoginEffectAssets('davidDoorParty');
+  preloadLoginEffectAssets('rachaelWillard');
   preloadLoginEffectAssets('haadHeavy');
   preloadLoginEffectAssets('omairaCall');
   var defer=window.requestIdleCallback||function(fn){return window.setTimeout(fn,240)};
@@ -3779,6 +3925,8 @@ function setupAuth(){
       if(AUTH_DISNEY_INPUT_TIMER)clearTimeout(AUTH_DISNEY_INPUT_TIMER);
       if(AUTH_WOODY_INPUT_TIMER)clearTimeout(AUTH_WOODY_INPUT_TIMER);
       if(AUTH_DOLLY_INPUT_TIMER)clearTimeout(AUTH_DOLLY_INPUT_TIMER);
+      if(AUTH_WILLARD_INPUT_TIMER)clearTimeout(AUTH_WILLARD_INPUT_TIMER);
+      if(AUTH_KNOCK_INPUT_TIMER)clearTimeout(AUTH_KNOCK_INPUT_TIMER);
       if(typed==='cat'){
         AUTH_CAT_INPUT_TIMER=window.setTimeout(function(){
           if(normEmail(input.value)!=='cat')return;
@@ -3892,6 +4040,24 @@ function setupAuth(){
         },420);
         return;
       }
+      if(typed==='willard'){
+        AUTH_WILLARD_INPUT_TIMER=window.setTimeout(function(){
+          if(normEmail(input.value)!=='willard')return;
+          triggerRachaelWillardLoginEasterEgg({toastLabel:'Willard call unlocked',reset:true});
+          input.value='';
+          setAuthMsg('Willard call preview only. No login attempted.','success');
+        },420);
+        return;
+      }
+      if(typed==='knock'){
+        AUTH_KNOCK_INPUT_TIMER=window.setTimeout(function(){
+          if(normEmail(input.value)!=='knock')return;
+          triggerDavidDoorPartyLoginEasterEgg({toastLabel:'Knock knock unlocked',reset:true});
+          input.value='';
+          setAuthMsg('Knock preview only. No login attempted.','success');
+        },420);
+        return;
+      }
       if(typed==='gravity')triggerAuthGravity();
     });
     renderLoginQuote(new Date());
@@ -3994,6 +4160,18 @@ function tryAuthLogin(ev){
     setAuthMsg('Dolly call preview only. No login attempted.','success');
     return;
   }
+  if(email==='willard'){
+    triggerRachaelWillardLoginEasterEgg({toastLabel:'Willard call unlocked',reset:true});
+    if(input)input.value='';
+    setAuthMsg('Willard call preview only. No login attempted.','success');
+    return;
+  }
+  if(email==='knock'){
+    triggerDavidDoorPartyLoginEasterEgg({toastLabel:'Knock knock unlocked',reset:true});
+    if(input)input.value='';
+    setAuthMsg('Knock preview only. No login attempted.','success');
+    return;
+  }
   if(!/@une\.edu$/i.test(email)){
     setAuthMsg('A UNE account is needed to access this site. Please use your @une.edu email.','error');
     return;
@@ -4021,6 +4199,17 @@ function isDavidDollyLoginUser(user){
 }
 function shouldForceDavidHeavyLogin(user){
   return isDavidHeavyLoginUser(user)&&Date.now()<AUTH_DAVID_HEAVY_FORCE_UNTIL;
+}
+function shouldForceDavidDoorPartyLogin(user){
+  var now=Date.now();
+  return isDavidDollyLoginUser(user)&&now>=AUTH_DAVID_DOOR_PARTY_FORCE_START&&now<AUTH_DAVID_DOOR_PARTY_FORCE_UNTIL;
+}
+function isRachaelWillardLoginUser(user){
+  return !!(user&&AUTH_RACHAEL_WILLARD_LOGIN_USERS[normEmail(user.email)]);
+}
+function shouldForceRachaelWillardLogin(user){
+  var now=Date.now();
+  return isRachaelWillardLoginUser(user)&&now>=AUTH_RACHAEL_WILLARD_FORCE_START&&now<AUTH_RACHAEL_WILLARD_FORCE_UNTIL;
 }
 function isHaadHeavyLoginUser(user){
   return !!(user&&AUTH_HAAD_HEAVY_LOGIN_USERS[normEmail(user.email)]);
@@ -4051,6 +4240,28 @@ function pickAuthLoginEffectForUser(user){
   return AUTH_SELECTED_LOGIN_EFFECT||pickAuthLoginEffect();
 }
 function playRandomLoginEffect(user){
+  if(shouldForceDavidDoorPartyLogin(user)){
+    AUTH_SELECTED_LOGIN_EFFECT=null;
+    setAuthMsg('Verified. Someone is knocking...','success');
+    preloadLoginEffectAssets('davidDoorParty');
+    triggerDavidDoorPartyLoginEasterEgg({
+      loginMode:true,
+      toastLabel:false,
+      onComplete:function(){playWelcome(user);}
+    });
+    return;
+  }
+  if(shouldForceRachaelWillardLogin(user)){
+    AUTH_SELECTED_LOGIN_EFFECT=null;
+    setAuthMsg('Verified. Willard call incoming...','success');
+    preloadLoginEffectAssets('rachaelWillard');
+    triggerRachaelWillardLoginEasterEgg({
+      loginMode:true,
+      toastLabel:false,
+      onComplete:function(){playWelcome(user);}
+    });
+    return;
+  }
   if(shouldForceDavidHeavyLogin(user)){
     AUTH_SELECTED_LOGIN_EFFECT=null;
     setAuthMsg('Verified. Balancing the login card...','success');
@@ -5694,6 +5905,107 @@ function triggerDavidHeavyLoginEasterEgg(options){
     card.style.visibility='';
   },3300);
 }
+function triggerDavidDoorPartyLoginEasterEgg(options){
+  options=options||{};
+  var overlay=document.getElementById('authOverlay');
+  var card=document.getElementById('authLoginCard');
+  if(!overlay||!card||!document.body.classList.contains('auth-locked')){
+    if(typeof options.onComplete==='function')options.onComplete();
+    return;
+  }
+  var oldLayer=document.querySelector('.david-door-login-layer');
+  if(oldLayer)oldLayer.remove();
+  var rect=card.getBoundingClientRect();
+  var viewportW=window.innerWidth||document.documentElement.clientWidth||1280;
+  var viewportH=window.innerHeight||document.documentElement.clientHeight||720;
+  var figureWidth=Math.max(170,Math.min(viewportW<640?viewportW*.42:viewportW*.2,280));
+  var figureTop=Math.max(18,Math.min(viewportH-figureWidth*1.12,rect.top+rect.height*.48-figureWidth*.7));
+  var dollyWidth=Math.max(120,Math.min(viewportW<640?viewportW*.34:viewportW*.16,210));
+  var davidDanceWidth=Math.max(118,Math.min(viewportW<640?viewportW*.32:viewportW*.15,195));
+  var layer=document.createElement('div');
+  layer.className='david-door-login-layer';
+  layer.setAttribute('aria-hidden','true');
+  layer.style.setProperty('--card-left',rect.left+'px');
+  layer.style.setProperty('--card-top',rect.top+'px');
+  layer.style.setProperty('--card-width',rect.width+'px');
+  layer.style.setProperty('--card-height',rect.height+'px');
+  layer.style.setProperty('--david-door-width',figureWidth+'px');
+  layer.style.setProperty('--david-door-top',figureTop+'px');
+  layer.style.setProperty('--david-door-start-x',(rect.left-figureWidth-viewportW*.22)+'px');
+  layer.style.setProperty('--david-door-stand-x',(rect.left-figureWidth*.62)+'px');
+  layer.style.setProperty('--david-door-knock-x',(rect.left-figureWidth*.5)+'px');
+  layer.style.setProperty('--david-door-enter-x',(rect.left+rect.width*.08)+'px');
+  layer.style.setProperty('--david-door-party-x',(rect.left+rect.width*.34)+'px');
+  layer.style.setProperty('--david-door-party-top',(rect.top+rect.height*.53)+'px');
+  layer.style.setProperty('--david-door-vanish-x',(rect.left+rect.width*.48)+'px');
+  layer.style.setProperty('--knock-left',(rect.left+28)+'px');
+  layer.style.setProperty('--knock-top',(figureTop+figureWidth*.24)+'px');
+  layer.style.setProperty('--party-left',(rect.left+rect.width*.38)+'px');
+  layer.style.setProperty('--party-top',(rect.top+rect.height*.38)+'px');
+  layer.style.setProperty('--david-club-dance-width',davidDanceWidth+'px');
+  layer.style.setProperty('--david-club-dance-x',(rect.left+rect.width*.42)+'px');
+  layer.style.setProperty('--david-club-dance-top',(rect.top+rect.height*.56)+'px');
+  layer.style.setProperty('--dolly-party-width',dollyWidth+'px');
+  layer.style.setProperty('--dolly-party-x',(rect.left+rect.width*.62)+'px');
+  layer.style.setProperty('--dolly-party-top',(rect.top+rect.height*.56)+'px');
+  var stage=document.createElement('div');
+  stage.className='david-door-stage';
+  var club=document.createElement('div');
+  club.className='david-door-club';
+  var clone=card.cloneNode(true);
+  clone.classList.add('david-door-card-clone');
+  clone.removeAttribute('id');
+  Array.prototype.slice.call(clone.querySelectorAll('[id]')).forEach(function(node){node.removeAttribute('id');});
+  var figure=document.createElement('img');
+  figure.className='david-door-figure';
+  figure.src='assets/david-door-party.png';
+  figure.alt='';
+  figure.decoding='async';
+  var davidDance=document.createElement('img');
+  davidDance.className='david-club-david-figure';
+  davidDance.src='assets/david-club-dance.png';
+  davidDance.alt='';
+  davidDance.decoding='async';
+  var dolly=document.createElement('img');
+  dolly.className='dolly-party-figure';
+  dolly.src='assets/dolly-club-party.webp';
+  dolly.alt='';
+  dolly.decoding='async';
+  var knock=document.createElement('span');
+  knock.className='david-door-knock';
+  var partyColors=['#e7c770','#45d7c9','#ffffff','#f26d91','#8bd5ff','#bff5ed'];
+  for(var i=0;i<42;i++){
+    var bit=document.createElement('span');
+    bit.className='david-party-burst';
+    var angle=(Math.PI*2*i/42)+(Math.random()*.45);
+    var distance=60+Math.random()*190;
+    bit.style.setProperty('--party-x',(Math.cos(angle)*distance)+'px');
+    bit.style.setProperty('--party-y',(Math.sin(angle)*distance-50)+'px');
+    bit.style.setProperty('--party-r',((Math.random()*520)-260)+'deg');
+    bit.style.setProperty('--party-delay',(3.18+Math.random()*.35)+'s');
+    bit.style.setProperty('--party-color',partyColors[i%partyColors.length]);
+    bit.style.width=(6+Math.random()*10)+'px';
+    bit.style.height=(6+Math.random()*16)+'px';
+    layer.appendChild(bit);
+  }
+  stage.appendChild(club);
+  stage.appendChild(clone);
+  layer.appendChild(stage);
+  layer.appendChild(davidDance);
+  layer.appendChild(dolly);
+  layer.appendChild(figure);
+  layer.appendChild(knock);
+  document.body.appendChild(layer);
+  card.classList.add('david-door-hidden');
+  if(options.toastLabel!==false)showSecretToast(options.toastLabel||'Knock knock unlocked');
+  if(typeof options.onComplete==='function'){
+    window.setTimeout(options.onComplete,options.completeDelay||6150);
+  }
+  window.setTimeout(function(){
+    if(layer&&layer.parentNode)layer.parentNode.removeChild(layer);
+    card.classList.remove('david-door-hidden');
+  },6900);
+}
 function triggerHaadHeavyLoginEasterEgg(options){
   options=options||{};
   options.src='assets/haad-login-rise-transparent.png';
@@ -5999,6 +6311,12 @@ function triggerDavidDollyLoginEasterEgg(options){
   options=options||{};
   options.sideEyeSrc='assets/david-dolly-phone.webp';
   if(options.toastLabel===undefined)options.toastLabel='Dolly call unlocked';
+  triggerOmairaCallLoginEasterEgg(options);
+}
+function triggerRachaelWillardLoginEasterEgg(options){
+  options=options||{};
+  options.sideEyeSrc='assets/rachael-willard-phone.gif';
+  if(options.toastLabel===undefined)options.toastLabel='Willard call unlocked';
   triggerOmairaCallLoginEasterEgg(options);
 }
 function triggerScalpelLoginEasterEgg(options){
