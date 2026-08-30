@@ -1579,23 +1579,54 @@ function getSessionKey(){
   for(var i=0;i<basis.length;i++){hash=((hash<<5)-hash+basis.charCodeAt(i))|0;}
   return 'quiz-builder-session-'+Math.abs(hash).toString(36);
 }
+function getSessionCookieName(){
+  return getSessionKey().replace(/[^A-Za-z0-9_-]/g,'_');
+}
+function getSessionCookiePath(){
+  var path=(window.location&&window.location.pathname)||'/';
+  path=path.replace(/[^\/]*$/,'');
+  return path||'/';
+}
+function writeSessionCookie(payload){
+  try{
+    var cookiePayload=payload.length<=3400?payload:JSON.stringify({v:1,key:getSessionKey(),savedAt:Date.now(),storage:'localStorage'});
+    document.cookie=getSessionCookieName()+'='+encodeURIComponent(cookiePayload)+'; Max-Age=2592000; Path='+getSessionCookiePath()+'; SameSite=Lax';
+  }catch(e){}
+}
+function readSessionCookie(){
+  try{
+    var name=getSessionCookieName()+'=';
+    var parts=document.cookie?document.cookie.split('; '):[];
+    for(var i=0;i<parts.length;i++){
+      if(parts[i].indexOf(name)===0)return decodeURIComponent(parts[i].slice(name.length));
+    }
+  }catch(e){}
+  return null;
+}
 function saveSession(){
   if(!questions.length||!questionBank.length)return;
+  var payload='';
   try{
-    localStorage.setItem(getSessionKey(),JSON.stringify({
+    payload=JSON.stringify({
       v:1,questions:questions,selected:selected,answers:answers,marked:marked,
       stemMarkup:stemMarkup,choiceMarkup:choiceMarkup,
       CQ:CQ,NC:NC,NI:NI,quizMode:quizMode,examSubmitted:examSubmitted,
       timerSec:timerSec,timerDisplayMode:timerDisplayMode,uiMode:uiMode
-    }));
-  }catch(e){}
+    });
+  }catch(e){return;}
+  try{localStorage.setItem(getSessionKey(),payload);}catch(e){}
+  writeSessionCookie(payload);
 }
 function clearSession(){
   try{localStorage.removeItem(getSessionKey());}catch(e){}
+  try{document.cookie=getSessionCookieName()+'=; Max-Age=0; Path='+getSessionCookiePath()+'; SameSite=Lax';}catch(e){}
 }
 function tryRestoreSession(){
   var saved=null;
-  try{saved=JSON.parse(localStorage.getItem(getSessionKey())||'null');}catch(e){return false;}
+  var raw=null;
+  try{raw=localStorage.getItem(getSessionKey());}catch(e){}
+  if(!raw)raw=readSessionCookie();
+  try{saved=JSON.parse(raw||'null');}catch(e){return false;}
   if(!saved||saved.v!==1||!Array.isArray(saved.questions))return false;
   if(saved.questions.length!==questionBank.length)return false;
   var hasProgress=Object.keys(saved.selected||{}).length>0||Object.keys(saved.answers||{}).length>0||saved.timerSec>0;
