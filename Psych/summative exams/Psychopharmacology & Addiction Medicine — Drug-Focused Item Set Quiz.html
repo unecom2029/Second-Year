@@ -18,6 +18,12 @@
   --stem-size:25px;--choice-size:15.5px;
   --app-vh:100dvh;--app-vw:100vw;--viewport-scale:1;--ui-title-size:26px;--ui-control-size:13px;--ui-meta-size:12px;--ui-micro-size:10px;
   --font-ui:Arial,Helvetica,sans-serif;--font-mono:Consolas,"Courier New",monospace;
+  /* Key Findings (post-submit vignette highlights) — case-note token palette */
+  --vh-coral:#C85A3E;--vh-coral-bg:#F7E4DB;
+  --vh-teal:#256B63;--vh-teal-bg:#DFEDE8;
+  --vh-gold:#A47A1F;--vh-gold-bg:#F3E7C6;
+  --vh-violet:#6B5390;--vh-violet-bg:#E9E2F1;
+  --vh-sky:#2F6485;--vh-sky-bg:#DEE9EF;
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 body{font-family:var(--font-ui);background:var(--cream);color:var(--ink);min-height:var(--app-vh);-webkit-font-smoothing:antialiased}
@@ -508,6 +514,42 @@ body.nbme-lock{overflow:hidden}
 @keyframes toastIn{from{opacity:0;transform:translateY(14px) scale(.94)}to{opacity:1;transform:translateY(0) scale(1)}}
 @keyframes toastOut{to{opacity:0;transform:translateY(8px) scale(.95)}}
 .toast.ok{background:var(--navy);color:var(--teal-glow)}.toast.err{background:var(--red);color:#fff}
+
+/* ══ KEY FINDINGS — vignette highlights, revealed on submit ══ */
+mark.vh{cursor:pointer;padding:0 .08em;border-radius:.2em;text-decoration:none;color:inherit;box-decoration-break:clone;-webkit-box-decoration-break:clone;border-bottom:2px solid transparent;transition:filter .15s;animation:vhFadeIn .35s ease both}
+mark.vh:hover{filter:brightness(0.96)}
+@keyframes vhFadeIn{from{background-color:transparent;border-bottom-color:transparent}}
+mark.vh.vh-cat-finding{background:var(--vh-coral-bg);border-bottom-color:var(--vh-coral)}
+mark.vh.vh-cat-mechanism{background:var(--vh-teal-bg);border-bottom-color:var(--vh-teal)}
+mark.vh.vh-cat-term{background:var(--vh-gold-bg);border-bottom-color:var(--vh-gold)}
+mark.vh.vh-cat-pattern{background:var(--vh-violet-bg);border-bottom-color:var(--vh-violet)}
+mark.vh.vh-cat-workup{background:var(--vh-sky-bg);border-bottom-color:var(--vh-sky)}
+.vh-legend{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin:14px 0 0;padding:10px 14px;border-radius:10px;background:var(--warm);border:1px solid var(--rule);animation:vhFadeIn .35s ease both}
+.vh-legend-label{font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:var(--mist)}
+.vh-legend-item{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--ink2);letter-spacing:.02em}
+.vh-legend-dot{width:11px;height:11px;border-radius:3px;flex-shrink:0}
+.vh-legend-hint{font-size:11.5px;color:var(--slate);font-weight:400}
+.vh-tooltip{position:fixed;z-index:900;max-width:320px;padding:12px 15px;border-radius:12px;background:var(--navy);color:#fff;font-family:var(--font-ui);font-size:14px;line-height:1.55;box-shadow:0 14px 34px rgba(18,32,60,.28);opacity:0;pointer-events:none;transition:opacity .12s;transform:translateY(2px)}
+.vh-tooltip.show{opacity:1}
+.vh-tooltip .vht-eyebrow{font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:var(--teal-glow);margin-bottom:4px}
+.vh-tooltip .vht-title{font-weight:700;font-size:14.5px;margin-bottom:4px}
+.vh-tooltip .vht-teaser{color:rgba(255,255,255,.78);font-size:13px}
+.vh-panel{position:fixed;z-index:950;background:var(--white);box-shadow:0 -10px 40px rgba(18,32,60,.22);opacity:0;pointer-events:none;transition:transform .28s cubic-bezier(.4,0,.2,1),opacity .2s;display:flex;flex-direction:column;top:0;right:0;bottom:0;width:min(360px,86vw);border-left:1px solid rgba(18,32,60,.1);transform:translateX(16px);padding:22px 22px 26px}
+.vh-panel.open{opacity:1;pointer-events:auto;transform:translateX(0)}
+.vh-panel-close{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;border:none;background:rgba(18,32,60,.06);color:var(--navy);font-size:18px;line-height:1;cursor:pointer}
+.vh-panel-close:hover{background:rgba(18,32,60,.12)}
+.vh-panel-eyebrow{font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;margin:6px 0 8px;color:var(--vh-violet)}
+.vh-panel-title{font-family:var(--font-ui);font-size:21px;font-weight:800;color:var(--navy);margin-bottom:12px;padding-right:26px;line-height:1.3}
+.vh-panel-body{font-size:15.5px;line-height:1.65;color:var(--ink2);overflow-y:auto}
+.vh-panel.vh-panel-finding .vh-panel-eyebrow{color:var(--vh-coral)}.vh-panel.vh-panel-finding{border-top:4px solid var(--vh-coral)}
+.vh-panel.vh-panel-mechanism .vh-panel-eyebrow{color:var(--vh-teal)}.vh-panel.vh-panel-mechanism{border-top:4px solid var(--vh-teal)}
+.vh-panel.vh-panel-term .vh-panel-eyebrow{color:var(--vh-gold)}.vh-panel.vh-panel-term{border-top:4px solid var(--vh-gold)}
+.vh-panel.vh-panel-pattern .vh-panel-eyebrow{color:var(--vh-violet)}.vh-panel.vh-panel-pattern{border-top:4px solid var(--vh-violet)}
+.vh-panel.vh-panel-workup .vh-panel-eyebrow{color:var(--vh-sky)}.vh-panel.vh-panel-workup{border-top:4px solid var(--vh-sky)}
+@media (max-width:1000px){
+  .vh-panel{top:auto;left:0;right:0;bottom:0;width:auto;max-height:62vh;border-left:none;border-top:1px solid rgba(18,32,60,.1);border-radius:20px 20px 0 0;transform:translateY(100%)}
+  .vh-panel.open{transform:translateY(0)}
+}
 </style>
 </head>
 <body>
@@ -1237,7 +1279,8 @@ function cloneQuestion(q){
     correct:typeof q.correct==='number'?q.correct:(parseInt(q.correct,10)||0),
     explanation:String(q.explanation||''),
     wrongExplanations:Object.assign({},q.wrongExplanations||{}),
-    eli5:String(q.eli5||'')
+    eli5:String(q.eli5||''),
+    highlights:sanitizeHighlights(q.highlights)
   };
 }
 function buildWrongExplanationLookup(rawChoices, rawCorrect, wrongExplanations){
@@ -1266,7 +1309,7 @@ function randomizeQuestionChoices(q){
   var realChoices=choiceMeta.filter(function(choice){return choice.text.trim();});
   var blankChoices=choiceMeta.filter(function(choice){return !choice.text.trim();});
   var shuffledChoices=shuffle(realChoices).concat(blankChoices);
-  var randomized={stem:source.stem,choices:[],correct:0,explanation:source.explanation,wrongExplanations:{},eli5:source.eli5};
+  var randomized={stem:source.stem,choices:[],correct:0,explanation:source.explanation,wrongExplanations:{},eli5:source.eli5,highlights:source.highlights};
   shuffledChoices.forEach(function(choice,idx){
     randomized.choices.push(choice.text);
     if(choice.isCorrect)randomized.correct=idx;
@@ -1284,7 +1327,7 @@ function normQ(q){
   var rawCorrect=typeof q.correct==='number'?q.correct:(parseInt(q.correct)||0);
   if(rawCorrect<0||rawCorrect>=rawChoices.length)rawCorrect=0;
   var wrongLookup=buildWrongExplanationLookup(rawChoices, rawCorrect, q.wrongExplanations);
-  var nq={stem:String(q.stem),choices:[],correct:0,explanation:String(q.explanation||''),wrongExplanations:{},eli5:String(q.eli5||'')};
+  var nq={stem:String(q.stem),choices:[],correct:0,explanation:String(q.explanation||''),wrongExplanations:{},eli5:String(q.eli5||''),highlights:sanitizeHighlights(q.highlights)};
   rawChoices.forEach(function(choiceText,idx){
     nq.choices.push(choiceText);
     if(idx===rawCorrect)nq.correct=idx;
@@ -1645,6 +1688,152 @@ function launchQuiz(){
 }
 
 // ── STATE HELPERS ──
+// ══ KEY FINDINGS — vignette highlights, revealed once a question is submitted ══
+var VH_CATS=['finding','mechanism','term','pattern','workup'];
+var VH_CAT_LABELS={finding:'Discriminating finding',mechanism:'Mechanism',term:'Key term',pattern:'Pattern / trap',workup:'What is being asked'};
+var activeVhHighlights=[];
+function sanitizeHighlights(list){
+  if(!Array.isArray(list))return [];
+  return list.map(function(h){
+    if(!h||typeof h!=='object')return null;
+    var text=String(h.text||'').trim();
+    if(!text)return null;
+    var cat=VH_CATS.indexOf(h.cat)>-1?h.cat:'finding';
+    return {
+      text:text,
+      cat:cat,
+      eyebrow:String(h.eyebrow||cat.toUpperCase()),
+      title:String(h.title||''),
+      body:String(h.body||'')
+    };
+  }).filter(Boolean);
+}
+function questionIsSubmitted(index){
+  return !!answers[index];
+}
+function getStemHTMLForDisplay(index){
+  var base=getStemHTML(index);
+  var q=questions[index];
+  if(!questionIsSubmitted(index)||!q||!q.highlights||!q.highlights.length){
+    activeVhHighlights=[];
+    return base;
+  }
+  activeVhHighlights=q.highlights;
+  return injectVignetteHighlights(base,q.highlights);
+}
+function injectVignetteHighlights(html,highlights){
+  var container=document.createElement('div');
+  container.innerHTML=html;
+  highlights.forEach(function(h,idx){markPhraseInElement(container,h,idx);});
+  return container.innerHTML;
+}
+function markPhraseInElement(root,h,idx){
+  if(!h||!h.text)return false;
+  var walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null,false);
+  var node;
+  while(node=walker.nextNode()){
+    if(node.parentNode&&node.parentNode.closest&&node.parentNode.closest('mark.vh'))continue;
+    var pos=node.nodeValue.indexOf(h.text);
+    if(pos>-1){
+      var mid=node.splitText(pos);
+      mid.splitText(h.text.length);
+      var mark=document.createElement('mark');
+      mark.className='vh vh-cat-'+h.cat;
+      mark.setAttribute('data-vh-idx',String(idx));
+      mid.parentNode.replaceChild(mark,mid);
+      mark.appendChild(mid);
+      return true;
+    }
+  }
+  return false;
+}
+function buildVhLegendHTML(index){
+  var q=questions[index];
+  if(!questionIsSubmitted(index)||!q||!q.highlights||!q.highlights.length)return '';
+  var used=[];
+  q.highlights.forEach(function(h){if(used.indexOf(h.cat)<0)used.push(h.cat);});
+  used.sort(function(a,b){return VH_CATS.indexOf(a)-VH_CATS.indexOf(b);});
+  return '<div class="vh-legend"><span class="vh-legend-label">How to tackle it</span>'+
+    used.map(function(cat){
+      return '<span class="vh-legend-item"><span class="vh-legend-dot" style="background:var(--vh-'+
+        ({finding:'coral',mechanism:'teal',term:'gold',pattern:'violet',workup:'sky'})[cat]+'-bg);border:1.5px solid var(--vh-'+
+        ({finding:'coral',mechanism:'teal',term:'gold',pattern:'violet',workup:'sky'})[cat]+')"></span>'+VH_CAT_LABELS[cat]+'</span>';
+    }).join('')+
+    '<span class="vh-legend-hint">Hover or tap a highlight for why it matters.</span></div>';
+}
+function stripVhMarks(html){
+  var wrap=document.createElement('div');
+  wrap.innerHTML=html;
+  wrap.querySelectorAll('mark.vh').forEach(function(node){
+    while(node.firstChild)node.parentNode.insertBefore(node.firstChild,node);
+    node.parentNode.removeChild(node);
+  });
+  wrap.normalize();
+  return wrap.innerHTML;
+}
+function vhTruncate(text,max){
+  text=String(text||'');
+  return text.length>max?text.slice(0,max).replace(/\s+\S*$/,'')+'\u2026':text;
+}
+function vhEscape(text){
+  return String(text||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function showVhTooltip(markEl){
+  var idx=+markEl.getAttribute('data-vh-idx');
+  var h=activeVhHighlights[idx];
+  if(!h)return;
+  var tip=document.getElementById('vhTooltip');
+  if(!tip)return;
+  tip.innerHTML='<div class="vht-eyebrow">'+vhEscape(h.eyebrow)+'</div><div class="vht-title">'+vhEscape(h.title)+'</div><div class="vht-teaser">'+vhEscape(vhTruncate(h.body,110))+'</div>';
+  tip.classList.add('show');
+  var rect=markEl.getBoundingClientRect();
+  var tw=Math.min(320,tip.offsetWidth||320);
+  var left=Math.min(Math.max(8,rect.left),window.innerWidth-tw-8);
+  var top=rect.bottom+8;
+  if(top+tip.offsetHeight>window.innerHeight-8)top=rect.top-tip.offsetHeight-8;
+  tip.style.left=left+'px';
+  tip.style.top=Math.max(8,top)+'px';
+}
+function hideVhTooltip(){
+  var tip=document.getElementById('vhTooltip');
+  if(tip)tip.classList.remove('show');
+}
+function openVhPanel(markEl){
+  var idx=+markEl.getAttribute('data-vh-idx');
+  var h=activeVhHighlights[idx];
+  if(!h)return;
+  hideVhTooltip();
+  var panel=document.getElementById('vhPanel');
+  if(!panel)return;
+  panel.className='vh-panel open vh-panel-'+h.cat;
+  document.getElementById('vhPanelEyebrow').textContent=h.eyebrow;
+  document.getElementById('vhPanelTitle').textContent=h.title;
+  document.getElementById('vhPanelBody').textContent=h.body;
+}
+function closeVhPanel(){
+  var panel=document.getElementById('vhPanel');
+  if(panel)panel.classList.remove('open');
+}
+var vhHoverCapable=!!(window.matchMedia&&window.matchMedia('(hover: hover) and (pointer: fine)').matches);
+document.addEventListener('mouseover',function(e){
+  if(!vhHoverCapable)return;
+  var mark=e.target.closest&&e.target.closest('mark.vh');
+  if(mark)showVhTooltip(mark);
+});
+document.addEventListener('mouseout',function(e){
+  if(!vhHoverCapable)return;
+  var mark=e.target.closest&&e.target.closest('mark.vh');
+  if(mark)hideVhTooltip();
+});
+document.addEventListener('click',function(e){
+  var mark=e.target.closest&&e.target.closest('mark.vh');
+  if(mark){openVhPanel(mark);return;}
+  var panel=document.getElementById('vhPanel');
+  if(panel&&panel.classList.contains('open')&&!e.target.closest('#vhPanel'))closeVhPanel();
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape')closeVhPanel();
+});
 function stripChoiceLabel(text){
   return String(text||'').replace(/^[A-E]\.\s*/i,'');
 }
@@ -2007,7 +2196,7 @@ function buildClassicQuestion(){
   var qnumText=`Question ${CQ+1} of ${total}${marked[CQ]?' • Flagged':''}`;
   var mainHTML=`<div class="q-main">
       <div class="${qnumClass}">${qnumText}</div>
-      <div class="qstem" id="stemEl" data-stem-html="1">${getStemHTML(CQ)}</div>
+      <div class="qstem" id="stemEl" data-stem-html="1">${getStemHTMLForDisplay(CQ)}</div>${buildVhLegendHTML(CQ)}
       <div class="ach" id="achEl">${choicesHTML}</div>
       ${submitHTML}
     </div>`;
@@ -2059,7 +2248,7 @@ function buildNbmeQuestion(){
   var feedbackHTML=ans?buildExplanationHTML(q,ans):'';
   var mainHTML=`<div class="nb-question-main">
     <div class="nb-question-label">QUESTION ${CQ+1}</div>
-    <div class="nb-question-stem" id="nbStemEl" data-stem-html="1">${getStemHTML(CQ)}</div>
+    <div class="nb-question-stem" id="nbStemEl" data-stem-html="1">${getStemHTMLForDisplay(CQ)}</div>${buildVhLegendHTML(CQ)}
     <div class="nb-answers">${answersHTML}</div>
     ${submitHTML}
   </div>`;
@@ -2245,7 +2434,7 @@ function persistCurrentAnnotationsFromDOM(){
   var root=getCurrentAnnotationRoot();
   if(!root)return;
   var stem=root.querySelector('[data-stem-html]');
-  if(stem)stemMarkup[CQ]=stem.innerHTML;
+  if(stem)stemMarkup[CQ]=stripVhMarks(stem.innerHTML);
   var nodes=root.querySelectorAll('[data-choice-html]');
   if(nodes.length){
     var arr=ensureChoiceMarkup(CQ);
@@ -2555,4 +2744,12 @@ updScore();
 updTimer();
 applyFontSize();
 hydratePreloadedQuiz();
-</script></body></html>
+</script>
+<div class="vh-tooltip" id="vhTooltip" role="tooltip"></div>
+<div class="vh-panel" id="vhPanel" role="dialog" aria-label="Key finding detail">
+  <button class="vh-panel-close" type="button" onclick="closeVhPanel()" aria-label="Close">&times;</button>
+  <div class="vh-panel-eyebrow" id="vhPanelEyebrow"></div>
+  <div class="vh-panel-title" id="vhPanelTitle"></div>
+  <div class="vh-panel-body" id="vhPanelBody"></div>
+</div>
+</body></html>
