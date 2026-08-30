@@ -400,11 +400,11 @@ body.nbme-lock{overflow:hidden}
 .sum-btn.primary{background:linear-gradient(135deg,var(--teal),var(--teal-mid));border-color:transparent;color:#fff;box-shadow:0 10px 24px rgba(26,122,109,.2)}
 .sum-btn.primary:hover{color:#fff;box-shadow:0 14px 28px rgba(26,122,109,.26)}
 .sum-stats{display:flex;gap:12px;flex-wrap:wrap;padding:18px 28px;border-bottom:1px solid rgba(18,32,60,.08);background:rgba(246,243,236,.72)}
-.sum-stat{min-width:150px;padding:14px 16px;border-radius:18px;border:1px solid rgba(18,32,60,.08);background:#fff;box-shadow:0 8px 20px rgba(18,32,60,.05)}
+.sum-stat{min-width:130px;padding:14px 16px;border-radius:18px;border:1px solid rgba(18,32,60,.08);background:#fff;box-shadow:0 8px 20px rgba(18,32,60,.05)}
 .sum-stat-label{font-size:10px;font-weight:900;letter-spacing:1.6px;text-transform:uppercase;color:var(--mist);margin-bottom:8px}
 .sum-stat-value{font-family:var(--font-ui);font-size:32px;line-height:1;color:var(--navy);font-weight:700}
 .sum-list{display:grid;gap:14px;padding:22px 24px 26px}
-.sum-item{display:grid;grid-template-columns:150px minmax(0,1fr);gap:18px;padding:20px;border-radius:22px;border:1px solid rgba(18,32,60,.08);background:#fff;box-shadow:0 8px 22px rgba(18,32,60,.05)}
+.sum-item{display:grid;grid-template-columns:180px minmax(0,1fr);gap:18px;padding:20px;border-radius:22px;border:1px solid rgba(18,32,60,.08);background:#fff;box-shadow:0 8px 22px rgba(18,32,60,.05)}
 .sum-item.correct{border-color:rgba(45,134,89,.24);background:linear-gradient(180deg,#fff,#f6fcf8)}
 .sum-item.incorrect{border-color:rgba(196,64,64,.18);background:linear-gradient(180deg,#fff,#fff8f8)}
 .sum-item.unanswered{border-color:rgba(192,123,26,.24);background:linear-gradient(180deg,#fff,#fffaf1)}
@@ -414,7 +414,8 @@ body.nbme-lock{overflow:hidden}
 .sum-item.correct .sum-state{background:var(--green-bg);color:var(--green)}
 .sum-item.incorrect .sum-state{background:var(--red-bg);color:var(--red)}
 .sum-item.unanswered .sum-state{background:var(--amber-bg);color:var(--amber)}
-.sum-answer{font-size:13px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;color:var(--slate)}
+.sum-answer,.sum-user-answer,.sum-flag{font-size:13px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;color:var(--slate)}
+.sum-flag.flagged{color:var(--amber)}
 .sum-body{display:grid;gap:14px}
 .sum-section{padding:16px 18px;border-radius:18px;border:1px solid rgba(18,32,60,.06);background:rgba(246,243,236,.56)}
 .sum-label{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:800;letter-spacing:1.7px;text-transform:uppercase;color:var(--mist);margin-bottom:9px}
@@ -1699,6 +1700,7 @@ function buildSummaryStatsHTML(){
     <div class="sum-stat"><div class="sum-stat-label">Score</div><div class="sum-stat-value">${percent==='—'?'—':percent+'%'}</div></div>
     <div class="sum-stat"><div class="sum-stat-label">Correct</div><div class="sum-stat-value">${NC}</div></div>
     <div class="sum-stat"><div class="sum-stat-label">Incorrect</div><div class="sum-stat-value">${NI}</div></div>
+    <div class="sum-stat"><div class="sum-stat-label">Flagged</div><div class="sum-stat-value">${getMarkedCount()}</div></div>
     <div class="sum-stat"><div class="sum-stat-label">Questions</div><div class="sum-stat-value">${questions.length}</div></div>
   </div>`;
 }
@@ -1706,12 +1708,17 @@ function buildReviewSheetItemsHTML(){
   return questions.map(function(q,index){
     var ans=answers[index];
     var meta=getAnswerStateMeta(ans);
+    var selectedChoice=getSelectedChoice(index);
+    var selectedLetter=selectedChoice===undefined||selectedChoice===null?'No Answer':choiceLetter(selectedChoice);
     var correctLetter=choiceLetter(q.correct);
-    return `<article class="sum-item ${meta.className}">
+    var isFlagged=!!marked[index];
+    return `<article class="sum-item ${meta.className}${isFlagged?' flagged':''}">
       <div class="sum-meta">
         <div class="sum-num">Question ${index+1}</div>
         <div class="sum-state">${meta.label}</div>
+        <div class="sum-user-answer">Your Answer: ${selectedLetter}</div>
         <div class="sum-answer">Correct Answer: ${correctLetter}</div>
+        <div class="sum-flag${isFlagged?' flagged':''}">Flagged: ${isFlagged?'Yes':'No'}</div>
       </div>
       <div class="sum-body">
         <div class="sum-section">
@@ -1734,7 +1741,7 @@ function buildReviewSheetHTML(forPrint){
       <div>
         <div class="sum-kicker">Quiz Review Sheet</div>
         <h2 class="sum-title">${title}</h2>
-        <div class="sum-sub">Question-by-question review showing only the correct-answer explanation and the ELI5 summary for quick post-quiz review.</div>
+        <div class="sum-sub">Question-by-question review showing right/wrong status, your answer, the correct answer, flagged status, and the explanations for quick post-quiz review.</div>
       </div>
       ${actionHTML}
     </div>
@@ -1751,11 +1758,11 @@ function getSummaryPrintStyles(){
     .sum-title{font-size:30px;line-height:1.08;color:#12203C;margin:0 0 8px}
     .sum-sub{font-size:14px;line-height:1.6;color:#3E4555;max-width:68ch}
     .sum-stats{display:flex;gap:12px;flex-wrap:wrap;padding:18px 24px;border-bottom:1px solid #e4e7ec;background:#fbf8f3}
-    .sum-stat{min-width:140px;padding:14px 16px;border-radius:14px;border:1px solid #e4e7ec;background:#fff}
+    .sum-stat{min-width:130px;padding:14px 16px;border-radius:14px;border:1px solid #e4e7ec;background:#fff}
     .sum-stat-label{font-size:10px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:#6B7689;margin-bottom:8px}
     .sum-stat-value{font-size:30px;line-height:1;color:#12203C;font-weight:700}
     .sum-list{display:grid;gap:14px;padding:22px 24px}
-    .sum-item{display:grid;grid-template-columns:150px minmax(0,1fr);gap:18px;padding:18px;border-radius:16px;border:1px solid #e4e7ec;background:#fff;break-inside:avoid-page;page-break-inside:avoid}
+    .sum-item{display:grid;grid-template-columns:180px minmax(0,1fr);gap:18px;padding:18px;border-radius:16px;border:1px solid #e4e7ec;background:#fff;break-inside:avoid-page;page-break-inside:avoid}
     .sum-item.correct{background:#f6fcf8}
     .sum-item.incorrect{background:#fff8f8}
     .sum-item.unanswered{background:#fffaf1}
@@ -1766,7 +1773,8 @@ function getSummaryPrintStyles(){
     .sum-item.correct .sum-state{background:#E8F5EE;color:#2D8659}
     .sum-item.incorrect .sum-state{background:#FDF0F0;color:#C44040}
     .sum-item.unanswered .sum-state{background:#FEF5E6;color:#C07B1A}
-    .sum-answer{font-size:13px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;color:#3E4555}
+    .sum-answer,.sum-user-answer,.sum-flag{font-size:13px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;color:#3E4555}
+    .sum-flag.flagged{color:#C07B1A}
     .sum-body{display:grid;gap:12px}
     .sum-section{padding:14px 16px;border-radius:14px;border:1px solid #eceff3;background:#faf7f1}
     .sum-label{font-family:Consolas,monospace;font-size:10px;font-weight:800;letter-spacing:1.6px;text-transform:uppercase;color:#6B7689;margin-bottom:8px}
