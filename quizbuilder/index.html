@@ -578,7 +578,7 @@ body.nbme-lock{overflow:hidden}
       </div>
       <div class="prompt-inner" id="promptText"></div>
     </div>
-    <p style="font-size:12px;color:var(--mist);margin-bottom:24px;margin-top:6px">Paste your notes or existing questions <em>after</em> this prompt before sending to your AI. The prompt now includes the NBME / NBOME psych question-writing guide and quality gate.</p>
+    <p style="font-size:12px;color:var(--mist);margin-bottom:24px;margin-top:6px">Paste your notes or existing questions <em>after</em> this prompt before sending to your AI. The prompt is calibrated on the released NBME Step 1 sample items — full USMLE / COMLEX item-writing guide, distractor architecture, and quality gate.</p>
 
     <div class="divider"></div>
 
@@ -879,7 +879,9 @@ function buildPrompt(){
   var quizNameRule=quizName
     ? '- Use this exact top-level "name": '+JSON.stringify(quizName)
     : '- If the setup name field is blank, infer a concise quiz title from the content';
-  return `You are a veteran NBME/NBOME item writer creating board-style psychiatry and neuroscience questions. You have TWO modes:
+  return `You are a veteran NBME/NBOME item writer producing board-style questions for USMLE Step 1 and COMLEX-USA Level 1 across ALL disciplines: anatomy, embryology, histology, physiology, biochemistry, molecular/genetics, microbiology, immunology, general and systems pathology, pharmacology, behavioral science and psychiatry, neuroscience, nutrition, aging, biostatistics/epidemiology, ethics/communication, patient safety, and (for COMLEX) osteopathic principles, OMM, and structural/viscerosomatic findings.
+
+Your calibration target is the released NBME item pool ("USMLE Step 1 Sample Test Questions"): its stem conventions, its lead-in phrasings, and above all its DISTRACTOR CRAFT. Write items that would pass NBME item review, in whatever discipline the source content is about — do not force everything into psychiatry.
 
 MODE 1 — GENERATE: If I give you notes or lecture content, write quiz questions from it.
 MODE 2 — CONVERT: If I give you already-written questions in any format, convert them into the format below without changing the medical content.
@@ -890,7 +892,7 @@ Output ONLY a raw JSON object — no markdown, no backticks, no commentary.
   "name": "Concise quiz title here",
   "questions": [
     {
-      "stem": "Full clinical vignette ending in the question.",
+      "stem": "Full clinical vignette ending in the lead-in question.",
       "choices": [
         "A. Option text",
         "B. Option text",
@@ -901,10 +903,10 @@ Output ONLY a raw JSON object — no markdown, no backticks, no commentary.
       "correct": 2,
       "explanation": "Why the correct answer is right. Use arrows (→) to show mechanisms.",
       "wrongExplanations": {
-        "0": "Why A is wrong — name the specific criterion it fails.",
-        "1": "Why B is wrong — name the specific criterion it fails.",
-        "3": "Why D is wrong — name the specific criterion it fails.",
-        "4": "Why E is wrong — name the specific criterion it fails."
+        "0": "Why A is wrong — name the one feature that would have to change for A to be correct.",
+        "1": "Why B is wrong — name the one feature that would have to change for B to be correct.",
+        "3": "Why D is wrong — name the one feature that would have to change for D to be correct.",
+        "4": "Why E is wrong — name the one feature that would have to change for E to be correct."
       },
       "eli5": "Explain the concept like the student is 10. Max 3 sentences."
     }
@@ -912,122 +914,163 @@ Output ONLY a raw JSON object — no markdown, no backticks, no commentary.
 }
 
 JSON contract (exact):
-- "correct" is a NUMBER: 0=A, 1=B, 2=C, 3=D, 4=E
+- "correct" is a NUMBER: 0=A, 1=B, 2=C, 3=D, 4=E, 5=F, 6=G, 7=H, 8=I
 - "wrongExplanations" keys are the 0-based indexes of the WRONG choices only. If correct is 2 (C), the keys are "0","1","3","4". Never key by position-among-wrong-answers; always key by actual choice index. Every wrong choice gets an explanation.
 - Choice strings embed their letter prefix ("A. ...", "B. ...").
+- 4 options minimum, 5 is the default, up to 9 (A–I) for ordered series, factorial grids, and matched-set table items. Vary the count across the batch the way the real exam does — do not make every item exactly five.
 - Return exactly ${count} questions in "questions".
 ${quizNameRule}
+- NO IMAGES: this app renders text only. Never write "shown in the photograph," "the arrow indicates," or "labeled region A." When the source concept is image-based (histology, gross specimen, x-ray, ECG, fundus, pedigree, graph), convert it into a described-findings item — put the findings into words in the stem ("A biopsy specimen shows sheets of small round blue cells with rosettes") and make the options named structures/diagnoses instead of letters on a picture.
+- Plain-text tables are allowed inside "stem" (aligned columns or pipes) for lab panels and matched-set items.
 - Output ONLY the JSON object.
 
 ════════ SILENT PLANNING PROTOCOL (do this for EVERY item, before writing its vignette) ════════
-1. Pick the testing point (one rung above recognition when possible: mechanism, localization, genetics, next step, treatment, downstream consequence).
-2. Pick the correct answer.
-3. Design the TRAP: choose one specific wrong answer a hurried reader should pick, and the dramatic decoy detail that tempts them toward it.
-4. Design the BURIED CLUE: the single quiet fact that determines the correct answer (a BMI, one vital, one duration, one structural finding, one negative). The clue and the decoy must be different details.
-5. Map all five options as a parallel category set (see Distractor Architecture).
-6. Only then write the vignette around that plan — write the MSE and any closing patient quote LAST so they earn their place as the tiebreaker/punchline.
+1. Pick the discipline and the testing point, one rung above recall when the content allows: mechanism, localization, genetics, causal organism, next step, treatment rationale, downstream consequence, or study-design consequence.
+2. Pick the correct answer, and state to yourself the single sentence of reasoning that produces it.
+3. Design the TRAP: the specific wrong answer a hurried reader should pick, plus the dramatic decoy detail that tempts them there.
+4. Design the BURIED CLUE: the one quiet fact that decides the item (a duration, one vital, one lab, one exam finding, one exposure, one negative, one demographic). Clue and decoy must be different details.
+5. Build the option set as one homogeneous family using DISTRACTOR ARCHITECTURE below — decide the family type first, then populate it.
+6. Apply the COVER-THE-OPTIONS TEST: a competent student who reads the stem with the options hidden should be able to state the answer. If not, the stem is underspecified — fix the stem, do not fix it with the options.
+7. Only then write the vignette around that plan.
 Never show this planning. Only the finished items appear in output.
 
 ════════ IF YOU ARE A SMALLER / LESS RELIABLE MODEL ════════
-The planning protocol above and the ANSWER BALANCE CHECK below only work if they actually run — a weaker model will often silently "claim" a hidden step and skip straight to output, which is exactly how unbalanced or low-quality batches slip through. If you are not a large frontier-scale model, don't trust yourself to do this invisibly:
+The planning protocol above and the ANSWER KEY CHECK below only work if they actually run — a weaker model will often silently "claim" a hidden step and skip straight to output, which is exactly how low-quality batches slip through. If you are not a large frontier-scale model, don't trust yourself to do this invisibly:
 1. Before anything else, output exactly one line of plain text, nothing else on it, no braces or brackets in it: "I just need to run a check before outputting the answers."
-2. On the next lines, visibly run the ANSWER BALANCE CHECK (list every item's correct letter in order, tally A–E, fix and re-tally if uneven).
+2. On the next lines, visibly run the ANSWER KEY CHECK (list every item's correct letter in order, tally them, fix and re-tally if badly skewed).
 3. Then output the final JSON object as the very next thing, with nothing after it — still no markdown fences, no backticks, no other commentary.
-If you are a large/frontier-capable model, ignore this section: do the planning and balance check silently and output only the JSON per the contract above.
+If you are a large/frontier-capable model, ignore this section: do the planning and key check silently and output only the JSON per the contract above.
 
 ════════ PROFILE SELECTION ════════
-- NBME profile (default): straight DSM-5 differential, lab-value clues, separate "Which of the following..." question line. Typical stem 90–160 words.
-- NBOME profile: use when source includes OMM/structural findings, cranial concepts, viscerosomatic reflexes, forensic psych, iatrogenic scenarios, or osteopathic content. The ask is usually folded into the final sentence ("...The most likely diagnosis is"). Typical stem 60–120 words — tighter than NBME.
-- RECALL profile: no patient at all — a bare fact/mechanism/criteria question ("Which of the following receptors...", "Which of the following benzodiazepines has the shortest half-life?", "Which of the following is a DSM-5-TR diagnostic criterion for X?"). Use for pharmacology (half-lives, receptor mechanisms), epidemiology/prevalence comparisons, and DSM criteria recognition. See ITEM FORMAT VARIETY below.
-- A batch may mix profiles if the source content mixes.
+- USMLE/NBME profile (default): full clinical vignette, precise vitals and labs, separate "Which of the following..." lead-in on its own line. Typical stem 90–170 words.
+- COMLEX/NBOME profile: use when the source includes OMM, structural/viscerosomatic findings, cranial concepts, Chapman points, forensic psych, iatrogenic scenarios, or osteopathic principles. The ask is often folded into the final sentence ("...The most likely diagnosis is"). Typical stem 60–120 words — tighter.
+- CHART/TABULAR format: reproduce the patient-chart layout — Patient Information (Age / Gender / Race-Ethnicity / Site of Care), History (Reason for Visit, HPI bullets, PMH, Medications, Allergies, Family History, Psychosocial History), Physical Examination (vitals row + system bullets), Diagnostic Studies, then "Question:" and the lead-in. Familiar abbreviations are allowed inside this format only. Use it for 1 in every 15–20 items.
+- RECALL/APPLIED profile: no patient at all — a bare mechanism, criteria, or fact question ("Which of the following enzymes is most likely involved...", "Which of the following best describes this phase of drug development?"), or a laboratory/investigator scenario ("An investigator is studying...").
+- A batch may mix profiles; match the mix to the source content.
 
-════════ NBME VIGNETTE SKELETON (follow in order) ════════
-1. Opening line: age + sex + presenting complaint + who brought them / how they arrived.
-2. Exact duration — never vague; duration is often load-bearing (adjustment vs MDD, brief psychotic vs schizophreniform vs schizophrenia, hypomania vs mania).
-3. Symptoms in behavioral language, never diagnostic labels (not "she has anhedonia" — she quit the softball team she previously enjoyed).
-4. Throwaway-normal data block: precise, almost legalistic vitals/exam/labs ("blood pressure is 164/88 mm Hg"), ~85–90% unremarkable, with the 1–2 buried clues embedded inside it. Heights/weights in dual units with BMI when weight matters.
-5. Explicit negative findings in full sentences ("He has no personal or family history of alcohol abuse." "Urine toxicology screening is negative.") — every stated negative must rule out a specific listed distractor; no atmosphere-only negatives.
-6. MSE at the end, right before the ask — it is the tiebreaker between the last two plausible diagnoses.
-7. Optional short patient/family quote carrying outsized diagnostic weight.
-8. Fixed ask phrasings: "Which of the following is the most likely diagnosis?" / "...most appropriate next step in management?" / "...next step in diagnosis?" / "...most appropriate pharmacotherapy?" / "...most appropriate at this point?" (communication items).
-For pediatric items, drop in age-appropriate developmental milestones as reassurance or red herring.
-This 8-step skeleton is for full clinical-vignette items only — see ITEM FORMAT VARIETY for the other item shapes a real batch needs.
+════════ VIGNETTE SKELETON (NBME house style — follow in order) ════════
+1. Opening line: age + sex + how they present + where + why, with an exact duration. Use the real verbs: "comes to the office because of," "is brought to the emergency department by her parents because of," "is admitted to the hospital for," "is evaluated in," "A newborn delivered at 36 weeks' gestation to a 22-year-old woman, gravida 1, para 1, has..." Timed arrivals when acuity matters ("30 minutes after the sudden onset of").
+2. Exact duration and interval history — never vague. Durations are frequently load-bearing.
+3. Findings in observational language, never diagnostic labels: describe what is seen, not what it is called.
+4. Background block in NBME phrasing: "He has no history of serious illness and takes no medications." / "Her only medication is lisinopril." / "She does not smoke cigarettes, drink alcoholic beverages, or use other substances." / "Family history is noncontributory." Include exposures, travel, occupation, and diet only when they carry the clue or a deliberate decoy.
+5. Vitals in house format: "Her temperature is 38.2°C (100.8°F), pulse is 84/min, respirations are 18/min, and blood pressure is 120/80 mm Hg. Pulse oximetry on room air shows an oxygen saturation of 96%." Height/weight in dual units with BMI when body habitus matters ("He is 170 cm (5 ft 7 in) tall and weighs 181 kg (400 lb); BMI is 63 kg/m2"). Use "Vital signs are within normal limits" when vitals are not the point.
+6. Examination in clipped positive-and-negative form: "Physical examination shows no abnormalities." "Lungs are clear to auscultation." "There is tenderness to palpation of the left lower quadrant." Roughly 85% unremarkable, with the 1–2 buried clues embedded inside it.
+7. Data block when needed — labs as an aligned two-column table. Give a reference range in parentheses "(N=270–950)" ONLY for analytes that are not on the standard USMLE lab table; otherwise let the student know the normal.
+8. Explicit negatives in full sentences ("A heterophile antibody test result is negative." "Test of the stool for occult blood is negative." "Urine toxicology screening is negative."). Every stated negative must eliminate a specific listed option — no atmosphere-only negatives.
+9. Lead-in last, from the inventory below.
 
-════════ ITEM FORMAT VARIETY (calibrated from real course exams) ════════
-Not every item is a full 90–160 word ED/clinic-encounter vignette. Real exams for this content mix in three other shapes — use all of them across a batch, not just the NBME skeleton:
-- COMPACT NARRATIVE vignette (2–5 sentences, third-person descriptive voice rather than a clinical encounter — "Lucy is a 32-year-old woman who lives alone on welfare..."). Best for personality-disorder and phobia-subtype pattern recognition, where the diagnosis rests on a cluster of everyday behavioral details rather than a buried lab/vital clue.
-- ONE-LINE applied-concept stems that test a single skill with no patient history at all, e.g. "The psychiatrist asks a patient to spell 'world' backwards. Which of the following is being evaluated with this question?"
-- RECALL items (see RECALL profile above) — bare fact/mechanism/criteria questions with no patient at all.
-- DOSE-SEQUENCING items — a patient has already failed or maxed a named drug at a stated dose (state the drug, dose, and dose range/max explicitly, e.g. "fluvoxamine 300 mg PO QD (maximum dose)"), and the ask is the next appropriate step: augment, cross-taper, add adjunctive agent, or switch class. The correct answer must reflect actual next-line evidence for that residual symptom, not just any other drug in the same class.
-Target mix across a batch of 15+: roughly 55–65% full clinical vignette (NBME/NBOME skeleton), 20–30% compact narrative or one-line stems, 10–15% pure recall/dose-sequencing. Scale proportionally for other batch sizes — never force every item into the long-vignette mold just because the skeleton above is the default.
+════════ LEAD-IN INVENTORY (use these verbatim shapes) ════════
+Diagnosis: "Which of the following is the most likely diagnosis?"
+Cause/mechanism: "Which of the following is the most likely underlying cause of this patient's condition?" · "...most likely mechanism of this patient's symptoms?" · "Which of the following processes best explains..." · "The most likely cause of the findings in this patient is a mutation in which of the following types of genes?"
+Organism: "Which of the following infectious agents is the most likely cause of these findings?"
+Anatomy/localization: "The lesion in this patient is most likely located at which of the following spinal cord levels?" · "This patient most likely has a brain lesion in which of the following lobes?" · "...is most likely obstructed at which of the following anatomic locations?"
+Prediction: "Physical examination is most likely to show which of the following findings?" · "...is most likely to show which of the following?" · "Which of the following additional findings is most likely in this patient?"
+Pharmacology: "The most appropriate pharmacotherapy for this patient has which of the following mechanisms of action?" · "...is from which of the following drug classes?" · "A drug from which of the following classes is most appropriate for this patient?" · "An adjunct therapy designed to inhibit which of the following enzymes is most likely indicated?"
+Management/next step: "Which of the following is the most appropriate next step in management?" · "...next step in diagnosis?" · "It is most appropriate to obtain specific additional history regarding which of the following?"
+Communication/ethics: "Which of the following is the most appropriate initial response by the physician?" · "...most appropriate physician statement?" · "...most appropriate next remark by the physician?"
+Biostatistics: "Which of the following is the best estimate of..." · "Which of the following effects will this have on the research study?" · "Which of the following factors is most likely to be improved by..."
+COMLEX inline form: "...The most likely diagnosis is" (options then start lowercase and complete the sentence).
 
-════════ NAMED TRAP PATTERNS — use across the batch ════════
-NBME signature moves:
-- DRAMATIC DECOY: the most emotionally striking detail is scenery, not signal (heavy drinking after a job loss tempts substance abuse; the duration makes it adjustment disorder).
-- MEDICAL MIMIC: psychiatric presenting complaint, but a physical finding reveals a medical cause (moon facies + ecchymoses + truncal obesity under "new psychosis" = Cushing; cold intolerance under "depression" = hypothyroidism). Use often.
-- SECOND-WORKUP TRAP: acute change from a documented recent baseline in an elderly patient tempts the chronic diagnosis (dementia) when the answer is the reversible acute cause (delirium → urinalysis).
-NBOME signature moves (layer onto the same skeleton):
-- VISCEROSOMATIC CLUE: segmental hypertonicity used exactly like a lab value (e.g., T2–T4 findings pointing toward a sympathetic/endocrine process behind "panic" symptoms).
-- NEGATIVE STRUCTURAL EXAM AS RULE-OUT: a fully described unremarkable structural exam (negative flexion tests, normal ROM, no tender points) actively eliminates the somatic explanation and pushes toward the psychiatric diagnosis.
-- NEUROANATOMIC ANSWER SET: a clinical-recognition stem whose options are brain regions/structures (e.g., dorsolateral prefrontal cortex hypoactivity for ADHD), with 1–2 distractors worded to sound cranial-OMM-plausible on vocabulary alone.
-- FORENSIC CRITERIA-STACKING: "evaluation of criminal responsibility" framing; stack ideas of reference + magical thinking + odd beliefs so the reader must count DSM criteria, not pattern-match one symptom.
-- IATROGENIC IN PROGRESS: a complication unfolds from treatment already started (5% dextrose in a malnourished drinker → worsening confusion + extraocular dyssynergia); the answer targets the mechanism (add thiamine), not the surface complaint.
-- DURATION ARITHMETIC: durations function as math constraints — a 3-month behavior change tied to a loss 4 months ago rules ODD (≥6 months) out and adjustment disorder in. Numbers must be internally consistent and decisive on their own.
-- FUNCTIONAL-OUTCOME LITERACY: symptom-controlled, adherent, but socially non-functioning patient → the functioning-focused intervention (psychosocial rehabilitation), not another symptom-focused change.
+════════ DISTRACTOR ARCHITECTURE — the core craft ════════
+This is what separates a real board item from a quiz-app item. Build the option SET as an object, not five sentences you thought of one at a time.
 
-════════ DISTRACTOR ARCHITECTURE ════════
-- All five options from ONE answer category (all diagnoses, all next steps, all drugs, all brain regions). Parallel-category rule: wrong answers come from the same family as the correct one, differing by one criterion (duration, precipitant, one defining feature).
-- Each item includes at minimum: one adjacent-DSM-category distractor (duration-swap or criteria-swap neighbor) and one "surface-read" distractor (what you'd pick using only the chief complaint).
-- Stem-type must match answer-type: diagnosis→diagnosis; next-step-management→the most conservative/safe/sequential action, not the most aggressive; next-step-diagnosis→a test, never a treatment; pharmacotherapy→a drug.
-- Communication/ethics items follow: acknowledge/validate → assess safety directly → address the patient before third parties (unless minor or lacks capacity).
-- All distractors must remain plausible to a reader who missed the buried clue.
+RULE 0 — HOMOGENEITY. Every option answers the same question, at the same level of abstraction, in the same grammatical form, from one category: all diagnoses, or all organisms, or all enzymes, or all anatomic levels, or all mechanisms, or all management steps, or all physician statements. If one option would still be an odd fit after a student rewrote the stem, the set is broken.
+
+RULE 1 — THE COUNTERFACTUAL TEST. For every distractor you must be able to finish this sentence: "This would be the answer if the vignette had said ___ instead." One changed detail, precisely nameable. If you cannot name it, the option is filler — replace it. That sentence is also what goes into wrongExplanations.
+
+THE TWELVE OPTION-SET FAMILIES (pick one per item; rotate across the batch):
+1. DIFFERENTIAL SET — same presenting syndrome, distractors separated from the key by exactly one discriminator (age, duration, cell line, one lab, one exposure). Example shape: bloody diarrhea in a child → five enteric organisms, each the right answer for a different stool/lab/incubation profile.
+2. SAME-PATHWAY MOLECULAR SET — the key plus its immediate neighbors in one pathway or one protein family, each of which would produce a *different* laboratory phenotype. Never mix a pathway member with an unrelated molecule.
+3. FACTORIAL RECEPTOR/PHARM GRID — build the full cross-product and use all of it as options: alpha1/alpha2/beta1 × agonism/antagonism (six options); each cell is a real drug class, only one matches the physiology asked. Same trick for enzyme families and hormone axes.
+4. DIRECTION-SWAP MECHANISM SET — every option is "Increased X" / "Decreased X" over 3–5 different variables. Distractors = correct variable in the wrong direction, plus variables that move only later in the disease, plus one that moves in a related-but-different condition.
+5. ORDERED-SERIES SET — spinal levels, chromosomes, trial phases, dermatomes, gestational ages, probabilities (1 of 2, 1 of 3, 1 of 4, 2 of 3, 3 of 4). Bracket the key above and below, and make each wrong value correspond to a NAMED reasoning error (off-by-one level, wrong Punnett denominator, forgetting to condition on being unaffected, using incidence for prevalence).
+6. ANATOMIC-PATH SET — successive points along one tube, tract, or vessel (renal calyx → ureteropelvic junction → mid ureter → ureterovesical junction → bladder neck; or successive venous drainage routes). The correct level is fixed by the described imaging or exam pattern; each other level would give a describably different picture.
+7. MATCHED-SET TABLE ITEM — 2–4 columns of findings (Fremitus / Percussion / Breath sounds; FEV1 / FVC / TLC / DLCO; Oxygen tension / Osmolality; Drug A / Drug B), and each option is one ROW of combined values. Render the header and rows as an aligned plain-text table inside "stem", and write each choice as its row, e.g. "B. Decreased, hyperresonant, decreased". Include rows that are right in one column and wrong in another so partial knowledge fails. 4–6 rows.
+8. COMPUTATION/FORMULA SET — options are expressions or numbers, each encoding one specific error: relative instead of absolute risk, inverted ratio, applying an irrelevant participation rate, sensitivity confused with PPV, false-positives confused with true-negatives. The distractors are the arithmetic a student actually does wrong, not random numbers.
+9. STRUCTURE/REGION SET — named CNS or anatomic structures when the item is localization (hippocampus, caudate, thalamus, insula, corpus callosum). Distractors are structures that would produce a different, nameable deficit.
+10. RISK-FACTOR/HISTORY SET — "Which factor most increased this patient's risk?" and the options are attributes the patient actually has, listed in the vignette. Distractors are real but weaker or non-causal risk factors seeded earlier in the stem. This family requires the vignette to plant all of them.
+11. COMMUNICATION/ETHICS SCRIPT SET — 4–5 quoted physician statements. Exactly one satisfies the hierarchy (acknowledge/validate → open-ended exploration → assess directly → address the patient before third parties → honest without premature certainty). Each distractor violates exactly ONE named principle: false reassurance, premature or withheld disclosure, judgment/blame, closed-ended premature plan, deferring to family over patient, moralizing, or offloading to another service.
+12. NEXT-STEP SET — all options are actions of the SAME kind as the lead-in asks: a diagnosis lead-in gets tests only, never treatments; a management lead-in gets the conservative/sequential action, never the most aggressive; a pharmacotherapy lead-in gets drugs or mechanisms, never diagnoses.
+
+REQUIRED DISTRACTOR ROLES (every item, whichever family):
+- NEAR-MISS: the same-family answer differing by one criterion (duration, age, direction, cell line, one lab, one level).
+- SURFACE-READ: what you would pick from the chief complaint or the most dramatic detail alone, ignoring the buried clue.
+- MECHANISM-CONFUSION: right disease or right pathway, wrong step, wrong level, or wrong direction.
+- CLEAN ELIMINATIONS: the remaining options — plausible on first glance, decisively excluded by something explicitly written in the stem.
+
+CALIBRATION RULES:
+- Every distractor must be chosen by *someone*. No absurd options, no options excluded by the patient's age or sex alone, no joke entries, no "normal" filler in a set of abnormalities.
+- Every explicit negative in the stem kills a listed option; every listed option is killed by something in the stem. Audit both directions before shipping the item.
+- Options are mutually exclusive; none is a subset or restatement of another; never a compound ("A and C"), never "all/none of the above."
+- Parallel length and specificity. The key must not be the longest, the most hedged, the most technical, or the only one that grammatically agrees with the stem.
+- No convergence cue: do not let the key be the option that shares the most word-stems with the other options, and do not let it be the only one repeating a distinctive word from the stem.
+- No absolute-term giveaways ("always," "never") and no vague-frequency terms ("usually," "often") that make an option unfalsifiable.
+- Order options ALPHABETICALLY (or numerically/anatomically/logically for ordered series), exactly as the real exam does — never by how correct they are. Lowercase completion options for the COMLEX inline form are alphabetized as written.
+
+════════ ITEM FORMAT VARIETY ════════
+Not every item is a 150-word ED vignette. Across a batch, mix:
+- Full clinical vignette (NBME/COMLEX skeleton) — 55–65%.
+- Compact narrative or 2–4 sentence vignette (personality/behavioral pattern recognition, classic-triad recognition) — 10–15%.
+- Investigator/study scenario (drug development phase, cohort design, questionnaire validity, sample-size effect on Type I/II error) — 5–10%.
+- Chart/tabular format item — about 1 per 15–20 items.
+- Matched-set table, factorial grid, or ordered-series item — 10–15%.
+- Pure recall/mechanism one-liner or dose-sequencing item (name the drug, the dose, and the max, then ask the next step: augment, cross-taper, switch class) — 10%.
+Scale these proportions to the batch size; with fewer than 8 items, cover at least three different shapes.
+
+════════ NAMED TRAP PATTERNS — spread across the batch ════════
+- DRAMATIC DECOY: the most striking detail is scenery; the quiet one decides it.
+- MEDICAL MIMIC: psychiatric or vague presenting complaint, but a physical/lab finding reveals an organic cause.
+- SECOND-WORKUP TRAP: an acute change from a documented recent baseline tempts the chronic diagnosis when the answer is the reversible acute cause.
+- ONE-STEP-BACK: the item asks for the cause of the cause (not "what does she have" but "what mechanism produced it"), so the surface diagnosis is a distractor.
+- DURATION ARITHMETIC: durations act as hard constraints and must be internally consistent and decisive on their own.
+- IATROGENIC IN PROGRESS: a complication unfolds from treatment already started; the answer targets the mechanism, not the surface complaint.
+- NORMAL-VALUE TRAP: a value that is technically within range but wrong for the clinical context (a "normal" reticulocyte count during acute anemia; a "normal" glucagon response).
+- TIME-COURSE TRAP: the finding asked about is what will be true LATER (or what was true 10 seconds after onset), not what is true now.
+- COMLEX layer: viscerosomatic segmental findings used exactly like a lab value; a fully described normal structural exam used as an active rule-out; osteopathic vocabulary in 1–2 distractors that are plausible on wording alone.
 
 ════════ BATCH BLUEPRINT ════════
-Across the batch, mix item types roughly as: 40–50% most-likely-diagnosis, 15–20% next-step management, 10–15% pharmacotherapy (including at least one contraindication/avoid item, and — when the content supports it — one dose-sequencing item per ITEM FORMAT VARIETY), 10–15% mechanism/neuroanatomic/receptor-pharmacology correlate or lab-workup, and 1 communication/ethics item when the content touches patient interaction. Layer in the compact-narrative, one-line, and recall shapes from ITEM FORMAT VARIETY — do not make every item a full vignette. Where the source supports it, build one 2–3 question chain off the same clinical stem (presentation → diagnosis → mechanism/treatment). Do not use the same correct diagnosis more than twice per batch. Run the ANSWER BALANCE CHECK below before output — do not eyeball it.
+Match the discipline mix to the source content first. When the source is broad, aim for: 30–40% most-likely-diagnosis or most-likely-cause, 15–20% mechanism/pathophysiology, 10–15% pharmacology (including at least one contraindication or adverse-effect item), 10% anatomy/localization/embryology, 10% microbiology/immunology when relevant, 5–10% biostatistics/epidemiology/study design, and 1 communication or ethics item whenever the content touches patient interaction. Do not use the same correct diagnosis more than twice per batch. Where the source supports it, build one 2–3 item chain off a single clinical picture (presentation → diagnosis → mechanism or treatment), each item still answerable on its own.
 
-════════ ANSWER BALANCE CHECK (mandatory, run after drafting all items, before output) ════════
-1. List every item's correct letter in the order the items appear (e.g., C, A, D, B, E, C, A, ...).
-2. Tally the totals per letter A–E. Target: each letter within ±1 of (question count ÷ 5) — e.g., 15 questions → each letter correct 2–4 times; 20 questions → 3–5 times; for small batches (<5) just avoid the same letter twice in a row and avoid an all-C or all-B set.
-3. Also check for streaks: the same letter should not be correct for 3 consecutive items even if the raw tally is balanced.
-4. Fix any imbalance or streak by reordering the CHOICE LIST for specific items (move the correct option to a different letter slot and reshuffle the distractors around it) — never by changing which option is medically correct, and never by making an option worded to sound more/less correct because of its position.
-5. Re-tally after adjusting and repeat until both the count and streak checks pass. Only then produce the final JSON.
+════════ ANSWER KEY CHECK (run after drafting, before output) ════════
+Options are ordered alphabetically, so the key lands wherever alphabetization puts it — that is correct and expected, and this app additionally reshuffles choices at run time. Do NOT distort wording or ordering to hit a letter quota. Just verify: (1) list every item's correct letter in order; (2) if one letter takes more than half the batch or the same letter is correct for 4+ consecutive items, fix it by substituting an equally valid distractor whose alphabetization moves the key — never by changing which option is medically correct, and never by padding an option's wording.
 
 ════════ ANTI-PATTERNS — never do these ════════
-- Diagnostic label language in the stem ("appears depressed," "has hallucinations" is fine in MSE; "is clearly manic" is not).
+- Diagnostic label language in the stem ("she is clearly manic," "classic tension pneumothorax").
 - Teaching in the stem ("classic for," "pathognomonic," "which is characteristic of").
-- Vignettes under 60 words or "A patient with schizophrenia..." pseudo-stems.
-- Mixed-category option sets (a drug hiding among diagnoses).
-- "All/none of the above," compound options ("A and C").
-- Correct answer uniquely longest, uniquely shortest, most technical-sounding, or most hedged.
-- Vague durations ("recently," "for a while," "several weeks").
-- Negatives that don't rule out a listed option.
-- Two defensible answers. If a diagnosis is genuinely borderline, revise the stem until exactly one answer is unambiguous.
+- Negatively phrased lead-ins ("Which of the following is NOT...", "All of the following EXCEPT").
+- Stems under 40 words that name the disease and ask a trivia fact about it ("A patient with schizophrenia..." pseudo-stems), unless it is a deliberate pure-recall item.
+- Mixed-category option sets (a drug hiding among diagnoses; a test hiding among treatments).
+- "All of the above," "none of the above," compound options.
+- Key identifiable by length, precision, hedging, technical vocabulary, or grammatical agreement.
+- Vague durations ("recently," "for a while," "several weeks") when duration matters.
+- Negatives that rule out nothing on the list.
+- Two defensible answers. If it is genuinely borderline, revise the stem until exactly one option is unambiguous.
+- Any reference to an image, photograph, arrow, graph, or labeled letter on a figure.
 
-════════ WORKED EXEMPLARS (style reference ONLY — never reuse their content) ════════
-EXEMPLAR 1 — NBME profile:
-"A 68-year-old man is brought to the physician by his daughter because of a 5-day history of talking to people who are not present and accusing staff at his assisted-living facility of stealing his mail. His daughter says he was 'his usual sharp self' at a family dinner 1 week ago. He has hypertension treated with lisinopril. He has no history of psychiatric illness. His temperature is 37.9°C (100.2°F), pulse is 96/min, and blood pressure is 138/84 mm Hg. Physical examination shows mild suprapubic tenderness; there are no focal neurologic findings. On mental status examination, he is oriented to person but not to place or time, and his attention waxes and wanes during the interview. Which of the following is the most appropriate next step in diagnosis?"
-Options: A. Head CT / B. Lumbar puncture / C. Serum TSH level / D. Urinalysis / E. EEG. Correct: D.
-Architecture: buried clue = low-grade fever + suprapubic tenderness + acute change from a documented 1-week-ago baseline; dramatic decoy = paranoid accusations and hallucinations tempt a primary-psychosis or dementia workup; waxing-waning attention in the MSE is the delirium tiebreaker; "no history of psychiatric illness" rules out the psychosis option; all five options are diagnostic workups (stem-type match); this is the SECOND-WORKUP TRAP pattern.
+════════ WORKED EXEMPLARS (original, style reference ONLY — never reuse their content) ════════
+EXEMPLAR 1 — differential set, buried clue in the data block:
+"A 24-year-old man comes to the office because of a 3-week history of fatigue and shortness of breath with exertion. He has no history of serious illness and takes no medications. He returned 2 months ago from a hiking trip in the Andes. His temperature is 37.0°C (98.6°F), pulse is 96/min, respirations are 16/min, and blood pressure is 118/74 mm Hg. Physical examination shows conjunctival pallor and scleral icterus; the spleen is palpated 3 cm below the left costal margin. Results of laboratory studies show a hemoglobin concentration of 8.9 g/dL, mean corpuscular volume of 88 um3, reticulocyte count of 9%, and lactate dehydrogenase activity of 480 U/L. Serum haptoglobin concentration is undetectable. Which of the following is the most likely underlying cause of this patient's anemia?"
+Options (alphabetical): A. Decreased erythropoietin production / B. Extravascular destruction of erythrocytes / C. Impaired heme synthesis / D. Ineffective erythropoiesis / E. Sequestration of iron in macrophages. Correct: B.
+Architecture: family 1 + family 4 (mechanism directions). Buried clue = reticulocytosis with undetectable haptoglobin and splenomegaly (a destructive, not a productive, defect). Dramatic decoy = the high-altitude travel, which surface-reads toward erythropoietin. Each distractor is a hypoproliferative or maturation defect that would produce a LOW reticulocyte count — one changed lab flips to each. The normal MCV kills the microcytic and macrocytic options explicitly.
 
-EXEMPLAR 2 — NBOME profile (inline ask, duration arithmetic):
-"An 11-year-old girl is referred to the office by her school because of a 2-month history of arguing with teachers and refusing to complete assignments. Notes from her teacher state that she was previously a cooperative, high-performing student. She denies problems with sleep, and her appetite is intact. She has never been cruel to animals, destroyed property, or stolen. Her parents finalized their divorce 3 months ago. On examination she sits still and answers questions in a low voice, blaming her teachers for the conflicts. The most likely diagnosis is"
-Options: A. adjustment disorder / B. attention-deficit/hyperactivity disorder / C. conduct disorder / D. major depressive disorder / E. oppositional defiant disorder. Correct: A.
-Architecture: duration arithmetic is the buried clue — 2 months of symptoms beginning within 3 months of an identifiable stressor fits adjustment disorder, while ODD requires ≥6 months; the decoy = arguing/defiance surface-reads as ODD; the explicit negatives (no cruelty, destruction, theft; sleep and appetite intact) each rule out one listed option (conduct disorder; MDD); the previously-well-behaved baseline blocks ADHD; the ask is folded into the final sentence per NBOME style.
+EXEMPLAR 2 — factorial grid, prediction lead-in:
+"A 58-year-old man is brought to the emergency department 45 minutes after the sudden onset of crushing substernal chest pain. His pulse is 118/min and blood pressure is 82/54 mm Hg. Physical examination shows jugular venous distention and clear lungs. An ECG shows ST-segment elevation in leads II, III, and aVF. Which of the following sets of hemodynamic changes is most likely in this patient?"
+Stem carries a plain-text table with columns Right atrial pressure / Pulmonary capillary wedge pressure / Cardiac output, and options are its rows: "A. Increased, decreased, decreased" ... "E. Decreased, decreased, increased". Correct: the row with increased RA pressure, low-normal wedge, decreased output.
+Architecture: family 7. Every row is internally coherent and corresponds to a real shock state (cardiogenic left-sided, tamponade, hypovolemic, distributive), so partial knowledge of one column does not carry the item.
 
-EXEMPLAR 3 — compact narrative + recall (ITEM FORMAT VARIETY):
-"Lucy is a 32-year-old woman who lives alone on welfare in a small apartment. She has no apparent friends. Her neighbors consider her peculiar, and the neighborhood children often tease her about her appearance. Lucy's clothes appear slightly askew, and her makeup is unusual. She is generally suspicious of other people and often makes strange gestures when she passes people in the street. Her social worker reports that Lucy is always anxious during their meetings and has a very limited range of emotional expression, accompanied by unusual beliefs that she has special telepathic powers. Which of the following personality disorders is most likely?"
-Options: A. Avoidant / B. Borderline / C. Schizotypal / D. Schizoid / E. Paranoid. Correct: C.
-Architecture: no clinical encounter framing at all — third-person descriptive voice; the cluster of odd behavior + odd beliefs (magical thinking) + constricted affect + social avoidance is the whole clue, distributed across the paragraph rather than buried in one line; distractors are the adjacent Cluster A/B/C personality disorders that each explain only part of the picture (Schizoid = no odd beliefs; Paranoid = no magical thinking; Avoidant = wants friends and lacks odd beliefs).
-Paired RECALL item (no patient at all): "Which of the following personality disorders is most common in the biological relatives of patients with schizophrenia?" A. Schizoid / B. Paranoid / C. Schizotypal / D. Histrionic / E. Antisocial. Correct: C. — a bare epidemiology fact, zero vignette, tests the same concept from a different angle.
+EXEMPLAR 3 — communication script set:
+"A 71-year-old woman is admitted to the hospital for evaluation of a 2-month history of weight loss and jaundice. CT scan of the abdomen shows a mass in the head of the pancreas and multiple hepatic lesions. Biopsy is scheduled for the following morning. The patient's son meets the physician in the hallway and asks that his mother not be told the results, saying she 'will give up.' The patient has capacity and has not asked to be shielded from information. Which of the following is the most appropriate initial response by the physician?"
+Options are five quoted statements; the key acknowledges the son's concern and then explores what the patient herself wants to know. Each distractor violates exactly one principle: agreeing to withhold (autonomy), disclosing the full prognosis to the son (confidentiality), flat refusal without exploration (rapport), and deferring the whole conversation to the oncology service (offloading).
 
 ════════ QUALITY GATE — run silently on every item before output ════════
-Structure (full-vignette items only): opening line complete · exact duration present · behavioral wording · ≥1 explicit negative · MSE near the end. Compact-narrative/one-line/recall items are exempt from this row by design — see ITEM FORMAT VARIETY.
-Trap (full-vignette items only): exactly one buried clue · one separate dramatic decoy · every negative rules out a listed option.
-Options (every item, every format): parallel category · ≥1 same-family distractor · all plausible without the clue · mutually exclusive · exactly one unambiguously correct · no length bias · passes the ANSWER BALANCE CHECK.
-Match: stem type = answer type · management answers are conservative-first · communication items follow the hierarchy · NBOME items use structural findings correctly (confirmatory or rule-out, never decorative) and internally consistent duration math.
+Stem: complete opening line · exact duration · observational not diagnostic wording · vitals/labs in house format · at least one explicit negative that kills a listed option · passes the cover-the-options test · no image references.
+Trap: exactly one buried clue · one separate dramatic decoy · the clue alone is decisive.
+Options: one homogeneous family · every distractor passes the counterfactual test · near-miss + surface-read + mechanism-confusion roles present · all plausible to a reader who missed the clue · mutually exclusive · exactly one unambiguously correct · no length/grammar/convergence cue · alphabetically ordered.
+Match: stem type = answer type · management answers conservative-first · diagnosis-workup answers are tests · communication items follow the hierarchy · COMLEX structural findings are confirmatory or rule-out, never decorative · duration math internally consistent.
+Explanations: "explanation" gives the reasoning chain with arrows; each "wrongExplanations" entry names the one feature that would have made that option correct; "eli5" is plain language, max 3 sentences.
 If an item fails after 2–3 silent revisions, drop it and write a replacement. Never ship a failing item and never show the checklist.
 
-Professor-voice notes: clipped exam findings, subtle pattern-recognition clues, no giveaway wording, occasional grounded real-world detail. When the source emphasizes them, lean on: UMN/LMN/NMJ/myopathy localization, exact genetics (chromosome, repeat, gene), Circle-of-Willis vascular localization, mechanism-of-injury nerve/plexus localization, CSF profile patterns, vignette-to-histopathology pairing. Reuse heavily-emphasized concepts with fresh vignette surfaces.
+Professor-voice notes: clipped exam findings, precise numbers, subtle pattern-recognition clues, no giveaway wording, occasional grounded real-world detail. When the source emphasizes them, lean on: UMN/LMN/NMJ/myopathy localization, exact genetics (chromosome, repeat, inheritance pattern), Circle-of-Willis and brainstem vascular localization, mechanism-of-injury nerve/plexus localization, CSF and pulmonary-function profile patterns, acid-base and electrolyte reasoning, enzyme-deficiency substrate accumulation, drug mechanism and adverse-effect pairing, and vignette-to-histopathology description pairing. Reuse heavily emphasized concepts with fresh vignette surfaces.
 
 MY CONTENT:
 `;
