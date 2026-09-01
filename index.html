@@ -1226,6 +1226,65 @@ body:not(.auth-locked) .secrets-fab{background:rgba(255,255,255,.92);color:var(-
   .thanos-speck{display:none}
   @keyframes thanosReduced{0%{opacity:0}25%,76%{opacity:1}100%{opacity:0}}
 }
+.jaws-login-layer{position:fixed;inset:0;z-index:13212;pointer-events:none;overflow:hidden;isolation:isolate}
+.jaws-login-layer::before{content:'';position:fixed;left:50%;bottom:-9vh;width:min(720px,92vw);height:24vh;border-radius:50%;background:radial-gradient(circle,rgba(53,187,206,.22),rgba(5,19,35,0) 72%);opacity:0;transform:translateX(-50%);animation:jawsWaterGlow 3.45s ease forwards}
+.jaws-shark-piece{
+  position:fixed;left:var(--jaws-x,50vw);top:0;width:var(--jaws-width,min(820px,92vw));height:auto;max-width:none;object-fit:contain;opacity:0;
+  filter:drop-shadow(0 28px 32px rgba(2,8,18,.4));will-change:transform,opacity;
+}
+.jaws-shark-piece.upper{z-index:13231;transform:translate3d(-50%,var(--jaws-lurk-y,100vh),0);animation:jawsUpperBiteDrag 3.45s cubic-bezier(.16,.86,.18,1) forwards}
+.jaws-shark-piece.lower{z-index:13236;transform:translate3d(-50%,var(--jaws-lurk-y,100vh),0);animation:jawsLowerBiteDrag 3.45s cubic-bezier(.16,.86,.18,1) forwards}
+.jaws-card-clone{
+  position:fixed!important;left:var(--jaws-card-left,0);top:var(--jaws-card-top,0);width:var(--jaws-card-width,760px);height:var(--jaws-card-height,720px);
+  max-width:none!important;max-height:none!important;margin:0!important;box-sizing:border-box;z-index:13233;pointer-events:none!important;
+  transform-origin:50% 62%;animation:jawsCardChompDrag 3.45s cubic-bezier(.16,.86,.18,1) forwards;will-change:transform,opacity,filter;
+}
+.auth-login.jaws-card-hidden{visibility:hidden!important}
+.jaws-ripple{
+  position:fixed;left:var(--jaws-x,50vw);top:var(--jaws-ripple-y,82vh);width:var(--jaws-ripple-width,min(680px,88vw));height:34px;border-radius:50%;
+  border:2px solid rgba(162,231,239,.34);box-shadow:0 0 24px rgba(62,196,213,.2);opacity:0;z-index:13229;
+  transform:translate(-50%,-50%) scale(.6);animation:jawsRipple 1.55s ease .62s forwards;
+}
+.jaws-bite-flash{
+  position:fixed;left:var(--jaws-x,50vw);top:var(--jaws-flash-y,50vh);width:min(360px,58vw);height:min(150px,22vh);
+  border-radius:50%;background:radial-gradient(circle,rgba(238,248,255,.48),rgba(90,205,224,.18) 35%,rgba(255,255,255,0) 68%);
+  opacity:0;z-index:13237;transform:translate(-50%,-50%) scale(.65);animation:jawsBiteFlash .76s ease 1.47s forwards;
+}
+@keyframes jawsWaterGlow{0%,12%{opacity:0;transform:translateX(-50%) scale(.8)}34%,78%{opacity:1;transform:translateX(-50%) scale(1)}100%{opacity:0;transform:translateX(-50%) scale(1.12)}}
+@keyframes jawsUpperBiteDrag{
+  0%{opacity:0;transform:translate3d(-50%,var(--jaws-lurk-y,100vh),0) rotate(1deg) scale(.92)}
+  16%{opacity:1}
+  38%{opacity:1;transform:translate3d(-50%,var(--jaws-upper-open-y,18vh),0) rotate(-1deg) scale(1)}
+  48%{transform:translate3d(-50%,var(--jaws-bite-y,32vh),0) rotate(.2deg) scale(1.02)}
+  72%{opacity:1;transform:translate3d(-50%,var(--jaws-drag-y,108vh),0) rotate(-1deg) scale(.98)}
+  100%{opacity:0;transform:translate3d(-50%,calc(var(--jaws-drag-y,108vh) + 80px),0) rotate(-2deg) scale(.94)}
+}
+@keyframes jawsLowerBiteDrag{
+  0%{opacity:0;transform:translate3d(-50%,var(--jaws-lurk-y,100vh),0) rotate(-1deg) scale(.92)}
+  16%{opacity:1}
+  38%{opacity:1;transform:translate3d(-50%,var(--jaws-lower-open-y,32vh),0) rotate(1.4deg) scale(1)}
+  48%{transform:translate3d(-50%,var(--jaws-bite-y,32vh),0) rotate(0) scale(1.02)}
+  72%{opacity:1;transform:translate3d(-50%,var(--jaws-drag-y,108vh),0) rotate(1deg) scale(.98)}
+  100%{opacity:0;transform:translate3d(-50%,calc(var(--jaws-drag-y,108vh) + 80px),0) rotate(2deg) scale(.94)}
+}
+@keyframes jawsCardChompDrag{
+  0%,39%{opacity:1;filter:blur(0);transform:translate3d(0,0,0) rotate(0) scale(1)}
+  48%{opacity:1;filter:blur(0);transform:translate3d(0,-5px,0) rotate(-.7deg) scale(.985)}
+  72%{opacity:.95;filter:blur(.35px);transform:translate3d(0,var(--jaws-card-drag,112vh),0) rotate(-2.2deg) scale(.94)}
+  100%{opacity:0;filter:blur(1.4px);transform:translate3d(0,calc(var(--jaws-card-drag,112vh) + 96px),0) rotate(-4deg) scale(.9)}
+}
+@keyframes jawsRipple{0%{opacity:0;transform:translate(-50%,-50%) scale(.52)}22%,62%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(1.18)}}
+@keyframes jawsBiteFlash{0%,24%{opacity:0;transform:translate(-50%,-50%) scale(.65)}36%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.45)}}
+@media(max-width:640px){
+  .jaws-shark-piece{width:var(--jaws-width,min(620px,106vw))}
+}
+@media(prefers-reduced-motion:reduce){
+  .jaws-shark-piece,.jaws-ripple,.jaws-login-layer::before{animation:jawsReduced 1.1s ease forwards}
+  .jaws-bite-flash{display:none}
+  .jaws-card-clone{animation:none;opacity:0}
+  .auth-login.jaws-card-hidden{visibility:hidden!important}
+  @keyframes jawsReduced{0%{opacity:0}25%,78%{opacity:1}100%{opacity:0}}
+}
 .trojan-easter-layer{position:fixed;inset:0;z-index:13160;pointer-events:none;overflow:hidden;isolation:isolate}
 .trojan-easter-layer::before{content:'';position:fixed;left:50%;top:50%;width:min(620px,78vw);height:min(360px,44vh);border-radius:50%;background:radial-gradient(circle,rgba(245,199,91,.16),rgba(245,199,91,0) 70%);opacity:0;transform:translate(-50%,-34%);animation:trojanGlow 3.4s ease forwards}
 .trojan-horse{position:fixed;left:0;top:50%;width:min(330px,44vw);aspect-ratio:221/257;background:url("assets/google-odyssey-horse-opens-spritesheet.png") 0 0/400% 100% no-repeat;filter:drop-shadow(0 28px 30px rgba(4,9,17,.34));transform-origin:50% 88%;animation:trojanHorseRoll 3.35s cubic-bezier(.18,.82,.24,1) forwards,trojanHorseBob .34s ease-in-out infinite alternate,trojanHorseOpen 3.35s steps(3,end) forwards}
@@ -3280,6 +3339,8 @@ var ADMIN_ACCOUNT={email:'jmehta@une.edu',password:'test123',name:'Jeevs'};
 var AUTH_STORAGE_KEY='une-study-hub-custom-users-v1';
 var AUTH_LAST_LOGIN_KEY='une-study-hub-last-login-v1';
 var AUTH_REMEMBER_KEY='une-study-hub-remembered-auth-v1';
+var AUTH_LOGIN_EFFECT_HISTORY_COOKIE='une-study-hub-login-effect-history-v1';
+var AUTH_LOGIN_EFFECT_HISTORY_KEY='une-study-hub-login-effect-history-v1';
     // Fixed session length: reloads should not extend the four-hour login window.
     var AUTH_REMEMBER_MS=4*60*60*1000;
 var AUTH_GRAVITY_LOGIN_CHANCE=.22;
@@ -3287,6 +3348,7 @@ var AUTH_PAW_LOGIN_CHANCE=.25;
 var AUTH_CAT_INPUT_TIMER=null;
 var AUTH_SPIDER_INPUT_TIMER=null;
 var AUTH_THANOS_INPUT_TIMER=null;
+var AUTH_JAWS_INPUT_TIMER=null;
 var AUTH_ORIGAMI_INPUT_TIMER=null;
 var AUTH_TROJAN_INPUT_TIMER=null;
 var AUTH_CAR_INPUT_TIMER=null;
@@ -3305,6 +3367,7 @@ var AUTH_LOGIN_EFFECTS=[
   'gravity',
   'spiderman',
   'thanos',
+  'jaws',
   'trojan',
   'car',
   'scalpel',
@@ -3317,6 +3380,7 @@ var AUTH_LOGIN_EFFECT_ASSETS={
   pawprints:['assets/google-cat-paw.gif','assets/google-dog-paw.gif'],
   spiderman:['assets/google-spiderman-fab.png','assets/google-spiderman-sprite.png'],
   thanos:['assets/google-thanos-idle.png','assets/google-thanos-snap-transparent.gif'],
+  jaws:['assets/jaws-shark-upper.png','assets/jaws-shark-lower.png'],
   trojan:[
     'assets/google-odyssey-horse.png',
     'assets/google-odyssey-horse-opens-spritesheet.png',
@@ -3803,6 +3867,71 @@ function safeStorageWrite(key,value){
 function safeStorageRemove(key){
   try{localStorage.removeItem(key);return true}catch(err){return false}
 }
+function readCookie(name){
+  try{
+    var prefix=encodeURIComponent(name)+'=';
+    var parts=String(document.cookie||'').split(';');
+    for(var i=0;i<parts.length;i++){
+      var part=parts[i].trim();
+      if(part.indexOf(prefix)===0)return decodeURIComponent(part.slice(prefix.length));
+    }
+  }catch(err){}
+  return null;
+}
+function writeCookie(name,value,days){
+  try{
+    var maxAge=Math.max(1,Math.round((days||365)*24*60*60));
+    document.cookie=encodeURIComponent(name)+'='+encodeURIComponent(value)+'; max-age='+maxAge+'; path=/; SameSite=Lax';
+    return true;
+  }catch(err){return false}
+}
+function loadAuthLoginEffectHistory(){
+  var raw=readCookie(AUTH_LOGIN_EFFECT_HISTORY_COOKIE)||safeStorageRead(AUTH_LOGIN_EFFECT_HISTORY_KEY);
+  if(!raw)return {v:1,users:{}};
+  try{
+    var parsed=JSON.parse(raw);
+    if(!parsed||typeof parsed!=='object'||Array.isArray(parsed))return {v:1,users:{}};
+    if(!parsed.users||typeof parsed.users!=='object'||Array.isArray(parsed.users))parsed.users={};
+    return parsed;
+  }catch(err){return {v:1,users:{}}}
+}
+function saveAuthLoginEffectHistory(history){
+  if(!history||typeof history!=='object')history={v:1,users:{}};
+  history.v=1;
+  if(!history.users||typeof history.users!=='object'||Array.isArray(history.users))history.users={};
+  var keys=Object.keys(history.users);
+  if(keys.length>40){
+    keys.sort(function(a,b){return Number(history.users[b].updatedAt||0)-Number(history.users[a].updatedAt||0)});
+    keys.slice(40).forEach(function(key){delete history.users[key]});
+  }
+  var raw=JSON.stringify(history);
+  writeCookie(AUTH_LOGIN_EFFECT_HISTORY_COOKIE,raw,365);
+  safeStorageWrite(AUTH_LOGIN_EFFECT_HISTORY_KEY,raw);
+}
+function uniqueAuthEffects(effects){
+  var seen={};
+  return (effects||[]).filter(function(effect){
+    if(!effect||seen[effect])return false;
+    seen[effect]=true;
+    return true;
+  });
+}
+function shuffleAuthEffects(effects,lastEffect){
+  var pool=(effects||[]).slice();
+  for(var i=pool.length-1;i>0;i--){
+    var j=Math.floor(Math.random()*(i+1));
+    var tmp=pool[i];
+    pool[i]=pool[j];
+    pool[j]=tmp;
+  }
+  if(pool.length>1&&pool[0]===lastEffect){
+    var swapIndex=1+Math.floor(Math.random()*(pool.length-1));
+    var first=pool[0];
+    pool[0]=pool[swapIndex];
+    pool[swapIndex]=first;
+  }
+  return pool;
+}
 function loadCustomUsers(){
   var raw=safeStorageRead(AUTH_STORAGE_KEY);
   if(!raw)return {};
@@ -3935,6 +4064,7 @@ function setupAuth(){
       if(AUTH_CAT_INPUT_TIMER)clearTimeout(AUTH_CAT_INPUT_TIMER);
       if(AUTH_SPIDER_INPUT_TIMER)clearTimeout(AUTH_SPIDER_INPUT_TIMER);
       if(AUTH_THANOS_INPUT_TIMER)clearTimeout(AUTH_THANOS_INPUT_TIMER);
+      if(AUTH_JAWS_INPUT_TIMER)clearTimeout(AUTH_JAWS_INPUT_TIMER);
       if(AUTH_ORIGAMI_INPUT_TIMER)clearTimeout(AUTH_ORIGAMI_INPUT_TIMER);
       if(AUTH_TROJAN_INPUT_TIMER)clearTimeout(AUTH_TROJAN_INPUT_TIMER);
       if(AUTH_CAR_INPUT_TIMER)clearTimeout(AUTH_CAR_INPUT_TIMER);
@@ -3971,6 +4101,15 @@ function setupAuth(){
           triggerThanosSnapEasterEgg({toastLabel:'Thanos snap unlocked'});
           input.value='';
           setAuthMsg('Perfectly balanced. No login attempted.','success');
+        },420);
+        return;
+      }
+      if(typed==='jaws'){
+        AUTH_JAWS_INPUT_TIMER=window.setTimeout(function(){
+          if(normEmail(input.value)!=='jaws')return;
+          triggerJawsLoginEasterEgg({toastLabel:'Jaws unlocked',reset:true});
+          input.value='';
+          setAuthMsg('Jaws preview only. No login attempted.','success');
         },420);
         return;
       }
@@ -4125,6 +4264,12 @@ function tryAuthLogin(ev){
     setAuthMsg('Perfectly balanced. No login attempted.','success');
     return;
   }
+  if(email==='jaws'){
+    triggerJawsLoginEasterEgg({toastLabel:'Jaws unlocked',reset:true});
+    if(input)input.value='';
+    setAuthMsg('Jaws preview only. No login attempted.','success');
+    return;
+  }
   if(email==='origami'){
     triggerOrigamiLoginExit({toastLabel:'Origami flight unlocked'});
     if(input)input.value='';
@@ -4242,21 +4387,41 @@ function isOmairaCallLoginUser(user){
 function shouldForceOmairaCallLogin(user){
   return isOmairaCallLoginUser(user)&&Date.now()<AUTH_OMAIRA_CALL_FORCE_UNTIL;
 }
-function pickAuthLoginEffectForUser(user){
+function getEligibleAuthLoginEffectsForUser(user){
+  var effects=AUTH_LOGIN_EFFECTS.slice();
   if(isOmairaCallLoginUser(user)){
-    var omairaEffects=AUTH_LOGIN_EFFECTS.concat(['omairaCall']);
-    return omairaEffects[Math.floor(Math.random()*omairaEffects.length)]||'original';
+    effects=effects.concat(['omairaCall']);
   }
   if(isDavidHeavyLoginUser(user)){
-    var targetedEffects=AUTH_LOGIN_EFFECTS.concat(['davidHeavy']);
-    if(isDavidDollyLoginUser(user))targetedEffects=targetedEffects.concat(['davidDolly']);
-    return targetedEffects[Math.floor(Math.random()*targetedEffects.length)]||'original';
+    effects=effects.concat(['davidHeavy']);
+    if(isDavidDollyLoginUser(user))effects=effects.concat(['davidDolly']);
   }
   if(isHaadHeavyLoginUser(user)){
-    var haadTargetedEffects=AUTH_LOGIN_EFFECTS.concat(['haadHeavy']);
-    return haadTargetedEffects[Math.floor(Math.random()*haadTargetedEffects.length)]||'original';
+    effects=effects.concat(['haadHeavy']);
   }
-  return AUTH_SELECTED_LOGIN_EFFECT||pickAuthLoginEffect();
+  return uniqueAuthEffects(effects);
+}
+function pickTrackedAuthLoginEffect(user){
+  var eligible=getEligibleAuthLoginEffectsForUser(user);
+  if(!eligible.length)return 'original';
+  var key=normEmail(user&&user.email)||'default';
+  var history=loadAuthLoginEffectHistory();
+  var userHistory=history.users[key]||{};
+  var lastEffect=userHistory.last||'';
+  var remaining=Array.isArray(userHistory.remaining)?userHistory.remaining.filter(function(effect){return eligible.indexOf(effect)!==-1;}):[];
+  if(!remaining.length)remaining=shuffleAuthEffects(eligible,lastEffect);
+  var choice=remaining.shift()||'original';
+  history.users[key]={
+    eligible:eligible,
+    remaining:remaining,
+    last:choice,
+    updatedAt:Date.now()
+  };
+  saveAuthLoginEffectHistory(history);
+  return choice;
+}
+function pickAuthLoginEffectForUser(user){
+  return pickTrackedAuthLoginEffect(user);
 }
 function playRandomLoginEffect(user){
   if(shouldForceDavidDoorPartyLogin(user)){
@@ -4361,6 +4526,15 @@ function playRandomLoginEffect(user){
     triggerThanosSnapEasterEgg({
       loginMode:true,
       toastLabel:'Thanos snap unlocked',
+      onComplete:function(){playWelcome(user);}
+    });
+    return;
+  }
+  if(choice==='jaws'){
+    setAuthMsg('Verified. Jaws assist incoming...','success');
+    triggerJawsLoginEasterEgg({
+      loginMode:true,
+      toastLabel:'Jaws unlocked',
       onComplete:function(){playWelcome(user);}
     });
     return;
@@ -5213,6 +5387,7 @@ var SECRET_SHORTCUTS=[
   {group:'games',key:'cat',aliases:[],icon:'🐾',title:'Paw Prints',description:'Runs the cat and dog paw-print surprise.'},
   {group:'games',key:'spiderman',aliases:['spidey'],icon:'🕸️',title:'Web Swing',description:'Runs the Spider-Man style web-sweep surprise.'},
   {group:'games',key:'thanos',aliases:['snap'],icon:'💎',title:'Thanos Snap',description:'Runs the Infinity Gauntlet dust-away surprise.'},
+  {group:'games',key:'jaws',aliases:['shark'],icon:'🦈',title:'Jaws Drag',description:'Has a shark grab the login card and pull it under.'},
   {group:'games',key:'trojan',aliases:['odyssey'],icon:'🏛️',title:'Trojan Horse',description:'Runs the Google Odyssey horse surprise.'},
   {group:'games',key:'car',aliases:[],icon:'🚗',title:'Car Bump',description:'Drives into the login card and pushes it aside.'},
   {group:'games',key:'scalpel',aliases:['anatomy'],icon:'🔪',title:'Anatomy Split',description:'Cuts the login screen into two halves.'},
@@ -5301,6 +5476,7 @@ function launchSecretCommand(keyword){
     case 'cat': triggerPawPrintEasterEgg({toastLabel:'Paw prints unlocked'}); break;
     case 'spiderman': triggerSpiderManEasterEgg({toastLabel:'Web-slinger unlocked'}); break;
     case 'thanos': triggerThanosSnapEasterEgg({toastLabel:'Thanos snap unlocked'}); break;
+    case 'jaws': triggerJawsLoginEasterEgg({toastLabel:'Jaws unlocked',reset:true}); break;
     case 'trojan': triggerTrojanHorseEasterEgg({toastLabel:'Trojan horse unlocked'}); break;
     case 'car': triggerCarLoginEasterEgg({toastLabel:'Car assist unlocked',reset:true}); break;
     case 'scalpel': triggerScalpelLoginEasterEgg({toastLabel:'Anatomy assist unlocked',reset:true}); break;
@@ -5741,6 +5917,80 @@ function restoreThanosTargets(){
       el.classList.remove('thanos-returning');
     },740);
   });
+}
+function triggerJawsLoginEasterEgg(options){
+  options=options||{};
+  var overlay=document.getElementById('authOverlay');
+  var card=document.getElementById('authLoginCard');
+  if(!overlay||!card||!document.body.classList.contains('auth-locked')){
+    if(typeof options.onComplete==='function')options.onComplete();
+    return;
+  }
+  var oldLayer=document.querySelector('.jaws-login-layer');
+  if(oldLayer)oldLayer.remove();
+  card.classList.remove('jaws-card-hidden');
+  card.style.visibility='';
+  void card.offsetWidth;
+  var rect=card.getBoundingClientRect();
+  var viewportW=window.innerWidth||document.documentElement.clientWidth||1280;
+  var viewportH=window.innerHeight||document.documentElement.clientHeight||720;
+  var sharkWidth=Math.max(430,Math.min(viewportW*.92,rect.width*1.18,820));
+  var mouthCenter=sharkWidth*(374/573);
+  var biteY=Math.max(-sharkWidth*.13,Math.min(viewportH*.58,rect.top+rect.height*.58-mouthCenter));
+  var dragDistance=viewportH-rect.top+sharkWidth*.28;
+  var layer=document.createElement('div');
+  layer.className='jaws-login-layer';
+  layer.setAttribute('aria-hidden','true');
+  layer.style.setProperty('--jaws-x',(rect.left+rect.width*.5)+'px');
+  layer.style.setProperty('--jaws-width',sharkWidth+'px');
+  layer.style.setProperty('--jaws-lurk-y',(viewportH+sharkWidth*.16)+'px');
+  layer.style.setProperty('--jaws-upper-open-y',(biteY-sharkWidth*.08)+'px');
+  layer.style.setProperty('--jaws-lower-open-y',(biteY+sharkWidth*.11)+'px');
+  layer.style.setProperty('--jaws-bite-y',biteY+'px');
+  layer.style.setProperty('--jaws-flash-y',(biteY+sharkWidth*.48)+'px');
+  layer.style.setProperty('--jaws-drag-y',(viewportH+sharkWidth*.32)+'px');
+  layer.style.setProperty('--jaws-card-left',rect.left+'px');
+  layer.style.setProperty('--jaws-card-top',rect.top+'px');
+  layer.style.setProperty('--jaws-card-width',rect.width+'px');
+  layer.style.setProperty('--jaws-card-height',rect.height+'px');
+  layer.style.setProperty('--jaws-card-drag',dragDistance+'px');
+  layer.style.setProperty('--jaws-card-drag-start',(dragDistance*.26)+'px');
+  layer.style.setProperty('--jaws-ripple-y',Math.min(viewportH-26,rect.top+rect.height*.86)+'px');
+  layer.style.setProperty('--jaws-ripple-width',Math.min(viewportW*.88,sharkWidth*.9)+'px');
+  var clone=card.cloneNode(true);
+  clone.classList.add('jaws-card-clone');
+  clone.removeAttribute('id');
+  Array.prototype.slice.call(clone.querySelectorAll('[id]')).forEach(function(node){node.removeAttribute('id');});
+  var upper=document.createElement('img');
+  upper.className='jaws-shark-piece upper';
+  upper.src='assets/jaws-shark-upper.png';
+  upper.alt='';
+  upper.decoding='async';
+  var lower=document.createElement('img');
+  lower.className='jaws-shark-piece lower';
+  lower.src='assets/jaws-shark-lower.png';
+  lower.alt='';
+  lower.decoding='async';
+  var ripple=document.createElement('span');
+  ripple.className='jaws-ripple';
+  var flash=document.createElement('span');
+  flash.className='jaws-bite-flash';
+  layer.appendChild(ripple);
+  layer.appendChild(lower);
+  layer.appendChild(clone);
+  layer.appendChild(upper);
+  layer.appendChild(flash);
+  document.body.appendChild(layer);
+  card.classList.add('jaws-card-hidden');
+  if(options.toastLabel!==false)showSecretToast(options.toastLabel||'Jaws unlocked');
+  if(typeof options.onComplete==='function'){
+    window.setTimeout(options.onComplete,options.completeDelay||3100);
+  }
+  window.setTimeout(function(){
+    if(layer&&layer.parentNode)layer.parentNode.removeChild(layer);
+    card.classList.remove('jaws-card-hidden');
+    card.style.visibility='';
+  },3900);
 }
 function triggerTrojanHorseEasterEgg(options){
   options=options||{};
@@ -6529,6 +6779,16 @@ function handleEasterEggKeydown(ev){
   if(EASTER_EGG_BUFFER.endsWith('snap')){
     EASTER_EGG_BUFFER='';
     triggerThanosSnapEasterEgg({toastLabel:'Thanos snap unlocked'});
+    return;
+  }
+  if(EASTER_EGG_BUFFER.endsWith('jaws')){
+    EASTER_EGG_BUFFER='';
+    triggerJawsLoginEasterEgg({toastLabel:'Jaws unlocked',reset:true});
+    return;
+  }
+  if(EASTER_EGG_BUFFER.endsWith('shark')){
+    EASTER_EGG_BUFFER='';
+    triggerJawsLoginEasterEgg({toastLabel:'Jaws unlocked',reset:true});
     return;
   }
   if(EASTER_EGG_BUFFER.endsWith('trojan')){
