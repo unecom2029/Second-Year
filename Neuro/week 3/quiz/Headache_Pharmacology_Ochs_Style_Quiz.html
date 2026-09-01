@@ -3,6 +3,56 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+(function(){
+  var NOTE_AUTH_KEY='une-study-hub-remembered-auth-v1';
+  var NOTE_LOGIN_URL='../../../index.html?login=notes';
+
+  function readCookie(name){
+    try{
+      var prefix=encodeURIComponent(name)+'=';
+      var parts=String(document.cookie||'').split(';');
+      for(var i=0;i<parts.length;i++){
+        var part=parts[i].trim();
+        if(part.indexOf(prefix)===0)return decodeURIComponent(part.slice(prefix.length));
+      }
+    }catch(err){}
+    return null;
+  }
+  function validAuth(raw){
+    if(!raw)return false;
+    try{
+      var parsed=JSON.parse(raw);
+      var email=String(parsed&&parsed.email||'').trim().toLowerCase();
+      var expiresAt=Number(parsed&&parsed.expiresAt);
+      return /@une\.edu$/.test(email)&&expiresAt&&Date.now()<expiresAt;
+    }catch(err){return false}
+  }
+  function hasValidNoteAuth(){
+    var stored=null;
+    try{ stored=localStorage.getItem(NOTE_AUTH_KEY); }catch(err){}
+    return validAuth(stored)||validAuth(readCookie(NOTE_AUTH_KEY));
+  }
+  function syncNoteAuth(){
+    document.documentElement.setAttribute('data-note-auth',hasValidNoteAuth()?'unlocked':'locked');
+  }
+  window.openNoteLogin=function(){
+    var loginWindow=window.open(NOTE_LOGIN_URL,'uneStudyHubLogin');
+    if(!loginWindow)window.location.href=NOTE_LOGIN_URL;
+  };
+  window.refreshNoteAuth=syncNoteAuth;
+  window.addEventListener('message',function(event){
+    if(event&&event.data&&event.data.type==='une-study-hub-auth-complete')syncNoteAuth();
+  });
+  window.addEventListener('storage',function(event){
+    if(!event||event.key===NOTE_AUTH_KEY)syncNoteAuth();
+  });
+  window.addEventListener('focus',syncNoteAuth);
+  window.setInterval(syncNoteAuth,1000);
+  syncNoteAuth();
+})();
+</script>
 <title>Headache Pharmacology — Ochs-Style Question Bank</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -289,9 +339,78 @@ body.print-review-active #printReviewRoot { display: block; padding: 32px; backg
 .finish-score { font-family: 'Crimson Pro', serif; font-size: 52px; font-weight: 800; color: var(--teal); margin-bottom: 6px; }
 .finish-btn { border: none; background: linear-gradient(135deg, var(--navy2), var(--navy)); color: #fff; font-weight: 800; padding: 12px 22px; border-radius: 10px; cursor: pointer; font-family: 'Nunito', sans-serif; }
 
+#noteAuthGate{display:none}
+html[data-note-auth="locked"] body{
+  min-height:100vh;
+  overflow:hidden;
+  background:#f4f5f7;
+  color:#1f2937;
+}
+html[data-note-auth="locked"] body>*:not(#noteAuthGate){display:none!important}
+html[data-note-auth="locked"] #noteAuthGate{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  background:linear-gradient(135deg,#f4f5f7,#ffffff 52%,#eef2f7);
+}
+.note-auth-card{
+  width:min(460px,100%);
+  padding:30px;
+  border:1px solid rgba(31,41,55,.14);
+  border-radius:14px;
+  background:rgba(255,255,255,.94);
+  box-shadow:0 22px 70px rgba(31,41,55,.16);
+  text-align:center;
+}
+.note-auth-kicker{
+  font-family:var(--mono,'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace);
+  font-size:.68rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:#cf4520;
+  font-weight:700;
+  margin-bottom:12px;
+}
+.note-auth-card h1{
+  margin:0 0 12px;
+  font-family:var(--disp,'Crimson Pro',Georgia,'Times New Roman',serif);
+  font-size:clamp(2rem,6vw,3rem);
+  line-height:.98;
+  color:#263241;
+}
+.note-auth-card p{
+  margin:0 0 22px;
+  font-size:1rem;
+  line-height:1.55;
+  color:#556070;
+}
+.note-auth-btn{
+  border:0;
+  border-radius:999px;
+  padding:12px 20px;
+  font:800 .9rem var(--body,'Nunito',-apple-system,'Segoe UI',Roboto,Arial,sans-serif);
+  color:#fff;
+  background:#263241;
+  cursor:pointer;
+  box-shadow:0 12px 28px rgba(38,50,65,.22);
+}
+.note-auth-btn:hover{background:#cf4520}
 </style>
 </head>
 <body>
+<div id="noteAuthGate" role="dialog" aria-modal="true" aria-labelledby="noteAuthTitle">
+  <div class="note-auth-card">
+    <div class="note-auth-kicker">2nd Year Study Hub</div>
+    <h1 id="noteAuthTitle">Please log in to continue with this note.</h1>
+    <p>Open the Study Hub login, enter your approved UNE email, and this note will unlock automatically.</p>
+    <button class="note-auth-btn" type="button" onclick="openNoteLogin()">Log in to continue</button>
+  </div>
+</div>
+
 
 <div class="launch-wrap" id="launchWrap">
   <div class="launch-card">
