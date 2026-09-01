@@ -1,0 +1,1421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sepsis 2026 — Study Notes</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🩸</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ============ COLOR SYSTEM ============ */
+:root{
+  --ink:#1a1209; --paper:#faf7f2; --cream:#ece1cd;
+  --accent:#b5341a; --accent2:#2c5f8a; --gold:#c9922a; --muted:#6b5e4e; --border:#d4cabb;
+  --highlight:#fbe4a0; --highlight2:#cfe4f7; --green-bg:#d7f0da; --red-bg:#f8d6d0;
+  --blue-bg:#d2e7f9; --purple-bg:#e6dbfa; --hero-bg:#1a1209;
+  --panel-dark-bg:#1a1209; --panel-dark-text:#faf7f2;
+  --hero-heading:#f5ede0; --hero-sub:#c9bcad;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.12);
+  --hero-meta-label:#a8968400; --hero-meta-label:#a89684; --hero-meta-value:#f0e0c8;
+  --floating-ui-bg:#3a3030; --floating-ui-fg:#f5ede0; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.2);
+  --quiz-overlay:rgba(44,95,138,0.5); --quiz-overlay-hover:rgba(44,95,138,0.78);
+}
+[data-theme="night"]{
+  --ink:#e0e8f0; --paper:#0f1923; --cream:#162030;
+  --accent:#e8b84b; --accent2:#4aa8d8; --gold:#e8b84b; --muted:#94abc0; --border:#1e3048;
+  --highlight:#3a3016; --highlight2:#12283a; --green-bg:#10281c; --red-bg:#2e1616;
+  --blue-bg:#10233a; --purple-bg:#201a38; --hero-bg:#070e15;
+  --panel-dark-bg:#101a26; --panel-dark-text:#eef5fb;
+  --hero-heading:#f4f9ff; --hero-sub:#b8cad8;
+  --hero-meta-bg:rgba(255,255,255,0.08); --hero-meta-border:rgba(255,255,255,0.12);
+  --hero-meta-label:#8fa4b8; --hero-meta-value:#f4f9ff;
+  --floating-ui-bg:#070e15; --floating-ui-fg:#f4f9ff; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.36);
+  --quiz-overlay:rgba(74,168,216,0.42); --quiz-overlay-hover:rgba(74,168,216,0.62);
+}
+[data-theme="ocean"]{
+  --ink:#0b2436; --paper:#eef7fb; --cream:#cdeaf5;
+  --accent:#d1495b; --accent2:#0f6fb0; --gold:#d9a441; --muted:#4f7185; --border:#a8d4e8;
+  --highlight:#ffe6ad; --highlight2:#bfe3f2; --green-bg:#c9f0dc; --red-bg:#fad9d5;
+  --blue-bg:#c3e4f6; --purple-bg:#e1d7f6; --hero-bg:#0a3a5c;
+  --panel-dark-bg:#0b2436; --panel-dark-text:#eef7fb;
+  --hero-heading:#f2fbff; --hero-sub:#bcdcef;
+  --hero-meta-bg:rgba(255,255,255,0.10); --hero-meta-border:rgba(255,255,255,0.16);
+  --hero-meta-label:#9fc7dd; --hero-meta-value:#f2fbff;
+  --floating-ui-bg:#0a3a5c; --floating-ui-fg:#f2fbff; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.28);
+  --quiz-overlay:rgba(15,111,176,0.5); --quiz-overlay-hover:rgba(15,111,176,0.78);
+}
+[data-theme="forest"]{
+  --ink:#16241a; --paper:#f2f7f0; --cream:#d7ead2;
+  --accent:#a3401f; --accent2:#1f7a4d; --gold:#b8860b; --muted:#52684f; --border:#b7d4ae;
+  --highlight:#f3e6a0; --highlight2:#cbe4c4; --green-bg:#c7ecc0; --red-bg:#f7ddd0;
+  --blue-bg:#cbe6df; --purple-bg:#e1dbee; --hero-bg:#12301c;
+  --panel-dark-bg:#16241a; --panel-dark-text:#f2f7f0;
+  --hero-heading:#f2fbf1; --hero-sub:#bcd8ba;
+  --hero-meta-bg:rgba(255,255,255,0.09); --hero-meta-border:rgba(255,255,255,0.14);
+  --hero-meta-label:#9dbf9a; --hero-meta-value:#f2fbf1;
+  --floating-ui-bg:#12301c; --floating-ui-fg:#f2fbf1; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.28);
+  --quiz-overlay:rgba(31,122,77,0.5); --quiz-overlay-hover:rgba(31,122,77,0.78);
+}
+[data-theme="sepia"]{
+  --ink:#3a2414; --paper:#f7ecd9; --cream:#ecd7ae;
+  --accent:#9c3b17; --accent2:#2f5f6b; --gold:#8b5a17; --muted:#7a614a; --border:#d9bd8c;
+  --highlight:#f0d38a; --highlight2:#d7c39a; --green-bg:#dbe3bc; --red-bg:#f0d0c0;
+  --blue-bg:#cfdedd; --purple-bg:#e3d3e0; --hero-bg:#3f2814;
+  --panel-dark-bg:#3a2414; --panel-dark-text:#f7ecd9;
+  --hero-heading:#fbf1e0; --hero-sub:#d6bf9e;
+  --hero-meta-bg:rgba(255,255,255,0.09); --hero-meta-border:rgba(255,255,255,0.14);
+  --hero-meta-label:#bda17c; --hero-meta-value:#fbf1e0;
+  --floating-ui-bg:#3f2814; --floating-ui-fg:#fbf1e0; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.28);
+  --quiz-overlay:rgba(47,95,107,0.5); --quiz-overlay-hover:rgba(47,95,107,0.78);
+}
+[data-theme="lavender"]{
+  --ink:#241a33; --paper:#f6f3fb; --cream:#e7def4;
+  --accent:#b03a5b; --accent2:#6a4fa0; --gold:#b8862a; --muted:#6b5f80; --border:#d3c6e8;
+  --highlight:#f3e2b0; --highlight2:#e0d2f4; --green-bg:#d8eedd; --red-bg:#f7d8dd;
+  --blue-bg:#dcd8f6; --purple-bg:#e6dbfa; --hero-bg:#241a33;
+  --panel-dark-bg:#241a33; --panel-dark-text:#f6f3fb;
+  --hero-heading:#f8f4fd; --hero-sub:#c9bade;
+  --hero-meta-bg:rgba(255,255,255,0.09); --hero-meta-border:rgba(255,255,255,0.14);
+  --hero-meta-label:#a495c0; --hero-meta-value:#f8f4fd;
+  --floating-ui-bg:#241a33; --floating-ui-fg:#f8f4fd; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.3);
+  --quiz-overlay:rgba(106,79,160,0.5); --quiz-overlay-hover:rgba(106,79,160,0.78);
+}
+[data-theme="rose"]{
+  --ink:#33161f; --paper:#fdf3f5; --cream:#f7dde3;
+  --accent:#b02444; --accent2:#2c6a72; --gold:#c07a2a; --muted:#84606c; --border:#ecc4cf;
+  --highlight:#fbe4a8; --highlight2:#f4cfd9; --green-bg:#d7efdc; --red-bg:#f9d3d6;
+  --blue-bg:#d3e8ec; --purple-bg:#ecd9ec; --hero-bg:#3a1220;
+  --panel-dark-bg:#33161f; --panel-dark-text:#fdf3f5;
+  --hero-heading:#fdf2f5; --hero-sub:#dcb3bf;
+  --hero-meta-bg:rgba(255,255,255,0.09); --hero-meta-border:rgba(255,255,255,0.14);
+  --hero-meta-label:#c2909e; --hero-meta-value:#fdf2f5;
+  --floating-ui-bg:#3a1220; --floating-ui-fg:#fdf2f5; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.3);
+  --quiz-overlay:rgba(44,106,114,0.5); --quiz-overlay-hover:rgba(44,106,114,0.78);
+}
+[data-theme="slate"]{
+  --ink:#1c2229; --paper:#f4f5f7; --cream:#e3e7ec;
+  --accent:#cf4520; --accent2:#33607a; --gold:#a8862a; --muted:#5c6a76; --border:#c8d0d8;
+  --highlight:#f2e3ac; --highlight2:#d5e2ec; --green-bg:#d6ead9; --red-bg:#f4d8d0;
+  --blue-bg:#d3e2ef; --purple-bg:#dfd9ec; --hero-bg:#1c2530;
+  --panel-dark-bg:#1c2530; --panel-dark-text:#f4f5f7;
+  --hero-heading:#f6f8fa; --hero-sub:#b7c3ce;
+  --hero-meta-bg:rgba(255,255,255,0.09); --hero-meta-border:rgba(255,255,255,0.14);
+  --hero-meta-label:#93a3b0; --hero-meta-value:#f6f8fa;
+  --floating-ui-bg:#1c2530; --floating-ui-fg:#f6f8fa; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.3);
+  --quiz-overlay:rgba(51,96,122,0.5); --quiz-overlay-hover:rgba(51,96,122,0.78);
+}
+
+/* ============ BASE ============ */
+*{box-sizing:border-box;}
+body{margin:0; background:var(--paper); color:var(--ink);
+  font-family:'Source Serif 4',Georgia,serif; font-size:16px; line-height:1.62;
+  transition:background .25s,color .25s;}
+.container{max-width:min(1220px,94%); margin:0 auto; padding:0 8px;}
+p{margin:0 0 14px;}
+strong{color:var(--accent2); font-weight:600;}
+em{color:var(--muted);}
+a{color:var(--accent2);}
+
+/* ============ HERO ============ */
+.hero{background:var(--hero-bg); padding:52px 0 44px; width:100%;}
+.hero-tag{font-family:'JetBrains Mono',monospace; font-size:.66rem; letter-spacing:.18em;
+  text-transform:uppercase; color:var(--hero-meta-label); margin-bottom:14px;}
+.hero h1{font-family:'Playfair Display',serif; font-weight:900; font-size:clamp(2rem,4.6vw,3.5rem);
+  line-height:1.08; margin:0 0 12px; color:var(--hero-heading);}
+.hero h1 span{color:var(--accent);}
+.hero-sub{color:var(--hero-sub); font-size:1.03rem; max-width:760px; margin:0 0 18px;}
+.hero-meta{display:flex; flex-wrap:wrap; gap:10px; margin-top:20px;}
+.hero-meta-item{background:var(--hero-meta-bg); border:1px solid var(--hero-meta-border);
+  border-radius:8px; padding:9px 14px; display:flex; flex-direction:column; gap:3px;}
+.hero-meta-item .label{font-family:'JetBrains Mono',monospace; font-size:.55rem; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--hero-meta-label);}
+.hero-meta-item .value{font-size:.9rem; font-weight:600; color:var(--hero-meta-value);}
+.hy-btn{display:inline-flex; align-items:center; gap:8px; background:var(--gold); color:#2a1a00;
+  border:none; padding:12px 22px; border-radius:30px; font-family:'JetBrains Mono',monospace;
+  font-size:.78rem; font-weight:700; letter-spacing:.04em; cursor:pointer; margin-top:4px;
+  box-shadow:0 4px 14px rgba(0,0,0,0.3); transition:transform .15s,box-shadow .15s;}
+.hy-btn:hover{transform:translateY(-2px); box-shadow:0 6px 18px rgba(0,0,0,0.35);}
+
+/* ============ TOC — FIXED LEFT SIDEBAR ============ */
+:root{--toc-w:252px;}
+body{padding-left:var(--toc-w);}
+.toc-bar{position:fixed; top:0; left:0; bottom:0; z-index:90; width:var(--toc-w);
+  background:var(--hero-bg); border-right:1px solid rgba(255,255,255,0.10);
+  overflow-y:auto; overflow-x:hidden;}
+.toc-bar::-webkit-scrollbar{width:6px;}
+.toc-bar::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.14); border-radius:3px;}
+.toc-bar::-webkit-scrollbar-track{background:transparent;}
+
+.toc-head{padding:26px 22px 18px; border-bottom:1px solid rgba(255,255,255,0.10);}
+.toc-eyebrow{display:block; font-family:'JetBrains Mono',monospace; font-size:.5rem;
+  letter-spacing:.22em; text-transform:uppercase; color:var(--hero-meta-label); margin-bottom:7px;}
+.toc-name{display:block; font-family:'Playfair Display',serif; font-weight:700;
+  font-size:1.22rem; color:var(--hero-heading); line-height:1.15;}
+.toc-name em{font-style:normal; color:var(--accent);}
+
+.toc-hy-btn{display:flex; align-items:center; justify-content:center; gap:7px;
+  width:calc(100% - 28px); margin:16px 14px 2px; background:var(--gold); color:#2a1a00;
+  border:none; padding:11px 10px; border-radius:24px; cursor:pointer;
+  font-family:'JetBrains Mono',monospace; font-size:.61rem; font-weight:700;
+  letter-spacing:.04em; line-height:1.25; text-align:center;
+  transition:transform .15s,box-shadow .15s;}
+.toc-hy-btn:hover{transform:translateY(-1px); box-shadow:0 4px 13px rgba(0,0,0,0.32);}
+
+.toc-group{font-family:'JetBrains Mono',monospace; font-size:.49rem; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--hero-meta-label); opacity:.75;
+  margin:0; padding:20px 22px 8px;}
+.toc-bar nav{display:flex; flex-direction:column; padding:0 0 30px;}
+.toc-bar a{display:flex; align-items:center; gap:11px; text-decoration:none;
+  font-family:'Source Serif 4',Georgia,serif; font-size:.85rem; line-height:1.3;
+  color:var(--hero-sub); padding:9px 18px 9px 19px;
+  border-left:3px solid transparent; transition:color .15s,border-color .15s,background .15s;}
+.toc-num{flex:none; width:21px; height:21px; border-radius:50%;
+  border:1px solid rgba(255,255,255,0.18); display:flex; align-items:center; justify-content:center;
+  font-family:'JetBrains Mono',monospace; font-size:.58rem; font-weight:700;
+  color:var(--hero-meta-label); transition:all .15s;}
+.toc-num.dot{border:none; position:relative;}
+.toc-num.dot::before{content:''; width:5px; height:5px; border-radius:50%;
+  background:rgba(255,255,255,0.28); transition:background .15s;}
+.toc-bar a:hover{color:var(--hero-heading); background:rgba(255,255,255,0.05);}
+.toc-bar a:hover .toc-num{border-color:rgba(255,255,255,0.4); color:var(--hero-heading);}
+.toc-bar a:hover .toc-num.dot::before{background:var(--accent);}
+.toc-bar a.active{color:var(--hero-heading); border-left-color:var(--accent);
+  background:rgba(255,255,255,0.06); font-weight:600;}
+.toc-bar a.active .toc-num{background:var(--accent); border-color:var(--accent); color:#fff;}
+.toc-bar a.active .toc-num.dot{background:none; border-color:transparent;}
+.toc-bar a.active .toc-num.dot::before{background:var(--accent); width:7px; height:7px;}
+
+/* The sidebar carries the High-Yield button on wide screens, so the hero one is redundant */
+.hero .hy-btn{display:none;}
+
+/* Narrow screens: fall back to a horizontal sticky bar across the top */
+@media (max-width:1000px){
+  body{padding-left:0;}
+  .toc-bar{position:sticky; top:0; bottom:auto; width:100%; height:auto;
+    border-right:none; border-bottom:1px solid rgba(255,255,255,0.12);
+    overflow-x:auto; overflow-y:hidden;}
+  .toc-head,.toc-group,.toc-hy-btn{display:none;}
+  .hero .hy-btn{display:inline-flex;}
+  .toc-bar nav{flex-direction:row; padding:0 8px; white-space:nowrap;}
+  .toc-bar a{padding:11px 14px; border-left:none; border-bottom:2px solid transparent; gap:8px;}
+  .toc-bar a:hover,.toc-bar a.active{border-left-color:transparent;
+    border-bottom-color:var(--accent); background:none;}
+  .toc-num{width:18px; height:18px; font-size:.54rem;}
+}
+
+/* ============ SECTIONS ============ */
+.section{padding:48px 0 12px; border-bottom:1px solid var(--border);}
+.badge-row{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px;}
+.lo-badge{display:inline-block; font-family:'JetBrains Mono',monospace; font-size:.62rem;
+  letter-spacing:.1em; text-transform:uppercase; background:var(--accent2); color:#fff;
+  padding:5px 12px; border-radius:20px; font-weight:700;}
+.lo-badge.alt{background:var(--gold); color:#2a1a00;}
+.section-label{font-family:'JetBrains Mono',monospace; font-size:.62rem; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--muted); margin:0 0 6px;}
+.section-title{font-family:'Playfair Display',serif; font-weight:700; font-size:clamp(1.6rem,3vw,2.35rem);
+  margin:0 0 20px; line-height:1.15; border-bottom:3px solid var(--accent); padding-bottom:10px; display:inline-block;}
+h3{font-family:'Playfair Display',serif; font-size:1.35rem; margin:30px 0 12px;
+  border-left:4px solid var(--accent2); padding-left:12px;}
+h4{font-family:'Playfair Display',serif; font-size:1.05rem; margin:0 0 8px;}
+
+/* ============ CALLOUTS ============ */
+.callout{border-radius:10px; padding:14px 18px; margin:16px 0; border-left:5px solid var(--accent2);
+  background:var(--blue-bg);}
+.callout-title{font-family:'JetBrains Mono',monospace; font-size:.72rem; font-weight:700;
+  letter-spacing:.07em; text-transform:uppercase; margin-bottom:7px;}
+.callout p:last-child,.callout ul:last-child{margin-bottom:0;}
+.callout-key{background:var(--highlight); border-left-color:var(--gold);}
+.callout-concept{background:var(--blue-bg); border-left-color:var(--accent2);}
+.callout-clinical{background:var(--green-bg); border-left-color:#2e7d32;}
+.callout-warning{background:var(--red-bg); border-left-color:var(--accent);}
+.callout-purple{background:var(--purple-bg); border-left-color:#6a4fa0;}
+
+/* ============ LISTS ============ */
+ul.notes-list{list-style:none; padding-left:0; margin:12px 0;}
+ul.notes-list li{position:relative; padding-left:20px; margin-bottom:7px;}
+ul.notes-list li::before{content:'›'; position:absolute; left:4px; color:var(--accent);
+  font-weight:700; font-size:1.1rem; line-height:1.3;}
+ol.step-list{list-style:none; counter-reset:step; padding-left:0; margin:16px 0;}
+ol.step-list li{counter-increment:step; position:relative; padding-left:44px; margin-bottom:14px;}
+ol.step-list li::before{content:counter(step); position:absolute; left:0; top:1px; width:28px; height:28px;
+  background:var(--accent); color:#fff; border-radius:50%; display:flex; align-items:center;
+  justify-content:center; font-family:'JetBrains Mono',monospace; font-size:.78rem; font-weight:700;}
+ol.step-list strong{display:block; margin-bottom:2px;}
+
+/* ============ TABLES ============ */
+table{width:100%; border-collapse:collapse; margin:14px 0 18px; font-size:.9rem;}
+th{background:var(--panel-dark-bg); color:var(--panel-dark-text); text-align:left;
+  padding:9px 11px; font-family:'JetBrains Mono',monospace; font-size:.66rem;
+  letter-spacing:.08em; text-transform:uppercase; font-weight:700;}
+td{padding:9px 11px; border-bottom:1px solid var(--border); vertical-align:top;}
+tr:nth-child(even) td{background:var(--cream);}
+tr:hover td{background:var(--highlight2);}
+
+/* ============ EXAM Q ============ */
+.exam-q{background:var(--panel-dark-bg); color:var(--panel-dark-text); border-radius:12px;
+  padding:20px 22px 18px; margin:22px 0; position:relative;}
+.exam-q::before{content:'Exam Q'; position:absolute; top:-11px; left:20px; background:var(--accent);
+  color:#fff; font-family:'JetBrains Mono',monospace; font-size:.6rem; letter-spacing:.14em;
+  text-transform:uppercase; padding:4px 11px; border-radius:12px; font-weight:700;}
+.exam-q p{margin:0 0 10px;} .exam-q p:last-child{margin-bottom:0;}
+.exam-q strong{color:var(--gold);}
+.exam-q .answer{border-top:1px solid rgba(255,255,255,0.18); margin-top:12px; padding-top:12px;}
+.exam-q .answer .label{font-family:'JetBrains Mono',monospace; font-size:.58rem; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--gold); margin-bottom:5px;}
+.exam-q ul{margin:6px 0 0; padding-left:20px;} .exam-q li{margin-bottom:4px;}
+
+/* ============ IMAGES ============ */
+.slide-img{width:100%; border-radius:10px; border:1px solid var(--border);
+  margin:18px 0 4px; cursor:zoom-in; background:#fff; display:block;}
+.slide-caption{font-family:'JetBrains Mono',monospace; font-size:.63rem; letter-spacing:.06em;
+  color:var(--muted); text-align:center; margin:0 0 18px;}
+.img-duo{display:flex; gap:16px; margin:16px 0; flex-wrap:wrap;}
+.img-duo>div{flex:1 1 260px;}
+
+/* ============ CARDS ============ */
+.drug-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:12px; margin:16px 0;}
+.drug-card{border:1px solid var(--border); border-top:4px solid var(--accent2); border-radius:10px;
+  padding:14px 16px; background:var(--cream);}
+.drug-card h4{margin:0 0 3px; font-size:1rem;}
+.drug-card .generic{font-family:'JetBrains Mono',monospace; font-size:.66rem; color:var(--muted);
+  letter-spacing:.04em; margin-bottom:5px;}
+.hallmarks-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:12px; margin:16px 0;}
+.hallmark-card{border:1px solid var(--border); border-top:4px solid var(--accent); border-radius:10px;
+  padding:14px 16px; background:var(--cream);}
+.hallmark-card:nth-child(2){border-top-color:var(--accent2);}
+.hallmark-card:nth-child(3){border-top-color:var(--gold);}
+.hallmark-card:nth-child(4){border-top-color:#2e7d32;}
+.hallmark-card:nth-child(5){border-top-color:#6a4fa0;}
+.hallmark-card:nth-child(6){border-top-color:var(--accent);}
+.hallmark-card:nth-child(7){border-top-color:var(--accent2);}
+.hallmark-card:nth-child(8){border-top-color:var(--gold);}
+.hallmark-num{font-family:'JetBrains Mono',monospace; font-size:.7rem; font-weight:700;
+  color:var(--accent); margin-bottom:4px;}
+.hallmark-card p{font-size:.86rem; margin:0; color:var(--muted);}
+.compare-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px; margin:18px 0;}
+.compare-card{border:1px solid var(--border); border-radius:12px; padding:16px 18px; background:var(--cream);}
+.compare-card .card-emoji{font-size:1.5rem; display:block; margin-bottom:6px;}
+.tech-card{border:1px solid var(--border); border-left:5px solid var(--gold); border-radius:10px;
+  padding:16px 18px; background:var(--cream); margin:16px 0;}
+.case-card{border:2px solid var(--accent2); border-radius:12px; background:var(--cream);
+  padding:18px 20px; margin:18px 0;}
+.case-card .case-tag{font-family:'JetBrains Mono',monospace; font-size:.6rem; letter-spacing:.14em;
+  text-transform:uppercase; background:var(--accent2); color:#fff; padding:3px 10px;
+  border-radius:12px; display:inline-block; margin-bottom:9px; font-weight:700;}
+.pill{display:inline-block; font-family:'JetBrains Mono',monospace; font-size:.62rem;
+  background:var(--cream); border:1px solid var(--border); padding:2px 8px; border-radius:12px;
+  margin:0 2px;}
+.lab-tag{font-family:'JetBrains Mono',monospace; color:var(--accent2); font-size:.86rem; font-weight:500;}
+.abbr-first{border-bottom:1px dotted var(--muted);}
+
+/* ============ TABLE QUIZ ============ */
+.tq-bar{display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:6px; padding:8px 12px;
+  background:var(--cream); border:1px solid var(--border); border-radius:8px;}
+.tq-toggle{font-family:'JetBrains Mono',monospace; font-size:.65rem; letter-spacing:.1em;
+  text-transform:uppercase; background:var(--accent2); color:#fff; border:none; border-radius:20px;
+  padding:5px 12px; cursor:pointer;}
+.tq-toggle.active{background:var(--accent);}
+.tq-cols{display:flex; flex-wrap:wrap; gap:5px; flex:1;}
+.tq-col-btn{font-size:.72rem; padding:3px 9px; border:1px solid var(--border); border-radius:12px;
+  background:var(--paper); color:var(--ink); cursor:pointer; font-family:'JetBrains Mono',monospace; transition:all .15s;}
+.tq-col-btn.sel{background:var(--accent2); color:#fff; border-color:var(--accent2);}
+.tq-start{font-family:'JetBrains Mono',monospace; font-size:.65rem; background:#2e7d32; color:#fff;
+  border:none; border-radius:20px; padding:5px 12px; cursor:pointer;}
+.tq-start:disabled{opacity:.35; cursor:not-allowed;}
+.tq-shuffle{font-family:'JetBrains Mono',monospace; font-size:.65rem; background:var(--gold);
+  color:#2a1a00; border:none; border-radius:20px; padding:5px 12px; cursor:pointer;}
+.tq-reset{font-family:'JetBrains Mono',monospace; font-size:.65rem; background:#b5341a; color:#fff;
+  border:none; border-radius:20px; padding:5px 13px; cursor:pointer;}
+.tq-score{font-family:'JetBrains Mono',monospace; font-size:.72rem; color:var(--muted);}
+.tq-score.done{color:#2e7d32; font-weight:700;}
+.quiz-hidden-cell{position:relative !important; cursor:pointer !important;}
+.quiz-hidden-cell .tq-cell-content{filter:blur(5px) !important; user-select:none !important;
+  pointer-events:none !important; opacity:.4 !important;}
+.quiz-hidden-cell::after{content:'tap to reveal' !important; position:absolute !important; inset:0 !important;
+  display:flex !important; align-items:center !important; justify-content:center !important;
+  background:var(--quiz-overlay) !important; color:#fff !important;
+  font-family:'JetBrains Mono',monospace !important; font-size:.6rem !important; font-weight:700 !important;
+  letter-spacing:.12em !important; text-transform:uppercase !important; border-radius:4px !important;}
+.quiz-hidden-cell:hover::after{background:var(--quiz-overlay-hover) !important;}
+
+/* ============ LIGHTBOX ============ */
+.lightbox{position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:400; display:none;
+  align-items:center; justify-content:center; cursor:zoom-out; padding:20px;}
+.lightbox.active{display:flex;}
+.lightbox img{max-width:92vw; max-height:88vh; border-radius:6px;}
+
+/* ============ FLOATING CONTROLS ============ */
+.floating-stack{position:fixed; bottom:20px; right:20px; z-index:100; display:flex;
+  flex-direction:column; align-items:flex-end; gap:10px;}
+.font-btn-row{display:flex; align-items:center; background:var(--floating-ui-bg); color:var(--floating-ui-fg);
+  padding:7px 10px; border-radius:30px; box-shadow:var(--floating-ui-shadow);
+  font-family:'JetBrains Mono',monospace; font-size:.62rem; letter-spacing:.1em; gap:2px;}
+.font-btn{background:none; border:none; cursor:pointer; color:var(--floating-ui-fg);
+  font-family:'JetBrains Mono',monospace; font-weight:700; font-size:1rem; padding:2px 8px;
+  border-radius:6px; transition:background .15s; line-height:1;}
+.font-btn:hover{background:rgba(255,255,255,0.18);}
+.font-sep{color:rgba(255,255,255,0.2); padding:0 3px;}
+.font-label{font-size:.58rem; opacity:.7; padding:0 5px; text-transform:uppercase; letter-spacing:.1em;}
+.theme-btn{display:flex; align-items:center; gap:7px; background:var(--floating-ui-bg);
+  color:var(--floating-ui-fg); border:none; padding:10px 16px; border-radius:30px; cursor:pointer;
+  box-shadow:var(--floating-ui-shadow); font-family:'JetBrains Mono',monospace; font-size:.66rem;
+  letter-spacing:.1em; text-transform:uppercase;}
+.theme-panel{background:var(--floating-ui-bg); color:var(--floating-ui-fg); border-radius:12px;
+  padding:10px; box-shadow:var(--floating-ui-shadow); display:none; min-width:190px;}
+.theme-panel.open{display:block;}
+.theme-panel-title{font-family:'JetBrains Mono',monospace; font-size:.55rem; letter-spacing:.14em;
+  text-transform:uppercase; opacity:.6; padding:4px 8px 8px;}
+.theme-option{display:flex; align-items:center; gap:9px; padding:6px 9px; border-radius:7px;
+  cursor:pointer; font-family:'JetBrains Mono',monospace; font-size:.68rem; transition:background .15s;}
+.theme-option:hover{background:rgba(255,255,255,0.12);}
+.theme-option.active{background:rgba(255,255,255,0.2);}
+.theme-swatch{width:18px; height:18px; border-radius:50%; border:1px solid rgba(255,255,255,0.3); flex:none;}
+
+/* ============ HIGH-YIELD ONE-PAGER ============ */
+.hy-modal{position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:300; display:none;
+  align-items:flex-start; justify-content:center; overflow-y:auto; padding:30px 16px;}
+.hy-modal.open{display:flex;}
+.hy-modal-card{background:var(--paper); color:var(--ink); max-width:1150px; width:100%;
+  border-radius:14px; padding:26px 30px 34px; position:relative; box-shadow:0 20px 60px rgba(0,0,0,0.45);}
+.hy-modal-header{display:flex; align-items:center; justify-content:space-between; gap:12px;
+  margin-bottom:14px; border-bottom:3px solid var(--accent2); padding-bottom:10px; flex-wrap:wrap;}
+.hy-modal-header h2{font-family:'Playfair Display',serif; margin:0; font-size:1.4rem;}
+.hy-modal-actions{display:flex; gap:8px; flex:none;}
+.hy-action-btn{font-family:'JetBrains Mono',monospace; font-size:.66rem; letter-spacing:.05em;
+  text-transform:uppercase; border:1px solid var(--border); background:var(--cream); color:var(--ink);
+  padding:7px 13px; border-radius:20px; cursor:pointer;}
+.hy-close-btn{background:var(--accent); color:#fff; border:none;}
+.hy-subhead{font-family:'JetBrains Mono',monospace; font-size:.68rem; color:var(--muted); margin:0 0 14px;}
+.hy-cols{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px;}
+@media (max-width:760px){.hy-cols{grid-template-columns:1fr;}}
+.hy-block{border:1px solid var(--border); border-radius:8px; padding:9px 11px;
+  background:var(--cream); margin-bottom:10px;}
+.hy-block h4{margin:0 0 6px; font-size:.78rem; color:var(--accent2);
+  border-bottom:1px solid var(--border); padding-bottom:4px;}
+.hy-block p,.hy-block li{font-size:.68rem; line-height:1.4; margin:0 0 4px;}
+.hy-block ul{padding-left:15px; margin:0;}
+.hy-lo-tag{display:block; font-family:'JetBrains Mono',monospace; font-size:.62rem; font-weight:700;
+  color:#fff; background:var(--accent2); padding:3px 9px; border-radius:10px; margin-bottom:8px;
+  letter-spacing:.05em; text-align:center;}
+.hy-mini-table{width:100%; border-collapse:collapse; font-size:.65rem; margin-top:4px;}
+.hy-mini-table th,.hy-mini-table td{border:1px solid var(--border); padding:3px 5px;
+  text-align:left; line-height:1.3;}
+.hy-mini-table th{background:var(--panel-dark-bg); color:var(--panel-dark-text); font-size:.58rem;
+  text-transform:uppercase; letter-spacing:.05em;}
+.hy-mini-table tr:nth-child(even) td{background:transparent;}
+.hy-mini-table tr:hover td{background:var(--highlight2);}
+
+footer{padding:30px 0 40px; color:var(--muted); font-family:'JetBrains Mono',monospace; font-size:.66rem;}
+
+/* ============ PRINT ============ */
+@media print{
+  body{background:#fff; color:#000; font-size:11pt; padding-left:0 !important;}
+  .container{max-width:100% !important;}
+  .toc-bar,.floating-stack,.theme-panel,.lightbox,.tq-bar,.hy-btn,.toc-hy-btn{display:none !important;}
+  .section{page-break-inside:auto; border-bottom:1px solid #ccc;}
+  .exam-q{background:#f2f2f2 !important; color:#000 !important; border:1px solid #999;}
+  .exam-q strong,.exam-q .answer .label{color:#8a5a00 !important;}
+  th{background:#333 !important; color:#fff !important; -webkit-print-color-adjust:exact; print-color-adjust:exact;}
+  .callout,.drug-card,.hallmark-card,.case-card,.tech-card{-webkit-print-color-adjust:exact; print-color-adjust:exact;}
+  .slide-img{max-height:520px; object-fit:contain; page-break-inside:avoid;}
+  a{color:#000; text-decoration:none;}
+
+  body.hy-mode .hero, body.hy-mode .toc-bar, body.hy-mode .section,
+  body.hy-mode .lightbox, body.hy-mode .floating-stack, body.hy-mode footer{display:none !important;}
+  body.hy-mode .hy-modal{position:static !important; inset:auto !important; background:none !important;
+    padding:0 !important; display:block !important; overflow:visible !important;}
+  body.hy-mode .hy-modal-card{position:static !important; max-width:100% !important; width:100% !important;
+    box-shadow:none !important; padding:4px !important;}
+  .hy-modal-actions{display:none !important;}
+  body.hy-mode .hy-cols{grid-template-columns:repeat(3,1fr); gap:8px;}
+  body.hy-mode .hy-modal-header h2{font-size:1.05rem;}
+  body.hy-mode .hy-subhead{font-size:.58rem; margin-bottom:8px;}
+  body.hy-mode .hy-block{padding:5px 7px; margin-bottom:6px;}
+  body.hy-mode .hy-block h4{font-size:.68rem; margin-bottom:3px; padding-bottom:2px;}
+  body.hy-mode .hy-block p, body.hy-mode .hy-block li{font-size:.585rem; line-height:1.28; margin-bottom:2px;}
+  body.hy-mode .hy-mini-table{font-size:.555rem;}
+  body.hy-mode .hy-mini-table th, body.hy-mode .hy-mini-table td{padding:1.5px 3px;}
+  body.hy-mode .hy-lo-tag{font-size:.55rem; padding:2px 7px; margin-bottom:5px;}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none !important; transition:none !important;}
+}
+</style>
+</head>
+<body>
+<div class="toc-bar">
+  <div class="toc-head">
+    <span class="toc-eyebrow">Study Notes · 2026</span>
+    <span class="toc-name">Sepsis <em>2026</em></span>
+  </div>
+  <button class="toc-hy-btn" onclick="openHY()">🎯 High-Yield One-Pager</button>
+  <nav>
+    <a href="#overview"><span class="toc-num dot"></span><span>Overview</span></a>
+    <p class="toc-group">Outline Sections</p>
+    <a href="#terms"><span class="toc-num">A</span><span>Sepsis Terms</span></a>
+    <a href="#scores"><span class="toc-num">B</span><span>Assessment Scores</span></a>
+    <a href="#risk"><span class="toc-num">C</span><span>Risk Factors &amp; Epidemiology</span></a>
+    <a href="#etiologies"><span class="toc-num">D</span><span>Etiologies</span></a>
+    <a href="#triggers"><span class="toc-num">E</span><span>Triggers &amp; Mechanism</span></a>
+    <a href="#diagnosis"><span class="toc-num">F</span><span>Signs &amp; Diagnosis</span></a>
+    <a href="#treatment"><span class="toc-num">G</span><span>Treatment &amp; Prognosis</span></a>
+    <p class="toc-group">Reference</p>
+    <a href="#glossary"><span class="toc-num dot"></span><span>Glossary</span></a>
+  </nav>
+</div>
+
+<div class="hero">
+  <div class="container">
+    <div class="hero-tag">Sepsis — 2026 · Microbiology &amp; Pathophysiology</div>
+    <h1>Sepsis: When the Host Response <span>Attacks Itself</span></h1>
+    <p class="hero-sub">The body's extreme response to an infection, resulting in life-threatening organ dysfunction or failure caused by a dysregulated host response, involving the widespread release of inflammatory mediators. Rather than dealing with the infection, the immune system attacks "self."</p>
+    <button class="hy-btn" onclick="openHY()">🎯 High-Yield One-Pager</button>
+    <div class="hero-meta">
+      <div class="hero-meta-item"><span class="label">US Cases / Year</span><span class="value">1.7 million</span></div>
+      <div class="hero-meta-item"><span class="label">US Deaths / Year</span><span class="value">~350,000</span></div>
+      <div class="hero-meta-item"><span class="label">Annual Cost</span><span class="value">$62 billion</span></div>
+      <div class="hero-meta-item"><span class="label">Culture Negative</span><span class="value">30–50% of cases</span></div>
+      <div class="hero-meta-item"><span class="label">Mortality</span><span class="value">10–52%</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ OVERVIEW ============ -->
+<div class="section" id="overview">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge alt">Orientation</div></div>
+    <p class="section-label">The one sentence that organizes everything</p>
+    <h2 class="section-title">Overview: The Problem Is the Response, Not the Organism</h2>
+
+    <div class="callout callout-key">
+      <div class="callout-title">🔑 Core Definition</div>
+      <p style="margin-bottom:0;">Sepsis is the body's <strong>extreme response to an infection</strong>, resulting in <strong>life-threatening organ dysfunction or failure</strong> caused by a <strong>dysregulated host response</strong> to infection, involving the widespread release of inflammatory mediators. <em>Rather than dealing with the infection, the immune system attacks "self."</em></p>
+    </div>
+
+    <p>Almost every difficulty in this lecture follows from that definition. Because the damage comes from the host response rather than the pathogen directly, <strong>no single organism defines sepsis</strong>, <strong>cultures are negative in 30–50% of cases</strong>, and — as the outline states twice — <strong>no assessment or diagnostic criterion has sufficient sensitivity or specificity</strong>. That is why there are five competing scoring systems rather than one test.</p>
+
+    <div class="callout callout-warning">
+      <div class="callout-title">⚠️ Two Statements the Outline Makes Explicitly</div>
+      <ul class="notes-list" style="margin-bottom:0;">
+        <li><strong>"Assessments of sepsis — none to date have sufficient sensitivity or specificity."</strong></li>
+        <li><strong>"Diagnosis — no reliable criteria."</strong></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ============ A. TERMS ============ -->
+<div class="section" id="terms">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Section A — Sepsis Terms</div></div>
+    <p class="section-label">Definitions</p>
+    <h2 class="section-title">The Three Terms, in Order of Severity</h2>
+
+    <ol class="step-list">
+      <li><div><strong>Early sepsis</strong> <strong>Infection and bacteremia are sepsis risk factors</strong> — they are the setup, not the diagnosis itself.</div></li>
+      <li><div><strong>Sepsis</strong> <strong>Life-threatening, time-dependent organ dysfunction</strong> caused by a dysregulated host response to infection. Note the phrase <em>time-dependent</em> — it is what justifies the treatment bundle.</div></li>
+      <li><div><strong>Septic shock</strong> A <strong>subset of sepsis</strong> in which underlying <strong>circulatory and cellular/metabolic abnormalities are profound enough to substantially increase mortality</strong>. Can lead to multi-organ dysfunction (<strong>MODS</strong> — an older term).</div></li>
+    </ol>
+
+    <div class="callout callout-concept">
+      <div class="callout-title">🧠 How to Keep Them Straight</div>
+      <p style="margin-bottom:0;">Infection/bacteremia → <strong>risk factor</strong>. Add <strong>organ dysfunction</strong> → sepsis. Add <strong>profound circulatory and cellular/metabolic abnormality</strong> → septic shock. Each step is a strict subset of the one before, and each adds one requirement.</p>
+    </div>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> What single feature separates septic shock from sepsis?</p>
+      <div class="answer">
+        <div class="label">Answer</div>
+        <p style="margin-bottom:0;">Septic shock is the <strong>subset of sepsis</strong> in which <strong>circulatory <em>and</em> cellular/metabolic abnormalities are profound enough to substantially increase mortality</strong>. Both parts matter — it is not simply hypotension; the cellular/metabolic derangement is part of the definition, which is why lactate (a marker of cellular metabolic failure) sits in the treatment bundle.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ B. SCORES ============ -->
+<div class="section" id="scores">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Section B — Assessments of Sepsis</div></div>
+    <p class="section-label">Scoring systems</p>
+    <h2 class="section-title">Five Scores, None Sufficient</h2>
+
+    <table>
+      <tr><th>Score</th><th>What it is</th><th>Status / use</th><th>Parameters</th></tr>
+      <tr><td><strong>SIRS</strong></td><td>Systemic Inflammatory Response Syndrome</td><td><strong>No longer a defining criterion</strong> for sepsis — but still popular, used by the US Center for Medicare and Medicaid Services</td><td>7 measurable responses to stress (below)</td></tr>
+      <tr><td><strong>SOFA</strong></td><td>Sequential Organ Failure Assessment</td><td><strong>More specific</strong>; <strong>better predictive validity than SIRS</strong></td><td>Neuro, liver, kidney, blood/hemodynamics</td></tr>
+      <tr><td><strong>qSOFA</strong></td><td>quick SOFA</td><td><strong>Bedside assessment outside the emergency room</strong></td><td>3 criteria</td></tr>
+      <tr><td><strong>NEWS2</strong></td><td>National Early Warning Score</td><td>Assesses <strong>risk of death from sepsis</strong></td><td>Aggregate score of <strong>6</strong> parameters</td></tr>
+      <tr><td><strong>MEWS</strong></td><td>Modified Early Warning Score</td><td><strong>More sensitive</strong></td><td>5 parameters</td></tr>
+    </table>
+
+    <h3>SIRS Criteria — Measurable Systemic Responses to Stress</h3>
+    <table>
+      <tr><th>Category</th><th>Criterion</th></tr>
+      <tr><td>Temperature</td><td><strong>Hypothermia (&lt; 38 °C)</strong> or <strong>hyperthermia (&gt; 38 °C)</strong></td></tr>
+      <tr><td>Heart rate</td><td>Tachycardia <strong>&gt; 90 bpm</strong></td></tr>
+      <tr><td>Respiratory</td><td>Increased respiratory rate <strong>&gt; 20/min</strong>, <strong>OR</strong> PaCO₂ <strong>&lt; 32 mmHg</strong></td></tr>
+      <tr><td>White cell count</td><td>Leukopenia <strong>&lt; 4,000/µL</strong>, <strong>OR</strong> leukocytosis <strong>&gt; 12,000/µL</strong>, <strong>OR</strong> <strong>&gt; 10% bands</strong></td></tr>
+    </table>
+
+    <div class="callout callout-clinical">
+      <div class="callout-title">🩺 Note the Bidirectional Criteria</div>
+      <p style="margin-bottom:0;">Three of the four SIRS categories can be tripped in <strong>either direction</strong> — temperature (low <em>or</em> high) and white cell count (low <em>or</em> high <em>or</em> left-shifted). A septic patient can be <strong>hypothermic and leukopenic</strong>, which is easy to misread as "not infected." That bidirectionality is a favorite exam trap.</p>
+    </div>
+
+    <h3>SOFA — Sequential Organ Failure Assessment</h3>
+    <ul class="notes-list">
+      <li>Assesses performance of several organ systems — <strong>neurologic, liver, kidney, blood/hemodynamics</strong> — to determine mortality risk.</li>
+      <li><strong>Better predictive validity than SIRS.</strong></li>
+      <li><strong>Score ≥ 2 = mortality risk of approximately 10%.</strong></li>
+    </ul>
+
+    <h3>qSOFA — Three Bedside Criteria</h3>
+    <div class="hallmarks-grid">
+      <div class="hallmark-card"><div class="hallmark-num">1</div><h4>Respiratory rate ≥ 22/min</h4><p>The most sensitive early vital sign change.</p></div>
+      <div class="hallmark-card"><div class="hallmark-num">2</div><h4>Systolic BP ≤ 100 mmHg</h4><p>Note: ≤ 100, not &lt; 90 — qSOFA catches patients before frank hypotension.</p></div>
+      <div class="hallmark-card"><div class="hallmark-num">3</div><h4>Altered mentation</h4><p>Assessed by Glasgow Coma Scale.</p></div>
+    </div>
+
+    <h3>Other Assessments</h3>
+    <div class="compare-grid">
+      <div class="compare-card" style="background:var(--blue-bg); border-color:var(--accent2);">
+        <span class="card-emoji">📊</span>
+        <h4>NEWS2 — National Early Warning Score</h4>
+        <p>Assesses <strong>risk of death from sepsis</strong>. Aggregate score of <strong>6 parameters</strong>:</p>
+        <ul class="notes-list" style="margin-bottom:0;">
+          <li>Respiration rate</li><li>Oxygen saturation</li><li>Systolic blood pressure</li>
+          <li>Pulse rate</li><li>Consciousness level</li><li>Temperature</li>
+        </ul>
+      </div>
+      <div class="compare-card" style="background:var(--green-bg); border-color:#2e7d32;">
+        <span class="card-emoji">🔍</span>
+        <h4>MEWS — Modified Early Warning Score</h4>
+        <p><strong>More sensitive.</strong> 5 parameters:</p>
+        <ul class="notes-list" style="margin-bottom:0;">
+          <li>Systolic blood pressure</li><li>Heart rate</li><li>Respiratory rate</li>
+          <li>Temperature</li><li><strong>AVPU / mental status</strong></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout callout-key">
+      <div class="callout-title">🔑 Distinguishing NEWS2 from MEWS</div>
+      <p style="margin-bottom:0;">Both are early-warning scores built from vital signs. <strong>NEWS2 has 6 parameters and adds oxygen saturation</strong>; <strong>MEWS has 5 and is the more sensitive</strong> of the two. Every parameter in MEWS also appears in NEWS2 — oxygen saturation is the one NEWS2 adds.</p>
+    </div>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> Which sepsis assessment is described as more specific with better predictive validity than SIRS, and what does a score of ≥ 2 indicate?</p>
+      <div class="answer">
+        <div class="label">Answer</div>
+        <p style="margin-bottom:0;"><strong>SOFA</strong> — the Sequential Organ Failure Assessment. A score of <strong>≥ 2 indicates a mortality risk of approximately 10%</strong>. It assesses the performance of several organ systems (neurologic, liver, kidney, blood/hemodynamics). Remember that <strong>SIRS is no longer a defining criterion</strong> for sepsis, though it remains in use by the US Center for Medicare and Medicaid Services.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ C. RISK + EPI ============ -->
+<div class="section" id="risk">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Sections B &amp; C — Risk Factors and Epidemiology</div></div>
+    <p class="section-label">Who gets it, and how often</p>
+    <h2 class="section-title">Risk Factors and Epidemiology</h2>
+
+    <h3>Risk Factors for Sepsis</h3>
+    <ul class="notes-list">
+      <li><strong>Intensive care unit admission</strong></li>
+      <li><strong>Bacteremia</strong></li>
+      <li><strong>Age:</strong> ≥ 65 years, and children &lt; 1 year (risk <strong>increased if premature</strong>)</li>
+      <li><strong>Pregnancy</strong></li>
+      <li><strong>Immune suppression co-morbidities</strong> — e.g. diabetes, chemotherapy, recent organ transplant</li>
+      <li><strong>Community-acquired pneumonia</strong></li>
+      <li><strong>Prior hospitalization</strong></li>
+      <li><strong>Genetic factors</strong> leading to decreased immune response or reduced pathogen recognition</li>
+    </ul>
+
+    <h3>Epidemiology (United States)</h3>
+    <table>
+      <tr><th>Measure</th><th>Value</th></tr>
+      <tr><td>Cases per year</td><td><strong>1.7 million</strong></td></tr>
+      <tr><td>Deaths per year</td><td><strong>~350,000</strong></td></tr>
+      <tr><td>Annual cost</td><td><strong>$62 billion</strong></td></tr>
+      <tr><td>Re-hospitalization</td><td><strong>High rate</strong></td></tr>
+    </table>
+
+    <div class="callout callout-key">
+      <div class="callout-title">🔑 Source of Infection — Memorize the Order</div>
+      <p style="margin-bottom:0;">Sepsis most commonly follows <strong>respiratory infection &gt; urinary &gt; abdominal &gt; head &gt; other (skin, gastrointestinal, meningitis)</strong>. Respiratory first is the single most useful fact here — it also explains why community-acquired pneumonia appears in the risk factor list.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ D. ETIOLOGIES ============ -->
+<div class="section" id="etiologies">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Section D — Etiologies</div></div>
+    <p class="section-label">Which organisms</p>
+    <h2 class="section-title">Etiologies: Bacterial First, but Nothing Is Excluded</h2>
+
+    <div class="callout callout-concept">
+      <div class="callout-title">🧬 The Overall Picture</div>
+      <ul class="notes-list" style="margin-bottom:0;">
+        <li>Many organisms — bacterial, viral, fungal, protozoal, helminth. <strong>Bacterial etiology is more common than the others.</strong></li>
+        <li><strong>No organism (culture negative) is detected in 30–50% of cases.</strong></li>
+        <li><strong>Gram-positive bacteria are the most commonly identified</strong> etiologies: <em>S. aureus</em>, <em>Enterococcus</em>, <em>S. pneumoniae</em>, <em>S. pyogenes</em>.</li>
+        <li><strong>Gram-negatives remain important:</strong> <em>E. coli</em>, <em>Klebsiella</em>, <em>Pseudomonas aeruginosa</em>, <em>Enterobacter</em>.</li>
+        <li><strong>20% of cases are polymicrobial.</strong></li>
+        <li><strong>Viral causes are often underdiagnosed.</strong></li>
+        <li><strong>Fungal (<em>Candida</em>) cases are increasing</strong> in the immunocompromised, but remain lower than bacterial.</li>
+        <li>Protozoan and helminth agents are mostly seen in <strong>endemic niches</strong>.</li>
+      </ul>
+    </div>
+
+    <h3>Bacterial Etiologies by Initial Infection Site</h3>
+    <table>
+      <tr><th>Site</th><th>Organisms</th></tr>
+      <tr><td><strong>Respiratory</strong></td><td><em>S. pneumoniae</em>, <em>Haemophilus influenzae</em> b, <em>E. coli</em> (and other aerobic gram-negative bacilli), <em>Pseudomonas aeruginosa</em>, <em>Klebsiella pneumoniae</em> (<strong>alcoholics</strong>), <em>Legionella pneumophila</em></td></tr>
+      <tr><td><strong>Urinary tract</strong></td><td><em>E. coli</em>, <em>Klebsiella</em> sp., <em>Enterobacter</em> sp., <em>Enterococcus</em> sp., <em>Staphylococcus epidermidis</em>, <em>Proteus</em></td></tr>
+      <tr><td><strong>Abdominal</strong></td><td><em>E. coli</em>, <strong><em>Bacteroides fragilis</em></strong>, <em>Candida</em> sp., <strong>mixed anaerobes</strong></td></tr>
+      <tr><td><strong>Skin / soft tissue</strong></td><td><em>S. pyogenes</em>, <em>S. aureus</em>, aerobic gram-negative bacilli (<em>E. coli</em>, <em>Enterobacter</em>, <em>Citrobacter</em>), <em>Clostridium</em> and other anaerobes, <em>Pseudomonas aeruginosa</em></td></tr>
+      <tr><td><strong>Meningitis</strong></td><td><em>S. pneumoniae</em>, <em>N. meningitidis</em>, <em>E. coli</em>, <strong><em>Listeria monocytogenes</em></strong></td></tr>
+    </table>
+
+    <h3>Non-Bacterial Etiologies</h3>
+    <table>
+      <tr><th>Class</th><th>Agents</th><th>Context</th></tr>
+      <tr><td rowspan="4"><strong>Viral</strong></td><td>Influenza, RSV, Covid, Adenovirus, Rhinovirus</td><td>Common respiratory agents</td></tr>
+      <tr><td>Epstein-Barr virus, Cytomegalovirus</td><td><strong>Immunocompromised</strong> patients</td></tr>
+      <tr><td>Herpes simplex 1, Enterovirus</td><td><strong>Neonates → young children</strong></td></tr>
+      <tr><td>Dengue, Yellow Fever, Ebola</td><td><strong>Tropical / subtropical</strong> areas</td></tr>
+      <tr><td><strong>Fungal</strong></td><td><strong><em>Candida</em> sp. (albicans, auris) — 80%</strong>; <em>Aspergillus</em> — 10%</td><td>Associated with risk factors</td></tr>
+      <tr><td><strong>Parasitic</strong></td><td><em>Plasmodium</em> sp., <em>Schistosoma</em> sp., <em>Leishmania</em> sp., <em>Echinococcus</em> sp.</td><td>Protozoans and helminths, endemic niches</td></tr>
+    </table>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> A patient develops sepsis following an intra-abdominal source. Which anaerobe should be at the front of your differential, and what proportion of sepsis cases overall are polymicrobial?</p>
+      <div class="answer">
+        <div class="label">Answer</div>
+        <p style="margin-bottom:0;"><strong><em>Bacteroides fragilis</em></strong> — the abdominal site is the one the outline explicitly pairs with <em>B. fragilis</em> and <strong>mixed anaerobes</strong> (along with <em>E. coli</em> and <em>Candida</em>). <strong>20% of sepsis cases are polymicrobial</strong>, and abdominal sources are a major reason why.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ E. TRIGGERS + MECHANISM ============ -->
+<div class="section" id="triggers">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Sections E &amp; F — Microbial Triggers and Mechanism</div></div>
+    <p class="section-label">Pathophysiology</p>
+    <h2 class="section-title">PAMPs, DAMPs, and the Sepsis Paradigm</h2>
+
+    <div class="compare-grid">
+      <div class="compare-card" style="background:var(--blue-bg); border-color:var(--accent2);">
+        <span class="card-emoji">🦠</span>
+        <h4>PAMPs — Pathogen-Associated Molecular Patterns</h4>
+        <p style="margin-bottom:0;">Molecular signatures carried <strong>by the organism itself</strong>.</p>
+      </div>
+      <div class="compare-card" style="background:var(--red-bg); border-color:var(--accent);">
+        <span class="card-emoji">💥</span>
+        <h4>DAMPs — Damage-Associated Molecular Patterns</h4>
+        <p style="margin-bottom:0;">Released <strong>from the host's own damaged tissues</strong> — the mechanism by which viral infection triggers sepsis.</p>
+      </div>
+    </div>
+
+    <table>
+      <tr><th>Class</th><th>Trigger type</th><th>Specific molecules</th></tr>
+      <tr><td><strong>Bacterial — gram-positive</strong></td><td>PAMPs</td><td><strong>Lipoteichoic acid</strong>, cell wall <strong>peptidoglycan</strong></td></tr>
+      <tr><td><strong>Bacterial — gram-negative</strong></td><td>PAMPs</td><td><strong>Lipopolysaccharide (LPS) — most prominent</strong></td></tr>
+      <tr><td><strong>Bacterial — other</strong></td><td>PAMPs</td><td><strong>Super-antigens (TSST 1&amp;2, SPE)</strong>, also DNA, RNA, surface glycoproteins</td></tr>
+      <tr><td><strong>Viral</strong></td><td><strong>DAMPs</strong></td><td>Released from tissues damaged by the virus → stimulates a cascade of pro-inflammatory cytokines (<strong>IL-1, IL-6</strong>)</td></tr>
+      <tr><td><strong>Fungal</strong></td><td>PAMPs</td><td>Cell wall <strong>β-glucans, mannans, chitin</strong> — all polysaccharides</td></tr>
+      <tr><td><strong>Parasitic</strong></td><td><strong>Both</strong></td><td>PAMPs <em>and</em> DAMPs</td></tr>
+    </table>
+
+    <div class="callout callout-key">
+      <div class="callout-title">🔑 The Cleanest Pairings to Memorize</div>
+      <ul class="notes-list" style="margin-bottom:0;">
+        <li><strong>Gram-negative → LPS</strong> (most prominent trigger overall)</li>
+        <li><strong>Gram-positive → lipoteichoic acid + peptidoglycan</strong></li>
+        <li><strong>Fungal → β-glucans, mannans, chitin</strong> (all polysaccharides — one rule covers all three)</li>
+        <li><strong>Viral → DAMPs, not PAMPs</strong> — the exception in the list, and therefore the likely question</li>
+      </ul>
+    </div>
+
+    <h3>Mechanism — The Sepsis Paradigm</h3>
+    <ol class="step-list">
+      <li><div><strong>Patient is injured by some means</strong> The initiating insult.</div></li>
+      <li><div><strong>Activation of host defenses</strong> <strong>(i)</strong> Release of inflammatory cytokines. <strong>(ii)</strong> Activation of other agents which exert control over bodily systems.</div></li>
+      <li><div><strong>Persistent inflammation → the cascade to organ failure</strong> Leads to <strong>endothelial dysfunction</strong> and <strong>ischemic tissue injury</strong> → <strong>sequential organ damage/failure</strong> → activation of <strong>cell death pathways</strong>: <strong>necrosis, necroptosis, pyroptosis, autophagy</strong>.</div></li>
+    </ol>
+
+    <div class="callout callout-concept">
+      <div class="callout-title">🧠 Why "Sequential" Matters</div>
+      <p style="margin-bottom:0;">Organ failure in sepsis is described as <strong>sequential</strong>, not simultaneous — which is precisely what the <strong>S</strong>equential <strong>O</strong>rgan <strong>F</strong>ailure <strong>A</strong>ssessment is built to track. The mechanism and the scoring system share the same word for the same reason.</p>
+    </div>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> Name the four cell death pathways activated by persistent inflammation in sepsis, and the two upstream events that precede them.</p>
+      <div class="answer">
+        <div class="label">Answer</div>
+        <p><strong>Cell death pathways: necrosis, necroptosis, pyroptosis, autophagy.</strong></p>
+        <p style="margin-bottom:0;">The two upstream events are <strong>endothelial dysfunction</strong> and <strong>ischemic tissue injury</strong>, which together produce <strong>sequential organ damage and failure</strong>. The chain to reproduce is: persistent inflammation → endothelial dysfunction + ischemic tissue injury → sequential organ failure → cell death pathways.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ F. DIAGNOSIS ============ -->
+<div class="section" id="diagnosis">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Section G — Signs, Symptoms and Diagnosis</div></div>
+    <p class="section-label">Recognition</p>
+    <h2 class="section-title">Diagnosis: No Reliable Criteria, Only Useful Findings</h2>
+
+    <p>General signs and symptoms are <strong>early and non-specific</strong>. The outline is explicit that there are <strong>no reliable diagnostic criteria</strong> — you are assembling a picture from findings that are individually weak.</p>
+
+    <h3>Useful Clinical Findings</h3>
+    <ul class="notes-list">
+      <li><strong>"SIRS-like" symptoms</strong></li>
+      <li><strong>Peripheral vasodilation</strong>; <strong>shock</strong></li>
+      <li><strong>Mental acuity alteration</strong></li>
+      <li><strong>Jaundice</strong></li>
+      <li><strong>Metabolic acidosis</strong></li>
+      <li><strong>Thrombocytopenia</strong></li>
+      <li><strong>Respiratory alkalosis</strong></li>
+    </ul>
+
+    <div class="callout callout-warning">
+      <div class="callout-title">⚠️ The Acid-Base Pairing</div>
+      <p style="margin-bottom:0;">Sepsis classically produces <strong>metabolic acidosis</strong> (from lactate — tissue hypoperfusion) alongside <strong>respiratory alkalosis</strong> (from tachypnea). Both appear on the outline's list together. Seeing them <em>simultaneously</em> is more suggestive than either alone.</p>
+    </div>
+
+    <h3>Primary Laboratory Indicators</h3>
+    <table>
+      <tr><th>Laboratory feature</th><th>Finding in sepsis</th></tr>
+      <tr><td><strong>White blood cell count</strong></td><td><strong>Leukocytosis (&gt; 12,000/µL)</strong> or <strong>leukopenia (&lt; 4,000/µL)</strong>, or normal white count with <strong>&gt; 10% immature forms</strong></td></tr>
+      <tr><td><strong>Platelet count</strong></td><td><strong>Thrombocytopenia (&lt; 100,000/µL)</strong></td></tr>
+      <tr><td><strong>Coagulation cascade</strong></td><td>&gt; 1.5 mg/dL, or <strong>activated partial thromboplastin time (aPTT) &gt; 60 seconds</strong></td></tr>
+      <tr><td><strong>Creatinine level</strong></td><td><strong>Increased &gt; 0.5 mg/dL</strong></td></tr>
+      <tr><td><strong>Lactic acid level</strong></td><td><strong>Elevated</strong></td></tr>
+      <tr><td><strong>Bilirubin level</strong></td><td>Hyperbilirubinemia — plasma total bilirubin <strong>&gt; 4 mg/dL</strong></td></tr>
+      <tr><td><strong>Plasma C-reactive protein (CRP)</strong></td><td><strong>Elevated</strong></td></tr>
+      <tr><td><strong>Plasma procalcitonin</strong></td><td><strong>Elevated — indicative of a bacterial etiology</strong></td></tr>
+      <tr><td><strong>Arterial oxygen concentration</strong></td><td>Hypoxemia — <strong>PaO₂ / FiO₂ &lt; 300</strong></td></tr>
+      <tr><td><strong>Plasma glucose</strong></td><td>Hyperglycemia <strong>&gt; 140 mg/dL</strong></td></tr>
+      <tr><td><strong>Urine output</strong></td><td>Oliguria <strong>&lt; 0.5 mL/kg/hr</strong></td></tr>
+      <tr><td><strong>Cortisol level</strong></td><td>Baseline <strong>&lt; 10 mg/dL</strong> — <strong>adrenal insufficiency</strong></td></tr>
+    </table>
+
+    <p>Plus <strong>bacterial cultures</strong> — remembering that these are <strong>negative in 30–50% of cases</strong>.</p>
+
+    <div class="callout callout-clinical">
+      <div class="callout-title">🩺 The One Lab That Points to a Cause</div>
+      <p style="margin-bottom:0;">Most of the table tells you <em>how sick</em> the patient is. <strong>Procalcitonin is different — an elevation is indicative of a bacterial etiology</strong>, which makes it the one marker on the list that helps distinguish <em>what kind</em> of organism you are dealing with.</p>
+    </div>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> A septic patient has a normal white blood cell count. Does this argue against the diagnosis?</p>
+      <div class="answer">
+        <div class="label">Answer</div>
+        <p><strong>No.</strong> The laboratory criterion is satisfied by leukocytosis (&gt; 12,000/µL), leukopenia (&lt; 4,000/µL), <em>or</em> <strong>a normal white count with &gt; 10% immature forms</strong> — a left shift with a normal total count.</p>
+        <p style="margin-bottom:0;">The same bidirectional logic runs through SIRS, where both hypothermia and hyperthermia qualify. In sepsis, a "normal-looking" number can still be an abnormal response.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ G. TREATMENT ============ -->
+<div class="section" id="treatment">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Sections H &amp; I — Treatment and Prognosis</div></div>
+    <p class="section-label">Management</p>
+    <h2 class="section-title">Treatment and Prognosis</h2>
+
+    <h3>The Early Sepsis Bundle</h3>
+    <div class="hallmarks-grid">
+      <div class="hallmark-card"><div class="hallmark-num">a</div><h4>Bactericidal antimicrobial treatment</h4><p>Note the outline specifies <strong>bactericidal</strong>, not merely bacteriostatic.</p></div>
+      <div class="hallmark-card"><div class="hallmark-num">b</div><h4>Intravenous fluids</h4><p>Addresses the peripheral vasodilation and hypoperfusion.</p></div>
+      <div class="hallmark-card"><div class="hallmark-num">c</div><h4>Lactate measurement</h4><p>The marker of the cellular/metabolic abnormality in the septic shock definition.</p></div>
+      <div class="hallmark-card"><div class="hallmark-num">d</div><h4>Assess tissue perfusion</h4><p>Confirms whether the fluids are working.</p></div>
+      <div class="hallmark-card"><div class="hallmark-num">e</div><h4>Vasopressors</h4><p>When fluids alone cannot maintain perfusion pressure.</p></div>
+    </div>
+
+    <h3>Other Treatment</h3>
+    <ul class="notes-list">
+      <li><strong>Surgical removal or drainage of the infection site</strong> (if known) — source control.</li>
+      <li><strong>Oxygen therapy.</strong></li>
+    </ul>
+
+    <div class="callout callout-key">
+      <div class="callout-title">🔑 Why the Bundle Is a Bundle</div>
+      <p style="margin-bottom:0;">Recall the Section A definition: sepsis is <strong>time-dependent</strong> organ dysfunction. That single word is the justification for delivering all five elements together and early, rather than sequentially as results return.</p>
+    </div>
+
+    <h3>Prognosis</h3>
+    <table>
+      <tr><th>Outcome</th><th>Figure</th></tr>
+      <tr><td>Mortality (patients with risk factors)</td><td><strong>10–52%</strong></td></tr>
+      <tr><td><strong>Post-sepsis syndrome (PSS)</strong></td><td><strong>50% of sepsis survivors</strong></td></tr>
+      <tr><td>Survival in young / healthy patients</td><td><strong>90%</strong></td></tr>
+    </table>
+
+    <div class="callout callout-clinical">
+      <div class="callout-title">🩺 Post-Sepsis Syndrome</div>
+      <p style="margin-bottom:0;">Half of all sepsis survivors develop <strong>post-sepsis syndrome</strong> — surviving the admission is not the end of the disease. Together with the <strong>high rate of re-hospitalization</strong> noted in the epidemiology section, this is why sepsis carries such a large ongoing cost burden ($62 billion annually).</p>
+    </div>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> A previously healthy 24-year-old and a 71-year-old with diabetes and a recent hospitalization both present with sepsis. How does the prognosis differ, and what happens to survivors afterward?</p>
+      <div class="answer">
+        <div class="label">Answer</div>
+        <p>The young, healthy patient has roughly <strong>90% survival</strong>. The older patient carries several listed risk factors — <strong>age ≥ 65, immune suppression co-morbidity (diabetes), and prior hospitalization</strong> — placing them in the <strong>10–52% mortality</strong> range.</p>
+        <p style="margin-bottom:0;">For either survivor, <strong>post-sepsis syndrome affects 50%</strong>, and the rate of re-hospitalization is high.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ GLOSSARY ============ -->
+<div class="section" id="glossary">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge alt">Reference</div></div>
+    <p class="section-label">Every abbreviation in this outline</p>
+    <h2 class="section-title">Glossary of Abbreviations</h2>
+
+    <table>
+      <tr><th>Short form</th><th>Full term</th><th>Meaning here</th></tr>
+      <tr><td>aPTT</td><td>activated Partial Thromboplastin Time</td><td>&gt; 60 seconds is a sepsis laboratory criterion</td></tr>
+      <tr><td>AVPU</td><td>Alert, Voice, Pain, Unresponsive</td><td>The mental status scale used in MEWS</td></tr>
+      <tr><td>CRP</td><td>C-Reactive Protein</td><td>Elevated — a non-specific inflammatory marker</td></tr>
+      <tr><td>DAMPs</td><td>Damage-Associated Molecular Patterns</td><td>Released from host tissue damaged by virus → IL-1, IL-6 cascade</td></tr>
+      <tr><td>FiO₂</td><td>Fraction of inspired Oxygen</td><td>PaO₂/FiO₂ &lt; 300 defines the hypoxemia criterion</td></tr>
+      <tr><td>IL-1 / IL-6</td><td>Interleukin-1 / Interleukin-6</td><td>Pro-inflammatory cytokines in the DAMP cascade</td></tr>
+      <tr><td>ICU</td><td>Intensive Care Unit</td><td>Admission is a listed risk factor</td></tr>
+      <tr><td>LPS</td><td>Lipopolysaccharide</td><td>The <strong>most prominent</strong> gram-negative PAMP</td></tr>
+      <tr><td>MEWS</td><td>Modified Early Warning Score</td><td>5 parameters; <strong>more sensitive</strong> than NEWS2</td></tr>
+      <tr><td>MODS</td><td>Multi-Organ Dysfunction Syndrome</td><td>Older term; the end state of septic shock</td></tr>
+      <tr><td>NEWS2</td><td>National Early Warning Score (version 2)</td><td>6 parameters; assesses risk of death from sepsis</td></tr>
+      <tr><td>PaCO₂</td><td>Partial pressure of arterial Carbon Dioxide</td><td>&lt; 32 mmHg satisfies the SIRS respiratory criterion</td></tr>
+      <tr><td>PaO₂</td><td>Partial pressure of arterial Oxygen</td><td>Used in the PaO₂/FiO₂ ratio</td></tr>
+      <tr><td>PAMPs</td><td>Pathogen-Associated Molecular Patterns</td><td>Molecular signatures carried by the organism</td></tr>
+      <tr><td>PSS</td><td>Post-Sepsis Syndrome</td><td>Affects <strong>50% of survivors</strong></td></tr>
+      <tr><td>qSOFA</td><td>quick SOFA</td><td>3 bedside criteria: RR ≥ 22, SBP ≤ 100, altered mentation</td></tr>
+      <tr><td>RSV</td><td>Respiratory Syncytial Virus</td><td>A common viral respiratory etiology</td></tr>
+      <tr><td>SBP</td><td>Systolic Blood Pressure</td><td>≤ 100 mmHg in qSOFA</td></tr>
+      <tr><td>SIRS</td><td>Systemic Inflammatory Response Syndrome</td><td><strong>No longer defining</strong> for sepsis; still used by CMS</td></tr>
+      <tr><td>SOFA</td><td>Sequential Organ Failure Assessment</td><td>More specific; <strong>score ≥ 2 ≈ 10% mortality risk</strong></td></tr>
+      <tr><td>SPE</td><td>Streptococcal Pyrogenic Exotoxin</td><td>A bacterial super-antigen trigger</td></tr>
+      <tr><td>TSST 1 &amp; 2</td><td>Toxic Shock Syndrome Toxin 1 and 2</td><td>Bacterial super-antigen triggers</td></tr>
+      <tr><td>UTI</td><td>Urinary Tract Infection</td><td>Second most common source after respiratory</td></tr>
+    </table>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    Study notes compiled from the Sepsis – 2026 course outline.<br>
+    For personal study use only.
+  </div>
+</footer>
+
+<div class="hy-modal" id="hyModal">
+  <div class="hy-modal-card">
+    <div class="hy-modal-header">
+      <h2>🎯 Sepsis 2026 — High-Yield One-Pager</h2>
+      <div class="hy-modal-actions">
+        <button class="hy-action-btn" onclick="printHY()">🖨️ Print / Save PDF</button>
+        <button class="hy-action-btn hy-close-btn" onclick="closeHY()">✕ Close</button>
+      </div>
+    </div>
+    <p class="hy-subhead">By outline section — A terms · B scores · C risk &amp; epidemiology · D etiologies · E triggers &amp; mechanism · F diagnosis · G treatment</p>
+
+    <div class="hy-cols">
+      <div>
+        <span class="hy-lo-tag">A · TERMS</span>
+        <div class="hy-block">
+          <h4>Definition</h4>
+          <ul>
+            <li>Extreme response to infection → <strong>life-threatening organ dysfunction</strong> from a <strong>dysregulated host response</strong>, widespread inflammatory mediators</li>
+            <li>Immune system <strong>attacks "self"</strong> instead of the infection</li>
+          </ul>
+        </div>
+        <div class="hy-block">
+          <h4>Three terms, each a subset</h4>
+          <ul>
+            <li><strong>Early sepsis:</strong> infection + bacteremia are <strong>risk factors</strong></li>
+            <li><strong>Sepsis:</strong> + <strong>time-dependent organ dysfunction</strong></li>
+            <li><strong>Septic shock:</strong> + circulatory <strong>AND</strong> cellular/metabolic abnormalities profound enough to <strong>substantially increase mortality</strong>; → MODS (old term)</li>
+          </ul>
+        </div>
+
+        <span class="hy-lo-tag">C · RISK &amp; EPIDEMIOLOGY</span>
+        <div class="hy-block">
+          <h4>Risk factors</h4>
+          <ul>
+            <li>ICU admission · bacteremia</li>
+            <li><strong>Age ≥ 65</strong>; children <strong>&lt; 1 yr</strong> (↑ if premature)</li>
+            <li>Pregnancy</li>
+            <li>Immune suppression (diabetes, chemo, recent transplant)</li>
+            <li>Community-acquired pneumonia · prior hospitalization</li>
+            <li>Genetic ↓ immune response / pathogen recognition</li>
+          </ul>
+        </div>
+        <div class="hy-block">
+          <h4>US numbers</h4>
+          <ul>
+            <li><strong>1.7 M cases/yr · ~350,000 deaths/yr · $62 B/yr</strong></li>
+            <li>High re-hospitalization rate</li>
+            <li><strong>Source order: respiratory &gt; urinary &gt; abdominal &gt; head &gt; other</strong> (skin, GI, meningitis)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div>
+        <span class="hy-lo-tag">B · ASSESSMENT SCORES</span>
+        <div class="hy-block">
+          <h4>Headline: none have sufficient sensitivity or specificity</h4>
+          <ul>
+            <li><strong>SIRS</strong> — no longer defining for sepsis, but still used by <strong>US CMS</strong></li>
+            <li><strong>SOFA</strong> — more specific, <strong>better predictive validity than SIRS</strong></li>
+            <li><strong>qSOFA</strong> — bedside, outside the ER</li>
+            <li><strong>NEWS2</strong> — 6 parameters, risk of death</li>
+            <li><strong>MEWS</strong> — 5 parameters, <strong>more sensitive</strong></li>
+          </ul>
+        </div>
+        <div class="hy-block">
+          <h4>SIRS criteria (bidirectional!)</h4>
+          <ul>
+            <li>Hypothermia <strong>&lt; 38 °C</strong> or hyperthermia <strong>&gt; 38 °C</strong></li>
+            <li>Tachycardia <strong>&gt; 90 bpm</strong></li>
+            <li>RR <strong>&gt; 20/min</strong> OR PaCO₂ <strong>&lt; 32 mmHg</strong></li>
+            <li>Leukopenia <strong>&lt; 4,000/µL</strong> OR leukocytosis <strong>&gt; 12,000/µL</strong> OR <strong>&gt; 10% bands</strong></li>
+          </ul>
+        </div>
+        <div class="hy-block">
+          <h4>SOFA</h4>
+          <ul>
+            <li>Organ systems: <strong>neuro, liver, kidney, blood/hemodynamics</strong></li>
+            <li><strong>Score ≥ 2 = ~10% mortality risk</strong></li>
+          </ul>
+        </div>
+        <div class="hy-block">
+          <h4>qSOFA — 3 criteria</h4>
+          <ul>
+            <li><strong>RR ≥ 22/min</strong></li>
+            <li><strong>Systolic BP ≤ 100 mmHg</strong></li>
+            <li><strong>Altered mentation</strong> (Glasgow Coma Scale)</li>
+          </ul>
+        </div>
+        <div class="hy-block">
+          <h4>NEWS2 (6) vs MEWS (5)</h4>
+          <ul>
+            <li><strong>NEWS2:</strong> RR · <strong>O₂ saturation</strong> · systolic BP · pulse · consciousness · temperature</li>
+            <li><strong>MEWS:</strong> systolic BP · HR · RR · temperature · <strong>AVPU/mental status</strong></li>
+            <li>Difference = NEWS2 adds <strong>O₂ saturation</strong></li>
+          </ul>
+        </div>
+      </div>
+
+      <div>
+        <span class="hy-lo-tag">D · ETIOLOGIES</span>
+        <div class="hy-block">
+          <h4>Overall</h4>
+          <ul>
+            <li><strong>Bacterial &gt; all others</strong></li>
+            <li><strong>Culture negative in 30–50%</strong></li>
+            <li><strong>G(+) most commonly identified:</strong> <em>S. aureus</em>, <em>Enterococcus</em>, <em>S. pneumoniae</em>, <em>S. pyogenes</em></li>
+            <li><strong>G(−) still important:</strong> <em>E. coli</em>, <em>Klebsiella</em>, <em>Pseudomonas aeruginosa</em>, <em>Enterobacter</em></li>
+            <li><strong>20% polymicrobial</strong>; viral often underdiagnosed; fungal (<em>Candida</em>) increasing in immunocompromised</li>
+          </ul>
+        </div>
+        <div class="hy-block">
+          <h4>Bacteria by initial site</h4>
+          <ul>
+            <li><strong>Respiratory:</strong> <em>S. pneumoniae</em>, <em>H. influenzae</em> b, <em>E. coli</em>, <em>Pseudomonas</em>, <em>Klebsiella</em> (<strong>alcoholics</strong>), <em>Legionella</em></li>
+            <li><strong>UTI:</strong> <em>E. coli</em>, <em>Klebsiella</em>, <em>Enterobacter</em>, <em>Enterococcus</em>, <em>S. epidermidis</em>, <em>Proteus</em></li>
+            <li><strong>Abdominal:</strong> <em>E. coli</em>, <strong><em>Bacteroides fragilis</em></strong>, <em>Candida</em>, <strong>mixed anaerobes</strong></li>
+            <li><strong>Skin/soft tissue:</strong> <em>S. pyogenes</em>, <em>S. aureus</em>, aerobic G(−) bacilli, <em>Clostridium</em>/anaerobes, <em>Pseudomonas</em></li>
+            <li><strong>Meningitis:</strong> <em>S. pneumoniae</em>, <em>N. meningitidis</em>, <em>E. coli</em>, <strong><em>Listeria monocytogenes</em></strong></li>
+          </ul>
+        </div>
+        <div class="hy-block">
+          <h4>Non-bacterial</h4>
+          <ul>
+            <li><strong>Viral:</strong> influenza, RSV, Covid, adeno, rhino · <strong>EBV/CMV if immunocompromised</strong> · HSV-1/enterovirus in neonates-children · dengue/yellow fever/Ebola in tropics</li>
+            <li><strong>Fungal:</strong> <em>Candida</em> (albicans, auris) <strong>80%</strong>, <em>Aspergillus</em> <strong>10%</strong></li>
+            <li><strong>Parasitic:</strong> <em>Plasmodium</em>, <em>Schistosoma</em>, <em>Leishmania</em>, <em>Echinococcus</em></li>
+          </ul>
+        </div>
+      </div>
+
+      <div>
+        <span class="hy-lo-tag">E · TRIGGERS &amp; MECHANISM</span>
+        <div class="hy-block">
+          <h4>PAMPs vs DAMPs</h4>
+          <ul>
+            <li><strong>G(+):</strong> lipoteichoic acid, peptidoglycan</li>
+            <li><strong>G(−): LPS — most prominent</strong></li>
+            <li><strong>Super-antigens:</strong> TSST 1&amp;2, SPE; also DNA, RNA, surface glycoproteins</li>
+            <li><strong>Viral → DAMPs</strong> (from virus-damaged tissue) → <strong>IL-1, IL-6</strong> cascade</li>
+            <li><strong>Fungal:</strong> β-glucans, mannans, chitin (<strong>all polysaccharides</strong>)</li>
+            <li><strong>Parasites: both</strong> PAMPs and DAMPs</li>
+          </ul>
+        </div>
+        <div class="hy-block">
+          <h4>Sepsis paradigm</h4>
+          <ul>
+            <li>Patient injured →</li>
+            <li>Host defenses activate: inflammatory cytokines + agents controlling bodily systems →</li>
+            <li><strong>Persistent inflammation → endothelial dysfunction + ischemic tissue injury → SEQUENTIAL organ damage/failure</strong> →</li>
+            <li>Cell death: <strong>necrosis, necroptosis, pyroptosis, autophagy</strong></li>
+          </ul>
+        </div>
+
+        <span class="hy-lo-tag">G · TREATMENT &amp; PROGNOSIS</span>
+        <div class="hy-block">
+          <h4>Early sepsis bundle</h4>
+          <ul>
+            <li><strong>Bactericidal</strong> antimicrobial treatment</li>
+            <li>IV fluids · <strong>lactate measurement</strong> · assess tissue perfusion · <strong>vasopressors</strong></li>
+            <li>Plus: <strong>surgical removal/drainage of infection site</strong> (if known); oxygen therapy</li>
+          </ul>
+        </div>
+        <div class="hy-block">
+          <h4>Prognosis</h4>
+          <ul>
+            <li><strong>10–52% mortality</strong> (patients with risk factors)</li>
+            <li><strong>Post-sepsis syndrome — 50% of survivors</strong></li>
+            <li><strong>90% survival</strong> in young/healthy patients</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="hy-block" style="margin-top:4px;">
+      <h4>Master Laboratory Reference — Every Threshold in This Outline</h4>
+      <table class="hy-mini-table">
+        <tr><th>Laboratory feature</th><th>Finding / threshold</th><th>What it reflects</th></tr>
+        <tr><td>White blood cell count</td><td>Leukocytosis <strong>&gt; 12,000/µL</strong>, leukopenia <strong>&lt; 4,000/µL</strong>, or normal WBC with <strong>&gt; 10% immature forms</strong></td><td>Bidirectional — a normal count with a left shift still qualifies</td></tr>
+        <tr><td>Platelet count</td><td>Thrombocytopenia <strong>&lt; 100,000/µL</strong></td><td>Consumption / coagulopathy</td></tr>
+        <tr><td>Coagulation cascade</td><td><strong>&gt; 1.5 mg/dL</strong> or <strong>aPTT &gt; 60 seconds</strong></td><td>Coagulopathy</td></tr>
+        <tr><td>Creatinine</td><td>Increased <strong>&gt; 0.5 mg/dL</strong></td><td>Renal organ dysfunction</td></tr>
+        <tr><td>Lactic acid</td><td><strong>Elevated</strong></td><td>Tissue hypoperfusion — in the treatment bundle</td></tr>
+        <tr><td>Bilirubin</td><td>Total <strong>&gt; 4 mg/dL</strong></td><td>Hepatic dysfunction; clinical jaundice</td></tr>
+        <tr><td>C-reactive protein</td><td><strong>Elevated</strong></td><td>Non-specific inflammation</td></tr>
+        <tr><td>Procalcitonin</td><td><strong>Elevated</strong></td><td><strong>Indicative of BACTERIAL etiology</strong> — the one cause-specific marker</td></tr>
+        <tr><td>Arterial oxygen</td><td>Hypoxemia — <strong>PaO₂/FiO₂ &lt; 300</strong></td><td>Pulmonary organ dysfunction</td></tr>
+        <tr><td>Plasma glucose</td><td>Hyperglycemia <strong>&gt; 140 mg/dL</strong></td><td>Stress metabolic response</td></tr>
+        <tr><td>Urine output</td><td>Oliguria <strong>&lt; 0.5 mL/kg/hr</strong></td><td>Renal hypoperfusion</td></tr>
+        <tr><td>Cortisol</td><td>Baseline <strong>&lt; 10 mg/dL</strong></td><td><strong>Adrenal insufficiency</strong></td></tr>
+        <tr><td>Bacterial cultures</td><td><strong>Negative in 30–50% of cases</strong></td><td>A negative culture does not exclude sepsis</td></tr>
+        <tr><td>Acid-base</td><td><strong>Metabolic acidosis</strong> + <strong>respiratory alkalosis</strong></td><td>Classic simultaneous pairing in sepsis</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" aria-hidden="true"><img id="lightboxImg" alt="Zoomed image"></div>
+
+<div class="floating-stack">
+  <div class="theme-panel" id="themePanel">
+    <div class="theme-panel-title">Choose Theme</div>
+    <div class="theme-option active" data-theme="paper" onclick="setTheme('paper',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#faf7f2,#1a1209)"></div>Paper (Default)</div>
+    <div class="theme-option" data-theme="night" onclick="setTheme('night',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#0f1923,#e8b84b)"></div>Night</div>
+    <div class="theme-option" data-theme="ocean" onclick="setTheme('ocean',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#eef7fb,#0f6fb0)"></div>Ocean</div>
+    <div class="theme-option" data-theme="forest" onclick="setTheme('forest',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#f2f7f0,#1f7a4d)"></div>Forest</div>
+    <div class="theme-option" data-theme="sepia" onclick="setTheme('sepia',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#f7ecd9,#8b5a17)"></div>Sepia</div>
+    <div class="theme-option" data-theme="lavender" onclick="setTheme('lavender',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#f6f3fb,#6a4fa0)"></div>Lavender</div>
+    <div class="theme-option" data-theme="rose" onclick="setTheme('rose',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#fdf3f5,#b02444)"></div>Rose</div>
+    <div class="theme-option" data-theme="slate" onclick="setTheme('slate',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#f4f5f7,#cf4520)"></div>Slate</div>
+  </div>
+  <div class="font-btn-row">
+    <span class="font-label">Text</span>
+    <button class="font-btn" onclick="changeFontSize(1)" title="Increase font size">A+</button>
+    <span class="font-sep">|</span>
+    <button class="font-btn" onclick="changeFontSize(-1)" title="Decrease font size">A−</button>
+  </div>
+  <button class="theme-btn" id="themeBtn" onclick="toggleThemePanel()" title="Switch theme"><span>🎨</span><span>Theme</span></button>
+</div>
+
+<script>
+/* ============ THEME ============ */
+var STORAGE_THEME_KEY = 'sepsis-2026-theme';
+var themePanelOpen = false;
+
+function toggleThemePanel(){
+  themePanelOpen = !themePanelOpen;
+  document.getElementById('themePanel').classList.toggle('open', themePanelOpen);
+}
+function syncThemeOptions(theme){
+  document.querySelectorAll('.theme-option').forEach(function(option){
+    option.classList.toggle('active', option.dataset.theme === theme);
+  });
+}
+function setTheme(theme, el, skipStorage){
+  if(theme === 'paper'){ document.documentElement.removeAttribute('data-theme'); }
+  else { document.documentElement.setAttribute('data-theme', theme); }
+  syncThemeOptions(theme);
+  if(!skipStorage){ try{ localStorage.setItem(STORAGE_THEME_KEY, theme); }catch(e){} }
+  setTimeout(function(){
+    themePanelOpen = false;
+    document.getElementById('themePanel').classList.remove('open');
+  }, 300);
+}
+document.addEventListener('click', function(e){
+  var panel = document.getElementById('themePanel');
+  var btn = document.getElementById('themeBtn');
+  if(themePanelOpen && !panel.contains(e.target) && !btn.contains(e.target)){
+    themePanelOpen = false;
+    panel.classList.remove('open');
+  }
+});
+
+/* ============ FONT SIZE ============ */
+var currentFontSize = 16;
+function changeFontSize(delta){
+  currentFontSize = Math.min(24, Math.max(12, currentFontSize + delta));
+  document.body.style.fontSize = currentFontSize + 'px';
+}
+
+/* ============ LIGHTBOX ============ */
+var lightbox, lightboxImg;
+function openLightbox(img){
+  lightboxImg.src = img.src;
+  lightbox.classList.add('active');
+  lightbox.setAttribute('aria-hidden','false');
+}
+function closeLightbox(){
+  lightbox.classList.remove('active');
+  lightbox.setAttribute('aria-hidden','true');
+  lightboxImg.src = '';
+}
+
+/* ============ HIGH-YIELD ONE-PAGER ============ */
+function openHY(){
+  document.getElementById('hyModal').classList.add('open');
+  document.body.classList.add('hy-mode');
+  document.body.style.overflow = 'hidden';
+}
+function closeHY(){
+  document.getElementById('hyModal').classList.remove('open');
+  document.body.classList.remove('hy-mode');
+  document.body.style.overflow = '';
+}
+function printHY(){ window.print(); }
+
+/* ============ TABLE QUIZ ============ */
+function initTableQuiz(){
+  document.querySelectorAll('table').forEach(function(table){
+    if(table.classList.contains('hy-mini-table')) return;
+
+    var headerRow = table.querySelector('tr');
+    if(!headerRow) return;
+    var headers = Array.prototype.slice.call(headerRow.querySelectorAll('th'));
+    if(headers.length < 2) return;
+
+    var dataRows = Array.prototype.slice.call(table.querySelectorAll('tr')).filter(function(r){
+      return r !== headerRow && r.querySelectorAll('td').length > 0;
+    });
+    if(dataRows.length < 2) return;
+
+    var state = { selected:new Set(), hidden:new Map(), running:false, revealed:0, total:0, originalOrder:null };
+
+    var bar = document.createElement('div');
+    bar.className = 'tq-bar';
+
+    var toggleBtn = document.createElement('button');
+    toggleBtn.className = 'tq-toggle';
+    toggleBtn.textContent = '🧩 Quiz this table';
+
+    var colsWrap = document.createElement('div');
+    colsWrap.className = 'tq-cols';
+    colsWrap.style.display = 'none';
+
+    var startBtn = document.createElement('button');
+    startBtn.className = 'tq-start';
+    startBtn.textContent = '▶ Start';
+    startBtn.disabled = true;
+    startBtn.style.display = 'none';
+
+    var shuffleBtn = document.createElement('button');
+    shuffleBtn.className = 'tq-shuffle';
+    shuffleBtn.textContent = '🔀 Shuffle rows';
+    shuffleBtn.style.display = 'none';
+
+    var resetBtn = document.createElement('button');
+    resetBtn.className = 'tq-reset';
+    resetBtn.textContent = '↺ Reset';
+    resetBtn.style.display = 'none';
+
+    var score = document.createElement('span');
+    score.className = 'tq-score';
+    score.style.display = 'none';
+
+    headers.forEach(function(th, idx){
+      var b = document.createElement('button');
+      b.className = 'tq-col-btn';
+      b.textContent = th.textContent.trim().slice(0,26);
+      b.onclick = function(){
+        if(state.running) return;
+        if(state.selected.has(idx)){ state.selected.delete(idx); b.classList.remove('sel'); }
+        else { state.selected.add(idx); b.classList.add('sel'); }
+        startBtn.disabled = state.selected.size === 0;
+      };
+      colsWrap.appendChild(b);
+    });
+
+    function updateScore(){
+      score.textContent = state.revealed + ' / ' + state.total + ' revealed';
+      if(state.total > 0 && state.revealed === state.total){
+        score.classList.add('done');
+        score.textContent = '🎉 ' + state.revealed + ' / ' + state.total + ' revealed';
+      } else { score.classList.remove('done'); }
+    }
+
+    toggleBtn.onclick = function(){
+      var open = colsWrap.style.display === 'none';
+      colsWrap.style.display = open ? 'flex' : 'none';
+      startBtn.style.display = open ? 'inline-block' : 'none';
+      shuffleBtn.style.display = open ? 'inline-block' : 'none';
+      toggleBtn.classList.toggle('active', open);
+      if(!open) resetBtn.click();
+    };
+
+    shuffleBtn.onclick = function(){
+      var parent = dataRows[0].parentNode;
+      if(!state.originalOrder){ state.originalOrder = dataRows.slice(); }
+      var shuffled = dataRows.slice();
+      for(var i = shuffled.length - 1; i > 0; i--){
+        var j = Math.floor(Math.random() * (i + 1));
+        var t = shuffled[i]; shuffled[i] = shuffled[j]; shuffled[j] = t;
+      }
+      shuffled.forEach(function(r){ parent.appendChild(r); });
+    };
+
+    startBtn.onclick = function(){
+      if(state.selected.size === 0) return;
+      state.running = true;
+      state.revealed = 0;
+      state.total = 0;
+      state.hidden.clear();
+      dataRows.forEach(function(row){
+        var cells = row.querySelectorAll('td');
+        state.selected.forEach(function(idx){
+          var cell = cells[idx];
+          if(!cell) return;
+          state.hidden.set(cell, cell.innerHTML);
+          cell.innerHTML = '<span class="tq-cell-content">' + cell.innerHTML + '</span>';
+          cell.classList.add('quiz-hidden-cell');
+          state.total++;
+          cell.addEventListener('click', function handler(){
+            if(!cell.classList.contains('quiz-hidden-cell')) return;
+            cell.classList.remove('quiz-hidden-cell');
+            cell.innerHTML = state.hidden.get(cell);
+            state.revealed++;
+            updateScore();
+          });
+        });
+      });
+      startBtn.style.display = 'none';
+      shuffleBtn.style.display = 'none';
+      colsWrap.style.display = 'none';
+      resetBtn.style.display = 'inline-block';
+      score.style.display = 'inline-block';
+      updateScore();
+    };
+
+    resetBtn.onclick = function(){
+      state.hidden.forEach(function(html, cell){
+        cell.classList.remove('quiz-hidden-cell');
+        cell.innerHTML = html;
+      });
+      if(state.originalOrder){
+        var parent = state.originalOrder[0].parentNode;
+        state.originalOrder.forEach(function(r){ parent.appendChild(r); });
+      }
+      state.hidden.clear();
+      state.running = false;
+      state.revealed = 0;
+      state.total = 0;
+      state.selected.clear();
+      colsWrap.querySelectorAll('.tq-col-btn').forEach(function(b){ b.classList.remove('sel'); });
+      startBtn.disabled = true;
+      resetBtn.style.display = 'none';
+      score.style.display = 'none';
+      score.classList.remove('done');
+      colsWrap.style.display = 'none';
+      startBtn.style.display = 'none';
+      shuffleBtn.style.display = 'none';
+      toggleBtn.classList.remove('active');
+    };
+
+    bar.appendChild(toggleBtn);
+    bar.appendChild(colsWrap);
+    bar.appendChild(startBtn);
+    bar.appendChild(shuffleBtn);
+    bar.appendChild(resetBtn);
+    bar.appendChild(score);
+    table.parentNode.insertBefore(bar, table);
+  });
+}
+
+/* ============ INIT ============ */
+function initVisualState(){
+  var savedTheme = 'paper';
+  try{ savedTheme = localStorage.getItem(STORAGE_THEME_KEY) || 'paper'; }catch(e){}
+  setTheme(savedTheme, null, true);
+}
+
+/* ============ TOC SCROLLSPY ============ */
+function initScrollspy(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.toc-bar a'));
+  var map = {};
+  var sections = [];
+  links.forEach(function(a){
+    var id = a.getAttribute('href').slice(1);
+    var sec = document.getElementById(id);
+    if(sec){ map[id] = a; sections.push(sec); }
+  });
+  if(!sections.length) return;
+  function update(){
+    var best = null;
+    var bestTop = -Infinity;
+    sections.forEach(function(sec){
+      var top = sec.getBoundingClientRect().top;
+      if(top <= 120 && top > bestTop){ bestTop = top; best = sec; }
+    });
+    if(!best) best = sections[0];
+    links.forEach(function(a){ a.classList.remove('active'); });
+    var active = map[best.id];
+    if(active) active.classList.add('active');
+  }
+  window.addEventListener('scroll', update, {passive:true});
+  update();
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  initVisualState();
+  initTableQuiz();
+  initScrollspy();
+
+  lightbox = document.getElementById('lightbox');
+  lightboxImg = document.getElementById('lightboxImg');
+  document.querySelectorAll('.slide-img').forEach(function(img){
+    img.addEventListener('click', function(){ openLightbox(img); });
+  });
+  lightbox.addEventListener('click', closeLightbox);
+
+  var hyModal = document.getElementById('hyModal');
+  hyModal.addEventListener('click', function(e){ if(e.target === this) closeHY(); });
+
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){
+      closeLightbox();
+      if(hyModal.classList.contains('open')) closeHY();
+    }
+  });
+});
+</script>
+</body>
+</html>

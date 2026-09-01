@@ -13,6 +13,8 @@ The One-Pager is mandatory — build it when the user wants a condensed pre-exam
 
 The page is self-contained: no build tools, no frameworks, just one `.html` file with embedded CSS, fonts, and JS.
 
+> **Navigation change (current default).** The table of contents is now a **fixed left sidebar**, not a sticky bar across the top — see **Section 5.2**, which supersedes the old horizontal `.toc-bar`. It keeps the `.toc-bar` class name so existing theme and print rules still match, and it degrades to the original horizontal bar below 1000px. Three things elsewhere in this document depend on it: `.container` must use `94%` rather than `94vw` (Section 6), `@media print` must zero `body`'s left padding (Section 12.5, Mistake 3), and `initScrollspy()` joins the `DOMContentLoaded` init list (Section 9).
+
 > **Two variants now exist.** Sections 2–12 below are **Variant 1** — the original system, organized strictly by numbered Learning Objectives, with an 8-theme switcher (Paper/Night/Ocean/Forest/Sepia/Lavender/Rose/Slate) and a component vocabulary tuned for pharmacology/pathology content (drug grids, hallmark grids, REMS badges, potency bars). **Section 13 is Variant 2** — a lighter-weight system built for `Introduction_to_Therapy_Study_Notes.html`, better suited to lecture content that isn't cleanly split into 2–3 LOs: a single light/dark toggle instead of named themes, and a component vocabulary built around generic "modality cards," mnemonics, and click-to-reveal cases rather than drug-specific components. Both variants share the same underlying philosophy (self-contained file, base64 images, lightbox, table quiz, optional HY one-pager) — pick whichever fits the lecture's actual content shape, and don't mix components from both within one file. **Section 14 is the Study Tools System** — an optional active-recall/progress layer (Recall Mode, per-section reviewed/confidence tracking, TOC scrollspy, collapsible sections, next-question jumper, pinned compare strip, keyboard shortcuts) first built for `Eating_Disorders_Study_Notes.html` on top of Variant 1; it's designed as an add-on layer and can be applied to either variant.
 
 ---
@@ -291,9 +293,9 @@ Four light themes (Paper, Ocean, Forest, Sepia) were originally shipped with too
 ## 4. Overall Page Structure
 
 ```
-<body>
+<body>                 ← gets padding-left: var(--toc-w) to clear the fixed sidebar
+  .toc-bar             ← FIXED LEFT SIDEBAR nav with anchor links (see 5.2)
   .hero                ← dark hero header with title + meta stats (+ optional High-Yield button)
-  .toc-bar             ← sticky top nav with anchor links
   [.section × N]       ← one per LO topic
   .hy-modal            ← optional: High-Yield One-Pager overlay (Section 12), hidden by default
   .lightbox            ← full-screen image overlay
@@ -318,7 +320,8 @@ Dark background (`var(--ink)`), large serif title, subtitle, and a row of stat c
     <div class="hero-tag">Instructor · Institution Name</div>
     <h1>Topic of <span>Lecture</span></h1>      <!-- span gets --accent color -->
     <p class="hero-sub">Short description.</p>
-    <!-- Optional: <button class="hy-btn" onclick="openHY()">🎯 High-Yield One-Pager</button> — see Section 12 -->
+    <!-- Optional: <button class="hy-btn" onclick="openHY()">🎯 High-Yield One-Pager</button>
+         Narrow-screen fallback only — the visible button lives in the sidebar. See Section 12.1 -->
     <div class="hero-meta">
       <div class="hero-meta-item">
         <span class="label">STAT LABEL</span>
@@ -330,16 +333,152 @@ Dark background (`var(--ink)`), large serif title, subtitle, and a row of stat c
 </div>
 ```
 
-### 5.2 Sticky TOC Bar
-Horizontal scrolling nav, one anchor link per section.
+### 5.2 TOC — Fixed Left Sidebar
+
+> **This replaces the original sticky top bar.** Built for `HIV_Case_Based_Management_Study_Notes.html`. The class name stays `.toc-bar` on purpose — every existing print rule, `body.hy-mode` rule, and per-theme override that already targets `.toc-bar` keeps working with no edits. Only the styling changes from "horizontal strip" to "vertical column."
+>
+> **Why the change:** on a 16" MacBook Pro (Section 6) a horizontal bar wastes a full row of vertical space on every scroll, and once a lecture has 8+ sections the labels get truncated or scroll off-screen. A vertical column has effectively unlimited room for full, readable section names, and it stays visible the whole way down the page.
+
+The sidebar has three parts: a **header block** (so the column is anchored and doesn't start cold with a link), **grouped nav links**, and a **numbered chip** per link. If the file has a High-Yield One-Pager, its button also lives here — see Section 12.1.
 
 ```html
 <div class="toc-bar">
+  <div class="toc-head">
+    <span class="toc-eyebrow">Study Notes</span>
+    <span class="toc-name">Case-Based <em>HIV</em></span>   <!-- em gets --accent -->
+  </div>
+  <button class="toc-hy-btn" onclick="openHY()">🎯 High-Yield One-Pager</button>  <!-- see 12.1 -->
   <nav>
-    <a href="#section-id">Section Name</a>
+    <a href="#orientation"><span class="toc-num dot"></span><span>Orientation</span></a>
+
+    <p class="toc-group">Learning Objectives</p>
+    <a href="#lo1"><span class="toc-num">1</span><span>Microbiology &amp; Life Cycle</span></a>
+    <a href="#lo2"><span class="toc-num">2</span><span>CDC Testing Algorithm</span></a>
+    <!-- one per LO -->
+
+    <p class="toc-group">Reference</p>
+    <a href="#glossary"><span class="toc-num dot"></span><span>Glossary</span></a>
   </nav>
 </div>
 ```
+
+**The three legibility rules that make this read as clean rather than as a wall of links:**
+
+1. **Link labels use the body serif at normal case — NOT uppercase mono.** The first build used `'JetBrains Mono'` + `text-transform: uppercase` for every link (carried over from the horizontal bar, where it was fine at 8 short items). Stacked vertically it reads as one undifferentiated block that you have to decode word by word. Keep mono for the small structural labels (`.toc-eyebrow`, `.toc-group`) only — that's what it's good at.
+2. **Numbered chips build an alignment column.** LO links get a circled number; non-LO links (Orientation, Glossary, appendices) get a `.dot` variant. The eye tracks down one clean edge instead of ragged text starts.
+3. **Group the links.** A `.toc-group` label over the LO block and another over the reference block makes the LOs read as a set rather than as N equal items.
+
+Because the sidebar has real horizontal room, **write out the full section name** — `Microbiology & Life Cycle`, not the truncated `LO 1 · Microbiology` the horizontal bar forced. The number chip already carries the "LO 1" information, so repeating it in the label is redundant.
+
+```css
+:root { --toc-w: 252px; }
+body { padding-left: var(--toc-w); }   /* clears the fixed column */
+
+.toc-bar { position: fixed; top: 0; left: 0; bottom: 0; z-index: 90; width: var(--toc-w);
+  background: var(--hero-bg); border-right: 1px solid rgba(255,255,255,0.10);
+  overflow-y: auto; overflow-x: hidden; }
+.toc-bar::-webkit-scrollbar { width: 6px; }
+.toc-bar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.14); border-radius: 3px; }
+.toc-bar::-webkit-scrollbar-track { background: transparent; }
+
+.toc-head { padding: 26px 22px 18px; border-bottom: 1px solid rgba(255,255,255,0.10); }
+.toc-eyebrow { display: block; font-family: 'JetBrains Mono', monospace; font-size: .5rem;
+  letter-spacing: .22em; text-transform: uppercase; color: var(--hero-meta-label); margin-bottom: 7px; }
+.toc-name { display: block; font-family: 'Playfair Display', serif; font-weight: 700;
+  font-size: 1.22rem; color: var(--hero-heading); line-height: 1.15; }
+.toc-name em { font-style: normal; color: var(--accent); }
+
+.toc-group { font-family: 'JetBrains Mono', monospace; font-size: .49rem; letter-spacing: .2em;
+  text-transform: uppercase; color: var(--hero-meta-label); opacity: .75;
+  margin: 0; padding: 20px 22px 8px; }
+.toc-bar nav { display: flex; flex-direction: column; padding: 0 0 30px; }
+.toc-bar a { display: flex; align-items: center; gap: 11px; text-decoration: none;
+  font-family: 'Source Serif 4', Georgia, serif; font-size: .85rem; line-height: 1.3;
+  color: var(--hero-sub); padding: 9px 18px 9px 19px;
+  border-left: 3px solid transparent; transition: color .15s, border-color .15s, background .15s; }
+
+.toc-num { flex: none; width: 21px; height: 21px; border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.18); display: flex; align-items: center; justify-content: center;
+  font-family: 'JetBrains Mono', monospace; font-size: .58rem; font-weight: 700;
+  color: var(--hero-meta-label); transition: all .15s; }
+.toc-num.dot { border: none; position: relative; }
+.toc-num.dot::before { content: ''; width: 5px; height: 5px; border-radius: 50%;
+  background: rgba(255,255,255,0.28); transition: background .15s; }
+
+.toc-bar a:hover { color: var(--hero-heading); background: rgba(255,255,255,0.05); }
+.toc-bar a:hover .toc-num { border-color: rgba(255,255,255,0.4); color: var(--hero-heading); }
+.toc-bar a:hover .toc-num.dot::before { background: var(--accent); }
+.toc-bar a.active { color: var(--hero-heading); border-left-color: var(--accent);
+  background: rgba(255,255,255,0.06); font-weight: 600; }
+.toc-bar a.active .toc-num { background: var(--accent); border-color: var(--accent); color: #fff; }
+/* REQUIRED — see pitfall below */
+.toc-bar a.active .toc-num.dot { background: none; border-color: transparent; }
+.toc-bar a.active .toc-num.dot::before { background: var(--accent); width: 7px; height: 7px; }
+
+/* Narrow screens: fall back to the original horizontal sticky bar */
+@media (max-width: 1000px) {
+  body { padding-left: 0; }
+  .toc-bar { position: sticky; top: 0; bottom: auto; width: 100%; height: auto;
+    border-right: none; border-bottom: 1px solid rgba(255,255,255,0.12);
+    overflow-x: auto; overflow-y: hidden; }
+  .toc-head, .toc-group, .toc-hy-btn { display: none; }   /* hero .hy-btn takes over — see 12.1 */
+  .toc-bar nav { flex-direction: row; padding: 0 8px; white-space: nowrap; }
+  .toc-bar a { padding: 11px 14px; border-left: none; border-bottom: 2px solid transparent; gap: 8px; }
+  .toc-bar a:hover, .toc-bar a.active { border-left-color: transparent;
+    border-bottom-color: var(--accent); background: none; }
+  .toc-num { width: 18px; height: 18px; font-size: .54rem; }
+}
+```
+
+> **Pitfall — the active dot turns into a red blob.** `.toc-bar a.active .toc-num` fills the whole 21px circle with `--accent`, which is right for a numbered chip and badly wrong for a `.dot`, where the circle is just an invisible flex container around a 5px `::before`. Without the two `.toc-num.dot` override lines above, Orientation and Glossary render as large solid accent-colored discs the moment they go active. This shipped and had to be caught by looking at a rendered screenshot — the CSS reads fine.
+
+#### Scrollspy (required for the sidebar)
+
+A horizontal bar can get away with no active-state tracking; a vertical list can't — the highlight is what tells you where you are in a long document. Call `initScrollspy()` from `DOMContentLoaded`.
+
+```js
+function initScrollspy(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.toc-bar a'));
+  var map = {}, sections = [];
+  links.forEach(function(a){
+    var id = a.getAttribute('href').slice(1);
+    var sec = document.getElementById(id);
+    if(sec){ map[id] = a; sections.push(sec); }
+  });
+  if(!sections.length) return;
+  function update(){
+    var best = null, bestTop = -Infinity;
+    sections.forEach(function(sec){
+      var top = sec.getBoundingClientRect().top;
+      if(top <= 120 && top > bestTop){ bestTop = top; best = sec; }   // 120px offset band
+      });
+    if(!best) best = sections[0];
+    links.forEach(function(a){ a.classList.remove('active'); });
+    var active = map[best.id];
+    if(active) active.classList.add('active');
+  }
+  window.addEventListener('scroll', update, { passive: true });
+  update();   // set initial state on load
+}
+```
+
+The `top <= 120` band means "the active section is the last one whose top has passed 120px from the viewport top," which tracks the section you're actually reading rather than whichever one happens to touch the viewport edge.
+
+#### Verifying it (the screenshot trap)
+
+**Headless full-page screenshots do not capture `position: fixed` elements correctly** — the sidebar renders only at the very top of the capture and the rest of the strip comes out as bare page background, which looks exactly like a broken layout. Don't chase that as a bug. Verify the geometry by measuring in the live page instead:
+
+```js
+JSON.stringify({
+  inner: innerWidth,
+  bodyPadL: getComputedStyle(document.body).paddingLeft,          // expect "252px"
+  tocRect: document.querySelector('.toc-bar').getBoundingClientRect(),  // expect x:0, width:252, height:viewport
+  heroRect: document.querySelector('.hero').getBoundingClientRect(),    // expect x:252, right:innerWidth
+  active: document.querySelector('.toc-bar a.active')?.textContent
+})
+```
+
+A viewport-sized (non-full-page) headless screenshot **does** render the sidebar correctly, so use `--window-size=1512,950 --screenshot=…` for the visual check.
 
 ### 5.3 Section Wrapper
 Each topic is a `.section` with a `.container` inside.
@@ -742,13 +881,15 @@ The content column width described in Section 5.11 (`.slide-img` fills a "max 86
 
 **When building or adapting a file, size the layout so it visually fills a 16" MacBook Pro browser window without much empty space on either side:**
 
-- Widen the primary content container. Don't hardcode a single fixed `max-width` like `860px`; instead scale it to the viewport with something like:
+- Widen the primary content container. Don't hardcode a single fixed `max-width` like `860px`; instead scale it with something like:
   ```css
-  .container { max-width: min(1200px, 94vw); margin: 0 auto; }
+  .container { max-width: min(1220px, 94%); margin: 0 auto; }
   ```
   1100–1300px reads as full and well-used on a 16" MacBook Pro while still keeping body text lines from getting uncomfortably long (long-line readability still matters for body paragraphs — don't stretch `<p>` text edge-to-edge; widen the *page*, not necessarily every text block).
+
+  > **Use `94%`, not `94vw`, once the file has the fixed left sidebar (Section 5.2).** `vw` is measured against the whole viewport and ignores `body`'s `padding-left`, so a `94vw` container overflows its parent by roughly the sidebar's width — the right edge of every section runs off-screen and the page gains a horizontal scrollbar. `%` resolves against `body`'s content box, which already has the sidebar subtracted, so it stays correct in both the sidebar layout and the narrow horizontal-bar fallback with no media query. If you are adapting an older file that still has `94vw`, changing it is a required part of moving the TOC to the side.
 - Grid-based components (`.drug-grid`, `.hallmarks-grid`, `.compare-grid`, `.p53-grid`, `.hy-cols`, `.rr-grid`, Variant 2's `.hy-grid`) should use `auto-fit`/`auto-fill` with a `minmax()` track size (e.g. `grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));`) rather than a fixed column count — on a wide 16" screen this naturally produces more columns per row and uses the extra horizontal space, instead of leaving it blank beside a narrow fixed-width grid.
-- The `.hero`, `.toc-bar`/`.topbar`, and any full-bleed background bands should span the full viewport width (`width: 100%`, no `max-width` cap) even while the text/content *inside* them stays constrained to the narrower reading column — this keeps the page feeling edge-to-edge rather than like a strip down the middle of the screen.
+- The `.hero`, Variant 2's `.topbar`, and any full-bleed background bands should span the full width available to them (`width: 100%`, no `max-width` cap) even while the text/content *inside* them stays constrained to the narrower reading column — this keeps the page feeling edge-to-edge rather than like a strip down the middle of the screen. With the Section 5.2 sidebar in place, "full width" means the viewport minus the sidebar, which `width: 100%` gives you for free since these bands are children of the padded `body`.
 - Don't solve this by cranking up base font size or padding instead of widening the layout — that just makes existing content bigger without using the freed-up horizontal space, and can make a 16" viewport feel cramped vertically (more scrolling) instead of well-proportioned.
 - **Test at realistic 16" MacBook Pro widths, not just a phone breakpoint and a generic 1280px "desktop" check.** Render (or resize a browser preview to) roughly **1512px** and **1728px** wide and confirm: the page doesn't look like a narrow column floating in empty space, grids gain extra columns rather than staying stuck at 2–3, and nothing that was fine at 1280px overflows or looks stretched/thin at these wider sizes.
 - This applies to both Variant 1 and Variant 2 — update `.container`'s `max-width` (Variant 1) and `--maxw` (Variant 2, Section 13.1) using the same `min(…, …vw)` pattern rather than leaving either as a flat pixel value.
@@ -857,7 +998,7 @@ document.addEventListener('keydown', e => {
 When adding a new topic section, go through this checklist:
 
 - [ ] `.section` has a unique `id` (for TOC anchor)
-- [ ] TOC link added in `.toc-bar nav`
+- [ ] TOC link added in `.toc-bar nav`, with a `.toc-num` chip (a number for an LO section, `.toc-num.dot` for a non-LO one) and placed under the right `.toc-group` heading
 - [ ] Section has a `.lo-badge` (wrap in `.badge-row` if more than one)
 - [ ] At least one callout box used per major concept
 - [ ] At least one exam question (`exam-q`) per section
@@ -868,7 +1009,9 @@ When adding a new topic section, go through this checklist:
 When setting up a new lecture file:
 
 - [ ] `STORAGE_THEME_KEY` constant is unique to this file
-- [ ] `initVisualState()` and `initTableQuiz()` both called in `DOMContentLoaded`
+- [ ] `initVisualState()`, `initTableQuiz()`, and `initScrollspy()` all called in `DOMContentLoaded`
+- [ ] TOC sidebar (Section 5.2): `body { padding-left: var(--toc-w) }` set, `.container` uses `94%` not `94vw`, `@media print` zeroes the body padding, and the `.toc-num.dot` active-state overrides are present
+- [ ] Sidebar checked at a narrow width (&lt; 1000px) to confirm it falls back to the horizontal bar instead of eating the viewport
 - [ ] All theme variable groups overridden in each `[data-theme="..."]` block, **plus the `--panel-dark-bg`/`--panel-dark-text` pair (Section 3)**
 - [ ] After writing/copying theme palettes, **render each theme and check an `.exam-q` box and a `<table>` header specifically** — this is where dark-theme bugs hide (Section 3)
 - [ ] Decide whether this file gets a High-Yield One-Pager (Section 12) — optional, build it only if the user wants a condensed pre-exam summary
@@ -886,7 +1029,8 @@ When setting up a new lecture file:
 5. **Theme system is plug-and-play** — copy the full theme CSS block (all variable groups, including `--panel-dark-bg`/`--panel-dark-text`) and JS verbatim; no edits needed per lecture. Still worth a quick visual spot-check per theme (Section 3).
 6. **Change the localStorage key** — update the `STORAGE_THEME_KEY` constant to a unique per-lecture string so different files don't share state
 7. **Table Quiz is automatic** — `initTableQuiz()` requires no per-table setup; just include it and call it from `DOMContentLoaded`
-7a. **Scale layout width for a 16" MacBook Pro (Section 6)** — use `min(1200px, 94vw)`-style container widths and `auto-fit`/`auto-fill` grids instead of flat pixel `max-width`s, so the page fills a ~1512–1728px browser window instead of sitting as a narrow column with empty space on both sides
+7a. **Scale layout width for a 16" MacBook Pro (Section 6)** — use `min(1220px, 94%)`-style container widths and `auto-fit`/`auto-fill` grids instead of flat pixel `max-width`s, so the page fills a ~1512–1728px browser window instead of sitting as a narrow column with empty space on both sides. **Percent, not `vw`** — see the note in Section 6, since `vw` ignores the sidebar's `body` padding and overflows
+7b. **Copy the TOC sidebar wholesale (Section 5.2)** — the CSS, the `.toc-head`/`.toc-group`/`.toc-num` markup, `initScrollspy()`, and the print override are all lecture-independent; the only per-lecture work is writing the link list and deciding which entries get numbers vs. dots
 8. **Font size control** — copy the `.font-btn-row` HTML and `changeFontSize()` JS verbatim; no edits needed
 9. **If building the High-Yield One-Pager** — draft its content only after the full notes are otherwise done, since it's meant to be a condensed extraction of the real content, not written independently (Section 12)
 
@@ -905,13 +1049,42 @@ When setting up a new lecture file:
 
 An optional condensed-summary feature (see Section 1). A **self-contained modal** with its own hand-written, dense, LO-organized summary — plus a working Print/Save-PDF button that outputs a clean 1–2 page document, not the whole 30+ page file.
 
-### 12.1 The Button (place in the hero, high visibility)
+### 12.1 The Button — in the sidebar, with the hero as the narrow-screen fallback
+
+**Primary placement is the TOC sidebar (Section 5.2)**, directly under `.toc-head` and above the nav links. The hero button scrolls away after the first screen, which is exactly when you want the one-pager — from the sidebar it stays reachable from anywhere in the document.
+
+Keep **both** buttons in the markup and let the breakpoint choose which is visible, so the feature survives the narrow-screen fallback where the sidebar collapses to a horizontal bar with no room for a pill:
 
 ```html
+<!-- In the sidebar, between .toc-head and <nav> -->
+<button class="toc-hy-btn" onclick="openHY()">🎯 High-Yield One-Pager</button>
+
+<!-- In the hero, unchanged — shown only below 1000px -->
 <p class="hero-sub">Short description.</p>
 <button class="hy-btn" onclick="openHY()">🎯 High-Yield One-Pager</button>
 <div class="hero-meta">...</div>
 ```
+
+```css
+.toc-hy-btn { display: flex; align-items: center; justify-content: center; gap: 7px;
+  width: calc(100% - 28px); margin: 16px 14px 2px; background: var(--gold); color: #2a1a00;
+  border: none; padding: 11px 10px; border-radius: 24px; cursor: pointer;
+  font-family: 'JetBrains Mono', monospace; font-size: .61rem; font-weight: 700;
+  letter-spacing: .04em; line-height: 1.25; text-align: center;
+  transition: transform .15s, box-shadow .15s; }
+.toc-hy-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 13px rgba(0,0,0,0.32); }
+
+/* Exactly one of the two is visible at any width */
+.hero .hy-btn { display: none; }
+@media (max-width: 1000px) {
+  .toc-hy-btn { display: none; }
+  .hero .hy-btn { display: inline-flex; }
+}
+```
+
+> Note the sizing difference: the sidebar button is `display:flex` with `width: calc(100% - 28px)` so it fills the column as a block, at a smaller font than the hero's `inline-flex` pill. Don't just drop the hero `.hy-btn` into the sidebar unchanged — at `.78rem` the label wraps awkwardly inside a 252px column.
+>
+> **Add `.toc-hy-btn` to the `@media print` hide list** alongside `.hy-btn`, or it prints at the top of the first page.
 
 ```css
 .hy-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--gold);
@@ -1039,13 +1212,17 @@ Getting the print output to be *just* the one-pager (not the whole 30-page docum
 
 ```css
 @media print {
+  /* Mistake 3 — see below. Required once the TOC is a fixed left sidebar (5.2). */
+  body { padding-left: 0 !important; }
+  .container { max-width: 100% !important; }
+
   body.hy-mode .hero, body.hy-mode .toc-bar, body.hy-mode .section,
   body.hy-mode .lightbox, body.hy-mode .floating-stack, body.hy-mode footer { display: none !important; }
   body.hy-mode .hy-modal { position: static !important; inset: auto !important; background: none !important;
     padding: 0 !important; display: block !important; overflow: visible !important; }
   body.hy-mode .hy-modal-card { position: static !important; max-width: 100% !important; width: 100% !important;
     box-shadow: none !important; padding: 4px !important; }
-  .hy-modal-actions, .tq-bar { display: none !important; }
+  .hy-modal-actions, .tq-bar, .toc-hy-btn { display: none !important; }
   .hy-cols { grid-template-columns: repeat(3, 1fr); gap: 8px; }
 
   /* Shrink typography for print only — screen view stays at normal, readable size */
@@ -1062,17 +1239,33 @@ Getting the print output to be *just* the one-pager (not the whole 30-page docum
 
 The print-only font shrink at the bottom is optional and content-dependent — add it only if the one-pager's content overflows past 1 page in testing (see 12.6). It has no effect on the on-screen modal, which keeps its normal, comfortably readable size.
 
+**Mistake 3 — forgetting that hiding the sidebar doesn't reclaim its space.** With the Section 5.2 left sidebar, the existing `.toc-bar { display: none }` print rule removes the column itself, but `body`'s `padding-left: 252px` is still applied — so **every printed page comes out with a blank 252px gutter down the left edge** and the content squeezed into what's left. This affects the *normal* print path (plain Ctrl+P of the full notes), not just the one-pager, so it's easy to miss if you only ever test the modal. Zero `body { padding-left }` and release `.container`'s `max-width` inside `@media print`, as shown above. Both rules are unscoped — they should apply whether or not `hy-mode` is on.
+
 ### 12.6 Verifying the print output actually works
 
 **Do not just eyeball the CSS — actually render it.** If you have computer/browser tooling available, open the modal, switch to print media emulation, and export to PDF, then check the page count and read the rendered output:
 
 ```python
 # Example verification approach (Playwright)
-page.click(".hy-btn")
+page.click(".toc-hy-btn")     # the sidebar button — .hy-btn is display:none above 1000px
 page.emulate_media(media="print")
 page.pdf(path="onepager.pdf", format="Letter", print_background=True)
 # then check page count (pdfinfo) and render to images to actually look at it
 ```
+
+**Without Playwright** (it is not installed by default), headless Chrome does the same job if you pre-apply the two classes `openHY()` would have set and print that copy — this exercises the real print CSS path:
+
+```bash
+python3 -c "
+h=open('notes.html',encoding='utf-8').read()
+h=h.replace('<body>','<body class=\"hy-mode\">',1)
+h=h.replace('<div class=\"hy-modal\" id=\"hyModal\">','<div class=\"hy-modal open\" id=\"hyModal\">',1)
+open('print_test.html','w',encoding='utf-8').write(h)"
+chrome --headless --disable-gpu --no-pdf-header-footer --print-to-pdf=hy.pdf http://localhost:PORT/print_test.html
+pdfinfo hy.pdf | grep Pages      # expect 1-3, NOT 40+
+```
+
+Then print the **unmodified** file the same way and confirm you still get the full document (tens of pages) — that is the Mistake 2 check.
 
 A 40-page PDF means Mistake 1 above; a full-document printout when the modal was never opened means Mistake 2. If the one-pager itself is fine but runs 2+ pages, either trim content or add the print-only font-size shrink from 12.5 — verify by re-running the export, don't assume a CSS tweak worked.
 
@@ -1160,7 +1353,7 @@ document.getElementById('themeToggle').addEventListener('click', () => {
   <script>         ← theme toggle, scroll-based active-nav highlight, quiz-table engine, MCQ engine, lightbox, HY modal
 ```
 
-The topbar nav uses `<a href="#section-id">` pills that gain an `.active` class on scroll (via a `scroll` listener comparing each section's `getBoundingClientRect().top`), rather than Variant 1's plain `.toc-bar` links with no active-state tracking.
+The topbar nav uses `<a href="#section-id">` pills that gain an `.active` class on scroll (via a `scroll` listener comparing each section's `getBoundingClientRect().top`). Variant 1 now tracks an active state too, via the sidebar scrollspy in Section 5.2 — the two use the same `getBoundingClientRect().top` offset-band approach, so if you move a Variant 2 file to the sidebar layout you can drop its pill scrollspy and use `initScrollspy()` unchanged.
 
 ### 13.4 Component Reference
 
@@ -1394,7 +1587,7 @@ Don't just read the CSS/JS back and reason about it — actually drive the page 
 
 ## 14. Study Tools System (Optional Active-Recall / Progress Layer)
 
-> First built for `Eating_Disorders_Study_Notes.html` (Lee Wolfrum, DO — Eating Disorders), layered on top of Variant 1. This is an **add-on layer**, not a third variant: it assumes the base file already exists (sections with stable `id`s, a sticky TOC bar, `.exam-q` blocks, the table quiz) and injects everything else at runtime via JS — no manual per-section HTML edits needed beyond the TOC. It can be applied to either variant.
+> First built for `Eating_Disorders_Study_Notes.html` (Lee Wolfrum, DO — Eating Disorders), layered on top of Variant 1. This is an **add-on layer**, not a third variant: it assumes the base file already exists (sections with stable `id`s, a TOC nav, `.exam-q` blocks, the table quiz) and injects everything else at runtime via JS — no manual per-section HTML edits needed beyond the TOC. It can be applied to either variant.
 
 The design intent: convert a passive reading document into a retrieval-practice tool. Every feature below maps to a specific study behavior — Recall Mode = active recall, reviewed/confidence tracking = a self-sorting review queue for the second pass, collapse = header-prompted recall, the compare strip = anchoring the discrimination task, Next-Q = a pure question-pass the night before the exam.
 
@@ -1437,7 +1630,9 @@ window.addEventListener('scroll', function(){
 
 ### 14.2 TOC Scrollspy + Progress Chip + Collapse-All
 
-The sticky TOC (5.2) gains three things: an active-section underline, a per-section ✓ colored by confidence, and a right-aligned tools cluster.
+The TOC (5.2) gains three things: an active-section indicator, a per-section ✓ colored by confidence, and a tools cluster.
+
+> **Reconciling with the 5.2 sidebar.** Section 5.2 already ships a scrollspy and an `.active` state, so when this layer is applied to a sidebar file, **don't add a second scrollspy** — keep `initScrollspy()` and layer only the ✓ marks and tools on top of it. Two mappings change in sidebar mode: the active indicator is 5.2's left border rather than an animated underline (drop the `::after` width animation, which reads as a stray horizontal line in a vertical list), and `.toc-tools` cannot be pushed right with `margin-left: auto` in a column — put it in its own block at the bottom of the nav, or in the `.toc-head`, instead. The `.toc-check` and `conf-1/2/3` classes carry over unchanged; place the ✓ at the end of the link so it sits opposite the `.toc-num` chip.
 
 **HTML — each TOC link gets a hidden check, and a `.toc-tools` span goes at the end of the nav:**
 ```html
