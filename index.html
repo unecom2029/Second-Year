@@ -3339,6 +3339,7 @@ var ADMIN_ACCOUNT={email:'jmehta@une.edu',password:'test123',name:'Jeevs'};
 var AUTH_STORAGE_KEY='une-study-hub-custom-users-v1';
 var AUTH_LAST_LOGIN_KEY='une-study-hub-last-login-v1';
 var AUTH_REMEMBER_KEY='une-study-hub-remembered-auth-v1';
+var AUTH_REMEMBER_COOKIE_KEY=AUTH_REMEMBER_KEY;
 var AUTH_LOGIN_EFFECT_HISTORY_COOKIE='une-study-hub-login-effect-history-v1';
 var AUTH_LOGIN_EFFECT_HISTORY_KEY='une-study-hub-login-effect-history-v1';
     // Fixed session length: reloads should not extend the four-hour login window.
@@ -3960,9 +3961,10 @@ function getAuthUser(email){
 }
 function clearRememberedAuth(){
   safeStorageRemove(AUTH_REMEMBER_KEY);
+  try{document.cookie=encodeURIComponent(AUTH_REMEMBER_COOKIE_KEY)+'=; max-age=0; path=/; SameSite=Lax';}catch(err){}
 }
 function readRememberedAuth(){
-  var raw=safeStorageRead(AUTH_REMEMBER_KEY);
+  var raw=safeStorageRead(AUTH_REMEMBER_KEY)||readCookie(AUTH_REMEMBER_COOKIE_KEY);
   if(!raw)return null;
   try{
     var parsed=JSON.parse(raw);
@@ -3990,11 +3992,23 @@ function writeRememberedAuth(email){
     clearRememberedAuth();
     return null;
   }
-  safeStorageWrite(AUTH_REMEMBER_KEY,JSON.stringify({
+  var rememberedPayload=JSON.stringify({
     email:user.email,
     expiresAt:Date.now()+AUTH_REMEMBER_MS
-  }));
+  });
+  safeStorageWrite(AUTH_REMEMBER_KEY,rememberedPayload);
+  writeCookie(AUTH_REMEMBER_COOKIE_KEY,rememberedPayload,AUTH_REMEMBER_MS/(24*60*60*1000));
   return user;
+}
+function isNotesLoginReturn(){
+  return location.search.indexOf("login=notes")!==-1||location.hash==="#login-notes";
+}
+function notifyNotesLoginComplete(user){
+  if(!isNotesLoginReturn())return;
+  try{
+    if(window.opener)window.opener.postMessage({type:'une-study-hub-auth-complete',email:user&&user.email||''},'*');
+  }catch(err){}
+  setTimeout(function(){try{window.close();}catch(err){}},650);
 }
 function setAuthMsg(msg,type){
   var el=document.getElementById('authMsg');
@@ -5152,6 +5166,7 @@ function logoutApp(){
 function unlockApp(){
   var overlay=document.getElementById('authOverlay');
   document.body.classList.remove('auth-locked');
+  notifyNotesLoginComplete(AUTH_STATE.user);
   rSB();
   rMN();
   syncAdminControls();
