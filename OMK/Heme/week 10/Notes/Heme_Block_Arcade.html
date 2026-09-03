@@ -1,0 +1,1550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Heme Block Arcade — Active Recall</title>
+<link rel="icon" href="data:image/svg+xml,<svg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'><text%20y='.9em'%20font-size='56'>🎮</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#2b1216; --paper:#fdf7f5; --cream:#f2d8d2;
+  --accent:#a5142a; --accent2:#22606f; --gold:#b07c1c; --muted:#7c585b; --border:#e6c8c2;
+  --highlight:#fae2ab; --highlight2:#f6d3cc; --green-bg:#d5ecd8; --red-bg:#f9d3cf;
+  --blue-bg:#d0e6ec; --purple-bg:#e9dbec; --hero-bg:#2b0d13;
+  --panel-dark-bg:#2b1216; --panel-dark-text:#fdf7f5;
+  --hero-heading:#fbeae6; --hero-sub:#d3aeab;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#a8797a; --hero-meta-value:#f5d8c9;
+  --floating-ui-bg:#3a151c; --floating-ui-fg:#fbeae6; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(34,96,111,.52); --quiz-overlay-hover:rgba(34,96,111,.80);
+}
+[data-theme="venous"]{
+  --ink:#ecd9dc; --paper:#150a0e; --cream:#2c171e;
+  --accent:#f68292; --accent2:#5fbccd; --gold:#e6b761; --muted:#ab9095; --border:#3d2029;
+  --highlight:#3f2b13; --highlight2:#2e1822; --green-bg:#11291d; --red-bg:#35151a;
+  --blue-bg:#11262d; --purple-bg:#251b31; --hero-bg:#0c0507;
+  --panel-dark-bg:#1f1015; --panel-dark-text:#f8e9eb;
+  --hero-heading:#fbe9ec; --hero-sub:#c3a3a9;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#9a7a80; --hero-meta-value:#f6dfc7;
+  --floating-ui-bg:#080304; --floating-ui-fg:#fbe9ec; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(95,188,205,.42); --quiz-overlay-hover:rgba(95,188,205,.64);
+}
+[data-theme="paper"]{
+  --ink:#1a1209; --paper:#faf7f2; --cream:#ece1cd;
+  --accent:#a32c14; --accent2:#2c5f8a; --gold:#c9922a; --muted:#6b5e4e; --border:#d4cabb;
+  --highlight:#fbe4a0; --highlight2:#cfe4f7; --green-bg:#d7f0da; --red-bg:#f8d6d0;
+  --blue-bg:#d2e7f9; --purple-bg:#e6dbfa; --hero-bg:#1a1209;
+  --panel-dark-bg:#1a1209; --panel-dark-text:#faf7f2;
+  --hero-heading:#f5ede0; --hero-sub:#c9bcad;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#8a7a6a; --hero-meta-value:#f0e0c8;
+  --floating-ui-bg:#3a3030; --floating-ui-fg:#f5ede0; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(44,95,138,.50); --quiz-overlay-hover:rgba(44,95,138,.78);
+}
+[data-theme="night"]{
+  --ink:#e0e8f0; --paper:#0f1923; --cream:#1b2942;
+  --accent:#e8b84b; --accent2:#4aa8d8; --gold:#e8b84b; --muted:#94abc0; --border:#1e3048;
+  --highlight:#3a3016; --highlight2:#12283a; --green-bg:#10281c; --red-bg:#2e1616;
+  --blue-bg:#10233a; --purple-bg:#201a38; --hero-bg:#070e15;
+  --panel-dark-bg:#101a26; --panel-dark-text:#eef5fb;
+  --hero-heading:#f4f9ff; --hero-sub:#b8cad8;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#8fa4b8; --hero-meta-value:#f4f9ff;
+  --floating-ui-bg:#070e15; --floating-ui-fg:#f4f9ff; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(74,168,216,.42); --quiz-overlay-hover:rgba(74,168,216,.62);
+}
+[data-theme="ocean"]{
+  --ink:#0b2436; --paper:#eef7fb; --cream:#cdeaf5;
+  --accent:#a32536; --accent2:#0a5286; --gold:#d9a441; --muted:#4f7185; --border:#a8d4e8;
+  --highlight:#ffe6ad; --highlight2:#bfe3f2; --green-bg:#c9f0dc; --red-bg:#fad9d5;
+  --blue-bg:#c3e4f6; --purple-bg:#e1d7f6; --hero-bg:#0a3a5c;
+  --panel-dark-bg:#0b2436; --panel-dark-text:#eef7fb;
+  --hero-heading:#eaf6fd; --hero-sub:#a9c9dc;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#7ba0b8; --hero-meta-value:#d9edfa;
+  --floating-ui-bg:#0a3a5c; --floating-ui-fg:#eaf6fd; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(15,111,176,.48); --quiz-overlay-hover:rgba(15,111,176,.74);
+}
+[data-theme="forest"]{
+  --ink:#16241a; --paper:#f2f7f0; --cream:#d7ead2;
+  --accent:#8f3418; --accent2:#155c39; --gold:#b8860b; --muted:#52684f; --border:#b7d4ae;
+  --highlight:#f3e6a0; --highlight2:#cbe4c4; --green-bg:#c7ecc0; --red-bg:#f7ddd0;
+  --blue-bg:#cbe6df; --purple-bg:#e1dbee; --hero-bg:#12301c;
+  --panel-dark-bg:#16241a; --panel-dark-text:#f2f7f0;
+  --hero-heading:#eef7ea; --hero-sub:#b6cfb0;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#87a382; --hero-meta-value:#e2f2da;
+  --floating-ui-bg:#12301c; --floating-ui-fg:#eef7ea; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(31,122,77,.48); --quiz-overlay-hover:rgba(31,122,77,.74);
+}
+[data-theme="sepia"]{
+  --ink:#3a2414; --paper:#f7ecd9; --cream:#ecd7ae;
+  --accent:#9c3b17; --accent2:#2f5f6b; --gold:#8b5a17; --muted:#7a614a; --border:#d9bd8c;
+  --highlight:#f0d38a; --highlight2:#d7c39a; --green-bg:#dbe3bc; --red-bg:#f0d0c0;
+  --blue-bg:#cfdedd; --purple-bg:#e3d3e0; --hero-bg:#3f2814;
+  --panel-dark-bg:#3a2414; --panel-dark-text:#f7ecd9;
+  --hero-heading:#f7ecd9; --hero-sub:#cbb190;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#a08a68; --hero-meta-value:#f2ddb4;
+  --floating-ui-bg:#3f2814; --floating-ui-fg:#f7ecd9; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(47,95,107,.50); --quiz-overlay-hover:rgba(47,95,107,.78);
+}
+[data-theme="slate"]{
+  --ink:#1c2229; --paper:#f4f5f7; --cream:#dde3ea;
+  --accent:#9e2c0f; --accent2:#2b5268; --gold:#a8862a; --muted:#5c6a76; --border:#c8d0d8;
+  --highlight:#f2e3ac; --highlight2:#d5e2ec; --green-bg:#d6ead9; --red-bg:#f4d8d0;
+  --blue-bg:#d3e2ef; --purple-bg:#dfd9ec; --hero-bg:#1c2530;
+  --panel-dark-bg:#1c2530; --panel-dark-text:#f4f5f7;
+  --hero-heading:#eef1f5; --hero-sub:#b3bfca;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#8595a3; --hero-meta-value:#e4ebf2;
+  --floating-ui-bg:#1c2530; --floating-ui-fg:#eef1f5; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(51,96,122,.50); --quiz-overlay-hover:rgba(51,96,122,.78);
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;padding-left:var(--toc-w);background:var(--paper);color:var(--ink);
+  font-family:'Source Serif 4',Georgia,serif;font-size:16px;line-height:1.65;overflow-wrap:break-word;
+  transition:background .25s,color .25s}
+:root{--toc-w:258px}
+h1,h2,h3,h4{font-family:'Playfair Display',Georgia,serif;line-height:1.18}
+a{color:var(--accent2)}
+strong{color:var(--accent2)}
+.container{max-width:min(1220px,94%);margin:0 auto}
+img{max-width:100%}
+
+/* ---------------- reading progress ---------------- */
+.progress-bar{position:fixed;top:0;left:0;height:3px;width:0;z-index:200;
+  background:linear-gradient(90deg,var(--accent2),var(--accent));transition:width .1s linear}
+
+/* ---------------- TOC sidebar ---------------- */
+.toc-bar{position:fixed;top:0;left:0;bottom:0;z-index:90;width:var(--toc-w);
+  background:var(--hero-bg);border-right:1px solid rgba(255,255,255,.10);overflow-y:auto;overflow-x:hidden}
+.toc-bar::-webkit-scrollbar{width:6px}
+.toc-bar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14);border-radius:3px}
+.toc-bar::-webkit-scrollbar-track{background:transparent}
+.toc-head{padding:24px 20px 16px;border-bottom:1px solid rgba(255,255,255,.10)}
+.toc-eyebrow{display:block;font-family:'JetBrains Mono',monospace;font-size:.5rem;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--hero-meta-label);margin-bottom:7px}
+.toc-name{display:block;font-family:'Playfair Display',serif;font-weight:700;font-size:1.2rem;
+  color:var(--hero-heading);line-height:1.15}
+.toc-name em{font-style:normal;color:var(--accent)}
+.toc-group{font-family:'JetBrains Mono',monospace;font-size:.49rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--hero-meta-label);opacity:.75;margin:0;padding:18px 20px 7px}
+.toc-bar nav{display:flex;flex-direction:column;padding:0 0 26px}
+.toc-bar a{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:'Source Serif 4',Georgia,serif;
+  font-size:.85rem;line-height:1.3;color:var(--hero-sub);padding:8px 16px 8px 17px;
+  border-left:3px solid transparent;transition:color .15s,border-color .15s,background .15s}
+.toc-num{flex:none;width:21px;height:21px;border-radius:50%;border:1px solid rgba(255,255,255,.18);
+  display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;
+  font-size:.56rem;font-weight:700;color:var(--hero-meta-label);transition:all .15s}
+.toc-num.dot{border:none;position:relative}
+.toc-num.dot::before{content:'';width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.28);transition:background .15s}
+.toc-bar a:hover{color:var(--hero-heading);background:rgba(255,255,255,.05)}
+.toc-bar a:hover .toc-num{border-color:rgba(255,255,255,.4);color:var(--hero-heading)}
+.toc-bar a:hover .toc-num.dot::before{background:var(--accent)}
+.toc-bar a.active{color:var(--hero-heading);border-left-color:var(--accent);background:rgba(255,255,255,.06);font-weight:600}
+.toc-bar a.active .toc-num{background:var(--accent);border-color:var(--accent);color:#fff}
+.toc-bar a.active .toc-num.dot{background:none;border-color:transparent}
+.toc-bar a.active .toc-num.dot::before{background:var(--accent);width:7px;height:7px}
+.toc-check{margin-left:auto;font-size:.72rem;display:none;line-height:1}
+.toc-bar a.done .toc-check{display:inline}
+.toc-bar a.conf-1 .toc-check{color:#e0564a}
+.toc-bar a.conf-2 .toc-check{color:#d6a12a}
+.toc-bar a.conf-3 .toc-check{color:#3d9c5c}
+.toc-tools{display:flex;flex-direction:column;gap:6px;padding:14px 14px 0;margin-top:8px;
+  border-top:1px solid rgba(255,255,255,.10)}
+.toc-chip{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);color:var(--hero-sub);
+  font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.05em;padding:7px 9px;
+  border-radius:8px;cursor:pointer;text-align:left;transition:background .15s,color .15s}
+.toc-chip:hover{background:rgba(255,255,255,.14);color:var(--hero-heading)}
+.toc-hy-btn{display:flex;align-items:center;justify-content:center;gap:7px;width:calc(100% - 28px);
+  margin:15px 14px 2px;background:var(--gold);color:#2a1a00;border:none;padding:11px 10px;border-radius:24px;
+  cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.04em;
+  line-height:1.25;text-align:center;transition:transform .15s,box-shadow .15s}
+.toc-hy-btn:hover{transform:translateY(-1px);box-shadow:0 4px 13px rgba(0,0,0,.32)}
+
+/* ---------------- hero ---------------- */
+.hero{background:var(--hero-bg);padding:52px 0 44px;width:100%}
+.hero-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--hero-meta-label);margin-bottom:16px}
+.hero h1{margin:0 0 12px;font-size:clamp(2rem,4.4vw,3.3rem);font-weight:900;color:var(--hero-heading);letter-spacing:-.01em}
+.hero h1 span{color:var(--accent)}
+.hero-sub{margin:0 0 20px;max-width:66ch;color:var(--hero-sub);font-size:1.03rem}
+.hero-meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.hero-meta-item{background:var(--hero-meta-bg);border:1px solid var(--hero-meta-border);border-radius:9px;
+  padding:9px 15px;min-width:118px}
+.hero-meta-item .label{display:block;font-family:'JetBrains Mono',monospace;font-size:.5rem;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--hero-meta-label);margin-bottom:4px}
+.hero-meta-item .value{display:block;font-family:'Playfair Display',serif;font-weight:700;font-size:1.02rem;color:var(--hero-meta-value)}
+.hy-btn{display:none;align-items:center;gap:8px;background:var(--gold);color:#2a1a00;border:none;padding:12px 22px;
+  border-radius:30px;font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700;letter-spacing:.04em;
+  cursor:pointer;margin-top:4px;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+
+/* ---------------- sections ---------------- */
+.section{padding:46px 0 8px;border-bottom:1px solid var(--border);scroll-margin-top:20px}
+.section:last-of-type{border-bottom:none}
+.badge-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.lo-badge{display:inline-block;background:var(--accent);color:#fff;font-family:'JetBrains Mono',monospace;
+  font-size:.6rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;padding:6px 13px;border-radius:20px}
+.lo-badge.alt{background:var(--accent2)}
+.section-label{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 6px}
+.section-title{margin:0 0 6px;font-size:clamp(1.55rem,3vw,2.3rem);font-weight:700;
+  border-bottom:3px solid var(--accent);display:inline-block;padding-bottom:6px}
+.section h3{margin:30px 0 8px;font-size:1.24rem;border-left:4px solid var(--accent2);padding-left:11px}
+.section h4{margin:18px 0 6px;font-size:1.03rem}
+.lede{font-size:1.05rem;color:var(--muted);max-width:74ch}
+
+/* section tools (injected) */
+.sec-tools{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:14px 0 4px;padding:8px 12px;
+  background:var(--cream);border:1px solid var(--border);border-radius:9px;
+  font-family:'JetBrains Mono',monospace;font-size:.6rem}
+.sec-tools .st-lab{color:var(--muted);text-transform:uppercase;letter-spacing:.11em}
+.sec-tools button{font-family:'JetBrains Mono',monospace;font-size:.6rem;border:1px solid var(--border);
+  background:var(--paper);color:var(--ink);border-radius:20px;padding:4px 11px;cursor:pointer;transition:all .15s}
+.sec-tools button:hover{border-color:var(--accent2)}
+.sec-tools button.on{background:var(--accent2);color:#fff;border-color:var(--accent2)}
+.sec-tools .st-collapse{margin-left:auto}
+.sec-body-outer{display:grid;grid-template-rows:1fr;transition:grid-template-rows .35s ease}
+.sec-body-inner{overflow:hidden;min-height:0}
+.section.collapsed .sec-body-outer{grid-template-rows:0fr}
+.recall-note{display:none;margin:12px 0;padding:9px 13px;border:1px dashed var(--accent2);border-radius:8px;
+  background:var(--blue-bg);font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--ink)}
+body.recall-mode .recall-note{display:block}
+
+/* ---------------- callouts ---------------- */
+.callout{border-left:5px solid var(--accent2);border-radius:0 9px 9px 0;padding:14px 18px;margin:18px 0;background:var(--blue-bg)}
+.callout p:last-child,.callout ul:last-child{margin-bottom:0}
+.callout p:first-of-type{margin-top:0}
+.callout-title{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;margin-bottom:7px;color:var(--ink)}
+.callout-key{border-left-color:var(--gold);background:var(--highlight)}
+.callout-concept{border-left-color:var(--accent2);background:var(--blue-bg)}
+.callout-clinical{border-left-color:#3d9c5c;background:var(--green-bg)}
+.callout-warning{border-left-color:var(--accent);background:var(--red-bg)}
+.callout-purple{border-left-color:#7a5aa8;background:var(--purple-bg)}
+.callout-hook{border-left-color:var(--gold);background:var(--highlight);border-left-style:dashed;border-left-width:5px}
+
+/* ---------------- lists ---------------- */
+.notes-list{list-style:none;padding-left:0;margin:12px 0}
+.notes-list li{position:relative;padding-left:20px;margin-bottom:7px}
+.notes-list li::before{content:'\203A';position:absolute;left:4px;color:var(--accent);font-weight:700}
+.step-list{list-style:none;counter-reset:st;padding-left:0;margin:16px 0}
+.step-list li{counter-increment:st;position:relative;padding-left:44px;margin-bottom:14px;min-height:30px}
+.step-list li::before{content:counter(st);position:absolute;left:0;top:0;width:30px;height:30px;border-radius:50%;
+  background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:700}
+.step-list li>div>strong:first-child{display:block;margin-bottom:2px;color:var(--accent)}
+
+/* ---------------- tables ---------------- */
+table{width:100%;border-collapse:collapse;margin:6px 0 20px;font-size:.92rem}
+th,td{border:1px solid var(--border);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:var(--panel-dark-bg);color:var(--panel-dark-text);font-family:'JetBrains Mono',monospace;
+  font-size:.63rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700}
+tr:nth-child(even) td{background:var(--cream)}
+tr:hover td{background:var(--highlight2)}
+.tbl-scroll{overflow-x:auto;margin-bottom:20px}
+.tbl-scroll table{margin-bottom:0}
+
+/* ---------------- exam Q ---------------- */
+.exam-q{background:var(--panel-dark-bg);color:var(--panel-dark-text);border-radius:11px;padding:20px 22px 18px;margin:22px 0;position:relative}
+.exam-q::before{content:'Exam Q';position:absolute;top:-10px;left:20px;background:var(--accent);color:#fff;
+  font-family:'JetBrains Mono',monospace;font-size:.56rem;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;padding:4px 11px;border-radius:12px}
+.exam-q p{margin:6px 0}
+.exam-q strong{color:var(--gold)}
+.exam-q .answer{margin-top:12px;padding-top:12px;border-top:1px dashed rgba(255,255,255,.28);display:none}
+.exam-q.revealed .answer{display:block;animation:fadeIn .32s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.exam-q .answer .label{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--gold);margin-bottom:5px}
+.exam-q .reveal-btn{margin-top:11px;background:transparent;border:1px solid rgba(255,255,255,.4);
+  color:var(--panel-dark-text);font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.09em;
+  text-transform:uppercase;padding:6px 15px;border-radius:20px;cursor:pointer}
+.exam-q .reveal-btn:hover{background:rgba(255,255,255,.14)}
+.exam-q.revealed .reveal-btn{display:none}
+.exam-q.q-flash{outline:3px solid var(--gold);animation:qPulse 1.2s ease 1}
+@keyframes qPulse{0%{box-shadow:0 0 0 0 rgba(201,146,42,.55)}70%{box-shadow:0 0 0 14px rgba(201,146,42,0)}100%{box-shadow:none}}
+
+/* ---------------- cards & grids ---------------- */
+.compare-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:14px;margin:18px 0}
+.compare-card{border:1px solid var(--border);border-radius:11px;padding:16px 18px;background:var(--cream)}
+.compare-card h4{margin:6px 0 6px;font-size:1.08rem}
+.compare-card .card-emoji{font-size:1.5rem;line-height:1}
+.compare-card p{margin:0 0 8px}
+.fact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,235px),1fr));gap:13px;margin:18px 0}
+.fact-card{border:1px solid var(--border);border-top:4px solid var(--accent2);border-radius:10px;
+  padding:14px 16px;background:var(--cream)}
+.fact-card h4{margin:0 0 3px;font-size:1rem}
+.fact-card .generic{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.fact-card p{margin:0;font-size:.87rem}
+.hallmarks-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,215px),1fr));gap:13px;margin:18px 0}
+.hallmark-card{border:1px solid var(--border);border-top:4px solid var(--accent);border-radius:10px;
+  padding:14px 16px;background:var(--cream);position:relative}
+.hallmark-card:nth-child(3n+2){border-top-color:var(--accent2)}
+.hallmark-card:nth-child(3n+3){border-top-color:var(--gold)}
+.hallmark-card h4{margin:6px 0 4px;font-size:.99rem}
+.hallmark-card p{margin:0;font-size:.86rem}
+.hallmark-num{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;color:var(--muted)}
+
+/* inline chips */
+.lab-code{font-family:'JetBrains Mono',monospace;background:var(--cream);border:1px solid var(--border);
+  padding:1px 6px;border-radius:4px;font-size:.82rem;white-space:nowrap}
+.gene-tag{font-family:'JetBrains Mono',monospace;color:var(--accent2);font-size:.88rem;font-weight:600}
+.hy-flag{display:inline-flex;align-items:center;gap:3px;background:var(--highlight);color:var(--gold);
+  border:1px solid var(--gold);font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.6rem;
+  padding:1px 8px;border-radius:20px;letter-spacing:.04em;vertical-align:middle}
+.up{color:#c0392b;font-weight:700}
+.dn{color:#2c7fb8;font-weight:700}
+
+/* ---------------- images ---------------- */
+.slide-img{width:100%;display:block;border:1px solid var(--border);border-radius:10px;margin:18px 0 5px;
+  cursor:zoom-in;background:#fff}
+.slide-caption{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 20px;text-align:center}
+.img-pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px;margin:18px 0}
+.img-pair .slide-img{margin:0}
+.img-pair .slide-caption{margin:6px 0 0}
+.fig{margin:18px 0}
+.fig svg{width:100%;height:auto;display:block;border:1px solid var(--border);border-radius:10px;background:var(--cream)}
+
+/* ---------------- table quiz ---------------- */
+.tq-bar{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:6px;padding:8px 12px;
+  background:var(--cream);border:1px solid var(--border);border-radius:8px}
+.tq-toggle{font-family:'JetBrains Mono',monospace;font-size:.63rem;letter-spacing:.09em;text-transform:uppercase;
+  background:var(--accent2);color:#fff;border:none;border-radius:20px;padding:5px 12px;cursor:pointer}
+.tq-toggle.active{background:var(--accent)}
+.tq-cols{display:flex;flex-wrap:wrap;gap:5px;flex:1}
+.tq-col-btn{font-size:.7rem;padding:3px 9px;border:1px solid var(--border);border-radius:12px;background:var(--paper);
+  cursor:pointer;font-family:'JetBrains Mono',monospace;color:var(--ink);transition:all .15s}
+.tq-col-btn.sel{background:var(--accent2);color:#fff;border-color:var(--accent2)}
+.tq-start,.tq-shuffle,.tq-reset{font-family:'JetBrains Mono',monospace;font-size:.63rem;color:#fff;border:none;
+  border-radius:20px;padding:5px 12px;cursor:pointer}
+.tq-start{background:#2e7d32}.tq-start:disabled{opacity:.35;cursor:not-allowed}
+.tq-shuffle{background:var(--accent2)}
+.tq-reset{background:var(--accent)}
+.tq-score{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted)}
+.tq-score.done{color:#2e7d32;font-weight:700}
+.quiz-hidden-cell{position:relative!important;cursor:pointer!important}
+.quiz-hidden-cell .tq-cell-content{filter:blur(5px)!important;user-select:none!important;pointer-events:none!important;opacity:.4!important}
+.quiz-hidden-cell::after{content:'tap to reveal'!important;position:absolute!important;inset:0!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;background:var(--quiz-overlay)!important;
+  color:#fff!important;font-family:'JetBrains Mono',monospace!important;font-size:.58rem!important;font-weight:700!important;
+  letter-spacing:.12em!important;text-transform:uppercase!important;border-radius:4px!important}
+.quiz-hidden-cell:hover::after{background:var(--quiz-overlay-hover)!important}
+
+/* ---------------- recall mode ---------------- */
+body.recall-mode .sec-body-inner :is(p,li,td,h4,dd) strong:not(.rc-open){color:transparent;background:var(--highlight2);
+  border-radius:4px;cursor:pointer;box-shadow:inset 0 0 0 1px var(--border);padding:0 2px}
+body.recall-mode .exam-q strong,body.recall-mode .tq-bar strong{color:var(--gold)!important;background:none!important;box-shadow:none!important}
+body.recall-mode .game strong{color:inherit!important;background:none!important;box-shadow:none!important;cursor:auto}
+strong.rc-open{animation:rcReveal .35s ease}
+@keyframes rcReveal{from{background:var(--gold)}to{background:transparent}}
+
+/* ---------------- games ---------------- */
+.game{background:var(--cream);border:1px solid var(--border);border-top:4px solid var(--accent);border-radius:12px;
+  padding:18px 20px;margin:22px 0}
+.g-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:4px}
+.g-head h3{margin:0;font-size:1.16rem;border:none;padding:0}
+.g-emoji{margin-right:.45em}
+.g-score{margin-left:auto;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.72rem;color:var(--muted)}
+.g-intro{font-size:.87rem;color:var(--muted);margin:0 0 10px}
+.g-stage{background:var(--paper);border:1px solid var(--border);border-radius:14px;padding:20px 18px 16px;margin:10px 0 0}
+.g-vign{text-align:left;font-size:.97rem;line-height:1.55;min-height:2.4em}
+.g-vign .lead{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--muted);display:block;margin-bottom:6px}
+.g-opts{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));margin-top:14px}
+.g-opt{border:1px solid var(--border);background:var(--cream);border-radius:11px;padding:9px 14px;font-weight:700;
+  cursor:pointer;font-size:.88rem;font-family:'Source Serif 4',Georgia,serif;color:var(--ink);text-align:center;
+  transition:transform .12s ease,border-color .12s,background .12s}
+.g-opt:hover{transform:translateY(-2px);border-color:var(--accent)}
+.g-opt.correct{background:var(--green-bg);border-color:#2e7d32;color:#1f5c24}
+.g-opt.wrong{background:var(--red-bg);border-color:var(--accent);color:var(--accent)}
+.g-fb{min-height:2.4em;margin-top:12px;font-size:.9rem;line-height:1.55}
+.g-fb .ok{color:#2e7d32;font-weight:700}
+.g-fb .no{color:var(--accent);font-weight:700}
+.g-btn{margin-top:14px;background:var(--accent);color:#fff;border:none;border-radius:22px;padding:8px 20px;
+  font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.06em;cursor:pointer}
+.g-btn:hover{filter:brightness(1.1)}
+.g-bank{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-top:12px}
+.g-bank .g-opt{padding:7px 13px;font-size:.83rem}
+.g-opt.picked{opacity:.5;pointer-events:none}
+.g-slots{display:grid;gap:9px;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));margin-top:12px}
+.g-slot{border:1px dashed var(--border);border-radius:10px;padding:10px 12px;background:var(--cream);min-height:62px}
+.g-slot h5{margin:0 0 6px;font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted)}
+.g-slot.sel{border-style:solid;border-color:var(--accent2);box-shadow:0 0 0 2px var(--blue-bg)}
+.g-slot ul{margin:0;padding-left:16px;font-size:.82rem}
+.g-timer{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--accent);font-weight:700}
+
+/* ---------------- floating UI ---------------- */
+.floating-stack{position:fixed;bottom:18px;right:18px;z-index:100;display:flex;flex-direction:column;align-items:flex-end;gap:9px}
+.font-btn-row{display:flex;align-items:center;background:var(--floating-ui-bg);color:var(--floating-ui-fg);
+  padding:7px 10px;border-radius:30px;box-shadow:var(--floating-ui-shadow);font-family:'JetBrains Mono',monospace;
+  font-size:.62rem;letter-spacing:.1em;gap:2px}
+.font-btn{background:none;border:none;cursor:pointer;color:var(--floating-ui-fg);font-family:'JetBrains Mono',monospace;
+  font-weight:700;font-size:1rem;padding:2px 8px;border-radius:6px;line-height:1}
+.font-btn:hover{background:rgba(255,255,255,.18)}
+.font-sep{color:rgba(255,255,255,.22);padding:0 3px}
+.font-label{font-size:.56rem;opacity:.7;padding:0 5px;text-transform:uppercase;letter-spacing:.1em}
+.theme-btn{display:flex;align-items:center;gap:7px;background:var(--floating-ui-bg);color:var(--floating-ui-fg);
+  border:none;padding:10px 17px;border-radius:30px;box-shadow:var(--floating-ui-shadow);cursor:pointer;
+  font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.09em;text-transform:uppercase}
+.theme-panel{position:absolute;bottom:100%;right:0;margin-bottom:10px;background:var(--floating-ui-bg);
+  color:var(--floating-ui-fg);border-radius:12px;padding:12px 10px;box-shadow:var(--floating-ui-shadow);
+  min-width:196px;display:none}
+.theme-panel.open{display:block}
+.theme-panel-title{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.16em;text-transform:uppercase;
+  opacity:.65;padding:0 8px 8px}
+.theme-option{display:flex;align-items:center;gap:9px;padding:7px 9px;border-radius:8px;cursor:pointer;
+  font-family:'JetBrains Mono',monospace;font-size:.66rem}
+.theme-option:hover{background:rgba(255,255,255,.12)}
+.theme-option.active{background:rgba(255,255,255,.18)}
+.theme-swatch{width:17px;height:17px;border-radius:50%;border:1px solid rgba(255,255,255,.35);flex:none}
+
+.floating-left{position:fixed;bottom:18px;left:calc(var(--toc-w) + 18px);z-index:100;
+  display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+.tools-menu{display:flex;flex-direction:column;gap:7px;opacity:0;pointer-events:none;transform:translateY(10px);
+  transition:opacity .22s,transform .22s}
+.floating-left:hover .tools-menu,.floating-left:focus-within .tools-menu,.floating-left.open .tools-menu{
+  opacity:1;pointer-events:auto;transform:none}
+.tool-btn{background:var(--floating-ui-bg);color:var(--floating-ui-fg);border:none;padding:9px 15px;border-radius:22px;
+  box-shadow:var(--floating-ui-shadow);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:.63rem;
+  letter-spacing:.05em;text-align:left;white-space:nowrap}
+.tool-btn:hover{filter:brightness(1.2)}
+.tool-btn.on{background:var(--accent);color:#fff}
+.tools-trigger{position:relative}
+.tools-trigger .dot{display:none;position:absolute;top:6px;right:8px;width:7px;height:7px;border-radius:50%;background:var(--gold)}
+.tools-trigger.busy .dot{display:block}
+.backtop{display:none}
+.backtop.show{display:block}
+
+/* ---------------- lightbox ---------------- */
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:400;display:none;align-items:center;
+  justify-content:center;cursor:zoom-out;padding:22px}
+.lightbox.active{display:flex}
+.lightbox img{max-width:92vw;max-height:88vh;border-radius:6px}
+
+/* ---------------- HY one-pager ---------------- */
+.hy-modal{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:300;display:none;align-items:flex-start;
+  justify-content:center;overflow-y:auto;padding:30px 16px}
+.hy-modal.open{display:flex}
+.hy-modal-card{background:var(--paper);color:var(--ink);max-width:1060px;width:100%;border-radius:14px;
+  padding:26px 30px 34px;box-shadow:0 20px 60px rgba(0,0,0,.45)}
+.hy-modal-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;
+  border-bottom:3px solid var(--accent);padding-bottom:10px;flex-wrap:wrap}
+.hy-modal-header h2{margin:0;font-size:1.35rem}
+.hy-modal-actions{display:flex;gap:8px;flex:none}
+.hy-action-btn{font-family:'JetBrains Mono',monospace;font-size:.64rem;letter-spacing:.05em;text-transform:uppercase;
+  border:1px solid var(--border);background:var(--cream);color:var(--ink);padding:7px 13px;border-radius:20px;cursor:pointer}
+.hy-close-btn{background:var(--accent);color:#fff;border:none}
+.hy-subhead{font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--muted);margin:0 0 13px}
+.hy-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;min-width:0}
+@media (max-width:760px){.hy-cols{grid-template-columns:1fr}}
+.hy-cols>div{min-width:0}
+.hy-block{border:1px solid var(--border);border-radius:8px;padding:9px 11px;background:var(--cream);margin-bottom:9px;min-width:0}
+.hy-block h4{margin:0 0 5px;font-size:.76rem;color:var(--accent);border-bottom:1px solid var(--border);padding-bottom:4px}
+.hy-block p,.hy-block li{font-size:.67rem;line-height:1.4;margin:0 0 3px}
+.hy-block ul{margin:0;padding-left:15px}
+.hy-lo-tag{display:block;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;color:#fff;
+  background:var(--accent2);padding:3px 9px;border-radius:10px;margin-bottom:7px;letter-spacing:.05em;text-align:center}
+.hy-mini-table{width:100%;border-collapse:collapse;font-size:.63rem;margin-top:4px}
+.hy-mini-table th,.hy-mini-table td{border:1px solid var(--border);padding:3px 5px;text-align:left;line-height:1.3}
+.hy-mini-table th{background:var(--panel-dark-bg);color:var(--panel-dark-text);font-size:.56rem;text-transform:uppercase}
+.hy-mini-table tr:nth-child(even) td{background:transparent}
+
+/* ---------------- glossary ---------------- */
+.gloss{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:10px;margin:16px 0}
+.gloss dl{margin:0;border:1px solid var(--border);border-radius:9px;padding:12px 14px;background:var(--cream)}
+.gloss dt{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;color:var(--accent);margin-top:8px}
+.gloss dt:first-child{margin-top:0}
+.gloss dd{margin:2px 0 0;font-size:.86rem}
+.abbr-strip{background:var(--cream);border:1px solid var(--border);border-left:4px solid var(--gold);
+  border-radius:0 9px 9px 0;padding:11px 15px;margin:14px 0;font-size:.85rem}
+.abbr-strip .t{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--muted);display:block;margin-bottom:5px}
+
+footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top:40px;font-size:.83rem}
+footer .container{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center}
+footer kbd{font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.2);
+  border-radius:4px;padding:1px 6px;font-size:.72rem}
+
+/* ---------------- responsive ---------------- */
+@media (max-width:1000px){
+  body{padding-left:0}
+  .toc-bar{position:sticky;top:0;bottom:auto;width:100%;height:auto;border-right:none;
+    border-bottom:1px solid rgba(255,255,255,.12);overflow-x:auto;overflow-y:hidden}
+  .toc-head,.toc-group,.toc-hy-btn,.toc-tools{display:none}
+  .toc-bar nav{flex-direction:row;padding:0 8px;white-space:nowrap}
+  .toc-bar a{padding:11px 13px;border-left:none;border-bottom:2px solid transparent;gap:8px}
+  .toc-bar a:hover,.toc-bar a.active{border-left-color:transparent;border-bottom-color:var(--accent);background:none}
+  .toc-num{width:18px;height:18px;font-size:.53rem}
+  .toc-check{display:none!important}
+  .hero .hy-btn{display:inline-flex}
+  .floating-left{left:14px;bottom:14px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
+
+/* ---------------- print ---------------- */
+@media print{
+  body{padding-left:0!important;background:#fff;color:#000}
+  .container{max-width:100%!important}
+  .toc-bar,.floating-stack,.floating-left,.progress-bar,.sec-tools,.recall-note,.tq-bar,
+  .toc-hy-btn,.hy-btn,.lightbox,.game,.exam-q .reveal-btn{display:none!important}
+  .section{page-break-inside:auto;border-bottom:1px solid #ccc}
+  .section.collapsed .sec-body-outer{grid-template-rows:1fr!important}
+  .exam-q .answer{display:block!important}
+  .hero{background:#fff!important;color:#000;padding:16px 0}
+  .hero h1,.hero-sub,.hero-tag,.hero-meta-item .value,.hero-meta-item .label{color:#000!important}
+  .slide-img{page-break-inside:avoid}
+  body.hy-mode .hero,body.hy-mode .section,body.hy-mode footer{display:none!important}
+  body.hy-mode .hy-modal{position:static!important;inset:auto!important;background:none!important;padding:0!important;
+    display:block!important;overflow:visible!important}
+  body.hy-mode .hy-modal-card{position:static!important;max-width:100%!important;width:100%!important;
+    box-shadow:none!important;padding:4px!important}
+  .hy-modal-actions{display:none!important}
+  .hy-cols{grid-template-columns:repeat(3,1fr);gap:8px}
+  .hy-modal-header h2{font-size:1.02rem}
+  .hy-subhead{font-size:.56rem;margin-bottom:7px}
+  .hy-block{padding:5px 7px;margin-bottom:5px;break-inside:avoid}
+  .hy-block h4{font-size:.66rem;margin-bottom:3px;padding-bottom:2px}
+  .hy-block p,.hy-block li{font-size:.565rem;line-height:1.26;margin-bottom:2px}
+  .hy-mini-table{font-size:.535rem}
+  .hy-mini-table th,.hy-mini-table td{padding:1.5px 3px}
+  .hy-lo-tag{font-size:.53rem;padding:2px 7px;margin-bottom:4px}
+  @page{margin:11mm}
+}
+
+</style>
+</head>
+<body>
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="toc-bar">
+  <div class="toc-head">
+    <span class="toc-eyebrow">OMK 2 · Heme · Week 10</span>
+    <span class="toc-name">The Heme <em>Arcade</em></span>
+  </div>
+  <button class="toc-hy-btn" onclick="openHY()">🎯 High-Yield One-Pager</button>
+  <nav>
+    <p class="toc-group">Start</p>
+    <a href="#orientation"><span class="toc-num dot"></span><span>How to Use This</span><span class="toc-check">✓</span></a>
+    <p class="toc-group">Reference</p>
+    <a href="#numbers"><span class="toc-num dot"></span><span>Numbers to Know</span><span class="toc-check">✓</span></a>
+    <p class="toc-group">The Arcade</p>
+    <a href="#a-mechanism"><span class="toc-num">1</span><span>Mechanism &amp; Morphology</span><span class="toc-check">✓</span></a>
+    <a href="#b-labs"><span class="toc-num">2</span><span>Reading the Panel</span><span class="toc-check">✓</span></a>
+    <a href="#c-genetics"><span class="toc-num">3</span><span>Genotype to Phenotype</span><span class="toc-check">✓</span></a>
+    <a href="#d-transfusion"><span class="toc-num">4</span><span>At the Blood Bank</span><span class="toc-check">✓</span></a>
+    <a href="#e-reactions"><span class="toc-num">5</span><span>The Nurse Is Calling</span><span class="toc-check">✓</span></a>
+    <a href="#f-boss"><span class="toc-num">6</span><span>Boss Round</span><span class="toc-check">✓</span></a>
+  </nav>
+  <div class="toc-tools">
+    <button class="toc-chip" id="progressChip" onclick="jumpToNextTodo()">0/0 reviewed</button>
+    <button class="toc-chip" id="collapseAllBtn" onclick="toggleAllSections()">⊟ Collapse all</button>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="container">
+    <div class="hero-tag">OMK 2 · Hematology · UNE COM</div>
+    <h1>The Heme <span>Arcade</span></h1>
+    <p class="hero-sub">Eleven games and a boss round across all three lectures — hematopoiesis and the production anemias, the hemolytic anemias, and transfusion medicine. No section headings giving the answer away.</p>
+    <button class="hy-btn" onclick="openHY()">🎯 High-Yield One-Pager</button>
+    <div class="hero-meta"><div class="hero-meta-item"><span class="label">Covers</span><span class="value">All 3 lectures</span></div><div class="hero-meta-item"><span class="label">Games</span><span class="value">12</span></div><div class="hero-meta-item"><span class="label">Items</span><span class="value">~120 questions</span></div><div class="hero-meta-item"><span class="label">Mode</span><span class="value">Active recall</span></div><div class="hero-meta-item"><span class="label">Score</span><span class="value">Per game, resets on reload</span></div></div>
+  </div>
+</div>
+
+<div class="section" id="orientation">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Start here</div></div>
+    <p class="section-label">How to use this file</p>
+    <h2 class="section-title">The Heme Block Arcade</h2>
+
+<p class="lede">Eleven games and a boss round, drawing on all three of the block's lectures at once.
+The notes files teach; this one <strong>tests</strong>. Nothing here has a section heading giving the answer
+away, and the items are deliberately shuffled across lectures — because the exam will not tell you which
+lecture a question came from either.</p>
+
+<div class="callout callout-key"><div class="callout-title">🔑 How to use it</div><ul class="notes-list"><li><strong>Each game reshuffles</strong> when you exhaust its item bank, so it does not become a memorization sequence.</li><li><strong>The score is per game</strong> and resets on reload — it is a practice signal, not a grade.</li><li>Work through a game until you are getting them right <em>for the right reason</em>. The feedback text explains the mechanism every time, including when you were correct.</li><li>Start with <strong>Boss Round</strong> if you want to find your weak spots first, then go back to the specific game.</li></ul></div>
+
+<div class="callout callout-clinical"><div class="callout-title">🩺 The companion files</div><ul class="notes-list"><li><strong>Hematopoiesis &amp; Anemia I</strong> — how blood is built, and impaired production: iron, B12, folate, inflammation.</li><li><strong>Anemia II — Hemolytic Anemias</strong> — intravascular vs extravascular, and the four inherited red cell defects.</li><li><strong>Transfusion Medicine</strong> — products, evidence-based thresholds, immunohematology, reactions, global health.</li></ul></div>
+
+  </div>
+</div>
+<div class="section" id="numbers">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Reference</div></div>
+    <p class="section-label">Before you start</p>
+    <h2 class="section-title">The Numbers You Must Know Cold</h2>
+
+<p class="lede">Almost every game below turns on one of these. Read the table once, then go play — and come
+back to it when a game catches you out.</p>
+
+<div class="tbl-scroll"><table><thead><tr><th>Number</th><th>What it is</th><th>Where it comes from</th></tr></thead><tbody><tr><td><strong>80–100 fL</strong></td><td>Normal mean corpuscular volume. <strong>&lt;80 microcytic, &gt;100 macrocytic</strong></td><td>Anemia I — the first branch point</td></tr><tr><td><strong>Hct ≈ 3 × Hgb</strong></td><td>The conversion between hematocrit and hemoglobin</td><td>Anemia I</td></tr><tr><td><strong>37–47% / 42–52%</strong></td><td>Normal hematocrit, female / male</td><td>Anemia I</td></tr><tr><td><strong>120 days</strong></td><td>Normal red cell lifespan</td><td>Anemia II</td></tr><tr><td><strong>&lt; 15%</strong></td><td>Transferrin saturation in iron deficiency</td><td>Anemia I</td></tr><tr><td><strong>80% / 20%</strong></td><td>Body iron that is functional (hemoglobin, myoglobin, enzymes) / stored</td><td>Anemia I</td></tr><tr><td><strong>4 alpha genes (chr 16), 2 beta genes (chr 11)</strong></td><td>Globin gene dosage — the whole thalassemia framework</td><td>Anemia II</td></tr><tr><td><strong>40–45% HbS</strong></td><td>Sickle cell <strong>trait</strong>, with HbA also present</td><td>Anemia II</td></tr><tr><td><strong>90–100% HbS, no HbA</strong></td><td>Sickle cell <strong>disease</strong></td><td>Anemia II</td></tr><tr><td><strong>&lt; 30% HbS</strong></td><td>Target for chronic transfusion to reduce stroke risk</td><td>Anemia II</td></tr><tr><td><strong>10–60% enzyme activity</strong></td><td>WHO class III G6PD (A−), 10% of US Black males</td><td>Anemia II</td></tr><tr><td><strong>7 g/dL</strong></td><td>Restrictive red cell transfusion threshold (TRICC)</td><td>Transfusion</td></tr><tr><td><strong>10,000/µL</strong></td><td>Prophylactic platelet threshold, hypoproliferative non-bleeding</td><td>Transfusion</td></tr><tr><td><strong>20,000/µL</strong></td><td>Platelet threshold before lumbar puncture</td><td>Transfusion</td></tr><tr><td><strong>25,000/µL</strong></td><td>Platelet threshold, preterm neonate</td><td>Transfusion</td></tr><tr><td><strong>30% factor activity</strong></td><td>Enough to form a clot — above it, plasma is a teacup into an ocean</td><td>Transfusion</td></tr><tr><td><strong>1–6 °C, 42 days</strong></td><td>Red cell storage</td><td>Transfusion</td></tr><tr><td><strong>Room temperature, agitated, 5–7 days</strong></td><td>Platelet storage — and why bacterial contamination is the top infectious risk</td><td>Transfusion</td></tr><tr><td><strong>15% RhD negative; O negative ≈ 6%</strong></td><td>Why O negative is rationed for females of childbearing potential</td><td>Transfusion</td></tr><tr><td><strong>1–3% vs 20–60%</strong></td><td>Alloantibody formation, general population vs sickle cell disease</td><td>Transfusion</td></tr><tr><td><strong>14–20%</strong></td><td>Parous women carrying anti-HLA antibodies — the TRALI mechanism</td><td>Transfusion</td></tr></tbody></table></div>
+
+<div class="callout callout-hook"><div class="callout-title">🪝 Memory hook — If you only carry five numbers into the exam</div><ul class="notes-list"><li><strong>80–100 fL</strong> — the MCV split. Everything in the anemia differential hangs off it.</li><li><strong>7 / 10,000 / 30%</strong> — red cells, platelets, plasma. The three transfusion thresholds.</li><li><strong>Retic LOW = production problem; retic HIGH = destruction or loss.</strong> One test halves the tree.</li><li><strong>Ferritin LOW + TIBC HIGH = iron deficiency. Ferritin HIGH + TIBC LOW = inflammation.</strong></li><li><strong>MMA elevated = B12. MMA normal = folate.</strong> Homocysteine rises in both and settles nothing.</li></ul></div>
+
+  </div>
+</div>
+<div class="section" id="a-mechanism">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Arcade</div></div>
+    <p class="section-label">Anemia I + II · classification and the smear</p>
+    <h2 class="section-title">Round 1 — Mechanism and Morphology</h2>
+<p class="lede">Two games on the two skills that come first in any anemia: put it in the right bucket, and read what the smear is telling you.</p>
+<div class="game" id="a1-bucket">
+  <div class="g-head"><h3><span class="g-emoji">🎮</span>Bucket Sort</h3><span class="g-score">0 / 0</span></div>
+  <p class="g-intro">Every anemia in the block. Blood loss, impaired production, or increased destruction — the classification slide the lecture kept returning to, as a drill.</p>
+  <div class="g-stage"><div class="g-vign">Press start for your first item.</div><div class="g-bank"></div><div class="g-fb"></div><button class="g-btn">▶ Start</button></div>
+</div>
+<div class="game" id="a2-smear">
+  <div class="g-head"><h3><span class="g-emoji">🎮</span>Read the Smear</h3><span class="g-score">0 / 0</span></div>
+  <p class="g-intro">One cell on the slide. Name the disease it points to — and know why that shape happens.</p>
+  <div class="g-stage"><div class="g-vign">Press start for your first item.</div><div class="g-opts"></div><div class="g-fb"></div><button class="g-btn">▶ Start</button></div>
+</div>
+  </div>
+</div>
+<div class="section" id="b-labs">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Arcade</div></div>
+    <p class="section-label">Anemia I + II · laboratory interpretation</p>
+    <h2 class="section-title">Round 2 — Reading the Panel</h2>
+<p class="lede">The single most examinable skill in the block: a set of numbers with no diagnosis attached, and one value that settles it.</p>
+<div class="game" id="b1-iron">
+  <div class="g-head"><h3><span class="g-emoji">🎮</span>Iron Panel Lightning</h3><span class="g-score">0 / 0</span></div>
+  <p class="g-intro">Iron, ferritin, total iron binding capacity, saturation. Four studies, one diagnosis — and the treatment changes completely depending on your answer.</p>
+  <div class="g-stage"><div class="g-vign">Press start for your first item.</div><div class="g-opts"></div><div class="g-fb"></div><button class="g-btn">▶ Start</button></div>
+</div>
+<div class="game" id="b2-macro">
+  <div class="g-head"><h3><span class="g-emoji">🎮</span>Macrocytic Sorter</h3><span class="g-score">0 / 0</span></div>
+  <p class="g-intro">B12 or folate? One finding at a time, including the ones that look decisive and are not.</p>
+  <div class="g-stage"><div class="g-vign">Press start for your first item.</div><div class="g-bank"></div><div class="g-fb"></div><button class="g-btn">▶ Start</button></div>
+</div>
+<div class="game" id="b3-hemolysis">
+  <div class="g-head"><h3><span class="g-emoji">🎮</span>Hemolysis Markers</h3><span class="g-score">0 / 0</span></div>
+  <p class="g-intro">Haptoglobin, plasma colour, urine, smear, spleen. Intravascular, extravascular, or does this finding not discriminate at all?</p>
+  <div class="g-stage"><div class="g-vign">Press start for your first item.</div><div class="g-opts"></div><div class="g-fb"></div><button class="g-btn">▶ Start</button></div>
+</div>
+  </div>
+</div>
+<div class="section" id="c-genetics">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Arcade</div></div>
+    <p class="section-label">Anemia II · inherited red cell defects</p>
+    <h2 class="section-title">Round 3 — Genotype to Phenotype</h2>
+<p class="lede">Gene dosage, inheritance patterns, and the abnormal tetramers. The counting exercise shown in lecture two different ways because it is genuinely hard to hold.</p>
+<div class="game" id="c1-genes">
+  <div class="g-head"><h3><span class="g-emoji">🎮</span>Count the Genes</h3><span class="g-score">0 / 0</span></div>
+  <p class="g-intro">Alpha and beta thalassemia genotypes, plus the tetramers they produce. Name the diagnosis.</p>
+  <div class="g-stage"><div class="g-vign">Press start for your first item.</div><div class="g-bank"></div><div class="g-fb"></div><button class="g-btn">▶ Start</button></div>
+</div>
+<div class="game" id="c2-inherit">
+  <div class="g-head"><h3><span class="g-emoji">🎮</span>Inheritance Patterns</h3><span class="g-score">0 / 0</span></div>
+  <p class="g-intro">Autosomal dominant, X-linked, autosomal recessive — and the clinical consequences that follow from each.</p>
+  <div class="g-stage"><div class="g-vign">Press start for your first item.</div><div class="g-opts"></div><div class="g-fb"></div><button class="g-btn">▶ Start</button></div>
+</div>
+  </div>
+</div>
+<div class="section" id="d-transfusion">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Arcade</div></div>
+    <p class="section-label">Transfusion · products, thresholds, compatibility</p>
+    <h2 class="section-title">Round 4 — At the Blood Bank</h2>
+<p class="lede">Three games covering the working half of transfusion medicine: what to give, when to give it, and what the blood bank must confirm first.</p>
+<div class="game" id="d1-bag">
+  <div class="g-head"><h3><span class="g-emoji">🎮</span>Which Bag?</h3><span class="g-score">0 / 0</span></div>
+  <p class="g-intro">A clinical situation and four bags on the shelf. Pick the product that treats the actual problem.</p>
+  <div class="g-stage"><div class="g-vign">Press start for your first item.</div><div class="g-opts"></div><div class="g-fb"></div><button class="g-btn">▶ Start</button></div>
+</div>
+<div class="game" id="d2-threshold">
+  <div class="g-head"><h3><span class="g-emoji">🎮</span>Threshold Trainer</h3><span class="g-score">0 / 0</span></div>
+  <p class="g-intro">Every transfusion threshold in the lecture, with the traps where the number alone gives the wrong answer.</p>
+  <div class="g-stage"><div class="g-vign">Press start for your first item.</div><div class="g-opts"></div><div class="g-fb"></div><button class="g-btn">▶ Start</button></div>
+</div>
+<div class="game" id="d3-abo">
+  <div class="g-head"><h3><span class="g-emoji">🎮</span>Compatibility Bench</h3><span class="g-score">0 / 0</span></div>
+  <p class="g-intro">ABO and RhD, front and back typing, universal donors, and the emergency-release rules.</p>
+  <div class="g-stage"><div class="g-vign">Press start for your first item.</div><div class="g-opts"></div><div class="g-fb"></div><button class="g-btn">▶ Start</button></div>
+</div>
+  </div>
+</div>
+<div class="section" id="e-reactions">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Arcade</div></div>
+    <p class="section-label">Transfusion · adverse events</p>
+    <h2 class="section-title">Round 5 — The Nurse Is Calling</h2>
+<p class="lede">The scenario the lecture promised will happen to you. A patient mid-transfusion with a new problem, and you have to name it before you can treat it.</p>
+<div class="game" id="e1-reactions">
+  <div class="g-head"><h3><span class="g-emoji">🎮</span>Name the Reaction</h3><span class="g-score">0 / 0</span></div>
+  <p class="g-intro">Every reaction in the FDA fatality data, plus the common benign ones — and the discriminators that separate the pairs everybody confuses.</p>
+  <div class="g-stage"><div class="g-vign">Press start for your first item.</div><div class="g-opts"></div><div class="g-fb"></div><button class="g-btn">▶ Start</button></div>
+</div>
+  </div>
+</div>
+<div class="section" id="f-boss">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Arcade</div></div>
+    <p class="section-label">All three lectures</p>
+    <h2 class="section-title">Boss Round — Everything, Shuffled</h2>
+<p class="lede">Full vignettes drawn from every lecture with no category label. If you can clear this one consistently, you have the block.</p>
+<div class="game" id="f1-boss">
+  <div class="g-head"><h3><span class="g-emoji">🏆</span>Boss Round</h3><span class="g-score">0 / 0</span></div>
+  <p class="g-intro">Anemia, hemolysis and transfusion, mixed and unlabelled. Some items deliberately look like one diagnosis and are another.</p>
+  <div class="g-stage"><div class="g-vign">Press start for your first item.</div><div class="g-opts"></div><div class="g-fb"></div><button class="g-btn">▶ Start</button></div>
+</div>
+  </div>
+</div>
+
+<div class="hy-modal" id="hyModal">
+  <div class="hy-modal-card">
+    <div class="hy-modal-header">
+      <h2>🎯 Heme Block — Everything on One Page</h2>
+      <div class="hy-modal-actions">
+        <button class="hy-action-btn" onclick="printHY()">🖨️ Print / Save PDF</button>
+        <button class="hy-action-btn hy-close-btn" onclick="closeHY()">✕ Close</button>
+      </div>
+    </div>
+    <p class="hy-subhead">UNE COM · all three lectures condensed — production anemias · hemolytic anemias · transfusion medicine</p>
+    <div class="hy-cols"><div><span class="hy-lo-tag">Anemia I — production</span><div class="hy-block"><h4>Framework</h4><ul><li><strong>Blood loss · impaired production · increased destruction.</strong></li><li><strong>MCV &lt;80 micro · 80–100 normo · &gt;100 macro.</strong></li><li><strong>Retic LOW = production. Retic HIGH = loss or destruction.</strong></li><li><strong>Hct ≈ 3 × Hgb.</strong> Normal Hct 37–47% F, 42–52% M.</li></ul></div><div class="hy-block"><h4>Iron deficiency</h4><ul><li><strong>Fe ↓, ferritin ↓, TIBC ↑, saturation ↓ (&lt;15%), MCV ↓</strong>, marrow iron absent.</li><li>Causes: dietary lack · malabsorption · ↑ requirement · <strong>chronic blood loss</strong>.</li><li><strong>Adult male or postmenopausal female = GI blood loss until proven otherwise.</strong></li><li><strong>Ferritin is an acute phase reactant</strong> — falsely normal when inflamed.</li></ul></div><div class="hy-block"><h4>B12 / folate / inflammation</h4><ul><li>B12 = <strong>DNA synthesis + myelin</strong>. Folate = DNA only, <strong>no neurology</strong>.</li><li><strong>MMA elevated = B12. MMA normal = folate.</strong> Homocysteine rises in both.</li><li><strong>Macro-ovalocytes + hypersegmented neutrophils</strong>; high LDH with low retics = <strong>ineffective erythropoiesis</strong>.</li><li><strong>Pernicious anemia</strong>: anti-parietal cell 85–90%, anti-IF 75%; gastric atrophy → <strong>cancer risk</strong>; <strong>subacute combined degeneration</strong>.</li><li><strong>Never give folate alone</strong> to a macrocytic anemia.</li><li><strong>AOCD</strong>: hepcidin ↑ locks ferroportin. <strong>Ferritin ↑, TIBC ↓.</strong> Treat the disease.</li></ul></div></div><div><span class="hy-lo-tag">Anemia II — hemolysis</span><div class="hy-block"><h4>Intravascular vs extravascular</h4><ul><li>All hemolysis: <strong>short lifespan · bilirubin ↑ · retics ↑</strong>.</li><li><strong>Intravascular</strong>: schistocytes, <strong>pink plasma</strong>, hemoglobinuria, <strong>haptoglobin ABSENT</strong>, <strong>kidney at risk</strong>.</li><li><strong>Extravascular</strong>: spherocytes, haptoglobin mildly ↓, <strong>splenomegaly</strong>.</li></ul></div><div class="hy-block"><h4>The four defects</h4><ul><li><strong>HS</strong> — autosomal dominant, cytoskeleton (ANK1/SPTB/SLC4A1). Spherocytes, <strong>osmotic fragility ↑</strong>, <strong>Coombs NEGATIVE</strong>. Splenectomy.</li><li><strong>G6PD</strong> — X-linked, enzyme unstable so <strong>older cells</strong> deficient. <strong>Bite/blister cells, Heinz bodies</strong>. Triggers: infection, antimalarials, sulfa, nitrofurantoin, <strong>fava beans</strong>. Assay <strong>falsely normal in crisis</strong>.</li><li><strong>Thalassemia</strong> — <strong>4 alpha (chr 16), 2 beta (chr 11)</strong>. Damage is from the <strong>excess unpaired chain</strong>. <strong>Target cells</strong>, MCV ↓, <strong>iron studies normal — do NOT give iron</strong>. HbH = β₄; Hb Barts = γ₄.</li><li><strong>SCD</strong> — <strong>valine for glutamic acid</strong>, HBB. Trait 40–45% HbS + HbA; disease 90–100% HbS, <strong>no HbA</strong>. Crises: <strong>vaso-occlusive · aplastic (retics LOW) · sequestration (spleen huge)</strong>. Hydroxyurea ↑ HbF; penicillin + vaccines; keep <strong>HbS &lt;30%</strong>.</li></ul></div></div><div><span class="hy-lo-tag">Transfusion</span><div class="hy-block"><h4>Products &amp; thresholds</h4><ul><li><strong>RBC 1–6 °C / 42 d · platelets room temp agitated / 5–7 d · plasma &amp; cryo frozen / 1 yr.</strong></li><li><strong>TRICC: restrictive 7 g/dL</strong>; liberal arm did <strong>worse</strong>.</li><li><strong>Platelets 10,000</strong> hypoproliferative · <strong>20,000</strong> lumbar puncture · <strong>25,000</strong> preterm neonate · <strong>dengue: none</strong>.</li><li><strong>30% factor activity</strong> is enough to clot — above it plasma is a <strong>teacup into an ocean</strong>.</li><li><strong>Cryo</strong> = fibrinogen. Warfarin → <strong>PCC + vitamin K</strong>.</li></ul></div><div class="hy-block"><h4>Immunohematology</h4><ul><li><strong>A → anti-B · B → anti-A · AB → neither · O → both</strong>, from <strong>gut colonization</strong>.</li><li><strong>ABO = IgM = complement = INTRAVASCULAR.</strong> <strong>Alloantibody = IgG = EXTRAVASCULAR.</strong></li><li><strong>O = universal RBC donor; AB = universal RBC recipient. Inverts for plasma.</strong></li><li><strong>15% RhD negative; O neg ≈ 6%.</strong> Save O negative for females of childbearing potential.</li><li><strong>Screen = ready. Cross = reserved.</strong> <strong>Direct</strong> Coombs = patient’s cells; <strong>indirect</strong> = patient’s plasma.</li></ul></div><div class="hy-block"><h4>Reactions</h4><ul><li><strong>STOP · IV open · clerical check · treat · send to blood bank.</strong></li><li><strong>Febrile non-hemolytic</strong> — cytokines; ↓ by leukoreduction. Commonest.</li><li><strong>Septic</strong> — platelets; skin plug. <strong>Most common infectious risk.</strong></li><li><strong>Acute hemolytic</strong> — pink plasma, hemoglobinuria, positive DAT. <strong>Never event</strong>, from <strong>wrong blood in tube</strong>.</li><li><strong>Anaphylaxis</strong> — tiny volume; consider <strong>IgA deficiency</strong>.</li><li><strong>TRALI</strong> — hypotension, normal JVP, donor <strong>anti-HLA</strong>. <strong>TACO</strong> — hypertension, raised JVP, diuresis works.</li><li><strong>GVHD</strong> — pancytopenia weeks later, fatal. Prevented only by <strong>IRRADIATION</strong>.</li></ul></div></div></div>
+    <div class="hy-block" style="margin-top:4px;"><h4>The numbers, in one place</h4><table class="hy-mini-table"><tr><th>Number</th><th>Meaning</th></tr><tr><td><strong>80–100 fL</strong></td><td>Normal MCV. &lt;80 microcytic, &gt;100 macrocytic</td></tr><tr><td><strong>Hct ≈ 3 × Hgb</strong></td><td>Conversion between the two measurements</td></tr><tr><td><strong>120 days</strong></td><td>Normal red cell lifespan</td></tr><tr><td><strong>&lt;15%</strong></td><td>Transferrin saturation in iron deficiency</td></tr><tr><td><strong>80% / 20%</strong></td><td>Body iron functional / stored</td></tr><tr><td><strong>4 alpha, 2 beta</strong></td><td>Globin gene dosage (chr 16 / chr 11)</td></tr><tr><td><strong>40–45% HbS</strong></td><td>Sickle trait (HbA also present)</td></tr><tr><td><strong>90–100% HbS, no HbA</strong></td><td>Sickle cell disease</td></tr><tr><td><strong>&lt;30% HbS</strong></td><td>Chronic transfusion target for stroke prevention</td></tr><tr><td><strong>7 g/dL</strong></td><td>Restrictive red cell threshold (TRICC)</td></tr><tr><td><strong>10,000 / 20,000 / 25,000</strong></td><td>Platelet thresholds: hypoproliferative / lumbar puncture / preterm neonate</td></tr><tr><td><strong>30%</strong></td><td>Factor activity sufficient to clot</td></tr><tr><td><strong>42 days / 5–7 days / 1 year</strong></td><td>Storage: red cells / platelets / plasma and cryo</td></tr><tr><td><strong>15% / 6%</strong></td><td>RhD negative / O negative in the population</td></tr><tr><td><strong>1–3% vs 20–60%</strong></td><td>Alloimmunization: general population vs sickle cell disease</td></tr><tr><td><strong>14–20%</strong></td><td>Parous women with anti-HLA antibodies — the TRALI mechanism</td></tr></table></div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" aria-hidden="true"><img id="lightboxImg" alt="Zoomed slide image"></div>
+
+<div class="floating-left" id="floatingLeft">
+  <div class="tools-menu">
+    <button class="tool-btn backtop" id="backtopBtn">↑ Top</button>
+    <button class="tool-btn" id="nextQBtn">❓ Next question <span id="qCount"></span></button>
+    <button class="tool-btn" id="recallBtn">🙈 Recall mode <span id="rcCount"></span></button>
+  </div>
+  <button class="tool-btn tools-trigger" id="toolsTrigger" onclick="toggleToolsMenu()">🧰 Study<span class="dot"></span></button>
+</div>
+
+<div class="floating-stack">
+  <div class="theme-panel" id="themePanel">
+    <div class="theme-panel-title">Choose Theme</div>
+    <div class="theme-option active" data-theme="heme" onclick="setTheme('heme',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#fdf7f5,#a5142a)"></div>Heme (Default)</div>
+    <div class="theme-option" data-theme="venous" onclick="setTheme('venous',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#150a0e,#e8556c)"></div>Venous (Dark)</div>
+    <div class="theme-option" data-theme="paper" onclick="setTheme('paper',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#faf7f2,#1a1209)"></div>Paper</div>
+    <div class="theme-option" data-theme="night" onclick="setTheme('night',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#0f1923,#e8b84b)"></div>Night</div>
+    <div class="theme-option" data-theme="ocean" onclick="setTheme('ocean',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#eef7fb,#0f6fb0)"></div>Ocean</div>
+    <div class="theme-option" data-theme="forest" onclick="setTheme('forest',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#f2f7f0,#1f7a4d)"></div>Forest</div>
+    <div class="theme-option" data-theme="sepia" onclick="setTheme('sepia',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#f7ecd9,#8b5a17)"></div>Sepia</div>
+    <div class="theme-option" data-theme="slate" onclick="setTheme('slate',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#f4f5f7,#cf4520)"></div>Slate</div>
+  </div>
+  <div class="font-btn-row">
+    <span class="font-label">Text</span>
+    <button class="font-btn" onclick="changeFontSize(1)" title="Increase font size">A+</button>
+    <span class="font-sep">|</span>
+    <button class="font-btn" onclick="changeFontSize(-1)" title="Decrease font size">A−</button>
+  </div>
+  <button class="theme-btn" id="themeBtn" onclick="toggleThemePanel()" title="Switch theme"><span>🎨</span><span>Theme</span></button>
+</div>
+
+<footer>
+  <div class="container">
+    <div>Companion to the three <em>Heme Week 10</em> study notes files · Built from the OMK 2 hematology lectures at UNE COM · Personal study aid.</div>
+    <div>Shortcuts: <kbd>J</kbd>/<kbd>K</kbd> section · <kbd>Q</kbd> next question · <kbd>R</kbd> reveal · <kbd>Esc</kbd> close</div>
+  </div>
+</footer>
+
+<script>
+var STORAGE_THEME_KEY='heme-w10-arcade-theme';
+var STORAGE_FONT_KEY='heme-w10-arcade-font';
+var STORAGE_PROGRESS_KEY='heme-w10-arcade-progress';
+var DEFAULT_THEME='heme';
+var SECTION_IDS=['orientation','numbers','a-mechanism','b-labs','c-genetics','d-transfusion','e-reactions','f-boss'];
+
+var $  = function(s,r){return (r||document).querySelector(s);};
+var $$ = function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));};
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function storageGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+function storageSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+
+/* ============ theme ============ */
+var themePanelOpen=false;
+function toggleThemePanel(){themePanelOpen=!themePanelOpen;$('#themePanel').classList.toggle('open',themePanelOpen);}
+function syncThemeOptions(t){$$('.theme-option').forEach(function(o){o.classList.toggle('active',o.dataset.theme===t);});}
+function setTheme(t,el,skipStorage){
+  if(t===DEFAULT_THEME){document.documentElement.removeAttribute('data-theme');}
+  else{document.documentElement.setAttribute('data-theme',t);}
+  syncThemeOptions(t);
+  if(!skipStorage) storageSet(STORAGE_THEME_KEY,t);
+  setTimeout(function(){themePanelOpen=false;var p=$('#themePanel');if(p)p.classList.remove('open');},260);
+}
+document.addEventListener('click',function(e){
+  var p=$('#themePanel'),b=$('#themeBtn');
+  if(themePanelOpen&&p&&b&&!p.contains(e.target)&&!b.contains(e.target)){themePanelOpen=false;p.classList.remove('open');}
+});
+
+/* ============ font size ============ */
+var currentFontSize=16;
+function changeFontSize(d){currentFontSize=Math.min(24,Math.max(12,currentFontSize+d));
+  document.body.style.fontSize=currentFontSize+'px';storageSet(STORAGE_FONT_KEY,currentFontSize);}
+
+function initVisualState(){
+  var t=storageGet(STORAGE_THEME_KEY)||DEFAULT_THEME; setTheme(t,null,true);
+  var f=parseInt(storageGet(STORAGE_FONT_KEY),10);
+  if(f&&f>=12&&f<=24){currentFontSize=f;document.body.style.fontSize=f+'px';}
+}
+
+/* ============ lightbox ============ */
+function openLightbox(img){var lb=$('#lightbox');$('#lightboxImg').src=img.src;
+  $('#lightboxImg').alt=img.alt||'';lb.classList.add('active');lb.setAttribute('aria-hidden','false');}
+function closeLightbox(){var lb=$('#lightbox');lb.classList.remove('active');
+  lb.setAttribute('aria-hidden','true');$('#lightboxImg').src='';}
+function initLightbox(){
+  $$('.slide-img').forEach(function(i){i.addEventListener('click',function(){openLightbox(i);});});
+  $('#lightbox').addEventListener('click',closeLightbox);
+}
+
+/* ============ scrollspy ============ */
+function initScrollspy(){
+  var links=$$('.toc-bar nav a'),map={},sections=[];
+  links.forEach(function(a){var id=a.getAttribute('href').slice(1),s=document.getElementById(id);
+    if(s){map[id]=a;sections.push(s);}});
+  if(!sections.length)return;
+  function update(){
+    var best=null,bestTop=-Infinity;
+    sections.forEach(function(s){var top=s.getBoundingClientRect().top;
+      if(top<=140&&top>bestTop){bestTop=top;best=s;}});
+    if(!best)best=sections[0];
+    links.forEach(function(a){a.classList.remove('active');});
+    if(map[best.id])map[best.id].classList.add('active');
+  }
+  window.addEventListener('scroll',update,{passive:true});update();
+}
+
+/* ============ reading progress ============ */
+function initProgress(){
+  var bar=$('#progressBar'),bt=$('#backtopBtn');
+  window.addEventListener('scroll',function(){
+    var h=document.documentElement,max=h.scrollHeight-h.clientHeight;
+    bar.style.width=(max>0?(h.scrollTop/max)*100:0)+'%';
+    if(bt)bt.classList.toggle('show',h.scrollTop>600);
+  },{passive:true});
+}
+
+/* ============ exam question reveal ============ */
+function initExamQ(){
+  $$('.exam-q').forEach(function(q){
+    var ans=q.querySelector('.answer'); if(!ans) return;
+    var b=document.createElement('button');b.className='reveal-btn';b.textContent='Reveal answer';
+    b.addEventListener('click',function(){q.classList.add('revealed');updateQCount();});
+    ans.parentNode.insertBefore(b,ans);
+  });
+  updateQCount();
+}
+function updateQCount(){
+  var all=$$('.exam-q'),done=all.filter(function(q){return q.classList.contains('revealed');});
+  var el=$('#qCount'); if(el) el.textContent=done.length+'/'+all.length;
+}
+function jumpToNextQ(){
+  var all=$$('.exam-q');if(!all.length)return;
+  var y=window.scrollY,pick=null;
+  var todo=all.filter(function(q){return !q.classList.contains('revealed');});
+  var pool=todo.length?todo:all;
+  for(var i=0;i<pool.length;i++){if(pool[i].getBoundingClientRect().top+y>y+120){pick=pool[i];break;}}
+  if(!pick)pick=pool[0];
+  var sec=pick.closest('.section');
+  if(sec&&sec.classList.contains('collapsed'))toggleSection(sec,false);
+  setTimeout(function(){
+    pick.scrollIntoView({behavior:'smooth',block:'center'});
+    pick.classList.remove('q-flash');void pick.offsetWidth;pick.classList.add('q-flash');
+  },sec&&sec.classList.contains('collapsed')?0:60);
+}
+
+/* ============ per-section progress ============ */
+var progress={};
+function loadProgress(){try{progress=JSON.parse(storageGet(STORAGE_PROGRESS_KEY)||'{}');}catch(e){progress={};}}
+function saveProgress(){storageSet(STORAGE_PROGRESS_KEY,JSON.stringify(progress));}
+function renderProgress(){
+  var reviewed=0;
+  SECTION_IDS.forEach(function(id){
+    var st=progress[id]||{},sec=document.getElementById(id);
+    if(st.reviewed)reviewed++;
+    if(sec){
+      var tools=sec.querySelector('.sec-tools');
+      if(tools){
+        tools.querySelector('.st-rev').classList.toggle('on',!!st.reviewed);
+        $$('.st-conf',tools).forEach(function(b){b.classList.toggle('on',+b.dataset.v===st.conf);});
+      }
+    }
+    var link=$('.toc-bar nav a[href="#'+id+'"]');
+    if(link){link.classList.toggle('done',!!st.reviewed);
+      link.classList.remove('conf-1','conf-2','conf-3');
+      if(st.conf)link.classList.add('conf-'+st.conf);}
+  });
+  var chip=$('#progressChip');
+  if(chip)chip.textContent=reviewed+'/'+SECTION_IDS.length+' reviewed';
+}
+function jumpToNextTodo(){
+  var target=null;
+  for(var i=0;i<SECTION_IDS.length&&!target;i++){var st=progress[SECTION_IDS[i]]||{};if(!st.reviewed)target=SECTION_IDS[i];}
+  for(var c=1;c<=2&&!target;c++){
+    for(var j=0;j<SECTION_IDS.length&&!target;j++){var s2=progress[SECTION_IDS[j]]||{};if(s2.conf===c)target=SECTION_IDS[j];}}
+  if(!target)target=SECTION_IDS[0];
+  var sec=document.getElementById(target); if(!sec)return;
+  if(sec.classList.contains('collapsed'))toggleSection(sec,false);
+  sec.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* ============ section tools + collapse ============ */
+function toggleSection(sec,force){
+  var willCollapse=(typeof force==='boolean')?force:!sec.classList.contains('collapsed');
+  sec.classList.toggle('collapsed',willCollapse);
+  var b=sec.querySelector('.st-collapse'); if(b)b.textContent=willCollapse?'▸ Expand':'▾ Collapse';
+}
+function toggleAllSections(){
+  var anyOpen=SECTION_IDS.some(function(id){var s=document.getElementById(id);return s&&!s.classList.contains('collapsed');});
+  SECTION_IDS.forEach(function(id){var s=document.getElementById(id);if(s)toggleSection(s,anyOpen);});
+  var b=$('#collapseAllBtn'); if(b)b.textContent=anyOpen?'⊞ Expand all':'⊟ Collapse all';
+}
+function initSectionTools(){
+  SECTION_IDS.forEach(function(id){
+    var sec=document.getElementById(id); if(!sec)return;
+    var container=sec.querySelector('.container'); if(!container)return;
+    var anchor=container.querySelector('.section-title'); if(!anchor)return;
+    var tools=document.createElement('div');
+    tools.className='sec-tools';
+    tools.innerHTML='<button class="st-rev">✓ Reviewed</button>'+
+      '<span class="st-lab">confidence</span>'+
+      '<button class="st-conf" data-v="1">\u{1F534} Shaky</button>'+
+      '<button class="st-conf" data-v="2">\u{1F7E1} Okay</button>'+
+      '<button class="st-conf" data-v="3">\u{1F7E2} Solid</button>'+
+      '<button class="st-collapse">▾ Collapse</button>';
+    anchor.parentNode.insertBefore(tools,anchor.nextSibling);
+    var note=document.createElement('div');
+    note.className='recall-note';
+    note.textContent='RECALL MODE — every bolded fact below is hidden. Say the answer out loud, then click the block to check it.';
+    tools.parentNode.insertBefore(note,tools.nextSibling);
+    var outer=document.createElement('div');outer.className='sec-body-outer';
+    var inner=document.createElement('div');inner.className='sec-body-inner';
+    outer.appendChild(inner);
+    while(note.nextSibling) inner.appendChild(note.nextSibling);
+    container.appendChild(outer);
+    tools.querySelector('.st-rev').addEventListener('click',function(){
+      progress[id]=progress[id]||{};progress[id].reviewed=!progress[id].reviewed;saveProgress();renderProgress();});
+    $$('.st-conf',tools).forEach(function(b){
+      b.addEventListener('click',function(){
+        progress[id]=progress[id]||{};
+        progress[id].conf=(progress[id].conf===+b.dataset.v)?0:+b.dataset.v;
+        saveProgress();renderProgress();});
+    });
+    tools.querySelector('.st-collapse').addEventListener('click',function(){toggleSection(sec);});
+  });
+  renderProgress();
+}
+
+/* ============ recall mode ============ */
+var recallMode=false;
+function recallTargets(){
+  return $$('.sec-body-inner :is(p,li,td,h4,dd) strong').filter(function(s){
+    return !s.closest('.exam-q')&&!s.closest('.tq-bar')&&!s.closest('.game')&&!s.closest('.abbr-strip');});
+}
+function updateRecallCount(){
+  var t=recallTargets(),o=t.filter(function(s){return s.classList.contains('rc-open');});
+  var el=$('#rcCount'); if(el) el.textContent=recallMode?(o.length+'/'+t.length):'';
+}
+function toggleRecall(){
+  recallMode=!recallMode;
+  document.body.classList.toggle('recall-mode',recallMode);
+  $('#recallBtn').classList.toggle('on',recallMode);
+  if(!recallMode) recallTargets().forEach(function(s){s.classList.remove('rc-open');});
+  else{
+    var allCollapsed=SECTION_IDS.every(function(id){var s=document.getElementById(id);return !s||s.classList.contains('collapsed');});
+    if(allCollapsed) toggleAllSections();
+  }
+  syncToolsDot();updateRecallCount();
+}
+function initRecall(){
+  document.addEventListener('click',function(e){
+    if(!recallMode)return;
+    var s=e.target.closest?e.target.closest('strong'):null;
+    if(!s||s.classList.contains('rc-open'))return;
+    if(s.closest('.exam-q')||s.closest('.game')||s.closest('.abbr-strip'))return;
+    if(!s.closest('.sec-body-inner'))return;
+    e.stopPropagation();s.classList.add('rc-open');updateRecallCount();
+  },true);
+}
+function syncToolsDot(){var t=$('#toolsTrigger');if(t)t.classList.toggle('busy',recallMode);}
+function toggleToolsMenu(){$('#floatingLeft').classList.toggle('open');}
+
+/* ============ HY one-pager ============ */
+function openHY(){var m=$('#hyModal');if(!m)return;m.classList.add('open');
+  document.body.classList.add('hy-mode');document.body.style.overflow='hidden';}
+function closeHY(){var m=$('#hyModal');if(!m)return;m.classList.remove('open');
+  document.body.classList.remove('hy-mode');document.body.style.overflow='';}
+function printHY(){window.print();}
+
+/* ============ table quiz ============ */
+function initTableQuiz(){
+  $$('table').forEach(function(table){
+    if(table.classList.contains('hy-mini-table'))return;
+    if(table.closest('.game'))return;
+    var headRow=table.rows[0]; if(!headRow)return;
+    var headers=Array.prototype.slice.call(headRow.cells).map(function(c){return c.textContent.trim();});
+    if(headers.length<2)return;
+    var bar=document.createElement('div');bar.className='tq-bar';
+    var toggle=document.createElement('button');toggle.className='tq-toggle';toggle.textContent='\u{1F9E9} Quiz this table';
+    var cols=document.createElement('div');cols.className='tq-cols';cols.style.display='none';
+    var start=document.createElement('button');start.className='tq-start';start.textContent='▶ Start';
+    start.disabled=true;start.style.display='none';
+    var shuf=document.createElement('button');shuf.className='tq-shuffle';shuf.textContent='\u{1F500} Shuffle rows';shuf.style.display='none';
+    var reset=document.createElement('button');reset.className='tq-reset';reset.textContent='↺ Reset';reset.style.display='none';
+    var score=document.createElement('span');score.className='tq-score';
+    bar.appendChild(toggle);bar.appendChild(cols);bar.appendChild(shuf);bar.appendChild(start);bar.appendChild(reset);bar.appendChild(score);
+    var host=table.parentNode.classList.contains('tbl-scroll')?table.parentNode:table;
+    host.parentNode.insertBefore(bar,host);
+
+    var sel=new Set(),running=false,hidden=[],revealed=0,originalOrder=null;
+    headers.forEach(function(h,i){
+      var b=document.createElement('button');b.className='tq-col-btn';b.textContent=h||('col '+(i+1));
+      b.addEventListener('click',function(){
+        if(running)return;
+        if(sel.has(i)){sel.delete(i);b.classList.remove('sel');}else{sel.add(i);b.classList.add('sel');}
+        start.disabled=sel.size===0;
+      });
+      cols.appendChild(b);
+    });
+    function dataRows(){
+      var parent=table.tBodies[0]||table;
+      return Array.prototype.slice.call(parent.rows).filter(function(r){return !r.querySelector('th')||r!==headRow;})
+        .filter(function(r){return r!==headRow;});
+    }
+    toggle.addEventListener('click',function(){
+      var open=cols.style.display==='none';
+      cols.style.display=open?'flex':'none';
+      start.style.display=shuf.style.display=open?'':'none';
+      toggle.classList.toggle('active',open);
+      toggle.textContent=open?'✕ Close quiz':'\u{1F9E9} Quiz this table';
+      if(!open)doReset();
+    });
+    shuf.addEventListener('click',function(){
+      var parent=table.tBodies[0]||table;
+      var rows=dataRows();
+      if(!originalOrder)originalOrder=rows.slice();
+      shuffle(rows).forEach(function(r){parent.appendChild(r);});
+    });
+    function updateScore(){
+      score.textContent=revealed+' / '+hidden.length+' revealed';
+      score.classList.toggle('done',hidden.length>0&&revealed===hidden.length);
+      if(hidden.length>0&&revealed===hidden.length)score.textContent='\u{1F389} '+revealed+' / '+hidden.length;
+    }
+    start.addEventListener('click',function(){
+      if(running||!sel.size)return;
+      running=true;hidden=[];revealed=0;
+      dataRows().forEach(function(r){
+        Array.prototype.slice.call(r.cells).forEach(function(c,i){
+          if(!sel.has(i)||!c.textContent.trim())return;
+          var w=document.createElement('span');w.className='tq-cell-content';w.innerHTML=c.innerHTML;
+          c.innerHTML='';c.appendChild(w);c.classList.add('quiz-hidden-cell');
+          c.dataset.tqOrig=w.innerHTML;
+          hidden.push(c);
+        });
+      });
+      reset.style.display='';start.disabled=true;updateScore();
+    });
+    table.addEventListener('click',function(e){
+      var c=e.target.closest?e.target.closest('td.quiz-hidden-cell'):null;
+      if(!c)return;
+      c.classList.remove('quiz-hidden-cell');c.innerHTML=c.dataset.tqOrig;revealed++;updateScore();
+    });
+    function doReset(){
+      hidden.forEach(function(c){if(c.classList.contains('quiz-hidden-cell')){c.classList.remove('quiz-hidden-cell');c.innerHTML=c.dataset.tqOrig;}});
+      if(originalOrder){var parent=table.tBodies[0]||table;originalOrder.forEach(function(r){parent.appendChild(r);});}
+      hidden=[];revealed=0;running=false;score.textContent='';score.classList.remove('done');
+      start.disabled=sel.size===0;reset.style.display='none';
+    }
+    reset.addEventListener('click',doReset);
+  });
+}
+
+/* ============ generic quiz-game engine ============ */
+/* items: [{v:vignette(html), o:[options], a:correctIndex, d:explanation(html)}] */
+function makeGame(id,items){
+  var host=document.getElementById(id); if(!host)return;
+  var vign=host.querySelector('.g-vign'),opts=host.querySelector('.g-opts'),
+      fb=host.querySelector('.g-fb'),score=host.querySelector('.g-score'),btn=host.querySelector('.g-btn');
+  var pool=shuffle(items),idx=-1,right=0,total=0,lock=true;
+  function next(){
+    idx++;
+    if(idx>=pool.length){pool=shuffle(items);idx=0;}
+    var it=pool[idx];
+    vign.innerHTML=it.v;fb.innerHTML='';lock=false;opts.innerHTML='';
+    btn.textContent='↻ Next';
+    var mapped=it.o.map(function(t,i){return {t:t,ok:i===it.a};});
+    shuffle(mapped).forEach(function(op){
+      var b=document.createElement('button');b.className='g-opt';b.innerHTML=op.t;
+      b.addEventListener('click',function(){
+        if(lock)return;lock=true;total++;
+        if(op.ok){right++;b.classList.add('correct');
+          fb.innerHTML='<span class="ok">✔ Correct.</span> '+it.d;}
+        else{b.classList.add('wrong');
+          $$('.g-opt',opts).forEach(function(bb){if(bb.innerHTML===it.o[it.a])bb.classList.add('correct');});
+          fb.innerHTML='<span class="no">✘ It is '+it.o[it.a]+'.</span> '+it.d;}
+        score.textContent=right+' / '+total;
+      });
+      opts.appendChild(b);
+    });
+  }
+  btn.addEventListener('click',next);
+}
+
+/* ============ sorting game: drop chips into buckets ============ */
+/* items:[{w:label,f:bucketKey,d:explain}]  buckets:[{k,label}] */
+function makeSorter(id,items,buckets){
+  var host=document.getElementById(id); if(!host)return;
+  var word=host.querySelector('.g-vign'),bank=host.querySelector('.g-bank'),
+      fb=host.querySelector('.g-fb'),score=host.querySelector('.g-score'),btn=host.querySelector('.g-btn');
+  var pool=shuffle(items),idx=-1,right=0,total=0,lock=true;
+  bank.innerHTML='';
+  buckets.forEach(function(b){
+    var el=document.createElement('button');el.className='g-opt';el.innerHTML=b.label;el.dataset.k=b.k;
+    el.addEventListener('click',function(){
+      if(lock)return;lock=true;total++;
+      var it=pool[idx];
+      if(b.k===it.f){right++;el.classList.add('correct');
+        fb.innerHTML='<span class="ok">✔ Yes.</span> '+it.d;}
+      else{el.classList.add('wrong');
+        $$('.g-opt',bank).forEach(function(x){if(x.dataset.k===it.f)x.classList.add('correct');});
+        fb.innerHTML='<span class="no">✘ It belongs to '+bucketLabel(buckets,it.f)+'.</span> '+it.d;}
+      score.textContent=right+' / '+total;
+    });
+    bank.appendChild(el);
+  });
+  function bucketLabel(bs,k){for(var i=0;i<bs.length;i++)if(bs[i].k===k)return bs[i].label;return k;}
+  btn.addEventListener('click',function(){
+    idx++; if(idx>=pool.length){pool=shuffle(items);idx=0;}
+    word.innerHTML='<span class="lead">Where does this belong?</span><b style="font-size:1.2rem">'+pool[idx].w+'</b>';
+    fb.innerHTML='';lock=false;
+    $$('.g-opt',bank).forEach(function(x){x.classList.remove('correct','wrong');});
+    btn.textContent='↻ Next';
+  });
+}
+
+/* ============ keyboard shortcuts ============ */
+function initKeys(){
+  document.addEventListener('keydown',function(e){
+    if(e.metaKey||e.ctrlKey||e.altKey)return;
+    var t=e.target,tag=t&&t.tagName;
+    if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT'||(t&&t.isContentEditable))return;
+    var hy=$('#hyModal');
+    if(e.key==='Escape'){ if(hy&&hy.classList.contains('open'))closeHY(); closeLightbox(); return; }
+    if(hy&&hy.classList.contains('open'))return;
+    var k=e.key.toLowerCase();
+    if(k==='q'){e.preventDefault();jumpToNextQ();return;}
+    if(k==='r'){
+      e.preventDefault();
+      var best=null,bd=Infinity,mid=window.innerHeight/2;
+      $$('.exam-q').forEach(function(q){var d=Math.abs(q.getBoundingClientRect().top+q.offsetHeight/2-mid);
+        if(d<bd){bd=d;best=q;}});
+      if(best){best.classList.add('revealed');updateQCount();}
+      return;
+    }
+    if(k==='j'||k==='k'){
+      e.preventDefault();
+      var y=window.scrollY+window.innerHeight*0.3,cur=0;
+      SECTION_IDS.forEach(function(id,i){var s=document.getElementById(id);if(s&&s.offsetTop<=y)cur=i;});
+      var nx=k==='j'?Math.min(SECTION_IDS.length-1,cur+1):Math.max(0,cur-1);
+      var target=document.getElementById(SECTION_IDS[nx]);
+      if(target)target.scrollIntoView({behavior:'smooth',block:'start'});
+    }
+  });
+}
+
+/* ============ boot ============ */
+document.addEventListener('DOMContentLoaded',function(){
+  initVisualState();
+  loadProgress();
+  initSectionTools();
+  initExamQ();
+  initTableQuiz();
+  initLightbox();
+  initScrollspy();
+  initProgress();
+  initRecall();
+  initKeys();
+  var hy=$('#hyModal');
+  if(hy) hy.addEventListener('click',function(e){if(e.target===this)closeHY();});
+  var rb=$('#recallBtn'); if(rb) rb.addEventListener('click',toggleRecall);
+  var nq=$('#nextQBtn'); if(nq) nq.addEventListener('click',jumpToNextQ);
+  var bt=$('#backtopBtn'); if(bt) bt.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});
+  document.addEventListener('click',function(e){
+    var fl=$('#floatingLeft');
+    if(fl&&fl.classList.contains('open')&&!fl.contains(e.target))fl.classList.remove('open');
+  });
+  if(typeof initGames==='function') initGames();
+});
+
+
+function initGames(){
+
+/* ---------- Round 1 ---------- */
+makeSorter('a1-bucket', [
+ {w:'Iron deficiency anemia', f:'prod', d:'Defective <b>hemoglobin</b> synthesis — a missing raw material. Impaired production, retics low.'},
+ {w:'Vitamin B12 deficiency', f:'prod', d:'Defective <b>DNA</b> synthesis. Impaired production — and note the paradox: hypercellular marrow with a <b>low</b> reticulocyte count, because precursors die before release.'},
+ {w:'Folate deficiency', f:'prod', d:'Defective DNA synthesis, identical to B12 but with <b>no neurologic manifestations</b>.'},
+ {w:'Anemia of chronic disease', f:'prod', d:'Cytokines suppress erythropoietin, suppress erythroid proliferation, and lock iron behind <b>hepcidin</b>. Impaired production.'},
+ {w:'Chronic kidney disease anemia', f:'prod', d:'The kidney makes <b>erythropoietin</b>. Lose it and the order is never given — normocytic anemia with a low reticulocyte count.'},
+ {w:'Hereditary spherocytosis', f:'dest', d:'A membrane <b>cytoskeleton</b> defect. Cells are built fine, then removed by the spleen — extravascular hemolysis.'},
+ {w:'G6PD deficiency', f:'dest', d:'A red cell <b>enzyme</b> deficiency. Oxidant stress destroys the older cells.'},
+ {w:'Beta thalassemia major', f:'dest', d:'Deficient globin chain synthesis. Classified under destruction — unpaired alpha chains precipitate and kill cells in marrow and spleen.'},
+ {w:'Sickle cell disease', f:'dest', d:'A structurally abnormal globin chain. HbS polymerizes, the cell stiffens, and it is destroyed.'},
+ {w:'Warm autoimmune hemolytic anemia', f:'dest', d:'Antibody-mediated — an <b>extrinsic</b> cause. Spherocytes with a <b>POSITIVE</b> direct Coombs test.'},
+ {w:'Microangiopathic hemolytic anemia', f:'dest', d:'Mechanical trauma — cells sheared on fibrin strands. Schistocytes.'},
+ {w:'Hypersplenism', f:'dest', d:'An overactive spleen removing normal cells. Extrinsic destruction.'},
+ {w:'ABO-incompatible transfusion', f:'dest', d:'Antibody-mediated <b>intravascular</b> hemolysis — IgM fixing complement. Destruction, and the most dangerous kind.'},
+ {w:'Bleeding colonic adenocarcinoma', f:'loss', d:'Chronic gastrointestinal loss. It causes iron deficiency downstream, but the primary mechanism is <b>loss</b> — and it is why iron deficiency in an older adult demands a colonoscopy.'},
+ {w:'Menorrhagia', f:'loss', d:'Chronic gynecologic loss — the commonest cause of iron deficiency in premenopausal women.'},
+ {w:'Trauma with acute hemorrhage', f:'loss', d:'Acute loss. The initial hemoglobin can look <b>normal</b> because plasma and cells are lost together.'},
+ {w:'Postpartum hemorrhage', f:'loss', d:'Acute obstetric loss — the number one cause of maternal mortality worldwide, and the reason transfusion exists at all.'}
+], [
+ {k:'loss', label:'Blood loss'},
+ {k:'prod', label:'Impaired production'},
+ {k:'dest', label:'Increased destruction'}
+]);
+
+makeGame('a2-smear', [
+ {v:'<span class="lead">On the smear</span>Round, dense red cells with <b>no central pallor</b>.',
+  o:['Spherocyte — hereditary spherocytosis or autoimmune hemolysis','Target cell — thalassemia','Bite cell — G6PD','Schistocyte — mechanical'], a:0,
+  d:'A <b>spherocyte</b>. Membrane has been lost or is structurally defective, so the biconcave disc balls up. Two causes — the <b>direct Coombs test</b> separates them: negative in hereditary spherocytosis, positive in autoimmune hemolysis.'},
+ {v:'<span class="lead">On the smear</span>A red cell with a <b>semicircular chunk missing</b> from its edge.',
+  o:['Bite cell — G6PD deficiency','Spherocyte — hereditary spherocytosis','Target cell — thalassemia','Howell-Jolly body — asplenia'], a:0,
+  d:'A <b>bite cell</b>. A splenic macrophage removed a <b>Heinz body</b> — precipitated oxidized hemoglobin — plus the overlying membrane. A <b>blister cell</b> is the same event with the membrane still stretched over the defect.'},
+ {v:'<span class="lead">On the smear</span>A <b>bull’s-eye</b>: a dark centre, a pale ring, and a dark rim.',
+  o:['Target cell — thalassemia','Spherocyte — hereditary spherocytosis','Sickle cell — sickle cell disease','Schistocyte — mechanical'], a:0,
+  d:'A <b>target cell (codocyte)</b>. Too much membrane for too little hemoglobin — an increased surface-area-to-volume ratio, so hemoglobin piles up centrally and peripherally with a pale ring between. Classic in thalassemia; also sickle cell disease, liver disease and iron deficiency.'},
+ {v:'<span class="lead">On the smear</span>Large <b>oval</b> red cells, and a neutrophil with <b>seven nuclear lobes</b>.',
+  o:['Megaloblastic anemia — B12 or folate deficiency','Iron deficiency','Thalassemia','Hereditary spherocytosis'], a:0,
+  d:'Macro-ovalocytes plus a <b>hypersegmented neutrophil</b> (six or more lobes). Macrocytosis alone has a long differential; the hypersegmented neutrophil narrows it specifically to <b>defective DNA synthesis</b> — B12 or folate.'},
+ {v:'<span class="lead">On the smear</span>Pale cells with a <b>markedly enlarged central pale zone</b>, and small.',
+  o:['Hypochromic microcytic — iron deficiency','Megaloblastic — B12 deficiency','Spherocytes — HS','Sickle cells — SCD'], a:0,
+  d:'<b>Hypochromic and microcytic.</b> The precursor could not reach its target hemoglobin concentration, so it underwent an extra division or two — producing cells that are both <b>pale and small</b>. Classic iron deficiency; thalassemia looks similar but with normal iron studies.'},
+ {v:'<span class="lead">On the smear</span>A dense, round <b>nuclear remnant</b> inside a mature red cell.',
+  o:['Howell-Jolly body — the spleen is not working','Heinz body — oxidant damage','Basophilic stippling — lead','Target cell — thalassemia'], a:0,
+  d:'A <b>Howell-Jolly body</b> — retained nuclear DNA that a functioning spleen would pit out. Its presence means the spleen is absent or non-functional: classically <b>autosplenectomy in sickle cell disease</b>, or post-splenectomy.'},
+ {v:'<span class="lead">On the smear</span><b>Angular fragments</b> of red cells.',
+  o:['Schistocytes — mechanical shearing','Spherocytes — membrane defect','Bite cells — oxidant damage','Target cells — membrane excess'], a:0,
+  d:'<b>Schistocytes.</b> The cells were physically sheared apart <i>in the circulation</i> — on fibrin strands in microangiopathic hemolytic anemia, or on a mechanical heart valve. They come with the full <b>intravascular</b> picture: absent haptoglobin and hemoglobinuria.'},
+ {v:'<span class="lead">On the smear</span>Rigid <b>crescent-shaped</b> cells among otherwise normal ones.',
+  o:['Sickle cells — sickle cell disease','Target cells — thalassemia','Teardrop cells — myelofibrosis','Spherocytes — HS'], a:0,
+  d:'<b>Sickle cells</b> from polymerized deoxygenated HbS. Note that only a <i>minority</i> of cells are frankly sickled at any moment — the whole smear does not look like this.'},
+ {v:'<span class="lead">On the smear</span>Marked variation in both <b>size and shape</b> of the red cells.',
+  o:['Anisopoikilocytosis','Polychromasia','Rouleaux','Basophilic stippling'], a:0,
+  d:'<b>Aniso-</b> means variation in size, <b>poikilo-</b> variation in shape. Non-specific on its own — seen in thalassemia and most severe anemias — but it tells you the marrow is under real stress.'}
+]);
+
+/* ---------- Round 2 ---------- */
+makeGame('b1-iron', [
+ {v:'<span class="lead">Panel</span>Hgb 9.1, MCV 72 fL. <b>Ferritin 6</b>, iron low, <b>TIBC HIGH</b>, saturation 8%.',
+  o:['Iron deficiency anemia','Anemia of chronic disease','Thalassemia trait','B12 deficiency'], a:0,
+  d:'The <b>low ferritin</b> is the single most useful value, and the liver makes <i>more</i> transferrin in response — so <b>TIBC goes UP</b>. Empty cups, high capacity. Now ask where the iron went.'},
+ {v:'<span class="lead">Panel</span>Hgb 10.2, MCV 86 fL, in rheumatoid arthritis. <b>Ferritin 320</b>, iron low, <b>TIBC LOW</b>, CRP high.',
+  o:['Anemia of chronic disease','Iron deficiency anemia','Iron overload','Hemolysis'], a:0,
+  d:'Interleukin-6 drives <b>hepcidin</b> up, hepcidin destroys <b>ferroportin</b>, iron is locked inside macrophages. Ferritin is high partly from stores and partly because it is an <b>acute phase reactant</b>. Oral iron will not open that door — treat the arthritis.'},
+ {v:'<span class="lead">Panel</span>Hgb 11.4, <b>MCV 68</b> — strikingly small for such a mild anemia. <b>All iron studies normal.</b> Red cell count elevated.',
+  o:['Thalassemia trait','Iron deficiency','Anemia of chronic disease','Sideroblastic anemia'], a:0,
+  d:'Normal iron studies plus a disproportionately low MCV plus a <b>high</b> red cell count. Confirm with electrophoresis — and critically, <b>do not give iron</b>: it achieves nothing and causes overload.'},
+ {v:'<span class="lead">Panel</span>A 58-year-old man. Hgb 10.8, MCV 73, ferritin 8, saturation 9%. Otherwise well.',
+  o:['Iron deficiency — and he needs endoscopic evaluation','Iron deficiency — prescribe iron and review in 3 months','Anemia of chronic disease','Thalassemia trait'], a:0,
+  d:'The laboratory diagnosis is easy; the <b>management</b> is the exam point. Iron deficiency in an <b>adult male or postmenopausal woman is gastrointestinal blood loss until proven otherwise</b> — colorectal adenocarcinoma presents exactly this way.'},
+ {v:'<span class="lead">Panel</span>Hospitalized with osteomyelitis. Hgb 9.8, MCV 79. <b>Ferritin 90</b>, <b>saturation 6%</b>, TIBC low-normal, CRP markedly raised.',
+  o:['Iron deficiency coexisting with inflammation','Pure anemia of chronic disease','Pure iron deficiency','B12 deficiency'], a:0,
+  d:'The trap. <b>Ferritin is an acute phase reactant</b>, so a "normal" 90 in a floridly inflamed patient is inappropriately <i>low</i>. The <b>very low saturation</b> and frank microcytosis argue that iron deficiency is present <i>as well as</i> inflammation. This is why one test is never enough.'},
+ {v:'<span class="lead">Panel</span>Hgb 8.6, MCV 90, iron studies normal, <b>reticulocytes low</b>, creatinine 4.2 mg/dL.',
+  o:['Erythropoietin deficiency from chronic kidney disease','Iron deficiency','Hemolysis','Folate deficiency'], a:0,
+  d:'Normocytic, normal raw materials, <b>low reticulocytes</b> — the <i>order</i> is missing, not the bricks. The kidney makes <b>erythropoietin</b>. Treat with an ESA, after confirming iron stores, because the drug is useless without them.'},
+ {v:'<span class="lead">Panel</span>Two years after gastric bypass. Hgb 9.9, MCV 91, <b>RDW markedly raised</b>, smear shows both small pale cells and large oval cells.',
+  o:['Combined iron and B12 deficiency','Pure iron deficiency','Pure B12 deficiency','Anemia of chronic disease'], a:0,
+  d:'A <b>dimorphic</b> smear with a wide RDW and a deceptively <b>normal</b> MCV — microcytes and macrocytes averaging out. Bypass removes acid and intrinsic factor and bypasses the duodenum, so <b>iron and B12 fail together</b>. Never trust a normal MCV alone.'}
+]);
+
+makeSorter('b2-macro', [
+ {w:'Methylmalonic acid elevated', f:'b12', d:'MMA accumulates only in <b>B12</b> deficiency. The single best discriminator.'},
+ {w:'Methylmalonic acid normal', f:'fol', d:'Normal MMA with a megaloblastic picture points to <b>folate</b>.'},
+ {w:'Homocysteine elevated', f:'both', d:'Rises in <b>both</b>. It tells you one of the two is missing but not which — order the MMA.'},
+ {w:'Hypersegmented neutrophils', f:'both', d:'Present in both. It tells you the problem is <b>DNA synthesis</b>, which is already valuable — it excludes iron deficiency and the other macrocytoses.'},
+ {w:'Paresthesias and sensory ataxia', f:'b12', d:'Only B12 maintains <b>myelin</b>. Dorsal and lateral column degeneration is <b>subacute combined degeneration</b> and becomes irreversible.'},
+ {w:'Anti-parietal cell antibodies present', f:'b12', d:'<b>Pernicious anemia</b> — autoimmune loss of parietal cells and therefore intrinsic factor. Present in 85–90%; anti-intrinsic factor in 75%.'},
+ {w:'History of terminal ileal resection', f:'b12', d:'The <b>terminal ileum</b> is the only absorption site for the B12–intrinsic factor complex.'},
+ {w:'Chronic alcohol use with a poor diet', f:'fol', d:'The classic cause of <b>folate</b> deficiency through reduced intake. Green vegetables are the richest source.'},
+ {w:'Taking methotrexate', f:'fol', d:'A <b>folate antagonist</b> — it blocks dihydrofolate reductase, so folate cannot be activated. Impaired <i>utilization</i> rather than intake.'},
+ {w:'Strict vegan diet for fifteen years', f:'b12', d:'B12 comes almost entirely from <b>animal products</b>; plants contain very little cobalamin. A vegan diet is usually folate-replete.'},
+ {w:'Concern about neural tube defects in pregnancy', f:'fol', d:'<b>Folate</b> is the key nutrient for neural tube closure — why every prenatal vitamin contains it and why supplementation prevents spina bifida.'},
+ {w:'Elevated LDH with a LOW reticulocyte count', f:'both', d:'<b>Ineffective erythropoiesis</b> — precursors made and destroyed inside the marrow. Occurs in both deficiencies, and is why the marrow is hypercellular while the patient is profoundly anemic.'},
+ {w:'Gastric atrophy with intestinal metaplasia', f:'b12', d:'Part of the <b>pernicious anemia</b> tissue triad, and it carries a <b>gastric carcinoma risk</b> requiring surveillance.'},
+ {w:'Anemia corrected but gait worsened after treatment', f:'b12', d:'The classic disaster: <b>folate given to a B12-deficient patient</b>. It fixes the blood count while the <b>subacute combined degeneration continues</b>. Always check B12 before treating a macrocytic anemia with folate.'}
+], [
+ {k:'b12', label:'B12 deficiency'},
+ {k:'fol', label:'Folate deficiency'},
+ {k:'both', label:'Both — does not discriminate'}
+]);
+
+makeGame('b3-hemolysis', [
+ {v:'<span class="lead">Finding</span>Spun plasma is <b>pink</b> rather than straw-yellow.',
+  o:['Intravascular hemolysis','Extravascular hemolysis','Both equally','Neither'], a:0,
+  d:'Free hemoglobin reaches the plasma only when the cell ruptures <i>inside</i> the vessel. In extravascular hemolysis the macrophage dismantles hemoglobin internally.'},
+ {v:'<span class="lead">Finding</span><b>Haptoglobin undetectable.</b>',
+  o:['Intravascular hemolysis','Extravascular hemolysis','Neither','Iron deficiency'], a:0,
+  d:'Haptoglobin is <b>consumed</b> mopping up free plasma hemoglobin. It falls mildly in extravascular hemolysis but becomes <b>absent</b> with a large free-hemoglobin load.'},
+ {v:'<span class="lead">Finding</span>Urine dipstick <b>positive for blood</b>, microscopy shows <b>no red cells</b>.',
+  o:['Intravascular hemolysis — hemoglobinuria','Extravascular hemolysis','Glomerulonephritis','Bladder tumour'], a:0,
+  d:'The dipstick detects <b>heme</b>, not intact cells — so filtered free hemoglobin reads positive with an empty microscopy field. This is also the warning that the <b>kidney</b> is at risk.'},
+ {v:'<span class="lead">Finding</span>A markedly <b>enlarged spleen</b>.',
+  o:['Extravascular hemolysis','Intravascular hemolysis','Neither','Both equally'], a:0,
+  d:'The spleen enlarges because it is doing the destroying. Intravascular hemolysis typically leaves it a normal size.'},
+ {v:'<span class="lead">Finding</span><b>Reticulocyte count high</b>, marrow hypercellular.',
+  o:['Both — true of all hemolysis','Intravascular only','Extravascular only','Impaired production'], a:0,
+  d:'<b>Compensatory erythropoiesis</b> is one of the three features shared by every hemolytic anemia — and the cleanest split from the impaired-production anemias, where retics are <b>low</b>.'},
+ {v:'<span class="lead">Finding</span>A patient with chronic hemolysis crashes, and the <b>reticulocyte count is 0.2%</b>.',
+  o:['Aplastic crisis — parvovirus B19','Hemolytic crisis','Sequestration crisis','Acute bleeding'], a:0,
+  d:'The <b>low</b> reticulocyte count is decisive — in a hemolytic crisis the marrow would work harder and retics would rise. Parvovirus B19 shuts down erythroid precursors, and a patient dependent on a maximal marrow has no reserve.'},
+ {v:'<span class="lead">Finding</span>Unconjugated bilirubin elevated; the patient is jaundiced.',
+  o:['Both — it does not discriminate','Intravascular only','Extravascular only','Neither'], a:0,
+  d:'Heme is broken down to bilirubin whichever way the cell dies. Use <b>plasma colour, haptoglobin and the smear</b> to discriminate.'}
+]);
+
+/* ---------- Round 3 ---------- */
+makeSorter('c1-genes', [
+ {w:'3 of 4 alpha genes present', f:'silent', d:'<b>Silent carrier</b> — completely asymptomatic, no anemia. Never diagnosed unless specifically looked for.'},
+ {w:'2 of 4 alpha genes present', f:'atrait', d:'<b>Alpha thalassemia trait</b> — minimal anemia, no abnormal physical signs. Microcytic with <b>normal iron studies</b>, which is why it is mistaken for iron deficiency.'},
+ {w:'1 of 4 alpha genes present', f:'hbh', d:'<b>Hemoglobin H disease</b> — excess beta chains form <b>β₄ tetramers</b> that precipitate under oxidative stress and are removed by the spleen. Moderately severe anemia.'},
+ {w:'0 of 4 alpha genes present', f:'hydrops', d:'<b>Hydrops fetalis</b> — excess gamma chains form <b>Hb Barts (γ₄)</b>, which binds oxygen and will not release it. Intrauterine fetal death.'},
+ {w:'Tetramer γ₄', f:'hydrops', d:'<b>Hb Barts.</b> Extremely high oxygen affinity, cannot deliver oxygen to tissue.'},
+ {w:'Tetramer β₄', f:'hbh', d:'<b>Hemoglobin H.</b> Four beta chains with no alpha partner — unstable, precipitates.'},
+ {w:'Heterozygous beta thalassemia, one normal beta gene', f:'bminor', d:'<b>Thalassemia minor (trait)</b> — mild anemia, normal iron studies, raised HbA₂.'},
+ {w:'Homozygous β⁰', f:'bmajor', d:'<b>Thalassemia major</b> — no beta chain production at all. Severe transfusion-dependent anemia presenting at 3–6 months, once the globin switch removes HbF.'},
+ {w:'Frontal bossing, transfusions every 3–4 weeks from infancy', f:'bmajor', d:'<b>Thalassemia major.</b> The facial changes come from marrow cavity expansion under extreme erythropoietic drive.'},
+ {w:'40–45% HbS with HbA also present', f:'scdtrait', d:'<b>Sickle cell trait</b> — heterozygous, generally asymptomatic, and confers up to a <b>30% reduction in malaria mortality</b>.'},
+ {w:'90–100% HbS with NO HbA', f:'scddis', d:'<b>Sickle cell disease</b> — homozygous. The <b>absence of HbA</b> is the diagnosis.'},
+ {w:'Electrophoresis: HbS 85%, HbF 12%, HbA 0%', f:'scddis', d:'<b>Sickle cell disease.</b> The residual HbF is protective, because HbS polymerizes poorly with HbF — which is exactly what hydroxyurea aims to exploit.'}
+], [
+ {k:'silent', label:'Silent carrier'},
+ {k:'atrait', label:'Alpha thal trait'},
+ {k:'hbh', label:'Hemoglobin H'},
+ {k:'hydrops', label:'Hydrops fetalis'},
+ {k:'bminor', label:'Beta thal minor'},
+ {k:'bmajor', label:'Beta thal major'},
+ {k:'scdtrait', label:'Sickle trait'},
+ {k:'scddis', label:'Sickle cell disease'}
+]);
+
+makeGame('c2-inherit', [
+ {v:'<span class="lead">Inheritance</span>Hereditary spherocytosis.',
+  o:['Autosomal dominant','X-linked','Autosomal recessive','Mitochondrial'], a:0,
+  d:'<b>Autosomal dominant</b> — which is why a case vignette so often mentions a parent with unexplained jaundice in adolescence. Genes: ANK1, SPTB, SLC4A1.'},
+ {v:'<span class="lead">Inheritance</span>G6PD deficiency.',
+  o:['X-linked','Autosomal dominant','Autosomal recessive','Mitochondrial'], a:0,
+  d:'<b>X-linked</b>, so fully expressed in males. It is the world’s most common enzyme deficiency, affecting over <b>400 million</b> people.'},
+ {v:'<span class="lead">Mechanism</span>Why is G6PD deficiency episodic rather than continuous in most people?',
+  o:['The enzyme is unstable, so only OLDER cells are depleted','The gene is only expressed intermittently','The spleen only works intermittently','Oxidants are only present at night'], a:0,
+  d:'The enzyme is made in <b>normal amounts but is unstable</b>. Activity decays as the cell ages, so only the <b>oldest</b> cells are vulnerable. Once they are destroyed, the young ones survive and hemolysis stops — which is also why the <b>assay can be falsely normal during a crisis</b>.'},
+ {v:'<span class="lead">Genetics</span>Why does beta thalassemia present at 3–6 months rather than at birth?',
+  o:['A newborn runs on HbF, which needs no beta chains','Maternal antibodies protect the newborn','The spleen is not yet functional','Iron stores last six months'], a:0,
+  d:'The <b>globin switch</b>. A fetus and newborn use <b>HbF (α₂γ₂)</b>, which requires no beta chains at all. Only as gamma production falls off and beta is meant to take over does the deficiency appear. Same logic applies to sickle cell disease.'},
+ {v:'<span class="lead">Genetics</span>Why is alpha thalassemia graded in four steps but beta thalassemia in essentially two?',
+  o:['There are 4 alpha genes but only 2 beta genes','Alpha chains are longer','Beta genes are on two chromosomes','Alpha thalassemia is more common'], a:0,
+  d:'<b>Four alpha genes on chromosome 16, two beta genes on chromosome 11.</b> Gene dosage gives alpha four clinical grades. With only two betas, losing one already matters — which is the point that beta is easier to be severely affected by.'},
+ {v:'<span class="lead">Mechanism</span>In thalassemia, what actually destroys the cells?',
+  o:['The unpartnered chain you have too MUCH of, precipitating','The missing chain itself','Autoantibodies','Oxidant stress alone'], a:0,
+  d:'The counterintuitive part. Too little hemoglobin gives hypochromia — the mild half. The severity tracks the <b>excess unpaired chain</b>, which aggregates into insoluble complexes, killing precursors in the marrow (<b>ineffective hematopoiesis</b>) and mature cells in the spleen.'},
+ {v:'<span class="lead">Genetics</span>What is the mutation in sickle cell disease?',
+  o:['Valine substituted for glutamic acid at position 6 of the beta chain','Deletion of one beta globin gene','A frameshift in the alpha chain','A promoter mutation reducing beta output'], a:0,
+  d:'A single <b>adenine-to-thymine</b> substitution in <span class="gene-tag">HBB</span> changes the 6th codon. Glutamic acid is charged; <b>valine is hydrophobic</b> — and a hydrophobic patch on the outside makes deoxygenated molecules stick together and polymerize.'},
+ {v:'<span class="lead">Evolution</span>What do G6PD deficiency and sickle cell trait have in common geographically?',
+  o:['Both track endemic malaria and are protective in the heterozygous state','Both are commonest in northern Europe','Both are X-linked','Both arose in the last century'], a:0,
+  d:'Overlay the maps and they are the same picture. G6PD deficiency protects against severe <i>Plasmodium falciparum</i>; sickle trait drops malaria mortality by up to <b>30%</b>. Advantageous as a carrier, devastating homozygous — the recurring bargain in this block.'}
+]);
+
+/* ---------- Round 4 ---------- */
+makeGame('d1-bag', [
+ {v:'<span class="lead">Situation</span>Postpartum hemorrhage, still bleeding after 3 red cells and 1 plasma. <b>Fibrinogen 90 mg/dL.</b>',
+  o:['Cryoprecipitate','More red cells alone','Plasma alone','Platelets alone'], a:0,
+  d:'The <b>fibrinogen of 90</b> decides it. Cryoprecipitate is the concentrated fibrinogen product — and fibrinogen becoming fibrin is the step that actually <b>cross-links the clot</b>. She needs everything else too while she bleeds.'},
+ {v:'<span class="lead">Situation</span>Post stem cell transplant, awaiting count recovery, not bleeding. <b>Platelets 7,000/µL.</b>',
+  o:['Platelets','Red cells','Plasma','Nothing'], a:0,
+  d:'<b>Hypoproliferative thrombocytopenia below 10,000</b> in a non-bleeding patient — the exact guideline population.'},
+ {v:'<span class="lead">Situation</span>Hemophilia A with a bleeding joint.',
+  o:['Factor VIII concentrate','Fresh frozen plasma','Cryoprecipitate','Platelets'], a:0,
+  d:'Plasma is for <b>multiple</b> factor deficiency. For a single identified factor deficiency you give <b>that factor</b> — plasma would need an impossible volume for an inadequate level.'},
+ {v:'<span class="lead">Situation</span>A colloid volume expander is needed. Someone suggests plasma.',
+  o:['Albumin — plasma is not a volume expander','Plasma','Cryoprecipitate','Red cells'], a:0,
+  d:'<b>Albumin</b> is the purified colloid, made from pooled plasma and <b>pathogen-inactivated</b>, dispensed from pharmacy. Plasma carries reaction and infectious risk for no hemostatic indication here.'},
+ {v:'<span class="lead">Situation</span>Stable, asymptomatic, not bleeding. <b>Hemoglobin 8.4 g/dL.</b>',
+  o:['No transfusion','Two units of red cells','One unit of plasma','Platelets'], a:0,
+  d:'Above the <b>restrictive threshold of 7 g/dL</b>. TRICC found no mortality benefit from a liberal strategy and that the liberal arm did <i>worse</i>. If transfusion were indicated: <b>one unit, then reassess</b>.'},
+ {v:'<span class="lead">Situation</span>A severely immunocompromised child needs red cells.',
+  o:['Irradiated red cells','Standard red cells','Washed red cells only','Whole blood'], a:0,
+  d:'<b>Irradiation</b> damages the DNA of residual donor lymphocytes so they cannot proliferate — the only prevention for <b>transfusion-associated graft-versus-host disease</b>, which is nearly always fatal.'},
+ {v:'<span class="lead">Situation</span>A patient with <b>IgA deficiency and anti-IgA</b> who had anaphylaxis to platelets last month.',
+  o:['Washed or IgA-deficient products','Standard products with premedication','Irradiated products','Leukoreduced products'], a:0,
+  d:'Every plasma-containing product contains <b>IgA</b>, and this patient reacts to a few millilitres. Leukoreduction and irradiation address different problems entirely — the plasma itself must go.'}
+]);
+
+makeGame('d2-threshold', [
+ {v:'<span class="lead">Decision</span>Euvolemic, stable ICU patient with sepsis. <b>Hemoglobin 9 g/dL.</b> Not bleeding.',
+  o:['Hold','Transfuse 2 units','Transfuse 1 unit','Transfuse to 10'], a:0,
+  d:'The <b>TRICC</b> population exactly. Restrictive threshold <b>7 g/dL</b>; the liberal arm at 10 did <b>worse</b>.'},
+ {v:'<span class="lead">Decision</span>Non-bleeding patient on chemotherapy. <b>Platelets 8,000/µL.</b>',
+  o:['Transfuse platelets','Hold — she is not bleeding','Only above 20,000','Give plasma'], a:0,
+  d:'<b>Below 10,000</b> with hypoproliferative thrombocytopenia. The 2002 randomized trial found no difference between a 20,000 and a 10,000 trigger.'},
+ {v:'<span class="lead">Decision</span><b>Platelets 16,000</b>, scheduled for a <b>lumbar puncture</b>.',
+  o:['Transfuse — LP threshold is 20,000','Hold — 10,000 is the threshold','Hold — no threshold applies','Give plasma'], a:0,
+  d:'Procedures raise the bar. <b>20,000 for lumbar puncture</b>, because a spinal hematoma would be catastrophic. The 10,000 figure applies only to a patient having nothing done to them.'},
+ {v:'<span class="lead">Decision</span><b>Dengue</b>, platelets 12,000, no bleeding.',
+  o:['Do not transfuse on count alone','Transfuse — below threshold','Transfuse above 50,000','Give cryoprecipitate'], a:0,
+  d:'Dengue thrombocytopenia is <b>consumptive</b>, not hypoproliferative — transfused platelets are consumed too. The 2025 JAMA guideline names this explicitly. <b>Treat the mechanism, not the number.</b>'},
+ {v:'<span class="lead">Decision</span><b>Preterm neonate</b>, platelets 22,000.',
+  o:['Transfuse — neonatal threshold is 25,000','Hold — 10,000 applies','Hold — 20,000 applies','Give whole blood'], a:0,
+  d:'<b>25,000</b>. Germinal matrix vessels are fragile and intraventricular hemorrhage is devastating, so the threshold sits higher than for adults.'},
+ {v:'<span class="lead">Decision</span>Liver biopsy scheduled. <b>INR 1.2.</b> The proceduralist wants plasma.',
+  o:['Decline — above the 30% hemostatic threshold','Give 2 units','Give 4 units','Give cryoprecipitate'], a:0,
+  d:'An INR of 1.2 corresponds to activity well above the <b>30%</b> needed to clot. Plasma here is a <b>teacup into an ocean</b> — no measurable change, all of the risk.'},
+ {v:'<span class="lead">Decision</span>Actively hemorrhaging after a stabbing. <b>Hemoglobin 13.9 g/dL</b> on arrival.',
+  o:['Resuscitate — the threshold does not apply','Hold — hemoglobin is normal','Wait until below 7','Plasma alone'], a:0,
+  d:'In acute hemorrhage plasma and cells are lost in the <b>same proportion</b>, so the concentration is initially unchanged. TRICC was done in <b>euvolemic</b> patients and does not apply to active bleeding.'},
+ {v:'<span class="lead">Decision</span>Immune thrombocytopenic purpura, platelets 8,000, no bleeding.',
+  o:['Treat the immune process, not the count','Transfuse platelets — below 10,000','Transfuse to above 50,000','Give plasma'], a:0,
+  d:'Same logic as dengue. The marrow is producing normally and <b>autoantibody is destroying</b> the platelets — transfused platelets are destroyed just as fast. Steroids, IVIG or a thrombopoietin receptor agonist; transfuse only for serious active bleeding.'}
+]);
+
+makeGame('d3-abo', [
+ {v:'<span class="lead">Compatibility</span>Which red cells can a <b>group O</b> patient safely receive?',
+  o:['Group O only','Any group','O and A','O and AB'], a:0,
+  d:'Group O has <b>both anti-A and anti-B</b>. It is the universal red cell <i>donor</i> and the most restricted <i>recipient</i> — the reverse of the intuition.'},
+ {v:'<span class="lead">Compatibility</span>Universal recipient of <b>red cells</b>?',
+  o:['AB','O','A','B'], a:0,
+  d:'Group AB plasma has <b>neither anti-A nor anti-B</b>, so no donor antigen can be attacked.'},
+ {v:'<span class="lead">Compatibility</span>Universal donor of <b>plasma</b>?',
+  o:['AB','O','A','B'], a:0,
+  d:'The relationship <b>inverts</b> for plasma, because plasma carries antibodies rather than antigens. <b>AB plasma has no ABO antibodies.</b>'},
+ {v:'<span class="lead">Mechanism</span>Where do a group A person’s anti-B antibodies come from?',
+  o:['Gut bacterial colonization in infancy','A previous transfusion','A previous pregnancy','Present at birth'], a:0,
+  d:'Newborns have <b>no</b> ABO antibodies. Over the first 6 months to 2 years the gut is colonized by bacteria whose carbohydrates resemble A and B antigens, and the immune system makes antibody to the antigen it does <b>not</b> have. This is why ABO reactions need no prior exposure.'},
+ {v:'<span class="lead">Emergency</span>Unidentified <b>male</b> trauma patient, exsanguinating.',
+  o:['O RhD-POSITIVE red cells','O RhD-negative','AB red cells','Wait for a type and screen'], a:0,
+  d:'Group O for emergency release, and <b>RhD positive</b> for a male — preserve the scarce O-negative units. Only <b>15%</b> of people are RhD negative and O-negative is roughly <b>1 in 15</b>.'},
+ {v:'<span class="lead">Emergency</span>Same scenario, a <b>17-year-old female</b>.',
+  o:['O RhD-NEGATIVE red cells','O RhD-positive','AB red cells','Wait for a crossmatch'], a:0,
+  d:'Prevent her forming <b>anti-D</b>, which is <b>IgG</b> and <b>crosses the placenta</b> — in a future pregnancy with a D-positive fetus it would cause <b>hemolytic disease of the fetus and newborn</b>.'},
+ {v:'<span class="lead">Testing</span>Which test asks whether the patient’s own cells are already antibody-coated?',
+  o:['Direct antiglobulin test','Indirect antiglobulin test','Crossmatch','Front type'], a:0,
+  d:'<b>Direct</b> goes <i>directly</i> to the patient’s cells. Diagnostic for immune hemolysis — and it is what separates <b>autoimmune hemolytic anemia (positive)</b> from <b>hereditary spherocytosis (negative)</b>.'},
+ {v:'<span class="lead">Ordering</span>"Type and cross four units for tomorrow." What have you asked for?',
+  o:['Type, screen, and crossmatch and reserve four named units','Type and screen only','ABO group only','Four units sent now'], a:0,
+  d:'<b>Type and cross</b> = type and screen <b>plus</b> crossmatching and reserving named units, which are then unavailable to anyone else. <b>Screen = ready. Cross = reserved.</b>'},
+ {v:'<span class="lead">Population</span>Why do sickle cell patients so often develop alloantibodies?',
+  o:['Repeated lifelong exposure to minor red cell antigens','Their cells are abnormally antigenic','They are usually RhD negative','Hyperactive spleens'], a:0,
+  d:'Transfused <b>repeatedly for life</b>. ABO is always matched, but each transfusion exposes them to <b>minor</b> antigens — Duffy, Kidd, Kell. Rates run <b>20–60%</b> versus 1–3% generally, which is why many centers now give <b>extended antigen-matched</b> blood.'}
+]);
+
+/* ---------- Round 5 ---------- */
+makeGame('e1-reactions', [
+ {v:'<span class="lead">The nurse is calling</span><b>Back and flank pain</b>, fever, hypotension, hypoxia during red cells. Plasma is <b>pink</b>; <b>hemoglobin in the urine</b>; direct Coombs <b>positive</b>.',
+  o:['Acute hemolytic transfusion reaction (ABO)','Febrile non-hemolytic reaction','TRALI','Allergic reaction'], a:0,
+  d:'The full <b>intravascular hemolysis</b> signature. Naturally occurring <b>IgM</b> ABO antibody fixed complement; <b>free heme threatens the kidney</b>. A <b>never event</b> — usual cause is <b>wrong blood in tube</b>, a mislabeled sample.'},
+ {v:'<span class="lead">The nurse is calling</span><b>Fever and chills</b> during platelets. <b>No hemolysis</b>, normal plasma colour. Settles within the hour.',
+  o:['Febrile non-hemolytic transfusion reaction','Acute hemolytic reaction','Anaphylaxis','TACO'], a:0,
+  d:'The commonest reaction there is — several a week at a large centre. <b>Cytokines from cells sitting in the bag.</b> Self-limited; the rate drops sharply with <b>leukocyte reduction</b>.'},
+ {v:'<span class="lead">The nurse is calling</span>After <b>5 mL of platelets</b>: hypotension, <b>throat tightness</b>, dyspnea, hypoxia, hives.',
+  o:['Anaphylaxis — consider IgA deficiency','Mild allergic reaction','Febrile non-hemolytic reaction','TACO'], a:0,
+  d:'Reacting to a <b>tiny volume</b> points at anaphylaxis. One key mechanism is <b>IgA deficiency with anti-IgA</b>. Stop, give <b>epinephrine</b>; future products must be <b>washed or IgA-deficient</b>.'},
+ {v:'<span class="lead">The nurse is calling</span>One hour in: dyspnea, hypoxia, <b>bilateral infiltrates</b>. BP <b>88/50</b>, JVP <b>normal</b>, no response to diuresis.',
+  o:['TRALI','TACO','Anaphylaxis','Septic reaction'], a:0,
+  d:'<b>Hypotension with a normal JVP and no diuretic response</b> separates TRALI from TACO. Donor <b>anti-HLA antibodies</b> — classically from a woman sensitized in pregnancy — cause <b>leukoagglutination in the pulmonary capillaries</b>.'},
+ {v:'<span class="lead">The nurse is calling</span>Elderly patient, third unit of red cells. BP <b>178/94</b>, <b>JVP raised</b>, crackles. Improves with a diuretic.',
+  o:['TACO — circulatory overload','TRALI','Anaphylaxis','Acute hemolytic reaction'], a:0,
+  d:'<b>Hypertension, raised JVP, responds to diuresis</b> = volume, not immunity. Memory hook: <b>TACO = too much volume.</b>'},
+ {v:'<span class="lead">The nurse is calling</span><b>Hives, flushing, itching</b> during plasma. <b>Vital signs stable</b>, airway fine.',
+  o:['Mild allergic reaction — antihistamine','Anaphylaxis — epinephrine','TRALI','Acute hemolytic reaction'], a:0,
+  d:'The mild end of the hypersensitivity spectrum — a soluble allergen from the donor’s plasma (the <i>donor ate strawberries</i> model). Antihistamine; often resumable cautiously.'},
+ {v:'<span class="lead">Weeks later</span>Immunocompromised patient transfused a month ago returns with <b>pancytopenia</b>, rash, diarrhea, liver dysfunction.',
+  o:['Transfusion-associated graft-versus-host disease','Delayed hemolytic reaction','TRALI','Iron overload'], a:0,
+  d:'<b>Donor lymphocytes engrafted</b> and are attacking the recipient including the <b>marrow</b> — hence every cell line falling. Nearly always fatal. Prevented <i>only</i> by <b>irradiating the product</b>.'},
+ {v:'<span class="lead">First move</span>Fever and rigors ten minutes into a transfusion. Your <b>first</b> action?',
+  o:['Stop the transfusion','Send a direct Coombs','Give acetaminophen','Slow the rate and continue'], a:0,
+  d:'<b>Stop the exposure before you diagnose it.</b> The two lethal reactions — acute hemolysis and anaphylaxis — are <b>dose dependent</b>. Then keep the IV open with saline, do the <b>clerical check</b>, treat supportively, and send everything to the blood bank.'},
+ {v:'<span class="lead">Prevention</span>Why does a <b>diversion pouch</b> reduce septic transfusion reactions?',
+  o:['It discards the skin plug punched out by the needle','It filters white cells','It irradiates the unit','It removes plasma'], a:0,
+  d:'The needle bore punches a <b>plug of skin</b> into the bag and skin flora grow — especially in <b>room-temperature platelets</b>. The pouch discards the first ~100 mL. Filtering white cells is <b>leukocyte reduction</b>, a different fix for a different problem.'},
+ {v:'<span class="lead">Risk</span>What is the <b>most common infectious risk</b> of transfusion today?',
+  o:['A bacterially contaminated platelet','HIV','Hepatitis C','West Nile virus'], a:0,
+  d:'Platelets are stored at <b>room temperature</b>, so bacteria can grow. Viral risks are now vanishingly small — HIV is roughly comparable to <b>being struck by lightning</b>.'}
+]);
+
+/* ---------- Boss Round ---------- */
+makeGame('f1-boss', [
+ {v:'A 25-year-old woman: fatigue, pallor, craving <b>ice</b>. Heavy periods, vegetarian. Hgb 7, MCV 74, ferritin low.',
+  o:['Iron deficiency anemia','Anemia of chronic disease','Folate deficiency','Thalassemia trait'], a:0,
+  d:'Microcytic with a low ferritin. Craving ice is <b>pagophagia</b>, a form of pica strongly associated with iron deficiency. Two mechanisms at once — menstrual loss plus low dietary bioavailable iron.'},
+ {v:'A 61-year-old man: fatigue, <b>confusion</b>, <b>paresthesias</b>. Hgb 6.3, MCV 115, B12 low, LDH high, <b>retics low</b>, <b>hypersegmented neutrophils</b>.',
+  o:['B12 deficiency, likely pernicious anemia','Folate deficiency','Iron deficiency','Hemolytic anemia'], a:0,
+  d:'Macrocytic with hypersegmented neutrophils = defective DNA synthesis; the <b>neurologic findings</b> name which one. High LDH with low retics is <b>ineffective erythropoiesis</b>. Treat with intramuscular B12 and send parietal-cell antibodies.'},
+ {v:'A 68-year-old with <b>rheumatoid arthritis</b>. Hgb 9.5, MCV 88, iron low, <b>ferritin high</b>, <b>TIBC low</b>, retics low.',
+  o:['Anemia of chronic disease','Iron deficiency anemia','B12 deficiency','Acute blood loss'], a:0,
+  d:'Serum iron is low in <i>both</i> this and iron deficiency, so it decides nothing. The discriminating pair is <b>high ferritin with a LOW TIBC</b> — the opposite of iron deficiency. Treat the arthritis; oral iron will not open a hepcidin-locked door.'},
+ {v:'A 13-year-old with lifelong episodic jaundice, spleen 6 cm down, a father with adolescent jaundice. <b>Spherocytes</b>, MCHC 40%, retics 11%, <b>osmotic fragility increased</b>, <b>Coombs NEGATIVE</b>.',
+  o:['Hereditary spherocytosis','Warm autoimmune hemolytic anemia','G6PD deficiency','Beta thalassemia minor'], a:0,
+  d:'Autosomal dominant inheritance, spherocytes, increased osmotic fragility — and the <b>negative Coombs</b> is what excludes autoimmune hemolysis, which produces spherocytes by a completely different route.'},
+ {v:'A 6-year-old boy of Greek ancestry: jaundice, dark urine, pallor two days after eating <b>fava beans</b>. Hgb 6.8. Smear shows cells with semicircular defects.',
+  o:['G6PD deficiency','Hereditary spherocytosis','Sickle cell disease','Autoimmune hemolysis'], a:0,
+  d:'<b>Bite cells</b> after an oxidant exposure. Given the ancestry and severity, likely the <b>Mediterranean (class II)</b> variant, where the enzyme half-life is <i>hours</i> and the whole red cell population is vulnerable. An assay drawn now may be <b>falsely normal</b>.'},
+ {v:'A 2-year-old, well at birth, pallor from <b>6 months</b>, transfusions every 4–6 weeks, <b>frontal bossing</b>. MCV 65, <b>target cells</b>, electrophoresis: reduced HbA, <b>elevated HbF and HbA₂</b>.',
+  o:['Beta thalassemia major','Sickle cell disease','Iron deficiency','Hemoglobin H disease'], a:0,
+  d:'Onset at 6 months is the <b>globin switch</b> — a newborn runs on HbF and needs no beta chains. Frontal bossing is marrow cavity expansion. Transfusion plus <b>iron chelation</b>, because there is no route to excrete transfusional iron.'},
+ {v:'A 1-year-old with fever, <b>dactylitis</b>, spleen 4 cm down. Smear: <b>sickled cells and target cells</b>. Electrophoresis <b>HbS 85%, HbF 12%, HbA 0%</b>.',
+  o:['Sickle cell disease — and the fever is the emergency','Sickle cell trait','Beta thalassemia major','G6PD deficiency'], a:0,
+  d:'<b>HbA of zero</b> proves homozygosity. Dactylitis is the classic infant vaso-occlusive presentation. But the priority is the <b>fever</b>: repeated splenic infarction leaves him <b>functionally asplenic</b>, so give <b>empiric antibiotics without waiting for cultures</b>.'},
+ {v:'A 9-year-old with known hereditary spherocytosis: Hgb crashes from 10.5 to 4.2 during a viral illness. <b>Reticulocyte count 0.2%.</b>',
+  o:['Aplastic crisis — parvovirus B19','Hemolytic crisis','Sequestration crisis','Acute bleeding'], a:0,
+  d:'The <b>low reticulocyte count</b> is decisive — a hemolytic crisis would drive retics <i>up</i>. Parvovirus B19 shuts down erythroid precursors, and a patient living on a maximal marrow has no reserve.'},
+ {v:'A 2-year-old with sickle cell disease becomes suddenly pale and tachycardic. Hgb 4.1, <b>retics 14%</b>, and the <b>spleen is now enormous</b> having been barely palpable last month.',
+  o:['Sequestration crisis','Aplastic crisis','Vaso-occlusive crisis','Acute chest syndrome'], a:0,
+  d:'<b>Sequestration.</b> The spleen has trapped a large fraction of the circulating red cell mass — the cells are alive, just not circulating, so retics are <b>high</b>. A hypovolemic emergency.'},
+ {v:'A 34-year-old with a <b>mechanical aortic valve</b>: anemia, <b>schistocytes</b>, <b>undetectable haptoglobin</b>, high LDH, <b>hemoglobinuria</b>.',
+  o:['Mechanical intravascular hemolysis','Hereditary spherocytosis','Thalassemia trait','Anemia of chronic disease'], a:0,
+  d:'An <b>extrinsic</b> cause — cells sheared apart by the valve. The full intravascular picture: fragments, absent haptoglobin, hemoglobinuria. Same laboratory signature as microangiopathic hemolytic anemia.'},
+ {v:'A 62-year-old with new anemia, jaundice, splenomegaly, <b>spherocytes</b>, and a <b>POSITIVE</b> direct Coombs test.',
+  o:['Warm autoimmune hemolytic anemia','Hereditary spherocytosis','G6PD deficiency','Beta thalassemia'], a:0,
+  d:'Spherocytes plus a <b>positive</b> Coombs. Antibody-coated cells have membrane removed piecemeal by splenic macrophages. New onset in an adult also argues against a lifelong inherited condition.'},
+ {v:'An adult with lifelong mild anemia. MCV 68, Hgb 11.4, <b>all iron studies normal</b>, <b>red cell count elevated</b>.',
+  o:['Thalassemia trait — do not give iron','Iron deficiency anemia','Anemia of chronic disease','Sideroblastic anemia'], a:0,
+  d:'A strikingly low MCV for such a mild anemia, entirely normal iron studies, and a <i>high</i> red cell count. Confirm with electrophoresis. Giving iron achieves nothing and causes overload.'},
+ {v:'A patient develops fever, rigors and hypotension <b>during a platelet transfusion</b>, deteriorating rapidly.',
+  o:['Septic transfusion reaction','Febrile non-hemolytic reaction','TRALI','TACO'], a:0,
+  d:'Rapid deterioration with hypotension separates this from a benign febrile reaction. <b>Platelets are stored at room temperature</b>, so contaminating skin flora can grow — the <b>most common infectious risk</b> of transfusion.'},
+ {v:'A 76-year-old on <b>warfarin</b> with sudden severe headache and altered mental status. <b>INR 2.7.</b>',
+  o:['Prothrombin complex concentrate plus vitamin K','Plasma alone','Vitamin K alone','Nothing — INR is only mildly raised'], a:0,
+  d:'Warfarin inhibits factors <b>II, VII, IX, X</b>. <b>PCC beats plasma</b> for urgent reversal — faster, smaller volume, more reliable. <b>Always add vitamin K</b>, or the INR rebounds as the concentrate clears.'},
+ {v:'A patient with an <b>INR of 1.1</b>, not bleeding, no procedure planned. The team asks for plasma.',
+  o:['Give nothing','2 units of plasma','4 units of plasma','Cryoprecipitate'], a:0,
+  d:'Far above the <b>30% hemostatic threshold</b> — this patient can already clot. This is the single commonest plasma error: treating the number rather than the patient.'},
+ {v:'A hospitalized patient with osteomyelitis: Hgb 9.8, MCV 79, <b>ferritin 90</b>, <b>saturation 6%</b>, CRP markedly raised.',
+  o:['Iron deficiency coexisting with inflammation','Pure anemia of chronic disease','Pure iron deficiency','Thalassemia trait'], a:0,
+  d:'The hardest one here. <b>Ferritin is an acute phase reactant</b>, so a "normal" 90 in a floridly inflamed patient is inappropriately <b>low</b>. The very low saturation and the microcytosis argue that iron deficiency is present <i>as well as</i> inflammation.'},
+ {v:'A 3-year-old whose diet is almost entirely cow’s milk. Hgb 8.4, MCV 68, ferritin 5.',
+  o:['Iron deficiency from dietary lack','Anemia of chronic disease','Thalassemia major','Lead poisoning'], a:0,
+  d:'Milk contains <b>very little bioavailable iron</b>. Dietary lack is a genuine cause in <b>infants, children and the elderly</b> even in wealthy countries — This turns up in pediatric emergency departments.'},
+ {v:'A patient two years after <b>gastric bypass</b>: Hgb 9.9, MCV 91, <b>RDW markedly raised</b>, dimorphic smear.',
+  o:['Combined iron and B12 deficiency','Pure iron deficiency','Pure B12 deficiency','Hemolysis'], a:0,
+  d:'A deceptively <b>normal MCV</b> hiding two populations. Bypass removes acid and intrinsic factor and bypasses the duodenum, so <b>iron and B12 fail together</b>. Never trust a normal MCV alone — check the RDW and the smear.'}
+]);
+
+}
+
+</script>
+</body>
+</html>

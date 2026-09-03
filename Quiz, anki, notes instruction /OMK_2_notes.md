@@ -15,7 +15,7 @@ The page is self-contained: no build tools, no frameworks, just one `.html` file
 
 > **Navigation change (current default).** The table of contents is now a **fixed left sidebar**, not a sticky bar across the top — see **Section 5.2**, which supersedes the old horizontal `.toc-bar`. It keeps the `.toc-bar` class name so existing theme and print rules still match, and it degrades to the original horizontal bar below 1000px. Three things elsewhere in this document depend on it: `.container` must use `94%` rather than `94vw` (Section 6), `@media print` must zero `body`'s left padding (Section 12.5, Mistake 3), and `initScrollspy()` joins the `DOMContentLoaded` init list (Section 9).
 
-> **Two variants now exist.** Sections 2–12 below are **Variant 1** — the original system, organized strictly by numbered Learning Objectives, with an 8-theme switcher (Paper/Night/Ocean/Forest/Sepia/Lavender/Rose/Slate) and a component vocabulary tuned for pharmacology/pathology content (drug grids, hallmark grids, REMS badges, potency bars). **Section 13 is Variant 2** — a lighter-weight system built for `Introduction_to_Therapy_Study_Notes.html`, better suited to lecture content that isn't cleanly split into 2–3 LOs: a single light/dark toggle instead of named themes, and a component vocabulary built around generic "modality cards," mnemonics, and click-to-reveal cases rather than drug-specific components. Both variants share the same underlying philosophy (self-contained file, base64 images, lightbox, table quiz, optional HY one-pager) — pick whichever fits the lecture's actual content shape, and don't mix components from both within one file. **Section 14 is the Study Tools System** — an optional active-recall/progress layer (Recall Mode, per-section reviewed/confidence tracking, TOC scrollspy, collapsible sections, next-question jumper, pinned compare strip, keyboard shortcuts) first built for `Eating_Disorders_Study_Notes.html` on top of Variant 1; it's designed as an add-on layer and can be applied to either variant.
+> **Two variants now exist.** Sections 2–12 below are **Variant 1** — the original system, organized strictly by numbered Learning Objectives, with a 9-theme switcher (Paper/Night/Ocean/Forest/Sepia/Lavender/Rose/Slate/Hemo) and a component vocabulary tuned for pharmacology/pathology content (drug grids, hallmark grids, REMS badges, potency bars). **Section 13 is Variant 2** — a lighter-weight system built for `Introduction_to_Therapy_Study_Notes.html`, better suited to lecture content that isn't cleanly split into 2–3 LOs: a single light/dark toggle instead of named themes, and a component vocabulary built around generic "modality cards," mnemonics, and click-to-reveal cases rather than drug-specific components. Both variants share the same underlying philosophy (self-contained file, base64 images, lightbox, table quiz, optional HY one-pager) — pick whichever fits the lecture's actual content shape, and don't mix components from both within one file. **Section 14 is the Study Tools System** — an optional active-recall/progress layer (Recall Mode, per-section reviewed/confidence tracking, TOC scrollspy, collapsible sections, next-question jumper, pinned compare strip, keyboard shortcuts) first built for `Eating_Disorders_Study_Notes.html` on top of Variant 1; it's designed as an add-on layer and can be applied to either variant.
 
 ---
 
@@ -76,7 +76,7 @@ add flavicon related to the lecture (can be from image from given class notes (p
 
 ## 3. Theme System
 
-The page supports 8 visual themes via a `data-theme` attribute on the `<html>` element. **Paper is the default** — it's what renders when no `data-theme` attribute is present, and it's the theme every file should load with before the person picks something else.
+The page supports 9 visual themes via a `data-theme` attribute on the `<html>` element. **Paper is the default** — it's what renders when no `data-theme` attribute is present, and it's the theme every file should load with before the person picks something else.
 
 ### Available Themes
 
@@ -90,6 +90,7 @@ The page supports 8 visual themes via a `data-theme` attribute on the `<html>` e
 | Lavender | Soft violet + deep purple | `lavender` |
 | Rose | Blush pink + wine red / teal accent2 | `rose` |
 | Slate | Cool gray + steel blue / burnt orange accent | `slate` |
+| Hemo | Dark oxblood + arterial crimson / methylene-blue accent2 — built for hematology lectures | `hemo` |
 
 ### Theme CSS Structure
 Each theme overrides **all** `:root` CSS variables — not just the core palette, but also the hero, floating-ui, quiz-overlay, and dark-panel vars. Example (Night theme, abbreviated):
@@ -151,6 +152,9 @@ Each theme overrides **all** `:root` CSS variables — not just the core palette
   <div class="theme-option" data-theme="sepia" onclick="setTheme('sepia',this)">
     <div class="theme-swatch" style="background:linear-gradient(135deg,#faf3e8,#8b4513)"></div>Sepia
   </div>
+  <div class="theme-option" data-theme="hemo" onclick="setTheme('hemo',this)">
+    <div class="theme-swatch" style="background:linear-gradient(135deg,#170a0d,#ff6b6b)"></div>Hemo (Blood)
+  </div>
 </div>
 ```
 
@@ -206,6 +210,7 @@ A handful of components are meant to **always** render as a dark card with light
 [data-theme="ocean"]  { --panel-dark-bg: #0b2436; --panel-dark-text: #eef7fb; }
 [data-theme="forest"] { --panel-dark-bg: #16241a; --panel-dark-text: #f2f7f0; }
 [data-theme="sepia"]  { --panel-dark-bg: #3a2414; --panel-dark-text: #f7ecd9; }
+[data-theme="hemo"]   { --panel-dark-bg: #2e1017; --panel-dark-text: #f9e7e9; }
 ```
 
 Then use `background: var(--panel-dark-bg); color: var(--panel-dark-text);` on `th`, `.exam-q`, and `.hy-mini-table th` instead of `var(--ink)`/`var(--paper)`. For light themes this pair is just a copy of that theme's `--ink`/`--paper` values (no visual change); for dark themes it's a fixed dark navy/light text pair independent of the flip. **Always spot-check `.exam-q` and a `<table>` header in every theme after writing palettes** — this is the single most common way a theme silently breaks.
@@ -280,7 +285,42 @@ Four light themes (Paper, Ocean, Forest, Sepia) were originally shipped with too
   --blue-bg: #d3e2ef; --purple-bg: #dfd9ec; --hero-bg: #1c2530;
   --panel-dark-bg: #1c2530; --panel-dark-text: #f4f5f7;
 }
+[data-theme="hemo"] {
+  --ink: #f3dfe1; --paper: #170a0d; --cream: #2b1218;
+  --accent: #ff6b6b; --accent2: #8fb8ea; --gold: #e7b95c; --muted: #b4919a; --border: #431d25;
+  --highlight: #402c14; --highlight2: #33161f; --green-bg: #11291e; --red-bg: #45151a;
+  --blue-bg: #12243c; --purple-bg: #261b3a; --hero-bg: #0c0407;
+  --panel-dark-bg: #2e1017; --panel-dark-text: #f9e7e9;
+}
 ```
+
+**Hemo — the remaining per-theme vars** (same groups every theme must set, spelled out here because Hemo is a *dark* theme and the values are not derivable from the light-theme pattern):
+
+```css
+[data-theme="hemo"] {
+  /* Hero vars */
+  --hero-heading: #fbeaea;
+  --hero-sub: #c9a3a8;
+  --hero-meta-bg: rgba(255,255,255,0.06);
+  --hero-meta-border: rgba(255,107,107,0.18);
+  --hero-meta-label: #b4919a;
+  --hero-meta-value: #ffd9d0;
+
+  /* Floating UI */
+  --floating-ui-bg: #0c0407;
+  --floating-ui-fg: #fbeaea;
+  --floating-ui-shadow: 0 3px 12px rgba(0,0,0,0.45);
+
+  /* Quiz overlay */
+  --quiz-overlay: rgba(143,184,234,0.40);
+  --quiz-overlay-hover: rgba(143,184,234,0.62);
+}
+/* Components needing more than a variable swap (same two as Night) */
+[data-theme="hemo"] .hero    { background: #0c0407; }
+[data-theme="hemo"] .toc-bar { background: #0c0407; border-color: #431d25; }
+```
+
+> **Contrast notes for Hemo (blood):** Hemo is the second *dark* theme after Night, so pitfall #3 inverts — the risk is a red-on-red page where `--accent` (arterial crimson `#ff6b6b`) and the oxblood `--paper`/`--cream` collapse into one another. Three deliberate choices keep it legible: (1) `--accent2` is a **methylene-blue `#8fb8ea`**, not a red-family color, so links and `<strong>` read as a separate channel — the Wright–Giemsa logic of blue nuclei against pink cytoplasm, which also keeps "concept = cool color" consistent with every other theme; (2) `--cream` (`#2b1218`) sits a full step lighter than `--paper` (`#170a0d`) so drug cards and `.section` blocks visibly layer off the page, and `--red-bg` (`#45151a`) is pushed lighter still so a warning callout is distinguishable from an ordinary card despite both being red; (3) `--panel-dark-bg` (`#2e1017`) is a fixed dark maroon that does **not** track the `--ink`/`--paper` flip, so `th`, `.exam-q`, and `.hy-mini-table th` stay dark-with-light-text exactly as in Night. Rendered and spot-checked at all five callout backgrounds, a table header, and `.exam-q`.
 
 > **Contrast notes for the three newest themes:** all three are light themes, so pitfall #3 from the checklist applies directly. Rose deliberately uses a *teal* `--accent2` (#2c6a72) rather than a pink-family color so links/`<strong>` don't melt into the warm pink page; Slate does the same with a burnt-orange `--accent` (#cf4520) against its cool grays so warnings still pop. Lavender's `--accent2` is the purple itself (#6a4fa0), which is far enough from its near-black violet ink to hold contrast.
 

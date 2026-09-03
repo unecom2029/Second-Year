@@ -2647,4 +2647,149 @@ updScore();
 updTimer();
 applyFontSize();
 hydratePreloadedQuiz();
-</script></body></html>
+</script><script>
+(function(){
+  var NOTE_AUTO_RELOAD_KEY = 'second-year-note-auto-reload-v1';
+  var NOTE_AUTO_RELOAD_MS = 5 * 60 * 1000;
+  var stateKey = NOTE_AUTO_RELOAD_KEY + ':scroll:' + location.pathname;
+  var timerKey = NOTE_AUTO_RELOAD_KEY + ':last:' + location.pathname;
+  var savePending = false;
+
+  function storageReady(){
+    try {
+      sessionStorage.setItem(NOTE_AUTO_RELOAD_KEY + ':test', '1');
+      sessionStorage.removeItem(NOTE_AUTO_RELOAD_KEY + ':test');
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  var canStore = storageReady();
+
+  function authLocked(){
+    return document.documentElement.getAttribute('data-note-auth') === 'locked';
+  }
+
+  function maxScroll(){
+    var doc = document.documentElement || {};
+    var body = document.body || {};
+    return Math.max(0, (doc.scrollHeight || 0), (body.scrollHeight || 0)) - window.innerHeight;
+  }
+
+  function saveScroll(){
+    if (!canStore || authLocked()) return;
+    var doc = document.documentElement || {};
+    var body = document.body || {};
+    var top = window.pageYOffset || doc.scrollTop || body.scrollTop || 0;
+    var left = window.pageXOffset || doc.scrollLeft || body.scrollLeft || 0;
+    var scrollMax = maxScroll();
+    var payload = {
+      top: top,
+      left: left,
+      ratio: scrollMax > 0 ? top / scrollMax : 0,
+      savedAt: Date.now()
+    };
+    try {
+      sessionStorage.setItem(stateKey, JSON.stringify(payload));
+    } catch (error) {}
+  }
+
+  function queueSave(){
+    if (savePending) return;
+    savePending = true;
+    (window.requestAnimationFrame || window.setTimeout)(function(){
+      savePending = false;
+      saveScroll();
+    }, 80);
+  }
+
+  function restoreScroll(){
+    if (!canStore || authLocked()) return;
+    var raw = null;
+    try {
+      raw = sessionStorage.getItem(stateKey);
+    } catch (error) {}
+    if (!raw) return;
+    try {
+      var saved = JSON.parse(raw);
+      var top = Number(saved.top) || 0;
+      var left = Number(saved.left) || 0;
+      var scrollMax = maxScroll();
+      if (saved.ratio && scrollMax > 0) {
+        top = Math.max(top, saved.ratio * scrollMax);
+      }
+      window.scrollTo(left, top);
+    } catch (error) {}
+  }
+
+  function restoreSoon(){
+    restoreScroll();
+    window.setTimeout(restoreScroll, 60);
+    window.setTimeout(restoreScroll, 250);
+    window.setTimeout(restoreScroll, 800);
+  }
+
+  function activeTextEntry(){
+    var el = document.activeElement;
+    if (!el) return false;
+    var tag = (el.tagName || '').toLowerCase();
+    return tag === 'input' || tag === 'textarea' || tag === 'select' || el.isContentEditable;
+  }
+
+  function markReloadClock(){
+    if (!canStore) return;
+    try {
+      sessionStorage.setItem(timerKey, String(Date.now()));
+    } catch (error) {}
+  }
+
+  function lastReloadClock(){
+    if (!canStore) return 0;
+    try {
+      return Number(sessionStorage.getItem(timerKey)) || 0;
+    } catch (error) {
+      return 0;
+    }
+  }
+
+  function maybeAutoReload(){
+    if (authLocked()) return;
+    if (document.visibilityState && document.visibilityState !== 'visible') return;
+    if (activeTextEntry()) return;
+    var last = lastReloadClock();
+    if (!last) {
+      markReloadClock();
+      return;
+    }
+    if (Date.now() - last < NOTE_AUTO_RELOAD_MS) return;
+    saveScroll();
+    markReloadClock();
+    location.reload();
+  }
+
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+  }
+  window.addEventListener('scroll', queueSave, { passive: true });
+  window.addEventListener('pagehide', saveScroll);
+  window.addEventListener('beforeunload', saveScroll);
+  document.addEventListener('visibilitychange', function(){
+    if (document.visibilityState === 'hidden') {
+      saveScroll();
+    } else {
+      maybeAutoReload();
+    }
+  });
+  window.addEventListener('focus', maybeAutoReload);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', restoreSoon);
+  } else {
+    restoreSoon();
+  }
+  window.addEventListener('load', restoreSoon);
+  markReloadClock();
+  window.setInterval(maybeAutoReload, NOTE_AUTO_RELOAD_MS);
+})();
+</script>
+</body></html>
