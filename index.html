@@ -2587,7 +2587,8 @@ OMK:{
       {label:"Hematology Key Drug List",href:"OMK/Heme/Hematology_Key_Drug_List_2026_Study_System.html",style:"open"}
     ],items:[
       {title:"Hematology/Heme Summative Exam 3",icon:"🧪",group:"summative-exam",typeLabel:"Summative",links:[
-        {label:"Hematology Key Drug List",href:"OMK/Heme/Hematology_Key_Drug_List_2026_Study_System.html",style:"open"}
+        {label:"Hematology Key Drug List",href:"OMK/Heme/Hematology_Key_Drug_List_2026_Study_System.html",style:"open"},
+        {label:"Objective Review",href:"OMK/Heme/summative/OMK_2A_Heme_Summative_3_Objective_Review.html",style:"open",allowedUsers:["jmehta@une.edu"],privateUntil:"2026-09-16T20:30:00-04:00"}
       ]}
     ]}
   }
@@ -2879,7 +2880,12 @@ function restoreLastHubView(){
 }
 
 function canViewItem(item){
-  if(!item||!item.allowedUsers||!item.allowedUsers.length)return true;
+  if(!item)return true;
+  if(item.privateUntil){
+    var releaseAt=Date.parse(item.privateUntil);
+    if(!isNaN(releaseAt)&&Date.now()>=releaseAt)return true;
+  }
+  if(!item.allowedUsers||!item.allowedUsers.length)return true;
   var email=AUTH_STATE&&AUTH_STATE.user?normEmail(AUTH_STATE.user.email):'';
   if(!email)return false;
   return item.allowedUsers.some(function(allowed){return normEmail(allowed)===email});
