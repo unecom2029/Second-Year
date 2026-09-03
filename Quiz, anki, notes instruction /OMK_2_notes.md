@@ -215,6 +215,28 @@ A handful of components are meant to **always** render as a dark card with light
 
 Then use `background: var(--panel-dark-bg); color: var(--panel-dark-text);` on `th`, `.exam-q`, and `.hy-mini-table th` instead of `var(--ink)`/`var(--paper)`. For light themes this pair is just a copy of that theme's `--ink`/`--paper` values (no visual change); for dark themes it's a fixed dark navy/light text pair independent of the flip. **Always spot-check `.exam-q` and a `<table>` header in every theme after writing palettes** — this is the single most common way a theme silently breaks.
 
+### Known Pitfall #2: Chips that pair `var(--accent)` / `var(--accent2)` with white text
+
+Found while building `Week_10_Hematology_CBC_and_Anemia_Study_Notes.html`, and it is the same trap as the `--panel-dark-*` one wearing different clothes. A whole family of small components is styled as *saturated background + white text*: `.lo-badge`, `.exam-q::before` (the "EXAM Q" chip), `.step-list li::before`, `.toc-bar a.active .toc-num`, `.tq-toggle`, `.tq-col-btn.sel`, `.hy-lo-tag`, `.hy-close-btn`. Every one of them reads `var(--accent)` or `var(--accent2)` for the background and hardcodes `color:#fff`.
+
+That works in the light themes, where the accents are dark. **It fails in the dark themes, where the accents are deliberately light** so they can sit on a near-black page — Night's `--accent` is a gold `#e8b84b` and Hemo's is a bright `#ff6b6b`. White on either lands around **1.9–2.6:1**, far under the 4.5:1 floor.
+
+The same mechanism bites `.exam-q strong` and `.exam-q .answer .label`, which use `var(--gold)` on the fixed-dark `--panel-dark-bg`. In Sepia, `--gold` is `#8b5a17` and the panel is `#3a2414` — dark brown on dark brown, measured at **2.48:1**. Bolded key terms inside the exam box were effectively unreadable.
+
+**Fix — a second set of theme-independent variables, declared in `:root` and never overridden by any `[data-theme]` block:**
+
+```css
+:root {
+  /* Theme-INDEPENDENT chip colors. These sit on backgrounds that are dark or
+     saturated in every theme, so they must not swap with --accent/--accent2. */
+  --chip-red:#b5341a; --chip-blue:#2c5f8a; --chip-fg:#ffffff; --panel-dark-accent:#e8b84b;
+}
+```
+
+Then point the red-family chips (`.lo-badge`, `.exam-q::before`, `.step-list li::before`, `.toc-bar a.active .toc-num`, `.tq-toggle.active`, `.hy-close-btn`) at `--chip-red`/`--chip-fg`, the blue-family chips (`.tq-toggle`, `.tq-col-btn.sel`, `.hy-lo-tag`) at `--chip-blue`/`--chip-fg`, and the two exam-box text colors at `--panel-dark-accent`. Measured after the fix across all nine themes: exam-box bold text **7.9–10.0:1**, LO badge a uniform **6.05:1**, table headers **12.4–17.3:1**.
+
+> **How to catch this yourself:** eyeballing a screenshot will not do it — a gold chip on a dark page *looks* fine until you try to read the white label on it. Loop the themes in the console and compute the ratio. Give the theme **at least ~150ms to settle between switches**, and read `color` and `background-color` in the same tick: switching themes rapidly and measuring immediately returns a mix of the old and new palette and produces nonsense numbers that look like catastrophic failures in themes that are actually fine.
+
 ### Contrast Checklist for New Themes
 
 Four light themes (Paper, Ocean, Forest, Sepia) were originally shipped with too little contrast between the page background and callout/card backgrounds — everything read as flat and washed out compared to Night, which naturally has more perceptual separation between its near-black page and dark-navy cards. When writing a new theme's palette, check each of these before considering it done:
