@@ -1478,6 +1478,93 @@ body:not(.auth-locked) .secrets-fab{background:rgba(255,255,255,.92);color:var(-
   .boxer-shard{display:none}
   @keyframes boxerReduced{0%{opacity:0}25%,78%{opacity:1}100%{opacity:0}}
 }
+.minecraft-login-layer{position:fixed;inset:0;z-index:13224;pointer-events:none;overflow:hidden;isolation:isolate}
+.minecraft-login-layer::before{
+  content:'';position:fixed;left:50%;top:50%;width:min(760px,86vw);height:min(420px,52vh);border-radius:28px;
+  background:radial-gradient(circle,rgba(86,210,70,.14),rgba(23,91,45,.08) 42%,rgba(0,0,0,0) 72%);
+  opacity:0;transform:translate(-50%,-50%) scale(.82);animation:minecraftGlow 3.95s ease forwards;
+}
+.minecraft-arm{
+  position:fixed;left:var(--minecraft-arm-x,62vw);top:var(--minecraft-arm-y,52vh);width:var(--minecraft-arm-width,min(900px,92vw));
+  height:auto;max-width:none;object-fit:contain;opacity:0;z-index:13234;
+  filter:drop-shadow(0 22px 18px rgba(4,9,17,.32));transform:translate(-50%,-50%);
+  animation:minecraftArmPresence 3.95s cubic-bezier(.16,.84,.2,1) forwards;will-change:transform,opacity;
+}
+.minecraft-break-overlay{
+  position:fixed;left:var(--minecraft-card-left,0);top:var(--minecraft-card-top,0);width:var(--minecraft-card-width,720px);height:var(--minecraft-card-height,700px);
+  border-radius:var(--minecraft-card-radius,28px);background:url("assets/minecraft-break-sheet.png") 0 0/1000% 100% no-repeat;
+  opacity:0;z-index:13233;mix-blend-mode:screen;filter:drop-shadow(0 0 18px rgba(87,255,72,.22));
+  animation:minecraftDamageFrames 2.85s steps(9,end) .42s forwards,minecraftDamageVisible 3.25s linear forwards;
+}
+.auth-login.minecraft-card-punched{animation:minecraftCardPunches 3.08s cubic-bezier(.16,.84,.2,1) forwards;will-change:transform,filter}
+.auth-login.minecraft-card-hidden{visibility:hidden!important}
+.minecraft-hit-flash{
+  position:fixed;left:var(--hit-x,50vw);top:var(--hit-y,50vh);width:var(--hit-size,84px);height:var(--hit-size,84px);border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.72),rgba(133,255,98,.32) 38%,rgba(255,255,255,0) 68%);
+  opacity:0;z-index:13235;transform:translate(-50%,-50%) scale(.35);animation:minecraftHitFlash .28s ease-out var(--hit-delay,0s) forwards;
+}
+.minecraft-block-pixel{
+  position:fixed;left:var(--pixel-x,50vw);top:var(--pixel-y,50vh);width:var(--pixel-size,10px);height:var(--pixel-size,10px);
+  background:var(--pixel-color,#5ad642);opacity:0;z-index:13236;
+  box-shadow:0 0 10px rgba(103,255,71,.24);animation:minecraftPixelBurst .62s ease-out var(--pixel-delay,0s) forwards;
+}
+.minecraft-shatter-wrap{
+  position:fixed;left:var(--minecraft-card-left,0);top:var(--minecraft-card-top,0);width:var(--minecraft-card-width,720px);height:var(--minecraft-card-height,700px);
+  pointer-events:none;z-index:13237;
+}
+.minecraft-shard{
+  position:absolute;overflow:hidden;box-sizing:border-box;transform-origin:center center;will-change:transform,opacity,filter;
+  clip-path:polygon(var(--p1,0 0),var(--p2,100% 0),var(--p3,100% 100%),var(--p4,0 100%));
+  filter:drop-shadow(0 14px 18px rgba(4,9,17,.25));animation:minecraftShardScatter 1.45s cubic-bezier(.12,.72,.2,1) var(--shard-delay,0s) forwards;
+}
+.minecraft-shard::after{
+  content:'';position:absolute;inset:0;background:url("assets/minecraft-break-sheet.png") 100% 0/1000% 100% no-repeat;opacity:.72;mix-blend-mode:screen;pointer-events:none;
+}
+.minecraft-shard-card{position:absolute!important;margin:0!important;box-sizing:border-box;pointer-events:none!important;transform:none!important;max-width:none!important}
+@keyframes minecraftGlow{0%,9%{opacity:0;transform:translate(-50%,-50%) scale(.82)}20%,78%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.08)}}
+@keyframes minecraftArmPresence{
+  0%{opacity:0;transform:translate(-50%,-50%) translate3d(var(--minecraft-arm-enter-x,38vw),var(--minecraft-arm-enter-y,36vh),0) rotate(-14deg) scale(.92)}
+  8%,83%{opacity:1;transform:translate(-50%,-50%) translate3d(0,0,0) rotate(-3deg) scale(1)}
+  100%{opacity:0;transform:translate(-50%,-50%) translate3d(var(--minecraft-arm-enter-x,38vw),var(--minecraft-arm-enter-y,36vh),0) rotate(7deg) scale(.95)}
+}
+@keyframes minecraftDamageFrames{0%{background-position:0 0}100%{background-position:100% 0}}
+@keyframes minecraftDamageVisible{0%,10%{opacity:0}14%,83%{opacity:.94}100%{opacity:.68}}
+@keyframes minecraftCardPunches{
+  0%,10%{transform:translate3d(0,0,0) rotate(0);filter:blur(0)}
+  14%{transform:translate3d(-8px,3px,0) rotate(-.28deg)}
+  18%,24%{transform:translate3d(0,0,0) rotate(0)}
+  28%{transform:translate3d(-12px,2px,0) rotate(-.36deg)}
+  32%,38%{transform:translate3d(0,0,0) rotate(0)}
+  42%{transform:translate3d(-15px,4px,0) rotate(-.48deg)}
+  46%,52%{transform:translate3d(0,0,0) rotate(0)}
+  56%{transform:translate3d(-18px,5px,0) rotate(-.6deg)}
+  60%,66%{transform:translate3d(0,0,0) rotate(0)}
+  70%{transform:translate3d(-22px,6px,0) rotate(-.8deg);filter:blur(.08px)}
+  74%,80%{transform:translate3d(0,0,0) rotate(0)}
+  84%{transform:translate3d(-26px,8px,0) rotate(-1deg);filter:blur(.12px)}
+  100%{transform:translate3d(0,0,0) rotate(0);filter:blur(0)}
+}
+@keyframes minecraftHitFlash{0%{opacity:0;transform:translate(-50%,-50%) scale(.32)}28%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.45)}}
+@keyframes minecraftPixelBurst{
+  0%{opacity:0;transform:translate(-50%,-50%) translate3d(0,0,0) rotate(0) scale(.6)}
+  22%{opacity:1}
+  100%{opacity:0;transform:translate(calc(-50% + var(--pixel-out-x,0px)),calc(-50% + var(--pixel-out-y,0px))) rotate(var(--pixel-rot,90deg)) scale(.18)}
+}
+@keyframes minecraftShardScatter{
+  0%{opacity:1;filter:blur(0) drop-shadow(0 14px 18px rgba(4,9,17,.25));transform:translate3d(0,0,0) rotate(0) scale(1)}
+  70%{opacity:.92;filter:blur(.1px) drop-shadow(0 14px 18px rgba(4,9,17,.16))}
+  100%{opacity:0;filter:blur(1px) drop-shadow(0 8px 10px rgba(4,9,17,.08));transform:translate3d(var(--shard-x,0),var(--shard-y,100vh),0) rotate(var(--shard-r,80deg)) scale(.84)}
+}
+@media(max-width:640px){
+  .minecraft-arm{width:var(--minecraft-arm-width,min(600px,98vw))}
+}
+@media(prefers-reduced-motion:reduce){
+  .minecraft-arm,.minecraft-login-layer::before,.minecraft-hit-flash{animation:minecraftReduced 1.1s ease forwards}
+  .minecraft-break-overlay{animation:none;opacity:.6;background-position:100% 0}
+  .auth-login.minecraft-card-punched{animation:none;opacity:.24}
+  .minecraft-block-pixel,.minecraft-shard{display:none}
+  @keyframes minecraftReduced{0%{opacity:0}25%,78%{opacity:1}100%{opacity:0}}
+}
 .disney-login-layer{position:fixed;inset:0;z-index:13220;pointer-events:none;overflow:hidden;isolation:isolate}
 .disney-login-layer::before{
   content:'';position:absolute;inset:0;
@@ -2553,17 +2640,20 @@ OMK:{
       {label:"Hematology Key Drug List",href:"OMK/Heme/Hematology_Key_Drug_List_2026_Study_System.html",style:"open"}
     ],items:[
       {title:"Hematopoiesis and Anemia 1",icon:"🩸",group:"notes",typeLabel:"Study Notes",links:[
-        {label:"Open",href:"OMK/Heme/week 10/Notes/Hematopoiesis_and_Anemia_1_Study_Notes.html",style:"open"}
+        {label:"Notes",href:"OMK/Heme/week 10/Notes/Hematopoiesis_and_Anemia_1_Study_Notes.html",style:"open"},
+        {label:"Quiz",href:"OMK/Heme/week 10/quiz/Hematopoiesis & Anemia I — Impaired Red Cell Production Quiz.html",style:"dl"}
       ]},
       {title:"Anemia 2: Hemolytic Anemias",icon:"🩸",group:"notes",typeLabel:"Study Notes",links:[
-        {label:"Open",href:"OMK/Heme/week 10/Notes/Anemia_2_Hemolytic_Anemias_Study_Notes.html",style:"open"}
+        {label:"Notes",href:"OMK/Heme/week 10/Notes/Anemia_2_Hemolytic_Anemias_Study_Notes.html",style:"open"},
+        {label:"Quiz",href:"OMK/Heme/week 10/quiz/Anemia II — Hemolytic Anemias Quiz.html",style:"dl"}
       ]},
       {title:"Transfusion Medicine",icon:"💉",group:"notes",typeLabel:"Study Notes",links:[
         {label:"Open",href:"OMK/Heme/week 10/Notes/Transfusion_Medicine_Study_Notes.html",style:"open"}
       ]},
       {title:"HIV Structure, Replication, ART, and Opportunistic Infections",icon:"🦠",group:"notes",typeLabel:"Study Notes",links:[
         {label:"Notes",href:"OMK/Heme/week 10/Notes/HIV_2026_Microbiology_ART_Study_Notes.html",style:"open"},
-        {label:"Structure/ART Quiz",href:"OMK/Heme/week 10/quiz/HIV Structure, Replication, Antiretroviral Therapy, and Opportunistic Infections Quiz.html",style:"dl"}
+        {label:"Micro/ART Quiz",href:"OMK/Heme/week 10/quiz/HIV 2026 — Microbiology & Antiretroviral Therapy Quiz.html",style:"dl"},
+        {label:"Structure/OI Quiz",href:"OMK/Heme/week 10/quiz/HIV Structure, Replication, Antiretroviral Therapy, and Opportunistic Infections Quiz.html",style:"dl"}
       ]},
       {title:"HIV Case-Based Management",icon:"🧩",group:"case-based",typeLabel:"Case-Based Notes",links:[
         {label:"Notes",href:"OMK/Heme/week 10/Notes/HIV_Case_Based_Management_Study_Notes.html",style:"open"},
@@ -2575,6 +2665,9 @@ OMK:{
       ]},
       {title:"Heme Block Arcade",icon:"🎮",group:"study-tools",typeLabel:"Study Tool",links:[
         {label:"Open",href:"OMK/Heme/week 10/Notes/Heme_Block_Arcade.html",style:"open"}
+      ]},
+      {title:"Week 10 Heme Quiz Index",icon:"🧪",group:"study-tools",typeLabel:"Quiz Hub",links:[
+        {label:"Open",href:"OMK/Heme/week 10/quiz/index.html",style:"open"}
       ]}
     ]},
     11:{label:"Week 11",weekNum:11,heroLinks:[
@@ -3004,7 +3097,7 @@ function rSB(){var systems=getSystemGroups(CC);var oldList=document.querySelecto
 var userMeta=AUTH_STATE.user?'<div class="sb-user-actions"><div class="sb-user-label">Signed in as '+escapeHtml(AUTH_STATE.user.name||AUTH_STATE.user.email)+'</div><button class="sb-logout-btn" onclick="logoutApp()">Log out</button></div>':'';
 var h='<div class="sb-hd"><div class="sb-brand"><img src="'+LOGO+'" alt="UNE"><div class="sb-brand-txt"><h1>2nd <em>Year</em></h1><small>UNE COM Study Hub</small></div></div>'+userMeta+'</div><div class="sb-tabs"><button class="sb-tab'+(CC==='OMK'?' on':'')+'" onclick="swC(\'OMK\')">OMK</button><button class="sb-tab'+(CC==='OCS'?' on':'')+'" onclick="swC(\'OCS\')">OCS</button></div><div class="sb-list">';
 systems.forEach(function(sys,idx){
-  h+='<div class="wk on'+(EW[idx]?' ex':'')+'" data-system="'+sys.name+'"><div class="wk-hd" onclick="toggleSystemGroup('+idx+')"><span class="wk-n">'+(sys.icon||'🧠')+'</span><span class="wk-l">'+sys.name+'</span><span class="wk-dots"><span class="wk-d da"></span></span><span class="wk-ch">▾</span></div><div class="wk-sub">';
+  h+='<div class="wk on'+(EW[idx]?' ex':'')+'" data-system="'+sys.name+'" data-system-key="'+(sys.key||'')+'"><div class="wk-hd" onclick="toggleSystemGroup('+idx+')"><span class="wk-n">'+(sys.icon||'🧠')+'</span><span class="wk-l">'+sys.name+'</span><span class="wk-dots"><span class="wk-d da"></span></span><span class="wk-ch">▾</span></div><div class="wk-sub">';
   (sys.weeks||[]).forEach(function(week){
     h+='<div class="si'+(week===CW?' on':'')+'" data-week="'+week+'" data-view="overview" onclick="go('+week+',\'overview\')"><span class="sii">'+getWeekBadge(CC,week)+'</span>'+getWeekLabel(CC,week)+'</div>';
   });
@@ -3015,9 +3108,9 @@ document.getElementById('sb').innerHTML=h;var newList=document.querySelector('#s
 function syncSB(){var sb=document.getElementById('sb');if(!sb||!sb.querySelector('.sb-list')){rSB();return}var weeks=sb.querySelectorAll('.wk');for(var i=0;i<weeks.length;i++){var wkEl=weeks[i];wkEl.classList.add('on');wkEl.classList.toggle('ex',!!EW[i]);}
 var items=sb.querySelectorAll('.si');for(var j=0;j<items.length;j++){var item=items[j],itemWeek=+item.getAttribute('data-week'),itemView=item.getAttribute('data-view');item.classList.toggle('on',itemWeek===CW&&itemView===CV);}}
 
-function swC(c){CC=c;CW=getDefaultWeek(c);CV='overview';EW={};EW[getSystemIndexForWeek(CC,CW)]=true;persistLastHubView();rSB();rMN();document.querySelector('.sb').classList.remove('mo')}
+function swC(c){CC=c;SYSTEM_THEME=null;applyDynamicTheme(new Date());CW=getDefaultWeek(c);CV='overview';EW={};EW[getSystemIndexForWeek(CC,CW)]=true;persistLastHubView();rSB();rMN();document.querySelector('.sb').classList.remove('mo')}
 function swW(w){go(w,'overview')}
-function toggleSystemGroup(i){EW[i]=!EW[i];persistLastHubView();syncSB()}
+function toggleSystemGroup(i){var groups=getSystemGroups(CC),sys=groups[i];SYSTEM_THEME=(CC==='OMK'&&sys&&sys.key==='heme')?'heme':null;applyDynamicTheme(new Date());EW[i]=!EW[i];persistLastHubView();syncSB()}
 function go(w,v){CW=+w;CV='overview';EW={};EW[getSystemIndexForWeek(CC,CW)]=true;persistLastHubView();syncSB();rMN();document.querySelector('.sb').classList.remove('mo')}
 function goPT(i){var groups=getSystemGroups(CC);var firstWeek=(groups[0]&&groups[0].weeks&&groups[0].weeks[0])||1;CW=firstWeek;CV='overview';EW={};EW[getSystemIndexForWeek(CC,CW)]=true;persistLastHubView();syncSB();rMN();document.querySelector('.sb').classList.remove('mo')}
 
@@ -3407,6 +3500,7 @@ var AUTH_WOODY_INPUT_TIMER=null;
 var AUTH_DOLLY_INPUT_TIMER=null;
 var AUTH_WILLARD_INPUT_TIMER=null;
 var AUTH_KNOCK_INPUT_TIMER=null;
+var AUTH_MINECRAFT_INPUT_TIMER=null;
 var AUTH_LOGIN_EFFECTS=[
   'original',
   'origami',
@@ -3419,6 +3513,7 @@ var AUTH_LOGIN_EFFECTS=[
   'car',
   'scalpel',
   'boxer',
+  'minecraft',
   'disney',
   'woody'
 ];
@@ -3438,6 +3533,7 @@ var AUTH_LOGIN_EFFECT_ASSETS={
   car:['assets/login-car-push.png'],
   scalpel:['assets/anatomy-scalpel-login.png'],
   boxer:['assets/boxer-glove-transparent.png'],
+  minecraft:['assets/minecraft-login-arm.gif','assets/minecraft-break-sheet.png'],
   disney:['assets/study-hub-disney-transparent.png'],
   woody:['assets/woody-ride-transparent.gif'],
   davidHeavy:['assets/david-login-rise-transparent.png'],
@@ -4140,6 +4236,7 @@ function setupAuth(){
       if(AUTH_DOLLY_INPUT_TIMER)clearTimeout(AUTH_DOLLY_INPUT_TIMER);
       if(AUTH_WILLARD_INPUT_TIMER)clearTimeout(AUTH_WILLARD_INPUT_TIMER);
       if(AUTH_KNOCK_INPUT_TIMER)clearTimeout(AUTH_KNOCK_INPUT_TIMER);
+      if(AUTH_MINECRAFT_INPUT_TIMER)clearTimeout(AUTH_MINECRAFT_INPUT_TIMER);
       if(typed==='cat'){
         AUTH_CAT_INPUT_TIMER=window.setTimeout(function(){
           if(normEmail(input.value)!=='cat')return;
@@ -4230,6 +4327,16 @@ function setupAuth(){
           triggerBoxerLoginEasterEgg({toastLabel:'Boxer unlocked',reset:true});
           input.value='';
           setAuthMsg('Boxer preview only. No login attempted.','success');
+        },420);
+        return;
+      }
+      if(typed==='minecraft'||typed==='mine'){
+        AUTH_MINECRAFT_INPUT_TIMER=window.setTimeout(function(){
+          var current=normEmail(input.value);
+          if(current!=='minecraft'&&current!=='mine')return;
+          triggerMinecraftLoginEasterEgg({toastLabel:'Minecraft login unlocked',reset:true});
+          input.value='';
+          setAuthMsg('Minecraft preview only. No login attempted.','success');
         },420);
         return;
       }
@@ -4368,6 +4475,12 @@ function tryAuthLogin(ev){
     triggerBoxerLoginEasterEgg({toastLabel:'Boxer unlocked',reset:true});
     if(input)input.value='';
     setAuthMsg('Boxer preview only. No login attempted.','success');
+    return;
+  }
+  if(email==='minecraft'||email==='mine'){
+    triggerMinecraftLoginEasterEgg({toastLabel:'Minecraft login unlocked',reset:true});
+    if(input)input.value='';
+    setAuthMsg('Minecraft preview only. No login attempted.','success');
     return;
   }
   if(email==='disney'||email==='studyhub'){
@@ -4639,6 +4752,15 @@ function playRandomLoginEffect(user){
     });
     return;
   }
+  if(choice==='minecraft'){
+    setAuthMsg('Verified. Minecraft mining your way in...','success');
+    triggerMinecraftLoginEasterEgg({
+      loginMode:true,
+      toastLabel:'Minecraft login unlocked',
+      onComplete:function(){playWelcome(user);}
+    });
+    return;
+  }
   if(choice==='disney'){
     setAuthMsg('Verified. Study Hub star incoming...','success');
     triggerDisneyLoginEasterEgg({
@@ -4905,7 +5027,8 @@ function getFaviconEmoji(date){
 
 var THEME_OVERRIDE_KEY='une_study_hub_theme_override_v1';
 var THEME_OVERRIDE='auto';
-var THEME_OPTION_META={auto:'Follows the current vibe',morning:'Bright and fresh',afternoon:'Classic study hub',evening:'Soft and focused',late:'Moody night study',weekend:'Looser weekend energy',exam:'Locked-in intensity',nightshift:'Warm amber — easy on eyes',mono:'Black & white focus mode'};
+var SYSTEM_THEME=null;
+var THEME_OPTION_META={auto:'Follows the current vibe',morning:'Bright and fresh',afternoon:'Classic study hub',evening:'Soft and focused',late:'Moody night study',weekend:'Looser weekend energy',exam:'Locked-in intensity',nightshift:'Warm amber — easy on eyes',mono:'Black & white focus mode',heme:'Hematology rose and burgundy'};
 var THEME_SWATCHES={
   auto:      'conic-gradient(from 180deg, #3EC4B2 0%, #D4A843 33%, #E07A5F 66%, #7B5EA7 100%)',
   morning:   'linear-gradient(135deg,#FFD97A 0%,#FF9A6C 50%,#FF6B9D 100%)',
@@ -4915,7 +5038,8 @@ var THEME_SWATCHES={
   weekend:   'linear-gradient(135deg,#74EBD5 0%,#9FACE6 100%)',
   exam:      'linear-gradient(135deg,#232526 0%,#C44040 60%,#E07A5F 100%)',
   nightshift:'linear-gradient(135deg,#1C1208 0%,#3D2B0A 50%,#C8831A 100%)',
-  mono:      'linear-gradient(135deg,#111 0%,#666 50%,#ddd 100%)'
+  mono:      'linear-gradient(135deg,#111 0%,#666 50%,#ddd 100%)',
+  heme:      'linear-gradient(135deg,#fff7f8 0%,#c44850 52%,#4a1d29 100%)'
 };
 
 var THEME_PRESETS={
@@ -4967,6 +5091,15 @@ var THEME_PRESETS={
     '--warm':'#f9f9f9','--cream':'#f2f2f2','--white':'#ffffff','--rule':'#ddd','--rule2':'#e8e8e8',
     '--red':'#333','--red-bg':'#eeeeee','--amber':'#444','--amber-bg':'#ebebeb',
     '--green':'#333','--green-bg':'#ebebeb'
+  }},
+  heme:{name:'Heme mode',vars:{
+    '--teal':'#426D8E','--teal-deep':'#2E516D','--teal-light':'#DCE9F4','--teal-mid':'#5A83A2','--teal-glow':'#E5C5CA',
+    '--navy':'#4A1D29','--navy2':'#36121C','--coral':'#C44850','--coral-bg':'#F7D9DD','--gold':'#BC8A32','--gold-bg':'#F7E5B8','--gold-warm':'#D7A95A',
+    '--plum':'#7B5860','--plum-bg':'#EADFF2','--sky':'#426D8E','--sky-bg':'#DCE9F4',
+    '--ink':'#30161B','--ink2':'#55313A','--slate':'#7B5860','--mist':'#B58A94',
+    '--warm':'#FFF7F8','--cream':'#F9EEF0','--white':'#FFFEFE','--rule':'#E4C4CA','--rule2':'#F0D9DE',
+    '--red':'#B94149','--red-bg':'#F7D9DD','--amber':'#A86F22','--amber-bg':'#F7E5B8',
+    '--green':'#4C7A54','--green-bg':'#DCEEDD'
   }}
 };
 function getActiveTheme(date){
@@ -4986,6 +5119,7 @@ function saveThemeOverride(value){
   return THEME_OVERRIDE;
 }
 function getResolvedTheme(date){
+  if(SYSTEM_THEME&&Object.prototype.hasOwnProperty.call(THEME_PRESETS,SYSTEM_THEME))return SYSTEM_THEME;
   if(THEME_OVERRIDE&&THEME_OVERRIDE!=='auto'&&Object.prototype.hasOwnProperty.call(THEME_PRESETS,THEME_OVERRIDE))return THEME_OVERRIDE;
   return getActiveTheme(date||new Date());
 }
@@ -5044,7 +5178,7 @@ function updateThemePanelUI(){
   var fab=document.getElementById('themeFab');
   if(panel){
     Array.prototype.forEach.call(panel.querySelectorAll('[data-theme-option]'),function(btn){
-      btn.classList.toggle('active',btn.getAttribute('data-theme-option')===THEME_OVERRIDE);
+      btn.classList.toggle('active',!SYSTEM_THEME&&btn.getAttribute('data-theme-option')===THEME_OVERRIDE);
     });
   }
   if(fab)fab.setAttribute('aria-expanded',panel&&panel.classList.contains('open')?'true':'false');
@@ -5062,6 +5196,7 @@ function closeThemePanel(){
   toggleThemePanel(false);
 }
 function setThemePreference(themeKey){
+  SYSTEM_THEME=null;
   saveThemeOverride(themeKey);
   applyDynamicTheme(new Date());
   setDynamicFavicon();
@@ -5075,7 +5210,7 @@ function applyDynamicTheme(date){
   var root=document.documentElement;
   Object.keys(preset.vars||{}).forEach(function(key){root.style.setProperty(key,preset.vars[key]);});
   document.body.setAttribute('data-theme',themeKey);
-  document.body.setAttribute('data-theme-preference',THEME_OVERRIDE);
+  document.body.setAttribute('data-theme-preference',SYSTEM_THEME||THEME_OVERRIDE);
 }
 function scheduleThemeRefresh(){
   applyDynamicTheme(new Date());
@@ -6449,6 +6584,138 @@ function triggerBoxerLoginEasterEgg(options){
     card.classList.remove('boxer-card-punched');
     card.style.visibility='';
   },3400);
+}
+function triggerMinecraftLoginEasterEgg(options){
+  options=options||{};
+  var overlay=document.getElementById('authOverlay');
+  var card=document.getElementById('authLoginCard');
+  if(!overlay||!card||!document.body.classList.contains('auth-locked')){
+    if(typeof options.onComplete==='function')options.onComplete();
+    return;
+  }
+  var oldLayer=document.querySelector('.minecraft-login-layer');
+  if(oldLayer)oldLayer.remove();
+  card.classList.remove('minecraft-card-punched','minecraft-card-hidden');
+  card.style.visibility='';
+  void card.offsetWidth;
+  var rect=card.getBoundingClientRect();
+  var viewportW=window.innerWidth||document.documentElement.clientWidth||1280;
+  var viewportH=window.innerHeight||document.documentElement.clientHeight||720;
+  var armWidth=Math.max(520,Math.min(viewportW*.94,rect.width*.98,1040));
+  if(viewportW<640)armWidth=Math.max(410,Math.min(viewportW*.98,rect.width,620));
+  var cornerInsetX=Math.max(24,Math.min(64,rect.width*.05));
+  var cornerInsetY=Math.max(28,Math.min(76,rect.height*.06));
+  var hitX=Math.max(rect.left+rect.width*.62,Math.min(viewportW-46,rect.right-cornerInsetX));
+  var hitY=Math.max(rect.top+rect.height*.52,Math.min(viewportH-58,rect.bottom-cornerInsetY));
+  var armX=hitX+armWidth*.1;
+  var armY=hitY+armWidth*.1;
+  var armEnterX=viewportW+armWidth*.58-armX;
+  var armEnterY=viewportH+armWidth*.42-armY;
+  var layer=document.createElement('div');
+  layer.className='minecraft-login-layer';
+  layer.setAttribute('aria-hidden','true');
+  layer.style.setProperty('--minecraft-card-left',rect.left+'px');
+  layer.style.setProperty('--minecraft-card-top',rect.top+'px');
+  layer.style.setProperty('--minecraft-card-width',rect.width+'px');
+  layer.style.setProperty('--minecraft-card-height',rect.height+'px');
+  layer.style.setProperty('--minecraft-card-radius',getComputedStyle(card).borderRadius||'28px');
+  layer.style.setProperty('--minecraft-arm-width',armWidth+'px');
+  layer.style.setProperty('--minecraft-arm-x',armX+'px');
+  layer.style.setProperty('--minecraft-arm-y',armY+'px');
+  layer.style.setProperty('--minecraft-arm-enter-x',armEnterX+'px');
+  layer.style.setProperty('--minecraft-arm-enter-y',armEnterY+'px');
+  var damage=document.createElement('div');
+  damage.className='minecraft-break-overlay';
+  var arm=document.createElement('img');
+  arm.className='minecraft-arm';
+  arm.src='assets/minecraft-login-arm.gif';
+  arm.alt='';
+  arm.decoding='async';
+  var hitDelays=[.48,.78,1.08,1.38,1.68,1.98,2.28,2.58,2.88];
+  hitDelays.forEach(function(delay,idx){
+    var flash=document.createElement('span');
+    flash.className='minecraft-hit-flash';
+    flash.style.setProperty('--hit-delay',delay+'s');
+    flash.style.setProperty('--hit-x',(hitX+(Math.random()*42-21))+'px');
+    flash.style.setProperty('--hit-y',(hitY+(Math.random()*34-17))+'px');
+    flash.style.setProperty('--hit-size',(72+idx*5)+'px');
+    layer.appendChild(flash);
+    for(var p=0;p<4;p++){
+      var pixel=document.createElement('span');
+      pixel.className='minecraft-block-pixel';
+      pixel.style.setProperty('--pixel-delay',(delay+.02+p*.018)+'s');
+      pixel.style.setProperty('--pixel-x',(hitX+(Math.random()*58-29))+'px');
+      pixel.style.setProperty('--pixel-y',(hitY+(Math.random()*50-25))+'px');
+      pixel.style.setProperty('--pixel-size',(7+Math.random()*8)+'px');
+      pixel.style.setProperty('--pixel-color',['#5bd243','#37a852','#9b6b43','#7f5035','#e02b73','#35d8c6'][Math.floor(Math.random()*6)]);
+      pixel.style.setProperty('--pixel-out-x',((Math.random()-.5)*170)+'px');
+      pixel.style.setProperty('--pixel-out-y',(-35-Math.random()*115)+'px');
+      pixel.style.setProperty('--pixel-rot',((Math.random()>.5?1:-1)*(80+Math.random()*180))+'deg');
+      layer.appendChild(pixel);
+    }
+  });
+  layer.appendChild(damage);
+  layer.appendChild(arm);
+  document.body.appendChild(layer);
+  if(options.toastLabel!==false)showSecretToast(options.toastLabel||'Minecraft login unlocked');
+  requestAnimationFrame(function(){
+    if(layer.parentNode)card.classList.add('minecraft-card-punched');
+  });
+  function makeShard(row,col,rows,cols){
+    var shardW=rect.width/cols;
+    var shardH=rect.height/rows;
+    var x=col*shardW;
+    var y=row*shardH;
+    var shard=document.createElement('div');
+    shard.className='minecraft-shard';
+    shard.style.left=x+'px';
+    shard.style.top=y+'px';
+    shard.style.width=(shardW+1)+'px';
+    shard.style.height=(shardH+1)+'px';
+    shard.style.setProperty('--shard-delay',(Math.random()*.11)+'s');
+    shard.style.setProperty('--shard-x',((col-(cols-1)/2)*(70+Math.random()*36)+(Math.random()-.5)*54)+'px');
+    shard.style.setProperty('--shard-y',(viewportH*.54+row*48+Math.random()*120)+'px');
+    shard.style.setProperty('--shard-r',((Math.random()>.5?1:-1)*(45+Math.random()*190))+'deg');
+    shard.style.setProperty('--p1',(Math.random()*8)+'% '+(Math.random()*8)+'%');
+    shard.style.setProperty('--p2',(88+Math.random()*12)+'% '+(Math.random()*12)+'%');
+    shard.style.setProperty('--p3',(86+Math.random()*14)+'% '+(86+Math.random()*14)+'%');
+    shard.style.setProperty('--p4',(Math.random()*14)+'% '+(84+Math.random()*16)+'%');
+    var clone=card.cloneNode(true);
+    clone.classList.add('minecraft-shard-card');
+    clone.classList.remove('minecraft-card-punched','minecraft-card-hidden');
+    clone.removeAttribute('id');
+    Array.prototype.slice.call(clone.querySelectorAll('[id]')).forEach(function(node){node.removeAttribute('id');});
+    clone.style.left=(-x)+'px';
+    clone.style.top=(-y)+'px';
+    clone.style.width=rect.width+'px';
+    clone.style.height=rect.height+'px';
+    shard.appendChild(clone);
+    return shard;
+  }
+  window.setTimeout(function(){
+    var wrap=document.createElement('div');
+    wrap.className='minecraft-shatter-wrap';
+    wrap.style.setProperty('--minecraft-card-left',rect.left+'px');
+    wrap.style.setProperty('--minecraft-card-top',rect.top+'px');
+    wrap.style.setProperty('--minecraft-card-width',rect.width+'px');
+    wrap.style.setProperty('--minecraft-card-height',rect.height+'px');
+    var rows=5;
+    var cols=6;
+    for(var r=0;r<rows;r++){
+      for(var c=0;c<cols;c++)wrap.appendChild(makeShard(r,c,rows,cols));
+    }
+    layer.appendChild(wrap);
+    damage.style.opacity='0';
+    card.classList.add('minecraft-card-hidden');
+  },3250);
+  if(typeof options.onComplete==='function'){
+    window.setTimeout(options.onComplete,options.completeDelay||4300);
+  }
+  window.setTimeout(function(){
+    if(layer&&layer.parentNode)layer.parentNode.removeChild(layer);
+    card.classList.remove('minecraft-card-punched','minecraft-card-hidden');
+    card.style.visibility='';
+  },5100);
 }
 function triggerDisneyLoginEasterEgg(options){
   options=options||{};
