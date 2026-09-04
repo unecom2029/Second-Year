@@ -2901,7 +2901,7 @@ function getDefaultWeek(category){
   var groups=getSystemGroups(category);
   return (groups[0]&&groups[0].weeks&&groups[0].weeks[0])||1;
 }
-function init(){EW[getSystemIndexForWeek(CC,CW)]=true;rSB();rMN();
+function init(){setSystemThemeForCurrentWeek();EW[getSystemIndexForWeek(CC,CW)]=true;rSB();rMN();
 document.addEventListener('mouseup',function(){
   if(!toolMode)return;
   var sel=window.getSelection();
@@ -3108,10 +3108,18 @@ document.getElementById('sb').innerHTML=h;var newList=document.querySelector('#s
 function syncSB(){var sb=document.getElementById('sb');if(!sb||!sb.querySelector('.sb-list')){rSB();return}var weeks=sb.querySelectorAll('.wk');for(var i=0;i<weeks.length;i++){var wkEl=weeks[i];wkEl.classList.add('on');wkEl.classList.toggle('ex',!!EW[i]);}
 var items=sb.querySelectorAll('.si');for(var j=0;j<items.length;j++){var item=items[j],itemWeek=+item.getAttribute('data-week'),itemView=item.getAttribute('data-view');item.classList.toggle('on',itemWeek===CW&&itemView===CV);}}
 
-function swC(c){CC=c;SYSTEM_THEME=null;applyDynamicTheme(new Date());CW=getDefaultWeek(c);CV='overview';EW={};EW[getSystemIndexForWeek(CC,CW)]=true;persistLastHubView();rSB();rMN();document.querySelector('.sb').classList.remove('mo')}
+function setSystemThemeForSystem(sys){
+  SYSTEM_THEME=(CC==='OMK'&&sys&&sys.key==='heme')?'heme':null;
+  applyDynamicTheme(new Date());
+  updateThemePanelUI();
+}
+function setSystemThemeForCurrentWeek(){
+  setSystemThemeForSystem(getSystemMeta(CC,CW));
+}
+function swC(c){CC=c;CW=getDefaultWeek(c);CV='overview';EW={};EW[getSystemIndexForWeek(CC,CW)]=true;setSystemThemeForCurrentWeek();persistLastHubView();rSB();rMN();document.querySelector('.sb').classList.remove('mo')}
 function swW(w){go(w,'overview')}
-function toggleSystemGroup(i){var groups=getSystemGroups(CC),sys=groups[i];SYSTEM_THEME=(CC==='OMK'&&sys&&sys.key==='heme')?'heme':null;applyDynamicTheme(new Date());EW[i]=!EW[i];persistLastHubView();syncSB()}
-function go(w,v){CW=+w;CV='overview';EW={};EW[getSystemIndexForWeek(CC,CW)]=true;persistLastHubView();syncSB();rMN();document.querySelector('.sb').classList.remove('mo')}
+function toggleSystemGroup(i){var groups=getSystemGroups(CC),sys=groups[i];setSystemThemeForSystem(sys);EW[i]=!EW[i];persistLastHubView();syncSB()}
+function go(w,v){CW=+w;CV='overview';EW={};EW[getSystemIndexForWeek(CC,CW)]=true;setSystemThemeForCurrentWeek();persistLastHubView();syncSB();rMN();document.querySelector('.sb').classList.remove('mo')}
 function goPT(i){var groups=getSystemGroups(CC);var firstWeek=(groups[0]&&groups[0].weeks&&groups[0].weeks[0])||1;CW=firstWeek;CV='overview';EW={};EW[getSystemIndexForWeek(CC,CW)]=true;persistLastHubView();syncSB();rMN();document.querySelector('.sb').classList.remove('mo')}
 
 function renderWeekItems(wk){
@@ -5352,6 +5360,7 @@ function unlockApp(){
   var overlay=document.getElementById('authOverlay');
   document.body.classList.remove('auth-locked');
   notifyNotesLoginComplete(AUTH_STATE.user);
+  setSystemThemeForCurrentWeek();
   rSB();
   rMN();
   syncAdminControls();
