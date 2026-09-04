@@ -1301,6 +1301,7 @@ html[data-note-auth="locked"] #noteAuthGate{
 <script>
 /* ============ THEME ============ */
 var STORAGE_THEME_KEY = 'sepsis-2026-theme';
+var STORAGE_FONT_KEY = 'sepsis-2026-font';
 var themePanelOpen = false;
 
 function toggleThemePanel(){
@@ -1333,9 +1334,14 @@ document.addEventListener('click', function(e){
 
 /* ============ FONT SIZE ============ */
 var currentFontSize = 16;
-function changeFontSize(delta){
-  currentFontSize = Math.min(24, Math.max(12, currentFontSize + delta));
+function applyFontSize(size, skipStorage){
+  currentFontSize = Math.min(24, Math.max(12, Number(size) || 16));
+  document.documentElement.style.fontSize = currentFontSize + 'px';
   document.body.style.fontSize = currentFontSize + 'px';
+  if(!skipStorage){ try{ localStorage.setItem(STORAGE_FONT_KEY, String(currentFontSize)); }catch(e){} }
+}
+function changeFontSize(delta){
+  applyFontSize(currentFontSize + delta);
 }
 
 /* ============ LIGHTBOX ============ */
@@ -1523,8 +1529,11 @@ function initTableQuiz(){
 /* ============ INIT ============ */
 function initVisualState(){
   var savedTheme = 'slate';
+  var savedFont = 16;
   try{ savedTheme = localStorage.getItem(STORAGE_THEME_KEY) || 'slate'; }catch(e){}
+  try{ savedFont = parseInt(localStorage.getItem(STORAGE_FONT_KEY),10) || 16; }catch(e){}
   setTheme(savedTheme, null, true);
+  applyFontSize(savedFont, true);
 }
 
 /* ============ TOC SCROLLSPY ============ */
