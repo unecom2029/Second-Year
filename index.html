@@ -595,7 +595,17 @@ body.auth-locked .theme-dock{display:none}
 .auth-origami-top{clip-path:polygon(0 0,50% 50%,100% 0);transform-origin:50% 50%;animation:authOrigamiTop 2.45s cubic-bezier(.18,.84,.2,1) forwards}
 .auth-origami-bottom{clip-path:polygon(0 100%,50% 50%,100% 100%);transform-origin:50% 50%;animation:authOrigamiBottom 2.45s cubic-bezier(.18,.84,.2,1) forwards}
 .auth-origami-spine{position:absolute;left:50%;top:10%;bottom:10%;width:2px;border-radius:999px;background:rgba(255,255,255,.34);box-shadow:0 0 18px rgba(255,255,255,.22);opacity:0;animation:authOrigamiSpine 2.45s ease forwards}
-.auth-origami-figure{position:absolute;left:50%;top:50%;width:48%;height:32%;transform:translate(-50%,-50%) scale(.16) rotate(-8deg);opacity:0;filter:drop-shadow(0 18px 28px rgba(7,15,27,.22));animation:authOrigamiFigure 2.45s cubic-bezier(.18,.84,.2,1) forwards}
+.auth-origami-figure{position:absolute;left:50%;top:50%;width:min(540px,96%);height:auto;aspect-ratio:400/250;transform:translate(-50%,-50%);opacity:0;filter:drop-shadow(0 16px 16px rgba(7,15,27,.25));animation:authOrigamiFigure 3.3s ease forwards}
+.auth-origami-figure svg{display:block;width:100%;height:100%;overflow:visible}
+.auth-origami-figure .crane-wing{transform-origin:200px 155px;animation:craneFlap .65s ease-in-out 1.05s infinite alternate}
+.auth-origami-figure .crane-wing-back{animation-delay:1.16s}
+.auth-origami-bird{animation-duration:3.3s}
+.auth-origami-piece{animation-duration:1.25s;animation-name:authOrigamiLeft,origamiPaperFade;animation-timing-function:ease;animation-fill-mode:forwards}
+.auth-origami-right{animation-name:authOrigamiRight,origamiPaperFade}
+.auth-origami-top{animation-name:authOrigamiTop,origamiPaperFade}
+.auth-origami-bottom{animation-name:authOrigamiBottom,origamiPaperFade}
+@keyframes origamiPaperFade{0%,65%{opacity:1}100%{opacity:0}}
+@keyframes craneFlap{from{transform:scaleY(1) skewX(0deg)}to{transform:scaleY(.35) skewX(-12deg)}}
 .auth-origami-fold{position:absolute;display:block;background:linear-gradient(135deg,rgba(232,247,242,.96),rgba(68,181,164,.86));box-shadow:inset 0 1px 0 rgba(255,255,255,.45)}
 .auth-origami-wing-left{left:0;top:10%;width:58%;height:78%;clip-path:polygon(0 56%,100% 0,72% 72%);transform-origin:88% 44%;animation:authOrigamiWingLeft 2.45s cubic-bezier(.18,.84,.2,1) forwards}
 .auth-origami-wing-right{right:0;top:12%;width:58%;height:74%;clip-path:polygon(100% 50%,0 0,30% 72%);transform-origin:12% 44%;background:linear-gradient(135deg,rgba(248,236,184,.95),rgba(67,183,168,.88));animation:authOrigamiWingRight 2.45s cubic-bezier(.18,.84,.2,1) forwards}
@@ -605,7 +615,7 @@ body.auth-locked .theme-dock{display:none}
 .auth-gravity-piece{
   position:fixed;z-index:560;margin:0;box-sizing:border-box;pointer-events:none;
   transform-origin:center center;will-change:transform,opacity,filter;
-  animation:authGravityFall var(--fall-dur,2.6s) cubic-bezier(.18,.7,.34,1) var(--fall-delay,0s) forwards;
+  animation:authGravityFall var(--fall-dur,1.8s) linear var(--fall-delay,0s) both;
 }
 .auth-gravity-piece.auth-input,.auth-gravity-piece.auth-btn{display:block}
 .auth-gravity-reset{
@@ -748,16 +758,20 @@ body.auth-locked .theme-dock{display:none}
 @keyframes welcomePop{0%{opacity:0;transform:translateY(18px) scale(.97)}100%{opacity:1;transform:none}}
 @keyframes authGravityFall{
   0%{transform:translate3d(0,0,0) rotate(0deg);opacity:1;filter:blur(0)}
-  18%{transform:translate3d(calc(var(--gx,0px) * .06), -18px, 0) rotate(calc(var(--gr,0deg) * .08));opacity:1}
-  78%{opacity:1}
-  100%{transform:translate3d(var(--gx,0px), 110vh, 0) rotate(var(--gr,0deg));opacity:.08;filter:blur(1px)}
+  10%{transform:translate3d(0,2px,0) rotate(-1.5deg);opacity:1}
+  20%{transform:translate3d(0,5px,0) rotate(1deg);opacity:1;animation-timing-function:cubic-bezier(.55,0,1,.45)}
+  100%{transform:translate3d(var(--gx,0px),var(--gy,115vh),0) rotate(var(--gr,0deg));opacity:1;filter:blur(0)}
+}
+@media(prefers-reduced-motion:reduce){
+  .auth-gravity-piece{animation:authGravityFade .5s ease both!important}
+  @keyframes authGravityFade{from{opacity:1}to{opacity:0}}
 }
 @keyframes authOrigamiFlight{
   0%{opacity:1;filter:blur(0);transform:translate3d(0,0,0) rotate(0) scale(1)}
-  28%{opacity:1;filter:blur(0);transform:translate3d(0,-10px,0) rotate(0) scale(.86)}
-  52%{opacity:1;filter:blur(0);transform:translate3d(8vw,-18vh,80px) rotate(12deg) scale(.46)}
-  76%{opacity:.95;filter:blur(.2px);transform:translate3d(30vw,-46vh,180px) rotate(28deg) scale(.24)}
-  100%{opacity:0;filter:blur(1px);transform:translate3d(58vw,-82vh,260px) rotate(46deg) scale(.08)}
+  35%{opacity:1;transform:translate3d(0,-10px,0) rotate(0) scale(.95)}
+  62%{opacity:1;transform:translate3d(3vw,-7vh,0) rotate(-5deg) scale(.95)}
+  82%{opacity:1;transform:translate3d(28vw,-25vh,0) rotate(-14deg) scale(.7)}
+  100%{opacity:0;transform:translate3d(85vw,-62vh,0) rotate(-20deg) scale(.45)}
 }
 @keyframes authOrigamiLeft{
   0%,12%{transform:translate3d(0,0,0) rotateY(0) rotateZ(0)}
@@ -785,13 +799,10 @@ body.auth-locked .theme-dock{display:none}
   58%{transform:translate3d(0,16%,18px) rotateX(86deg) scale(.76)}
   100%{transform:translate3d(0,10%,8px) rotateX(78deg) scale(.62)}
 }
-@keyframes authOrigamiSpine{0%,14%{opacity:0}24%,72%{opacity:.8}100%{opacity:0}}
+@keyframes authOrigamiSpine{0%,8%{opacity:0}18%,28%{opacity:.6}38%,100%{opacity:0}}
 @keyframes authOrigamiFigure{
-  0%,26%{opacity:0;transform:translate(-50%,-50%) scale(.12) rotate(-8deg)}
-  38%{opacity:.96;transform:translate(-50%,-50%) scale(.82) rotate(-4deg)}
-  58%{opacity:1;transform:translate(-50%,-50%) scale(1.04) rotate(8deg)}
-  82%{opacity:1;transform:translate(-50%,-50%) scale(1.08) rotate(10deg)}
-  100%{opacity:0;transform:translate(-50%,-50%) scale(.92) rotate(18deg)}
+  0%,22%{opacity:0;transform:translate(-50%,-50%) scale(.4)}
+  38%,100%{opacity:1;transform:translate(-50%,-50%) scale(1)}
 }
 @keyframes authOrigamiWingLeft{
   0%,32%{transform:rotateY(72deg) rotateZ(-18deg)}
@@ -4966,6 +4977,22 @@ function playRandomLoginEffect(user){
   setAuthMsg('Verified. Preparing your welcome screen...','success');
   playWelcome(user);
 }
+function cloneGravityElement(el){
+  var clone=el.cloneNode(true);
+  var originals=[el].concat(Array.prototype.slice.call(el.querySelectorAll('*')));
+  var copies=[clone].concat(Array.prototype.slice.call(clone.querySelectorAll('*')));
+  originals.forEach(function(source,index){
+    var target=copies[index],style=getComputedStyle(source);
+    ['font-family','font-size','font-weight','line-height','letter-spacing','text-align','color','text-transform','white-space'].forEach(function(property){
+      target.style.setProperty(property,style.getPropertyValue(property));
+    });
+    target.removeAttribute('id');
+    if(source.tagName==='INPUT')target.value=source.value;
+  });
+  clone.setAttribute('aria-hidden','true');
+  clone.setAttribute('inert','');
+  return clone;
+}
 function triggerAuthGravity(options){
   options=options||{};
   var overlay=document.getElementById('authOverlay');
@@ -4976,7 +5003,7 @@ function triggerAuthGravity(options){
   pieces.forEach(function(el,idx){
     var rect=el.getBoundingClientRect();
     if(rect.width<2||rect.height<2)return;
-    var clone=el.cloneNode(true);
+    var clone=cloneGravityElement(el);
     if(el.tagName==='INPUT')clone.value=el.value;
     clone.classList.add('auth-gravity-piece');
     clone.removeAttribute('id');
@@ -4984,17 +5011,18 @@ function triggerAuthGravity(options){
     clone.style.top=rect.top+'px';
     clone.style.width=rect.width+'px';
     clone.style.height=rect.height+'px';
-    clone.style.setProperty('--gx',((idx%2?-1:1)*(90+idx*23))+'px');
-    clone.style.setProperty('--gr',((idx%2?-1:1)*(18+idx*11))+'deg');
-    clone.style.setProperty('--fall-delay',(idx*.055)+'s');
-    clone.style.setProperty('--fall-dur',(2.25+(idx%5)*.18)+'s');
+    clone.style.setProperty('--gx',((idx%2?-1:1)*Math.min(90,window.innerWidth*.1))+'px');
+    clone.style.setProperty('--gy',(window.innerHeight-rect.top+rect.width*.4+rect.height)+'px');
+    clone.style.setProperty('--gr',((idx%2?-1:1)*(8+idx*2))+'deg');
+    clone.style.setProperty('--fall-delay',(idx*.04)+'s');
+    clone.style.setProperty('--fall-dur','1.8s');
     overlay.appendChild(clone);
   });
   var clock=document.getElementById('authClock');
   if(clock){
     Array.prototype.slice.call(clock.children).forEach(function(el,idx){
       var rect=el.getBoundingClientRect();
-      var clone=el.cloneNode(true);
+      var clone=cloneGravityElement(el);
       clone.classList.add('auth-gravity-piece');
       clone.removeAttribute('id');
       clone.style.left=rect.left+'px';
@@ -5004,12 +5032,12 @@ function triggerAuthGravity(options){
       clone.style.setProperty('--gx',((idx?1:-1)*160)+'px');
       clone.style.setProperty('--gr',((idx?1:-1)*34)+'deg');
       clone.style.setProperty('--fall-delay',(.18+idx*.08)+'s');
-      clone.style.setProperty('--fall-dur','2.55s');
+      clone.style.setProperty('--fall-dur','1.8s');
       overlay.appendChild(clone);
     });
   }
   if(options.loginMode&&typeof options.onComplete==='function'){
-    window.setTimeout(options.onComplete,3600);
+    window.setTimeout(options.onComplete,2400);
   }else{
     var note=document.createElement('button');
     note.type='button';
@@ -5888,52 +5916,7 @@ function triggerOrigamiLoginExit(options){
     if(typeof options.onComplete==='function')options.onComplete();
     return;
   }
-  var oldLayer=document.querySelector('.auth-origami-layer');
-  if(oldLayer)oldLayer.remove();
-  var rect=card.getBoundingClientRect();
-  var layer=document.createElement('div');
-  layer.className='auth-origami-layer';
-  layer.setAttribute('aria-hidden','true');
-  var bird=document.createElement('div');
-  bird.className='auth-origami-bird';
-  bird.style.left=rect.left+'px';
-  bird.style.top=rect.top+'px';
-  bird.style.width=rect.width+'px';
-  bird.style.height=rect.height+'px';
-  var pieceNames=['left','right','top','bottom'];
-  pieceNames.forEach(function(name){
-    var piece=document.createElement('div');
-    piece.className='auth-origami-piece auth-origami-'+name;
-    var clone=card.cloneNode(true);
-    clone.removeAttribute('id');
-    Array.prototype.slice.call(clone.querySelectorAll('[id]')).forEach(function(el){el.removeAttribute('id')});
-    clone.style.width='100%';
-    clone.style.height='100%';
-    clone.style.maxHeight='none';
-    clone.style.pointerEvents='none';
-    piece.appendChild(clone);
-    bird.appendChild(piece);
-  });
-  var figure=document.createElement('div');
-  figure.className='auth-origami-figure';
-  ['wing-left','wing-right','tail','body','head'].forEach(function(name){
-    var fold=document.createElement('span');
-    fold.className='auth-origami-fold auth-origami-'+name;
-    figure.appendChild(fold);
-  });
-  bird.appendChild(figure);
-  var spine=document.createElement('span');
-  spine.className='auth-origami-spine';
-  bird.appendChild(spine);
-  layer.appendChild(bird);
-  document.body.appendChild(layer);
-  overlay.classList.add('origami-active');
-  if(options.toastLabel)showSecretToast(options.toastLabel);
-  window.setTimeout(function(){
-    if(typeof options.onComplete==='function')options.onComplete();
-    overlay.classList.remove('origami-active');
-    if(layer&&layer.parentNode)layer.parentNode.removeChild(layer);
-  },2350);
+  foldLoginCardIntoCrane(card,overlay,options);
 }
 function triggerCatLoginGrab(options){
   options=options||{};
@@ -7650,6 +7633,7 @@ document.addEventListener('keydown',function(ev){
 });
 </script>
 <script src="assets/spider-login.js"></script>
+<script src="assets/card-crane.js"></script>
 <script src="assets/kayak-login.js"></script>
 </body>
 </html>
