@@ -1393,6 +1393,7 @@ function setLabUnits(unit){
 
 // ── QUIZ LIFECYCLE ──
 function setQuizTitle(name){
+  document.title='QUIZ: '+(name||'Custom Quiz');
   document.getElementById('qtName').textContent=name;
   document.getElementById('nbQuizTitle').textContent=name;
 }
@@ -1529,7 +1530,10 @@ function toEmbeddedJSONString(value){
   return JSON.stringify(value).replace(/<\/script/gi,'<\\/script').replace(/\u2028/g,'\\u2028').replace(/\u2029/g,'\\u2029');
 }
 function buildDownloadHTML(payload){
+  var title=document.createElement('title');
+  title.textContent='QUIZ: '+(payload.name||'Custom Quiz');
   return DOWNLOAD_TEMPLATE
+    .replace(/<title>[^<]*<\/title>/i,function(){return title.outerHTML;})
     .replace('"__QUIZ_BUILDER_PRELOADED_NAME__"', toEmbeddedJSONString(payload.name||'Custom Quiz'))
     .replace('"__QUIZ_BUILDER_PRELOADED_QUESTIONS__"', toEmbeddedJSONString(JSON.stringify(payload.questions||[])))
     .replace('"__QUIZ_BUILDER_PRELOADED_UI_MODE__"', toEmbeddedJSONString('nbme'));
