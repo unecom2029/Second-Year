@@ -3594,6 +3594,7 @@ var AUTH_WILLARD_INPUT_TIMER=null;
 var AUTH_KNOCK_INPUT_TIMER=null;
 var AUTH_MINECRAFT_INPUT_TIMER=null;
 var AUTH_LOGIN_EFFECTS=[
+  'kayak',
   'original',
   'origami',
   'cat',
@@ -3610,6 +3611,7 @@ var AUTH_LOGIN_EFFECTS=[
   'woody'
 ];
 var AUTH_LOGIN_EFFECT_ASSETS={
+  kayak:['assets/kayak-study-hub.gif'],
   cat:['assets/google-cat-login-arm.png'],
   pawprints:['assets/google-cat-paw.gif','assets/google-dog-paw.gif'],
   spiderman:['assets/google-spiderman-fab.png','assets/google-spiderman-sprite.png'],
@@ -4442,6 +4444,12 @@ function setupAuth(){
         },420);
         return;
       }
+      if(typed==='kayak'){
+        input.value='';
+        triggerKayakLoginEasterEgg({reset:true});
+        setAuthMsg('Kayak preview only. No login attempted.','success');
+        return;
+      }
       if(typed==='minecraft'||typed==='mine'){
         AUTH_MINECRAFT_INPUT_TIMER=window.setTimeout(function(){
           var current=normEmail(input.value);
@@ -4587,6 +4595,12 @@ function tryAuthLogin(ev){
     triggerBoxerLoginEasterEgg({toastLabel:'Boxer unlocked',reset:true});
     if(input)input.value='';
     setAuthMsg('Boxer preview only. No login attempted.','success');
+    return;
+  }
+  if(email==='kayak'){
+    triggerKayakLoginEasterEgg({reset:true});
+    if(input)input.value='';
+    setAuthMsg('Kayak preview only. No login attempted.','success');
     return;
   }
   if(email==='minecraft'||email==='mine'){
@@ -4862,6 +4876,10 @@ function playRandomLoginEffect(user){
       toastLabel:'Boxer unlocked',
       onComplete:function(){playWelcome(user);}
     });
+    return;
+  }
+  if(choice==='kayak'){
+    triggerKayakLoginEasterEgg({loginMode:true,onComplete:function(){playWelcome(user);}});
     return;
   }
   if(choice==='minecraft'){
@@ -6014,6 +6032,10 @@ function triggerPawPrintEasterEgg(options){
 }
 function triggerSpiderManEasterEgg(options){
   options=options||{};
+  if(document.body.classList.contains('auth-locked')){
+    triggerSpiderLoginSwing(options);
+    return;
+  }
   var oldLayer=document.querySelector('.spider-easter-layer');
   if(oldLayer)oldLayer.remove();
   restoreSpiderSweepTargets();
@@ -7609,5 +7631,7 @@ document.addEventListener('keydown',function(ev){
   }
 });
 </script>
+<script src="assets/spider-login.js"></script>
+<script src="assets/kayak-login.js"></script>
 </body>
 </html>
