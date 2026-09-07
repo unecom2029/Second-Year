@@ -3647,6 +3647,11 @@ var AUTH_DAVID_DOLLY_LOGIN_USERS={
 var AUTH_RACHAEL_WILLARD_LOGIN_USERS={
   'rwolfe4@une.edu':true
 };
+var AUTH_KAYAK_FORCE_USERS={
+  'deverly@une.edu':true,
+  'rwolfe4@une.edu':true
+};
+var AUTH_KAYAK_FORCE_UNTIL=new Date(2026,8,8).getTime();
 var AUTH_DAVID_HEAVY_FORCE_UNTIL=new Date(2026,7,29).getTime();
 var AUTH_DAVID_DOOR_PARTY_FORCE_START=new Date(2026,7,30).getTime();
 var AUTH_DAVID_DOOR_PARTY_FORCE_UNTIL=new Date(2026,7,31).getTime();
@@ -4678,6 +4683,9 @@ function shouldForceRachaelWillardLogin(user){
   var now=Date.now();
   return isRachaelWillardLoginUser(user)&&now>=AUTH_RACHAEL_WILLARD_FORCE_START&&now<AUTH_RACHAEL_WILLARD_FORCE_UNTIL;
 }
+function shouldForceKayakLogin(user){
+  return !!(user&&AUTH_KAYAK_FORCE_USERS[normEmail(user.email)])&&Date.now()<AUTH_KAYAK_FORCE_UNTIL;
+}
 function isHaadHeavyLoginUser(user){
   return !!(user&&AUTH_HAAD_HEAVY_LOGIN_USERS[normEmail(user.email)]);
 }
@@ -4727,6 +4735,16 @@ function pickAuthLoginEffectForUser(user){
   return pickTrackedAuthLoginEffect(user);
 }
 function playRandomLoginEffect(user){
+  if(shouldForceKayakLogin(user)){
+    AUTH_SELECTED_LOGIN_EFFECT=null;
+    setAuthMsg('Verified. Kayak crossing incoming...','success');
+    preloadLoginEffectAssets('kayak');
+    triggerKayakLoginEasterEgg({
+      loginMode:true,
+      onComplete:function(){playWelcome(user);}
+    });
+    return;
+  }
   if(shouldForceDavidDoorPartyLogin(user)){
     AUTH_SELECTED_LOGIN_EFFECT=null;
     setAuthMsg('Verified. Someone is knocking...','success');
