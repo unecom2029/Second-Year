@@ -1366,8 +1366,15 @@ body:not(.auth-locked) .secrets-fab{background:rgba(255,255,255,.92);color:var(-
   @keyframes trojanReduced{0%{opacity:0}25%,78%{opacity:1}100%{opacity:0}}
 }
 .car-login-easter-layer{position:fixed;inset:0;z-index:13175;pointer-events:none;overflow:hidden;isolation:isolate}
+.car-login-siren-wash{position:absolute;inset:0;z-index:0;background:rgba(4,9,17,.2);animation:carSirenBase 2.9s ease-out forwards}
+.car-login-siren-wash::before,.car-login-siren-wash::after{content:'';position:absolute;inset:-18%;opacity:0;mix-blend-mode:screen;will-change:opacity,transform}
+.car-login-siren-wash::before{background:radial-gradient(circle at 18% 28%,rgba(255,18,48,.7),rgba(255,18,48,.24) 27%,transparent 58%);animation:carSirenRed .34s steps(1,end) infinite}
+.car-login-siren-wash::after{background:radial-gradient(circle at 82% 28%,rgba(20,112,255,.74),rgba(20,112,255,.25) 27%,transparent 58%);animation:carSirenBlue .34s steps(1,end) infinite}
+.car-login-wanted{position:fixed;z-index:4;top:clamp(22px,5vh,54px);right:clamp(18px,4vw,54px);min-width:min(310px,76vw);padding:12px 18px 13px;border:2px solid rgba(255,255,255,.88);border-radius:5px;background:rgba(4,7,12,.86);box-shadow:0 0 0 3px rgba(0,0,0,.55),0 12px 35px rgba(0,0,0,.45);color:#fff;text-align:center;text-transform:uppercase;opacity:0;transform:translateY(-18px) scale(.94);animation:carWantedDrop .35s cubic-bezier(.2,.9,.25,1.2) .14s forwards,carWantedAlarm .68s ease-in-out .55s infinite alternate}
+.car-login-wanted-label{display:block;font-family:'IBM Plex Mono',monospace;font-size:clamp(18px,3vw,28px);font-weight:800;line-height:1;letter-spacing:.2em;text-shadow:0 2px 0 #000}
+.car-login-wanted-stars{display:block;margin-top:7px;color:#ffd447;font-family:Arial,sans-serif;font-size:clamp(27px,5vw,42px);font-weight:900;line-height:.8;letter-spacing:.1em;-webkit-text-stroke:1px #7b4b00;text-shadow:0 2px 0 #5a3500,0 0 13px rgba(255,196,39,.55)}
 .car-login-car{
-  position:fixed;left:0;top:var(--car-y,58vh);width:var(--car-width,min(620px,72vw));height:auto;max-width:none;
+  position:fixed;z-index:2;left:0;top:var(--car-y,58vh);width:var(--car-width,min(620px,72vw));height:auto;max-width:none;
   transform:translate3d(var(--car-start-x,110vw),calc(-50% + 46px),0) rotate(.4deg) scale(.96);
   transform-origin:50% 70%;opacity:0;object-fit:contain;
   filter:drop-shadow(0 24px 28px rgba(4,9,17,.38));
@@ -1375,14 +1382,14 @@ body:not(.auth-locked) .secrets-fab{background:rgba(255,255,255,.92);color:var(-
   will-change:transform,opacity;
 }
 .car-login-shadow{
-  position:fixed;left:0;top:var(--car-shadow-y,68vh);width:var(--car-shadow-width,min(440px,52vw));height:22px;border-radius:50%;
+  position:fixed;z-index:1;left:0;top:var(--car-shadow-y,68vh);width:var(--car-shadow-width,min(440px,52vw));height:22px;border-radius:50%;
   background:rgba(4,9,17,.32);filter:blur(8px);opacity:0;
   transform:translate3d(var(--car-start-x,110vw),-50%,0) scale(.7);
   animation:carLoginShadow 2.65s cubic-bezier(.16,.9,.18,1) forwards;
   will-change:transform,opacity;
 }
 .car-login-spark{
-  position:fixed;left:var(--car-spark-x,50vw);top:var(--car-spark-y,50vh);width:10px;height:10px;border-radius:999px;
+  position:fixed;z-index:3;left:var(--car-spark-x,50vw);top:var(--car-spark-y,50vh);width:10px;height:10px;border-radius:999px;
   background:rgba(255,220,122,.96);box-shadow:0 0 16px rgba(255,220,122,.68);
   opacity:0;transform:translate(-50%,-50%) scale(.3);
   animation:carLoginSpark .58s ease-out var(--spark-delay,1.38s) forwards;
@@ -1417,6 +1424,11 @@ body:not(.auth-locked) .secrets-fab{background:rgba(255,255,255,.92);color:var(-
   64%{opacity:1;filter:blur(.1px);transform:translate3d(-34vw,-4px,0) rotate(-2.2deg) scale(.985)}
   100%{opacity:0;filter:blur(1px);transform:translate3d(-118vw,-12px,0) rotate(-5deg) scale(.96)}
 }
+@keyframes carSirenBase{0%{opacity:0}10%,78%{opacity:1}100%{opacity:0}}
+@keyframes carSirenRed{0%,49%{opacity:.82;transform:scale(1)}50%,100%{opacity:.12;transform:scale(.96)}}
+@keyframes carSirenBlue{0%,49%{opacity:.12;transform:scale(.96)}50%,100%{opacity:.84;transform:scale(1)}}
+@keyframes carWantedDrop{to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes carWantedAlarm{from{filter:drop-shadow(0 0 0 rgba(255,31,61,0))}to{filter:drop-shadow(0 0 16px rgba(30,116,255,.64))}}
 @media(max-width:640px){
   .car-login-car{width:var(--car-width,min(500px,92vw))}
   .car-login-shadow{width:var(--car-shadow-width,min(360px,66vw))}
@@ -1424,6 +1436,8 @@ body:not(.auth-locked) .secrets-fab{background:rgba(255,255,255,.92);color:var(-
 @media(prefers-reduced-motion:reduce){
   .car-login-car,.car-login-shadow{animation:carLoginReduced 1.1s ease forwards}
   .car-login-spark{display:none}
+  .car-login-siren-wash,.car-login-siren-wash::before,.car-login-siren-wash::after,.car-login-wanted{animation:none}
+  .car-login-siren-wash{opacity:.72}.car-login-siren-wash::before,.car-login-siren-wash::after{opacity:.34}.car-login-wanted{opacity:1;transform:none}
   .auth-login.car-login-card-hit{animation:none;opacity:.22}
   @keyframes carLoginReduced{0%{opacity:0}25%,78%{opacity:1}100%{opacity:0}}
 }
@@ -3641,7 +3655,6 @@ var AUTH_MINECRAFT_INPUT_TIMER=null;
 var AUTH_LOGIN_EFFECTS=[
   'rocket',
   'kayak',
-  'original',
   'origami',
   'cat',
   'gravity',
@@ -6462,6 +6475,11 @@ function triggerCarLoginEasterEgg(options){
   layer.style.setProperty('--car-nose-offset',frontOffset+'px');
   var shadow=document.createElement('div');
   shadow.className='car-login-shadow';
+  var sirenWash=document.createElement('div');
+  sirenWash.className='car-login-siren-wash';
+  var wanted=document.createElement('div');
+  wanted.className='car-login-wanted';
+  wanted.innerHTML='<span class="car-login-wanted-label">Wanted</span><span class="car-login-wanted-stars" aria-label="Five star wanted level">★★★★★</span>';
   var car=document.createElement('img');
   car.className='car-login-car';
   car.src='assets/login-car-push.png';
@@ -6471,6 +6489,8 @@ function triggerCarLoginEasterEgg(options){
     car.onerror=null;
     car.src='assets/kailey-boyle-car-login.png';
   };
+  layer.appendChild(sirenWash);
+  layer.appendChild(wanted);
   layer.appendChild(shadow);
   layer.appendChild(car);
   for(var i=0;i<7;i++){
