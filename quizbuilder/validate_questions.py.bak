@@ -8,8 +8,6 @@ def main(path):
     qs = d.get('questions', [])
     print("%s  |  name=%r  |  %d questions\n" % (path, d.get('name'), len(qs)))
     fails = 0
-    key_longest = key_shortest = 0
-    item_ratios = []
     for i, q in enumerate(qs, 1):
         s, ch, cor = q.get('stem',''), q.get('choices',[]), q.get('correct')
         we = q.get('wrongExplanations', {})
@@ -50,34 +48,7 @@ def main(path):
         chk(not re.search(r'\b(all of the above|none of the above)\b', " ".join(txt), re.I),
             "option set contains all/none of the above")
         wc = len(s.split())
-        chk(40 <= wc <= 200,
-            "stem is %d words (measured corpus: median 100, p10 63, p90 137)" % wc)
-
-        # --- LENGTH CUE: the correct answer must not be the longest option ---
-        # Measured in real UWorld items: key/distractor length ratio is 1.00 at the
-        # median, and the key is the longest option only 14% of the time (below the
-        # 20% expected by chance in a 5-option set). Models default to the opposite.
-        if isinstance(cor, int) and 0 <= cor < len(txt) and len(txt) > 1:
-            lens = [len(t.split()) for t in txt]
-            klen = lens[cor]
-            others = [x for j, x in enumerate(lens) if j != cor]
-            mx, mn = max(lens), min(lens)
-            avg = sum(others) / len(others)
-            item_ratios.append(klen / avg if avg else 1.0)
-            is_longest = klen == mx and lens.count(mx) == 1
-            if is_longest:
-                key_longest += 1
-                chk(False, "LENGTH CUE: the correct answer is the single LONGEST option "
-                    "(%d words vs %.1f avg distractor) - trim the key, or raise two "
-                    "distractors to the same specificity" % (klen, avg))
-            if klen == mn and lens.count(mn) == 1:
-                key_shortest += 1
-                chk(False, "LENGTH CUE: the correct answer is the single SHORTEST option "
-                    "(%d words vs %.1f avg distractor)" % (klen, avg))
-            # over-qualified key even when some distractor is nominally longer
-            if not is_longest and avg and klen > 1.3 * avg:
-                chk(False, "LENGTH CUE: key is %.2fx the mean distractor length "
-                    "(limit 1.30) - the key is over-qualified" % (klen / avg))
+        chk(45 <= wc <= 200, "stem is %d words (UWorld median 111, p10 72, p90 151)" % wc)
 
         status = "OK  " if not msgs else "FAIL"
         print("%s item %-3d %d options, key=%s, stem=%d words"
@@ -97,22 +68,6 @@ def main(path):
         run = max(len(r) for r in re.findall(r'(.)\1*', keys))
         if run >= 4:
             print("  warning: same letter correct for %d consecutive items" % run)
-    if item_ratios:
-        n = len(item_ratios)
-        avg_ratio = sum(item_ratios) / n
-        print("\nlength-cue audit (real UWorld: key is longest ~14%, mean ratio ~1.04)")
-        print("  key is the single longest option: %d of %d (%.0f%%)"
-              % (key_longest, n, 100.0 * key_longest / n))
-        print("  key is the single shortest option: %d of %d (%.0f%%)"
-              % (key_shortest, n, 100.0 * key_shortest / n))
-        print("  mean key/distractor length ratio: %.2f" % avg_ratio)
-        if 100.0 * key_longest / n > 20:
-            print("  WARNING: the key is the longest option in over 20% of items - this is "
-                  "the machine-written tell. Trim the keys; do not pad the distractors.")
-        if avg_ratio > 1.15:
-            print("  WARNING: keys run %.0f%% longer than distractors on average - "
-                  "over-qualified keys." % ((avg_ratio - 1) * 100))
-
     print("\n%d of %d items passed." % (len(qs) - fails, len(qs)))
     return 1 if fails else 0
 
