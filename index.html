@@ -565,6 +565,7 @@ body.auth-locked .theme-dock{display:none}
 .auth-login h1{font-size:clamp(36px,4.6vh,46px);line-height:1.02;color:#fff;font-weight:700;letter-spacing:-.6px;margin-bottom:clamp(12px,1.8dvh,18px)}
 .auth-sub{font-size:clamp(15px,1.8dvh,17px);line-height:1.5;color:rgba(255,255,255,.78);margin-bottom:clamp(16px,2.1dvh,22px)}
 .auth-form{display:grid;gap:clamp(12px,1.45dvh,16px)}
+.auth-password-field:not([hidden]){display:grid;gap:clamp(12px,1.45dvh,16px)}
 .auth-label{font-size:clamp(11px,1.4vh,13px);font-weight:800;letter-spacing:1.3px;text-transform:uppercase;color:rgba(255,255,255,.7);text-align:center}
 .auth-input{
   width:100%;padding:clamp(16px,2dvh,20px) 18px;border-radius:16px;border:1.5px solid rgba(255,255,255,.15);outline:none;
@@ -998,10 +999,16 @@ body:not(.auth-locked) .app-admin-btn{display:none}
 .admin-note{font-size:13px;color:rgba(255,255,255,.54);margin-top:16px;line-height:1.6}
 
 .theme-dock{position:fixed;right:18px;bottom:18px;z-index:570;display:flex;flex-direction:column;align-items:flex-end;gap:10px}
+.quiz-builder-wrap{position:relative;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
 .quiz-builder-fab{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:0 14px;border-radius:14px;border:none;cursor:pointer;transition:var(--tr);box-shadow:0 8px 24px rgba(0,0,0,.14);font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;letter-spacing:.02em;text-decoration:none}
 .quiz-builder-fab:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(0,0,0,.18)}
 .quiz-builder-fab-icon{font-size:16px;line-height:1}
 .quiz-builder-fab-label{line-height:1}
+.quiz-builder-menu{display:none;min-width:210px;padding:8px;border-radius:16px;background:rgba(255,255,255,.96);border:1px solid rgba(18,32,60,.1);box-shadow:0 18px 48px rgba(18,32,60,.2);backdrop-filter:blur(18px)}
+.quiz-builder-wrap.open .quiz-builder-menu{display:grid;gap:6px;animation:themePanelIn .2s cubic-bezier(.2,.8,.2,1)}
+.quiz-builder-edition{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:11px;color:var(--navy);font-size:13px;font-weight:800;text-decoration:none;transition:var(--tr)}
+.quiz-builder-edition:hover{background:var(--plum-bg);color:var(--plum);transform:translateX(-2px)}
+.quiz-builder-edition-icon{width:24px;text-align:center;font-size:16px}
 .secrets-fab{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:0 14px;border-radius:14px;border:none;cursor:pointer;transition:var(--tr);box-shadow:0 8px 24px rgba(0,0,0,.14);font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;letter-spacing:.02em}
 .secrets-fab:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(0,0,0,.18)}
 .secrets-fab-icon{font-size:16px;line-height:1}
@@ -2105,7 +2112,7 @@ body:not(.auth-locked) .secrets-fab{background:rgba(255,255,255,.92);color:var(-
 }
 
 
-body:not(.quiz-builder-enabled) .quiz-builder-fab{display:none!important}
+body:not(.quiz-builder-enabled) .quiz-builder-wrap{display:none!important}
 </style>
 </head>
 <body class="auth-locked">
@@ -2126,6 +2133,10 @@ body:not(.quiz-builder-enabled) .quiz-builder-fab{display:none!important}
       <form class="auth-form" id="authForm">
         <label class="auth-label" for="authEmail">UNE login email</label>
         <input class="auth-input" id="authEmail" name="email" type="email" inputmode="email" autocomplete="email" placeholder="name@une.edu" required>
+        <div class="auth-password-field" id="jeevalPasswordField" hidden>
+          <label class="auth-label" for="authPassword">Password</label>
+          <input class="auth-input" id="authPassword" name="password" type="password" autocomplete="current-password" placeholder="Enter your password">
+        </div>
         <button class="auth-btn" type="submit">Enter Study Hub</button>
       </form>
       <div class="auth-msg" id="authMsg">Access is limited to approved UNE accounts in accordance with UNE content distribution expectations. If you would like access, please contact admin.</div>
@@ -2214,10 +2225,16 @@ body:not(.quiz-builder-enabled) .quiz-builder-fab{display:none!important}
 </div>
 <div class="theme-dock" id="themeDock">
   <div class="theme-panel" id="themePanel" aria-hidden="true"></div>
-  <a class="quiz-builder-fab" id="quizBuilderFab" href="quizbuilder/index.html" target="_blank" rel="noopener noreferrer">
-    <span class="quiz-builder-fab-icon">🧪</span>
-    <span class="quiz-builder-fab-label">Build My Quiz</span>
-  </a>
+  <div class="quiz-builder-wrap" id="quizBuilderWrap">
+    <div class="quiz-builder-menu" id="quizBuilderMenu" role="menu" aria-hidden="true">
+      <a class="quiz-builder-edition" role="menuitem" href="quizbuilder/index.html" target="_blank" rel="noopener noreferrer" onclick="closeQuizBuilderMenu()"><span class="quiz-builder-edition-icon">🧪</span><span>Regular edition</span></a>
+      <a class="quiz-builder-edition" role="menuitem" href="quizbuilder/index%20uworld.html" target="_blank" rel="noopener noreferrer" onclick="closeQuizBuilderMenu()"><span class="quiz-builder-edition-icon">🌎</span><span>UWorld edition</span></a>
+    </div>
+    <button class="quiz-builder-fab" id="quizBuilderFab" type="button" aria-haspopup="menu" aria-controls="quizBuilderMenu" aria-expanded="false" onclick="toggleQuizBuilderMenu()">
+      <span class="quiz-builder-fab-icon">🧪</span>
+      <span class="quiz-builder-fab-label">Build My Quiz</span>
+    </button>
+  </div>
   <button class="secrets-fab" id="secretsFab" type="button" aria-haspopup="dialog" aria-controls="secretsModal" aria-expanded="false" onclick="openSecretsModal()">
     <span class="secrets-fab-icon">✨</span>
     <span class="secrets-fab-label">Secrets</span>
@@ -3115,7 +3132,29 @@ function canUseQuizBuilder(){
   return email==='jmehta@une.edu';
 }
 function syncQuizBuilderAccess(){
-  document.body.classList.toggle('quiz-builder-enabled',canUseQuizBuilder());
+  var allowed=canUseQuizBuilder();
+  document.body.classList.toggle('quiz-builder-enabled',allowed);
+  if(!allowed)closeQuizBuilderMenu();
+}
+function toggleQuizBuilderMenu(){
+  if(!canUseQuizBuilder())return;
+  var wrap=document.getElementById('quizBuilderWrap');
+  var button=document.getElementById('quizBuilderFab');
+  var menu=document.getElementById('quizBuilderMenu');
+  if(!wrap||!button||!menu)return;
+  var open=!wrap.classList.contains('open');
+  wrap.classList.toggle('open',open);
+  button.setAttribute('aria-expanded',open?'true':'false');
+  menu.setAttribute('aria-hidden',open?'false':'true');
+  if(open)closeThemePanel();
+}
+function closeQuizBuilderMenu(){
+  var wrap=document.getElementById('quizBuilderWrap');
+  var button=document.getElementById('quizBuilderFab');
+  var menu=document.getElementById('quizBuilderMenu');
+  if(wrap)wrap.classList.remove('open');
+  if(button)button.setAttribute('aria-expanded','false');
+  if(menu)menu.setAttribute('aria-hidden','true');
 }
 function getVisibleWeekItems(wk){
   return (wk&&wk.items?wk.items:[]).filter(canViewItem);
@@ -3657,6 +3696,7 @@ var AUTH_STORAGE_KEY='une-study-hub-custom-users-v1';
 var AUTH_LAST_LOGIN_KEY='une-study-hub-last-login-v1';
 var AUTH_REMEMBER_KEY='une-study-hub-remembered-auth-v1';
 var AUTH_REMEMBER_COOKIE_KEY=AUTH_REMEMBER_KEY;
+var JEEVAL_LOGIN_PASSWORD='%GcroDa0%';
 var AUTH_LOGIN_EFFECT_HISTORY_COOKIE='une-study-hub-login-effect-history-v1';
 var AUTH_LOGIN_EFFECT_HISTORY_KEY='une-study-hub-login-effect-history-v1';
     // Fixed session length: reloads should not extend the four-hour login window.
@@ -4427,6 +4467,7 @@ function setupAuth(){
     form.addEventListener('submit',tryAuthLogin);
     input.addEventListener('input',function(){
       var typed=normEmail(input.value);
+      syncJeevalPasswordField();
       if(AUTH_CAT_INPUT_TIMER)clearTimeout(AUTH_CAT_INPUT_TIMER);
       if(AUTH_SPIDER_INPUT_TIMER)clearTimeout(AUTH_SPIDER_INPUT_TIMER);
       if(AUTH_THANOS_INPUT_TIMER)clearTimeout(AUTH_THANOS_INPUT_TIMER);
@@ -4607,9 +4648,20 @@ function setupAuth(){
       if(typed==='gravity')triggerAuthGravity();
     });
     renderLoginQuote(new Date());
+    syncJeevalPasswordField();
     requestAnimationFrame(fitAuthLoginToViewport);
     setTimeout(function(){input.focus()},120);
   }
+}
+function syncJeevalPasswordField(){
+  var emailInput=document.getElementById('authEmail');
+  var passwordField=document.getElementById('jeevalPasswordField');
+  var passwordInput=document.getElementById('authPassword');
+  if(!emailInput||!passwordField||!passwordInput)return;
+  var required=normEmail(emailInput.value)==='jmehta@une.edu';
+  passwordField.hidden=!required;
+  passwordInput.required=required;
+  if(!required)passwordInput.value='';
 }
 function setupAdmin(){
   var loginForm=document.getElementById('adminLoginForm');
@@ -4630,6 +4682,7 @@ function tryAuthLogin(ev){
   var input=document.getElementById('authEmail');
   var btn=document.querySelector('.auth-btn');
   var email=normEmail(input&&input.value);
+  var passwordInput=document.getElementById('authPassword');
   if(email==='gravity'){
     triggerAuthGravity();
     return;
@@ -4748,6 +4801,12 @@ function tryAuthLogin(ev){
   var user=getAuthUser(email);
   if(!user){
     setAuthMsg('That UNE email is not recognized yet. Please contact admin for access.','error');
+    return;
+  }
+  if(email==='jmehta@une.edu'&&(!passwordInput||passwordInput.value!==JEEVAL_LOGIN_PASSWORD)){
+    syncJeevalPasswordField();
+    setAuthMsg('The password for this account is incorrect.','error');
+    if(passwordInput){passwordInput.focus();passwordInput.select();}
     return;
   }
   AUTH_STATE.user=user;
@@ -7771,11 +7830,15 @@ setupMediaModal();
 setupHubAutoReload();
 document.addEventListener('click',function(ev){
   var dock=document.getElementById('themeDock');
-  if(dock&&!dock.contains(ev.target))closeThemePanel();
+  if(dock&&!dock.contains(ev.target)){
+    closeThemePanel();
+    closeQuizBuilderMenu();
+  }
 });
 document.addEventListener('keydown',function(ev){
   if(ev.key==='Escape'){
     closeThemePanel();
+    closeQuizBuilderMenu();
     closeSecretsModal();
   }
 });
