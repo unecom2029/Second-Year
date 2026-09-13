@@ -42,6 +42,27 @@
       return {allowed:true,reason:'unlocked'};
     }catch(err){return {allowed:false,reason:'login'};}
   }
+  function canJeevalPrint(){
+    var raw=readCookie(NOTE_AUTH_KEY);
+    if(!raw)return false;
+    try{
+      var parsed=JSON.parse(raw);
+      var email=String(parsed&&parsed.email||'').trim().toLowerCase();
+      var expiresAt=Number(parsed&&parsed.expiresAt);
+      return email==='jmehta@une.edu'&&expiresAt&&Date.now()<expiresAt;
+    }catch(err){return false;}
+  }
+  function syncPrintAccess(){
+    var allowed=canJeevalPrint();
+    document.documentElement.setAttribute('data-print-auth',allowed?'jeeval':'locked');
+    var button=document.getElementById('hyPrintButton');
+    if(button){
+      button.disabled=!allowed;
+      button.setAttribute('aria-disabled',allowed?'false':'true');
+      button.title=allowed?'Print or save this review as a PDF':'Printing is available only when Jeeval Mehta is logged in through the Study Hub';
+    }
+    return allowed;
+  }
   function updateGateContent(state){
     var title=document.getElementById('noteAuthTitle');
     var message=document.getElementById('noteAuthMessage');
@@ -64,12 +85,15 @@
     document.documentElement.setAttribute('data-note-auth',state.allowed?'unlocked':'locked');
     document.documentElement.setAttribute('data-note-auth-reason',state.reason);
     updateGateContent(state);
+    syncPrintAccess();
   }
   window.openNoteLogin=function(){
     var loginWindow=window.open(NOTE_LOGIN_URL,'uneStudyHubLogin');
     if(!loginWindow)window.location.href=NOTE_LOGIN_URL;
   };
   window.refreshNoteAuth=syncNoteAuth;
+  window.canJeevalPrint=canJeevalPrint;
+  window.syncPrintAccess=syncPrintAccess;
   window.addEventListener('message',function(event){
     if(event&&event.data&&event.data.type==='une-study-hub-auth-complete')syncNoteAuth();
   });
@@ -530,6 +554,7 @@ strong.rc-open{animation:rcReveal .35s ease}
 .hy-modal-actions{display:flex;gap:8px;flex:none}
 .hy-action-btn{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.05em;text-transform:uppercase;
   border:1px solid var(--border);background:var(--cream);color:var(--ink);padding:7px 13px;border-radius:20px;cursor:pointer}
+.hy-action-btn:disabled{opacity:.42;cursor:not-allowed;filter:grayscale(.35)}
 .hy-close-btn{background:var(--accent);color:#fff;border:none}
 .hy-subhead{font-family:'JetBrains Mono',monospace;font-size:.64rem;color:var(--muted);margin:0 0 13px}
 .hy-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;min-width:0}
@@ -720,13 +745,14 @@ body.nav-open .toc-scrim{opacity:1;pointer-events:auto}
 
 /* ---------------- print security ---------------- */
 @media print{
-  html,body{background:#fff!important;color:#111!important;min-height:100%!important}
-  body{padding:0!important;margin:0!important}
-  body > *,
-  body.hy-mode > *,
-  body.hy-mode .hy-modal,
-  body.hy-mode .hy-modal-card{display:none!important}
-  body::before{
+  html:not([data-print-auth="jeeval"]),
+  html:not([data-print-auth="jeeval"]) body{background:#fff!important;color:#111!important;min-height:100%!important}
+  html:not([data-print-auth="jeeval"]) body{padding:0!important;margin:0!important}
+  html:not([data-print-auth="jeeval"]) body > *,
+  html:not([data-print-auth="jeeval"]) body.hy-mode > *,
+  html:not([data-print-auth="jeeval"]) body.hy-mode .hy-modal,
+  html:not([data-print-auth="jeeval"]) body.hy-mode .hy-modal-card{display:none!important}
+  html:not([data-print-auth="jeeval"]) body::before{
     content:"Printing is disabled for this protected study review. Please use the secure online version.";
     display:block!important;
     margin:18mm;
@@ -15522,7 +15548,7 @@ Rx:   Ferrous sulfate 325 mg tablets
     <div class="hy-modal-header">
       <h2>🎯 Hematology Summative 3 — High-Yield One-Pager</h2>
       <div class="hy-modal-actions">
-        <button class="hy-action-btn" onclick="printHY()">🖨️ Print / Save PDF</button>
+        <button class="hy-action-btn" id="hyPrintButton" type="button" onclick="printHY()" disabled aria-disabled="true" title="Printing is available only when Jeeval Mehta is logged in through the Study Hub">🖨️ Print / Save PDF</button>
         <button class="hy-action-btn hy-close-btn" onclick="closeHY()">✕ Close</button>
       </div>
     </div>
@@ -16455,6 +16481,10 @@ window.toggleToolsMenu=function(){$('#floatingLeft').classList.toggle('open');};
 window.openHY=function(){var m=$('#hyModal');if(!m)return;m.classList.add('open');document.body.style.overflow='hidden';};
 window.closeHY=function(){var m=$('#hyModal');if(!m)return;m.classList.remove('open');document.body.style.overflow='';};
 window.printHY=function(){
+  if(!window.syncPrintAccess||!window.syncPrintAccess()){
+    alert('Printing is available only when Jeeval Mehta is logged in through the Study Hub.');
+    return;
+  }
   document.body.classList.add('hy-mode');
   window.print();
   setTimeout(function(){document.body.classList.remove('hy-mode');},600);
