@@ -49,7 +49,7 @@
       var parsed=JSON.parse(raw);
       var email=String(parsed&&parsed.email||'').trim().toLowerCase();
       var expiresAt=Number(parsed&&parsed.expiresAt);
-      return email==='jmehta@une.edu'&&expiresAt&&Date.now()<expiresAt;
+      return email==='jmehta@une.edu'&&Number.isFinite(expiresAt)&&Date.now()<expiresAt;
     }catch(err){return false;}
   }
   function syncPrintAccess(){
@@ -100,6 +100,7 @@
   window.addEventListener('storage',function(event){
     if(!event||event.key===NOTE_AUTH_KEY)syncNoteAuth();
   });
+  window.addEventListener('beforeprint',syncNoteAuth);
   window.addEventListener('focus',syncNoteAuth);
   window.addEventListener('DOMContentLoaded',syncNoteAuth);
   window.setInterval(syncNoteAuth,1000);

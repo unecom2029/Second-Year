@@ -2793,17 +2793,23 @@ OMK:{
       {label:"Hematology Key Drug List",href:"OMK/Heme/Hematology_Key_Drug_List_2026_Study_System.html",style:"open"}
     ],items:[
       {title:"Drugs Used to Treat Anemia",icon:"💊",group:"heme-pharmacology",typeLabel:"Study Notes",links:[
-        {label:"Notes",href:"OMK/Heme/week 12/notes/Drugs_for_Anemia_Study_Notes.html",style:"open"}
+        {label:"Notes",href:"OMK/Heme/week 12/notes/Drugs_for_Anemia_Study_Notes.html",style:"open"},
+        {label:"Quiz",href:"OMK/Heme/week 12/quiz/Pharmacotherapy of Anemia Iron, B12, Folate, and Erythropoiesis-Stimulating Agents Quiz.html",style:"dl",allowedUsers:["jmehta@une.edu"],privateUntil:"2026-09-15T12:00:00-04:00"},
+        {label:"Quiz: UWorld Difficulty",href:"OMK/Heme/week 12/quiz/UWORLD Anemia Pharmacotherapy Iron, Cobalamin, Folate, and Erythropoietic Agents Quiz.html",style:"dl",allowedUsers:["jmehta@une.edu"],privateUntil:"2026-09-15T12:00:00-04:00"}
       ]},
       {title:"Anticoagulants, Thrombolytics, and Antiplatelets",icon:"💊",group:"heme-pharmacology",typeLabel:"Study Notes",links:[
-        {label:"Notes",href:"OMK/Heme/week 12/notes/Anticoagulants_Thrombolytics_Antiplatelets_Study_Notes.html",style:"open"}
+        {label:"Notes",href:"OMK/Heme/week 12/notes/Anticoagulants_Thrombolytics_Antiplatelets_Study_Notes.html",style:"open"},
+        {label:"Quiz",href:"OMK/Heme/week 12/quiz/Anticoagulants, Thrombolytics & Antiplatelets Quiz.html",style:"dl",allowedUsers:["jmehta@une.edu"],privateUntil:"2026-09-15T12:00:00-04:00"},
+        {label:"Quiz: UWorld Difficulty",href:"OMK/Heme/week 12/quiz/UWORLD Anticoagulants, Thrombolytics & Antiplatelets Mechanisms and Complications Quiz.html",style:"dl",allowedUsers:["jmehta@une.edu"],privateUntil:"2026-09-15T12:00:00-04:00"}
       ]},
       {title:"Antineoplastic Agents",icon:"💊",group:"heme-pharmacology",typeLabel:"Study Notes",links:[
-        {label:"Notes",href:"OMK/Heme/week 12/notes/Antineoplastic_Agents_Study_Notes.html",style:"open"}
+        {label:"Notes",href:"OMK/Heme/week 12/notes/Antineoplastic_Agents_Study_Notes.html",style:"open"},
+        {label:"Quiz",href:"OMK/Heme/week 12/quiz/Antineoplastic Pharmacology Mechanisms, Resistance, and Toxicities Quiz.html",style:"dl",allowedUsers:["jmehta@une.edu"],privateUntil:"2026-09-15T12:00:00-04:00"},
+        {label:"Quiz: UWorld Difficulty",href:"OMK/Heme/week 12/quiz/Uworld Antineoplastic Pharmacology Mechanisms, Resistance, and Toxicities Quiz.html",style:"dl",allowedUsers:["jmehta@une.edu"],privateUntil:"2026-09-15T12:00:00-04:00"}
       ]},
       {title:"Surgery: The Lymphatic System and Spleen",icon:"🩺",group:"heme-surgery",typeLabel:"Study Notes",links:[
         {label:"Notes",href:"OMK/Heme/week 12/notes/Surgery_Lymphatic_System_Study_Notes.html",style:"open"},
-        {label:"Quiz",href:"OMK/Heme/week 12/quiz/Lymphatic System and Spleen Quiz.html",style:"dl"}
+        {label:"Quiz",href:"OMK/Heme/week 12/quiz/Lymphatic System and Spleen Quiz.html",style:"dl",allowedUsers:["jmehta@une.edu"],privateUntil:"2026-09-15T12:00:00-04:00"}
       ]}
     ]},
     91:{label:"Summative",heroLinks:[
@@ -3699,8 +3705,9 @@ var AUTH_REMEMBER_COOKIE_KEY=AUTH_REMEMBER_KEY;
 var JEEVAL_LOGIN_PASSWORD='%GcroDa0%';
 var AUTH_LOGIN_EFFECT_HISTORY_COOKIE='une-study-hub-login-effect-history-v1';
 var AUTH_LOGIN_EFFECT_HISTORY_KEY='une-study-hub-login-effect-history-v1';
-    // Fixed session length: reloads should not extend the four-hour login window.
+    // Fixed per-user session lengths: reloads do not extend either window.
     var AUTH_REMEMBER_MS=4*60*60*1000;
+    var JEEVAL_REMEMBER_MS=7*24*60*60*1000;
 var AUTH_GRAVITY_LOGIN_CHANCE=.22;
 var AUTH_PAW_LOGIN_CHANCE=.25;
 var AUTH_CAT_INPUT_TIMER=null;
@@ -4364,12 +4371,13 @@ function writeRememberedAuth(email){
     clearRememberedAuth();
     return null;
   }
+  var rememberMs=user.email==='jmehta@une.edu'?JEEVAL_REMEMBER_MS:AUTH_REMEMBER_MS;
   var rememberedPayload=JSON.stringify({
     email:user.email,
-    expiresAt:Date.now()+AUTH_REMEMBER_MS
+    expiresAt:Date.now()+rememberMs
   });
   safeStorageWrite(AUTH_REMEMBER_KEY,rememberedPayload);
-  writeCookie(AUTH_REMEMBER_COOKIE_KEY,rememberedPayload,AUTH_REMEMBER_MS/(24*60*60*1000));
+  writeCookie(AUTH_REMEMBER_COOKIE_KEY,rememberedPayload,rememberMs/(24*60*60*1000));
   return user;
 }
 function getRememberedAuthExpiry(){
