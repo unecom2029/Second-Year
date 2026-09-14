@@ -162,7 +162,16 @@ body.nbme-lock{overflow:hidden}
 .q-feedback .exb::-webkit-scrollbar-thumb{background:rgba(18,32,60,.28);border-radius:999px}
 .qnum{display:inline-flex;align-items:center;padding:6px 11px;border-radius:999px;background:rgba(18,32,60,.045);font-family:var(--font-ui);font-size:11px;color:var(--mist);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:14px;font-weight:700}
 .qnum.marked{background:var(--gold-bg);color:var(--amber)}
-.qstem{font-family:var(--font-ui);font-size:var(--stem-size);line-height:1.45;margin-bottom:22px;font-weight:400;color:var(--ink);letter-spacing:0}
+.qstem{font-family:var(--font-ui);font-size:var(--stem-size);line-height:1.45;margin-bottom:22px;font-weight:400;color:var(--ink);letter-spacing:0;white-space:pre-wrap;overflow-wrap:anywhere}
+.lab-panel{display:grid;margin:14px 0 18px;border:1px solid rgba(18,32,60,.13);border-radius:14px;overflow:hidden;background:color-mix(in srgb,var(--white) 88%,var(--warm) 12%);font-size:.86em;line-height:1.35;white-space:normal;box-shadow:0 5px 16px rgba(18,32,60,.04)}
+.lab-head,.lab-row{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(96px,.65fr) minmax(118px,.8fr);align-items:baseline;gap:18px;padding:9px 14px}
+.lab-head{background:rgba(18,32,60,.075);font-family:var(--font-mono);font-size:.72em;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--mist)}
+.lab-row+.lab-row{border-top:1px solid rgba(18,32,60,.08)}
+.lab-row:nth-child(even){background:rgba(18,32,60,.025)}
+.lab-name{min-width:0;font-weight:600}
+.lab-value,.lab-reference{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:500}
+.lab-reference{color:color-mix(in srgb,var(--ink) 68%,var(--mist) 32%);font-size:.92em}
+.lab-note{padding:7px 14px;border-top:1px solid rgba(18,32,60,.08);background:rgba(18,32,60,.02);color:var(--mist);font-size:.72em;line-height:1.35}
 .qstem mark{
   background:linear-gradient(180deg,transparent 12%,var(--mark-color,#FFFAAD) 12%,var(--mark-color,#FFFAAD) 88%,transparent 88%);
   padding:0;
@@ -287,7 +296,7 @@ body.nbme-lock{overflow:hidden}
 .nb-question-side .exb::-webkit-scrollbar-thumb{background:rgba(18,32,60,.28);border-radius:999px}
 .nb-question-side .exb::after{content:'';display:block;height:clamp(88px,12vh,136px);background:transparent}
 .nb-question-label{margin-bottom:16px;color:#5b6570;font-weight:700;font-size:calc(var(--ui-meta-size) * 1.16);letter-spacing:.02em}
-.nb-question-stem{font-size:calc(var(--stem-size) * .72);line-height:1.58;user-select:text}
+.nb-question-stem{font-size:calc(var(--stem-size) * .72);line-height:1.58;user-select:text;white-space:pre-wrap;overflow-wrap:anywhere}
 .nb-question-stem mark,.nb-answer-copy mark{
   background:linear-gradient(180deg,transparent 16%,var(--mark-color,#fff173) 16%,var(--mark-color,#fff173) 86%,transparent 86%);
   color:inherit;
@@ -498,6 +507,7 @@ body.nbme-lock{overflow:hidden}
 .timer-card.expired{border-color:rgba(196,64,64,.6);box-shadow:0 0 0 4px rgba(196,64,64,.12),var(--sh2)}
 @keyframes timerBlink{50%{opacity:.35}}
 
+@media(max-width:600px){.lab-head{display:none}.lab-row{grid-template-columns:1fr auto;gap:2px 12px}.lab-value{text-align:right;white-space:normal}.lab-reference{grid-column:1/-1;text-align:left;white-space:normal}.lab-reference::before{content:'Reference: ';font-weight:700}.lab-note{font-size:.68em}}
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation:none !important;transition:none !important}
 }
@@ -2358,8 +2368,143 @@ function stripChoiceLabel(text){
 function choiceLetter(index){
   return LETTERS[index]||String.fromCharCode(65+index);
 }
+function escapeStemText(value){
+  return String(value==null?'':value)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;');
+}
+var TYPICAL_LAB_RANGES={
+  'absolute lymphocyte count':'Age-dependent',
+  'absolute neutrophil count':'>1,500/mm³',
+  'activated partial thromboplastin time':'25–35 sec',
+  'antithrombin activity':'80–120%',
+  'alanine aminotransferase':'0–35 U/L',
+  'anion gap':'8–12 mEq/L',
+  'arterial ph':'7.38–7.44',
+  'aspartate aminotransferase':'0–35 U/L',
+  'band forms':'0–3%',
+  'basophils':'0.5–1%',
+  'blasts':'0%',
+  'blood urea nitrogen':'8–20 mg/dL',
+  'c-reactive protein':'0–0.8 mg/dL',
+  'd-dimer':'<0.5 µg/mL FEU',
+  'direct bilirubin':'0–0.3 mg/dL',
+  'eosinophils':'1–4%',
+  'erythrocyte count':'4.2–5.9 million/mm³ (adult; sex-dependent)',
+  'erythrocyte sedimentation rate':'M: 0–15; F: 0–20 mm/h',
+  'factor viii activity':'50–150%',
+  'factor v leiden':'Not detected',
+  'fasting serum glucose':'70–99 mg/dL',
+  'fibrinogen':'200–400 mg/dL',
+  'haptoglobin':'30–200 mg/dL',
+  'hematocrit':'M: 41–51%; F: 36–47% (adult)',
+  'hemoglobin':'M: 14–17; F: 12–16 g/dL (adult)',
+  'international normalized ratio':'0.8–1.2',
+  'immature blasts':'0%',
+  'ionized calcium':'1.10–1.30 mmol/L',
+  'lactate dehydrogenase':'140–280 U/L (laboratory-dependent)',
+  'leukocyte count':'4,000–10,000/mm³',
+  'lymphocytes':'20–40% (adult; age-dependent)',
+  'mean corpuscular hemoglobin conc.':'32–36 g/dL',
+  'mean corpuscular hemoglobin concentration':'32–36 g/dL',
+  'mean corpuscular volume':'80–100 fL',
+  'metamyelocytes':'0%',
+  'methylmalonic acid':'0.00–0.40 µmol/L (assay-dependent)',
+  'monocytes':'2–8%',
+  'myelocytes':'0%',
+  'neutrophils':'40–60%',
+  'pco2':'35–45 mm Hg',
+  'platelet count':'150,000–450,000/mm³',
+  'platelet count, on admission':'150,000–450,000/mm³',
+  'platelet count, today':'150,000–450,000/mm³',
+  'promyelocytes':'0%',
+  'prothrombin gene mutation':'Not detected',
+  'protein c activity':'70–140%',
+  'protein s activity':'65–140%',
+  'prothrombin time':'11–14 sec',
+  'red cell distribution width':'11.5–14.5%',
+  'reticulocyte count':'0.5–1.5%',
+  'reticulocytes':'0.5–1.5%',
+  'segmented neutrophils':'40–60%',
+  'serum albumin':'3.5–5.5 g/dL',
+  'serum bicarbonate':'23–28 mEq/L',
+  'serum calcium':'9.0–10.5 mg/dL',
+  'serum cobalamin':'200–900 pg/mL',
+  'serum creatinine':'0.7–1.3 mg/dL (adult; sex-dependent)',
+  'serum erythropoietin':'4–24 mU/mL',
+  'serum ferritin':'15–200 ng/mL',
+  'serum folate':'4–20 ng/mL',
+  'serum glucose':'70–140 mg/dL (timing-dependent)',
+  'serum igg, iga, and igm':'Age-dependent',
+  'serum iron':'60–160 µg/dL',
+  'serum lactate':'0.5–2.2 mmol/L',
+  'serum methotrexate':'Time since infusion-dependent',
+  'serum phosphorus':'3.0–4.5 mg/dL',
+  'serum potassium':'3.5–5.0 mEq/L',
+  'serum total protein':'6.0–7.8 g/dL',
+  'serum uric acid':'M: 3.7–8.6; F: 2.4–5.8 mg/dL',
+  'serum vitamin b12':'200–900 pg/mL',
+  'homocysteine':'5–13 µmol/L',
+  'creatinine clearance':'90–120 mL/min (adult; age/sex-dependent)',
+  'tissue transglutaminase iga':'Negative (assay-dependent)',
+  'total bilirubin':'0.3–1.2 mg/dL',
+  'total iron-binding capacity':'250–460 µg/dL',
+  'transferrin saturation':'20–50%',
+  'urea nitrogen':'8–20 mg/dL',
+  'urine protein':'Negative to trace',
+  'von willebrand factor antigen':'50–150%',
+  'von willebrand factor ristocetin cofactor':'50–150%'
+};
+function inferLabUnit(value){
+  var match=String(value||'').match(/[-+]?\d[\d,.]*\s*([%a-zA-Zµμ]+(?:\/[a-zA-Z0-9µμ³^]+)?)/);
+  return match?match[1]:'';
+}
+function getLabResultAndReference(name,value){
+  var result=String(value||'').trim();
+  var explicit=result.match(/\s*\((?:N\s*=?|normal\s*:?)\s*([^)]+)\)\s*$/i);
+  var reference='';
+  if(explicit){
+    reference=explicit[1].trim();
+    result=result.slice(0,explicit.index).trim();
+    if(!/[a-zA-Z%µμ]/.test(reference)){
+      var unit=inferLabUnit(result);
+      if(unit)reference+=(unit==='%'?'':' ')+unit;
+    }
+  }else{
+    reference=TYPICAL_LAB_RANGES[String(name||'').trim().toLowerCase()]||'Laboratory-specific';
+  }
+  return {value:result,reference:reference};
+}
+function parseStructuredStemRow(line){
+  var match=String(line||'').trim().match(/^(.+?)\s{2,}(\S.*)$/);
+  if(!match)return null;
+  var details=getLabResultAndReference(match[1],match[2]);
+  return {name:match[1],value:details.value,reference:details.reference};
+}
+function formatStemText(stem){
+  var lines=String(stem||'').replace(/\r\n?/g,'\n').split('\n');
+  var output=[];
+  for(var i=0;i<lines.length;){
+    if(/^\s{2,}\S/.test(lines[i])){
+      var end=i;
+      while(end<lines.length&&/^\s{2,}\S/.test(lines[end]))end++;
+      var rows=lines.slice(i,end).map(parseStructuredStemRow);
+      if(rows.length>=2&&rows.every(Boolean)){
+        output.push('<div class="lab-panel" role="table" aria-label="Laboratory results"><div class="lab-head" role="row"><span role="columnheader">Test</span><span role="columnheader">Result</span><span role="columnheader">Reference range</span></div>'+rows.map(function(row){
+          return '<div class="lab-row" role="row"><span class="lab-name" role="cell">'+escapeStemText(row.name)+'</span><span class="lab-value" role="cell">'+escapeStemText(row.value)+'</span><span class="lab-reference" role="cell">'+escapeStemText(row.reference)+'</span></div>';
+        }).join('')+'<div class="lab-note">Typical educational ranges are shown. Actual reference intervals vary by laboratory, age, sex, and clinical context.</div></div>');
+        i=end;
+        continue;
+      }
+    }
+    output.push(escapeStemText(lines[i]));
+    i++;
+  }
+  return output.join('<br>');
+}
 function getStemHTML(index){
-  return stemMarkup[index]!=null?stemMarkup[index]:questions[index].stem;
+  return stemMarkup[index]!=null?stemMarkup[index]:formatStemText(questions[index].stem);
 }
 function ensureChoiceMarkup(index){
   if(!choiceMarkup[index])choiceMarkup[index]=[];
