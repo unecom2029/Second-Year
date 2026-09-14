@@ -2792,6 +2792,14 @@ function resetQuiz(){
 }
 function exitQuiz(){
   pauseTimer();
+  var isDownloadedQuiz=PRELOADED_QUESTIONS_JSON!=="__QUIZ_BUILDER_PRELOADED_QUESTIONS__";
+  if(isDownloadedQuiz){
+    window.close();
+    setTimeout(function(){
+      if(!window.closed)showToast('Your browser blocked automatic tab closing. Close this tab manually.','err');
+    },150);
+    return;
+  }
   reviewOpen=false;
   switchView('viewSetup');
 }
