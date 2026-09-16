@@ -1,8 +1,10 @@
 # How the "Jeevs Edition" quizzes are built
 
 Handoff document. Written so a fresh Claude session (or a human) can produce the next
-batch without re-deriving anything. Everything here was used to build batch 01 (Hematopoiesis & Marrow, 20 questions) and
-batch 02 (Anemia I · Impaired Production, 30 questions).
+batch without re-deriving anything. Everything here was used to build batch 01 (Hematopoiesis & Marrow, 20 questions),
+batch 02 (Anemia I · Impaired Production, 30 questions) and batch 03 (Anemia II ·
+Hemolysis, 20 questions — the first batch APPENDED to the live quiz rather than built as
+its own file; see §8).
 
 Paths are absolute because the figure library lives outside the repo.
 
@@ -246,6 +248,112 @@ Fine for private revision; do not redistribute.
 | `fig_erythropoiesis` | `Erythropoiesis.png` | unused in final build, kept in `figs/` |
 | `fig_flow` | `Flow cytometry.png` | **dropped** — see §9 |
 
+### A third library, added for batch 03
+
+```
+/Users/jeeval/Documents/Board Study/figures/pathoma-heme/
+```
+
+86 page-extracted images plus a `manifest.tsv` giving page, object number and pixel size —
+**no captions**, so each file has to be viewed before it can be described. Unused so far;
+AMBOSS and UWorld covered batch 03.
+
+### Figures added for batch 07 — the course's OWN lecture slides
+
+A fourth image source, and the best one yet: the review file's own slide images already live in
+
+```
+OMK/Heme/summative/assets/
+```
+
+named by topic and content (`anticoag-09-slide-on-warfarin-onset-listing-that-warfarin-is.jpg`,
+`coag1-10-mixing-study-interpretation-flowchart-distinguis.jpg`, …). These are the lecturer's
+actual slides, so an explanation figure can show Jeevs the exact slide the fact came from.
+Batch 07 used twelve of them, keyed `fig_slide_*`:
+
+| Key | Slide | Used in |
+|---|---|---|
+| `fig_slide_anticoag_classes` | anticoag-01, the four families | Q8, Q11, Q12, Q13, Q14, Q22 |
+| `fig_slide_hit` | anticoag-05, HIT four-step diagram | Q2 |
+| `fig_slide_hit_mgmt` | anticoag-06, HIT management | Q3 |
+| `fig_slide_vitk` | anticoag-08, the vitamin K cycle | Q5, Q7 |
+| `fig_slide_warf_onset` | anticoag-09, clotting factor half-lives | Q4 |
+| `fig_slide_cyp2c9` | anticoag-11, CYP2C9/VKORC1 | Q6 |
+| `fig_slide_xaban_reversal` | anticoag-14, DOAC reversal | Q9, Q10 |
+| `fig_slide_fibrinolysis` | anticoag-15, the fibrinolysis diagram | Q23, Q24, Q25 |
+| `fig_slide_platelet` | anticoag-16, platelet activation targets | Q16, Q20 |
+| `fig_slide_kp_antiplatelet` | anticoag-19, antiplatelet summary | Q17, Q18, Q19, Q21 |
+
+Plus `fig_warfarin_necrosis` (AMBOSS, clean clinical photograph — used as a **stem** image) and
+`fig_heparin_mech_uw` (UWorld heparin/LMWH mechanism, Q1 and Q15).
+
+**Use the half-life numbers from the slide, not from memory.** The lecture gives factor II 60 h,
+VII 4–6 h, IX 24 h, X 48–72 h, protein C 8 h, protein S 30 h — batch 07 quotes those, so the
+explanation matches what the lecturer said.
+
+### Figures added for batch 05
+
+| Key | Source | Used in |
+|---|---|---|
+| `fig_tx_reactions` | AMBOSS `Transfusion reactions.png` | Q1, Q3, Q4, Q6, Q11, Q14, Q15, Q17, Q18 — explanation |
+| `fig_tx_timeline` | AMBOSS `Transfusion reaction timeline.png` | Q2, Q5, Q7, Q12, Q16, Q19, Q20 — explanation |
+| `fig_abo` | AMBOSS `ABO blood group system.png` | Q8, Q13 — explanation |
+| `fig_o_neg_compat` | AMBOSS `Blood type O- RBC transfusion compatibility.png` | Q9 — explanation |
+| `fig_rh_pregnancy` | AMBOSS `Rhesus (Rh) incompatibility in pregnancy.png` | Q10 — explanation |
+| `fig_trali_cxr`, `fig_hdfn_uw` | AMBOSS / UWorld | resized, unused — the TRALI film carries red and green overlays |
+
+Transfusion is the first block with **no stem images** — nothing in it is a morphology
+question. The two AMBOSS summary figures (the reaction grid and the timeline) carry most of
+the explanations, and they are worth reusing heavily because the whole section is one
+differential.
+
+### Figures added for batch 04
+
+| Key | Source | Used in |
+|---|---|---|
+| `fig_pigment_stones` | UWorld GI `035_pathogenesis_of_pigment_stones.jpg` | Q1 — explanation |
+| `fig_bilirubin` | AMBOSS `Bilirubin metabolism.png` | Q2, Q3 — explanation |
+| `fig_hair_on_end` | AMBOSS `Hair-on-end appearance of the skull.png` | Q8 — **stem** (clean lateral skull radiograph, no annotation) |
+| `fig_thal_minor_uw` | UWorld `75_beta_thalassemia_minor_target_cells.png` | Q9 — explanation |
+| `fig_sickle_mutation` | UWorld `28_sickle_cell_missense_mutation.jpg` | Q12 — explanation |
+| `fig_sickle_inheritance` | UWorld `25_autosomal_recessive_sickle_cell_inheritance.jpg` | resized, unused in the final build |
+
+Everything else in batch 04 reuses batch 03 keys. The skull film is the first non-smear
+stem image in the series; it works because the finding can be described in words
+("the space between the inner and outer tables is widened, with fine perpendicular
+striations") without naming the diagnosis.
+
+### Figures used in batch 03
+
+| Key | Source | Used in |
+|---|---|---|
+| `fig_schistocytes` | AMBOSS `Schistocytes.png` | Q1 — stem |
+| `fig_howell_jolly` | AMBOSS `Howell-Jolly bodies in asplenia.png` | Q1, Q18 — explanation (**has red arrows — explanation only**) |
+| `fig_aiha` | UWorld `35_cold_and_warm_autoimmune_hemolytic_anemia.jpg` | Q2, Q7 — explanation |
+| `fig_spherocytes` | AMBOSS `Spherocytosis.png` (already in `figs/`) | Q4 — stem; Q5 — explanation |
+| `fig_spherocytes_uw` | UWorld `73_hemolytic_anemia_spherocytes_and_reticulocytes.jpg` | Q4 — explanation |
+| `fig_bite_cells` | AMBOSS `Bite cells in … (G6PD) deficiency.png` | Q8 — stem (clean, but pale/low contrast) |
+| `fig_bite_uw` | UWorld `01_g6pd_deficiency_bite_cells.jpg` | Q8, Q11 — explanation |
+| `fig_g6pd_pathway` | UWorld `02_g6pd_nadph_glutathione_pathway.jpg` | Q9 — explanation |
+| `fig_heinz` | AMBOSS `Heinz bodies.png` | Q10 — explanation (granular retics in field; too ambiguous for a stem) |
+| `fig_globin_chains` | UWorld `82_hemoglobin_chain_composition_and_variants.jpg` | Q12, Q13 — explanation |
+| `fig_beta_thal_uw` | UWorld `24_beta_thalassemia_microcytic_target_cells.png` | Q14 — explanation |
+| `fig_target_cells` | AMBOSS `Target cells (codocytes).png` | Q15 — stem |
+| `fig_electrophoresis` | UWorld `12_hemoglobinopathy_electrophoresis_patterns.jpg` | Q17 — explanation |
+| `fig_sickle_smear` | AMBOSS `Erythrocyte morphologies in sickle-cell disease.png` | Q19 — stem |
+| `fig_sickle_target` | AMBOSS `Sickle cell disease with drepanocytes and target cells.png` | Q19, Q20 — explanation |
+
+Reused from earlier batches: `fig_retics` (Q3), `fig_parvo_pronormoblast` (Q6),
+`fig_ida_progression` (Q15), `fig_hepcidin` (Q16).
+
+Checked and rejected for stems: `fig_howell_jolly` (red arrows burned in) and `fig_heinz`
+(the supravitally stained field also contains granular reticulocytes, so "small round
+inclusions" cannot be described unambiguously). Both were moved to explanations. AMBOSS
+captions describing coloured overlays again turned out to describe annotated versions that
+are **not** what is saved in this library — the saved `Spherocytosis.png`, `Schistocytes.png`,
+`Target cells (codocytes).png` and both sickle files are clean. Confirm by viewing, never
+by reading the caption.
+
 ### Figures used in batch 02
 
 | Key | Source | Used in |
@@ -396,6 +504,33 @@ cross-block LO may follow where the vignette genuinely serves both.
 
 ## 8. Build and validate
 
+### From batch 03 on: APPEND, do not build a new file
+
+Jeevs asked for one quiz, not a file per topic. New batches are appended to
+
+```
+OMK/Heme/summative/Jeevs edition _ summative review.html
+```
+
+with `append_quiz.py`, which edits that file in place:
+
+```bash
+cd "OMK/Heme/summative/quiz-toolchain"
+python3 append_quiz.py \
+    questions_batch03_anemia2_hemolysis.py \
+    lo_tags_batch03.py
+```
+
+It applies the same LO tagging and lab-block conversion as `build_quiz.py`, merges the
+new questions onto the end of `PRELOADED_QUESTIONS_JSON` and the new figures into
+`QUIZ_FIGURES`, and leaves every existing patch (LO blocks, the three normalizers, the
+CSS) untouched — so the target must already be a built Jeevs Edition file; the script
+asserts all four features and refuses otherwise. It writes a timestamped `.bak` first and
+aborts if a question looks already appended (duplicate opening 120 characters), so
+re-running it is safe. A third argument overrides the target filename.
+
+`build_quiz.py` is still the tool for creating a *new* quiz from the template:
+
 ```bash
 cd "OMK/Heme/summative/quiz-toolchain"
 python3 build_quiz.py \
@@ -536,6 +671,23 @@ stale — the file is fine. Kill it and start a fresh one on a new port.
 |---|---|---|---|---|---|
 | 01 | Hematopoiesis & Marrow | §1, §2 | 2, 29, 65, 81, 83 | 20 | `Jeevs Edition - Hematopoiesis and Marrow Quiz.html` |
 | 02 | Anemia I · Impaired Production | §4, §5, §6 | 18, 19, 20, 49 | 30 | `Jeevs Edition - Anemia I Impaired Production Quiz.html` |
+| 03 | Anemia II · Hemolysis | §8, §9, §10 | 7, 25, 28 | 20 | appended to `Jeevs edition _ summative review.html` |
+| 04 | Anemia II · Hemolysis, part 2 | §8, §9, §10 | 7, 25, 28 | 15 | appended to `Jeevs edition _ summative review.html` |
+| 05 | Transfusion Medicine | §12, §13, §14 | 31, 61, 74 | 20 | appended to `Jeevs edition _ summative review.html` |
+| 06 | Transfusion Medicine, part 2 | §12, §13, §14 | 31, 61, 74 | 10 | appended to `Jeevs edition _ summative review.html` |
+| 07 | Hemostasis Pharmacology | §15, §16 | 8, 12, 26, 48, 62, 69, 71 | 25 | appended to `Jeevs edition _ summative review.html` |
+| 08 | Hemostasis Pharmacology, part 2 | §15, §16 | 8, 48, 62, 69, 71 | 8 | appended to `Jeevs edition _ summative review.html` |
+| 09 | Anemia Pharmacology | §17 | 9, 70, 72 | 15 | appended to `Jeevs edition _ summative review.html` |
+| 10 | Anemia Pharmacology, part 2 | §17 | 7, 9, 20, 70, 72 | 5 | appended to `Jeevs edition _ summative review.html` |
+| 11 | Infection | §18, §19, §20, §21, §22 | 1, 5, 13, 14, 22, 23, 24, 75, 77 | 20 | appended to `Jeevs edition _ summative review.html` |
+| 12 | Infection, part 2 | §18, §19, §20, §21, §22 | 1, 5, 13, 14, 22, 23, 24, 77 | 18 | appended to `Jeevs edition _ summative review.html` |
+| 13 | Laboratory Foundations | §23, §24, §25 | 5, 19, 20, 27, 28, 33, 59 | 20 | appended to `Jeevs edition _ summative review.html` |
+| 14 | Benign White Cell Disorders | §26, §27, §28 | 1, 4, 31, 66, 76 | 20 | appended to `Jeevs edition _ summative review.html` |
+| 15 | Coagulation I · Bleeding | §29, §30, §31 | 32, 36, 50, 68, 79 | 25 | appended to `Jeevs edition _ summative review.html` |
+| 16 | Coagulation I · Bleeding, part 2 | §29, §30, §31 | 32, 36, 50, 79 | 10 | appended to `Jeevs edition _ summative review.html` |
+| 17 | Coagulation II · Clotting | §32, §33, §34 | 33, 43, 44, 45, 46, 48, 52 | 20 | appended to `Jeevs edition _ summative review.html` |
+| 18 | Coag II top-up + Lymph Node Pathology | §32–§35 | 33, 43, 44, 45, 46, 52, 63, 66 | 16 | appended to `Jeevs edition _ summative review.html` |
+| 19 | Hematologic Malignancy, part 1 (myeloid) | §36, §37, §38, §39 | 6, 37, 38, 39, 52, 54, 58, 66, 80, 82 | 20 | appended to `Jeevs edition _ summative review.html` |
 
 **Batch 01 topics:** fetal→adult hematopoietic sites, red marrow retreat and biopsy site,
 self-renewal vs pluripotency, HSC quiescence, CMP/CLP branch point, EPO source, HIF oxygen
@@ -560,6 +712,299 @@ tapeworm, the Schilling test, anti-intrinsic factor (specific) vs anti-parietal 
 aplastic crisis, bariatric dual deficiency with a normal MCV, high-dose oral B12 by passive
 diffusion, AOCD erythropoietin inappropriately low, transferrin as a negative acute phase
 reactant, breastfed infant of a vegan mother.
+
+**Batch 03 topics:** prosthetic-valve intravascular hemolysis and the dipstick-positive,
+erythrocyte-negative urine; which markers actually localize destruction (urine hemosiderin);
+the corrected reticulocyte count as arithmetic; hereditary spherocytosis with a negative
+Coombs and a high MCHC; osmotic fragility as a surface-area-to-volume test; parvovirus B19
+aplastic crisis (low reticulocytes); spherocytes with a POSITIVE antiglobulin test → warm
+autoimmune hemolysis; G6PD after a sulfonamide (bite cells); the NADPH/glutathione step;
+the falsely normal enzyme assay during a crisis; why a class III variant self-limits;
+counting alpha genes (hemoglobin H); hemoglobin Barts oxygen affinity; the globin switch and
+onset at 6 months; thalassemia trait vs iron deficiency as an iron-studies grid;
+transfusional iron overload → chelation, never phlebotomy; electrophoresis trait vs disease;
+fever in a child with sickle cell disease; sequestration vs aplastic vs vaso-occlusive
+crisis by reticulocyte count; hydroxyurea and hemoglobin F.
+
+**Batch 04 topics:** pigment gallstones from the chronic bilirubin load; filtered free heme →
+acute tubular necrosis; acholuric jaundice (unconjugated bilirubin is albumin-bound, so not
+filtered); vaccinating before splenectomy; pyruvate kinase deficiency (ATP, and the 2,3-BPG
+shift that explains exercise tolerance); infection as the commonest G6PD trigger; autosomal
+dominant recurrence risk and the independence of each pregnancy; marrow expansion and the
+skull radiograph; raised hemoglobin A2 in beta-thalassemia trait; cis vs trans alpha
+deletions and the hydrops risk; acute chest syndrome; why fluids and oxygen work; transcranial
+Doppler → chronic transfusion for stroke prevention; autosplenectomy and Howell-Jolly bodies;
+nitric oxide scavenging → pulmonary hypertension and leg ulcers.
+
+**Batch 05 topics:** the restrictive threshold and TRICC (written in chart/tabular format);
+the platelet threshold before a lumbar puncture; why platelet transfusion fails in immune
+thrombocytopenia; cryoprecipitate for fibrinogen in obstetric DIC; four-factor prothrombin
+complex concentrate plus vitamin K for warfarin reversal; factor VIII concentrate rather
+than plasma; citrate chelation and hypocalcemia in massive transfusion; why ABO antibodies
+exist without exposure; emergency release and RhD rationing; anti-D alloimmunization → HDFN;
+the positive antibody screen → antigen-negative units; delayed hemolytic reaction (anti-Jka);
+the plasma compatibility inversion; acute hemolytic reaction and wrong-blood-in-tube; TRALI;
+TACO as a matched-set contrast; febrile nonhemolytic → leukoreduction; anaphylaxis and IgA
+deficiency; the septic platelet unit; TA-GVHD → irradiation.
+
+**Batch 06 topics (the 10 gaps batch 05 left):** the 30% factor-activity threshold and the
+"treating the number" plasma error; product storage conditions as a matched set (the platelet
+exception); albumin for volume without a hemostatic requirement; type and screen versus type
+and cross; the front-type/back-type ABO discrepancy → recollect the sample; hemolytic disease
+of the fetus and newborn (IgG crosses, IgM does not); alloimmunization in sickle cell disease
+→ extended antigen matching; the reaction algorithm's first step (stop, then clerical check);
+the mild allergic reaction, the one that may be resumed; and the transfusion-refusal
+conversation.
+
+**Batch 07 topics:** chain length and target (why fondaparinux leaves the aPTT normal); HIT
+recognition and management; why warfarin alone is hazardous in HIT; factor half-lives and the
+bridge; warfarin-induced skin necrosis; CYP2C9 inhibition raising the INR; the vitamin K diet
+conversation; warfarin teratogenicity; idarucizumab for dabigatran; 4F-PCC for a -xaban (andexanet
+withdrawn); unfractionated heparin in renal failure; rivaroxaban with food; apixaban in kidney
+disease; the mechanical-valve exception; antithrombin deficiency causing heparin resistance;
+aspirin's irreversible COX-1 inhibition; clopidogrel/CYP2C19/omeprazole; prasugrel after TIA;
+ticagrelor dyspnea; glycoprotein IIb/IIIa thrombocytopenia at 6 hours; cilostazol in heart
+failure; white clot versus red clot; plasminogen → plasmin; reversing thrombolysis with
+cryoprecipitate and tranexamic acid; the thrombolysis contraindication list.
+
+**Batch 08 topics (the 8 gaps batch 07 left):** enzyme induction lowering the INR; the DOAC
+boxed warning on neuraxial anesthesia; alcohol's two directions (acute inhibition, chronic
+induction); the aspirin dose paradox; vorapaxar and the PAR-1 thrombin door; tenecteplase as a
+single bolus; heparin's non-bleeding harms (hyperkalemia, osteoporosis); and edoxaban's
+backwards renal rule.
+
+**Batch 09 — Anemia Pharmacology (§17), 15 items:** acid and Fe²⁺ with the proton pump inhibitor;
+when to abandon the oral route; premedicating an iron infusion (steroid yes, Benadryl no); ferric
+carboxymaltose and FGF23-driven hypophosphatemia; acute pediatric iron poisoning → deferoxamine;
+the three chelators and their boxed warnings; how long to continue iron after the hemoglobin
+normalizes; hypokalemia and hyperuricemia when a stalled marrow restarts on B12; folinic acid
+bypassing DHFR; the ESA mechanism and the reticulocyte-first response; the boxed warnings (11 g/dL
+ceiling, 1 g/dL per 2 weeks rate rule); functional iron deficiency as apparent ESA resistance;
+vadadustat and HIF stabilization; luspatercept versus an ESA in thalassemia; and complement
+inhibitors requiring meningococcal vaccination.
+
+Batch 09 uses the `anemiadrug-*` lecture slides from `assets/` the same way batch 07 used the
+`anticoag-*` ones — nine of them, keyed `fig_slide_*`.
+
+**Batch 10 topics (the 5 gaps batch 09 left):** hydroxyurea and fetal hemoglobin induction (the
+gamma chain cannot enter the sickle polymer; HbF ≥ 20% as the threshold); the enteric-coated
+formulation that releases its iron past the duodenum ("E-C and S-R are D-O-A"); the ESA cancer
+boxed warning's third clause — never when the anticipated outcome is curative; ferumoxytol as an
+iron oxide interfering with magnetic resonance imaging for ~3 months; and proximal versus terminal
+complement inhibition in PNH (C3d-positive, IgG-negative direct antiglobulin test with a normal
+LDH — "C3 catches more than C5").
+
+Batch 10 adds one figure, `fig_slide_sickle_complications`, from `assets/hemolysis-19-*`.
+
+**Batch 11 — Infection (§18–§22), 20 items:** sepsis — the bidirectional temperature and
+leukocyte criteria with three qSOFA points and the time-dependent bundle; procalcitonin as the
+only cause-specific row on the laboratory panel; viral sepsis triggered by DAMPs rather than
+PAMPs; the source-to-organism map (abdominal → *Bacteroides fragilis*). HIV microbiology — p24
+and the *gag* gene behind 4th-generation testing; the NNRTI allosteric pocket and its single-
+mutation collapse; CXCR4 tropism making maraviroc useless. HIV clinical — the nonreactive screen
+inside the window → HIV-1 NAT; PJP with the steroid thresholds (PaO₂ < 70 or A–a ≥ 35) and the
+cholesterol-not-ergosterol reason the antifungals fail; paradoxical IRIS read off the improving
+virology; CMV retinitis in the CD4 < 50 tier. Vector-borne — bubonic plague in the western US
+(bipolar rods, gentamicin); the blocked proventriculus; bacillary angiomatosis versus Kaposi
+sarcoma (biopsy, and why serology fails in the immunosuppressed); babesiosis with doxycycline as
+the trap; chloroquine and heme polymerase. VHF — dengue and the never-NSAIDs rule; hantavirus
+HFRS with its 3–9 week incubation and immunopathologic AKI; Lassa and bilateral sensorineural
+hearing loss; Crimean–Congo from a *Hyalomma* tick with ~30% mortality.
+
+Batch 11 adds 19 figures — the `sepsis-*`, `hivmicro-*`, `hivcase-*`, `bli2-*` and `vhf-*`
+lecture assets. Two are stem images (the PJP chest CT, the bacillary angiomatosis lesions); the
+rest are explanation slides. Note for future batches: `assets/bli2-yersinia-pestis-bipolar-*`
+and `ss-infx-yersinia-bipolar` are stock images with a visible Alamy watermark — do not embed
+them; the bubo photograph was used instead.
+
+**Batch 12 topics (the 18 gaps batch 11 left):** NEWS2's six parameters against MEWS's five
+(oxygen saturation is the one added); the septic shock definition as a strict subset —
+fluid-refractory hypotension PLUS a cellular/metabolic abnormality; post-sepsis syndrome and how
+much of it is neuropsychiatric. HIV — *gag*/*pol* cleaved by VIRAL protease while *env* is cleaved
+by HOST protease (why PIs spare the spikes); integration as the irreversible step behind the latent
+reservoir; cobicistat as an enhancer with no antiviral activity; JC virus and PML. HIV clinical —
+the live vaccine rule and the recombinant zoster exception; U = U and the PARTNER trial; the
+needlestick 72-hour window (start PEP before the source result); booster + over-the-counter nasal
+steroid → iatrogenic Cushing with a LOW cortisol and ACTH. Vector — Ervebo/Zaire against a
+Bundibugyo outbreak; cat scratch disease, where the inoculum is flea feces and the claw is only the
+needle; secondary plague pneumonia and why it transmits by aerosol anyway; RTS,S and the sporozoite
+bottleneck. VHF — Dengvaxia's prior-infection prerequisite; the M segment as the only antibody-
+accessible target; New World HCPS versus Old World HFRS, settled by a normal creatinine.
+
+Batch 12 adds 14 figures. Two stem images (the cat scratch cervical node, the plague pneumonia
+chest radiograph); the rest explanation slides.
+
+**Batch 13 — Laboratory Foundations (§23–§25), 20 items:** §23 — which three values are measured
+and which are arithmetic; thalassemia versus iron deficiency separated by the erythrocyte count;
+the reticulocyte count as the normocytic branch point; systematic bias versus random bias (the
+15% platelet trap); side scatter and the eosinophil; the immature platelet fraction as the
+reticulocyte count for platelets; the averaging trap after transfusion, caught by a wide RDW.
+§24 — the feather edge that manufactures spherocytes; echinocyte versus acanthocyte (kidney vs
+liver, or a bad slide); target cells with normal iron → electrophoresis; schistocytes settled by
+the coagulation screen; *P. vivax* hypnozoites; the toddler's milk as a three-way cause; the
+deliberately partial transfusion in a compensated chronic anemia. §25 — cold agglutinins and the
+impossible MCHC; pseudothrombocytopenia recognised by the absence of bleeding; microcytes counted
+as platelets; nucleated red cells inflating the white count; lipemia inflating the hemoglobin; the
+uninverted tube producing an artefactual pancytopenia.
+
+Batch 13 adds 13 figures from the `cbc-*` and `wbc-*` lecture assets. Three stem images (target
+cells, schistocytes, the iron-deficiency smear) reuse figures already in the file. Note that
+`cbc-20`, `cbc-21` and `wbc-07` carry burned-in labels naming the finding, so they are explanation
+figures only.
+
+**§23–§25 are covered end to end** (20 items). Batch 13 was authored under the option-length rule
+below and shipped at 15% uniquely-longest before append.
+
+**Batch 14 — Benign White Cell Disorders (§26–§28), 20 items:** §26 — computing the ANC when the
+percentage looks normal; febrile neutropenia below 200/µL, where fever may be the only sign because
+pus is dead neutrophils; the Duffy-null phenotype and the harm of one reference range; drugs as the
+adult cause of ineffective production; why a bacteriostatic agent fails in a host who cannot finish
+the job; a septic neonate whose count is suppressed rather than raised. §27 — the leukemoid
+reaction with Döhle bodies, toxic granulation and vacuolization; the inverted blast pyramid with
+Auer rods; the reactive lymphocytosis read off the cytoplasmic 'skirt' and the variety of
+appearances; the leukoerythroblastic picture; persistent basophilia → BCR-ABL; pertussis as the
+bacterium that raises lymphocytes. §28 — chronic granulomatous disease with a NORMAL neutrophil
+count (the qualitative/quantitative split); the catalase logic; Bruton's 6-month maternal-antibody
+window and absent tonsils; SCID where only early transplant changes the outcome; DiGeorge as one
+neural crest failure with five consequences; irradiated components (leukoreduction is the trap);
+live vaccines plus cocooning the household; and ADA deficiency, where transplant corrects the blood
+compartment and not the neurons.
+
+Batch 14 adds 18 figures from the `wbc-*` lecture assets, all explanation figures — `wbc-04`,
+`wbc-05` and `wbc-07` carry burned-in labels naming the finding, so none is used in a stem.
+
+**§26–§28 are covered end to end** (20 items). Two authoring notes from this batch: LO 66's FIRST
+anchor is `s31b-node-architecture` (§35), so reactive-versus-malignant items must be tagged
+`(66, "s24-reactive")` or they file themselves under the wrong section — this was caught after
+append and corrected in place. And a lab row reading "Serum IgA undetectable (N=…)" fails
+`_native()`, which splits at the first numeric token; write `<7 mg/dL` instead.
+
+**Batch 15 — Coagulation I · Bleeding (§29–§31), 25 items:** §29 — factor 12 (long aPTT, no
+bleeding) in a man with an uneventful tonsillectomy; the short-draw citrate tube and the 9:1 rule;
+the incubated mixing study for a slow factor 8 antibody; a normal screen in von Willebrand disease,
+because the platelets were spun out before the test began; factor 13 and delayed bleeding with
+three normal screens; the isolated long PT of vitamin K deficiency (factor 7's short half-life);
+what a D-dimer actually proves; heparin contamination from a line draw, proved by a normal
+peripheral redraw. §30 — hemarthrosis and the expected pattern; factor assays as the only way to
+separate hemophilia A from B; severity by factor level against the 50% rule; the inhibitor and the
+bypassing agent; emicizumab's falsely SHORT aPTT in a trauma patient; the activity-to-antigen ratio
+(type 2); desmopressin as endothelial release, not synthesis; type 2B where desmopressin is wrong;
+Bernard-Soulier read off the ristocetin column plus big platelets; Glanzmann versus aspirin; the
+grey zone with blood group O; and reading an X-linked pedigree. §31 — DIC with the fibrinogen TREND
+as the finding; factor 5 separating vitamin K deficiency from liver disease; why a cirrhotic INR
+does not justify plasma before a paracentesis; hemorrhagic disease of the newborn after a home
+birth; and Heyde syndrome.
+
+Batch 15 adds 17 figures from the `coag1-*` lecture assets, all explanation figures.
+
+**§29–§31 are covered end to end** (25 items). Authored under the option-length rule and rebalanced
+before append: 8 of 25 keyed answers started as the single longest option and 0 finished that way,
+mostly by lengthening short distractors rather than trimming the answer.
+
+**Batch 16 — the 10 Coag I gaps:** the vessel wall (hereditary hemorrhagic telangiectasia);
+protein C/S inactivating factors Va and VIIIa; factor VIII separating liver disease from DIC;
+thrombin's feed-forward loop; dysfibrinogenemia (bleeds AND clots); dense granule storage pool
+disease with albinism; type 2N von Willebrand disease masquerading as mild hemophilia A; the
+thrombin time and heparin rebound after bypass; Kasabach-Merritt phenomenon; and viscoelastic
+testing in massive hemorrhage.
+
+**Batch 17 — Coagulation II · Clotting (§32–§34), 20 items:** §32 — TTP treated on suspicion with
+plasma exchange (and platelets withheld); the ADAMTS13/ultra-large multimer mechanism; Shiga toxin
+HUS; atypical HUS and eculizumab; why the aHUS genotype decides transplant outcome; and a
+six-row matched-set grid separating the TMAs from DIC on PT/aPTT/fibrinogen/D-dimer. §33 — factor
+V Leiden as activated protein C resistance; prothrombin G20210A as a 3' UTR regulatory mutation;
+antithrombin deficiency causing heparin resistance in nephrotic syndrome; neonatal purpura
+fulminans; the lupus anticoagulant paradox and the excess-phospholipid confirmation; antibody
+without syndrome (do not anticoagulate); and the biological false-positive RPR. §34 — the 4T score
+with argatroban; why LMWH is closed off after HIT; rapid-onset HIT inside the 100-day window;
+anti-Xa rather than aPTT for LMWH; duration set by the circumstances, not the genotype, with an
+uninterpretable on-heparin antithrombin level; who is worth testing at all; and warfarin-induced
+skin necrosis.
+
+Batch 17 adds 15 figures from `coag2-*`, plus the existing schistocyte smear as a stem image. It
+also varies option counts deliberately — one 4-option item, one 6-option matched-set grid, the rest
+five — and the validator was generalised from A–E to A–H to allow it. A run of four consecutive
+identical keys appeared after append and was broken by rephrasing one correct option
+("Factors Va and VIIIa" → "Activated factors V and VIII"), which changes the alphabetization and
+not the medicine.
+
+**Batch 18 — Coag II top-up (8) + Lymph Node Pathology (8):** Virchow's triad; the postpartum peak;
+the reversible oral-contraceptive-plus-smoking combination; essential thrombocythemia versus
+reactive thrombocytosis; hyperhomocysteinemia poisoning protein C; pneumococcal HUS (neuraminidase
+and the T antigen); drug/transplant-associated TMA; and a low 4T score as a reason NOT to test.
+Then §35 — the node floor plan; why BCL2 is negative in a reactive germinal center; mononucleosis
+versus Hodgkin decided by retained CD20/OCT2 rather than by CD30; Kikuchi-Fujimoto; Rosai-Dorfman
+and emperipolesis; hyaline vascular Castleman and its dendritic-cell sarcoma risk; formalin as a
+one-way door; and hemophagocytosis as one criterion of eight.
+
+**Batch 19 — Hematologic Malignancy part 1 (§36–§39), 20 items:** the core construct (differentiation
+stage sets tempo); blasts as non-functional cells in a white count of 87,000; tumor lysis (three
+highs and one low); APL treated on suspicion; the grade paradox (aggressive = curable); ATRA as
+differentiation therapy; flow cytometry assigning lineage; fitness rather than age deciding
+induction; therapy-related AML; the 20% blast line; the MDS paradox and what actually kills in it;
+CML versus a leukemoid reaction (LAP low, basophilia, BCR-ABL); reading the phase criteria (24%
+basophils, 14% blasts); T315I → ponatinib; polycythemia vera; ruxolitinib helping symptoms and
+survival but not counts; the two-factor ET risk score; the polycythemia split on erythropoietin
+direction; and why the MPNs clot rather than fail.
+
+Authoring note from batch 19: six of twenty items needed re-alphabetisation after drafting, all
+from the same two causes — a leading "A "/"An " sorting before a longer word, and options
+beginning with the same first word. Check those two patterns first when the validator flags order.
+
+### File size and the 30 MB delivery limit
+
+At 301 questions and 151 figures the file reached 32.4 MB, and 95% of that was embedded base64
+images. That crosses the 30 MB ceiling for sending a file to phone/web viewers, so the desktop app
+received it and Remote Control did not.
+
+Fix applied in place: every embedded figure was decoded, re-encoded at `-Z 900` / quality 80, and
+kept only if the result was SMALLER than the original (so nothing is ever degraded upward).
+Embedded bytes fell 30.9 MB → 20.0 MB and the file 32.4 MB → 20.5 MB, with no question touched.
+Figures now render at 900px wide, which is still above the display width in the quiz.
+
+For future batches: source figures in `figs/` are still created at 1100px, so the shrink step can
+be re-run on the live file whenever it approaches the limit again. Roughly 30 more figures is the
+headroom before it needs repeating.
+
+### Option-length audit (run after batch 12)
+
+A test-wise student can score above chance by picking the longest option, so the length of the
+correct answer must not stand out. The first audit of all 206 items found a real leak:
+
+| Metric | Before | After | Chance |
+|---|---|---|---|
+| Correct option is the single longest | 35.4% | 8.3% | 20% |
+| Correct option is the single shortest | 18.4% | 15.0% | 20% |
+| Mean length rank of the correct option (1 = longest) | 2.37 | 2.90 | 3.00 |
+| Mean excess length over the distractors | +6.9 chars | +0.8 chars | 0 |
+
+Fifty-nine questions were rebalanced, preferring to LENGTHEN the short distractors with true,
+specific clauses (which also makes them more plausible) and trimming the correct option only
+where wording was redundant. No medicine was changed. The rebalance script re-alphabetises each
+edited question and remaps both `correct` and the `wrongExplanations` keys, so nothing silently
+drifts — see `scratchpad/rebalance.py` for the pattern.
+
+**Rule for future batches:** before appending, check that the keyed option is not the longest.
+The quickest fix is to give two distractors an extra true qualifier rather than to cut the answer.
+
+**Known drift:** these 59 edits were applied to the live quiz file only. The batch modules in
+`quiz-toolchain/` still hold the original wording. That is harmless — `append_quiz.py` only ever
+appends new questions — but the modules are no longer a byte-exact record of what is in the file.
+
+**§18–§22 are covered end to end** (38 items across batches 11 and 12). §20's only listed objective
+is LO 77, so the HIV-clinical items carry `(77, "s19-hiv-clinical")` in the anchor form.
+
+**§15–§16 are covered end to end** (33 items across batches 07 and 08). **§17 is covered end to
+end** (20 items across batches 09 and 10).
+
+**§12–§14 are covered end to end** (30 items across batches 05 and 06), weighted per a
+third-year's advice toward products/indications and the reaction differential. Batch 06's
+final item is the first COMMUNICATION/ETHICS question in the series — the house style calls
+for one wherever the content touches patient interaction, and batches 01–05 had none.
+
+**§8–§10 are now covered end to end** across batches 03 and 04 (35 items). Not given their
+own item, and named in explanations instead: the hemoglobin H inclusion stain, exchange
+transfusion arithmetic, and the gene therapies (Casgevy, Lyfgenia).
 
 §4–§6 is now covered end to end. The only review-file content not given its own item is
 the AOCD hemophagocytosis mechanism and the epidemiology line ("most common anemia in
@@ -598,7 +1043,6 @@ PY
 |---|---|---|
 | Anemia — evaluation & classification | §3 | 19, 42, 53, 55 |
 | Porphyrias & lead | §7 | 35 |
-| Hemolysis & the globin disorders | §8, §9, §10 | 25, 28 |
 | Laboratory foundations (CBC, smear, interference) | §23, §24, §25 | 27, 59 |
 | Coagulation & bleeding | §29, §30, §31 | 32, 36, 50 |
 | Splenic trauma & post-traumatic edema | §55, §56 | 47, 73, 34 |
@@ -613,18 +1057,206 @@ OMK/Heme/summative/
 ├── OMK_2A_Heme_Summative_3_Question_Bank.html      ← separate 117-question bank, also LO-tagged
 ├── heme_summative3_lo_question_map.json            ← LO ↔ section ↔ question map
 ├── index.html                                      ← item-writing spec + lab reference table
-├── Jeevs Edition - Hematopoiesis and Marrow Quiz.html        ← batch 01
-├── Jeevs Edition - Anemia I Impaired Production Quiz.html    ← batch 02
+├── Jeevs edition _ summative review.html                    ← THE LIVE QUIZ — batches 01+02+03, append here
+├── Jeevs Edition - Hematopoiesis and Marrow Quiz.html        ← batch 01, standalone
+├── Jeevs Edition - Anemia I Impaired Production Quiz.html    ← batch 02, standalone
 ├── QUIZ_BUILD_METHOD.md                            ← this file
 └── quiz-toolchain/
     ├── build_quiz.py                               ← clones template, injects Q + figures + LO blocks
+    ├── append_quiz.py                              ← appends a batch to an existing quiz, in place
     ├── questions_batch01_hematopoiesis_marrow.py
     ├── lo_tags_batch01.py
     ├── questions_batch02_anemia1_impaired_production.py
     ├── lo_tags_batch02.py
+    ├── questions_batch03_anemia2_hemolysis.py
+    ├── lo_tags_batch03.py
     └── figs/                                       ← resized JPEGs, keyed fig_*
 ```
 
 To start the next batch: copy the latest `questions_batchNN_*.py` and `lo_tags_batchNN.py`
 to the next number, replace the contents, add any new figures to `figs/`, and run
-`build_quiz.py` with the new filenames (§8).
+`append_quiz.py` with the new filenames (§8) — appending to the live quiz, not building a
+new file.
+
+---
+
+## Batch 20 — Hematologic Malignancy, part 2 (lymphoid)
+
+**Sections §40, §41, §42 · native LOs 3, 21, 30, 40, 41, 56, 57, 67 · 26 questions · 16 new figures.**
+
+**§40 (12):** acute lymphoblastic leukemia leaves the marrow, so the meninges are a sanctuary site →
+intrathecal chemotherapy for every patient; the favorable/unfavorable prognostic lists in childhood
+leukemia (age 2–5 is favorable, which is also the peak incidence group); BCR::ABL1 in adult
+precursor-B disease → add a tyrosine kinase inhibitor; the naming convention (leukemia = marrow,
+lymphoma = mass) read off a thymic T-lymphoblastic mass; double hit lymphoma at ~30% survival beating
+the worst possible International Prognostic Index score of 50%; a lymphocyte count of 68,000 that is
+**not** a treatment indication; a falling hemoglobin in CLL that is autoimmune hemolysis, not marrow
+infiltration → direct antiglobulin test; alcohol-induced nodal pain → **excisional** biopsy, because
+the Reed–Sternberg cell is 1–2% of the tissue; IgM hyperviscosity → emergent plasmapheresis; gastric
+MALT cured by eradication; nodal marginal zone cured by treating hepatitis C; CD5+/CD23− → mantle
+cell and cyclin D1.
+
+**§41 (11):** nodular sclerosis vs mixed cellularity settled by **fibrosis alone**; why PAX5 beats
+CD20 (a graded result with a built-in internal control); NLPHL retaining its B-cell program → the
+rituximab target; contiguous vs noncontiguous spread, with abdominal disease over a clean neck and
+chest as the non-Hodgkin signature; Burkitt (MYC, BCL2 negative, Ki-67 > 95%) against follicular
+(BCL2 positive, t(14;18)) — grow-fast vs die-slow; BCL2 inside a follicle as the one stain that
+separates lymphoma from hyperplasia; hairy cell leukemia found by **monocytopenia plus a dry tap**;
+mycosis fungoides → Sézary, confirmed by the same clone in blood and skin; dermatopathic
+lymphadenopathy as the staging trap; ALCL vs classic Hodgkin settled by ALK (and sheets vs scattered
+cells); ATLL flower cells, HTLV-1 geography and hypercalcemia.
+
+**§42 (3):** the two numbers 10 and 3 separating MGUS from smoldering myeloma, and the front-loaded
+smoldering risk curve that drives 4-monthly rather than 6-monthly surveillance; free light chains
+causing cast nephropathy behind a modest electrophoresis spike and a bland urinalysis; myeloma vs
+Waldenström — bone and kidney vs viscosity and nerve.
+
+### The option helper — adopted in batch 20, use it from now on
+
+Hand-alphabetising options caused ~30 defects across batches 11–19 and six in batch 19 alone. Batch 20
+supplies options as a **dict `{option text: wrong-answer explanation}`** and lets the helper sort:
+
+```python
+def q(stem, opts, correct, explanation, eli5, image=None, ...):
+    bodies = sorted(opts, key=str.lower)        # same key the validator uses
+    ci = bodies.index(correct)
+    d = {"choices": [f"{chr(65+i)}. {b}" for i, b in enumerate(bodies)],
+         "correct": ci,
+         "wrongExplanations": {str(i): opts[b] for i, b in enumerate(bodies) if i != ci}}
+```
+
+The correct answer is named by its **text**, not its index, so nothing has to be renumbered. Batch 20
+passed the alphabetical, wrongExplanations-key and letter-prefix checks on the first run — the first
+batch in the series to do so. It also removes the need for the `rebalance.py` re-sort step; only the
+option-length audit remains manual (batch 20 shipped at 1 of 26 uniquely longest before a one-word
+fix, then 0).
+
+### Figures
+
+Sixteen `lpd-*` lecture assets, keyed `fig_lpd_*`. Stem images: the nodular sclerosis low-power
+(collagen bands), the gastric lymphoepithelial lesion, the starry sky, back-to-back follicles, the
+hairy cell, Pautrier microabscesses, ALCL hallmark cells, ATLL flower cells, and the CLL smudge-cell
+smear. Explanation figures: the Reed–Sternberg cell, the PAX5 comparison, popcorn cells, the neoplasm
+origin map, the Hodgkin-vs-non-Hodgkin table, the follicular-vs-reactive comparison, and the mycosis
+fungoides plaques.
+
+Only two carry any burned-in marking, and neither names a finding: arrows on the smudge-cell and
+hallmark-cell images (described in the caption as "arrows"), and a `©WebPathology` watermark on the
+Pautrier image. `lpd-sezary-syndrome-blood-labeled`, both WHO classification tables and both summary
+tables are **labelled** and were not used.
+
+These were resized at `-Z 780 -s formatOptions 62` because the file was already at 24 MB. After the
+append the file hit 28.3 MB, so the whole figure library was re-encoded in place at
+`-Z 850 -s formatOptions 68`, keeping each result only if smaller: **embedded 26.6 → 20.0 MB, file
+28.3 → 21.8 MB.** Run that sweep whenever the file passes ~26 MB; it is lossless in practice at this
+viewing size and buys back two batches of headroom.
+
+### State after batch 20
+
+**363 questions · 185 figures · 21.8 MB · 70 of 83 objectives covered, 13 remaining.**
+8.5% uniquely-longest options, longest answer-key run 3.
+
+| Batch | Block | Review sections | Native LOs | Qs | File |
+|---|---|---|---|---|---|
+| 20 | Hematologic Malignancy, part 2 (lymphoid) | §40, §41, §42 | 3, 21, 30, 40, 41, 56, 57, 67 | 26 | appended to `Jeevs edition _ summative review.html` |
+
+The 13 uncovered objectives, grouped as they would be written:
+
+- **Chemotherapy pharmacology (§43, §45, §46)** — LO 64 (principles that enhance a regimen), LO 11
+  and LO 16 (targeted therapy and immunotherapy: mechanisms, toxicities), LO 15 (hormonal therapy
+  toxicities). Four objectives, three sections — the largest remaining block.
+- **Spleen and splenic trauma (§55, §11, §52)** — LO 73 (mechanisms of splenic injury, anatomy,
+  rupture/abscess/infarct/pseudoaneurysm) and LO 47 (management of traumatic splenic injury).
+- **Lymphatics (§48, §56, §57)** — LO 34 (post-traumatic edema) and LO 60 (anatomic pathways of
+  lymphatic dissemination in metastatic carcinoma).
+- **Anemia stragglers** — LO 42 and LO 55 (§3, the MCV-based differential and the management plan)
+  and LO 35 (§7, porphyria and lead poisoning). These three are the only *content* gaps left outside
+  the untouched blocks; §3 is well covered by questions tagged to neighbouring objectives, so LO 42
+  and LO 55 are largely a tagging gap rather than a knowledge gap.
+- **Deep vein thrombosis diagnosis (§49)** — LO 10. Adjacent to the covered §34 VTE management
+  material.
+- **Prescription writing (§54)** — LO 78.
+
+---
+
+## Batch 21 — Antineoplastic pharmacology, lymphatics & thrombosis
+
+**Sections §43, §45, §46, §48, §56, §57, §49 · native LOs 10, 11, 15, 16, 34, 60, 64 · 25 questions ·
+13 new figures.** The first batch to span three blocks, because the remaining objectives were
+scattered rather than clustered.
+
+**§43 traditional chemotherapy (7):** why combination regimens require differing mechanisms AND
+differing toxicities — the second half being a dosing argument, since overlapping toxicity forces
+dose reduction (R-CHOP as the worked example); the log-kill hypothesis and the 10⁹-cell / 1-gram
+detection threshold that justifies adjuvant therapy after a "complete" resection; MDR1 and
+P-glycoprotein producing cross-resistance to structurally unrelated drugs; the G0 problem —
+methotrexate (cell cycle-specific) versus cyclophosphamide (nonspecific); mesna and acrolein, taught
+as one of three rescue agents; **intrathecal vincristine is uniformly fatal**, and the minibag that
+makes the error physically impossible; oxaliplatin's cold-induced pharyngolaryngeal dysesthesia,
+explicitly not an allergy.
+
+**§45 targeted therapy and immunotherapy (8):** size decides format — no monoclonal antibody can hit
+an intracellular target, which is why every signal transduction inhibitor is a small molecule;
+trastuzumab and HER2 on cardiomyocytes as the cleanest case of toxicity following the target's normal
+tissue distribution; reading an antibody-drug conjugate's payload out of its generic name
+(-emtansine/-vedotin → neuropathy; -deruxtecan/-govitecan → myelosuppression); the EGFR acneiform
+rash as on-target toxicity rather than allergy, separated from an infusion reaction by timing;
+cytokine release syndrome at 9 hours → tocilizumab; **ICANS on day 6 → dexamethasone and a
+non-sedating anticonvulsant, NOT tocilizumab**; checkpoint colitis → corticosteroids, with loperamide
+as the named trap; daratumumab, CD38 on red cells, and the panreactive antibody screen that can mask
+a real alloantibody.
+
+**§46 hormonal therapy (3):** why an aromatase inhibitor fails in a premenopausal woman; SERM versus
+aromatase inhibitor read off the bone finding (agonist in bone and endometrium versus estrogen
+removed everywhere); leuprolide tumour flare causing cord compression, and the mandated concurrent
+anti-androgen.
+
+**§48 / §56 lymphedema and post-traumatic edema (3):** the Stemmer sign and the discriminating triad
+(unilateral → not heart failure; negative ultrasound → not a clot; square toes → lymphedema) after a
+groin operation; filariasis as the worldwide cause, which is the same picture decided by a history
+question about geography; acute compartment syndrome at 6 hours, where the palpable pulses are the
+trap because it is a capillary-perfusion problem.
+
+**§57 lymphatic spread (2):** Virchow's node and the thoracic duct's left-sided termination (with the
+right lymphatic duct as the contrast); the sentinel node, whose point is avoiding the dissection that
+is itself the commonest cause of lymphedema in the developed world.
+
+**§49 DVT/PE diagnosis (2):** duplex ultrasound first in a swollen limb 9 days post-arthroplasty,
+with the tempo clue — swelling that had improved and then worsened again; and **the V/Q scan, not CT
+angiography, as the screening test for chronic thromboembolic pulmonary hypertension.**
+
+### Notes
+
+- The option helper (batch 20) again produced zero alphabetical and zero wrongExplanations-key
+  errors on the first run. The only manual step was the option-length audit: 5 of 25 keyed answers
+  were uniquely longest (20%, exactly chance), fixed to **0 of 25** by lengthening distractors with
+  true qualifiers — "cross-links" → "interstrand cross-links", "red cell" → "red blood cell".
+- **LO 34's first-listed anchor is `s53-traumatic-edema` (§56), not the lymphedema section.** The two
+  lymphedema items therefore need `(34, "s43-lymphedema")`; only the compartment syndrome item takes
+  a bare `34`. Same trap as LO 66 in batch 14.
+- LO 31's anchors are `s11-products` and `s12-immuno` — there is no `s13-compatibility`. The
+  daratumumab item's cross-block tag uses `(31, "s12-immuno")`.
+- Figures: 13 `chemo-*` and `lymph-*` lecture assets at `-Z 850 -s formatOptions 68`, ~976 KB total.
+  All are explanation figures except the established-lymphedema photograph, which is clean and
+  unlabelled and is used as a stem image. The Chemo Man mnemonic slide (`chemo-10`) is worth reusing
+  heavily — it is the organ-toxicity map the combination-therapy rule depends on.
+
+### State after batch 21
+
+**388 questions · 198 figures · 23.2 MB · 77 of 83 objectives covered, 6 remaining.**
+8.0% uniquely-longest options, longest answer-key run 3.
+
+| Batch | Block | Review sections | Native LOs | Qs | File |
+|---|---|---|---|---|---|
+| 21 | Antineoplastic pharmacology, lymphatics & thrombosis | §43, §45, §46, §48, §49, §56, §57 | 10, 11, 15, 16, 34, 60, 64 | 25 | appended to `Jeevs edition _ summative review.html` |
+
+Remaining objectives, and what each would need:
+
+- **LO 73 (§55, §11, §52) and LO 47 (§55)** — the spleen: mechanisms of splenic injury, key anatomy
+  and physiology, rupture/abscess/infarct/pseudoaneurysm, and the medical, surgical and
+  interventional management of traumatic splenic injury. The largest remaining block; ~8 questions.
+- **LO 35 (§7)** — porphyria and lead poisoning. A genuine content gap; ~4 questions.
+- **LO 78 (§54)** — writing a complete prescription. ~2–3 questions.
+- **LO 42 and LO 55 (§3)** — the MCV-based differential of anemia and the management plan. Largely a
+  TAGGING gap: §3's content is heavily covered by questions tagged to LOs 18, 19, 20, 25, 28 and 49.
+  Either write 2–3 explicitly §3-anchored items, or retag existing ones.
