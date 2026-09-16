@@ -417,6 +417,7 @@ body.nbme-lock{overflow:hidden}
 .sum-item.incorrect .sum-state{background:var(--red-bg);color:var(--red)}
 .sum-item.unanswered .sum-state{background:var(--amber-bg);color:var(--amber)}
 .sum-answer{font-size:13px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;color:var(--slate)}
+.sum-flag{display:inline-flex;align-items:center;width:max-content;min-height:30px;padding:0 12px;border:1px solid rgba(192,123,26,.34);border-radius:999px;background:var(--amber-bg);color:var(--amber);font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
 .sum-body{display:grid;gap:14px}
 .sum-section{padding:16px 18px;border-radius:18px;border:1px solid rgba(18,32,60,.06);background:rgba(246,243,236,.56)}
 .sum-label{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:800;letter-spacing:1.7px;text-transform:uppercase;color:var(--mist);margin-bottom:9px}
@@ -1912,6 +1913,7 @@ function buildSummaryStatsHTML(){
     <div class="sum-stat"><div class="sum-stat-label">Score</div><div class="sum-stat-value">${percent==='—'?'—':percent+'%'}</div></div>
     <div class="sum-stat"><div class="sum-stat-label">Correct</div><div class="sum-stat-value">${NC}</div></div>
     <div class="sum-stat"><div class="sum-stat-label">Incorrect</div><div class="sum-stat-value">${NI}</div></div>
+    <div class="sum-stat"><div class="sum-stat-label">Flagged</div><div class="sum-stat-value">${getMarkedCount()}</div></div>
     <div class="sum-stat"><div class="sum-stat-label">Questions</div><div class="sum-stat-value">${questions.length}</div></div>
   </div>`;
 }
@@ -1924,6 +1926,7 @@ function buildReviewSheetItemsHTML(){
       <div class="sum-meta">
         <div class="sum-num">Question ${index+1}</div>
         <div class="sum-state">${meta.label}</div>
+        ${marked[index]?'<div class="sum-flag">⚑ Flagged</div>':''}
         <div class="sum-answer">Correct Answer: ${correctLetter}</div>
       </div>
       <div class="sum-body">
@@ -1950,7 +1953,7 @@ function buildReviewSheetHTML(forPrint){
       <div>
         <div class="sum-kicker">Quiz Review Sheet</div>
         <h2 class="sum-title">${title}</h2>
-        <div class="sum-sub">Question-by-question review with questions, answer choices, personal notes, correct-answer explanations, and ELI5 summaries.</div>
+        <div class="sum-sub">Question-by-question review with flagged status, personal notes, questions, answer choices, correct-answer explanations, and ELI5 summaries.</div>
       </div>
       ${actionHTML}
     </div>
@@ -1985,6 +1988,7 @@ function getSummaryPrintStyles(){
     .sum-item.incorrect .sum-state{background:#FDF0F0;color:#C44040}
     .sum-item.unanswered .sum-state{background:#FEF5E6;color:#C07B1A}
     .sum-answer{font-size:13px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;color:#3E4555}
+    .sum-flag{display:inline-flex;align-items:center;width:max-content;min-height:30px;padding:0 12px;border:1px solid #e6bf83;border-radius:999px;background:#FEF5E6;color:#9A6415;font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
     .sum-body{display:grid;gap:12px}
     .sum-section{padding:14px 16px;border-radius:14px;border:1px solid #eceff3;background:#faf7f1}
     .sum-label{font-family:Consolas,monospace;font-size:10px;font-weight:800;letter-spacing:1.6px;text-transform:uppercase;color:#6B7689;margin-bottom:8px}

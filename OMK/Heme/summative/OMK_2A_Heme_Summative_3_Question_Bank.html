@@ -435,6 +435,7 @@ body.nbme-lock{overflow:hidden}
 .sum-item.incorrect .sum-state{background:var(--red-bg);color:var(--red)}
 .sum-item.unanswered .sum-state{background:var(--amber-bg);color:var(--amber)}
 .sum-answer{font-size:13px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;color:var(--slate)}
+.sum-flag{display:inline-flex;align-items:center;width:max-content;min-height:30px;padding:0 12px;border:1px solid rgba(192,123,26,.34);border-radius:999px;background:var(--amber-bg);color:var(--amber);font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
 .sum-body{display:grid;gap:14px}
 .sum-section{padding:16px 18px;border-radius:18px;border:1px solid rgba(18,32,60,.06);background:rgba(246,243,236,.56)}
 .sum-label{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:800;letter-spacing:1.7px;text-transform:uppercase;color:var(--mist);margin-bottom:9px}
@@ -538,6 +539,17 @@ body.nbme-lock{overflow:hidden}
 .annotation-menu button:focus-visible{outline:2px solid white;outline-offset:3px}
 .annotation-strike{border:0;border-left:1px solid #777;background:transparent;color:white;padding:5px 9px;font-size:16px;cursor:pointer;text-decoration:line-through}
 .highlight-color-button{width:28px;height:28px;flex-shrink:0;align-self:center;border:2px solid #777;border-radius:50%;background:var(--active-highlight,#fff173);cursor:pointer}
+.q-tool.has-note::after,.nb-action-btn.has-note::after{content:'';width:7px;height:7px;margin-left:7px;border-radius:50%;background:currentColor;display:inline-block}
+.study-notes-dialog{width:min(430px,calc(100vw - 28px));padding:0;border:1px solid var(--rule);border-radius:16px;background:var(--white);color:var(--ink);box-shadow:0 22px 70px #0005}
+.study-notes-dialog::backdrop{background:#12203c55;backdrop-filter:blur(2px)}
+.study-notes-head{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 16px;background:var(--warm);border-bottom:1px solid var(--rule)}
+.study-notes-head strong{font-size:16px;color:var(--navy)}
+.study-notes-close{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border:0;border-radius:8px;background:transparent;color:var(--ink);font-size:22px;cursor:pointer}
+.study-notes-close:hover{background:var(--cream)}
+.study-notes-body{padding:16px}
+.study-notes-body label{display:block;margin-bottom:8px;color:var(--slate);font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+.study-notes-body textarea{box-sizing:border-box;width:100%;min-height:230px;resize:vertical;padding:12px;border:1px solid var(--rule);border-radius:10px;background:var(--cream);color:var(--ink);font:15px/1.65 var(--font-ui)}
+.study-notes-status{min-height:18px;margin:9px 0 0;color:var(--slate);font-size:12px;line-height:1.5}
 
 </style>
 <script>
@@ -788,6 +800,7 @@ html[data-note-auth="locked"] #noteAuthGate{position:fixed;inset:0;z-index:21474
 
       <!-- tools -->
       <div class="tool-panel">
+        <button class="q-tool" type="button" data-note-button onclick="openNotes()">📝 Notes</button>
         <button class="q-tool hl-tool" id="hlTool" onclick="toggleTool('hl')">🖊 Highlight</button>
         <button class="q-tool st-tool" id="stTool" onclick="toggleTool('st')">✂ Strikethrough</button>
         <button class="q-tool" onclick="clearMarks()">✖ Clear Marks</button>
@@ -840,6 +853,7 @@ html[data-note-auth="locked"] #noteAuthGate{position:fixed;inset:0;z-index:21474
         <button class="nb-action-btn" id="nbHighlightBtn" type="button" onclick="toggleTool('hl')">Highlight</button>
         <button class="nb-action-btn" id="nbStrikeBtn" type="button" onclick="toggleTool('st')">Strikeout</button>
         <button class="nb-action-btn" type="button" onclick="clearMarks()">Clear</button>
+        <button class="nb-action-btn" type="button" data-note-button onclick="openNotes()">Notes</button>
         <button class="nb-mode-pill active" id="nbModeLearn" type="button" onclick="setMode('learn')">Learn</button>
         <button class="nb-mode-pill" id="nbModeExam" type="button" onclick="setMode('exam')">Testing</button>
         <button class="nb-action-btn" id="nbSummaryBtn" type="button" onclick="toggleSummaryPanel()" disabled>See Score &amp; Summary</button>
@@ -936,9 +950,18 @@ html[data-note-auth="locked"] #noteAuthGate{position:fixed;inset:0;z-index:21474
   </div>
 </div>
 
+<dialog class="study-notes-dialog" id="studyNotes" aria-labelledby="studyNotesTitle" onclose="syncQuestionNotesUI()">
+  <div class="study-notes-head"><strong id="studyNotesTitle">Question notes</strong><button class="study-notes-close" type="button" aria-label="Close notes" onclick="closeNotes()">×</button></div>
+  <div class="study-notes-body">
+    <label for="studyNotesInput" id="studyNotesLabel">Current question</label>
+    <textarea id="studyNotesInput" placeholder="Your reasoning, reminders, and takeaways…" oninput="saveQuestionNote(Number(this.dataset.question),this.value)"></textarea>
+    <p class="study-notes-status" id="studyNotesStatus" role="status">Saved with your quiz progress · Included in summary exports.</p>
+  </div>
+</dialog>
+
 <script>
 // ── STATE ──
-var questions=[],questionBank=[],answers={},selected={},marked={},stemMarkup={},choiceMarkup={},NC=0,NI=0,CQ=0;
+var questions=[],questionBank=[],answers={},selected={},marked={},questionNotes={},stemMarkup={},choiceMarkup={},NC=0,NI=0,CQ=0;
 var quizMode='learn';
 var uiMode='classic';
 var examSubmitted=false;
@@ -959,6 +982,36 @@ var DEFAULT_QUESTION_COUNT=15;
 var MAX_AI_QUESTION_COUNT=25;
 var DOWNLOAD_TEMPLATE='';
 var LAB_SECTIONS=[{"title":"Serum","rows":[{"name":"Alanine aminotransferase (ALT)","us":"10–40 U/L","si":"10–40 U/L"},{"name":"Aspartate aminotransferase (AST)","us":"12–38 U/L","si":"12–38 U/L"},{"name":"Alkaline phosphatase","us":"25–100 U/L","si":"25–100 U/L"},{"name":"Amylase","us":"25–125 U/L","si":"25–125 U/L"},{"name":"Bilirubin, total // direct","us":"0.1–1.0 mg/dL // 0.0–0.3 mg/dL","si":"2–17 µmol/L // 0–5 µmol/L"},{"name":"Calcium","us":"8.4–10.2 mg/dL","si":"2.1–2.6 mmol/L"},{"group":"Cholesterol"},{"name":"Total","us":"Normal: &lt;200 mg/dL // High: &gt;240 mg/dL","si":"&lt;5.2 mmol/L // &gt;6.2 mmol/L"},{"name":"HDL","us":"40–60 mg/dL","si":"1.0–1.6 mmol/L"},{"name":"LDL","us":"&lt;160 mg/dL","si":"&lt;4.2 mmol/L"},{"name":"Triglycerides","us":"Normal: &lt;150 mg/dL // Borderline: 151–199 mg/dL","si":"&lt;1.70 mmol/L // 1.71–2.25 mmol/L"},{"name":"Cortisol","us":"0800 h: 5–23 µg/dL // 1600 h: 3–15 µg/dL","si":"138–635 nmol/L // 82–413 nmol/L"},{"name":"","us":"2000 h: &lt;50% of 0800 h","si":"Fraction of 0800 h: &lt;0.50"},{"name":"Creatine kinase","us":"Male: 25–90 U/L","si":"25–90 U/L"},{"name":"","us":"Female: 10–70 U/L","si":"10–70 U/L"},{"name":"Creatinine","us":"0.6–1.2 mg/dL","si":"53–106 µmol/L"},{"name":"Urea nitrogen","us":"7–18 mg/dL","si":"2.5–6.4 mmol/L"},{"name":"Creatinine clearance","us":"Male: 97–137 mL/min","si":"97–137 mL/min"},{"name":"","us":"Female: 88–128 mL/min","si":"88–128 mL/min"},{"group":"Electrolytes, serum"},{"name":"Sodium (Na<sup>+</sup>)","us":"136–146 mEq/L","si":"136–146 mmol/L"},{"name":"Potassium (K<sup>+</sup>)","us":"3.5–5.0 mEq/L","si":"3.5–5.0 mmol/L"},{"name":"Chloride (Cl<sup>−</sup>)","us":"95–105 mEq/L","si":"95–105 mmol/L"},{"name":"Bicarbonate (HCO<sub>3</sub><sup>−</sup>)","us":"22–28 mEq/L","si":"22–28 mmol/L"},{"name":"Magnesium (Mg<sup>2+</sup>)","us":"1.5–2.0 mg/dL","si":"0.75–1.0 mmol/L"},{"name":"Ferritin","us":"Male: 20–250 ng/mL","si":"20–250 µg/L"},{"name":"","us":"Female: 10–120 ng/mL","si":"10–120 µg/L"},{"name":"Follicle-stimulating hormone","us":"Male: 4–25 mIU/mL","si":"4–25 U/L"},{"name":"","us":"Female: premenopause 4–30 mIU/mL","si":"4–30 U/L"},{"name":"","us":"midcycle peak 10–90 mIU/mL","si":"10–90 U/L"},{"name":"","us":"postmenopause 40–250 mIU/mL","si":"40–250 U/L"},{"name":"Glucose","us":"Fasting: 70–100 mg/dL","si":"3.8–5.6 mmol/L"},{"name":"","us":"Random, non-fasting: &lt;140 mg/dL","si":"&lt;7.77 mmol/L"},{"name":"Growth hormone - arginine stimulation","us":"Fasting: &lt;5 ng/mL","si":"&lt;5 µg/L"},{"name":"","us":"Provocative stimuli: &gt;7 ng/mL","si":"&gt;7 µg/L"},{"name":"Iron","us":"Male: 65–175 µg/dL","si":"11.6–31.3 µmol/L"},{"name":"","us":"Female: 50–170 µg/dL","si":"9.0–30.4 µmol/L"},{"name":"Total iron-binding capacity","us":"250–400 µg/dL","si":"44.8–71.6 µmol/L"},{"name":"Transferrin","us":"200–360 mg/dL","si":"2.0–3.6 g/L"},{"name":"Lactate dehydrogenase","us":"45–200 U/L","si":"45–200 U/L"},{"name":"Lipase","us":"13–60 U/L","si":"13–60 U/L"},{"name":"Luteinizing hormone","us":"Male: 6–23 mIU/mL","si":"6–23 U/L"},{"name":"","us":"Female: follicular phase 5–30 mIU/mL","si":"5–30 IU/L"},{"name":"","us":"midcycle 75–150 mIU/mL","si":"75–150 IU/L"},{"name":"","us":"postmenopause 30–200 mIU/mL","si":"30–200 IU/L"},{"name":"Osmolality","us":"275–295 mOsmol/kg H<sub>2</sub>O","si":"275–295 mOsmol/kg H<sub>2</sub>O"},{"name":"Intact parathyroid hormone (PTH)","us":"10–60 pg/mL","si":"10–60 ng/L"},{"name":"Phosphorus (inorganic)","us":"3.0–4.5 mg/dL","si":"1.0–1.5 mmol/L"},{"name":"Prolactin (hPRL)","us":"Male: &lt;17 ng/mL","si":"&lt;17 µg/L"},{"name":"","us":"Female: &lt;25 ng/mL","si":"&lt;25 µg/L"},{"group":"Proteins"},{"name":"Total","us":"6.0–7.8 g/dL","si":"60–78 g/L"},{"name":"Albumin","us":"3.5–5.5 g/dL","si":"35–55 g/L"},{"name":"Globulin","us":"2.3–3.5 g/dL","si":"23–35 g/L"},{"name":"Troponin I","us":"≤0.04 ng/mL","si":"≤0.04 µg/L"},{"name":"TSH","us":"0.4–4.0 μU/mL","si":"0.4–4.0 mIU/L"},{"name":"Thyroidal iodine (<sup>123</sup>I) uptake","us":"8%–30% of administered dose/24 h","si":"0.08–0.30/24 h"},{"name":"Thyroxine (T<sub>4</sub>)","us":"5–12 µg/dL","si":"64–155 nmol/L"},{"name":"Free T<sub>4</sub>","us":"0.9–1.7 ng/dL","si":"12.0–21.9 pmol/L"},{"name":"Triiodothyronine (T<sub>3</sub>) (RIA)","us":"100–200 ng/dL","si":"1.5–3.1 nmol/L"},{"name":"Triiodothyronine (T<sub>3</sub>) resin uptake","us":"25%–35%","si":"0.25–0.35"},{"name":"Uric acid","us":"3.0–8.2 mg/dL","si":"0.18–0.48 mmol/L"},{"group":"Immunoglobulins"},{"name":"IgA","us":"76–390 mg/dL","si":"0.76–3.90 g/L"},{"name":"IgE","us":"0–380 IU/mL","si":"0–380 kIU/L"},{"name":"IgG","us":"650–1500 mg/dL","si":"6.5–15.0 g/L"},{"name":"IgM","us":"50–300 mg/dL","si":"0.5–3.0 g/L"},{"group":"Gases, arterial blood (room air)"},{"name":"pH","us":"7.35–7.45","si":"[H<sup>+</sup>] 36–44 nmol/L"},{"name":"Pco<sub>2</sub>","us":"33–45 mm Hg","si":"4.4–5.9 kPa"},{"name":"Po<sub>2</sub>","us":"75–105 mm Hg","si":"10.0–14.0 kPa"}]},{"title":"Cerebrospinal Fluid","rows":[{"name":"Cell count","us":"0–5/mm<sup>3</sup>","si":"0–5 x 10<sup>6</sup>/L"},{"name":"Chloride","us":"118–132 mEq/L","si":"118–132 mmol/L"},{"name":"Gamma globulin","us":"3%–12% total proteins","si":"0.03–0.12"},{"name":"Glucose","us":"40–70 mg/dL","si":"2.2–3.9 mmol/L"},{"name":"Pressure","us":"70–180 mm H<sub>2</sub>O","si":"70–180 mm H<sub>2</sub>O"},{"name":"Proteins, total","us":"&lt;40 mg/dL","si":"&lt;0.40 g/L"}]},{"title":"Hematologic","rows":[{"name":"Erythrocyte count (RBC)","us":"Male: 4.3–5.9 million/mm<sup>3</sup>","si":"4.3–5.9 x 10<sup>12</sup>/L"},{"name":"","us":"Female: 3.5–5.5 million/mm<sup>3</sup>","si":"3.5–5.5 x 10<sup>12</sup>/L"},{"name":"Erythrocyte sedimentation rate (Westergren)","us":"Male: 0–15 mm/h","si":"0–15 mm/h"},{"name":"","us":"Female: 0–20 mm/h","si":"0–20 mm/h"},{"name":"Hematocrit","us":"Male: 41%–53%","si":"0.41–0.53"},{"name":"","us":"Female: 36%–46%","si":"0.36–0.46"},{"name":"Hemoglobin, blood","us":"Male: 13.5–17.5 g/dL","si":"135–175 g/L"},{"name":"","us":"Female: 12.0–16.0 g/dL","si":"120–160 g/L"},{"name":"Hemoglobin A<sub>1c</sub>","us":"≤6%","si":"≤42 mmol/mol"},{"name":"Leukocyte count (WBC)","us":"4500–11,000/mm<sup>3</sup>","si":"4.5–11.0 x 10<sup>9</sup>/L"},{"name":"Neutrophils, segmented","us":"54%–62%","si":"0.54–0.62"},{"name":"Neutrophils, bands","us":"3%–5%","si":"0.03–0.05"},{"name":"Eosinophils","us":"1%–3%","si":"0.01–0.03"},{"name":"Basophils","us":"0%–0.75%","si":"0.00–0.0075"},{"name":"Lymphocytes","us":"25%–33%","si":"0.25–0.33"},{"name":"Monocytes","us":"3%–7%","si":"0.03–0.07"},{"name":"CD4+ T-lymphocyte count","us":"≥500/mm<sup>3</sup>","si":"≥0.5 x 10<sup>9</sup>/L"},{"name":"Platelet count","us":"150,000–400,000/mm<sup>3</sup>","si":"150–400 x 10<sup>9</sup>/L"},{"name":"Reticulocyte count","us":"0.5%–1.5%","si":"0.005–0.015"},{"name":"D-Dimer","us":"≤250 ng/mL","si":"≤1.4 nmol/L"},{"name":"Partial thromboplastin time (aPTT) (activated)","us":"25–40 seconds","si":"25–40 seconds"},{"name":"Prothrombin time (PT)","us":"11–15 seconds","si":"11–15 seconds"},{"name":"Mean corpuscular hemoglobin (MCH)","us":"25–35 pg/cell","si":"0.39–0.54 fmol/cell"},{"name":"Mean corpuscular hemoglobin concentration (MCHC)","us":"31%–36% Hb/cell","si":"4.8–5.6 mmol Hb/L"},{"name":"Mean corpuscular volume (MCV)","us":"80–100 µm<sup>3</sup>","si":"80–100 fL"},{"group":"Volume"},{"name":"Plasma","us":"Male: 25–43 mL/kg","si":"0.025–0.043 L/kg"},{"name":"","us":"Female: 28–45 mL/kg","si":"0.028–0.045 L/kg"},{"name":"Red cell","us":"Male: 20–36 mL/kg","si":"0.020–0.036 L/kg"},{"name":"","us":"Female: 19–31 mL/kg","si":"0.019–0.031 L/kg"}]},{"title":"Urine","rows":[{"name":"Calcium","us":"100–300 mg/24 h","si":"2.5–7.5 mmol/24 h"},{"name":"Osmolality","us":"50–1200 mOsmol/kg H<sub>2</sub>O","si":"50–1200 mOsmol/kg H<sub>2</sub>O"},{"name":"Oxalate","us":"8–40 µg/mL","si":"90–445 µmol/L"},{"name":"Proteins, total","us":"&lt;150 mg/24 h","si":"&lt;0.15 g/24 h"},{"name":"17-Hydroxycorticosteroids","us":"Male: 3.0–10.0 mg/24 h","si":"8.2–27.6 µmol/24 h"},{"name":"","us":"Female: 2.0–8.0 mg/24 h","si":"5.5–22.0 µmol/24 h"},{"name":"17-Ketosteroids, total","us":"Male: 8–20 mg/24 h","si":"28–70 µmol/24 h"},{"name":"","us":"Female: 6–15 mg/24 h","si":"21–52 µmol/24 h"}]},{"title":"Body Mass Index (BMI)","rows":[{"name":"","us":"<br>Adult: 19–25 kg/m<sup>2</sup>","si":"<br>Adult: 19–25 kg/m<sup>2</sup>"}]}];
+
+function escapeStudyText(value){return String(value==null?'':value).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function exportSummarySheet(){
+  var html='<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>'+escapeStudyText(getQuizTitle())+' — Summary</title><style>'+getSummaryPrintStyles()+'</style></head><body>'+buildReviewSheetHTML(true)+'</body></html>';
+  triggerQuizDownload(new Blob([html],{type:'text/html;charset=utf-8'}),buildDownloadFileName(getQuizTitle()).replace(/\.html$/i,' Summary.html'));
+}
+function openNotes(){
+  if(!questions.length)return;
+  syncQuestionNotesUI();
+  var dialog=document.getElementById('studyNotes');
+  if(!dialog.open)dialog.showModal();
+  document.getElementById('studyNotesInput').focus();
+}
+function closeNotes(){var dialog=document.getElementById('studyNotes');if(dialog.open)dialog.close();}
+function syncQuestionNotesUI(){
+  var input=document.getElementById('studyNotesInput');
+  if(!input)return;
+  var value=questionNotes[CQ]||'';
+  if(input.value!==value)input.value=value;
+  input.dataset.question=String(CQ);
+  document.getElementById('studyNotesLabel').textContent='Question '+(CQ+1)+' of '+questions.length;
+  document.querySelectorAll('[data-note-button]').forEach(function(button){button.classList.toggle('has-note',!!value);});
+}
+function saveQuestionNote(index,value){
+  if(value)questionNotes[index]=value;else delete questionNotes[index];
+  var saved=saveSession();
+  document.getElementById('studyNotesStatus').textContent=saved?'Saved in this browser · Included in summary exports.':'Browser storage unavailable. Export your summary to keep these notes.';
+  syncQuestionNotesUI();
+  if(summaryVisible){if(uiMode==='nbme')renderNbmeView();else renderClassicView();}
+}
 
 // ── PROMPT ──
 var PROMPT='';
@@ -1495,6 +1548,7 @@ function getQuizTitle(){
   return document.getElementById('qtName').textContent.trim()||document.getElementById('quizName').value.trim()||'Custom Quiz';
 }
 function resetQuizState(withTimerReset){
+  questionNotes={};
   answers={};
   selected={};
   marked={};
@@ -1525,12 +1579,13 @@ function saveSession(){
   if(!questions.length||!questionBank.length)return;
   try{
     localStorage.setItem(getSessionKey(),JSON.stringify({
-      v:1,questions:questions,selected:selected,answers:answers,marked:marked,
+      v:1,questionNotes:questionNotes,questions:questions,selected:selected,answers:answers,marked:marked,
       stemMarkup:stemMarkup,choiceMarkup:choiceMarkup,
       CQ:CQ,NC:NC,NI:NI,quizMode:quizMode,examSubmitted:examSubmitted,
       timerSec:timerSec,timerDisplayMode:timerDisplayMode,uiMode:uiMode
     }));
-  }catch(e){}
+    return true;
+  }catch(e){return false;}
 }
 function clearSession(){
   try{localStorage.removeItem(getSessionKey());}catch(e){}
@@ -1540,9 +1595,10 @@ function tryRestoreSession(){
   try{saved=JSON.parse(localStorage.getItem(getSessionKey())||'null');}catch(e){return false;}
   if(!saved||saved.v!==1||!Array.isArray(saved.questions))return false;
   if(saved.questions.length!==questionBank.length)return false;
-  var hasProgress=Object.keys(saved.selected||{}).length>0||Object.keys(saved.answers||{}).length>0||saved.timerSec>0;
+  var hasProgress=Object.keys(saved.questionNotes||{}).length>0||Object.keys(saved.selected||{}).length>0||Object.keys(saved.answers||{}).length>0||saved.timerSec>0;
   if(!hasProgress)return false;
   questions=saved.questions.map(function(q){return cloneQuestion(q);});
+  questionNotes=saved.questionNotes&&typeof saved.questionNotes==='object'?saved.questionNotes:{};
   selected=saved.selected||{};
   answers=saved.answers||{};
   marked=saved.marked||{};
@@ -1895,6 +1951,7 @@ function buildSummaryStatsHTML(){
     <div class="sum-stat"><div class="sum-stat-label">Score</div><div class="sum-stat-value">${percent==='—'?'—':percent+'%'}</div></div>
     <div class="sum-stat"><div class="sum-stat-label">Correct</div><div class="sum-stat-value">${NC}</div></div>
     <div class="sum-stat"><div class="sum-stat-label">Incorrect</div><div class="sum-stat-value">${NI}</div></div>
+    <div class="sum-stat"><div class="sum-stat-label">Flagged</div><div class="sum-stat-value">${getMarkedCount()}</div></div>
     <div class="sum-stat"><div class="sum-stat-label">Questions</div><div class="sum-stat-value">${questions.length}</div></div>
   </div>`;
 }
@@ -1907,6 +1964,7 @@ function buildReviewSheetItemsHTML(){
       <div class="sum-meta">
         <div class="sum-num">Question ${index+1}</div>
         <div class="sum-state">${meta.label}</div>
+        ${marked[index]?'<div class="sum-flag">⚑ Flagged</div>':''}
         <div class="sum-answer">Correct Answer: ${correctLetter}</div>
       </div>
       <div class="sum-body">
@@ -1914,6 +1972,7 @@ function buildReviewSheetItemsHTML(){
           <div class="sum-label">Learning Objective${q.los.length>1?'s':''}</div>
           <div class="sum-text">${q.los.map(function(lo){return `<div class="lo-row"><a class="lo-chip" href="${LO_REVIEW_FILE}${lo.a?('#'+lo.a):''}" target="_blank" rel="noopener">LO ${escLO(lo.n)}</a><span class="lo-text">${escLO(lo.t)}</span></div>`;}).join('')}</div>
         </div>`:''}
+        ${questionNotes[index]?'<div class="sum-section"><div class="sum-label">My notes</div><div class="sum-text study-notes-text">'+escapeStudyText(questionNotes[index])+'</div></div>':''}
         <div class="sum-section">
           <div class="sum-label">Correct Answer Explanation</div>
           <div class="sum-text">${q.explanation||'No explanation provided.'}</div>
@@ -1928,13 +1987,13 @@ function buildReviewSheetItemsHTML(){
 }
 function buildReviewSheetHTML(forPrint){
   var title=getQuizTitle();
-  var actionHTML=forPrint?'':`<div class="sum-actions"><button class="sum-btn" type="button" onclick="hideSummarySheet()">← Back to Questions</button><button class="sum-btn primary" type="button" onclick="printSummarySheet()">🖨 Print Summary</button></div>`;
+  var actionHTML=forPrint?'':`<div class="sum-actions"><button class="sum-btn" type="button" onclick="hideSummarySheet()">← Back to Questions</button><button class="sum-btn primary" type="button" onclick="printSummarySheet()">🖨 Print / Save PDF</button><button class="sum-btn" type="button" onclick="exportSummarySheet()">Export Summary</button></div>`;
   return `<section class="sum-sheet" id="summarySheet">
     <div class="sum-head">
       <div>
         <div class="sum-kicker">Quiz Review Sheet</div>
         <h2 class="sum-title">${title}</h2>
-        <div class="sum-sub">Question-by-question review showing only the correct-answer explanation and the ELI5 summary for quick post-quiz review.</div>
+        <div class="sum-sub">Question-by-question review with flagged status, personal notes, correct-answer explanations, and ELI5 summaries.</div>
       </div>
       ${actionHTML}
     </div>
@@ -1944,6 +2003,7 @@ function buildReviewSheetHTML(forPrint){
 }
 function getSummaryPrintStyles(){
   return `
+    .study-notes-text{white-space:pre-wrap;overflow-wrap:anywhere}
     body{margin:0;padding:28px;background:#fff;color:#1E1E20;font-family:Arial,Helvetica,sans-serif}
     .sum-sheet{border:1px solid #d8dce3;border-radius:18px;overflow:hidden}
     .sum-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding:22px 24px 18px;border-bottom:1px solid #e4e7ec;background:#f8fafc}
@@ -1967,6 +2027,7 @@ function getSummaryPrintStyles(){
     .sum-item.incorrect .sum-state{background:#FDF0F0;color:#C44040}
     .sum-item.unanswered .sum-state{background:#FEF5E6;color:#C07B1A}
     .sum-answer{font-size:13px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;color:#3E4555}
+    .sum-flag{display:inline-flex;align-items:center;width:max-content;min-height:30px;padding:0 12px;border:1px solid #e6bf83;border-radius:999px;background:#FEF5E6;color:#9A6415;font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
     .sum-body{display:grid;gap:12px}
     .sum-section{padding:14px 16px;border-radius:14px;border:1px solid #eceff3;background:#faf7f1}
     .sum-label{font-family:Consolas,monospace;font-size:10px;font-weight:800;letter-spacing:1.6px;text-transform:uppercase;color:#6B7689;margin-bottom:8px}
@@ -2362,6 +2423,7 @@ function renderQ(){
   renderItemSelectors();
   if(uiMode==='nbme')renderNbmeView();
   else renderClassicView();
+  syncQuestionNotesUI();
   saveSession();
 }
 
@@ -2785,6 +2847,7 @@ function showFinish(){
 function resetQuiz(){
   if(!questions.length)return;
   clearSession();
+  closeNotes();
   questions=randomizeQuestionsForSession(questionBank.length?questionBank:questions);
   resetQuizState(true);
   renderQ();
@@ -2793,6 +2856,7 @@ function resetQuiz(){
 }
 function exitQuiz(){
   pauseTimer();
+  closeNotes();
   reviewOpen=false;
   switchView('viewSetup');
 }
