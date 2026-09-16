@@ -1260,3 +1260,411 @@ Remaining objectives, and what each would need:
 - **LO 42 and LO 55 (§3)** — the MCV-based differential of anemia and the management plan. Largely a
   TAGGING gap: §3's content is heavily covered by questions tagged to LOs 18, 19, 20, 25, 28 and 49.
   Either write 2–3 explicitly §3-anchored items, or retag existing ones.
+
+---
+
+## Batch 22 — Chemotherapy toxicity, lymphatic structure, and the batch-21 gaps
+
+**Sections §44, §47, §43, §45, §46, §56, §57 · native LOs 11, 15, 16, 17, 34, 60, 63, 64 ·
+20 questions · 6 new figures.** Written after a per-section density audit showed that batch 21's
+three blocks had two sections with **zero** questions despite each carrying an objective.
+
+**§44 chemotherapy toxicity — LO 17, previously 0 questions (8):** bleomycin pulmonary fibrosis,
+identified by *normal blood counts* (it sits in the mildest myelosuppression tier, and the lung lacks
+bleomycin hydrolase); the vinca split — vinCRIStine → CRIS-py nerves, vinBLAStine → BLASts;
+cumulative lifetime anthracycline dose across a whole life, not per regimen; irinotecan's two
+diarrheas — early cholinergic → **atropine**, late → loperamide; the antiemetic suffixes (-pitant =
+neurokinin-1, -setron = 5-HT3), with a regimen deliberately containing one of each; cytarabine's
+eye-and-cerebellum pairing and the *prophylactic* steroid drops; procarbazine as a monoamine oxidase
+inhibitor and the tyramine crisis; plerixafor as a CXCR4 antagonist for stem cell mobilization, which
+loops back to the CXCR4/CXCL12 niche from batch 01.
+
+**§47 lymphatic structure — LO 63, previously 0 questions (4):** the **left internal jugular line →
+chylothorax**, including why the first film is normal (chyle accumulates over hours and rises with
+feeding); why lymphatic obstruction swells more than venous obstruction (lymph is protein-rich, and
+the protein has no alternative exit); ileocecal resection in an infant → loss of the major site of
+IgA production → bacterial translocation, contrasted with *inherited* selective IgA deficiency;
+thymic positive selection, cortex → medulla, non-responders apoptose.
+
+**Top-ups (4):** topoisomerase I vs II (the enzyme number is the strand number); why checkpoint
+inhibitors are engineered as **IgG4** — you must not lyse the T cell you are activating — with the
+-omab/-ximab/-zumab/-umab nomenclature; lenalidomide → venous thromboembolism requiring prophylaxis;
+abiraterone → CYP17 blockade → mineralocorticoid excess → why prednisone is co-prescribed.
+
+**§56/§57 (4):** hypoalbuminemia after large-volume resuscitation as the one mechanism producing
+*generalized* rather than local edema; inflammatory capillary leak as the **expected** swelling, with
+the negatives in the stem excluding the two emergencies; testis → para-aortic (not inguinal) versus
+scrotal skin → superficial inguinal; the dentate line watershed.
+
+### Notes
+
+- Option helper: again zero alphabetical and zero key errors on the first run. Manual fixes were the
+  option-length audit (4 of 20 uniquely longest → **0**) and a **run of four identical answer keys**
+  at Q1–Q4, broken by rewording one correct option ("Her cumulative lifetime anthracycline exposure"
+  → "The cumulative lifetime anthracycline dose she has already received") so it sorted to a
+  different letter. Check the key run as well as the length distribution before appending.
+- **LO 63's first-listed anchor is `s31b-node-architecture` (§35), not §47.** All four lymphatics
+  items need `(63, "s42-lymphatics")`. Third instance of this trap, after LO 66 (batch 14) and
+  LO 34 (batch 21) — *always* check `anchors[0]` against the section you are writing.
+- LO 76 is anchored to §26 (`s23-wbc-normal`), not to mucosal immunity; the IgA item carries LO 63
+  alone rather than a misleading second tag.
+
+### State after batch 22
+
+**408 questions · 204 figures · 24.0 MB · 77 of 83 objectives · 7.6% uniquely-longest · key run 3.**
+
+Every section that carries an objective now has questions behind it, except the six listed below.
+Section density for the batch-21/22 blocks: §43 → 8, §44 → 8, §45 → 10, §46 → 4, §47 → 4, §48 → 2,
+§49 → 2, §56 → 3, §57 → 4.
+
+| Batch | Block | Review sections | Native LOs | Qs | File |
+|---|---|---|---|---|---|
+| 22 | Chemo toxicity, lymphatic structure, batch-21 gaps | §43–§47, §56, §57 | 11, 15, 16, 17, 34, 60, 63, 64 | 20 | appended to `Jeevs edition _ summative review.html` |
+
+Still uncovered — unchanged by this batch, which was a density fix rather than a coverage fix:
+
+- **LO 73, LO 47** — the spleen (§55, §11, §52). ~8 questions. The largest remaining block.
+- **LO 35** — porphyria and lead poisoning (§7). 35k of source, zero questions. ~4.
+- **LO 78** — writing a complete prescription (§54). ~3.
+- **LO 42, LO 55** — the MCV differential (§3). A tagging gap, not a knowledge gap.
+
+---
+
+## Batch 23 — Pediatrics, spleen & prescribing · Trauma, edema & metastasis · Geriatrics
+
+**Sections §51, §52, §11, §55, §54, §56, §57, §53, §58 · native LOs 34, 47, 51, 60, 65, 67, 73, 77,
+78 · 25 questions (10 / 10 / 5) · 8 new figures.** Nine sections, seven of which had **zero**
+questions before this batch.
+
+**Group 1 — pediatrics, spleen & prescribing (10).** §51: the pancytopenic child split by
+*how the child looks* (well + acellular marrow = aplastic; sick + splenomegaly + packed marrow =
+leukemia, with a LOW white count as the trap); Fanconi vs TAR decided entirely by the thumbs;
+Wiskott-Aldrich found by **small** platelets when every other thrombocytopenia gives large ones;
+the childhood-ALL prognostic grid (hyperdiploid and t(12;21) favorable, hypodiploid and t(9;22)
+adverse). §52/§11: congestive hypersplenism from portal hypertension, where the normal marrow and
+normal morphology prove peripheral removal and splenectomy is **not** indicated; splenic vein
+thrombosis after pancreatitis → isolated gastric fundal varices → splenectomy curative; OPSI
+prevention with the 2-weeks-before / before-discharge timing split; Howell-Jolly bodies as proof of
+autosplenectomy, making fever an emergency. §54: the missing "Disp:" line, and the patient-safety
+writing conventions as a five-option grid.
+
+**Group 2 — trauma, edema & metastasis (10).** §55: unstable + positive FAST → laparotomy, never the
+scanner; stable + contrast blush → embolization (with the CT as a stem image); **delayed rupture on
+day 5–6**, which is why NOM is inpatient observation; spontaneous rupture in mononucleosis;
+post-splenectomy thrombocytosis > 1 million → aspirin; pancreatic tail injury found by a raised
+*drain* amylase with a normal serum amylase. §56: hematoma — immediate, focal, fluctuant, with
+expanding size as the alarm (completes all six mechanisms across batches 21–23). §57: the
+subcapsular sinus as the first compartment examined; why carcinoma prefers lymphatics (no basement
+membrane, overlapping junctions) against carcinoma-by-lymph / sarcoma-by-blood; the medial breast
+quadrant draining to internal mammary nodes a sentinel axillary biopsy never samples.
+
+**Group 3 — geriatrics (5).** Marrow cellularity = (100 − age), read as *normal* at 25% in an
+82-year-old; **anemia is never "just age"** — WHO thresholds regardless of age, a >10% fall from the
+patient's own baseline, and iron deficiency as a gastrointestinal lesion until proven otherwise;
+inflammaging in a virologically suppressed patient with a normal CD4; ADL vs IADL, where
+**instrumental activities fail first** and the case chain runs cognitive impairment → medication
+mismanagement → anticoagulant overdose → hematoma; and the three "there are no safe medications
+for…" slides, where dementia behaviours are the only one with **no drug concession at all**.
+
+### Notes
+
+- Option helper: zero alphabetical and zero key errors again. Manual work was the length audit
+  (3 of 25 uniquely longest → 0) and nothing else — no key run above 2.
+- Renumbering trap: a question inserted mid-file shifts every subsequent tag. Insert the question
+  **and** re-key `LO_TAGS` in the same edit, then re-run the validator before appending.
+- Figures: 8 from `lymph-*` and `ss-*`. The ALL blood smear (`ss-heme-all-lymphoblasts`) and the
+  splenic injury CT (`lymph-40`) are clean enough for stems — the CT carries an arrow and arrowhead
+  but no text, so the caption names them as arrows without naming the finding.
+
+### State after batch 23
+
+**433 questions · 211 figures · 24.9 MB · 80 of 83 objectives · 7.2% uniquely-longest · key run 3.**
+
+| Batch | Block | Review sections | Native LOs | Qs | File |
+|---|---|---|---|---|---|
+| 23 | Peds/spleen/prescribing · trauma/edema/metastasis · geriatrics | §11, §51–§58 | 34, 47, 51, 60, 65, 67, 73, 77, 78 | 25 | appended to `Jeevs edition _ summative review.html` |
+
+**Three objectives remain**, and only one is a real content gap:
+
+- **LO 35 (§7, `s6b-porphyria`)** — porphyria and lead poisoning. 35k of source, **zero** questions.
+  The last untouched topic in the file. ~4 questions.
+- **LO 42 and LO 55 (§3, `s3-anemia-eval`)** — the MCV-based differential and the management plan.
+  A *tagging* gap: §3's content is covered by questions tagged to LOs 18, 19, 20, 25, 28 and 49.
+  Either write 2–3 explicitly §3-anchored items, or retag existing ones.
+
+---
+
+## Batch 24 — Porphyria, lead, and the anemia differential — the file is complete
+
+**Sections §7, §3 · native LOs 35, 42, 55 · 8 questions · 4 new figures.** The last coverage gap.
+
+**§7 porphyria and lead (5):** the acute intermittent porphyria vignette — a young woman on a new
+oral contraceptive with pain out of all proportion to a soft abdomen and normal imaging, autonomic
+instability, hyponatremia and urine that darkens on standing → **spot urine porphobilinogen and
+δ-aminolevulinic acid, collected during the attack**; lead poisoning found by the one-enzyme
+discriminator (**ALA up + PBG up = porphyria; ALA up + PBG NORMAL = lead**, because lead blocks ALA
+dehydratase one step earlier); porphyria cutanea tarda with its hepatitis C / alcohol / dialysis
+associations and the **hemochromatosis gene in two-thirds**; the ALAS1 negative-feedback loop, which
+explains every precipitant and both treatments (glucose suppresses PGC-1α, hemin restores end-product
+inhibition); and the lecture's own thesis — the obstacle is not the test, it is that the diagnosis
+never enters the differential, with 26% initially misdiagnosed.
+
+**§3 the anemia differential (3):** extrinsic vs intrinsic destruction, with hypersplenism as the
+clean example of a normal cell destroyed by its environment; the **mean corpuscular volume as an
+average** — a post-bypass patient whose combined iron and B12 deficiency reads as normocytic, exposed
+by a distribution width of 21.4%; and the algorithm run end to end in renal anemia (normocytic → low
+reticulocytes → creatinine names it → confirm iron stores → erythropoiesis-stimulating agent below
+10 g/dL).
+
+### Note on figures
+
+`porph-porphyria-cutanea-tarda-hands` has **the diagnosis printed across the image** — explanation
+figure only, never a stem. The rule from batch 03 held up right to the last batch: confirm by
+viewing, never by reading the caption.
+
+---
+
+## Final state — 21 September 2026 exam
+
+**441 questions · 215 figures · 25.4 MB · 83 of 83 objectives covered.**
+7.0% uniquely-longest keyed answers (chance is 20%), longest answer-key run 3.
+Whole-file browser check: all 441 questions carry an LO chip, every lab block renders as a native
+`lab-row` table, and every stem and explanation figure resolves.
+
+Three review sections still have no questions filed to them as a *primary* anchor, and all three are
+deliberate:
+
+- **§50 `s45-itp`** — its objective (LO 36) is covered by the Coagulation I · Bleeding items, which
+  are anchored to §29–§31.
+- **§59 `s50-atlas`** and **§60 `s51-charts`** — reference material carrying no objectives.
+
+Five objectives are carried by a single question each (18, 54, 59, 81, 82). If there is ever another
+pass, that is where to add depth rather than breadth.
+
+### Batch history
+
+| Batch | Block | Qs |
+|---|---|---|
+| 01–02 | Hematopoiesis & Marrow · Anemia I | 50 |
+| 03–04 | Anemia II · Hemolysis | 35 |
+| 05–06 | Transfusion Medicine | 30 |
+| 07–08 | Hemostasis Pharmacology | 33 |
+| 09–10 | Anemia Pharmacology | 20 |
+| 11–12 | Infection | 38 |
+| 13 | Laboratory Foundations | 20 |
+| 14 | Benign White Cell Disorders | 20 |
+| 15–16 | Coagulation I · Bleeding | 35 |
+| 17–18 | Coagulation II · Clotting + Lymph Node Pathology | 36 |
+| 19–20 | Hematologic Malignancy (myeloid, then lymphoid) | 46 |
+| 21–22 | Antineoplastic pharmacology, lymphatics, thrombosis | 45 |
+| 23 | Peds/spleen/prescribing · trauma/edema/metastasis · geriatrics | 25 |
+| 24 | Porphyria, lead, and the anemia differential | 8 |
+
+### What made the difference, in order
+
+1. **Writing from the review file's numbered sections**, not the raw lecture notes — and checking
+   each block's native objectives before writing a single item (§2).
+2. **The heme data-consistency rules** (§3) — Hct ≈ 3 × Hgb, MCV matching morphology, reticulocytes
+   as the production/destruction switch, the hemolysis panel moving as a unit, iron studies as one
+   coherent row.
+3. **The option helper** (batch 20 onward) — supplying options as `{text: wrong-explanation}` and
+   letting the code alphabetise and re-key. It ended roughly thirty hand-sorting defects across
+   batches 11–19, and every batch since has passed those checks on the first run.
+4. **The option-length audit** (after batch 12) — the keyed answer must never be the single longest
+   option. File-wide this went from 35.4% uniquely longest to 7.0%.
+5. **Checking `anchors[0]`** before tagging. Three objectives (66, 34, 63) list a section other than
+   the one you are writing, and a bare tag sends the chip to the wrong place.
+6. **Viewing every figure before using it in a stem.** Captions lie; burned-in labels do not.
+
+---
+
+## Final answer-length audit (post-batch-24, whole file)
+
+Re-run properly rather than trusting the single per-batch metric. The earlier check only counted
+"keyed answer is uniquely longest", which misses two things: over-correction toward SHORT answers,
+and the fact that a reader cannot see a 1–3 character difference, so "one character shorter than the
+longest" still looks longest.
+
+### Metrics used
+
+1. **Uniquely longest / uniquely shortest** — the classic tell, and its mirror.
+2. **Normalized length rank** of the keyed answer, 0 = shortest option, 1 = longest. Ties get the
+   average rank. 0.500 is perfectly neutral.
+3. **"Looks longest within ±N characters"**, compared against an empirical chance rate computed by
+   picking a random option in each question 300 times. This is the honest version, because it treats
+   a near-tie as a tie.
+
+### Result before the fix
+
+| Metric | Value | Chance |
+|---|---|---|
+| Uniquely longest | 31 (7.0%) | 20.0% |
+| Uniquely shortest | 84 (19.0%) | 20.0% |
+| Normalized rank (mean) | 0.470 | 0.500 |
+| Keyed vs mean distractor length | −0.6 chars (98.2%) | — |
+| Looks longest ±0 | 12.9% | 26.1% |
+| Looks longest ±2 | 23.8% | 33.8% |
+
+No tell in either direction — below chance at every tolerance, and the shortest-answer rate was
+exactly chance, so the earlier rebalancing had not over-corrected.
+
+**What the audit did find:** the rank histogram had a lump at "second longest" (34.7% vs 20%
+expected), which is the fingerprint of the fix method — lengthening one distractor by just enough to
+clear the keyed answer. Cosmetic rather than real. Isolating the cases that a reader could actually
+see gave **8 questions (1.8%) where the keyed answer was uniquely longest by 5 or more characters**:
+Q14, Q17, Q22, Q212, Q272, Q275, Q289, Q292.
+
+### The fix
+
+Each was rebalanced by lengthening a distractor with a true qualifier, or shortening a verbose keyed
+answer — never by trimming content out of the answer. Examples:
+
+- Q212 "Recovering marrow production, with a rise expected shortly" → "…before the count rises",
+  and a distractor lengthened to tie it.
+- Q272 "Immune thrombocytopenia" → "Chronic immune thrombocytopenic purpura" (the keyed answer,
+  *hereditary hemorrhagic telangiectasia*, is a fixed disease name and could not be shortened).
+- Q275 "Calcium is a required cofactor at every step of the cascade" → "…at nearly every step of the
+  coagulation cascade".
+
+Edits were applied with a patcher that re-alphabetizes, recomputes `correct`, and re-keys
+`wrongExplanations` **by option text rather than by index** — the only safe way to edit an option in
+an alphabetized set.
+
+### Result after the fix
+
+| Metric | Value | Chance |
+|---|---|---|
+| Uniquely longest | **23 (5.2%)** | 20.0% |
+| Uniquely shortest | 85 (19.3%) | 20.0% |
+| Normalized rank (mean) | 0.463 | 0.500 |
+| Looks longest ±0 | **11.3%** | 23.1% |
+| Looks longest ±2 | **22.7%** | 32.7% |
+| Uniquely longest by 5+ chars | **0** | — |
+
+Integrity re-verified: letter prefixes, alphabetical order, `wrongExplanations` keys and duplicate
+options all clean across 441 questions, and the whole file re-checked in the browser (all 441 carry
+an LO chip, all lab blocks render, all 215 figures resolve).
+
+**Standing note on the alphabetical check:** it flags five questions — Q10, Q53, Q62, Q80, Q87 —
+which are ordered NUMERIC series (`0.8%, 1.6%, 4.0%, 8.0%, 16.0%`; `10,000 … 100,000/mm3`). Numeric
+order is correct there and must not be "fixed". These are the documented false positives.
+
+### For any future batch
+
+Run all three metrics, not just "uniquely longest". The threshold that matters is **uniquely longest
+by 5+ characters**, which should be zero — a near-tie is invisible to a reader and is not a defect,
+so chasing it produces the cosmetic second-longest lump rather than a genuinely neutral set.
+
+---
+
+## What the built-in randomizer does and does not invalidate
+
+The app reshuffles answer choices at run time. Verified against the template source and empirically:
+
+- `randomizeQuestionChoices()` Fisher-Yates shuffles the options, carrying each option's
+  `wrongExplanation` with it as a bound property, then rebuilds `correct` from the new position.
+- `stripChoiceLabel()` removes the baked-in `A. ` / `B. ` prefix and `choiceLetter(index)` re-letters
+  by DISPLAY position.
+
+**Empirical check: 441 questions × 5 shuffles = 2,205 trials — the keyed answer was never lost and
+no wrong-answer explanation was ever attached to the wrong option.**
+
+### Therefore these were wasted effort — do not repeat them
+
+- **Answer-key letter distribution and runs.** The student never sees the source letters. The run of
+  four identical keys broken in batch 17 (rephrasing "Factor Va and VIIIa" → "Activated factors V
+  and VIII") and again in batch 22 (rewording the anthracycline option) achieved nothing. The
+  earlier guidance in §8 — "fix only if one letter is correct for more than half the batch, or 4+
+  consecutive items share a key" — should simply be ignored.
+- **Alphabetical order as a student-facing property.** Keep alphabetizing, because it makes the
+  build deterministic and matches NBME house style in the source, but it is invisible in play and is
+  not worth a single minute of rebalancing.
+
+### These remain fully valid
+
+- **The whole answer-length audit.** Shuffling changes position, not length. "The longest option is
+  the answer" is a positional-INDEPENDENT tell, so every figure in the audit above stands exactly as
+  measured.
+- **No answer-letter references in prose** — this matters MORE because of the shuffle, not less.
+  A file-wide sweep for letter references, positional phrases and "all of the above" returned
+  15 flags, **all false positives**: blood group antigens ("A and B antigens"), hemophilia A or B,
+  hemoglobin F or A, and the D and E regions of the fibrin monomer. Zero genuine references.
+- Everything about content, data consistency, LO tagging and figures.
+
+### One real casualty — ordered numeric series get scrambled
+
+The shuffle is unconditional, so the four questions whose options form an ordered numeric or ordinal
+series are displayed out of order. Observed live:
+
+| Question | Source order | Example displayed order |
+|---|---|---|
+| Q10 | 0.8 / 1.6 / 4.0 / 8.0 / 16.0% | 0.8 / **8.0** / **4.0** / **1.6** / 16.0% |
+| Q53 | 0.9 / 2.8 / 3.2 / 6.0 / 12.9% | 2.8 / 6.0 / 12.9 / **0.9** / 3.2% |
+| Q62 | One / Two / Three / Four of four | **Four** / **One** / **Three** / **Two** of four |
+| Q87 | 10,000 … 100,000/mm3 | 10,000 / **25,000** / **50,000** / **20,000** / 100,000/mm3 |
+
+(Q80, the 0 / 1-in-8 / 1-in-4 / 1-in-2 / 3-in-4 probability item, behaves the same way.)
+
+This is a readability regression, not a correctness one — the answer and its explanation still track
+correctly. NBME convention keeps numeric options in numeric order so the reader can scan them. There
+is **no data-level fix**: the shuffle has no exemption. Correcting it would mean a ~5-line patch to
+`randomizeQuestionChoices()` to skip shuffling when every option parses as a number. That is a
+change to the quiz engine rather than to the question bank, so it has been left alone and flagged
+here instead.
+
+### Patch applied — ordered numeric series are no longer shuffled
+
+Two helpers were added immediately above `randomizeQuestionChoices()`, and one line inside it
+changed. This is the ONLY engine change made to the file.
+
+```js
+function parseChoiceNumber(text){        // "0.8%" → 0.8 · "10,000/mm3" → 10000
+  var t=stripChoiceLabel(text).trim();   // "1 in 8" → 0.125 · "Three of four" → 3
+  var frac=t.match(/^(\d+)\s+in\s+([\d,]+)/i);
+  if(frac)return parseFloat(frac[1])/parseFloat(frac[2].replace(/,/g,''));
+  var words={zero:0,one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine:9,ten:10};
+  var w=t.split(/[\s,]+/)[0].toLowerCase();
+  if(Object.prototype.hasOwnProperty.call(words,w))return words[w];
+  var m=t.match(/^[<>~≤≥]?\s*([\d,]+(?:\.\d+)?)/);
+  if(m)return parseFloat(m[1].replace(/,/g,''));
+  return null;
+}
+function isOrderedNumericSeries(items){  // every option numeric AND strictly ascending
+  if(!items||items.length<3)return false;
+  var vals=[],i;
+  for(i=0;i<items.length;i++){
+    var v=parseChoiceNumber(items[i].text);
+    if(v===null||isNaN(v))return false;
+    vals.push(v);
+  }
+  for(i=1;i<vals.length;i++){if(!(vals[i]>vals[i-1]))return false;}
+  return true;
+}
+```
+
+and inside `randomizeQuestionChoices()`:
+
+```js
+var orderedSeries=isOrderedNumericSeries(realChoices);
+var shuffledChoices=(orderedSeries?realChoices.slice():shuffle(realChoices)).concat(blankChoices);
+```
+
+**Why it is safe.** `shuffle()` was called from exactly one place, so this is a single chokepoint.
+The guard requires ALL options to parse as numbers AND to be strictly ascending, so a set that is
+merely number-ish is still shuffled — it cannot accidentally freeze a normal question into
+alphabetical order. Minimum three options. Applied on a copy and tested there before touching the
+live file, which was backed up first.
+
+**Verified on the live patched file:**
+
+| Check | Result |
+|---|---|
+| Q10, Q53, Q62, Q80, Q87 hold source order | 50 shuffles each — all ordered |
+| Every other question still shuffles | all 436 move |
+| Keyed answer follows its option | 2,205 trials, 0 failures |
+| Wrong-answer explanations follow their option | 2,205 trials, 0 failures |
+| Full session build | 441 questions, all LO chips intact |
+| Console | only the pre-existing `assets/copy-generated-question-sets.png` 404 |
+
+The detector was dry-run across all 441 questions before patching and matched exactly the five
+intended items — no false positives.
