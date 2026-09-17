@@ -1944,28 +1944,184 @@ function getSessionKey(){
   for(var i=0;i<basis.length;i++){hash=((hash<<5)-hash+basis.charCodeAt(i))|0;}
   return 'quiz-builder-session-'+Math.abs(hash).toString(36);
 }
-function saveSession(){
-  if(!questions.length||!questionBank.length)return;
+// Compact session state: each question's shuffled answer order (as a 3-char base-36 code
+// relative to the question bank) plus one base-36 char for picked / submitted / flagged.
+// Used for the cookie backup and so localStorage no longer stores a full copy of every question.
+function getChoiceOrder(bankQ,q){
+  if(!bankQ||!q||bankQ.choices.length!==q.choices.length||bankQ.choices.length>MAX_ANSWER_CHOICES)return null;
+  var used={},order=[];
+  for(var i=0;i<q.choices.length;i++){
+    var found=-1;
+    for(var j=0;j<bankQ.choices.length;j++){
+      if(!used[j]&&bankQ.choices[j]===q.choices[i]){found=j;break;}
+    }
+    if(found<0)return null;
+    used[found]=true;
+    order.push(found);
+  }
+  return order;
+}
+function encodeChoiceOrder(order){
+  var pool=order.slice().sort(function(a,b){return a-b;}),code=0;
+  order.forEach(function(v,k){
+    var idx=pool.indexOf(v);
+    code=code*(order.length-k)+idx;
+    pool.splice(idx,1);
+  });
+  return ('000'+code.toString(36)).slice(-3);
+}
+function decodeChoiceOrder(str,n){
+  var code=parseInt(str,36);
+  if(isNaN(code))return null;
+  var digits=[];
+  for(var k=n-1;k>=0;k--){digits[k]=code%(n-k);code=Math.floor(code/(n-k));}
+  var pool=[];
+  for(var i=0;i<n;i++)pool.push(i);
+  return digits.map(function(d){return pool.splice(d,1)[0];});
+}
+function applyChoiceOrder(bankQ,order){
+  var q=cloneQuestion(bankQ);
+  q.choices=order.map(function(src){return bankQ.choices[src];});
+  q.wrongExplanations={};
+  order.forEach(function(src,idx){
+    if(src===bankQ.correct)q.correct=idx;
+    else if(bankQ.wrongExplanations&&bankQ.wrongExplanations[String(src)])q.wrongExplanations[String(idx)]=bankQ.wrongExplanations[String(src)];
+  });
+  return q;
+}
+function encodeSessionOrder(){
+  if(questions.length!==questionBank.length)return null;
+  var out='';
+  for(var i=0;i<questions.length;i++){
+    var order=getChoiceOrder(questionBank[i],questions[i]);
+    if(!order)return null;
+    out+=encodeChoiceOrder(order);
+  }
+  return out;
+}
+function decodeSessionOrder(str){
+  if(typeof str!=='string'||str.length!==questionBank.length*3)return null;
+  var out=[];
+  for(var i=0;i<questionBank.length;i++){
+    var order=decodeChoiceOrder(str.substr(i*3,3),questionBank[i].choices.length);
+    if(!order)return null;
+    out.push(applyChoiceOrder(questionBank[i],order));
+  }
+  return out;
+}
+function encodeSessionMarks(){
+  var out='';
+  for(var i=0;i<questions.length;i++){
+    var v=selected[i]!==undefined&&selected[i]!==null?selected[i]+1:0;
+    if(answers[i])v+=9;
+    if(marked[i])v+=18;
+    out+=v.toString(36);
+  }
+  return out;
+}
+function decodeSessionMarks(str,qs){
+  var result={selected:{},answers:{},marked:{},NC:0,NI:0};
+  for(var i=0;i<str.length&&i<qs.length;i++){
+    var v=parseInt(str.charAt(i),36);
+    if(isNaN(v))continue;
+    if(v>=18){result.marked[i]=true;v-=18;}
+    var answered=v>=9;
+    if(answered)v-=9;
+    if(v>0)result.selected[i]=v-1;
+    if(answered){
+      if(v>0){
+        var ok=v-1===qs[i].correct;
+        result.answers[i]={s:v-1,r:ok?'c':'i'};
+        if(ok)result.NC++;else result.NI++;
+      }else{
+        result.answers[i]={s:null,r:'u'};
+        result.NI++;
+      }
+    }
+  }
+  return result;
+}
+
+// ── SESSION COOKIE BACKUP ──
+// A second copy of the answer state in a cookie, scoped to this page only, so progress
+// survives if localStorage is cleared or unavailable. Notes and highlights are too large
+// for a cookie and are kept in localStorage only.
+var SESSION_COOKIE_MAX=3800;
+function getSessionCookieName(){
+  return getSessionKey().replace('quiz-builder-session-','qbs-');
+}
+function writeSessionCookie(value,maxAge){
   try{
-    localStorage.setItem(getSessionKey(),JSON.stringify({
-      v:1,questionNotes:questionNotes,questions:questions,selected:selected,answers:answers,marked:marked,
-      stemMarkup:stemMarkup,choiceMarkup:choiceMarkup,
-      CQ:CQ,NC:NC,NI:NI,quizMode:quizMode,examSubmitted:examSubmitted,
-      timerSec:timerSec,timerDisplayMode:timerDisplayMode,uiMode:uiMode
-    }));
+    var secure=location.protocol==='https:'?';Secure':'';
+    document.cookie=getSessionCookieName()+'='+value+';path='+(location.pathname||'/')+';max-age='+maxAge+';SameSite=Lax'+secure;
     return true;
   }catch(e){return false;}
 }
+function saveSessionCookie(order){
+  if(!order)return false;
+  var value=['c1',questions.length.toString(36),CQ.toString(36),
+    (quizMode==='exam'?'e':'l')+(examSubmitted?'1':'0')+(timerDisplayMode==='remaining'?'r':'e'),
+    Math.max(0,Math.floor(timerSec||0)).toString(36),order,encodeSessionMarks()].join('.');
+  if(value.length>SESSION_COOKIE_MAX)return false;
+  if(!writeSessionCookie(value,60*60*24*60))return false;
+  return String(document.cookie||'').indexOf(getSessionCookieName()+'=')>=0;
+}
+function readSessionCookie(){
+  var name=getSessionCookieName()+'=',raw=null;
+  try{
+    String(document.cookie||'').split(';').forEach(function(part){
+      part=part.trim();
+      if(part.indexOf(name)===0)raw=part.slice(name.length);
+    });
+  }catch(e){return null;}
+  if(!raw)return null;
+  var bits=raw.split('.');
+  if(bits.length!==7||bits[0]!=='c1'||parseInt(bits[1],36)!==questionBank.length)return null;
+  var qs=decodeSessionOrder(bits[5]);
+  if(!qs)return null;
+  var marks=decodeSessionMarks(bits[6],qs);
+  return {
+    v:2,questions:qs,questionNotes:{},selected:marks.selected,answers:marks.answers,marked:marks.marked,
+    stemMarkup:{},choiceMarkup:{},CQ:parseInt(bits[2],36)||0,NC:marks.NC,NI:marks.NI,
+    quizMode:bits[3].charAt(0)==='e'?'exam':'learn',examSubmitted:bits[3].charAt(1)==='1',
+    timerDisplayMode:bits[3].charAt(2)==='r'?'remaining':'elapsed',timerSec:parseInt(bits[4],36)||0
+  };
+}
+
+function saveSession(){
+  if(!questions.length||!questionBank.length)return;
+  var order=encodeSessionOrder();
+  var cookieSaved=saveSessionCookie(order);
+  try{
+    var payload={
+      v:2,questionNotes:questionNotes,selected:selected,answers:answers,marked:marked,
+      stemMarkup:stemMarkup,choiceMarkup:choiceMarkup,
+      CQ:CQ,NC:NC,NI:NI,quizMode:quizMode,examSubmitted:examSubmitted,
+      timerSec:timerSec,timerDisplayMode:timerDisplayMode,uiMode:uiMode
+    };
+    if(order)payload.order=order;else payload.questions=questions;
+    localStorage.setItem(getSessionKey(),JSON.stringify(payload));
+    return true;
+  }catch(e){return cookieSaved;}
+}
 function clearSession(){
   try{localStorage.removeItem(getSessionKey());}catch(e){}
+  writeSessionCookie('',0);
+}
+function readStoredSession(){
+  var saved=null;
+  try{saved=JSON.parse(localStorage.getItem(getSessionKey())||'null');}catch(e){saved=null;}
+  if(saved&&saved.v===2&&!Array.isArray(saved.questions))saved.questions=decodeSessionOrder(saved.order);
+  if(saved&&(saved.v===1||saved.v===2)&&Array.isArray(saved.questions)&&saved.questions.length===questionBank.length)return saved;
+  return null;
+}
+function hasSessionProgress(saved){
+  return !!saved&&(Object.keys(saved.questionNotes||{}).length>0||Object.keys(saved.selected||{}).length>0||Object.keys(saved.answers||{}).length>0||Object.keys(saved.marked||{}).length>0||saved.timerSec>0);
 }
 function tryRestoreSession(){
-  var saved=null;
-  try{saved=JSON.parse(localStorage.getItem(getSessionKey())||'null');}catch(e){return false;}
-  if(!saved||saved.v!==1||!Array.isArray(saved.questions))return false;
-  if(saved.questions.length!==questionBank.length)return false;
-  var hasProgress=Object.keys(saved.questionNotes||{}).length>0||Object.keys(saved.selected||{}).length>0||Object.keys(saved.answers||{}).length>0||saved.timerSec>0;
-  if(!hasProgress)return false;
+  var saved=readStoredSession();
+  if(!hasSessionProgress(saved))saved=readSessionCookie();
+  if(!hasSessionProgress(saved))return false;
   questions=saved.questions.map(function(q){return cloneQuestion(q);});
   questionNotes=saved.questionNotes&&typeof saved.questionNotes==='object'?saved.questionNotes:{};
   selected=saved.selected||{};
@@ -1984,6 +2140,11 @@ function tryRestoreSession(){
   syncToolButtons();syncModeButtons();syncMarkButtons();updScore();updTimer();
   return true;
 }
+// Save once more when the tab is closed, reloaded or backgrounded.
+window.addEventListener('pagehide',function(){try{saveSession();}catch(e){}});
+document.addEventListener('visibilitychange',function(){
+  if(document.visibilityState==='hidden'){try{saveSession();}catch(e){}}
+});
 
 // ── FULLSCREEN ──
 function toggleFullscreen(){
