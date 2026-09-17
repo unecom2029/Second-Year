@@ -1866,3 +1866,117 @@ checklist holds cross-cutting facts, not the syllabus, so items on fetal hematop
 trauma, prescribing, the lymphatic drainage map and the chemotherapy principles legitimately sit
 outside it. Objective coverage, not card coverage, is the completeness test — and that stands at
 83/83.
+
+---
+
+## Hardest Exam — batch H7, the microbiology top-up
+
+Jeevs asked for "a little more micro coverage", and the coverage map made the case objectively.
+The review file's six infectious-disease sections — `s17-sepsis`, `s18-hiv-micro`,
+`s19-hiv-clinical`, `s19b-vector-infections`, `s19c-vhf`, `s25-immunodef` — hold twelve objectives
+and roughly 190,000 characters of source text, but carried only nineteen of the first 120
+questions. `s19b-vector-infections` alone is 61,000 characters and had four. That is where the
+thin coverage was, so batch H7 is entirely infectious disease.
+
+**Questions 121–140, by objective**
+
+| LO | Topic | Questions | Before → after |
+|---|---|---|---|
+| 5 | Babesiosis and malaria | 121 babesiosis treatment · 122 the Ixodes nymph · 123 thick vs thin film | 1 → 4 |
+| 22 | Bartonella | 124 flea feces as the inoculum · 125 Warthin–Starry · 126 biopsy over serology | 1 → 4 |
+| 23 | Plague | 127 secondary plague pneumonia · 128 resistance as a bioterrorism signal | 1 → 3 |
+| 13 | Hemorrhagic fevers | 129 Ebola strain mismatch · 130 Marburg · 131 Lassa · 132 Crimean–Congo · 133 Dengvaxia | 2 → 7 |
+| 1, 75 | Sepsis | 134 qSOFA · 135 procalcitonin · 136 fungal PAMPs | 2 → 6 |
+| 14, 24 | HIV virology | 137 p24 from gag · 138 cobicistat and CYP3A4 | 3 → 6 |
+| 77 | HIV clinical | 139 Pneumocystis and steroids · 140 CMV retinitis | 3 → 7 |
+
+**Figures.** Nine already existed in `figs/` but had never been embedded (`fig_babesia_rings`,
+`fig_warthin_starry`, `fig_plague_cxr`, `fig_pjp_ct`, `fig_filovirus_em`, `fig_slide_hiv_markers`).
+Six are new, prefixed `fig_hx_`: `fig_hx_ixodes_stages`, `fig_hx_thick_thin`, `fig_hx_hyalomma`,
+`fig_hx_marburg_em`, `fig_hx_cmv_retinitis`, `fig_hx_csd_papule`.
+
+Two needed cropping before use, and this is worth repeating for any future batch: the
+thick-vs-thin smear slide carried a printed caption stating the answer ("Thick smear is ideal for
+parasite identification…"), and the inoculation-papule photograph carried a figure-number band.
+Both were cropped with Pillow before the `sips` step rather than being demoted to explanation-only.
+`fig_filovirus_em` keeps a burned-in "Filoviridae" label, so it is used as an explanation image
+only. A Science Photo Library watermark ruled out the cat-scratch hand photograph entirely.
+
+**State after H7: 140 questions · 131 figures · 24.5 MB · 83/83 objectives · 50 stem images.**
+Uniquely-longest keyed answer 10.0% across the file (chance 20%), none by 5+ characters. Title
+updated to "Final 140".
+
+The batch initially audited at 0% uniquely-longest, which is its own tell — a student who always
+picks the longest option would score zero. Two keys were lengthened truthfully (Q134 "…to time,
+place and person", Q137 "…before antibody had developed") to bring the batch to 10% and match the
+rest of the file. Keep that in mind: the target is the file's established rate, not zero.
+
+Verified in the browser at 140/140: native lab tables, `data:` figures with `loading="lazy"`, LO
+chips, and an `Educational objective:` line on every item. Note for a future session — this file's
+login gate is `#noteAuthGate` plus a `nbme-lock` class on `<body>`; remove both and set `CQ` before
+calling `buildClassicQuestion()` to inspect any single question.
+
+The card coverage map above is now one batch stale. Regenerate the index and re-map before the
+next top-up.
+
+---
+
+## Key Findings — vignette highlights (questions 1–30)
+
+Ported from `Psych/Week 8/Lecture notes/Application session Psychotic_Disorders_…_LearnMode.html`.
+The engine was **already present** in the Hardest Exam file and needed no porting — only data.
+
+**How it behaves.** `getStemHTMLForDisplay(index)` returns the plain stem until
+`questionIsSubmitted(index)` is true, then wraps each matched phrase in
+`<mark class="vh vh-cat-…">`. So highlights are invisible while the learner is working and appear
+the moment the question is answered. Clicking a mark opens `#vhPanel`; `buildVhLegendHTML()` adds
+the category legend under the stem.
+
+```
+DATA     quiz-toolchain/highlights_hardest_001_030.py     (HIGHLIGHTS = {qnum: [ {...}, … ]})
+APPLIER  quiz-toolchain/apply_highlights.py HIGHLIGHTS_PY "Hardest exam/Jeevs Edition - Hardest Exam.html"
+```
+
+**Categories** (`VH_CAT_LABELS` in the file): `finding` = the discriminating fact · `mechanism` =
+the process · `term` = a named sign worth knowing · `pattern` = a trap, red herring, or a door the
+item writer deliberately closed · `workup` = what is actually being asked, or what a result rules
+in or out. The `pattern` and `workup` cards carry most of the teaching value — they are where the
+test-taking reasoning lives, not the pathology.
+
+**The one engine change.** `vhTextMap()` inserted a space only at block tags, but the lab panel
+renders each cell as an inline `<span>`, so a row flattened to `"Reticulocyte count0.2%"` and
+**every phrase written against a lab value silently failed to match** — 24 of the first 125. The
+flattener now also breaks on `lab-name` / `lab-value` / `lab-reference`:
+
+```js
+var blk=/^(BR|P|DIV|TR|TD|TH|LI|TABLE|UL|OL)$/.test(el.tagName)||/\blab-(name|value|reference)\b/.test(el.className||'');
+```
+
+A phrase spanning a lab name and its value produces two marks, one per cell, which is what you
+want — the row highlights as a unit and the reference range stays plain. Re-apply this patch after
+any rebuild from the template.
+
+**Authoring rules.** `text` must appear in the stem verbatim (whitespace-normalised), never
+including the `(N=…)` wrapper. Phrases must not overlap or nest — the marker skips a phrase already
+inside a mark. `apply_highlights.py` checks all of this and **writes nothing if any phrase fails**,
+because a highlight that does not match is invisible and therefore worse than useless.
+
+**State: all 140 questions carry highlights — 569 in total, every one verified matching in the
+browser**, with zero marks rendered before submission and a category legend on all 140. The data
+lives in five modules: `highlights_hardest_001_030.py`, `_031_060`, `_061_090`, `_091_120` and
+`_121_140`.
+
+Category mix across the file: finding 178 · workup 156 · pattern 134 · mechanism 62 · term 39. The
+`workup` and `pattern` cards were written deliberately heavily — they carry the test-taking
+reasoning (why a negative finding matters, which door the item writer just closed, what the
+question is really asking) rather than restating the pathology the explanation already covers.
+
+Two authoring traps the validator caught, worth knowing before writing more:
+- **Phrases are matched case-sensitively.** `"a 45-year-old sheep farmer"` fails where the stem
+  opens the sentence with `"A 45-year-old..."`.
+- **A phrase that contains another phrase in the same question is rejected.** The marker skips text
+  already inside a mark, so the nested one would silently never appear. Quote several short spans
+  rather than one long one that swallows them.
+
+The browser renders 632 `<mark>` elements for 569 highlights; the extra 63 are lab-row phrases that
+legitimately split across the name and value cells, highlighting the row as a unit.
