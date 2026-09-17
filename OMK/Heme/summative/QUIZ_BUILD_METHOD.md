@@ -1668,3 +1668,73 @@ live file, which was backed up first.
 
 The detector was dry-run across all 441 questions before patching and matched exactly the five
 intended items — no false positives.
+
+---
+
+## Hardest Exam — a separate final 100-question quiz (5 batches of 20)
+
+**File:** `Hardest exam/Jeevs Edition - Hardest Exam.html` (built with `build_quiz.py`, then the LO
+link is patched to `../OMK_2A_Heme_Summative_3_Objective_Review.html` because the file sits one folder
+down). Style spec: the UWorld prompt in `Hardest exam/index.html` — with **stem images allowed** (Jeevs
+overrode the text-only rule), pathology-weighted, "due to" openers, two-step asks, and every explanation
+ending in an `Educational objective:` line. The `q()` helper in the batch modules asserts that line.
+
+New figures are keyed `fig_hx_*` in `quiz-toolchain/figs/`, resized at `-Z 1000 -s formatOptions 75`.
+The **Robbins atlas** (`/Users/jeeval/Board Study/figures/Robbins/`, `.png` + `.txt` caption) is the main
+new pathology source. Its captions were wrong twice in batch H1 — `Red Blood Cell Disorders - a862…`
+is captioned Howell-Jolly body but shows basophilic stippling (used as `fig_hx_stipple_wright`), and
+`…3ee064…` is captioned target cells but is not convincingly so (dropped). View every image.
+
+| Batch | Sections | Module | Status |
+|---|---|---|---|
+| H1 | §1–§14 (hematopoiesis → transfusion) | `questions_hardest01.py` / `lo_tags_hardest01.py` | built, 20 Qs |
+| H2 | §15–§28 (pharmacology, infection, lab, benign WBC) | `questions_hardest02.py` / `lo_tags_hardest02.py` | appended, 20 Qs (file now 40 Qs, 58 figures, 11.8 MB) |
+| H3 | §29–§35, §49, §50 (coagulation, thrombophilia, VTE, ITP, node) | `questions_hardest03.py` / `lo_tags_hardest03.py` | appended, 20 Qs (file now 60 Qs, 79 figures, 16.5 MB) |
+| H4 | §36–§42, §51 (malignancy, peds leukemia) | `questions_hardest04.py` / `lo_tags_hardest04.py` | appended, 20 Qs (file now 80 Qs, 97 figures, 20.2 MB) |
+| H5 | §43–§46, §48, §55–§57, §23, §54 (chemo pharmacology, lymphatics, spleen trauma, lab, prescribing) | `questions_hardest05.py` / `lo_tags_hardest05.py` | appended — all 83 objectives covered at 100 Qs |
+| H6 | High-yield depth, driven by the review file's own Master High-Yield Checklist | `questions_hardest06.py` / `lo_tags_hardest06.py` | appended — 120 Qs, 119 figures, 23.3 MB |
+
+After H2, 44 of 83 objectives are covered. Batch H2 added Robbins figures `fig_hx_cerebral_malaria`, `fig_hx_pml_histo`, `fig_hx_kaposi_histo` and `fig_hx_ich_gross`; a Robbins smear captioned *P. falciparum* (`Red Blood Cell Disorders - 9ce795…`) was rejected because the field shows enlarged infected cells more consistent with a non-falciparum species.
+
+After H3, 57 of 83 objectives are covered. Still uncovered: 3, 6, 11, 15, 16, 17, 21, 30, 34, 37, 38, 39, 40, 41, 47, 54, 56, 57, 58, 59, 60, 64, 67, 78, 80, 82 — i.e. the malignancy block (H4) plus chemotherapy pharmacology, spleen trauma, lymphatics, prescribing and accuracy/precision (H5).
+
+After H4, 73 of 83 objectives are covered. The last 10 for batch H5: 11, 15, 16, 17 (antineoplastic pharmacology), 34 and 60 (lymphatics), 47 (splenic trauma management), 59 (accuracy vs precision), 64 (chemotherapy principles) and 78 (prescription writing). Note the file is at 20.2 MB — run the figure re-encode sweep (`-Z 850 -s formatOptions 68`, keep only if smaller) if H5 pushes it past ~26 MB.
+
+### Hardest Exam — final state
+
+**100 questions · 110 figures · 21.7 MB · 83 of 83 objectives covered.** 39 questions carry a stem
+image. Keyed answer is uniquely longest in 10.0% (chance is 20%), none by 5+ characters; all option
+sets alphabetical; every explanation ends in an `Educational objective:` line; every question carries
+an LO chip. Browser-verified at 100 questions: no console errors, all figures resolve, all lab blocks
+render as native `lab-row` tables.
+
+One engine change beyond the standard `build_quiz.py` patches: figure `<img>` tags now carry
+`loading="lazy" decoding="async"`, added by string-patching the single `<img src="'+src+'"` builder in
+the built file. It does not shrink the file (the images are inlined base64) but it stops the browser
+decoding 110 figures at load. If the file ever needs to be smaller — the 30 MB delivery ceiling — re-run
+the in-place re-encode sweep described above.
+
+New figure keys added across H1–H5 are prefixed `fig_hx_*`. Sources: Robbins atlas
+(`/Users/jeeval/Board Study/figures/Robbins/`, .png + .txt caption sidecar), AMBOSS, and the review
+file's own `assets/` slides. Two Robbins captions were wrong and were caught only by viewing the
+image — see the H2 note. Confirm every stem image by eye; the caption is not evidence.
+
+### Batch H6 — how the high-yield top-up was chosen
+
+Rather than picking topics by feel, H6 was built directly from the review file's own **Master
+High-Yield Checklist** (section id `checklist`, 66 numbered cards). Each of the first 100 questions
+was mapped onto the card it tests, and the 20 cards with no question were written up: 06 (folate
+alone masks B12), 07 (thalassemia trait vs iron deficiency), 12 (TRICC), 13 (platelet thresholds
+10/20/25), 14 (the 30% rule), 15 (TACO side of the TACO/TRALI pair), 16 (irradiation and TA-GVHD),
+17 (white vs red clot), 22 (the two CD4 numbers), 24 (one mutation kills the NNRTI class), 27
+(pseudothrombocytopenia), 28 (burr vs spur), 32 (maternal antibody and the timing of
+immunodeficiency), 41 (anti-Xa, not aPTT, for LMWH), 47 (CD23 splits the CD5+ B cells), 48
+(MGUS vs smoldering), 51 (left internal jugular line → chylothorax), 53 (which DOACs need a
+lead-in), 56 (acetaminophen never NSAIDs in VHF) and 61 (fasting provokes porphyria, glucose
+treats it).
+
+That mapping is the reusable part: if the file is ever extended again, re-run it and write the
+cards that come back uncovered.
+
+**State after H6: 120 questions · 119 figures · 23.3 MB · 83/83 objectives.** Uniquely-longest keyed
+answer 10.0% (chance 20%), none by 5+ characters. Title updated to "Final 120".
