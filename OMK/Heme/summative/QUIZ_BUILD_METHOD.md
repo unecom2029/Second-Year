@@ -1738,3 +1738,131 @@ cards that come back uncovered.
 
 **State after H6: 120 questions · 119 figures · 23.3 MB · 83/83 objectives.** Uniquely-longest keyed
 answer 10.0% (chance 20%), none by 5+ characters. Title updated to "Final 120".
+
+---
+
+## Hardest Exam — handoff, and the card coverage map
+
+### Handoff in one block
+
+```
+TARGET   OMK/Heme/summative/Hardest exam/Jeevs Edition - Hardest Exam.html   (120 Qs, 119 figures, 23.3 MB)
+SOURCE   OMK/Heme/summative/OMK_2A_Heme_Summative_3_Objective_Review.html    (59 sections, 83 objectives)
+MODULES  quiz-toolchain/questions_hardest0{1..6}.py + lo_tags_hardest0{1..6}.py
+FIGURES  quiz-toolchain/figs/  (new ones for this file are prefixed fig_hx_*)
+INDEX    quiz-toolchain/index_hardest.py  →  hardest_exam_question_index.txt
+```
+
+To add a batch:
+
+```bash
+cd "OMK/Heme/summative/quiz-toolchain"
+python3 append_quiz.py questions_hardest07.py lo_tags_hardest07.py \
+        "Hardest exam/Jeevs Edition - Hardest Exam.html"
+python3 index_hardest.py > hardest_exam_question_index.txt   # refresh the index
+```
+
+Rules this file follows, beyond the house style in §3–§7:
+
+- **Stem images are allowed and wanted** (Jeevs overrode the prompt's text-only rule). View every
+  figure before using it — two Robbins captions in this build were wrong, and three figures were
+  rejected for burned-in diagnoses.
+- Every explanation ends with a line beginning `Educational objective:`; the `q()` helper in each
+  questions module asserts it, asserts the keyed option carries an empty wrong-explanation string,
+  and alphabetises the options itself.
+- Length audit after every batch: the keyed answer must not be the uniquely longest option by 5+
+  characters. Fix by lengthening a distractor with a true qualifier whose FIRST LETTERS are
+  unchanged — otherwise the alphabetical order shifts and `correct` and the `wrongExplanations`
+  keys in the already-appended file no longer line up.
+- The built file carries one engine change beyond `build_quiz.py`'s patches: figure `<img>` tags
+  include `loading="lazy" decoding="async"`.
+- The LO chip link was repointed to `../OMK_2A_Heme_Summative_3_Objective_Review.html` because the
+  quiz lives one folder down. `build_quiz.py` writes the un-prefixed path, so re-patch after any
+  rebuild from the template.
+
+### The card coverage map
+
+Batch H6 was chosen by mapping every question onto the review file's own **Master High-Yield
+Checklist** (section id `checklist`, 66 cards) and writing the cards that had no question. This is
+that mapping, current at 120 questions. To redo it: regenerate the index, re-read the checklist
+section, and write the cards that come back empty.
+
+| Card | The fact | Questions |
+|---|---|---|
+| 01 | Reticulocyte count splits the anemia tree | 3, 4, 18 |
+| 02 | Read the MCV first; a normal MCV can be two diseases | 9, 102 |
+| 03 | Ferritin and TIBC move opposite ways | 7, 8 |
+| 04 | Iron deficiency is a symptom, not a diagnosis | 7 |
+| 05 | Methylmalonic acid separates B12 from folate | 5, 101 |
+| 06 | Never give folate alone for a macrocytosis | 101 |
+| 07 | Three microcytic anemias, three treatments | 102 |
+| 08 | Pink plasma, dark urine, absent haptoglobin | 12 |
+| 09 | Match the cell to the culprit | 13, 14, 15, 17, 111 |
+| 10 | Sudden anemia + LOW reticulocytes in a chronic hemolytic | 18 |
+| 11 | The direct Coombs test settles the spherocyte | 13, 76 |
+| 12 | Restrictive transfusion won the trial (TRICC) | 103 |
+| 13 | Ten, twenty, twenty-five (platelet thresholds) | 104 |
+| 14 | The ocean and the teacup (30% factor activity) | 105 |
+| 15 | TRALI versus TACO | 20, 107 |
+| 16 | Irradiate to prevent graft-versus-host disease | 106 |
+| 17 | White clot versus red clot | 25, 108 |
+| 18 | 1972, plus protein C and S | 21, 22, 46 |
+| 19 | Heparin-induced thrombocytopenia is a clotting emergency | 53 |
+| 20 | Eleven is the ESA ceiling | 27 |
+| 21 | Sepsis is the response, not the organism | 29, 30 |
+| 22 | Two different CD4 numbers | 119 |
+| 23 | CD4 stages, viral load transmits | 32, 119 |
+| 24 | One point mutation kills a whole ART class | 120 |
+| 25 | Three measured, four calculated | 37, 110 |
+| 26 | MCHC above 37 g/dL is an artefact | 13, 37 |
+| 27 | Wrong size, counted as the wrong thing | 110 |
+| 28 | Burr = kidney, spur = liver | 111 |
+| 29 | ANC 1,000 / 500 / 200 | 38 |
+| 30 | Reactive is busy, malignant is young | 39 |
+| 31 | Catalase-positive organisms survive in CGD | 40 |
+| 32 | Timing separates the immunodeficiencies | 112 |
+| 33 | Where they bleed tells you which half failed | 41 |
+| 34 | Corrects = missing, stays long = blocked | 41, 42 |
+| 35 | A normal PT and aPTT does not exclude a bleeding disorder | 43 |
+| 36 | Activity ≈ antigen, or not (von Willebrand typing) | 43 |
+| 37 | All microangiopathies have a normal PT and aPTT | 47, 48 |
+| 38 | Brain = TTP, kidney = HUS | 47, 48 |
+| 39 | Losing a brake beats pushing the accelerator | 49, 50 |
+| 40 | Duration follows the clot, not the genotype | 50, 54 |
+| 41 | Only a long heparin tail bridges antithrombin to thrombin | 109 |
+| 42 | The lupus anticoagulant is wrong on both counts | 51, 52 |
+| 43 | Differentiation stage sets the tempo | 61 |
+| 44 | More than 20% blasts defines acute leukemia | 62, 66, 67 |
+| 45 | Treat acute promyelocytic leukemia on suspicion | 63 |
+| 46 | Everything up except calcium (tumour lysis) | 65 |
+| 47 | CD23 splits the CD5-positive B cells | 76, 113 |
+| 48 | In myeloma the damage comes from the protein | 79, 114 |
+| 49 | Predict the toxicity from the class | 86, 87, 88 |
+| 50 | Six dose-limiting pairings | 83, 84, 85 |
+| 51 | Never a left internal jugular line | 115 |
+| 52 | Square toes mean lymphedema | 93 |
+| 53 | A and R go it alone (DOAC initiation) | 52, 116 |
+| 54 | Provoked stops at three months | 54 |
+| 55 | Geography and exposure name the organism | 33, 34, 35, 36 |
+| 56 | Acetaminophen, never NSAIDs, in any hemorrhagic fever | 117 |
+| 57 | Only hantavirus fails one organ out of proportion | 36 |
+| 58 | A blocked flea is the dangerous flea | 35 |
+| 59 | Chloroquine lets the parasite poison itself | 33 |
+| 60 | ALA up with PBG NORMAL is lead, not porphyria | 10 |
+| 61 | Fasting provokes porphyria; glucose treats it | 118 |
+| 62 | A normal germinal center is BCL2 NEGATIVE | 57 |
+| 63 | Mononucleosis keeps its B-cell program; Hodgkin loses it | 58 |
+| 64 | CD5 then CD10 cuts the mature B-cell differential into thirds | 76, 77, 78, 113 |
+| 65 | Grow-fast versus die-slow | 75 |
+| 66 | Necrosis without neutrophils is Kikuchi | 59 |
+
+**All 66 cards now carry at least one question.** The thinnest are the ones listed against a single
+question — cards 04, 06, 07, 08, 10, 12, 13, 14, 16, 19, 20, 22, 24, 27, 28, 29, 30, 31, 32, 33, 35,
+36, 41, 43, 45, 46, 51, 52, 54, 56, 57, 58, 59, 60, 61, 62, 63, 65 and 66 — and those are where a
+future batch should add depth rather than breadth.
+
+Thirty-eight of the 120 questions map to no card at all. That is expected and not a defect: the
+checklist holds cross-cutting facts, not the syllabus, so items on fetal hematopoiesis, splenic
+trauma, prescribing, the lymphatic drainage map and the chemotherapy principles legitimately sit
+outside it. Objective coverage, not card coverage, is the completeness test — and that stands at
+83/83.
