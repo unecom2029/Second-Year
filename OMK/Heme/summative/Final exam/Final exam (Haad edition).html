@@ -746,6 +746,14 @@ html[data-note-auth="locked"] #noteAuthGate{position:fixed;inset:0;z-index:21474
 .note-auth-btn{border:0;border-radius:999px;padding:12px 20px;color:#fff;background:#263241;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 12px 28px rgba(38,50,65,.22)}
 .note-auth-btn:hover{background:#a5142a}
 </style>
+<style>
+.save-status{display:inline-flex;align-items:center;padding:3px 7px;border-radius:6px;background:rgba(255,255,255,.14);color:inherit;font-size:11px;font-weight:700;white-space:nowrap}
+.save-status[data-save-state="answers"]{background:#fff3cd;color:#694500}
+.save-status[data-save-state="failed"]{background:#ffe0e0;color:#8b1e1e}
+.qt-bar{height:auto;min-height:52px;flex-wrap:wrap;padding-top:6px;padding-bottom:6px;gap:6px}
+.nb-util{flex-wrap:wrap}
+.nb-util-actions{min-width:0;max-width:100%;flex-shrink:1}
+</style>
 </head>
 <body>
 <div id="noteAuthGate" role="dialog" aria-modal="true" aria-labelledby="noteAuthTitle">
@@ -897,6 +905,9 @@ html[data-note-auth="locked"] #noteAuthGate{position:fixed;inset:0;z-index:21474
     <button class="qt-btn" id="qtClassicUiBtn" onclick="switchQuizUI('nbme')">⇄ NBME UI</button>
     <button class="qt-btn" id="qtMarkBtn" onclick="toggleMark()">⚑ Mark</button>
     <button class="qt-btn" id="qtSubmitBtn" onclick="submitExam()">🧾 Submit Exam</button>
+    <span class="save-status" role="status" aria-live="polite">Save pending</span>
+    <button class="qt-btn" onclick="exportProgress()">⬇ Export Progress</button>
+    <button class="qt-btn" onclick="document.getElementById('progressImport').click()">⬆ Import Progress</button>
     <button class="qt-btn" onclick="downloadQuiz()">⬇ Download Quiz</button>
     <button class="qt-btn" onclick="resetQuiz()">↺ Reset</button>
     <button class="qt-btn" onclick="exitQuiz()">✕ Close</button>
@@ -968,7 +979,10 @@ html[data-note-auth="locked"] #noteAuthGate{position:fixed;inset:0;z-index:21474
 
       <button class="nb-util-btn" onclick="toggleFullscreen()" id="nbFsBtn">⛶ Fullscreen</button>
       <button class="nb-util-btn" onclick="switchQuizUI('classic')">UNE UI</button>
-      <button class="nb-util-btn" onclick="downloadQuiz()">Download</button>
+      <span class="save-status" role="status" aria-live="polite">Save pending</span>
+      <button class="nb-util-btn" onclick="exportProgress()">Export Progress</button>
+      <button class="nb-util-btn" onclick="document.getElementById('progressImport').click()">Import Progress</button>
+      <button class="nb-util-btn" onclick="downloadQuiz()">Download Quiz</button>
       <button class="nb-util-btn" onclick="resetQuiz()">Reset</button>
       <button class="nb-util-btn" onclick="exitQuiz()">Close</button>
     </div>
@@ -1938,11 +1952,17 @@ function resetQuizState(withTimerReset){
   updScore();
 }
 // ── SESSION PERSISTENCE (resume where you left off) ──
+var sessionKeyCache='',sessionKeyCacheTitle='',sessionKeyCacheBank=null;
 function getSessionKey(){
-  var basis=getQuizTitle()+'|'+(questionBank.length?JSON.stringify(questionBank.map(function(q){var clean=Object.assign({},q);delete clean.highlights;return clean;})):'');
+  var title=getQuizTitle();
+  if(sessionKeyCache&&sessionKeyCacheTitle===title&&sessionKeyCacheBank===questionBank)return sessionKeyCache;
+  var basis=title+'|'+(questionBank.length?JSON.stringify(questionBank.map(function(q){var clean=Object.assign({},q);delete clean.highlights;return clean;})):'');
   var hash=0;
   for(var i=0;i<basis.length;i++){hash=((hash<<5)-hash+basis.charCodeAt(i))|0;}
-  return 'quiz-builder-session-'+Math.abs(hash).toString(36);
+  sessionKeyCache='quiz-builder-session-'+Math.abs(hash).toString(36);
+  sessionKeyCacheTitle=title;
+  sessionKeyCacheBank=questionBank;
+  return sessionKeyCache;
 }
 // Compact session state: each question's shuffled answer order (as a 3-char base-36 code
 // relative to the question bank) plus one base-36 char for picked / submitted / flagged.
@@ -2057,14 +2077,14 @@ function writeSessionCookie(value,maxAge){
     return true;
   }catch(e){return false;}
 }
-function saveSessionCookie(order){
+function saveSessionCookie(order,stamp){
   if(!order)return false;
-  var value=['c1',questions.length.toString(36),CQ.toString(36),
+  var value=['c2',questions.length.toString(36),CQ.toString(36),
     (quizMode==='exam'?'e':'l')+(examSubmitted?'1':'0')+(timerDisplayMode==='remaining'?'r':'e'),
-    Math.max(0,Math.floor(timerSec||0)).toString(36),order,encodeSessionMarks()].join('.');
+    Math.max(0,Math.floor(timerSec||0)).toString(36),Math.max(0,stamp||0).toString(36),order,encodeSessionMarks()].join('.');
   if(value.length>SESSION_COOKIE_MAX)return false;
   if(!writeSessionCookie(value,60*60*24*60))return false;
-  return String(document.cookie||'').indexOf(getSessionCookieName()+'=')>=0;
+  return String(document.cookie||'').split(';').some(function(part){return part.trim()===getSessionCookieName()+'='+value;});
 }
 function readSessionCookie(){
   var name=getSessionCookieName()+'=',raw=null;
@@ -2076,33 +2096,58 @@ function readSessionCookie(){
   }catch(e){return null;}
   if(!raw)return null;
   var bits=raw.split('.');
-  if(bits.length!==7||bits[0]!=='c1'||parseInt(bits[1],36)!==questionBank.length)return null;
-  var qs=decodeSessionOrder(bits[5]);
+  if(!((bits.length===7&&bits[0]==='c1')||(bits.length===8&&bits[0]==='c2'))||parseInt(bits[1],36)!==questionBank.length)return null;
+  var offset=bits[0]==='c2'?1:0;
+  var qs=decodeSessionOrder(bits[5+offset]);
   if(!qs)return null;
-  var marks=decodeSessionMarks(bits[6],qs);
+  var marks=decodeSessionMarks(bits[6+offset],qs);
   return {
     v:2,questions:qs,questionNotes:{},selected:marks.selected,answers:marks.answers,marked:marks.marked,
     stemMarkup:{},choiceMarkup:{},CQ:parseInt(bits[2],36)||0,NC:marks.NC,NI:marks.NI,
     quizMode:bits[3].charAt(0)==='e'?'exam':'learn',examSubmitted:bits[3].charAt(1)==='1',
-    timerDisplayMode:bits[3].charAt(2)==='r'?'remaining':'elapsed',timerSec:parseInt(bits[4],36)||0
+    timerDisplayMode:bits[3].charAt(2)==='r'?'remaining':'elapsed',timerSec:parseInt(bits[4],36)||0,
+    savedAtMs:offset?(parseInt(bits[5],36)||0):0
   };
 }
 
-function saveSession(){
-  if(!questions.length||!questionBank.length)return;
+var lastSaveState='pending';
+function setSaveStatus(state){
+  lastSaveState=state;
+  var label=state==='full'?'Saved '+new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit'}):
+    state==='answers'?'Answers saved · notes at risk':'Not saved · export progress';
+  document.querySelectorAll('.save-status').forEach(function(el){
+    el.textContent=label;
+    el.setAttribute('data-save-state',state);
+    el.title=state==='full'?'Answers, notes, and markings saved in this browser.':
+      state==='answers'?'Only answers and markings fit in the cookie backup. Export Progress to keep notes too.':
+      'Browser storage is unavailable. Export Progress now to keep your work.';
+  });
+}
+function getSessionPayload(){
   var order=encodeSessionOrder();
-  var cookieSaved=saveSessionCookie(order);
+  var stamp=Date.now();
+  var payload={
+    v:2,quizKey:getSessionKey(),quizTitle:getQuizTitle(),savedAt:new Date(stamp).toISOString(),savedAtMs:stamp,
+    questionNotes:questionNotes,selected:selected,answers:answers,marked:marked,
+    stemMarkup:stemMarkup,choiceMarkup:choiceMarkup,
+    CQ:CQ,NC:NC,NI:NI,quizMode:quizMode,examSubmitted:examSubmitted,
+    timerSec:timerSec,timerDisplayMode:timerDisplayMode,uiMode:uiMode
+  };
+  if(order)payload.order=order;else payload.questions=questions;
+  return payload;
+}
+function saveSession(){
+  if(!questions.length||!questionBank.length)return false;
+  var payload=getSessionPayload();
+  var cookieSaved=saveSessionCookie(payload.order,payload.savedAtMs);
+  var storageSaved=false;
   try{
-    var payload={
-      v:2,questionNotes:questionNotes,selected:selected,answers:answers,marked:marked,
-      stemMarkup:stemMarkup,choiceMarkup:choiceMarkup,
-      CQ:CQ,NC:NC,NI:NI,quizMode:quizMode,examSubmitted:examSubmitted,
-      timerSec:timerSec,timerDisplayMode:timerDisplayMode,uiMode:uiMode
-    };
-    if(order)payload.order=order;else payload.questions=questions;
-    localStorage.setItem(getSessionKey(),JSON.stringify(payload));
-    return true;
-  }catch(e){return cookieSaved;}
+    var data=JSON.stringify(payload);
+    localStorage.setItem(getSessionKey(),data);
+    storageSaved=localStorage.getItem(getSessionKey())===data;
+  }catch(e){}
+  setSaveStatus(storageSaved?'full':cookieSaved?'answers':'failed');
+  return storageSaved||cookieSaved;
 }
 function clearSession(){
   try{localStorage.removeItem(getSessionKey());}catch(e){}
@@ -2118,10 +2163,12 @@ function readStoredSession(){
 function hasSessionProgress(saved){
   return !!saved&&(Object.keys(saved.questionNotes||{}).length>0||Object.keys(saved.selected||{}).length>0||Object.keys(saved.answers||{}).length>0||Object.keys(saved.marked||{}).length>0||saved.timerSec>0);
 }
-function tryRestoreSession(){
-  var saved=readStoredSession();
-  if(!hasSessionProgress(saved))saved=readSessionCookie();
-  if(!hasSessionProgress(saved))return false;
+function sessionProgressScore(saved){
+  if(!saved)return -1;
+  return Object.keys(saved.answers||{}).length*100000+Object.keys(saved.selected||{}).length*1000+(saved.timerSec||0);
+}
+function restoreSessionPayload(saved){
+  if(!saved||!Array.isArray(saved.questions)||saved.questions.length!==questionBank.length)return false;
   questions=saved.questions.map(function(q){return cloneQuestion(q);});
   questionNotes=saved.questionNotes&&typeof saved.questionNotes==='object'?saved.questionNotes:{};
   selected=saved.selected||{};
@@ -2139,6 +2186,44 @@ function tryRestoreSession(){
   reviewOpen=false;summaryVisible=false;finishBannerMinimized=false;toolMode='';
   syncToolButtons();syncModeButtons();syncMarkButtons();updScore();updTimer();
   return true;
+}
+function tryRestoreSession(){
+  var stored=readStoredSession(),cookie=readSessionCookie();
+  var storedProgress=hasSessionProgress(stored),cookieProgress=hasSessionProgress(cookie);
+  var saved=storedProgress?stored:cookie;
+  if(storedProgress&&cookieProgress){
+    var storedStamp=stored.savedAtMs||0,cookieStamp=cookie.savedAtMs||0;
+    if(cookieStamp>storedStamp||(cookieStamp===storedStamp&&sessionProgressScore(cookie)>sessionProgressScore(stored))){
+      saved=cookie;
+      // The cookie holds only compact answers; retain any notes/annotations in the older browser save.
+      saved.questionNotes=stored.questionNotes||{};
+      saved.stemMarkup=stored.stemMarkup||{};
+      saved.choiceMarkup=stored.choiceMarkup||{};
+    }
+  }
+  return hasSessionProgress(saved)&&restoreSessionPayload(saved);
+}
+function exportProgress(){
+  if(!questions.length){showToast('Start the quiz before exporting progress.','err');return;}
+  var payload=getSessionPayload();
+  var fileName=buildDownloadFileName(getQuizTitle()).replace(/\.html$/i,' Progress.json');
+  triggerQuizDownload(new Blob([JSON.stringify(payload)],{type:'application/json;charset=utf-8'}),fileName);
+  showToast('Progress backup downloaded. Keep the JSON file to restore this attempt.','ok');
+}
+function importProgressFromFile(input){
+  var file=input.files&&input.files[0];
+  input.value='';
+  if(!file)return;
+  if(file.size>20000000){showToast('Progress file is too large.','err');return;}
+  file.text().then(function(contents){
+    var saved=JSON.parse(contents);
+    if(saved.v!==2||saved.quizKey!==getSessionKey())throw Error('This backup belongs to a different quiz or edition.');
+    if(!Array.isArray(saved.questions))saved.questions=decodeSessionOrder(saved.order);
+    if(!restoreSessionPayload(saved))throw Error('This progress file is incomplete or invalid.');
+    renderItemSelectors();
+    renderQ();
+    showToast(lastSaveState==='failed'?'Progress loaded in this tab. Export a new backup before closing.':'Progress restored and auto-saved.','ok');
+  }).catch(function(err){showToast(err.message||'Could not read this progress file.','err');});
 }
 // Save once more when the tab is closed, reloaded or backgrounded.
 window.addEventListener('pagehide',function(){try{saveSession();}catch(e){}});
@@ -3636,5 +3721,6 @@ hydratePreloadedQuiz();
   <div class="vh-panel-title" id="vhPanelTitle"></div>
   <div class="vh-panel-body" id="vhPanelBody"></div>
 </div>
+<input id="progressImport" type="file" accept="application/json,.json" hidden onchange="importProgressFromFile(this)">
 </body>
 </html>
