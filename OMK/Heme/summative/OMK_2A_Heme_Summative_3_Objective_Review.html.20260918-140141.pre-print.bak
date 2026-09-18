@@ -42,18 +42,14 @@
       return {allowed:true,reason:'unlocked'};
     }catch(err){return {allowed:false,reason:'login'};}
   }
-  var PRINT_ALLOWED_EMAILS={'jmehta@une.edu':true};
   function canJeevalPrint(){
-    /* Read the same payload the unlock gate uses: localStorage first, then the cookie.
-       A cookie-only check failed whenever the Study Hub login was remembered in
-       localStorage alone (for example when the file is opened straight from disk). */
-    var raw=readAuthPayload();
+    var raw=readCookie(NOTE_AUTH_KEY);
     if(!raw)return false;
     try{
       var parsed=JSON.parse(raw);
       var email=String(parsed&&parsed.email||'').trim().toLowerCase();
       var expiresAt=Number(parsed&&parsed.expiresAt);
-      return PRINT_ALLOWED_EMAILS[email]===true&&Number.isFinite(expiresAt)&&Date.now()<expiresAt;
+      return email==='jmehta@une.edu'&&Number.isFinite(expiresAt)&&Date.now()<expiresAt;
     }catch(err){return false;}
   }
   function syncPrintAccess(){
@@ -592,18 +588,14 @@ strong.rc-open{animation:rcReveal .35s ease}
 .hy-action-btn:disabled{opacity:.42;cursor:not-allowed;filter:grayscale(.35)}
 .hy-close-btn{background:var(--accent);color:#fff;border:none}
 .hy-subhead{font-family:'JetBrains Mono',monospace;font-size:.64rem;color:var(--muted);margin:0 0 13px}
-.hy-cols{columns:3;column-gap:11px;min-width:0}
-@media (max-width:1000px){.hy-cols{columns:2}}
-@media (max-width:760px){.hy-cols{columns:1}}
+.hy-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;min-width:0}
+@media (max-width:760px){.hy-cols{grid-template-columns:1fr}}
 .hy-cols>div{min-width:0}
-.hy-group{break-inside:avoid;-webkit-column-break-inside:avoid;display:flow-root}
-.hy-group.hy-breakable{break-inside:auto;-webkit-column-break-inside:auto}
-.hy-block{border:1px solid var(--border);border-radius:8px;padding:9px 11px;background:var(--cream);margin-bottom:9px;min-width:0;
-  break-inside:avoid;-webkit-column-break-inside:avoid;overflow:hidden}
+.hy-block{border:1px solid var(--border);border-radius:8px;padding:9px 11px;background:var(--cream);margin-bottom:9px;min-width:0}
 .hy-block h4{margin:0 0 5px;font-size:.75rem;color:var(--accent);border-bottom:1px solid var(--border);padding-bottom:4px}
 .hy-block p,.hy-block li{font-size:.66rem;line-height:1.4;margin:0 0 3px}
 .hy-block ul{margin:0;padding-left:15px}
-.hy-lo-tag{break-after:avoid;break-inside:avoid;display:block;font-family:'JetBrains Mono',monospace;font-size:.58rem;font-weight:700;color:#fff;
+.hy-lo-tag{display:block;font-family:'JetBrains Mono',monospace;font-size:.58rem;font-weight:700;color:#fff;
   background:var(--accent2);padding:3px 9px;border-radius:10px;margin-bottom:7px;letter-spacing:.05em;text-align:center}
 .hy-mini-table{width:100%;border-collapse:collapse;font-size:.62rem;margin-top:4px}
 .hy-mini-table{table-layout:fixed}
@@ -768,7 +760,7 @@ body.nav-open .toc-scrim{opacity:1;pointer-events:auto}
   body.hy-mode .hy-modal-card{position:static!important;max-width:100%!important;width:100%!important;
     box-shadow:none!important;padding:4px!important}
   .hy-modal-actions{display:none!important}
-  .hy-cols{columns:3;column-gap:8px}
+  .hy-cols{grid-template-columns:repeat(3,1fr);gap:8px}
   .hy-modal-header h2{font-size:1rem}
   .hy-subhead{font-size:.55rem;margin-bottom:7px}
   .hy-block{padding:5px 7px;margin-bottom:5px;break-inside:avoid}
@@ -778,8 +770,6 @@ body.nav-open .toc-scrim{opacity:1;pointer-events:auto}
   .hy-block-wide .hy-mini-table{font-size:.48rem}
   .hy-mini-table th,.hy-mini-table td{padding:1.5px 3px}
   .hy-lo-tag{font-size:.52rem;padding:2px 7px;margin-bottom:4px}
-  body.hy-mode .hy-modal-card{padding:4px 4px 0!important}
-  .hy-cols>:last-child,.hy-group>:last-child,.hy-block:last-child{margin-bottom:0}
   @page{margin:11mm}
 }
 
@@ -16168,8 +16158,8 @@ Rx:   Ferrous sulfate 325 mg tablets
     <p class="hy-subhead">Condensed by objective cluster — hematopoiesis · anemia I &amp; II · the laboratory · benign white cells · bleeding · clotting · transfusion · pharmacology · sepsis · HIV · malignancy · antineoplastics · lymphatics · VTE. Covers all 83 study guide objectives &mdash; 82 worked in full, plus prescription writing, the one objective with no lecture source.</p>
 
     <div class="hy-cols">
-              <div class="hy-group">
-<span class="hy-lo-tag">Hematopoiesis · LO 2 &middot; 81 &middot; 83</span>
+      <div>
+        <span class="hy-lo-tag">Hematopoiesis · LO 2 &middot; 81 &middot; 83</span>
         <div class="hy-block"><h4>Sites &amp; hierarchy</h4><ul>
           <li>Yolk sac → fetal liver &amp; spleen → bone marrow. Adult: <b>vertebrae, ribs, sternum, pelvis</b> (axial).</li>
           <li>HSC = self-renewal + differentiation; multipotent. Over-self-renewal = leukemia.</li>
@@ -16188,10 +16178,7 @@ Rx:   Ferrous sulfate 325 mg tablets
           <li>Hct ≈ 3 × Hgb. Female 37–47%, male 42–52%. RDW ↑ = two populations.</li>
           <li>Acute hemorrhage: initial Hgb can be normal — concentration unchanged.</li>
         </ul></div>
-        
-      </div>
-      <div class="hy-group">
-<span class="hy-lo-tag">Anemia I · LO 18 &middot; 19 &middot; 20 &middot; 29 &middot; 42 &middot; 53 &middot; 55</span>
+        <span class="hy-lo-tag">Anemia I · LO 18 &middot; 19 &middot; 20 &middot; 29 &middot; 42 &middot; 53 &middot; 55</span>
         <div class="hy-block"><h4>The 3 buckets + the algorithm</h4><ul>
           <li>Blood loss · impaired production · increased destruction.</li>
           <li>Confirm → <b>read MCV first</b> → retic count → targeted study → smear.</li>
@@ -16214,10 +16201,7 @@ Rx:   Ferrous sulfate 325 mg tablets
           <li><b>Never folate alone</b> — corrects the count while the cord degenerates.</li>
           <li><b>Folate in pregnancy:</b> neural tube closes at ~4 weeks — supplement <b>before conception</b>.</li>
         </ul></div>
-        
-      </div>
-      <div class="hy-group">
-<span class="hy-lo-tag">The laboratory · LO 27 &middot; 53</span>
+        <span class="hy-lo-tag">The laboratory · LO 27 &middot; 53</span>
         <div class="hy-block"><h4>Measured vs calculated</h4><ul>
           <li><b>Measured:</b> RBC + MCV (impedance), Hgb (SLS photometry, <b>555 nm</b>).</li>
           <li><b>Calculated:</b> Hct = RBC×MCV/10 · MCH = Hgb/RBC×10 · MCHC = Hgb/Hct×100 · RDW = SD/MCV.</li>
@@ -16248,10 +16232,7 @@ Rx:   Ferrous sulfate 325 mg tablets
           <tr><td>Inflammation</td><td>↑</td><td>↓</td><td>Treat disease</td></tr>
           <tr><td>Thal trait</td><td>normal</td><td>normal</td><td><b>Nothing</b></td></tr></table>
         </div>
-        
-      </div>
-      <div class="hy-group">
-<span class="hy-lo-tag">Anemia II · LO 5 &middot; 7 &middot; 25 &middot; 28 &middot; 51</span>
+        <span class="hy-lo-tag">Anemia II · LO 5 &middot; 7 &middot; 25 &middot; 28 &middot; 51</span>
         <div class="hy-block"><h4>Intravascular vs extravascular</h4><ul>
           <li>Shared: short lifespan · ↑ unconjugated bilirubin · <b>compensatory retic ↑</b>.</li>
           <li><b>Intravascular triad: pink plasma · dark urine · absent haptoglobin.</b> Schistocytes. <b>Kidney at risk</b> — free heme is nephrotoxic.</li>
@@ -16276,10 +16257,7 @@ Rx:   Ferrous sulfate 325 mg tablets
           <li>Encapsulated organisms: <b>S. pneumoniae</b>, N. meningitidis, H. influenzae b.</li>
           <li>Prevent: vaccinate (before surgery if planned) · daily penicillin in children · <b>any fever is an emergency</b>.</li>
         </ul></div>
-        
-      </div>
-      <div class="hy-group">
-<span class="hy-lo-tag">Benign WBC · LO 4 &middot; 66 &middot; 76</span>
+        <span class="hy-lo-tag">Benign WBC · LO 4 &middot; 66 &middot; 76</span>
         <div class="hy-block"><h4>Counts &amp; the ANC</h4><ul>
           <li>WBC 4.3–10.8 ×10⁹/L. Neutrophils 45–74% · lymphocytes 16–45% · monocytes 4–10% · eos 0–7% · baso 0–2%.</li>
           <li><b>ANC = WBC × % neutrophils.</b> &lt;1,000 risk ↑ · <b>&lt;500 own flora</b> · <b>&lt;200 no inflammatory response</b> — fever may be the only sign.</li>
@@ -16299,10 +16277,7 @@ Rx:   Ferrous sulfate 325 mg tablets
           <li><b>DiGeorge</b>: 22q11, <b>CATCH-22</b>, 3rd/4th branchial pouch → <b>irradiated blood products</b>, no live vaccines.</li>
           <li><b>SCID</b>: common γ chain or ADA; sick from month 2; <b>TREC newborn screen</b>, ALC &lt;2,000 → transplant, earlier is better.</li>
         </ul></div>
-        
-      </div>
-      <div class="hy-group">
-<span class="hy-lo-tag">Bleeding · LO 32 &middot; 50 &middot; 68 &middot; 79</span>
+        <span class="hy-lo-tag">Bleeding · LO 32 &middot; 50 &middot; 68 &middot; 79</span>
         <div class="hy-block"><h4>Pattern → half of hemostasis</h4><ul>
           <li><b>Mucocutaneous</b> → VWD / platelets (primary) · <b>joint + muscle</b> → hemophilia (secondary) · <b>delayed</b> → factor 13 or antiplasmin.</li>
           <li>Intrinsic 12→11→9→8 = <b>aPTT</b> · extrinsic 7 = <b>PT</b> · common 10→5→2→fibrinogen = both. Liver makes all except <b>VWF and factor 8</b>.</li>
@@ -16317,10 +16292,7 @@ Rx:   Ferrous sulfate 325 mg tablets
           <li>Handshake: collagen→VWF→<b>GPIb</b>→platelet. <b>Bernard–Soulier</b> = GPIb missing (↓ristocetin, big platelets) · <b>Glanzmann</b> = GPIIb/IIIa (all but ristocetin ↓; <b>aspirin looks the same</b>).</li>
           <li>Acquired: liver (rebalanced, INR misleads) · <b>DIC</b> (↓plt, ↑PT/aPTT, ↓fibrinogen trend, ↑↑D-dimer, schistocytes → treat the cause) · vitamin K (<b>2,7,9,10 + C/S</b>; <b>factor 5 normal</b> = vitamin K, low = liver) · acquired inhibitor (older, new diathesis, mix fails).</li>
         </ul></div>
-        
-      </div>
-      <div class="hy-group">
-<span class="hy-lo-tag">Transfusion · LO 31 &middot; 61 &middot; 74</span>
+        <span class="hy-lo-tag">Transfusion · LO 31 &middot; 61 &middot; 74</span>
         <div class="hy-block"><h4>Products &amp; thresholds</h4><ul>
           <li>RBC 1–6 °C, 42 d · Platelets <b>room temp, agitated, 5–7 d</b> · Plasma frozen 1 yr · Cryo = fibrinogen.</li>
           <li><b>TRICC: transfuse &lt; 7 g/dL</b>, one unit then reassess. Liberal arm did worse.</li>
@@ -16344,10 +16316,9 @@ Rx:   Ferrous sulfate 325 mg tablets
           <li><b>Transfusion GVHD</b>: pancytopenia 1–6 wk, usually fatal. <b>Prevent by irradiation</b> — also for related donors.</li>
           <li>Most common infectious risk = <b>bacterially contaminated platelet</b>.</li>
         </ul></div>
-        
       </div>
-      <div class="hy-group">
-<span class="hy-lo-tag">Pharmacology · LO 8 &middot; 9 &middot; 12 &middot; 26 &middot; 62 &middot; 69 &middot; 70 &middot; 71 &middot; 72</span>
+      <div>
+        <span class="hy-lo-tag">Pharmacology · LO 8 &middot; 9 &middot; 12 &middot; 26 &middot; 62 &middot; 69 &middot; 70 &middot; 71 &middot; 72</span>
         <div class="hy-block"><h4>Anticoagulants</h4><ul>
           <li>UFH = long rope (IIa + Xa) · LMWH = short (mostly Xa) · fondaparinux = pentasaccharide (pure Xa, <b>no HIT, no reversal</b>).</li>
           <li>Protamine: <b>full → partial → none</b>.</li>
@@ -16372,10 +16343,7 @@ Rx:   Ferrous sulfate 325 mg tablets
           <li>Leucovorin bypasses DHFR — the rescue for methotrexate. Luspatercept unblocks late maturation in thalassemia.</li>
           <li>Complement inhibitors (PNH) → <b>boxed meningococcal warning</b>, vaccinate first.</li>
         </ul></div>
-        
-      </div>
-      <div class="hy-group">
-<span class="hy-lo-tag">Sepsis &amp; HIV · LO 1 &middot; 14 &middot; 22 &middot; 24 &middot; 75 &middot; 77</span>
+        <span class="hy-lo-tag">Sepsis &amp; HIV · LO 1 &middot; 14 &middot; 22 &middot; 24 &middot; 75 &middot; 77</span>
         <div class="hy-block"><h4>Sepsis</h4><ul>
           <li>Dysregulated host response. <b>Cultures negative in 30–50%.</b> 1.7 M cases, ~350k deaths, $62 B/yr.</li>
           <li><b>SOFA ≥ 2 ≈ 10% mortality.</b> qSOFA: RR ≥22, SBP ≤100, altered mentation. NEWS2 = 6 params (adds O₂ sat); MEWS = 5, more sensitive. SIRS criteria are <b>bidirectional</b>.</li>
@@ -16397,10 +16365,7 @@ Rx:   Ferrous sulfate 325 mg tablets
           <li><b>Boosters (ritonavir, cobicistat) inhibit CYP3A4</b> → OTC nasal steroid → iatrogenic Cushing.</li>
           <li>U = U, CDC &lt; 200 copies/mL. PARTNER trial: 74,000 episodes, <b>zero transmissions</b>. PrEP ~99% sexual; PEP within <b>72 hours</b>.</li>
         </ul></div>
-        
-      </div>
-      <div class="hy-group">
-<span class="hy-lo-tag">Clotting · LO 33 &middot; 43 &middot; 44 &middot; 45 &middot; 46 &middot; 48 &middot; 52</span>
+        <span class="hy-lo-tag">Clotting · LO 33 &middot; 43 &middot; 44 &middot; 45 &middot; 46 &middot; 48 &middot; 52</span>
         <div class="hy-block"><h4>Microangiopathies</h4><ul>
           <li><b>All TMAs: PT, aPTT and fibrinogen normal. DIC: both prolonged, fibrinogen falling.</b> Schistocytes in all — the panel is the discriminator.</li>
           <li><b>TTP</b> = ADAMTS13 deficient or IgG-inhibited → uncleaved ultra-large VWF multimers seize platelets → systemic, <b>brain</b>. Acquired form presents in the 20s–30s. Rx <b>plasma exchange</b> (replaces enzyme + removes antibody); <b>no platelet transfusion</b>. Pentad: fever, ↓plt, MAHA, neuro, renal — treat before all five.</li>
@@ -16421,10 +16386,7 @@ Rx:   Ferrous sulfate 325 mg tablets
           <li><b>Recurrence sets duration:</b> major transient <b>3%</b> · minor reversible <b>5%</b> · unprovoked/persistent <b>10%</b> in year one.</li>
           <li>Test if: family history, <b>&lt;45 yrs</b>, no risk factors, recurrent, <b>unusual site</b>. Heparin ↓antithrombin, warfarin ↓protein C/S, acute illness ↑factor 8 → wait months, off anticoagulation. <b>Genetic testing any time, once.</b></li>
         </ul></div>
-        
-      </div>
-      <div class="hy-group">
-<span class="hy-lo-tag">Malignancy &middot; LO 3 &middot; 6 &middot; 21 &middot; 37 &middot; 38 &middot; 39 &middot; 40 &middot; 41 &middot; 54 &middot; 56 &middot; 57 &middot; 58 &middot; 66 &middot; 67 &middot; 80 &middot; 82</span>
+        <span class="hy-lo-tag">Malignancy &middot; LO 3 &middot; 6 &middot; 21 &middot; 37 &middot; 38 &middot; 39 &middot; 40 &middot; 41 &middot; 54 &middot; 56 &middot; 57 &middot; 58 &middot; 66 &middot; 67 &middot; 80 &middot; 82</span>
         <div class="hy-block"><h4>The core construct</h4><ul>
           <li><b>Less differentiated → AGGRESSIVE. More differentiated → INDOLENT.</b> Tempo follows the stage at transformation.</li>
           <li><b>&gt;20% blasts = acute leukemia</b> (marrow OR blood). Same line: MDS vs AML, and CML blast phase.</li>
@@ -16448,10 +16410,7 @@ Rx:   Ferrous sulfate 325 mg tablets
           <li><b>Waldenström = IgM pentamer</b> → hyperviscosity (<b>emergent plasmapheresis</b>), neuropathy, cold agglutinins, cryoglobulins, bleeding. MYD88.</li>
           <li><b>Myeloma</b>: damage from the <b>product</b>. <b>Light chains → renal failure</b> even with a small spike. CRAB. <b>MGUS &lt;10% &amp; &lt;3 g/dL (1%/yr); smoldering 10–60% or ≥3 g/dL (10%/yr for 5 yr).</b> Neither is treated.</li>
         </ul></div>
-        
-      </div>
-      <div class="hy-group">
-<span class="hy-lo-tag">Antineoplastics &middot; LO 11 &middot; 15 &middot; 16 &middot; 17 &middot; 64</span>
+        <span class="hy-lo-tag">Antineoplastics &middot; LO 11 &middot; 15 &middot; 16 &middot; 17 &middot; 64</span>
         <div class="hy-block"><h4>Principles</h4><ul>
           <li>Four classes: <b>cytotoxic</b> (dividing cells) · <b>targeted</b> (follows the target) · <b>immuno</b> (autoimmunity) · <b>hormonal</b> (hormone withdrawal).</li>
           <li><b>Neo</b>adjuvant = before surgery; adjuvant = after. <b>Log kill = constant FRACTION</b>, so cycles are mathematically necessary. <b>10⁹ cells ≈ 1 g = detection threshold.</b></li>
@@ -16479,10 +16438,9 @@ Rx:   Ferrous sulfate 325 mg tablets
           <li><b>CRS</b> (4–16 h, fever + hypotension + hypoxia) → <b>tocilizumab</b>. <b>ICANS</b> (day 3–9, confusion/seizure) → <b>dexamethasone</b>, NOT tocilizumab.</li>
           <li>Hormonal: <b>SERM = agonist in bone and endometrium</b> (tamoxifen → endometrial cancer + clots, protects bone). <b>Aromatase inhibitor removes estrogen everywhere</b> → osteoporosis; <b>postmenopausal only</b>. <b>GnRH agonist → tumour FLARE</b> → cover with an anti-androgen. Abiraterone (CYP17) → <b>hypokalaemia</b>, give with prednisone.</li>
         </ul></div>
-        
       </div>
-      <div class="hy-group">
-<span class="hy-lo-tag">Lymphatics &amp; VTE &middot; LO 10 &middot; 43 &middot; 63</span>
+      <div>
+        <span class="hy-lo-tag">Lymphatics &amp; VTE &middot; LO 10 &middot; 43 &middot; 63</span>
         <div class="hy-block"><h4>Lymphatics</h4><ul>
           <li><b>Primary function = return proteins and fluid to the blood.</b> Lymph is <b>protein-rich</b> — which is why obstruction swells so persistently.</li>
           <li><b>NEVER place a LEFT internal jugular line</b> — the thoracic duct enters the <b>posterior wall</b> at the left subclavian/IJ confluence → <b>chylothorax</b>. Use right IJ, subclavian or femoral.</li>
@@ -16500,10 +16458,7 @@ Rx:   Ferrous sulfate 325 mg tablets
           <li><b>AMPLIFY-EXTEND: apixaban 2.5 mg = full benefit, placebo-level bleeding. EINSTEIN-CHOICE: aspirin is markedly inferior and not safer.</b></li>
           <li><b>VTE-BLEED ≥2 = high risk (13%)</b>; active cancer alone scores 2. <b>IVC filter: one solid indication — absolute contraindication to anticoagulation</b>; it increases recurrent DVT.</li>
         </ul></div>
-        
-      </div>
-      <div class="hy-group">
-<span class="hy-lo-tag">Blood &amp; lymph infections &middot; LO 5 &middot; 13 &middot; 22 &middot; 23</span>
+        <span class="hy-lo-tag">Blood &amp; lymph infections &middot; LO 5 &middot; 13 &middot; 22 &middot; 23</span>
         <div class="hy-block"><h4>Viral hemorrhagic fevers &mdash; one mechanism</h4><ul>
           <li><b>A</b> immunosuppression (APCs immature: low co-stimulation, low type I IFN) &rarr; <b>B</b> cytokine storm &rarr; <b>C</b> infected phagocytes disseminate to <b>brain, adrenal, liver, spleen</b> &rarr; <b>D</b> capillary leak, DIC, MODS. <b>This is sepsis by a viral route.</b></li>
           <li>Patient bleeds for <b>three</b> reasons: consumption (storm) + failure of production (liver) + leaky vessel.</li>
@@ -16524,10 +16479,7 @@ Rx:   Ferrous sulfate 325 mg tablets
           <li><b><i>Babesia microti</i></b>: white-footed mouse (also Lyme, anaplasma, Powassan, hanta) + <b><i>Ixodes</i> NYMPH</b> (ticks not born infected; nymph is invisible &rarr; <b>no tick-bite history expected</b>). Rings on <b>Giemsa</b>, hemolytic anemia + thrombocytopenia. <b>Azithromycin + atovaquone</b> (atovaquone hits electron transport). <b>Doxycycline does NOT treat it.</b></li>
           <li><b>Malaria</b>: liver stage first (<b><i>Babesia</i> has none</b>). Fever interval = the erythrocytic cycle: <b><i>knowlesi</i> 24 h &middot; <i>vivax</i>/<i>ovale</i> 48 h &middot; <i>malariae</i> 72 h &middot; <i>falciparum</i> IRREGULAR</b> (unsynchronized &rarr; most dangerous). <b>THICK = is it there; THIN = which one.</b> <b>Chloroquine blocks heme polymerase</b> &rarr; free heme poisons the parasite; resistant &rarr; <b>ACT</b>. <b>RTS,S/AS01 targets the SPOROZOITE</b>; hepatitis B protein is only a carrier.</li>
         </ul></div>
-        
-      </div>
-      <div class="hy-group">
-<span class="hy-lo-tag">Porphyria &amp; lead &middot; LO 35</span>
+        <span class="hy-lo-tag">Porphyria &amp; lead &middot; LO 35</span>
         <div class="hy-block"><h4>Heme synthesis gone wrong</h4><ul>
           <li><b>Heme inhibits ALAS1.</b> A downstream block &rarr; less heme &rarr; less inhibition &rarr; ALAS1 revs up &rarr; <b>precursors above the block flood out</b>. <b>Disease of precursor accumulation, not heme deficiency.</b></li>
           <li>Precipitants all raise ALAS1: <b>fasting/low carbohydrate (PGC-1&alpha;), P450-inducing drugs, sex hormones, alcohol, infection, stress</b>. <b>Glucose and insulin suppress PGC-1&alpha;</b> &rarr; carbohydrate loading; <b>hemin</b> restores feedback.</li>
@@ -16535,10 +16487,7 @@ Rx:   Ferrous sulfate 325 mg tablets
           <li><b>PCT</b> &mdash; <b>the most common porphyria overall</b>; UROD. <b>Blistering photosensitivity + milia + hypertrichosis of cheeks/temples + TEA-COLOURED urine.</b> Associations: <b>hepatitis C, alcohol, iron overload, ESRD</b>; <b>hemochromatosis mutations in two-thirds</b>. Treat: DAA, <b>phlebotomy</b>, hydroxychloroquine, sun avoidance.</li>
           <li><b>THE DISCRIMINATOR: lead blocks ALA dehydratase (above PBG) &rarr; &uarr;ALA with NORMAL PBG.</b> AIP blocks PBG deaminase (below PBG) &rarr; <b>&uarr;ALA AND &uarr;PBG</b>. Lead also inhibits <b>ferrochelatase</b> &rarr; <b>ZPP</b> (3-month screen); microcytic anemia with <b>basophilic stippling</b>, Burton's lines, wrist/foot drop, saturnine gout.</li>
         </ul></div>
-        
-      </div>
-      <div class="hy-group">
-<span class="hy-lo-tag">Lymph node pathology &middot; LO 63 &middot; 66</span>
+        <span class="hy-lo-tag">Lymph node pathology &middot; LO 63 &middot; 66</span>
         <div class="hy-block"><h4>Normal node &amp; the reactive mimics</h4><ul>
           <li><b>Blue vs pink at low power IS the pattern</b>, and the pattern generates the differential. Cortex = B/follicles &middot; paracortex = T &middot; medulla = cords and sinuses. <b>Subcapsular sinus = where metastasis lands first.</b></li>
           <li><b>Reactive germinal center: polarized + tingible body macrophages + intact mantle + spaced follicles + BCL2 NEGATIVE.</b> Normal GC B cells switch BCL2 <b>off</b> so failed clones can die &mdash; <b>t(14;18) forces it back on = follicular lymphoma</b>.</li>
@@ -16549,10 +16498,7 @@ Rx:   Ferrous sulfate 325 mg tablets
           <li><b>HLH</b>: 5 of 8 criteria &mdash; fever, splenomegaly, cytopenias, <b>high ferritin</b>, high triglycerides, <b>LOW fibrinogen</b>, hemophagocytic histiocytes. <b>Hemophagocytosis = debris being destroyed; EMPERIPOLESIS = intact cells passing through (Rosai&ndash;Dorfman).</b></li>
           <li><b>Castleman</b> (hyaline vascular): <b>atretic dendritic-cell follicles + onion-skinning + lollipop vessel + twinning</b>; risk of <b>follicular dendritic cell sarcoma</b>. <b>Rosai&ndash;Dorfman</b>: massive sinus expansion, <b>S100 + (negative in the engulfed cells) &middot; CD1a &minus; &middot; CD207 &minus;</b>; MAP kinase mutations &rarr; <b>MEK inhibitors</b>.</li>
         </ul></div>
-        
-      </div>
-      <div class="hy-group">
-<span class="hy-lo-tag">Lymphomas in depth &middot; LO 21 &middot; 41 &middot; 56 &middot; 57</span>
+        <span class="hy-lo-tag">Lymphomas in depth &middot; LO 21 &middot; 41 &middot; 56 &middot; 57</span>
         <div class="hy-block"><h4>Two questions, then the phenotype</h4><ul>
           <li><b>CD5 + &rarr; CLL/SLL or mantle cell</b> (separate on <b>CD23: CLL POSITIVE, mantle NEGATIVE</b> + t(11;14) cyclin D1). <b>CD10 + &rarr; germinal center</b>: follicular, Burkitt, a subset of DLBCL. <b>CD5 &minus; and CD10 &minus; &rarr;</b> marginal zone, lymphoplasmacytic, hairy cell.</li>
           <li><b>Hodgkin = orderly CONTIGUOUS spread down axial groups</b>; abdominal nodes are never involved before cervical/mediastinal. <b>Non-Hodgkin = noncontiguous, peripheral, mesenteric/Waldeyer, extranodal.</b></li>
@@ -16570,10 +16516,7 @@ Rx:   Ferrous sulfate 325 mg tablets
           <li><b>ALCL</b>: <b>HALLMARK cells</b> (horseshoe nucleus, pale paranuclear area); <b>CD30 strong and diffuse</b> (the other CD30 lymphoma), often CD3 &minus;, EMA +, <b>CD45 +</b>. <b>ALK + ~80% survival vs ALK &minus; ~50%.</b> Sinusoidal growth mimics carcinoma/melanoma. <b>Breast implant-associated ALCL: 100% 5-year survival.</b></li>
           <li><b>ATLL</b>: <b>Japan or the Caribbean &rarr; HTLV-1</b>; <b>FLOWER cells</b> (multilobated petals) &mdash; not the <b>cerebriform</b> single folded mass of a S&eacute;zary cell. Hypercalcemia.</li>
         </ul></div>
-        
-      </div>
-      <div class="hy-group">
-<span class="hy-lo-tag">Pediatrics, spleen &amp; prescribing &middot; LO 65 &middot; 67 &middot; 77 &middot; 78</span>
+        <span class="hy-lo-tag">Pediatrics, spleen &amp; prescribing &middot; LO 65 &middot; 67 &middot; 77 &middot; 78</span>
         <div class="hy-block"><h4>ITP &mdash; two diseases, one name</h4><ul>
           <li><b>IgG against GP2b/3a</b>; antibody MADE in the spleen and platelets EATEN in the spleen &mdash; which is why splenectomy fixes both ends. <b>MCC of thrombocytopenia in adults and children.</b></li>
           <li><b>Acute (&lt;1 yr)</b>: child, post-viral, <b>80% resolve spontaneously</b> &rarr; <b>observe</b> (ICH &lt;0.1%). <b>Chronic (&gt;1 yr)</b>: adult women, often 2&deg; to SLE/RA/thyroid/CLL.</li>
@@ -16608,10 +16551,7 @@ Rx:   Ferrous sulfate 325 mg tablets
           <li><b>The commonest omission is the quantity</b> &mdash; without <i>Disp: #90</i> the pharmacist cannot fill it.</li>
           <li><b>No trailing zero</b> (1 mg, never 1.0 &mdash; reads as 10). <b>Always a leading zero</b> (0.5, never .5). <b>Write &ldquo;units&rdquo;</b> (U reads as 0). <b>Write &ldquo;daily&rdquo;</b>, not QD/QOD/QID. Spell out <b>morphine/magnesium sulfate</b>, never MS.</li>
         </ul></div>
-        
-      </div>
-      <div class="hy-group">
-<span class="hy-lo-tag">Trauma, edema &amp; metastasis &middot; LO 34 &middot; 47 &middot; 60 &middot; 73</span>
+        <span class="hy-lo-tag">Trauma, edema &amp; metastasis &middot; LO 34 &middot; 47 &middot; 60 &middot; 73</span>
         <div class="hy-block"><h4>Splenic injury &mdash; stability decides, not grade</h4><ul>
           <li><b>Most commonly injured solid organ in blunt abdominal trauma.</b> <b>Left lower rib fractures</b> are the warning. <b>Kehr sign = referred LEFT shoulder pain</b> from blood on the left hemidiaphragm (phrenic, C3&ndash;5), <b>worse lying flat</b>.</li>
           <li><b>UNSTABLE &rarr; FAST &rarr; operating room. Never send an unstable trauma patient to CT.</b> <b>STABLE &rarr; CT with contrast</b>, which grades it and finds the <b>blush</b>.</li>
@@ -17196,23 +17136,7 @@ function initRecall(){
 window.toggleToolsMenu=function(){$('#floatingLeft').classList.toggle('open');};
 
 /* ---------- HY modal ---------- */
-window.openHY=function(){
-  var m=$('#hyModal');if(!m)return;
-  m.classList.add('open');document.body.style.overflow='hidden';
-  balanceHY();
-};
-/* A cluster normally stays whole inside one column. A cluster taller than this
-   would otherwise push a big empty gap to the foot of a column or a printed
-   page, so the tallest ones are allowed to break instead. */
-function balanceHY(){
-  var groups=$$('.hy-group');
-  if(!groups.length)return;
-  var heights=groups.map(function(g){g.classList.remove('hy-breakable');return g.offsetHeight;});
-  var total=heights.reduce(function(a,b){return a+b;},0);
-  if(!total)return;
-  var limit=Math.max(420,total*0.055);
-  groups.forEach(function(g,i){if(heights[i]>limit)g.classList.add('hy-breakable');});
-}
+window.openHY=function(){var m=$('#hyModal');if(!m)return;m.classList.add('open');document.body.style.overflow='hidden';};
 window.closeHY=function(){var m=$('#hyModal');if(!m)return;m.classList.remove('open');document.body.style.overflow='';};
 window.printHY=function(){
   if(!window.syncPrintAccess||!window.syncPrintAccess()){
