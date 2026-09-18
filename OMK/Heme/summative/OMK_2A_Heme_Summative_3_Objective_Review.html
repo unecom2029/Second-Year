@@ -17200,7 +17200,18 @@ window.openHY=function(){
   var m=$('#hyModal');if(!m)return;
   m.classList.add('open');document.body.style.overflow='hidden';
   balanceHY();
+  /* Web fonts can land after the first measurement, and a resize changes the
+     column height, so re-balance whenever the geometry can have moved. */
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(balanceHY);
 };
+var hyResizeTimer=null;
+window.addEventListener('resize',function(){
+  var m=$('#hyModal');
+  if(!m||!m.classList.contains('open'))return;
+  clearTimeout(hyResizeTimer);
+  hyResizeTimer=setTimeout(balanceHY,150);
+});
+window.addEventListener('beforeprint',balanceHY);
 /* A cluster normally stays whole inside one column. A cluster taller than this
    would otherwise push a big empty gap to the foot of a column or a printed
    page, so the tallest ones are allowed to break instead. */
