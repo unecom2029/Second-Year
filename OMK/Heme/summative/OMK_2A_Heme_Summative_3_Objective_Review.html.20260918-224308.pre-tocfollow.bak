@@ -16864,39 +16864,9 @@ function initSubTocNav(){
   });
   if(location.hash.length>1)setTimeout(function(){revealAnchor(location.hash.slice(1));},120);
 }
-/* The contents list is far taller than the sidebar, so the section you are
-   reading — and the sub-list it opens — can sit well outside the visible strip.
-   Follow it, unless the reader is busy pointing at the list themselves. */
-var tocHover=false;
-function initTocFollow(){
-  var bar=$('.toc-bar');
-  if(!bar)return;
-  bar.addEventListener('pointerenter',function(){tocHover=true;});
-  bar.addEventListener('pointerleave',function(){tocHover=false;});
-}
-function keepActiveVisible(a){
-  var bar=$('.toc-bar');
-  if(!bar||!a||tocHover||document.body.classList.contains('nav-open'))return;
-  var sub=a.nextElementSibling;
-  if(sub&&!sub.classList.contains('toc-sub'))sub=null;
-  var barTop=bar.getBoundingClientRect().top;
-  var rowTop=a.getBoundingClientRect().top-barTop+bar.scrollTop;
-  var end=sub?sub.getBoundingClientRect().bottom:a.getBoundingClientRect().bottom;
-  var rowEnd=end-barTop+bar.scrollTop;
-  var viewTop=bar.scrollTop,viewEnd=viewTop+bar.clientHeight,margin=22;
-  if(rowTop>=viewTop+margin&&rowEnd<=viewEnd-margin)return;   /* already comfortably in view */
-  /* Sit the section about a third down, so its sub-list has room underneath
-     rather than being pinned to the bottom edge. */
-  var to=rowTop-Math.round(bar.clientHeight*0.3);
-  if(rowEnd-to>bar.clientHeight-margin)to=Math.min(rowTop-margin,rowEnd-bar.clientHeight+margin);
-  to=Math.max(0,Math.min(to,bar.scrollHeight-bar.clientHeight));
-  if(Math.abs(to-bar.scrollTop)<2)return;
-  bar.scrollTo({top:to,behavior:'smooth'});
-}
 function initScrollspy(){
   var links=$$('.toc-bar nav > a');
   var subWraps=$$('.toc-sub');
-  var lastActive=null;
   var secs=SECTION_IDS.map(function(id){return document.getElementById(id);}).filter(Boolean);
   var ticking=false;
   function upd(){
@@ -16905,12 +16875,6 @@ function initScrollspy(){
     links.forEach(function(a){
       var on=a.getAttribute('href')==='#'+cur.id;
       a.classList.toggle('active',on);
-      if(on&&lastActive!==cur.id){
-        lastActive=cur.id;
-        keepActiveVisible(a);
-        /* the sub-list is still expanding — settle the position once it has */
-        setTimeout(function(){if(a.classList.contains('active'))keepActiveVisible(a);},320);
-      }
       if(on){var lbl=a.querySelector('span:nth-child(2)'); if(lbl)setMobileHere(lbl.textContent);}
       var sub=a.nextElementSibling;
       if(sub&&sub.classList.contains('toc-sub')){
@@ -17492,7 +17456,7 @@ document.addEventListener('DOMContentLoaded',function(){
   initExamQ();
   initRecall();
   initProgressBar();
-  buildSubToc();initSubTocNav();initSubTocPeek();initTocFollow();
+  buildSubToc();initSubTocNav();initSubTocPeek();
   initScrollspy();
   initMobileNav();
   initLOTips();

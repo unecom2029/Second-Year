@@ -292,8 +292,7 @@ img{max-width:100%}
 .toc-bar .toc-sub a{font-size:.72rem;line-height:1.3;padding:4px 14px 4px 45px;color:var(--hero-sub);opacity:.72;
   position:relative;border-left:3px solid transparent;font-weight:400}
 .toc-bar .toc-sub a::before{content:'';position:absolute;left:25px;top:0;bottom:0;width:1px;background:rgba(255,255,255,.14)}
-.toc-bar .toc-sub a.on{opacity:1;color:var(--hero-heading);font-weight:700;
-  background:rgba(255,255,255,.07);border-left-color:var(--accent)}
+.toc-bar .toc-sub a.on{opacity:1;color:var(--hero-heading)}
 .toc-bar .toc-sub a.on::before{background:var(--accent);width:2px;left:24.5px}
 .toc-sub>div>a:last-child{margin-bottom:6px}
 .toc-bar a.done .toc-check{display:inline}
@@ -16807,47 +16806,6 @@ function revealAnchor(id){
   });
   return true;
 }
-/* Sub-lists used to open only for the section you happened to be reading, so
-   every other section in the contents looked as though it had none. Pointing at
-   a row (or tabbing to it) now opens that row's list too. */
-var HOVER_DWELL_MS=3000;   /* rest the pointer on a section this long to peek at its subsections */
-function initSubTocPeek(){
-  $$('.toc-bar nav > a').forEach(function(a){
-    var sub=a.nextElementSibling;
-    if(!sub||!sub.classList.contains('toc-sub'))return;
-    var dwell=null;
-    function open(){sub.dataset.peek='1';sub.classList.add('open');}
-    function openAfterDwell(){
-      if(sub.classList.contains('open'))return;   /* already open — nothing to wait for */
-      clearTimeout(dwell);
-      dwell=setTimeout(open,HOVER_DWELL_MS);
-    }
-    function close(){
-      clearTimeout(dwell);
-      delete sub.dataset.peek;
-      if(!a.classList.contains('active'))sub.classList.remove('open');
-    }
-    [a,sub].forEach(function(el){
-      el.addEventListener('pointerenter',openAfterDwell);
-      el.addEventListener('pointerleave',function(ev){
-        var to=ev.relatedTarget;
-        if(to&&(to===a||to===sub||a.contains(to)||sub.contains(to)))return;
-        close();
-      });
-      el.addEventListener('focusin',open);
-      el.addEventListener('focusout',function(ev){
-        var to=ev.relatedTarget;
-        if(to&&(to===a||to===sub||a.contains(to)||sub.contains(to)))return;
-        close();
-      });
-    });
-    /* Touch: a tap navigates, and opening the list straight away means the
-       subsections are visible without waiting for the scroll to land. */
-    a.addEventListener('click',open);
-    /* Clicking a subsection keeps its own list up while the page scrolls. */
-    sub.addEventListener('click',open);
-  });
-}
 function initSubTocNav(){
   $$('.toc-sub a').forEach(function(a){
     a.addEventListener('click',function(ev){
@@ -16864,39 +16822,9 @@ function initSubTocNav(){
   });
   if(location.hash.length>1)setTimeout(function(){revealAnchor(location.hash.slice(1));},120);
 }
-/* The contents list is far taller than the sidebar, so the section you are
-   reading — and the sub-list it opens — can sit well outside the visible strip.
-   Follow it, unless the reader is busy pointing at the list themselves. */
-var tocHover=false;
-function initTocFollow(){
-  var bar=$('.toc-bar');
-  if(!bar)return;
-  bar.addEventListener('pointerenter',function(){tocHover=true;});
-  bar.addEventListener('pointerleave',function(){tocHover=false;});
-}
-function keepActiveVisible(a){
-  var bar=$('.toc-bar');
-  if(!bar||!a||tocHover||document.body.classList.contains('nav-open'))return;
-  var sub=a.nextElementSibling;
-  if(sub&&!sub.classList.contains('toc-sub'))sub=null;
-  var barTop=bar.getBoundingClientRect().top;
-  var rowTop=a.getBoundingClientRect().top-barTop+bar.scrollTop;
-  var end=sub?sub.getBoundingClientRect().bottom:a.getBoundingClientRect().bottom;
-  var rowEnd=end-barTop+bar.scrollTop;
-  var viewTop=bar.scrollTop,viewEnd=viewTop+bar.clientHeight,margin=22;
-  if(rowTop>=viewTop+margin&&rowEnd<=viewEnd-margin)return;   /* already comfortably in view */
-  /* Sit the section about a third down, so its sub-list has room underneath
-     rather than being pinned to the bottom edge. */
-  var to=rowTop-Math.round(bar.clientHeight*0.3);
-  if(rowEnd-to>bar.clientHeight-margin)to=Math.min(rowTop-margin,rowEnd-bar.clientHeight+margin);
-  to=Math.max(0,Math.min(to,bar.scrollHeight-bar.clientHeight));
-  if(Math.abs(to-bar.scrollTop)<2)return;
-  bar.scrollTo({top:to,behavior:'smooth'});
-}
 function initScrollspy(){
   var links=$$('.toc-bar nav > a');
   var subWraps=$$('.toc-sub');
-  var lastActive=null;
   var secs=SECTION_IDS.map(function(id){return document.getElementById(id);}).filter(Boolean);
   var ticking=false;
   function upd(){
@@ -16905,18 +16833,10 @@ function initScrollspy(){
     links.forEach(function(a){
       var on=a.getAttribute('href')==='#'+cur.id;
       a.classList.toggle('active',on);
-      if(on&&lastActive!==cur.id){
-        lastActive=cur.id;
-        keepActiveVisible(a);
-        /* the sub-list is still expanding — settle the position once it has */
-        setTimeout(function(){if(a.classList.contains('active'))keepActiveVisible(a);},320);
-      }
       if(on){var lbl=a.querySelector('span:nth-child(2)'); if(lbl)setMobileHere(lbl.textContent);}
       var sub=a.nextElementSibling;
       if(sub&&sub.classList.contains('toc-sub')){
-        /* The section being read opens on its own; any other one stays open
-           while the reader is pointing at it or tabbing through it. */
-        sub.classList.toggle('open',on||sub.dataset.peek==='1');
+        sub.classList.toggle('open',on);
         var sl=sub.querySelectorAll('a'),cs=null;
         if(on)sl.forEach(function(x){var t=document.getElementById(x.getAttribute('href').slice(1));if(t&&t.getBoundingClientRect().top+window.scrollY<=y)cs=x;});
         sl.forEach(function(x){x.classList.toggle('on',x===cs);});
@@ -17492,7 +17412,7 @@ document.addEventListener('DOMContentLoaded',function(){
   initExamQ();
   initRecall();
   initProgressBar();
-  buildSubToc();initSubTocNav();initSubTocPeek();initTocFollow();
+  buildSubToc();initSubTocNav();
   initScrollspy();
   initMobileNav();
   initLOTips();
