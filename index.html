@@ -283,6 +283,29 @@ body,.sb,.auth-card,.mn,.tt,.modal-card,.chip,.qbd,.cd,.r-box,.box,.panel,.auth-
   background:rgba(255,255,255,.86);border-color:rgba(27,42,74,.12);color:var(--navy)
 }
 .resource-btn.secondary:hover{background:var(--white);transform:translateY(-2px);box-shadow:0 12px 26px rgba(18,32,60,.08)}
+.resource-btn.has-note{
+  position:relative;grid-column:1/-1;justify-content:flex-start;gap:14px;min-height:82px;padding:15px 62px 15px 16px;
+  text-align:left;border-width:2px;border-color:color-mix(in srgb,var(--navy) 24%,transparent);
+  background:linear-gradient(145deg,var(--white),color-mix(in srgb,var(--teal-light) 34%,var(--white)));
+  box-shadow:0 5px 0 color-mix(in srgb,var(--navy) 14%,transparent),0 13px 26px rgba(18,32,60,.10)
+}
+.resource-btn.has-note:hover{
+  border-color:color-mix(in srgb,var(--teal) 58%,var(--navy));
+  background:linear-gradient(145deg,var(--white),color-mix(in srgb,var(--teal-light) 58%,var(--white)));
+  transform:translateY(-3px);box-shadow:0 8px 0 color-mix(in srgb,var(--navy) 14%,transparent),0 18px 30px rgba(18,32,60,.14)
+}
+.resource-btn.has-note:active{transform:translateY(2px);box-shadow:0 2px 0 color-mix(in srgb,var(--navy) 16%,transparent),0 7px 15px rgba(18,32,60,.10)}
+.resource-btn.has-note::after{
+  content:'→';position:absolute;right:16px;top:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;
+  border-radius:11px;background:linear-gradient(135deg,var(--navy),var(--teal-deep));color:#fff;font-size:18px;
+  box-shadow:0 7px 15px rgba(18,32,60,.18);transform:translateY(-50%);transition:var(--tr)
+}
+.resource-btn.has-note:hover::after{transform:translate(3px,-50%)}
+.resource-btn-icon{flex:0 0 auto}
+.resource-btn.has-note .resource-btn-icon{width:42px;height:42px;display:flex;align-items:center;justify-content:center;border-radius:13px;background:var(--gold-bg);font-size:21px;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--gold) 18%,transparent)}
+.resource-btn-copy{display:flex;min-width:0;flex-direction:column;gap:3px;line-height:1.2}
+.resource-btn.has-note .resource-btn-label{font-size:16.5px;letter-spacing:.1px}
+.resource-btn-note{font-size:11.5px;font-weight:650;line-height:1.4;opacity:.72}
 @media (max-width:760px){
   .system-hero{padding:24px 22px}
   .system-hero-top{flex-direction:column;align-items:flex-start}
@@ -2818,7 +2841,9 @@ OMK:{
       {title:"Hematology/Heme Summative Exam 3",icon:"🧪",group:"summative-exam",typeLabel:"Summative",links:[
         {label:"Hematology Key Drug List",href:"OMK/Heme/Hematology_Key_Drug_List_2026_Study_System.html",style:"open"},
         {label:"Objective Review",href:"OMK/Heme/summative/OMK_2A_Heme_Summative_3_Objective_Review.html",style:"open",allowedUsers:["jmehta@une.edu"],privateUntil:"2026-09-16T20:30:00-04:00"},
-        {label:"Jeevs Edition — Summative Review",href:"OMK/Heme/summative/Jeevs edition _ summative review.html",style:"dl",allowedUsers:["jmehta@une.edu"]},
+        {label:"Drill, Drill, Drill",icon:"🎯",note:"A massive question bank built to hammer home every detail in the study guide. LO selector coming soon.",href:"OMK/Heme/summative/Jeevs edition _ summative review.html",style:"dl",allowedUsers:["jmehta@une.edu"]},
+        {label:"Concept Overview",icon:"🧠",note:"UWorld-style questions built from the study guide to reinforce core concepts and clinical reasoning.",href:"OMK/Heme/summative/OMK_2A_Heme_Summative_3_Question_Bank.html",style:"dl"},
+        {label:"Final Review",href:"OMK/Heme/summative/Hardest exam/Jeevs Edition - Hardest Exam.html",style:"open",allowedUsers:["jmehta@une.edu"],privateUntil:"2026-09-20T01:00:00-04:00"},
         {label:"Haad Edition — Final Exam",href:"OMK/Heme/summative/Final exam/Final exam (Haad edition).html",style:"open",allowedUsers:["hnaeem@une.edu","naeemh@une.edu"],availableAfter:"2026-09-16T20:30:00-04:00"}
       ]}
     ]}
@@ -3286,6 +3311,7 @@ function getLinkTone(link){
   return link&&link.style==='open'?'primary':'secondary';
 }
 function getLinkIcon(link){
+  if(link&&link.icon)return link.icon;
   var label=((link&&link.label)||'').toLowerCase();
   if(label.indexOf('note')!==-1)return '📝';
   if(label.indexOf('quiz')!==-1)return '🧪';
@@ -3362,7 +3388,7 @@ groupOrder.forEach(function(groupKey){
     var links=getVisibleLinks(item.links);
     var btns='';
     links.forEach(function(link){
-      btns+='<a class="resource-btn '+getLinkTone(link)+'" href="'+link.href+'" target="_blank"><span>'+getLinkIcon(link)+'</span><span>'+link.label+'</span></a>';
+      btns+='<a class="resource-btn '+getLinkTone(link)+(link.note?' has-note':'')+'" href="'+link.href+'" target="_blank"><span class="resource-btn-icon">'+getLinkIcon(link)+'</span><span class="resource-btn-copy"><span class="resource-btn-label">'+link.label+'</span>'+(link.note?'<span class="resource-btn-note">'+link.note+'</span>':'')+'</span></a>';
     });
     h+='<article class="resource-card"><div class="resource-card-top"><span class="resource-icon">'+(item.icon||'📘')+'</span><div><div class="resource-eyebrow">'+getResourceTypeLabel(item)+'</div><h4 class="resource-title">'+formatResourceTitle(item.title)+'</h4><div class="resource-sub">'+DATA[CC].fullName+'</div></div></div><div class="resource-actions">'+btns+'</div></article>';
   });
