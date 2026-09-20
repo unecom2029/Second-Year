@@ -62,7 +62,7 @@
   --panel-dark-bg:#1a1209; --panel-dark-text:#faf7f2;
   --hero-heading:#f5ede0; --hero-sub:#c9bcad;
   --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
-  --hero-meta-label:#8a7a6a; --hero-meta-value:#f0e0c8;
+  --hero-meta-label:#a2917f; --hero-meta-value:#f0e0c8;
   --floating-ui-bg:#3a3030; --floating-ui-fg:#f5ede0; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
   --quiz-overlay:rgba(44,95,138,.50); --quiz-overlay-hover:rgba(44,95,138,.78);
 }
@@ -81,7 +81,7 @@
 }
 [data-theme="ocean"]{
   --ink:#0a2233; --paper:#f0f7fc; --cream:#d4e7f3;
-  --accent:#1565c0; --accent2:#0d7c8a; --gold:#a8751a; --muted:#4e6b7d; --border:#b9d4e5;
+  --accent:#1565c0; --accent2:#0d7c8a; --gold:#a8751a; --muted:#3d5566; --border:#b9d4e5;
   --highlight:#f8e3a6; --highlight2:#c9e4f5; --green-bg:#cfeadb; --red-bg:#f7d6d2;
   --blue-bg:#cbe4f7; --purple-bg:#dfdcf5; --hero-bg:#0b2436;
   --panel-dark-bg:#0b2436; --panel-dark-text:#eef7fb;
@@ -111,7 +111,7 @@
   --panel-dark-bg:#3a2414; --panel-dark-text:#f7ecd9;
   --hero-heading:#f9efdd; --hero-sub:#c9b394;
   --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
-  --hero-meta-label:#a08c6c; --hero-meta-value:#f9efdd;
+  --hero-meta-label:#b8a282; --hero-meta-value:#f9efdd;
   --floating-ui-bg:#3a2414; --floating-ui-fg:#f9efdd; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
   --quiz-overlay:rgba(29,107,112,.50); --quiz-overlay-hover:rgba(29,107,112,.78);
 }
@@ -142,7 +142,7 @@
 
 /* ============ BASE ============ */
 *{box-sizing:border-box}
-html{scroll-behavior:smooth;scroll-padding-top:20px}
+html{scroll-padding-top:16px}
 body{margin:0;padding-left:var(--toc-w);background:var(--paper);color:var(--ink);
   font-family:'Source Serif 4',Georgia,serif;font-size:16px;line-height:1.62;
   -webkit-font-smoothing:antialiased;transition:background .25s,color .25s}
@@ -172,22 +172,26 @@ a{color:var(--accent2)}
 /* ============ TOC — FIXED LEFT SIDEBAR ============ */
 .toc-bar{position:fixed;top:0;left:0;bottom:0;z-index:90;width:var(--toc-w);
   background:var(--hero-bg);border-right:1px solid rgba(255,255,255,0.10);
-  overflow-y:auto;overflow-x:hidden}
+  display:flex;flex-direction:column;overflow:hidden}
 .toc-bar::-webkit-scrollbar{width:6px}
 .toc-bar::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.14);border-radius:3px}
 .toc-bar::-webkit-scrollbar-track{background:transparent}
-.toc-head{padding:24px 20px 16px;border-bottom:1px solid rgba(255,255,255,0.10)}
+.toc-head{flex:none;padding:18px 20px 13px;border-bottom:1px solid rgba(255,255,255,0.10)}
 .toc-eyebrow{display:block;font-family:'JetBrains Mono',monospace;font-size:.5rem;
   letter-spacing:.22em;text-transform:uppercase;color:var(--hero-meta-label);margin-bottom:7px}
 .toc-name{display:block;font-family:'Playfair Display',serif;font-weight:700;
   font-size:1.18rem;color:var(--hero-heading);line-height:1.15}
 .toc-name em{font-style:normal;color:var(--accent)}
 .toc-group{font-family:'JetBrains Mono',monospace;font-size:.49rem;letter-spacing:.2em;
-  text-transform:uppercase;color:var(--hero-meta-label);opacity:.75;margin:0;padding:18px 20px 7px}
-.toc-bar nav{display:flex;flex-direction:column;padding:0 0 28px}
+  text-transform:uppercase;color:var(--hero-meta-label);opacity:1;margin:0;padding:12px 20px 5px}
+.toc-bar nav{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;
+  display:flex;flex-direction:column;padding:0 0 18px}
+.toc-bar nav::-webkit-scrollbar{width:6px}
+.toc-bar nav::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.16);border-radius:3px}
+.toc-bar nav::-webkit-scrollbar-track{background:transparent}
 .toc-bar a{display:flex;align-items:center;gap:10px;text-decoration:none;
   font-family:'Source Serif 4',Georgia,serif;font-size:.83rem;line-height:1.3;
-  color:var(--hero-sub);padding:8px 14px 8px 17px;
+  color:var(--hero-sub);padding:5.5px 14px 5.5px 17px;
   border-left:3px solid transparent;transition:color .15s,border-color .15s,background .15s}
 .toc-num{flex:none;width:21px;height:21px;border-radius:50%;
   border:1px solid rgba(255,255,255,0.18);display:flex;align-items:center;justify-content:center;
@@ -224,6 +228,46 @@ a{color:var(--accent2)}
 h3{font-family:'Playfair Display',serif;font-size:1.28rem;margin:30px 0 11px;
   padding-left:11px;border-left:4px solid var(--accent2);line-height:1.25}
 h4{font-family:'Playfair Display',serif;font-size:1.03rem;margin:20px 0 8px}
+
+/* ===== COLLAPSIBLE SUBSECTIONS ===== */
+h3.sub-head{cursor:pointer;user-select:none;display:flex;align-items:flex-start;gap:9px}
+h3.sub-head:hover{color:var(--accent)}
+h3.sub-head .caret{flex:none;font-size:.62em;line-height:1.9;color:var(--muted);
+  transition:transform .25s ease}
+h3.sub-head.closed .caret{transform:rotate(-90deg)}
+h3.sub-head .sub-label{flex:1 1 auto;min-width:0}
+h3.sub-head .peek{flex:none;font-family:'JetBrains Mono',monospace;font-size:.5rem;
+  letter-spacing:.09em;text-transform:uppercase;color:var(--muted);
+  border:1px solid var(--border);border-radius:9px;padding:2px 8px;line-height:1.6;
+  opacity:0;transition:opacity .2s}
+h3.sub-head.closed .peek{opacity:1}
+.sub-outer{display:grid;grid-template-rows:1fr;transition:grid-template-rows .32s ease}
+.sub-outer.closed{grid-template-rows:0fr}
+/* padding/negative-margin pair keeps the EXAM Q chip from being clipped by overflow */
+.sub-inner{overflow:hidden;min-height:0;padding-top:12px;margin-top:-12px}
+/* ===== SIDEBAR SUB-NAVIGATION ===== */
+.toc-item{display:block}
+.toc-sub{display:grid;grid-template-rows:0fr;transition:grid-template-rows .25s ease}
+.toc-sub>div{overflow:hidden;min-height:0}
+.toc-sub.open{grid-template-rows:1fr}
+.toc-bar .toc-sub a{font-size:.71rem;line-height:1.32;padding:4px 12px 4px 44px;
+  color:var(--hero-sub);opacity:.74;position:relative;border-left:3px solid transparent;font-weight:400}
+.toc-bar .toc-sub a::before{content:'';position:absolute;left:25px;top:0;bottom:0;width:1px;
+  background:rgba(255,255,255,.16)}
+.toc-bar .toc-sub a:hover{opacity:1;color:var(--hero-heading);background:rgba(255,255,255,.05)}
+.toc-bar .toc-sub a.on{opacity:1;color:var(--hero-heading);font-weight:700;
+  background:rgba(255,255,255,.07);border-left-color:var(--accent)}
+.toc-bar .toc-sub a.on::before{background:var(--accent);width:2px;left:24.5px}
+.toc-bar .toc-sub>div>a:last-child{margin-bottom:6px}
+.toc-bar a .twist{flex:none;margin-left:auto;font-size:.52rem;opacity:.45;transition:transform .22s,opacity .2s}
+.toc-item.open>a .twist{transform:rotate(90deg);opacity:.95}
+@media (max-width:1000px){ .toc-sub{display:none} .toc-bar a .twist{display:none} }
+
+.toc-collapse-btn{flex:none;display:block;width:calc(100% - 28px);margin:0 14px 10px;
+  background:rgba(255,255,255,0.08);color:var(--hero-sub);border:1px solid rgba(255,255,255,0.15);
+  padding:8px 10px;border-radius:20px;cursor:pointer;font-family:'JetBrains Mono',monospace;
+  font-size:.56rem;font-weight:700;letter-spacing:.06em}
+.toc-collapse-btn:hover{background:rgba(255,255,255,0.16);color:var(--hero-heading)}
 
 /* ============ MISS / HIGH-YIELD MARKING ============ */
 .miss-count{display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;
@@ -411,8 +455,8 @@ td .dn{color:var(--accent2);font-weight:700}
 .theme-swatch{width:17px;height:17px;border-radius:50%;border:1px solid rgba(255,255,255,0.28);flex:none}
 
 /* ============ HIGH-YIELD ONE-PAGER ============ */
-.toc-hy-btn{display:flex;align-items:center;justify-content:center;gap:7px;
-  width:calc(100% - 28px);margin:15px 14px 2px;background:var(--chip-gold);color:var(--chip-gold-fg);border:none;
+.toc-hy-btn{flex:none;display:flex;align-items:center;justify-content:center;gap:7px;
+  width:calc(100% - 28px);margin:11px 14px 2px;background:var(--chip-gold);color:var(--chip-gold-fg);border:none;
   padding:11px 10px;border-radius:24px;cursor:pointer;font-family:'JetBrains Mono',monospace;
   font-size:.6rem;font-weight:700;letter-spacing:.04em;line-height:1.25;text-align:center;
   transition:transform .15s,box-shadow .15s}
@@ -477,9 +521,22 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
 @media print{
   body{padding-left:0 !important;background:#fff}
   .container{max-width:100% !important}
-  .toc-bar,.floating-stack,.lightbox,.tq-bar,.toc-hy-btn,.hy-btn{display:none !important}
+  .toc-bar,.floating-stack,.lightbox,.tq-bar,.toc-hy-btn,.hy-btn,.toc-collapse-btn{display:none !important}
+  .sub-outer{grid-template-rows:1fr !important}
+  .sub-inner{overflow:visible !important}
+  h3.sub-head .caret,h3.sub-head .peek{display:none !important}
   .section{page-break-inside:auto}
   .callout,.exam-q,.drug-card,.hallmark-card,figure,.t-wrap{break-inside:avoid}
+  /* tighten charts for paper only — screen stays comfortable */
+  table{font-size:.72rem}
+  th,td{padding:3.5px 6px;line-height:1.32}
+  .section{padding:22px 0 4px}
+  .section-title{font-size:1.35rem;margin-bottom:10px;padding-bottom:6px}
+  h3{font-size:1rem;margin:14px 0 6px}
+  .slide-img{max-height:2.6in;width:auto}
+  .callout{padding:8px 11px;margin:9px 0}
+  .exam-q{padding:10px 12px;margin:10px 0}
+  p{margin:0 0 7px}
   body.hy-mode .hero,body.hy-mode .toc-bar,body.hy-mode .section,
   body.hy-mode .lightbox,body.hy-mode .floating-stack,body.hy-mode footer{display:none !important}
   body.hy-mode .hy-modal{position:static !important;inset:auto !important;background:none !important;
@@ -507,6 +564,7 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
     <span class="toc-name">Hematology <em>Summative 3</em></span>
   </div>
   <button class="toc-hy-btn" onclick="openHY()">🎯 High-Yield One-Pager</button>
+  <button class="toc-collapse-btn" id="collapseAllBtn" onclick="toggleAllSubs()">⊟ Collapse all subsections</button>
   <nav>
     <a href="#orientation"><span class="toc-num dot"></span><span>How to Read This</span></a>
 
@@ -601,7 +659,7 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
       <p><span class="hy">Reticulocytes LOW = production problem. HIGH = loss or destruction.</span> Ask this before anything else.</p>
       <p><span class="hy">Hematocrit ≈ 3 × hemoglobin — but only if cell size is normal.</span> <strong>Acute hemorrhage: the initial hemoglobin can be normal</strong> — whole blood was lost, so concentration hasn't changed yet.</p>
     </div>
-    <img loading="lazy" src="assets/final-exam-fig_hematopoiesis-f8d0ff571f.jpg" alt="Hematopoiesis branching diagram" class="slide-img">
+    <img loading="lazy" width="850" height="544" src="assets/final-exam-fig_hematopoiesis-f8d0ff571f.jpg" alt="Hematopoiesis branching diagram" class="slide-img">
     <p class="slide-caption">One stem cell, two lineages.</p>
 
     <h3>The marrow biopsy</h3>
@@ -655,7 +713,7 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
       <tr><td>Inflammation — mechanism</td><td><span class="hy">Interleukin-6 → hepcidin ↑ → <span class="miss">hepcidin DESTROYS ferroportin</span> → iron locked in macrophages and enterocytes.</span> <strong>Hepcidin is the doorman; ferroportin is the door</strong> — more ferroportin would <em>help</em></td></tr>
       <tr><td>Inflammation — treat</td><td>Most common anemia in hospitalized patients (chronic infection, immune disease, malignancy — <strong>Hodgkin by name</strong>, as early as 1–2 months in). <strong>Oral iron fails</strong> (absorbed, then cannot leave). <strong>Treat the disease; IV iron bypasses the locked door</strong></td></tr>
     </table></div>
-    <img loading="lazy" src="assets/final-exam-fig_hepcidin-86408daa49.jpg" alt="Hepcidin degrading ferroportin" class="slide-img">
+    <img loading="lazy" width="850" height="566" src="assets/final-exam-fig_hepcidin-86408daa49.jpg" alt="Hepcidin degrading ferroportin" class="slide-img">
     <p class="slide-caption">Interleukin-6 → hepcidin → ferroportin destroyed → iron trapped.</p>
 
     <h3>Vitamin B12, pernicious anemia, folate</h3>
@@ -675,8 +733,8 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
       <tr><td>Pregnancy</td><td>Neural tube closes at <strong>~4 weeks</strong> — supplement <strong>before conception</strong></td></tr>
     </table></div>
     <div class="img-2col">
-      <div><img loading="lazy" src="assets/final-exam-fig_b12_absorption-5f0983be5b.jpg" alt="B12 absorption pathway" class="slide-img"><p class="slide-caption">The intrinsic factor route.</p></div>
-      <div><img loading="lazy" src="assets/final-exam-fig_hyperseg-142a405bb2.jpg" alt="Hypersegmented neutrophil" class="slide-img"><p class="slide-caption">≥6 lobes — the megaloblastic signature.</p></div>
+      <div><img loading="lazy" width="850" height="608" src="assets/final-exam-fig_b12_absorption-5f0983be5b.jpg" alt="B12 absorption pathway" class="slide-img"><p class="slide-caption">The intrinsic factor route.</p></div>
+      <div><img loading="lazy" width="850" height="850" src="assets/final-exam-fig_hyperseg-142a405bb2.jpg" alt="Hypersegmented neutrophil" class="slide-img"><p class="slide-caption">≥6 lobes — the megaloblastic signature.</p></div>
     </div>
 
     <h3>Sideroblastic anemia</h3>
@@ -685,7 +743,7 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
       <tr><td>The stain</td><td><span class="miss"><strong>Prussian blue</strong> stains <strong>iron</strong>; a blue ring around the nucleus = <strong>ringed sideroblast</strong></span> — iron stuck in mitochondria, unable to enter heme</td></tr>
       <tr><td>The picture</td><td>Macrocytic + other cytopenias + iron <strong>high across the board</strong>. <strong>Low binding capacity excludes deficiency</strong> → myelodysplasia</td></tr>
     </table></div>
-    <img loading="lazy" src="assets/final-exam-fig_sideroblast-ed59a57981.jpg" alt="Ringed sideroblasts" class="slide-img">
+    <img loading="lazy" width="850" height="638" src="assets/final-exam-fig_sideroblast-ed59a57981.jpg" alt="Ringed sideroblasts" class="slide-img">
     <p class="slide-caption">Ringed sideroblasts on Prussian blue.</p>
 
     <h3>Porphyria &amp; lead <span class="hy-star">★ HY</span></h3>
@@ -698,7 +756,7 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
       <tr><td><strong>THE discriminator</strong></td><td><span class="hy"><strong>Lead</strong> blocks ALA dehydratase (ABOVE porphobilinogen) → ALA ↑ with <strong>PBG NORMAL</strong>. <strong>Acute intermittent porphyria</strong> blocks below it → <strong>BOTH ↑</strong></span></td></tr>
       <tr><td>Lead, other effects</td><td>Also inhibits ferrochelatase → zinc protoporphyrin, <strong>basophilic stippling</strong>, Burton's lines, wrist/foot drop</td></tr>
     </table></div>
-    <img loading="lazy" src="assets/final-exam-fig_porph_lead-91ecf38346.jpg" alt="Lead inhibiting heme synthesis enzymes" class="slide-img">
+    <img loading="lazy" width="850" height="333" src="assets/final-exam-fig_porph_lead-91ecf38346.jpg" alt="Lead inhibiting heme synthesis enzymes" class="slide-img">
     <p class="slide-caption">The level of the block is the exam answer.</p>
 
     <div class="exam-q">
@@ -757,8 +815,8 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
       <li><strong>Asplenia:</strong> <span class="hy">encapsulated organisms — pneumococcus, meningococcus, <em>Haemophilus influenzae</em> b.</span> Vaccinate <strong>2 weeks before</strong> an elective splenectomy, <strong>before discharge</strong> after trauma. Most episodes within 2 years; highest risk if before age 4. <strong>Any fever → penicillin immediately.</strong></li>
     </ul>
     <div class="img-2col">
-      <div><img loading="lazy" src="assets/final-exam-fig_bite_cells-61adec8de9.jpg" alt="Bite cells in G6PD deficiency" class="slide-img"><p class="slide-caption">Bite cells — the spleen removed a Heinz body.</p></div>
-      <div><img loading="lazy" src="assets/final-exam-fig_howell_jolly-6d54c2061b.jpg" alt="Howell-Jolly bodies" class="slide-img"><p class="slide-caption">Howell-Jolly = no working spleen.</p></div>
+      <div><img loading="lazy" width="850" height="639" src="assets/final-exam-fig_bite_cells-61adec8de9.jpg" alt="Bite cells in G6PD deficiency" class="slide-img"><p class="slide-caption">Bite cells — the spleen removed a Heinz body.</p></div>
+      <div><img loading="lazy" width="850" height="637" src="assets/final-exam-fig_howell_jolly-6d54c2061b.jpg" alt="Howell-Jolly bodies" class="slide-img"><p class="slide-caption">Howell-Jolly = no working spleen.</p></div>
     </div>
 
     <div class="exam-q">
@@ -818,70 +876,122 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
 
     <div class="callout callout-key">
       <div class="callout-title">🔑 Pick the class before the drug <span class="hy-star">★ HY</span></div>
-      <p><span class="hy">Arterial = platelet-rich "white" clot → ANTIPLATELET. Venous = fibrin-rich "red" clot → ANTICOAGULANT.</span> <strong>White = Wall of the artery. Red = Resting vein.</strong></p>
+      <p><span class="hy">Arterial clot = platelet-rich, "white" → <strong>ANTIPLATELET</strong>. Venous clot = fibrin-rich, "red" → <strong>ANTICOAGULANT</strong>.</span> <strong>White = Wall of the artery. Red = Resting vein.</strong></p>
     </div>
 
-    <h3>Heparins — charge &amp; chain length decide everything</h3>
+    <h3>Anticoagulants — the master chart <span class="hy-star">★ HY</span></h3>
     <div class="t-wrap"><table>
-      <tr><th>Drug</th><th>Size &amp; charge</th><th>Targets</th><th>Reversal</th><th>Cautions</th></tr>
-      <tr><td><strong>Unfractionated</strong></td><td>~15,000 Da<br><span class="hy">strongly NEGATIVE (acidic polyanion)</span></td><td>Xa <strong>and</strong> thrombin</td><td><strong>Protamine FULL</strong> — a <strong>positively charged base</strong>; opposite charges neutralize</td><td>Highest HIT risk · <strong>raises potassium</strong> (blocks aldosterone) · osteoporosis · monitor aPTT 1.5–2.5×</td></tr>
-      <tr><td><strong>Low-molecular-weight</strong><br>enoxa<span class="sfx">parin</span>, dalte<span class="sfx">parin</span></td><td>~5,000 Da, shorter chain</td><td>Mostly Xa</td><td><strong>Protamine PARTIAL ~60%</strong></td><td>Renally cleared (reduce &lt;30) · monitor <strong>anti-Xa</strong>, not aPTT</td></tr>
-      <tr><td><strong>Fondaparinux</strong></td><td>~1,500 Da pentasaccharide</td><td>Xa only</td><td><span class="hy">NOTHING — protamine ineffective</span></td><td><strong>Doesn't bind platelet factor 4 → can't cause HIT → treats it.</strong> Avoid &lt;30</td></tr>
+      <tr><th>Drug</th><th>Mechanism of action</th><th>Monitoring</th><th>Interactions</th><th>Reversal / antidote</th><th>Contraindications &amp; cautions</th><th>Memory hook</th></tr>
+      <tr>
+        <td><strong>Unfractionated heparin</strong></td>
+        <td><span class="mech">Binds antithrombin; the long chain bridges antithrombin to thrombin</span> → inhibits <strong>factor 10a AND thrombin</strong></td>
+        <td>Activated partial thromboplastin time, <strong>1.5–2.5×</strong></td>
+        <td>Additive with all antiplatelets and anticoagulants</td>
+        <td><strong>Protamine sulfate — COMPLETE.</strong> Protamine is a <strong>positively charged base</strong> neutralising strongly <strong>negative</strong> heparin</td>
+        <td>Active bleeding; prior heparin-induced thrombocytopenia. <strong>Raises potassium</strong> (inhibits aldosterone); <strong>osteoporosis</strong> with long use. <strong>Highest</strong> thrombocytopenia risk</td>
+        <td>Long rope grabs <strong>both</strong></td>
+      </tr>
+      <tr>
+        <td><strong>Enoxaparin<br>Dalteparin</strong><br><span style="font-weight:400">(low molecular weight)</span></td>
+        <td><span class="mech">Chain too short to bridge thrombin</span> → <strong>mostly factor 10a</strong></td>
+        <td><strong>Anti-factor 10a level</strong> (not the clotting time) — only in pregnancy, obesity, renal impairment</td>
+        <td>Additive; avoid with other anticoagulants</td>
+        <td><strong>Protamine — PARTIAL, about 60%</strong></td>
+        <td><strong>Renally cleared</strong> — reduce below creatinine clearance 30. Thrombocytopenia risk lower but <strong>not zero</strong></td>
+        <td>Short rope reaches <strong>10a only</strong></td>
+      </tr>
+      <tr>
+        <td><strong>Fondaparinux</strong></td>
+        <td><span class="mech">Synthetic pentasaccharide</span> → <strong>pure factor 10a</strong>, no thrombin effect</td>
+        <td>Anti-factor 10a level</td>
+        <td>Additive</td>
+        <td><span class="hy">NOTHING works — protamine is ineffective</span></td>
+        <td>Creatinine clearance below 30. <strong>Does not bind platelet factor 4 → cannot cause heparin-induced thrombocytopenia, so it TREATS it</strong></td>
+        <td>Shortest rope — and <strong>cannot be untied</strong></td>
+      </tr>
+      <tr>
+        <td><strong>Warfarin</strong></td>
+        <td><span class="mech">Inhibits vitamin K epoxide reductase</span> → vitamin K cannot be recycled → factors <strong>2, 7, 9, 10 and proteins C and S</strong> never finished</td>
+        <td><strong>International normalized ratio</strong>, usually 2.0–3.0 (2.5–3.5 mechanical mitral valve)</td>
+        <td><strong>The longest list in hematology — see the next chart</strong></td>
+        <td><strong>Vitamin K + 4-factor prothrombin complex concentrate — give BOTH.</strong> Concentrate fixes the number now; vitamin K stops the rebound</td>
+        <td><strong>Pregnancy — teratogenic.</strong> Protein C falls first → <strong>skin necrosis</strong> and, in thrombocytopenia, <strong>limb gangrene</strong></td>
+        <td><strong>"1972"</strong> = factors 2, 7, 9, 10</td>
+      </tr>
+      <tr>
+        <td><strong>Dabigatran</strong></td>
+        <td><span class="mech">Directly inhibits thrombin</span></td>
+        <td>None routine</td>
+        <td><strong>P-glycoprotein</strong> inhibitors and inducers</td>
+        <td><strong>Idarucizumab</strong> — an antibody fragment binding it with about <strong>350×</strong> thrombin's affinity; works in minutes. Dialysis removes ~57%</td>
+        <td>Renally cleared. Famous for <strong>dyspepsia</strong>. <strong>Must stay in its original bottle</strong> — moisture-sensitive</td>
+        <td><strong>Praxbind binds Pradaxa</strong></td>
+      </tr>
+      <tr>
+        <td><strong>Apixaban<br>Rivaroxaban<br>Edoxaban</strong></td>
+        <td><span class="mech">Directly inhibit factor 10a</span></td>
+        <td>None routine</td>
+        <td>All are <strong>P-glycoprotein</strong> substrates and <strong>cytochrome P450 3A4</strong> dependent → azole antifungals, rifampin, HIV boosters</td>
+        <td><strong>4-factor prothrombin complex concentrate</strong> (andexanet alfa was withdrawn in 2026)</td>
+        <td><span class="hy"><strong>Antiphospholipid syndrome — evidence of HARM.</strong></span> Pregnancy; clearance below 30</td>
+        <td><strong>A</strong>pixaban <strong>A</strong>ll-round safest · <strong>R</strong>ivaroxaban <strong>R</strong>equires a meal · <strong>E</strong>doxaban <strong>E</strong>xcluded if clearance &gt;95</td>
+      </tr>
+      <tr>
+        <td><strong>Argatroban<br>Bivalirudin</strong></td>
+        <td><span class="mech">Directly inhibit thrombin</span>, given intravenously</td>
+        <td>Activated partial thromboplastin time</td>
+        <td>Argatroban confuses warfarin transitions (raises the ratio)</td>
+        <td><strong>None exists</strong> — supportive care; short half-lives</td>
+        <td>Argatroban is <strong>hepatically</strong> cleared (use in renal failure); bivalirudin is the <strong>catheterization-lab</strong> drug</td>
+        <td>The two <strong>heparin-allergy</strong> rescues</td>
+      </tr>
     </table></div>
-    <p><strong>Hook:</strong> antithrombin is a hand, heparin the rope. Long rope grabs thrombin AND Xa; short reaches Xa; shortest reaches Xa and <strong>can't be untied</strong>. Protamine's grip: <span class="hy">full → partial → none.</span></p>
+    <p><strong>Choosing:</strong> pregnancy → <strong>a heparin</strong> (warfarin is teratogenic; heparins do not cross the placenta) · severe renal failure → <strong>unfractionated heparin</strong> (not renally cleared) · may need to stop fast → <strong>unfractionated heparin</strong> (short half-life plus a complete antidote).</p>
+
+    <h3>Warfarin interactions — the highest-yield list <span class="hy-star">★ HY</span></h3>
+    <div class="t-wrap"><table>
+      <tr><th>Effect</th><th>Agents</th><th>Mechanism</th></tr>
+      <tr><td><span class="up">Raises the ratio → bleeding</span></td><td>Amiodarone · metronidazole · <strong>trimethoprim-sulfamethoxazole</strong> · fluconazole · ciprofloxacin · fluvoxamine</td><td><span class="mech">Cytochrome P450 2C9 inhibition</span> → less warfarin cleared</td></tr>
+      <tr><td><span class="up">Raises the ratio → bleeding</span></td><td><strong>Acute alcohol binge</strong> · any antibiotic that kills gut flora</td><td>Acute enzyme inhibition; loss of bacterial vitamin K</td></tr>
+      <tr><td><span class="dn">Lowers the ratio → clotting</span></td><td>Rifampin · carbamazepine · phenytoin · St John's wort · <strong>chronic alcohol</strong></td><td><span class="mech">Enzyme induction</span> → cleared faster</td></tr>
+      <tr><td><span class="dn">Lowers the ratio → clotting</span></td><td><strong>Leafy greens</strong></td><td>Vitamin K outcompetes warfarin at the target. <strong>Keep intake CONSISTENT, do not avoid</strong></td></tr>
+      <tr><td>Bleeding at any ratio</td><td>Aspirin and other antiplatelets</td><td>Pharmacodynamic — bleeds without moving the number</td></tr>
+      <tr><td>Dose varies enormously</td><td><strong>Cytochrome P450 2C9</strong> and <strong>VKORC1</strong> variants</td><td>Metabolism speed and target sensitivity — why you titrate to the ratio, not by weight</td></tr>
+    </table></div>
+    <p><span class="hy"><strong>Trimethoprim-sulfamethoxazole is the single highest-risk antibiotic</strong> — it inhibits the enzyme AND kills the flora that make vitamin K.</span> And <strong>factor 7 has the shortest half-life, so the ratio moves before the patient is actually anticoagulated</strong> → bridge at least 5 days.</p>
 
     <div class="box-warning">
       <span class="bw-label">☐ Heparin-induced thrombocytopenia — a CLOTTING emergency</span>
-      <p>Antibody vs the <strong>heparin–platelet factor 4</strong> complex <em>activates</em> platelets. Platelets fall <strong>days 5–14, &gt;50%</strong>; venous:arterial 4:1.<br>
-      <span class="hy">The count drops and the patient CLOTS — every intuition is backwards.</span><br>
-      <strong>4T score:</strong> 6–8 treat now · 4–5 test · 0–3 don't test.<br>
-      <strong>Do:</strong> stop all heparin → argatroban / bivalirudin / fondaparinux.<br>
-      <strong>Don't:</strong> warfarin alone (protein C falls first → <strong>limb gangrene</strong>) · switch to low-molecular-weight (cross-reacts) · give nothing.</p>
+      <p>Antibody against the <strong>heparin–platelet factor 4</strong> complex <em>activates</em> platelets. Platelets fall <strong>days 5–14</strong> by more than <strong>50%</strong>; venous to arterial events about <strong>4 to 1</strong>.<br>
+      <span class="hy">The platelet count drops and the patient CLOTS — every intuition here is backwards.</span><br>
+      <strong>4T score:</strong> 6–8 treat now · 4–5 test · 0–3 do not test.<br>
+      <strong>Do:</strong> stop all heparin → <strong>argatroban, bivalirudin or fondaparinux</strong>.<br>
+      <strong>Do NOT:</strong> give warfarin alone (protein C falls first → <strong>limb gangrene</strong>) · switch to low-molecular-weight heparin (<strong>cross-reacts</strong>) · simply stop and give nothing.</p>
     </div>
 
-    <h3>Warfarin — the highest-yield interaction list <span class="hy-star">★ HY</span></h3>
-    <p>Protein-bound, cleared by <strong>CYP2C9</strong>, target <strong>VKORC1</strong>. Blocks factors <strong>2, 7, 9, 10 + proteins C and S</strong> = <span class="hy">"1972."</span></p>
+    <h3>Antiplatelets — the master chart</h3>
+    <p>A platelet can be switched on through several doors — thromboxane, adenosine diphosphate, thrombin — but <span class="hy">every path ends at glycoprotein 2b/3a opening so fibrinogen can bridge one platelet to the next.</span></p>
     <div class="t-wrap"><table>
-      <tr><th>Direction</th><th>Agents</th><th>Mechanism</th></tr>
-      <tr><td><span class="up">↑ INR (bleed)</span></td><td>Amiodarone, metronidazole, <strong>trimethoprim-sulfamethoxazole</strong>, fluconazole, ciprofloxacin, fluvoxamine; <strong>acute alcohol binge</strong>; gut-flora-killing antibiotics</td><td>CYP2C9 inhibition; loss of bacterial vitamin K</td></tr>
-      <tr><td><span class="dn">↓ INR (clot)</span></td><td>Rifampin, carbamazepine, phenytoin, St John's wort, <strong>chronic alcohol</strong>, <strong>leafy greens</strong></td><td>Enzyme induction; vitamin K outcompetes at target</td></tr>
-      <tr><td>Bleeding at any INR</td><td>Aspirin, other antiplatelets</td><td>Pharmacodynamic — number doesn't move</td></tr>
+      <tr><th>Drug</th><th>Mechanism of action</th><th>Interactions</th><th>Reversal</th><th>Contraindications &amp; cautions</th><th>Memory hook</th></tr>
+      <tr><td><strong>Aspirin</strong></td><td><span class="mech">Irreversibly acetylates cyclo-oxygenase 1</span> → no thromboxane for the platelet's <strong>7–10 day life</strong></td><td>Additive with every drug below; raises bleeding on warfarin without moving the ratio</td><td><strong>None.</strong> Platelet transfusion if bleeding</td><td>Low dose <em>is</em> the antiplatelet dose — higher doses add no benefit</td><td>No nucleus = no new enzyme = <strong>lasts the cell's life</strong></td></tr>
+      <tr><td><strong>Clopidogrel</strong></td><td><span class="mech">Irreversibly blocks the platelet adenosine diphosphate receptor (P2Y12)</span></td><td><span class="hy">A <strong>prodrug needing cytochrome P450 2C19</strong> — <strong>omeprazole blunts it</strong>; use pantoprazole</span></td><td>None</td><td>Poor 2C19 metabolizers get little benefit</td><td><strong>CLO</strong>pidogrel needs a <strong>CLO</strong>ck</td></tr>
+      <tr><td><strong>Prasugrel</strong></td><td>Same receptor, irreversible, more potent</td><td>Additive bleeding</td><td>None</td><td><span class="hy"><strong>Contraindicated after stroke or transient ischemic attack.</strong></span> Avoid if age 75 or older, or weight under 60 kg</td><td><strong>PRA</strong>sugrel is <strong>PRO</strong>hibited after a stroke</td></tr>
+      <tr><td><strong>Ticagrelor</strong></td><td>Same receptor, <strong>reversible</strong>; not a prodrug</td><td><span class="hy">Maintenance aspirin must stay <strong>at or below 100 mg daily</strong> or ticagrelor loses effect</span></td><td>None</td><td>Causes <strong>dyspnea</strong> and bradyarrhythmias. No 2C19 problem</td><td><strong>TI</strong>cagrelor makes you <strong>TI</strong>red of breathing</td></tr>
+      <tr><td><strong>Cangrelor</strong></td><td>Same receptor, reversible, intravenous</td><td>—</td><td>Stop the infusion — <strong>offset in minutes</strong></td><td>The bridge during stenting when the patient cannot swallow</td><td><strong>CAN</strong>grelor <strong>CAN</strong> be switched off</td></tr>
+      <tr><td><strong>Eptifibatide<br>Tirofiban</strong></td><td><span class="mech">Block glycoprotein 2b/3a — the final common step</span></td><td>Additive</td><td>Stop; platelet transfusion</td><td><strong>Thrombocytopenia and the worst bleeding</strong> of the antiplatelets</td><td>Blocks the <strong>last door</strong></td></tr>
+      <tr><td><strong>Vorapaxar</strong></td><td><span class="mech">Blocks the platelet thrombin receptor (protease-activated receptor 1)</span></td><td>Additive</td><td><strong>None practical</strong> — very long-acting</td><td><span class="hy"><strong>Absolute contraindication with prior stroke, transient ischemic attack or intracranial hemorrhage</strong></span></td><td>The <strong>brain-bleed</strong> drug</td></tr>
+      <tr><td><strong>Dipyridamole<br>Cilostazol</strong></td><td><span class="mech">Inhibit phosphodiesterase → cyclic adenosine monophosphate rises → the platelet stays calm</span></td><td>—</td><td>—</td><td>Both vasodilate → <strong>headache, flushing</strong>. <strong>Cilostazol carries a boxed warning: contraindicated in heart failure</strong></td><td>Raise the <strong>calm-down</strong> signal</td></tr>
     </table></div>
-    <ul class="notes-list">
-      <li><span class="hy">Trimethoprim-sulfamethoxazole is highest-risk — it inhibits CYP2C9 AND kills vitamin-K-producing flora.</span></li>
-      <li><strong>Reversal: vitamin K + 4-factor prothrombin complex concentrate — BOTH.</strong> Concentrate fixes the INR now; vitamin K stops the rebound.</li>
-      <li><span class="hy">Factor 7 has the shortest half-life → the INR moves BEFORE the patient is anticoagulated → bridge ≥5 days.</span> Protein C also falls first → skin necrosis. <strong>Teratogenic.</strong> Keep greens <em>consistent</em>, don't avoid.</li>
-      <li><strong>Pharmacogenomics:</strong> CYP2C9 (metabolism) + VKORC1 (target sensitivity) — why you titrate to INR, not weight.</li>
-    </ul>
 
-    <h3>Direct oral anticoagulants</h3>
+    <h3>Thrombolytics</h3>
     <div class="t-wrap"><table>
-      <tr><th>Drug</th><th>Target</th><th>Cautions</th><th>Reversal</th></tr>
-      <tr><td><strong>Dabigatran</strong></td><td>Thrombin</td><td>Renally cleared · <strong>dyspepsia</strong> · <strong>keep in original bottle</strong> (moisture)</td><td><strong>Idarucizu<span class="sfx">mab</span></strong> (antibody fragment, ~350× affinity, minutes)</td></tr>
-      <tr><td><strong>Api<span class="sfx">xaban</span><br>Rivaro<span class="sfx">xaban</span><br>Edo<span class="sfx">xaban</span></strong></td><td>Factor Xa</td><td>All <strong>P-glycoprotein</strong> + CYP3A4. <span class="hy"><strong>A</strong>pi<span class="sfx">xaban</span> safest · <strong>R</strong>ivaro<span class="sfx">xaban</span> needs a meal · <strong>E</strong>do<span class="sfx">xaban</span> avoid if clearance &gt;95</span></td><td><strong>4-factor concentrate</strong> (andexanet withdrawn 2026)</td></tr>
-      <tr><td>Argatroban / bivalirudin</td><td>Thrombin (IV)</td><td>The HIT drugs; bivalirudin = cath lab</td><td><strong>None</strong> — short half-life</td></tr>
+      <tr><th>Drug</th><th>Mechanism of action</th><th>Reversal</th><th>Contraindications</th><th>Memory hook</th></tr>
+      <tr><td><strong>Alteplase<br>Tenecteplase<br>Reteplase</strong></td><td><span class="mech">Convert plasminogen to plasmin, which digests the fibrin mesh</span> — these <strong>destroy an existing clot</strong> rather than prevent one</td><td><strong>Cryoprecipitate</strong> to replace fibrinogen <strong>+ tranexamic or aminocaproic acid</strong> to block plasmin</td><td>Any active bleeding, recent surgery, prior intracranial hemorrhage, severe uncontrolled hypertension</td><td>Everything else prevents a clot; <strong>"-plase" dissolves one</strong>. <strong>Tenecteplase = single bolus</strong>, now approved for stroke</td></tr>
     </table></div>
-    <p><strong>Choosing:</strong> pregnancy → <strong>heparin</strong> (warfarin teratogenic, heparins don't cross placenta) · severe renal failure → <strong>unfractionated</strong> · may need to stop fast → <strong>unfractionated</strong> (short half-life + full antidote).</p>
-
-    <h3>Antiplatelets &amp; thrombolytics</h3>
-    <p>Several doors — thromboxane, ADP, thrombin — but <span class="hy">every path ends at glycoprotein IIb/IIIa opening for fibrinogen.</span></p>
-    <div class="t-wrap"><table>
-      <tr><th>Drug</th><th>Mechanism</th><th>Key caution</th></tr>
-      <tr><td><strong>Aspirin</strong></td><td>Irreversible COX-1 acetylation, <strong>7–10 day</strong> platelet life</td><td>Low dose <em>is</em> the antiplatelet dose</td></tr>
-      <tr><td><strong>Clopido<span class="sfx">grel</span></strong></td><td>Irreversible P2Y12</td><td><span class="hy">Prodrug needing CYP2C19 — omeprazole blunts it; use pantoprazole</span></td></tr>
-      <tr><td><strong>Prasu<span class="sfx">grel</span></strong></td><td>Irreversible</td><td><strong>Contraindicated after stroke/TIA</strong>; avoid age ≥75 or &lt;60 kg</td></tr>
-      <tr><td><strong>Tica<span class="sfx">grel</span>or</strong></td><td>Reversible</td><td><strong>Dyspnea</strong>, bradyarrhythmia; <strong>aspirin must stay ≤100 mg</strong></td></tr>
-      <tr><td>Can<span class="sfx">grel</span>or</td><td>Reversible IV</td><td>On/off in minutes — the bridge during stenting</td></tr>
-      <tr><td>Eptifibatide / tirofiban</td><td>GP IIb/IIIa</td><td><strong>Thrombocytopenia + worst bleeding</strong></td></tr>
-      <tr><td>Vorapaxar</td><td>PAR-1 (thrombin receptor)</td><td><span class="hy">Absolute contraindication with prior stroke/TIA/intracranial bleed</span></td></tr>
-      <tr><td>Dipyridamole / cilostazol</td><td>Raise cyclic AMP</td><td>Headache, flushing. <strong>Cilostazol boxed — contraindicated in heart failure</strong></td></tr>
-      <tr><td><strong>"-plase"</strong></td><td>Plasminogen → plasmin, eats fibrin</td><td>Tenecte<span class="sfx">plase</span> = single bolus. Bleed → <strong>cryoprecipitate + tranexamic acid</strong></td></tr>
-    </table></div>
-    <p><strong>Hooks:</strong> <strong>CLO</strong>pido<span class="sfx">grel</span> needs a <strong>CLO</strong>ck · <strong>PRA</strong>su<span class="sfx">grel</span> is <strong>PRO</strong>hibited after stroke · <strong>TI</strong>ca<span class="sfx">grel</span>or makes you <strong>TI</strong>red of breathing · <strong>CAN</strong>grelor <strong>CAN</strong> be switched off.</p>
 
     <div class="exam-q">
-      <p><strong>Q:</strong> Day 7 of heparin: platelets 240k → 90k, plus a new deep vein thrombosis. Do what, avoid what?</p>
-      <div class="answer"><div class="label">Answer</div><p><strong>HIT.</strong> Stop all heparin → <strong>argatroban, bivalirudin or fondaparinux</strong>. Avoid <strong>warfarin alone</strong> (limb gangrene) and low-molecular-weight heparin (cross-reacts).</p></div>
+      <p><strong>Q:</strong> Day 7 of heparin: platelets fall from 240,000 to 90,000 and a new deep vein thrombosis appears. What do you give, and what must you avoid?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Heparin-induced thrombocytopenia.</strong> Stop <em>all</em> heparin and start <strong>argatroban, bivalirudin or fondaparinux</strong>. Avoid <strong>warfarin alone</strong> (protein C falls first → limb gangrene) and <strong>low-molecular-weight heparin</strong> (cross-reacts).</p></div>
     </div>
   </div>
 </div>
@@ -889,59 +999,92 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
 <!-- ==================== 6. ANEMIA PHARM ==================== -->
 <div class="section" id="s6">
   <div class="container">
-    <div class="badge-row"><div class="lo-badge">6 — Anemia Pharmacology</div><div class="miss-count clean">LO 70 · plus iron/vitamin LOs</div></div>
+    <div class="badge-row"><div class="lo-badge">6 — Anemia Pharmacology</div><div class="miss-count clean">LO 70 · plus the iron and vitamin objectives</div></div>
     <h2 class="section-title">Drugs for Anemia</h2>
 
-    <h3>Iron — charge chemistry drives every interaction</h3>
+    <h3>Iron, the vitamins and the chelators — master chart <span class="hy-star">★ HY</span></h3>
     <div class="t-wrap"><table>
-      <tr><th>Topic</th><th>High-yield content</th></tr>
-      <tr><td><strong>Charge</strong></td><td>Absorbed as <strong>ferrous (Fe²⁺)</strong>, needs an acidic duodenum. <span class="hy">Every major interaction is a charge interaction</span></td></tr>
-      <tr><td>Blunted by</td><td>Proton pump inhibitors, antacids (less acid), calcium, tea. Avoid <strong>enteric-coated / slow-release</strong> — they dissolve past the absorption site</td></tr>
-      <tr><td>Mutual chelation</td><td><strong>Tetracyclines and fluoroquinolones</strong> — iron binds the antibiotic and neither is absorbed. <strong>Separate the doses</strong></td></tr>
-      <tr><td>Dosing &amp; response</td><td><strong>Alternate-day</strong> absorbs better. Retic bump <strong>7–10 days</strong>; ~1 g/dL per 2–3 weeks; <span class="hy">continue 3–6 months past normalization</span></td></tr>
-      <tr><td>Intravenous iron</td><td>Premedicate with <strong>methylprednisolone, NOT diphenhydramine</strong>. Ferric carboxymaltose → <strong>hypophosphatemia</strong> (FGF23) + a heart failure indication. Bypasses the hepcidin-locked door</td></tr>
+      <tr><th>Drug</th><th>Mechanism of action</th><th>Interactions</th><th>Reversal / antidote</th><th>Contraindications &amp; cautions</th><th>Memory hook</th></tr>
+      <tr>
+        <td><strong>Ferrous sulfate</strong><br><span style="font-weight:400">oral iron</span></td>
+        <td><span class="mech">Absorbed as ferrous iron in the duodenum; needs an acidic stomach to stay in that form</span></td>
+        <td><span class="hy">Every major interaction is a charge interaction.</span> Blunted by <strong>proton pump inhibitors, antacids, calcium, tea</strong>. <strong>Mutual chelation with tetracyclines and fluoroquinolones</strong> — separate the doses</td>
+        <td>—</td>
+        <td>Avoid <strong>enteric-coated and slow-release</strong> forms — they dissolve past the absorption site. <strong>Alternate-day dosing absorbs better</strong></td>
+        <td>Reticulocytes at <strong>7–10 days</strong>; continue <strong>3–6 months past normal</strong></td>
+      </tr>
+      <tr>
+        <td><strong>Ferric carboxymaltose</strong><br><span style="font-weight:400">intravenous iron</span></td>
+        <td><span class="mech">Delivers iron directly to transferrin, bypassing the gut</span> — and bypasses the hepcidin-locked door in inflammation</td>
+        <td>—</td>
+        <td>—</td>
+        <td><strong>Premedicate with methylprednisolone, NOT diphenhydramine.</strong> Causes <strong>low phosphate</strong> through fibroblast growth factor 23</td>
+        <td>Use it when the <strong>door is locked</strong></td>
+      </tr>
+      <tr>
+        <td><strong>Deferoxamine</strong></td>
+        <td><span class="mech">Chelates free iron; excreted in urine</span></td>
+        <td>—</td>
+        <td><strong>This IS the antidote</strong> for <strong>acute</strong> iron poisoning (parenteral)</td>
+        <td>Long 8–12 hour infusions; <strong>eye and ear toxicity</strong>. Urine turns reddish <strong>"vin rosé"</strong></td>
+        <td rowspan="3">Every chelator contains <span class="sfx">fe</span> — de<span class="sfx">fe</span>roxamine, de<span class="sfx">fe</span>rasirox, de<span class="sfx">fe</span>riprone</td>
+      </tr>
+      <tr>
+        <td><strong>Deferasirox</strong></td>
+        <td><span class="mech">Oral iron chelator</span></td><td>—</td>
+        <td>For <strong>chronic</strong> overload</td>
+        <td>Boxed warning: <strong>kidney failure, liver failure, gastrointestinal hemorrhage</strong></td>
+      </tr>
+      <tr>
+        <td><strong>Deferiprone</strong></td>
+        <td><span class="mech">Oral iron chelator</span></td><td>—</td>
+        <td>For <strong>chronic</strong> overload</td>
+        <td>Boxed warning: <strong>agranulocytosis</strong> — monitor the neutrophil count</td>
+      </tr>
+      <tr>
+        <td><strong>Cyanocobalamin</strong><br><span style="font-weight:400">vitamin B12</span></td>
+        <td><span class="mech">Cofactor for DNA synthesis AND myelin maintenance</span></td>
+        <td><strong>Metformin</strong> blocks uptake at the ileum; <strong>proton pump inhibitors</strong> stop release from food</td>
+        <td>—</td>
+        <td>In pernicious anemia the intrinsic-factor route is gone → give <strong>intramuscularly</strong>, or <strong>high-dose orally</strong> riding the <span class="miss">~1% that crosses by passive diffusion</span></td>
+        <td><strong>B12 has the Brain</strong> — folate does not</td>
+      </tr>
+      <tr>
+        <td><strong>Folic acid</strong></td>
+        <td><span class="mech">Must be reduced by dihydrofolate reductase before the cell can use it</span></td>
+        <td>—</td>
+        <td>—</td>
+        <td><span class="hy">NEVER give alone in an undiagnosed macrocytic anemia</span> — it corrects the blood count while the spinal cord degenerates</td>
+        <td>Neural tube closes at <strong>4 weeks</strong> → supplement <strong>before conception</strong></td>
+      </tr>
+      <tr>
+        <td><strong>Folinic acid</strong><br><span style="font-weight:400">leucovorin</span></td>
+        <td><span class="mech">Already past the dihydrofolate reductase step — needs no enzyme</span></td>
+        <td><strong>Rescues methotrexate, but ENHANCES fluorouracil</strong></td>
+        <td><strong>This IS the rescue</strong> for methotrexate toxicity</td>
+        <td>Plain folic acid is useless in methotrexate toxicity — the enzyme that would activate it is the one methotrexate broke</td>
+        <td><strong>"FoliNic is fiNished"</strong> — N for <strong>N</strong>o enzyme needed</td>
+      </tr>
     </table></div>
 
-    <h3>Iron toxicity and the chelators</h3>
-    <div class="t-wrap"><table>
-      <tr><th>Setting</th><th>Agent</th><th>Key point</th></tr>
-      <tr><td><strong>Acute overdose</strong></td><td><strong>Deferoxamine</strong> (parenteral)</td><td>Child swallowing adult tablets — a leading cause of poisoning death. Urine turns <strong>"vin rosé"</strong></td></tr>
-      <tr><td rowspan="3"><strong>Chronic overload</strong><br><span style="font-weight:400">No physiologic route excretes iron</span></td><td>Deferasirox (oral)</td><td>Boxed: <strong>renal, hepatic, GI</strong></td></tr>
-      <tr><td>Deferiprone (oral)</td><td><strong>Agranulocytosis</strong></td></tr>
-      <tr><td>Deferoxamine</td><td>8–12 h infusions; <strong>ocular and auditory</strong> toxicity</td></tr>
-    </table></div>
-    <p><strong>Hook:</strong> every iron chelator contains <span class="sfx">fe</span> — de<span class="sfx">fe</span>roxamine, de<span class="sfx">fe</span>rasirox, de<span class="sfx">fe</span>riprone.</p>
-
-    <h3>The vitamins, and the rescue rule</h3>
-    <div class="t-wrap"><table>
-      <tr><th>Agent</th><th>High-yield content</th></tr>
-      <tr><td>Vitamin B12</td><td>In pernicious anemia use a route not needing intrinsic factor — intramuscular, or high-dose oral on the <span class="miss">~1% passive diffusion leak</span>. <strong>Metformin and proton pump inhibitors both pinch B12</strong></td></tr>
-      <tr><td>Folic acid</td><td>Non-toxic at high doses. Long-term in chronic hemolysis, pregnancy, dialysis</td></tr>
-      <tr><td><strong>Folinic acid (leucovorin)</strong></td><td><span class="hy">The methotrexate rescue</span> — already <em>past</em> dihydrofolate reductase, the enzyme methotrexate broke, so plain folic acid is useless. <strong>But it ENHANCES 5-fluorouracil</strong></td></tr>
-    </table></div>
-    <div class="callout callout-key">
-      <div class="callout-title">🔑 Memory hooks</div>
-      <p><strong>"FoliNic is fiNished"</strong> — N for <strong>No enzyme needed</strong>. <strong>"MetForMin and the PPI Pinch B12"</strong> — ileum and stomach.</p>
-    </div>
-
-    <h3>Erythropoiesis-stimulating agents and the newer class</h3>
+    <h3>Erythropoiesis-stimulating and hemoglobin agents</h3>
     <div class="box-warning">
-      <span class="bw-label">☐ Eleven is the ESA ceiling</span>
-      <p><span class="hy">All four boxed warnings for every erythropoiesis-stimulating agent turn on above a hemoglobin of 11 g/dL</span> — death, myocardial infarction, stroke, clots, tumour progression.<br>
-      <strong>Cut the dose if hemoglobin rises &gt;1 g/dL in 2 weeks.</strong> Hypertension in up to ⅓. <strong>Replete iron first</strong> — an ESA without iron cannot work.</p>
+      <span class="bw-label">☐ Eleven is the ceiling</span>
+      <p><span class="hy">All four boxed warnings for every erythropoiesis-stimulating agent switch on above a hemoglobin of 11 g/dL</span> — death, myocardial infarction, stroke, clots and tumour progression.<br>
+      <strong>Cut the dose if hemoglobin climbs more than 1 g/dL in 2 weeks.</strong> Hypertension in up to a third. <strong>Replete iron first</strong> — these agents cannot work without it.</p>
     </div>
     <div class="t-wrap"><table>
-      <tr><th>Drug</th><th>Class / route</th><th>Mechanism</th><th>Key toxicity</th></tr>
-      <tr><td><strong>Epoetin alfa<br>Darbepoetin</strong></td><td>ESA · IV or subcutaneous</td><td><span class="mech">Stimulates erythroid progenitor division + reticulocyte release</span></td><td>Boxed above 11 g/dL. Subcutaneous needs <strong>15–30% less</strong>. For kidney disease + chemo anemia</td></tr>
-      <tr><td><strong>Vadadustat</strong></td><td>HIF prolyl hydroxylase inhibitor · <strong>oral</strong></td><td><span class="mech">Blocks the hydroxylase → hypoxia factor accumulates → erythropoietin gene switches on.</span> <span class="hy">It convinces the cell it is at altitude</span></td><td><strong>Hypertension and clots</strong> — exactly what altitude gives you</td></tr>
-      <tr><td><strong>Hydroxyurea</strong></td><td>Fetal hemoglobin inducer</td><td><span class="mech">Raises HbF</span> — an antineoplastic moonlighting as a sickle drug</td><td>Boxed <strong>myelosuppression + malignancy</strong></td></tr>
-      <tr><td><strong>Luspatercept</strong></td><td>Late-maturation agent</td><td><span class="mech">Unblocks LATE erythroid maturation</span></td><td>Chosen over an ESA in thalassemia — the problem is <strong>ineffective erythropoiesis, not absent erythropoietin</strong></td></tr>
-      <tr><td>Complement inhibitors</td><td>For paroxysmal nocturnal hemoglobinuria</td><td><span class="mech">Block terminal complement</span></td><td><strong>Boxed meningococcal warning — vaccinate first</strong></td></tr>
+      <tr><th>Drug</th><th>Mechanism of action</th><th>Route &amp; use</th><th>Contraindications &amp; cautions</th><th>Memory hook</th></tr>
+      <tr><td><strong>Epoetin alfa<br>Darbepoetin</strong></td><td><span class="mech">Stimulate erythroid progenitor division and differentiation, plus reticulocyte release</span></td><td>Intravenous or subcutaneous — <strong>subcutaneous needs 15–30% less</strong>. For kidney-disease and chemotherapy anemia</td><td>All boxed warnings above <strong>11 g/dL</strong>. Uncontrolled hypertension. Pure red cell aplasia from antibodies is rare but real</td><td>Replace the hormone the <strong>kidney</strong> stopped making</td></tr>
+      <tr><td><strong>Vadadustat</strong></td><td><span class="mech">Inhibits prolyl hydroxylase → hypoxia-inducible factor accumulates → the erythropoietin gene switches on</span></td><td><strong>Oral</strong> — for dialysis patients, 3 months or more. The oral route is the entire selling point</td><td><strong>Hypertension and clots</strong> — exactly what a body at altitude with thicker blood gets</td><td><span class="hy">It convinces the cell it is at <strong>altitude</strong></span></td></tr>
+      <tr><td><strong>Hydroxyurea</strong></td><td><span class="mech">Raises fetal hemoglobin</span>; also raises nitric oxide, improves deformability, reduces adhesion</td><td>15 mg/kg once daily — start in infancy in sickle cell disease. <strong>Fetal hemoglobin 20% or more reduces crises</strong></td><td>Two boxed warnings: <strong>severe myelosuppression</strong> and <strong>carcinogenicity</strong></td><td>An <strong>antineoplastic moonlighting</strong> as a sickle drug — that is the whole side-effect profile</td></tr>
+      <tr><td><strong>Luspatercept</strong></td><td><span class="mech">Unblocks LATE erythroid maturation</span></td><td>Transfusion-dependent beta thalassemia and some myelodysplasia</td><td>Hypertension, bone pain</td><td>Thalassemia's problem is <strong>ineffective erythropoiesis, not absent erythropoietin</strong> — so this, not an erythropoietin agent</td></tr>
+      <tr><td><strong>Eculizumab</strong></td><td><span class="mech">Blocks terminal complement</span></td><td>Paroxysmal nocturnal hemoglobinuria; also atypical hemolytic uremic syndrome</td><td><strong>Boxed meningococcal warning — vaccinate BEFORE starting</strong></td><td>Block complement → lose the defence against <strong>Neisseria</strong></td></tr>
     </table></div>
 
     <div class="exam-q">
-      <p><strong>Q:</strong> Methotrexate-induced mouth ulcers and pancytopenia. Why won't folic acid work?</p>
-      <div class="answer"><div class="label">Answer</div><p>Methotrexate blocks <strong>dihydrofolate reductase</strong> — the enzyme needed to activate folic acid. Give <strong>folinic acid (leucovorin)</strong>, already past the block.</p></div>
+      <p><strong>Q:</strong> A patient on methotrexate has painful mouth ulcers and pancytopenia. Why will folic acid not fix this, and what do you give?</p>
+      <div class="answer"><div class="label">Answer</div><p>Methotrexate blocks <strong>dihydrofolate reductase</strong> — the very enzyme needed to activate folic acid. Give <strong>folinic acid (leucovorin)</strong>, which is already past the block.</p></div>
     </div>
   </div>
 </div>
@@ -963,41 +1106,98 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
       <tr><td>Bundle</td><td>Bactericidal antibiotic · fluids · lactate · assess perfusion · vasopressors · <strong>source control</strong></td></tr>
       <tr><td>Outcome</td><td>Mortality 10–52%. <strong>Post-sepsis syndrome in 50% of survivors</strong></td></tr>
     </table></div>
-    <img loading="lazy" src="assets/final-exam-fig_slide_sepsis_cascade-6b7cae7a2e.jpg" alt="Sepsis cascade" class="slide-img">
+    <img loading="lazy" width="850" height="662" src="assets/final-exam-fig_slide_sepsis_cascade-6b7cae7a2e.jpg" alt="Sepsis cascade" class="slide-img">
     <p class="slide-caption">Inflammation → endothelial dysfunction → ischemia → organ failure.</p>
 
     <h3>HIV — genes and what they build <span class="hy-star">★ HY</span></h3>
     <div class="t-wrap"><table>
       <tr><th>Gene</th><th>Products</th><th>The tested point</th></tr>
-      <tr><td><strong>pol</strong></td><td>Reverse transcriptase, integrase, protease</td><td>Reverse transcriptase has a <strong>high error rate</strong> — the source of resistance</td></tr>
-      <tr><td><strong>gag</strong></td><td>p24, p17, p6/7/9</td><td><strong>p24 is easiest to detect</strong> — the antigen in the combo test</td></tr>
-      <tr><td><strong>env</strong></td><td>gp120, gp41</td><td>gp120 <span class="mech">binds CD4/CCR5</span>; gp41 does <span class="mech">fusion</span></td></tr>
+      <tr><td><strong>pol</strong></td><td>Reverse transcriptase, integrase, protease</td><td>Reverse transcriptase has a <strong>high error rate</strong> — the source of all resistance</td></tr>
+      <tr><td><strong>gag</strong></td><td>p24, p17, p6/7/9</td><td><strong>p24 is easiest to detect</strong> — the antigen in the combination test</td></tr>
+      <tr><td><strong>env</strong></td><td>gp120, gp41</td><td>gp120 <span class="mech">binds CD4 and CCR5</span>; gp41 performs <span class="mech">fusion</span></td></tr>
       <tr><td>Cleavage</td><td colspan="2"><strong>gag and pol are cleaved by VIRAL protease; env by HOST protease</strong></td></tr>
     </table></div>
 
-    <h3>Replication cycle → drug target</h3>
+    <h3>Antiretroviral master chart <span class="hy-star">★ HY</span></h3>
     <div class="t-wrap"><table>
-      <tr><th>Stage</th><th>Drug class</th><th>Drugs</th><th>Note</th></tr>
-      <tr><td>Attachment</td><td>Attachment inhibitor · CCR5 antagonist</td><td>Fostemsavir · Maraviroc</td><td><span class="mech">Block gp120 binding to CD4/CCR5</span></td></tr>
-      <tr><td>Fusion</td><td>Fusion inhibitor · post-attachment</td><td>Enfuvirtide · Ibalizumab</td><td><span class="mech">Enfuvirtide blocks gp41</span></td></tr>
-      <tr><td>Reverse transcription</td><td><strong>NRTI</strong> · <strong>NNRTI</strong> · capsid</td><td>Zidovudine · Efavirenz · Lenacapavir</td><td>NRTI = <span class="mech">competitive chain terminator</span>. <span class="hy">NNRTI is allosteric — ONE mutation kills the whole class</span></td></tr>
-      <tr><td>Integration</td><td>Integrase inhibitor</td><td>Raltegravir, Dolutegravir</td><td><span class="mech">Prevents strand transfer into host DNA</span></td></tr>
-      <tr><td>Maturation</td><td>Protease inhibitor</td><td>Atazanavir, Darunavir</td><td><span class="mech">Blocks cleavage of gag/gag-pol</span>. Resistance uncommon</td></tr>
-      <tr><td>Not a drug</td><td>Booster</td><td>Cobicistat, Ritonavir</td><td><strong>Cobicistat is NOT an antiretroviral.</strong> Both inhibit CYP3A4 → an OTC nasal steroid → <strong>iatrogenic Cushing</strong></td></tr>
+      <tr><th>Class</th><th>Drugs</th><th>Mechanism of action</th><th>Signature toxicity</th><th>Interactions &amp; contraindications</th><th>Memory hook</th></tr>
+      <tr>
+        <td><strong>Nucleoside reverse transcriptase inhibitors</strong></td>
+        <td>Zidovudine · Abacavir · Tenofovir · Lamivudine · Emtricitabine</td>
+        <td><span class="mech">Competitive chain terminators — lack the 3′ hydroxyl, so the DNA chain stops</span></td>
+        <td><strong>Zidovudine → anemia and marrow suppression</strong> · <strong>Abacavir → hypersensitivity</strong> · <strong>Tenofovir → kidney and bone loss</strong></td>
+        <td><span class="hy"><strong>Test HLA-B*5701 before abacavir</strong> — a positive test is an absolute contraindication</span>. Class effect: lactic acidosis with hepatic steatosis</td>
+        <td>The backbone pair of almost every regimen</td>
+      </tr>
+      <tr>
+        <td><strong>Non-nucleoside reverse transcriptase inhibitors</strong></td>
+        <td>Efavirenz · Nevirapine · Etravirine · Rilpivirine</td>
+        <td><span class="mech">Bind allosterically, away from the active site</span></td>
+        <td><strong>Efavirenz → vivid dreams, insomnia, mood change</strong> · <strong>Nevirapine → hepatotoxicity and severe rash</strong></td>
+        <td><span class="hy"><strong>ONE mutation kills the entire class</strong></span> — the lowest genetic barrier of any class. Strong cytochrome P450 interactions</td>
+        <td>Allosteric = fragile. <strong>Efavirenz gives "the big sad"</strong></td>
+      </tr>
+      <tr>
+        <td><strong>Integrase strand transfer inhibitors</strong></td>
+        <td>Ralte<span class="sfx">gravir</span> · Dolute<span class="sfx">gravir</span> · Bicte<span class="sfx">gravir</span> · Cabote<span class="sfx">gravir</span></td>
+        <td><span class="mech">Prevent strand transfer of viral DNA into the host genome</span></td>
+        <td>Weight gain; insomnia; headache</td>
+        <td>Dolutegravir levels drop with <strong>polyvalent cations</strong> — antacids, calcium, iron. Separate the doses</td>
+        <td>The <span class="sfx">gravir</span> ending = <strong>integrase</strong></td>
+      </tr>
+      <tr>
+        <td><strong>Protease inhibitors</strong></td>
+        <td>Ataza<span class="sfx">navir</span> · Daru<span class="sfx">navir</span> · Lopi<span class="sfx">navir</span></td>
+        <td><span class="mech">Block cleavage of the gag and gag-pol precursors → immature, non-infectious virions</span></td>
+        <td><strong>Atazanavir → indirect hyperbilirubinemia and kidney stones</strong> · <strong>Darunavir → rash</strong> · class: <strong>dyslipidemia, insulin resistance, fat redistribution</strong></td>
+        <td>Heavy cytochrome P450 3A4 interactions. <strong>Resistance is uncommon</strong> — the highest genetic barrier</td>
+        <td>The <span class="sfx">navir</span> ending = <strong>protease</strong></td>
+      </tr>
+      <tr>
+        <td><strong>Entry and fusion inhibitors</strong></td>
+        <td>Maraviroc · Enfuvirtide · Fostem<span class="sfx">savir</span> · Ibalizu<span class="sfx">mab</span></td>
+        <td><span class="mech">Maraviroc blocks CCR5 · enfuvirtide blocks gp41 fusion · fostemsavir blocks gp120 · ibalizumab blocks after attachment</span></td>
+        <td>Maraviroc → <strong>hepatotoxicity</strong> · enfuvirtide → painful <strong>injection-site reactions</strong></td>
+        <td><span class="hy"><strong>Maraviroc requires a tropism test first</strong> — useless against CXCR4-tropic virus</span></td>
+        <td>Stop it at the <strong>door</strong></td>
+      </tr>
+      <tr>
+        <td><strong>Capsid inhibitor</strong></td>
+        <td>Lenacapavir</td>
+        <td><span class="mech">Disrupts capsid function at several stages</span></td>
+        <td>Injection-site nodules</td>
+        <td>Long-acting, every 6 months — for multidrug-resistant virus</td>
+        <td>The newest target</td>
+      </tr>
+      <tr>
+        <td><strong>Boosters</strong><br><span style="font-weight:400">not antiretrovirals</span></td>
+        <td>Ritonavir · Cobicistat</td>
+        <td><span class="mech">Inhibit cytochrome P450 3A4 so the real drug survives longer</span></td>
+        <td>None of their own</td>
+        <td><span class="hy"><strong>Cobicistat has NO antiviral activity.</strong> Inhibiting 3A4 means an over-the-counter nasal or inhaled steroid can cause <strong>iatrogenic Cushing syndrome</strong></span></td>
+        <td>They <strong>protect</strong> the drug, they do not fight the virus</td>
+      </tr>
     </table></div>
 
     <h3>HIV — testing, staging, management</h3>
     <div class="t-wrap"><table>
       <tr><th>Topic</th><th>High-yield content</th></tr>
-      <tr><td>Testing</td><td>Antigen/antibody combo with p24 → antibody differentiation → nucleic acid test (<strong>positive alone = acute</strong>). <span class="hy">Eclipse period days 0–10 detects nothing.</span> Western blot obsolete</td></tr>
-      <tr><td>The two CD4 numbers</td><td><span class="hy">&lt;200 DEFINES AIDS · &lt;50 is peak opportunistic-infection risk.</span> Absolute lymphocytes &lt;1,000 predicts CD4 &lt;200</td></tr>
-      <tr><td>Thresholds</td><td><strong>&lt;200</strong> <em>Pneumocystis</em>, cryptococcus, candida · <strong>&lt;100</strong> toxoplasmosis (<strong>ring-enhancing</strong>) · <strong>&lt;50</strong> cytomegalovirus, <em>Mycobacterium avium</em>, CNS lymphoma</td></tr>
-      <tr><td><em>Pneumocystis</em></td><td>Has <strong>cholesterol, not ergosterol</strong> → trimethoprim-sulfamethoxazole. Steroids if oxygen &lt;70 or A–a ≥35. <strong>Start antiretrovirals within 2 weeks</strong></td></tr>
-      <tr><td>IRIS</td><td>10–20%, median 48 days. <span class="hy">CD4 and viral load IMPROVING while the patient worsens. Do NOT delay therapy</span></td></tr>
-      <tr><td>Prevention</td><td><strong>U = U</strong> (CDC &lt;200 copies/mL); PARTNER: 74,000 episodes, zero transmissions. PrEP ~99% sexual; <strong>PEP within 72 hours</strong>. Live vaccines only if <strong>CD4 ≥200</strong></td></tr>
+      <tr><td>Testing</td><td>Antigen/antibody combination with p24 → antibody differentiation → nucleic acid test (<strong>positive alone = acute infection</strong>). <span class="hy">The eclipse period, days 0–10, detects nothing.</span> Western blot is obsolete</td></tr>
+      <tr><td><strong>The two CD4 numbers</strong></td><td><span class="hy"><strong>Under 200 DEFINES AIDS · under 50 is peak opportunistic-infection risk.</strong></span> An absolute lymphocyte count under 1,000 predicts a CD4 under 200</td></tr>
+      <tr><td>Immune reconstitution syndrome</td><td>10–20%, median 48 days. <span class="hy">CD4 and viral load are IMPROVING while the patient worsens clinically. Do NOT delay therapy to prevent it</span></td></tr>
+      <tr><td>Prevention</td><td><strong>Undetectable = Untransmittable</strong> (under 200 copies/mL); the PARTNER trial ran 74,000 episodes with zero transmissions. Pre-exposure prophylaxis about <strong>99%</strong> for sexual transmission; post-exposure prophylaxis <strong>within 72 hours</strong>. Live vaccines only if <strong>CD4 is 200 or above</strong></td></tr>
     </table></div>
-    <img loading="lazy" src="assets/final-exam-fig_slide_hiv_cycle_drugs-b49a9e32b9.jpg" alt="HIV life cycle with drug classes" class="slide-img">
-    <p class="slide-caption">Each step with the class that blocks it.</p>
+
+    <h3>Opportunistic infection by CD4 threshold — prophylaxis and treatment</h3>
+    <div class="t-wrap"><table>
+      <tr><th>CD4 count</th><th>Organism</th><th>Prophylaxis</th><th>Treatment</th><th>Key point</th></tr>
+      <tr><td><strong>Under 200</strong></td><td><em>Pneumocystis jirovecii</em></td><td><strong>Trimethoprim-sulfamethoxazole</strong></td><td>Trimethoprim-sulfamethoxazole; <strong>add steroids if arterial oxygen under 70 or the A–a gradient is 35 or more</strong></td><td><span class="hy">Has <strong>cholesterol, not ergosterol</strong> — so antifungals that target ergosterol do not work.</span> Start antiretrovirals <strong>within 2 weeks</strong></td></tr>
+      <tr><td><strong>Under 200</strong></td><td>Candida · <em>Cryptococcus</em></td><td>None routine</td><td>Fluconazole; cryptococcal meningitis → amphotericin B + flucytosine</td><td>Manage raised intracranial pressure with serial lumbar punctures</td></tr>
+      <tr><td><strong>Under 100</strong></td><td><em>Toxoplasma gondii</em></td><td><strong>Trimethoprim-sulfamethoxazole</strong></td><td>Pyrimethamine + sulfadiazine + <strong>folinic acid</strong></td><td><strong>Ring-enhancing</strong> brain lesions. Folinic acid prevents the marrow toxicity of pyrimethamine</td></tr>
+      <tr><td><strong>Under 50</strong></td><td>Cytomegalovirus</td><td>None routine</td><td>Valganciclovir</td><td><strong>Retinitis</strong> — dilated eye examination</td></tr>
+      <tr><td><strong>Under 50</strong></td><td><em>Mycobacterium avium</em> complex</td><td>Azithromycin weekly</td><td>Azithromycin + ethambutol</td><td>Disseminated disease with fevers and weight loss</td></tr>
+      <tr><td><strong>Under 50</strong></td><td>Central nervous system lymphoma</td><td>—</td><td>Antiretrovirals + radiation</td><td>Epstein–Barr virus driven; hard to separate from toxoplasmosis</td></tr>
+    </table></div>
 
     <h3>Malaria &amp; babesia</h3>
     <div class="callout callout-key">
@@ -1014,9 +1214,78 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
       <tr><td>Treatment</td><td>—</td><td><strong>Chloroquine</strong> <span class="mech">blocks heme polymerase</span> → free heme poisons the parasite. Resistance → artemisinin combination</td></tr>
     </table></div>
     <div class="img-2col">
-      <div><img loading="lazy" src="assets/final-exam-fig_pvivax_smear-db88aa225a.jpg" alt="Plasmodium vivax smear" class="slide-img"><p class="slide-caption"><em>P. vivax</em> — enlarged cell.</p></div>
-      <div><img loading="lazy" src="assets/final-exam-fig_babesia_rings-6eb76b5a1f.jpg" alt="Babesia rings" class="slide-img"><p class="slide-caption"><em>Babesia</em> — maltese cross.</p></div>
+      <div><img loading="lazy" width="850" height="636" src="assets/final-exam-fig_pvivax_smear-db88aa225a.jpg" alt="Plasmodium vivax smear" class="slide-img"><p class="slide-caption"><em>P. vivax</em> — enlarged cell.</p></div>
+      <div><img loading="lazy" width="831" height="850" src="assets/final-exam-fig_babesia_rings-6eb76b5a1f.jpg" alt="Babesia rings" class="slide-img"><p class="slide-caption"><em>Babesia</em> — maltese cross.</p></div>
     </div>
+
+    <h3>Antiparasitic and antibacterial master chart <span class="hy-star">★ HY</span></h3>
+    <div class="t-wrap"><table>
+      <tr><th>Drug</th><th>Used for</th><th>Mechanism of action</th><th>Toxicity</th><th>Contraindications &amp; cautions</th><th>Memory hook</th></tr>
+      <tr>
+        <td><strong>Chloroquine</strong></td>
+        <td>Sensitive malaria — the <strong>blood</strong> stage</td>
+        <td><span class="mech">Blocks heme polymerase, so free heme accumulates and poisons the parasite</span></td>
+        <td><strong>Retinopathy</strong> with long use; pruritus</td>
+        <td>Widespread <strong>resistance</strong> → use artemisinin combination therapy instead</td>
+        <td>The parasite is <strong>poisoned by its own meal</strong></td>
+      </tr>
+      <tr>
+        <td><strong>Artemisinin combination therapy</strong></td>
+        <td>Falciparum, and resistant malaria</td>
+        <td><span class="mech">Free-radical damage to parasite proteins; always paired with a partner drug</span></td>
+        <td>Generally well tolerated</td>
+        <td>Never give artemisinin as monotherapy — it breeds resistance</td>
+        <td>First line where chloroquine has failed</td>
+      </tr>
+      <tr>
+        <td><strong>Primaquine<br>Tafenoquine</strong></td>
+        <td><span class="miss">The <strong>LIVER</strong> stage — kills dormant hypnozoites, so it prevents relapse in vivax and ovale</span></td>
+        <td><span class="mech">Oxidative damage to the dormant liver form</span></td>
+        <td><strong>Severe hemolysis</strong> in deficient patients; methemoglobinemia</td>
+        <td><span class="hy"><strong>Test for glucose-6-phosphate dehydrogenase deficiency BEFORE giving it.</strong> Contraindicated in pregnancy</span></td>
+        <td>The only drugs that reach the <strong>sleeping</strong> parasite</td>
+      </tr>
+      <tr>
+        <td><strong>Atovaquone + azithromycin</strong></td>
+        <td><strong>Babesiosis</strong></td>
+        <td><span class="mech">Atovaquone collapses the parasite's mitochondrial electron transport; azithromycin blocks protein synthesis</span></td>
+        <td>Rash, gastrointestinal upset</td>
+        <td><span class="hy"><strong>Doxycycline does NOT treat babesiosis</strong></span> — that is the classic trap, because the same tick carries Lyme disease</td>
+        <td>Same tick, <strong>different drug</strong></td>
+      </tr>
+      <tr>
+        <td><strong>Gentamicin</strong> or a <strong>fluoroquinolone</strong></td>
+        <td><strong>Plague</strong> (<em>Yersinia pestis</em>)</td>
+        <td><span class="mech">Gentamicin blocks the 30S ribosomal subunit; fluoroquinolones inhibit DNA gyrase</span></td>
+        <td>Gentamicin → kidney and ear toxicity</td>
+        <td>Treat on <strong>suspicion</strong> — pneumonic and septicemic forms approach 100% mortality untreated</td>
+        <td>Do not wait for the culture</td>
+      </tr>
+      <tr>
+        <td><strong>Azithromycin</strong></td>
+        <td><strong>Cat scratch disease</strong> in an immunocompetent patient</td>
+        <td><span class="mech">Blocks the 50S ribosomal subunit</span></td>
+        <td>QT prolongation, gastrointestinal upset</td>
+        <td><span class="hy"><strong>Do not culture <em>Bartonella</em></strong> — diagnose with Warthin–Starry stain or polymerase chain reaction</span></td>
+        <td>Child + cat + tender node</td>
+      </tr>
+      <tr>
+        <td><strong>Doxycycline</strong> or <strong>erythromycin</strong></td>
+        <td><strong>Bacillary angiomatosis</strong> in an immunocompromised patient</td>
+        <td><span class="mech">Doxycycline blocks the 30S subunit; erythromycin the 50S</span></td>
+        <td>Doxycycline → photosensitivity, esophagitis</td>
+        <td>Give <strong>with</strong> antiretroviral therapy. Serology is unreliable here</td>
+        <td>Same organism as cat scratch, <strong>different host, different drug</strong></td>
+      </tr>
+      <tr>
+        <td><strong>Ribavirin</strong></td>
+        <td><strong>Lassa fever</strong> — the only viral hemorrhagic fever with a drug</td>
+        <td><span class="mech">Nucleoside analogue interfering with viral RNA synthesis</span></td>
+        <td><strong>Hemolytic anemia</strong>; teratogenic</td>
+        <td><strong>Contraindicated in pregnancy.</strong> Effect is modest at best</td>
+        <td>Lassa is the <strong>one exception</strong> to "no antiviral"</td>
+      </tr>
+    </table></div>
 
     <h3>Six organisms, one grid</h3>
     <div class="t-wrap"><table>
@@ -1055,25 +1324,65 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
     <div class="badge-row"><div class="lo-badge">8 — Laboratory Foundations</div><div class="miss-count clean">LO 27 · 53</div></div>
     <h2 class="section-title">Inside the Analyzer — and How It Lies</h2>
 
-    <ul class="notes-list">
-      <li><span class="hy"><strong>MEASURED:</strong> red cell count + <span class="miss">cell size (impedance pulse height)</span> + hemoglobin (photometry, 555 nm, sodium lauryl sulfate). <strong>CALCULATED:</strong> hematocrit, hemoglobin per cell, concentration per cell, distribution width.</span></li>
-      <li><strong>Ranges:</strong> red cells 3.5–5.5 M · size 80–100 · concentration 31–37 · width 11.4–14.5 · reticulocytes 0.8–4%. EDTA (lavender) within 3 h.</li>
-      <li><span class="miss"><strong>Hemoglobin is optical; hematocrit is particle-counted.</strong> So lipemia, high bilirubin or a huge white count make the HEMOGLOBIN falsely HIGH</span> — the light-based number is the liar. Fix: saline replacement, re-run.</li>
-      <li><span class="miss"><strong>Side scatter = granularity → eosinophil is highest.</strong> Forward scatter = size → monocyte biggest. Lymphocyte is simplest → bottom-left.</span> Ghost cells = lysed, gated as debris. The differential comes from <strong>flow cytometry, not impedance</strong>; the analyzer counts ~36,000 cells vs 100–200 manually.</li>
-      <li><span class="miss"><strong>Normal cell size + very high distribution width = TWO populations averaged</strong></span> — post-transfusion into a microcytic patient, or microcytic + brisk reticulocytosis. The reported average may describe <em>no cell actually present</em>.</li>
-      <li><strong>Cold agglutinins</strong> come as a package: count <strong>falsely LOW</strong>, size <strong>HIGH</strong>, concentration <strong>impossibly HIGH</strong> → warm to 37 °C. <strong>Look for the whole package, not one feature.</strong></li>
-      <li>Platelets falsely <strong>high</strong> with microcytes/schistocytes/white-cell fragments; falsely <strong>low</strong> with clumps or giant platelets → citrate tube. <strong>Nucleated red cells</strong> falsely raise the white count.</li>
-      <li><span class="hy">Concentration index &gt;37 is an artefact — <strong>EXCEPT hereditary spherocytosis.</strong></span></li>
-      <li><strong>Smear:</strong> read the <strong>monolayer</strong> — the feather edge manufactures spherocytes. <strong>Target cells → send electrophoresis</strong>; morphology can never call thalassemia.</li>
-    </ul>
+    <h3>Measured versus calculated <span class="hy-star">★ HY</span></h3>
+    <div class="t-wrap"><table>
+      <tr><th>Value</th><th>Measured or calculated?</th><th>How</th><th>Normal range</th></tr>
+      <tr><td><strong>Red cell count</strong></td><td><strong>MEASURED</strong></td><td><span class="mech">Impedance — each cell crossing the aperture makes a pulse</span></td><td>3.5–5.5 million</td></tr>
+      <tr><td><strong>Mean corpuscular volume</strong></td><td><strong>MEASURED</strong></td><td><span class="miss"><span class="mech">Impedance PULSE HEIGHT</span></span></td><td>80–100</td></tr>
+      <tr><td><strong>Hemoglobin</strong></td><td><strong>MEASURED</strong></td><td><span class="mech">Photometry at 555 nm after lysis with sodium lauryl sulfate</span></td><td>—</td></tr>
+      <tr><td>Hematocrit</td><td>Calculated</td><td>count × volume ÷ 10</td><td>37–47% female · 42–52% male</td></tr>
+      <tr><td>Hemoglobin per cell</td><td>Calculated</td><td>hemoglobin ÷ count × 10</td><td>—</td></tr>
+      <tr><td>Hemoglobin concentration per cell</td><td>Calculated</td><td>hemoglobin ÷ hematocrit × 100</td><td>31–37</td></tr>
+      <tr><td>Distribution width</td><td>Calculated</td><td>standard deviation ÷ mean volume</td><td>11.4–14.5</td></tr>
+      <tr><td>Reticulocytes</td><td>Measured</td><td><span class="mech">Residual RNA stained and counted by fluorescence</span></td><td>0.8–4%</td></tr>
+    </table></div>
+    <p>Collect in EDTA (lavender top), ideally within <strong>3 hours</strong>. <span class="hy">Hematocrit ≈ 3 × hemoglobin — but only when the cell size is normal.</span></p>
+
+    <h3>The two scatter axes</h3>
+    <div class="t-wrap"><table>
+      <tr><th>Cell</th><th>Forward scatter (size)</th><th>Side scatter (granularity)</th><th>Where it sits</th></tr>
+      <tr><td><strong>Eosinophil</strong></td><td>Medium</td><td><span class="miss"><strong>HIGHEST</strong> — dense bright granules</span></td><td>Far right</td></tr>
+      <tr><td><strong>Neutrophil</strong></td><td>Medium</td><td>High</td><td>Right of centre</td></tr>
+      <tr><td><strong>Monocyte</strong></td><td><strong>HIGHEST — the biggest normal white cell</strong></td><td>Medium</td><td>Top</td></tr>
+      <tr><td><strong>Lymphocyte</strong></td><td>Low</td><td><span class="miss">Low — the simplest cell, a round nucleus with a thin rim</span></td><td><strong>Bottom-left</strong></td></tr>
+      <tr><td>Ghost cells</td><td>Low</td><td>Low</td><td>Gated out as debris — many means a degraded sample</td></tr>
+    </table></div>
+    <p><span class="hy">The differential comes from <strong>flow cytometry, not impedance</strong>.</span> The analyzer counts about <strong>36,000 cells</strong>; a manual differential counts 100–200. Blasts cluster where normal populations do not, which is what throws the "blasts?" flag and pulls the slide for a human.</p>
+
+    <h3>Interferences — is this number real? <span class="hy-star">★ HY</span></h3>
+    <div class="t-wrap"><table>
+      <tr><th>Interference</th><th>What it does to the numbers</th><th>Why</th><th>Fix</th></tr>
+      <tr><td><strong>Lipemia · high bilirubin · very high white count</strong></td><td><span class="miss">Hemoglobin falsely <strong>HIGH</strong></span></td><td><span class="mech">Turbidity absorbs and scatters light in the photometer</span>. <span class="miss">Hemoglobin is optical; hematocrit is particle-counted — so the light-based number is the liar</span></td><td>Replace the plasma with saline and re-run</td></tr>
+      <tr><td><strong>Cold agglutinins</strong></td><td>Red cell count falsely <strong>LOW</strong> · volume falsely <strong>HIGH</strong> · concentration <strong>impossibly HIGH</strong></td><td><span class="mech">Clumped cells cross the aperture together and count as one large cell</span></td><td>Warm the sample to 37 °C. <span class="miss">Look for the whole package, not one feature</span></td></tr>
+      <tr><td>Microcytes, schistocytes, white cell fragments</td><td>Platelets falsely <strong>HIGH</strong></td><td>Counted as platelets by size</td><td>Smear review</td></tr>
+      <tr><td>Platelet clumps, giant platelets</td><td>Platelets falsely <strong>LOW</strong></td><td>Clumps counted as one; giants sized out of the window</td><td>Citrate tube, or the fluorescent platelet channel</td></tr>
+      <tr><td>Nucleated red cells</td><td>White count falsely <strong>HIGH</strong></td><td>They survive lysis and get counted</td><td>Correct the count</td></tr>
+      <tr><td><strong>The one exception</strong></td><td colspan="3"><span class="hy">A hemoglobin concentration per cell above 37 is an artefact — <strong>EXCEPT in hereditary spherocytosis</strong>, the one real biological cause</span></td></tr>
+    </table></div>
+
+    <h3>Two populations averaged together</h3>
+    <div class="t-wrap"><table>
+      <tr><th>Clue</th><th>What it means</th></tr>
+      <tr><td><span class="miss">Normal mean volume <strong>with a very wide distribution width</strong></span></td><td><span class="miss">TWO populations averaged — the reported average may describe <strong>no cell actually present</strong></span></td></tr>
+      <tr><td>When it happens</td><td>After transfusing normal blood into a microcytic patient · a microcytic anemia with a brisk reticulocyte response</td></tr>
+      <tr><td>Confirm it</td><td><strong>Look at the smear</strong> — two populations are directly visible. This is the strongest argument for why the smear still exists</td></tr>
+    </table></div>
+
+    <h3>Reading the smear</h3>
+    <div class="t-wrap"><table>
+      <tr><th>Rule</th><th>Why</th></tr>
+      <tr><td><span class="hy">Read the <strong>monolayer</strong></span></td><td>The feather edge <strong>manufactures spherocytes</strong> — an artefact of the spreading</td></tr>
+      <tr><td><strong>Target cells → send hemoglobin electrophoresis</strong></td><td>Morphology alone can never call thalassemia</td></tr>
+      <tr><td>The smear's whole purpose</td><td>The analyzer can report a number that is <strong>arithmetically correct and clinically misleading</strong>; only the slide shows why</td></tr>
+    </table></div>
     <div class="img-2col">
-      <div><img loading="lazy" src="assets/final-exam-fig_slide_coulter-a9384a5823.jpg" alt="Coulter principle" class="slide-img"><p class="slide-caption">Pulse height = cell volume.</p></div>
-      <div><img loading="lazy" src="assets/final-exam-fig_slide_scattergram-9ee1669985.jpg" alt="Scattergram" class="slide-img"><p class="slide-caption">Size vs grittiness.</p></div>
+      <div><img loading="lazy" width="850" height="544" src="assets/final-exam-fig_slide_coulter-a9384a5823.jpg" alt="Coulter principle" class="slide-img"><p class="slide-caption">Pulse height = cell volume.</p></div>
+      <div><img loading="lazy" width="850" height="544" src="assets/final-exam-fig_slide_scattergram-9ee1669985.jpg" alt="Scattergram" class="slide-img"><p class="slide-caption">Size versus grittiness.</p></div>
     </div>
 
     <div class="exam-q">
-      <p><strong>Q:</strong> Which reported value is <em>directly measured</em> rather than calculated?</p>
-      <div class="answer"><div class="label">Answer</div><p><strong>Mean corpuscular volume — from the impedance pulse height.</strong> Red cell count and hemoglobin are also measured; everything else is derived.</p></div>
+      <p><strong>Q:</strong> Which reported value on the complete blood count is <em>directly measured</em> rather than calculated?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>The mean corpuscular volume — from the impedance pulse height.</strong> Red cell count and hemoglobin are also measured; hematocrit, hemoglobin per cell, concentration per cell and distribution width are all derived.</p></div>
     </div>
   </div>
 </div>
@@ -1107,7 +1416,7 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
       <tr><td><strong>Chronic myeloid leukemia</strong></td><td><span class="hy">BCR-ABL positive, <strong>basophilia</strong>, and a <strong>LOW</strong> leukocyte alkaline phosphatase</span></td></tr>
       <tr><td>Leukoerythroblastic</td><td>Immature granulocytes + nucleated red cells + <strong>tear-drops</strong> → <strong>myelofibrosis or marrow infiltration</strong></td></tr>
     </table></div>
-    <img loading="lazy" src="assets/final-exam-fig_toxic_granulation-7728b9d0fe.jpg" alt="Toxic granulation" class="slide-img">
+    <img loading="lazy" width="850" height="636" src="assets/final-exam-fig_toxic_granulation-7728b9d0fe.jpg" alt="Toxic granulation" class="slide-img">
     <p class="slide-caption">Toxic granulation — a reactive marrow, not a clone.</p>
 
     <h3>Primary immunodeficiencies</h3>
@@ -1163,7 +1472,7 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
       <tr><td><strong>Acquired inhibitor</strong></td><td>Older patient, new bleeding, <strong>mix fails to correct</strong></td></tr>
     </table></div>
     <p><strong>Factor 5 is the factor everyone forgets to order</strong> — and the cleanest discriminator here.</p>
-    <img loading="lazy" src="assets/final-exam-fig_slide_mixing_study-fd09a288b8.jpg" alt="Mixing study flowchart" class="slide-img">
+    <img loading="lazy" width="850" height="636" src="assets/final-exam-fig_slide_mixing_study-fd09a288b8.jpg" alt="Mixing study flowchart" class="slide-img">
     <p class="slide-caption">Corrects vs fails — deficiency vs inhibitor.</p>
 
     <div class="exam-q">
@@ -1225,6 +1534,7 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
     <div class="badge-row"><div class="lo-badge">12 — Lymph Node Pathology</div><div class="miss-count clean">LO 63 · 66</div></div>
     <h2 class="section-title">The Normal Node and the Benign Mimics</h2>
 
+    <h3>Architecture — the pattern makes the differential</h3>
     <ul class="notes-list">
       <li><span class="hy">Blue vs pink at low power IS the pattern, and the pattern makes the differential.</span> <strong>Cortex = B/follicles · paracortex = T · medulla = cords and sinuses.</strong></li>
       <li><span class="hy">The <strong>subcapsular (marginal) sinus</strong> is where metastasis lands first</span> — and where the pathologist looks first.</li>
@@ -1239,6 +1549,7 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
       <p><span class="hy">Reed–Sternberg-LIKE cells in mononucleosis <strong>RETAIN</strong> the B-cell program (CD20+, OCT2+, PAX5 normal). True Reed–Sternberg cells have <strong>LOST</strong> it.</span> <strong>CD30 and Epstein–Barr virus are shared — and therefore useless here.</strong></p>
     </div>
 
+    <h3>The benign mimics <span class="hy-star">★ HY</span></h3>
     <div class="t-wrap"><table>
       <tr><th>Mimic</th><th>Signature</th></tr>
       <tr><td><strong>Kikuchi–Fujimoto</strong></td><td>Young Asian woman, tender cervical node, <strong>antibiotic-unresponsive</strong>. <strong>Necrosis with NO neutrophils</strong> + crescentic histiocytes CD68+. Send <strong>lupus serology</strong>; supportive</td></tr>
@@ -1247,7 +1558,7 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
       <tr><td><strong>Rosai–Dorfman</strong></td><td><strong>Massive sinus expansion</strong> + <strong>emperipolesis</strong>; <strong>S100+</strong>, CD1a−, CD207−</td></tr>
     </table></div>
     <p><span class="hy"><strong>Hemophagocytosis</strong> = cells being destroyed. <strong>Emperipolesis</strong> = INTACT cells passing through (Rosai–Dorfman).</span></p>
-    <img loading="lazy" src="assets/final-exam-fig_rosai_emperipolesis-93fd1bfe40.jpg" alt="Emperipolesis" class="slide-img">
+    <img loading="lazy" width="850" height="640" src="assets/final-exam-fig_rosai_emperipolesis-93fd1bfe40.jpg" alt="Emperipolesis" class="slide-img">
     <p class="slide-caption">Emperipolesis — intact cells passing through, not digested.</p>
 
     <div class="exam-q">
@@ -1283,8 +1594,8 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
       <tr><td><strong>Myeloproliferative</strong></td><td><strong>JAK2</strong></td><td>Danger is <strong>thrombosis</strong>. Polycythemia vera → phlebotomy (hematocrit &lt;45 M / &lt;42 F). Essential thrombocythemia → hydroxyurea. Myelofibrosis → ruxoli<span class="sfx">tinib</span> helps symptoms + survival, <strong>NOT counts</strong></td></tr>
     </table></div>
     <div class="img-2col">
-      <div><img loading="lazy" src="assets/final-exam-fig_auer_rods-421ded2aa5.jpg" alt="Auer rods" class="slide-img"><p class="slide-caption">Auer rod — myeloid and malignant.</p></div>
-      <div><img loading="lazy" src="assets/final-exam-fig_apl_faggot-3b7354c51d.jpg" alt="Faggot cell" class="slide-img"><p class="slide-caption">Faggot cell — start ATRA now.</p></div>
+      <div><img loading="lazy" width="850" height="751" src="assets/final-exam-fig_auer_rods-421ded2aa5.jpg" alt="Auer rods" class="slide-img"><p class="slide-caption">Auer rod — myeloid and malignant.</p></div>
+      <div><img loading="lazy" width="850" height="574" src="assets/final-exam-fig_apl_faggot-3b7354c51d.jpg" alt="Faggot cell" class="slide-img"><p class="slide-caption">Faggot cell — start ATRA now.</p></div>
     </div>
 
     <h3>Lymphoid — two questions, then the phenotype <span class="hy-star">★ HY</span></h3>
@@ -1332,54 +1643,65 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
     <div class="badge-row"><div class="lo-badge">14 — Antineoplastic Pharmacology</div><div class="miss-count clean">LO 11 · 15 · 16 · 17 · 64</div></div>
     <h2 class="section-title">The Four Classes and What Each Costs</h2>
 
-    <ul class="notes-list">
-      <li><strong>Four classes:</strong> cytotoxic (dividing cells) · targeted (follows the target) · immunotherapy (useful autoimmunity) · hormonal (hormone withdrawal). <strong>Neoadjuvant</strong> = before surgery; <strong>adjuvant</strong> = after.</li>
-      <li><span class="hy">Log kill: each cycle kills a constant <strong>FRACTION</strong>, not a constant number — which is why cycles are mathematically necessary.</span> 10⁹ cells ≈ 1 g = detection threshold.</li>
-      <li><strong>Combine different mechanisms AND different organ toxicities</strong> — shared toxicity forces dose reduction.</li>
-      <li><strong>Rescues:</strong> leucovorin ↔ methotrexate (<strong>but ENHANCES 5-fluorouracil</strong>) · mesna ↔ acrolein · dexrazoxane ↔ anthracycline.</li>
-      <li><strong>Resistance:</strong> DNA repair · drug trapping · altered target enzyme · failed prodrug activation · <span class="hy"><strong>P-glycoprotein efflux → cross-resistance to unrelated drugs</strong></span> · sanctuary sites (CNS, testes). <strong>G0 cells resist cell-cycle-specific drugs</strong> — hence alkylators/platinums/anthracyclines as the backbone.</li>
-    </ul>
-
-    <h3>Chemo Man <span class="hy-star">★ HY</span></h3>
     <div class="t-wrap"><table>
-      <tr><th>Drug</th><th>Toxicity</th><th>Note</th></tr>
-      <tr><td>Cyclophosphamide, ifosfamide</td><td>Hemorrhagic cystitis</td><td>From <strong>acrolein</strong> → <strong>mesna</strong></td></tr>
-      <tr><td>Bleomycin</td><td><strong>Pulmonary fibrosis</strong></td><td><strong>Marrow SPARED</strong> — the giveaway</td></tr>
-      <tr><td>Cisplatin</td><td>Oto- + nephrotoxicity, vomiting</td><td>Carboplatin trades for myelosuppression; <strong>oxaliplatin → COLD-induced neuropathy</strong></td></tr>
-      <tr><td>Doxorubicin, trastuzu<span class="sfx">mab</span></td><td><strong>Cardiotoxicity</strong></td><td><span class="hy">Lifetime CUMULATIVE cap — ask what they already had</span></td></tr>
-      <tr><td>Vincristine, taxanes</td><td>Peripheral neuropathy</td><td><strong>vinCRIStine → nerves; vinBLAStine → marrow.</strong> <span class="hy">Vincristine NEVER intrathecal — fatal</span></td></tr>
-      <tr><td><strong>Irinotecan</strong></td><td>Potentially fatal diarrhea</td><td><span class="miss"><strong>EARLY = cholinergic</strong> (inhibits acetylcholinesterase): sweating, tearing, drooling, <strong>BRADYCARDIA</strong> → <strong>ATROPINE</strong>. <strong>LATE (days)</strong> = mucosal injury → <strong>loperamide</strong>.</span> Steroids are for checkpoint colitis</td></tr>
-      <tr><td>5-fluorouracil, capecitabine</td><td>Diarrhea <strong>+ hand-foot syndrome</strong></td><td>The pairing that separates it from irinotecan</td></tr>
-      <tr><td>Cytarabine · procarbazine</td><td>Cerebellar ataxia + conjunctivitis · —</td><td>Procarbazine is a <strong>monoamine oxidase inhibitor</strong></td></tr>
+      <tr><th>Principle</th><th>High-yield content</th></tr>
+      <tr><td>The four classes</td><td><strong>Cytotoxic</strong> (kills dividing cells) · <strong>targeted</strong> (follows the target) · <strong>immunotherapy</strong> (induces useful autoimmunity) · <strong>hormonal</strong> (hormone withdrawal)</td></tr>
+      <tr><td><strong>Log kill</strong></td><td><span class="hy">Each cycle kills a constant FRACTION, never a constant number</span> — which is why repeated cycles are mathematically necessary. 10⁹ cells ≈ 1 gram ≈ the detection threshold</td></tr>
+      <tr><td>Combining</td><td>Use different mechanisms <strong>AND</strong> different organ toxicities — shared toxicity forces dose reduction and loses the benefit</td></tr>
+      <tr><td>Timing</td><td><strong>Neoadjuvant</strong> = before surgery · <strong>adjuvant</strong> = after</td></tr>
+      <tr><td>Resistance</td><td>Enhanced DNA repair · drug trapping · altered target enzyme · failed prodrug activation · <span class="hy"><strong>P-glycoprotein efflux → cross-resistance to structurally unrelated drugs</strong></span> · sanctuary sites (central nervous system, testes)</td></tr>
+      <tr><td>Why alkylators anchor regimens</td><td><strong>Resting cells resist cell-cycle-specific drugs</strong> — so cycle-nonspecific alkylators, platinums and anthracyclines are the backbone</td></tr>
     </table></div>
-    <p><strong>Support:</strong> epoetin · filgra<span class="sfx">stim</span> · plerixafor (mobilisation) · "-opag/-ostim" (platelets). <strong>"-setron"</strong> = 5-HT3; <strong>"-pitant"</strong> = NK1.</p>
-    <img loading="lazy" src="assets/final-exam-fig_chemo_man-7ec8dd38cb.jpg" alt="Chemo Man mnemonic" class="slide-img">
+
+    <h3>Chemo Man — drug, toxicity, rescue <span class="hy-star">★ HY</span></h3>
+    <div class="t-wrap"><table>
+      <tr><th>Drug</th><th>Mechanism of action</th><th>Signature toxicity</th><th>Rescue / antidote</th><th>Contraindications &amp; cautions</th><th>Memory hook</th></tr>
+      <tr><td><strong>Cyclophosphamide<br>Ifosfamide</strong></td><td><span class="mech">Alkylates DNA, cross-linking strands</span></td><td><strong>Hemorrhagic cystitis</strong> from the metabolite <strong>acrolein</strong></td><td><strong>Mesna</strong> + aggressive hydration</td><td>Also causes infertility and secondary malignancy</td><td><strong>Mesna</strong> mops up <strong>acrolein</strong></td></tr>
+      <tr><td><strong>Bleomycin</strong></td><td><span class="mech">Generates free radicals that break DNA strands</span></td><td><strong>Pulmonary fibrosis</strong></td><td>None — stop the drug</td><td><span class="hy">The <strong>marrow is SPARED</strong> — that is the giveaway</span>. Cumulative dose limit</td><td>Lungs, not marrow</td></tr>
+      <tr><td><strong>Cisplatin</strong></td><td><span class="mech">Platinum cross-links DNA</span></td><td><strong>Ototoxicity, nephrotoxicity</strong>, severe vomiting</td><td>Amifostine; aggressive hydration; serotonin and neurokinin antiemetics</td><td><strong>Carboplatin</strong> trades these for <strong>myelosuppression</strong>. <strong>Oxaliplatin → COLD-induced neuropathy</strong></td><td><strong>Cis</strong>platin hits <strong>ears and kidneys</strong></td></tr>
+      <tr><td><strong>Doxorubicin<br>Daunorubicin</strong></td><td><span class="mech">Intercalates DNA and inhibits topoisomerase 2; generates free radicals</span></td><td><strong>Cardiotoxicity</strong> — dilated cardiomyopathy</td><td><strong>Dexrazoxane</strong></td><td><span class="hy"><strong>Lifetime CUMULATIVE dose cap — always ask what they have already had</strong></span></td><td>The <strong>red</strong> drug that breaks the <strong>heart</strong></td></tr>
+      <tr><td><strong>Vincristine</strong></td><td><span class="mech">Binds tubulin, preventing microtubule assembly</span></td><td><strong>Peripheral neuropathy</strong></td><td>None</td><td><span class="hy"><strong>NEVER intrathecal — it is fatal.</strong></span> Vesicant</td><td><strong>vinCRIS</strong>tine → <strong>nerves</strong>; <strong>vinBLAS</strong>tine → <strong>marrow (blasts)</strong></td></tr>
+      <tr><td><strong>Paclitaxel<br>Docetaxel</strong></td><td><span class="mech">Hyper-stabilises microtubules so they cannot disassemble</span></td><td>Peripheral neuropathy, hypersensitivity</td><td>Premedicate with steroid and antihistamine</td><td>Neuropathy is dose-limiting</td><td>One blocks assembly, the taxane blocks <strong>dis</strong>assembly</td></tr>
+      <tr><td><strong>Methotrexate</strong></td><td><span class="mech">Inhibits dihydrofolate reductase</span></td><td>Mucositis, myelosuppression, hepatic and renal injury</td><td><strong>Folinic acid (leucovorin)</strong>; alkalinise the urine; glucarpidase</td><td>Contraindicated in <strong>pregnancy</strong>; avoid in renal impairment and third-space fluid</td><td><strong>FoliNic is fiNished</strong></td></tr>
+      <tr><td><strong>Fluorouracil<br>Capecitabine</strong></td><td><span class="mech">Inhibits thymidylate synthase</span></td><td>Diarrhea <strong>plus hand-foot syndrome</strong></td><td>Uridine triacetate</td><td><strong>Leucovorin ENHANCES its toxicity</strong> (opposite of methotrexate). Dihydropyrimidine dehydrogenase deficiency → severe toxicity</td><td>Diarrhea <strong>+ painful palms</strong> = fluorouracil</td></tr>
+      <tr><td><strong>Irinotecan</strong></td><td><span class="mech">Topoisomerase 1 inhibitor — stabilises the cleavable complex</span></td><td><span class="miss">Potentially fatal diarrhea, in <strong>two forms</strong></span></td><td><span class="miss"><strong>EARLY</strong> (during infusion, cholinergic: sweating, tearing, drooling, <strong>slow pulse</strong>) → <strong>ATROPINE</strong>.<br><strong>LATE</strong> (days later, mucosal injury) → <strong>high-dose loperamide</strong></span></td><td>Diarrhea is dose-limiting. <strong>Corticosteroids are for checkpoint-inhibitor colitis, not this</strong></td><td><span class="hy">Wet and slow <strong>during</strong> = atropine. Dry and <strong>days later</strong> = loperamide</span></td></tr>
+      <tr><td><strong>Cytarabine</strong></td><td><span class="mech">Cytidine analogue terminating DNA chains</span></td><td><strong>Cerebellar ataxia + conjunctivitis</strong></td><td>Steroid eye drops for the conjunctivitis</td><td>Check cerebellar function before each high dose</td><td>The one that hits the <strong>cerebellum and the eyes</strong></td></tr>
+      <tr><td><strong>Procarbazine</strong></td><td><span class="mech">Alkylating agent</span></td><td>Myelosuppression</td><td>—</td><td><span class="hy">It is a <strong>monoamine oxidase inhibitor</strong> — tyramine foods and many drugs</span>; disulfiram-like reaction with alcohol</td><td>Chemo drug with a <strong>psychiatric drug's</strong> interaction list</td></tr>
+    </table></div>
+    <p><strong>Supportive care:</strong> epoetin (red cells) · filgrastim (neutrophils) · plerixafor (stem cell mobilisation) · the "-ostim" and "-opag" agents (platelets). Antiemetics: <strong>"-setron"</strong> = serotonin 5-HT3 blockers · <strong>"-pitant"</strong> = neurokinin 1 blockers.</p>
+    <img loading="lazy" width="1000" height="717" src="assets/final-exam-fig_chemo_man-7ec8dd38cb.jpg" alt="Chemo Man mnemonic" class="slide-img">
     <p class="slide-caption">Each organ carries the drug that damages it.</p>
 
-    <h3>Targeted &amp; immunotherapy</h3>
-    <ul class="notes-list">
-      <li><span class="hy"><strong>Size decides site:</strong> antibodies (~145 kDa) act OUTSIDE the cell; small molecules go INSIDE.</span> That's why there are no monoclonal antibodies among signal-transduction inhibitors.</li>
-      <li><strong>Small molecule</strong> → CYP3A4 interactions, food effects, QT prolongation, diarrhea, raised liver enzymes. <strong>Antibody</strong> → infusion reactions + on-target toxicity (EGFR → acne-like rash).</li>
-      <li><strong>Trastuzu<span class="sfx">mab</span> → heart failure</strong> (HER2 on cardiomyocytes). <strong>Daratumu<span class="sfx">mab</span> (CD38) interferes with the crossmatch — warn the blood bank.</strong></li>
-      <li><strong>Antibody-drug conjugates: the second word is the payload.</strong> "-emtansine"/"-vedotin" = anti-microtubule → <strong>neuropathy</strong>; "-deruxtecan"/"-govitecan" = topoisomerase → <strong>myelosuppression</strong>.</li>
-      <li><strong>Checkpoints:</strong> CTLA-4 ipilimu<span class="sfx">mab</span> · PD-1 pembrolizu<span class="sfx">mab</span>/nivolu<span class="sfx">mab</span> · PD-L1 atezolizu<span class="sfx">mab</span> · LAG-3 relatli<span class="sfx">mab</span>. <span class="hy">Toxicity = any organ ending in "-itis" → corticosteroids.</span></li>
-      <li><span class="hy"><strong>Cytokine release syndrome</strong> (4–16 h; fever, hypotension, hypoxia) → <strong>tocilizu<span class="sfx">mab</span></strong>. <strong>ICANS</strong> (day 3–9; confusion, seizure) → <strong>dexamethasone, NOT tocilizu<span class="sfx">mab</span></strong>.</span></li>
-    </ul>
-
-    <h3>Hormonal</h3>
+    <h3>Targeted therapy and immunotherapy</h3>
+    <div class="callout callout-key">
+      <div class="callout-title">🔑 Size decides site <span class="hy-star">★ HY</span></div>
+      <p><span class="hy">Antibodies (about 145 kilodaltons) act OUTSIDE the cell. Small molecules go INSIDE.</span> That is why there are no monoclonal antibodies among the signal-transduction inhibitors.</p>
+      <p><strong>Small molecule profile:</strong> cytochrome P450 3A4 interactions, food effects, QT prolongation, diarrhea, raised liver enzymes. <strong>Antibody profile:</strong> infusion reactions plus on-target toxicity.</p>
+    </div>
     <div class="t-wrap"><table>
-      <tr><th>Class</th><th>Mechanism</th><th>Signature</th></tr>
-      <tr><td><strong>SERM</strong> (tamoxifen)</td><td>Agonist in bone, antagonist in breast</td><td><strong>Endometrial cancer + clots</strong>; <strong>protects bone</strong></td></tr>
-      <tr><td><strong>Aromatase inhibitor</strong></td><td>Removes estrogen everywhere</td><td><strong>Osteoporosis</strong>. <strong>Postmenopausal only</strong></td></tr>
-      <tr><td><strong>GnRH agonist</strong> (leuprolide)</td><td>Continuous stimulation → downregulation</td><td><span class="hy">Initial tumour FLARE — cover with an anti-androgen</span></td></tr>
-      <tr><td><strong>Abiraterone</strong></td><td><span class="miss"><strong>CYP17 inhibition</strong> — blocks androgen synthesis in testis, adrenal AND tumour, so it works post-castration</span></td><td><span class="miss">Precursors shunt into the <strong>MINERALOCORTICOID</strong> pathway → <strong>hypokalemia, fluid retention, hypertension</strong> → <strong>co-prescribe PREDNISONE</strong> (suppresses the ACTH drive making the precursors).</span> Also hepatotoxicity</td></tr>
-      <tr><td>Receptor antagonists<br>(flutamide, bicalutamide, enzalutamide)</td><td>Block the androgen receptor</td><td><strong>Gynecomastia</strong>, rare hepatotoxicity</td></tr>
+      <tr><th>Agent</th><th>Target / mechanism</th><th>Signature toxicity</th><th>Management</th><th>Memory hook</th></tr>
+      <tr><td><strong>Trastuzumab</strong></td><td><span class="mech">Antibody against HER2</span></td><td><strong>Heart failure</strong></td><td>Monitor ejection fraction; hold the drug</td><td>HER2 sits on <strong>cardiomyocytes</strong> too</td></tr>
+      <tr><td><strong>Daratumumab</strong></td><td><span class="mech">Antibody against CD38</span></td><td>Infusion reactions</td><td><span class="hy"><strong>Interferes with the crossmatch — warn the blood bank</strong></span></td><td>CD38 is on red cells as well as myeloma</td></tr>
+      <tr><td>Cetuximab and other epidermal growth factor blockers</td><td><span class="mech">Block the epidermal growth factor receptor</span></td><td><strong>Acne-like rash</strong></td><td>Topical and oral antibiotics</td><td>On-target — the receptor is in <strong>skin</strong></td></tr>
+      <tr><td><strong>Antibody-drug conjugates</strong></td><td><span class="mech">Antibody + linker + cytotoxic payload</span></td><td><span class="hy"><strong>The second word names the payload, and the payload names the toxicity</strong></span></td><td>"-emtansine" / "-vedotin" = anti-microtubule → <strong>neuropathy</strong>. "-deruxtecan" / "-govitecan" = topoisomerase → <strong>myelosuppression</strong></td><td>Read the <strong>second half</strong> of the name</td></tr>
+      <tr><td><strong>Checkpoint inhibitors</strong></td><td><span class="mech">Release the brake on the T cell.</span> CTLA-4 = ipilimumab · PD-1 = pembrolizumab, nivolumab · PD-L1 = atezolizumab · LAG-3 = relatlimab</td><td><span class="hy">Any organ ending in <strong>"-itis"</strong> — colitis, hepatitis, pneumonitis, thyroiditis, hypophysitis</span></td><td><strong>Corticosteroids</strong></td><td>You bought efficacy with <strong>autoimmunity</strong></td></tr>
+      <tr><td><strong>Cytokine release syndrome</strong></td><td>From chimeric antigen receptor T cells and bispecific engagers</td><td><strong>4–16 hours:</strong> fever, hypotension, hypoxia</td><td><strong>Tocilizumab</strong> (interleukin-6 receptor blocker)</td><td rowspan="2"><span class="hy">Early and febrile → <strong>tocilizumab</strong>. Later and confused → <strong>dexamethasone</strong></span></td></tr>
+      <tr><td><strong>Neurotoxicity</strong></td><td>Same therapies</td><td><strong>Day 3–9:</strong> confusion, seizure</td><td><strong>Dexamethasone — NOT tocilizumab</strong></td></tr>
     </table></div>
-    <p><span class="hy"><strong>Bone is the giveaway: SERMs PROTECT bone; aromatase inhibitors DESTROY it.</strong></span></p>
+
+    <h3>Hormonal therapy</h3>
+    <div class="t-wrap"><table>
+      <tr><th>Drug</th><th>Mechanism of action</th><th>Signature toxicity</th><th>Co-prescribe / manage</th><th>Contraindications</th><th>Memory hook</th></tr>
+      <tr><td><strong>Tamoxifen</strong><br><span style="font-weight:400">selective estrogen receptor modulator</span></td><td><span class="mech">Antagonist in breast, AGONIST in bone and endometrium</span></td><td><strong>Endometrial cancer and venous clots</strong>; hot flashes</td><td>Investigate any postmenopausal bleeding</td><td>History of venous thromboembolism</td><td><strong>Protects</strong> bone</td></tr>
+      <tr><td><strong>Anastrozole<br>Letrozole</strong><br><span style="font-weight:400">aromatase inhibitors</span></td><td><span class="mech">Block peripheral conversion of androgen to estrogen — removes estrogen everywhere</span></td><td><strong>Osteoporosis</strong>, arthralgia, hot flashes</td><td>Bone density monitoring, calcium and vitamin D, bisphosphonate</td><td><strong>Postmenopausal women only</strong> — useless while ovaries function</td><td><span class="hy"><strong>Bone is the giveaway: modulators PROTECT bone, aromatase inhibitors DESTROY it</strong></span></td></tr>
+      <tr><td><strong>Leuprolide</strong><br><span style="font-weight:400">gonadotropin-releasing hormone agonist</span></td><td><span class="mech">Continuous stimulation downregulates the receptor</span> — but stimulates first</td><td><span class="hy"><strong>Initial tumour FLARE</strong></span> — worsening bone pain, obstruction, cord compression</td><td><strong>Cover with an anti-androgen</strong> for the first weeks</td><td>Impending cord compression without cover</td><td>An agonist that ends as a <strong>blocker</strong></td></tr>
+      <tr><td><strong>Abiraterone</strong></td><td><span class="miss"><span class="mech">Inhibits CYP17</span> — blocks androgen synthesis in testis, adrenal AND tumour, so it works even after castration</span></td><td><span class="miss">Precursors shunt into the <strong>MINERALOCORTICOID</strong> pathway → <strong>low potassium, fluid retention, hypertension</strong>, metabolic alkalosis</span>. Also <strong>hepatotoxicity</strong></td><td><span class="miss"><strong>Co-prescribe PREDNISONE</strong> — it suppresses the adrenocorticotropic hormone drive making the precursors</span></td><td>Monitor liver enzymes and potassium</td><td>Block the androgen road → traffic diverts to the <strong>salt road</strong>; prednisone closes the on-ramp</td></tr>
+      <tr><td><strong>Flutamide · Bicalutamide<br>Enzalutamide · Apalutamide</strong></td><td><span class="mech">Block the androgen receptor itself</span></td><td><strong>Gynecomastia</strong>; rare hepatotoxicity</td><td>Liver monitoring</td><td>—</td><td>Receptor <strong>blockers</strong>, not depleters — abiraterone is the <strong>depleter</strong></td></tr>
+    </table></div>
 
     <div class="exam-q">
-      <p><strong>Q:</strong> Twenty minutes into irinotecan: cramping diarrhea, sweating, lacrimation, salivation, pulse <strong>54</strong>. Treatment?</p>
-      <div class="answer"><div class="label">Answer</div><p><strong>Atropine</strong> — this is the early cholinergic diarrhea. Loperamide is for the late form days afterwards.</p></div>
+      <p><strong>Q:</strong> Twenty minutes into a first irinotecan infusion: cramping, watery diarrhea, sweating, lacrimation, salivation, pulse <strong>54</strong>. Treatment?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Atropine.</strong> This is the <em>early</em> cholinergic diarrhea — irinotecan inhibits acetylcholinesterase, and the secretions plus bradycardia identify it. Loperamide is for the <em>late</em> form; corticosteroids are for checkpoint-inhibitor colitis.</p></div>
     </div>
   </div>
 </div>
@@ -1401,8 +1723,8 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
       <tr><td>Thymus</td><td>Cortex → <span class="mech">positive selection</span> → medulla; non-responders apoptose. <strong>Involutes after puberty</strong></td></tr>
     </table></div>
     <div class="img-2col">
-      <div><img loading="lazy" src="assets/final-exam-fig_lymph_capillary-597812f757.jpg" alt="Lymphatic capillary" class="slide-img"><p class="slide-caption">The leaky capillary — that permeability is the point.</p></div>
-      <div><img loading="lazy" src="assets/final-exam-fig_stemmer-c0d262a2bc.jpg" alt="Stemmer sign" class="slide-img"><p class="slide-caption">Stemmer sign — square toes.</p></div>
+      <div><img loading="lazy" width="850" height="673" src="assets/final-exam-fig_lymph_capillary-597812f757.jpg" alt="Lymphatic capillary" class="slide-img"><p class="slide-caption">The leaky capillary — that permeability is the point.</p></div>
+      <div><img loading="lazy" width="850" height="510" src="assets/final-exam-fig_stemmer-c0d262a2bc.jpg" alt="Stemmer sign" class="slide-img"><p class="slide-caption">Stemmer sign — square toes.</p></div>
     </div>
 
     <h3>Lymphedema</h3>
@@ -1456,7 +1778,7 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
       <tr><td>Treatment</td><td>Matched sibling transplant</td><td>Risk-stratified chemotherapy</td></tr>
     </table></div>
     <p><span class="miss"><strong>Mild lymphadenopathy occurs in BOTH — it discriminates nothing.</strong> Splenomegaly separates them clinically; the marrow settles it. And the white count may be LOW in leukemia.</span> ~80% of childhood acute leukemia is lymphoblastic (~80% of that precursor-B).</p>
-    <img loading="lazy" src="assets/final-exam-fig_all_lymphoblasts-9c2625f1d2.jpg" alt="Lymphoblasts" class="slide-img">
+    <img loading="lazy" width="826" height="850" src="assets/final-exam-fig_all_lymphoblasts-9c2625f1d2.jpg" alt="Lymphoblasts" class="slide-img">
     <p class="slide-caption">Lymphoblasts — present even when the total white count reads low.</p>
 
     <h3>Inherited marrow failure — one feature each</h3>
@@ -1516,7 +1838,7 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
       <tr><td>Grading</td><td>I–III track <strong>depth</strong> (&lt;1 cm / 1–3 cm / &gt;3 cm); <strong>IV–V involve the vessels</strong></td></tr>
       <tr><td>Complications</td><td><strong>Delayed rupture classically day 5–6.</strong> Vaccinate <strong>2 weeks before elective</strong>, <strong>before discharge</strong> after trauma. Platelets &gt;1 million → aspirin</td></tr>
     </table></div>
-    <img loading="lazy" src="assets/final-exam-fig_splenic_injury_ct-7281bd267d.jpg" alt="Splenic injury CT" class="slide-img">
+    <img loading="lazy" width="850" height="637" src="assets/final-exam-fig_splenic_injury_ct-7281bd267d.jpg" alt="Splenic injury CT" class="slide-img">
     <p class="slide-caption">CT grades it and finds the blush — but only in a stable patient.</p>
 
     <h3>Edema after trauma — read the clock <span class="hy-star">★ HY</span></h3>
@@ -1562,6 +1884,7 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
       <p><span class="hy">The life expectancy of a 75-year-old disabled in activities of daily living equals that of an <strong>INDEPENDENT 85-year-old</strong></span> — a disability is worth roughly ten years of age. 75-year-olds without limitation live ~5 years longer.</p>
     </div>
 
+    <h3>The 4Ms — the framework the interview hangs on</h3>
     <div class="t-wrap"><table>
       <tr><th>The 4Ms</th><th>What you are actually asking</th></tr>
       <tr><td><strong>What Matters</strong></td><td>"Most important thing to you — in life, and right now?" Advance directive, life-sustaining orders, power of attorney</td></tr>
@@ -2007,7 +2330,7 @@ function changeFontSize(delta){
 
 /* ===== SCROLLSPY ===== */
 function initScrollspy(){
-  var links = Array.prototype.slice.call(document.querySelectorAll('.toc-bar a'));
+  var links = Array.prototype.slice.call(document.querySelectorAll('.toc-bar nav > a, .toc-bar nav > .toc-item > a'));
   var map = {}, sections = [];
   links.forEach(function(a){
     var id = a.getAttribute('href').slice(1);
@@ -2025,6 +2348,7 @@ function initScrollspy(){
     links.forEach(function(a){ a.classList.remove('active'); });
     var active = map[best.id];
     if(active) active.classList.add('active');
+    if(typeof syncSubNav === 'function') syncSubNav(best.id);
   }
   window.addEventListener('scroll', update, { passive:true });
   update();
@@ -2181,9 +2505,186 @@ function initTableQuiz(){
   });
 }
 
+/* ===== COLLAPSIBLE SUBSECTIONS ===== */
+/* ===== SIDEBAR SUB-NAVIGATION (hover to peek · auto-opens the section you are in) ===== */
+var subNav = { items: [], byId: {} };
+
+function buildSubNav(){
+  document.querySelectorAll('.toc-bar nav > a').forEach(function(link){
+    var secId = link.getAttribute('href').slice(1);
+    var sec = document.getElementById(secId);
+    if(!sec) return;
+    var heads = sec.querySelectorAll('h3.sub-head');
+    if(!heads.length) return;
+
+    // wrap the link so hover covers the link AND its sub-list
+    var item = document.createElement('div');
+    item.className = 'toc-item';
+    link.parentNode.insertBefore(item, link);
+    item.appendChild(link);
+
+    var twist = document.createElement('span');
+    twist.className = 'twist'; twist.textContent = '▸';
+    link.appendChild(twist);
+
+    var wrap = document.createElement('div'); wrap.className = 'toc-sub';
+    var box  = document.createElement('div');
+    wrap.appendChild(box);
+
+    var subLinks = [];
+    heads.forEach(function(h3){
+      var a = document.createElement('a');
+      a.href = '#' + h3.id;
+      var lab = h3.querySelector('.sub-label');
+      a.textContent = (lab ? lab.textContent : h3.textContent).replace(/\s*★\s*HY\s*$/,'').trim();
+      a.addEventListener('click', function(e){
+        e.preventDefault();
+        // a collapsed subsection must open before we jump into it
+        var outer = h3.nextElementSibling;
+        if(outer && outer.classList.contains('closed')){
+          var st = readSubState();
+          setSub(h3, outer, false, st);
+          writeSubState(st); syncCollapseBtn();
+        }
+        h3.scrollIntoView({block:'start'});
+        window.scrollBy(0,-14);
+        if(history.replaceState) history.replaceState(null,'','#'+h3.id);
+      });
+      box.appendChild(a);
+      subLinks.push({a:a, head:h3});
+    });
+
+    item.appendChild(wrap);
+    var rec = {item:item, link:link, wrap:wrap, subLinks:subLinks, secId:secId, hoverT:null};
+    subNav.items.push(rec);
+    subNav.byId[secId] = rec;
+
+    // hover to peek
+    item.addEventListener('mouseenter', function(){
+      clearTimeout(rec.hoverT);
+      openSub(rec, true);
+    });
+    item.addEventListener('mouseleave', function(){
+      clearTimeout(rec.hoverT);
+      rec.hoverT = setTimeout(function(){
+        if(!rec.link.classList.contains('active')) openSub(rec, false);
+      }, 260);
+    });
+  });
+}
+
+function openSub(rec, open){
+  rec.wrap.classList.toggle('open', open);
+  rec.item.classList.toggle('open', open);
+}
+
+// called by the scrollspy: open the section you are reading, close the rest
+function syncSubNav(activeSecId){
+  subNav.items.forEach(function(rec){
+    var isActive = rec.secId === activeSecId;
+    if(isActive) openSub(rec, true);
+    else if(!rec.item.matches(':hover')) openSub(rec, false);
+  });
+  var rec = subNav.byId[activeSecId];
+  if(!rec) return;
+  // mark which subsection is actually on screen
+  var best = null, bestTop = -Infinity;
+  rec.subLinks.forEach(function(sl){
+    var t = sl.head.getBoundingClientRect().top;
+    if(t <= 140 && t > bestTop){ bestTop = t; best = sl; }
+  });
+  // landed above the first heading — highlight the first one rather than nothing
+  if(!best) best = rec.subLinks[0];
+  rec.subLinks.forEach(function(sl){ sl.a.classList.toggle('on', sl === best); });
+}
+
+var SUBS_KEY='heme-summ3-hy-subs';
+function readSubState(){ try{ return JSON.parse(localStorage.getItem(SUBS_KEY)||'{}')||{}; }catch(e){ return {}; } }
+function writeSubState(o){ try{ localStorage.setItem(SUBS_KEY, JSON.stringify(o)); }catch(e){} }
+
+function setSub(head, outer, closed, state){
+  head.classList.toggle('closed', closed);
+  outer.classList.toggle('closed', closed);
+  head.setAttribute('aria-expanded', closed ? 'false' : 'true');
+  if(state) state[head.dataset.subId] = closed ? 1 : 0;
+}
+
+function initSubsections(){
+  var state = readSubState();
+  var n = 0;
+  document.querySelectorAll('.section .container').forEach(function(box){
+    var heads = Array.prototype.slice.call(box.children).filter(function(el){ return el.tagName === 'H3'; });
+    heads.forEach(function(h3){
+      var id = (box.closest('.section').id || 'x') + '-' + (n++);
+      h3.dataset.subId = id;
+      if(!h3.id) h3.id = id;
+      h3.classList.add('sub-head');
+      h3.setAttribute('role','button');
+      h3.setAttribute('tabindex','0');
+
+      // wrap the original heading text so the caret and badge sit either side of it
+      var label = document.createElement('span');
+      label.className = 'sub-label';
+      while(h3.firstChild) label.appendChild(h3.firstChild);
+      var caret = document.createElement('span'); caret.className='caret'; caret.textContent='▼';
+      var peek  = document.createElement('span'); peek.className='peek'; peek.textContent='show';
+      h3.appendChild(caret); h3.appendChild(label); h3.appendChild(peek);
+
+      // move every sibling up to the next H3 into the collapsible body
+      var outer = document.createElement('div'); outer.className='sub-outer';
+      var inner = document.createElement('div'); inner.className='sub-inner';
+      outer.appendChild(inner);
+      var sib = h3.nextSibling;
+      while(sib && !(sib.nodeType === 1 && sib.tagName === 'H3')){
+        var next = sib.nextSibling;
+        inner.appendChild(sib);
+        sib = next;
+      }
+      h3.parentNode.insertBefore(outer, h3.nextSibling);
+
+      setSub(h3, outer, state[id] === 1, null);
+
+      function toggle(){
+        var closed = !outer.classList.contains('closed');
+        setSub(h3, outer, closed, state);
+        writeSubState(state);
+        syncCollapseBtn();
+      }
+      h3.addEventListener('click', toggle);
+      h3.addEventListener('keydown', function(e){
+        if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); toggle(); }
+      });
+    });
+  });
+  syncCollapseBtn();
+}
+
+function toggleAllSubs(){
+  var heads = document.querySelectorAll('h3.sub-head');
+  var anyOpen = false;
+  heads.forEach(function(h){ if(!h.classList.contains('closed')) anyOpen = true; });
+  var state = readSubState();
+  heads.forEach(function(h){
+    setSub(h, h.nextElementSibling, anyOpen, state);
+  });
+  writeSubState(state);
+  syncCollapseBtn();
+}
+
+function syncCollapseBtn(){
+  var btn = document.getElementById('collapseAllBtn');
+  if(!btn) return;
+  var heads = document.querySelectorAll('h3.sub-head');
+  var open = 0;
+  heads.forEach(function(h){ if(!h.classList.contains('closed')) open++; });
+  btn.textContent = open ? '⊟ Collapse all subsections' : '⊞ Expand all subsections';
+}
+
 /* ===== INIT ===== */
 document.addEventListener('DOMContentLoaded', function(){
   initVisualState();
+  initSubsections();
+  buildSubNav();
   initTableQuiz();
   initScrollspy();
   var hyModal = document.getElementById('hyModal');
