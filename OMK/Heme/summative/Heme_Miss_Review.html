@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Miss Review — Heme Summative</title>
+<style>
+:root{
+  --paper:#FBF9F5; --card:#FFFFFF; --ink:#1B2A4A; --slate:#53617F; --mist:#8E9AB4;
+  --line:rgba(27,42,74,.10); --line2:rgba(27,42,74,.18);
+  --red:#C0392B; --red-bg:#FDF2F0; --red-line:rgba(192,57,43,.22);
+  --grn:#1A7A6D; --grn-bg:#EFF8F6; --grn-line:rgba(26,122,109,.22);
+  --amb:#9A6B00; --amb-bg:#FFF8E8; --amb-line:rgba(154,107,0,.24);
+  --teal:#1A7A6D; --sh:0 1px 2px rgba(27,42,74,.05), 0 6px 18px rgba(27,42,74,.06);
+  --ui:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif;
+  --sr:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--ui);
+  font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:820px;margin:0 auto;padding:0 16px 80px}
+
+/* ---------- header ---------- */
+header{padding:44px 0 22px}
+.kicker{font-size:11.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);margin:0 0 10px}
+h1{font-family:var(--sr);font-size:clamp(30px,6vw,42px);line-height:1.1;margin:0 0 12px;letter-spacing:-.01em}
+.sub{color:var(--slate);font-size:15.5px;margin:0;max-width:60ch}
+.stats{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:8px 13px;font-size:13px;box-shadow:var(--sh)}
+.stat b{font-size:16px}
+
+/* ---------- sticky nav ---------- */
+nav{position:sticky;top:0;z-index:20;background:rgba(251,249,245,.93);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line);margin:0 -16px 30px;padding:10px 16px}
+.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.chips::-webkit-scrollbar{display:none}
+.chips a{flex:0 0 auto;font-size:12px;font-weight:700;text-decoration:none;color:var(--slate);
+  background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 12px;white-space:nowrap}
+.chips a:hover{color:var(--ink);border-color:var(--line2)}
+.chips a.pharm{color:var(--teal);border-color:var(--grn-line);background:var(--grn-bg)}
+
+/* ---------- fast pass ---------- */
+.fast{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--teal);
+  border-radius:14px;padding:20px 22px;box-shadow:var(--sh);margin-bottom:38px}
+.fast h2{font-family:var(--sr);font-size:20px;margin:0 0 4px}
+.fast p.note{color:var(--mist);font-size:13px;margin:0 0 14px}
+.fast ol{margin:0;padding-left:20px;columns:1}
+.fast li{font-size:14.2px;line-height:1.5;margin-bottom:7px;color:var(--slate)}
+.fast li b{color:var(--ink)}
+@media(min-width:720px){.fast ol{columns:2;column-gap:26px}.fast li{break-inside:avoid}}
+
+/* ---------- sections ---------- */
+section{margin-bottom:46px;scroll-margin-top:76px}
+.sec-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;
+  padding-bottom:10px;border-bottom:2px solid var(--ink);margin-bottom:20px}
+.sec-head h2{font-family:var(--sr);font-size:23px;margin:0;letter-spacing:-.01em}
+.sec-head .count{font-size:11.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--red);background:var(--red-bg);border:1px solid var(--red-line);border-radius:999px;padding:3px 10px}
+.sec-head .count.ok{color:var(--teal);background:var(--grn-bg);border-color:var(--grn-line)}
+
+/* ---------- cards ---------- */
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;
+  padding:18px 20px;margin-bottom:14px;box-shadow:var(--sh);transition:opacity .2s}
+.card.done{opacity:.4}
+.card h3{font-size:16.5px;margin:0 0 12px;line-height:1.35;padding-right:34px;position:relative}
+.tick{position:absolute;top:-2px;right:-2px;width:26px;height:26px;border-radius:50%;
+  border:1.5px solid var(--line2);background:transparent;cursor:pointer;color:var(--mist);
+  font-size:14px;line-height:1;padding:0;font-family:var(--ui)}
+.tick:hover{border-color:var(--teal);color:var(--teal)}
+.card.done .tick{background:var(--teal);border-color:var(--teal);color:#fff}
+
+.ab{display:grid;gap:8px;margin-bottom:12px}
+@media(min-width:620px){.ab{grid-template-columns:1fr 1fr}}
+.pick,.ans{border-radius:10px;padding:9px 12px;font-size:14px;line-height:1.4}
+.pick{background:var(--red-bg);border:1px solid var(--red-line)}
+.ans{background:var(--grn-bg);border:1px solid var(--grn-line)}
+.pick .lab,.ans .lab{display:block;font-size:10.5px;font-weight:800;letter-spacing:.1em;
+  text-transform:uppercase;margin-bottom:2px}
+.pick .lab{color:var(--red)} .ans .lab{color:var(--grn)}
+
+.fix{font-size:14.8px;line-height:1.58;color:var(--slate);margin:0 0 10px}
+.fix b,.fix strong{color:var(--ink);font-weight:700}
+.fix+.fix{margin-top:-4px}
+
+.hook{background:var(--amb-bg);border:1px solid var(--amb-line);border-radius:10px;
+  padding:9px 12px;font-size:14px;line-height:1.45;color:#5C4200}
+.hook::before{content:"HOOK";display:block;font-size:10.5px;font-weight:800;letter-spacing:.1em;color:var(--amb);margin-bottom:2px}
+
+/* ---------- figures ---------- */
+figure{margin:0 0 14px;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;overflow:hidden;box-shadow:var(--sh)}
+figure img{display:block;width:100%;height:auto;background:#F3F1EC}
+figcaption{font-size:12.5px;color:var(--slate);padding:9px 13px;border-top:1px solid var(--line);line-height:1.45}
+
+/* ---------- tables ---------- */
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:14px;
+  border:1px solid var(--line);border-radius:12px;background:var(--card);box-shadow:var(--sh)}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:13.6px}
+th,td{text-align:left;padding:9px 13px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.45}
+th{background:#F5F3EE;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--slate)}
+tr:last-child td{border-bottom:none}
+td b{color:var(--ink)}
+.up{color:var(--red);font-weight:700}
+.dn{color:var(--teal);font-weight:700}
+
+/* ---------- misc ---------- */
+.clean{background:var(--grn-bg);border:1px solid var(--grn-line);border-radius:12px;padding:15px 18px;margin-bottom:38px}
+.clean h3{font-size:14px;margin:0 0 8px;color:var(--grn)}
+.clean p{margin:0;font-size:13.8px;color:var(--slate);line-height:1.6}
+.gloss{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;box-shadow:var(--sh)}
+.gloss dl{margin:0;font-size:13.6px;line-height:1.55}
+.gloss dt{font-weight:700;color:var(--ink);margin-top:9px}
+.gloss dt:first-child{margin-top:0}
+.gloss dd{margin:0;color:var(--slate)}
+footer{text-align:center;color:var(--mist);font-size:12.5px;padding-top:34px;margin-top:30px;border-top:1px solid var(--line)}
+
+@media print{
+  nav,.tick{display:none}
+  body{background:#fff;font-size:11pt}
+  .card,figure,.tw,.fast,.gloss{box-shadow:none;break-inside:avoid}
+  section{break-inside:auto}
+  .card.done{opacity:1}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p class="kicker">Built from your two quiz exports</p>
+  <h1>Miss Review</h1>
+  <p class="sub">Every question you got wrong, and nothing you got right. Each card is the trap you took, the answer, the one sentence that separates them, and a hook to hang it on.</p>
+  <div class="stats">
+    <span class="stat"><b>23</b> misses</span>
+    <span class="stat"><b>82</b> answered</span>
+    <span class="stat"><b>8</b> weak sections</span>
+    <span class="stat"><b>10</b> clean sections</span>
+  </div>
+</header>
+
+<nav>
+  <div class="chips">
+    <a href="#fast">90-second pass</a>
+    <a href="#lab">Lab foundations</a>
+    <a href="#marrow">Hematopoiesis</a>
+    <a href="#anemia1">Anemia I</a>
+    <a href="#anemia2">Anemia II</a>
+    <a href="#infx">Infection</a>
+    <a href="#lymph">Lymphatics</a>
+    <a href="#peds">Pediatrics</a>
+    <a href="#anti">Antineoplastic</a>
+    <a href="#hemo" class="pharm">Hemostasis drugs</a>
+    <a href="#anemiarx" class="pharm">Anemia drugs</a>
+    <a href="#gloss">Glossary</a>
+  </div>
+</nav>
+
+<!-- ============ FAST PASS ============ -->
+<div class="fast" id="fast">
+  <h2>The 90-second pass</h2>
+  <p class="note">If you read nothing else tonight, read this. Each line is one card below.</p>
+  <ol>
+    <li>Hematocrit ≈ 3 × hemoglobin. A mismatch means <b>one number is wrong</b>, and it's the light-based one.</li>
+    <li>Side scatter = grittiness. <b>Eosinophil</b> is the grittiest normal white cell.</li>
+    <li>Normal average size + very wide spread = <b>two populations</b>, not one.</li>
+    <li>Erythropoietin comes from cells <b>beside</b> the kidney tubule, not inside it.</li>
+    <li>Plerixafor cuts the <b>CXCR4–CXCL12</b> tether that holds stem cells in marrow.</li>
+    <li>Marrow cellularity ≈ <b>100 − age</b>. Fat replaces marrow as you age.</li>
+    <li>The buffy coat is <b>white cells and platelets</b>. Dissolved protein can't form a band.</li>
+    <li>Hepcidin is the <b>doorman</b>; ferroportin is the <b>door</b>. Inflammation raises the doorman.</li>
+    <li>Inflammation: ferritin <span class="up">up</span>, iron-binding capacity <span class="dn">down</span>. Deficiency does the exact opposite.</li>
+    <li>Iron deficiency in an adult man = <b>scope both ends</b>. One negative stool test proves nothing.</li>
+    <li>Prussian blue stains <b>iron</b>, including the ring inside a sideroblast's mitochondria.</li>
+    <li>Thalassemia trait = <b>many</b> small cells. Iron deficiency = <b>few</b> small cells.</li>
+    <li>Raw lake fish + ribbons in stool = <b>fish tapeworm</b> stealing vitamin B12.</li>
+    <li>Oral vitamin B12 works in pernicious anemia by <b>passive diffusion</b> of ~1% of a huge dose.</li>
+    <li>Corrected reticulocytes = retic % × <b>(hematocrit ÷ 45)</b>. Multiply by the ratio.</li>
+    <li>A high hemoglobin <b>concentration</b> per cell means spherocytes — or an artifact.</li>
+    <li>Only <b>urine hemosiderin</b> proves the destruction happened inside the vessel.</li>
+    <li><b>Hypnozoites</b> are asleep and relapse. Schizonts are awake and in every species.</li>
+    <li>Lymphedema is a <b>protein</b> problem. Venous edema is a <b>pressure</b> problem.</li>
+    <li>Sick child + big spleen = leukemia. Well child, no spleen = aplastic. <b>Marrow settles it.</b></li>
+    <li>Transfuse a chronically anemic child <b>to safe (~7), not to normal</b>.</li>
+    <li>Wet and slow <b>during</b> the irinotecan infusion = <b>atropine</b>.</li>
+    <li>Abiraterone diverts steroid traffic onto the <b>salt road</b>. Prednisone closes the on-ramp.</li>
+  </ol>
+</div>
+
+<!-- ============ LAB FOUNDATIONS ============ -->
+<section id="lab">
+  <div class="sec-head"><h2>Laboratory Foundations</h2><span class="count">3 misses</span></div>
+
+  <div class="card">
+    <h3>Hemoglobin 17.9 with a hematocrit of 34, and milky plasma<button class="tick" aria-label="mark reviewed">✓</button></h3>
+    <div class="ab">
+      <div class="pick"><span class="lab">You picked</span>True acute blood loss with delayed plasma refill</div>
+      <div class="ans"><span class="lab">Answer</span>The hemoglobin is falsely <b>high</b> — turbidity increases light absorbance</div>
+    </div>
+    <p class="fix"><b>The cross-check:</b> hematocrit is normally about three times the hemoglobin. A hematocrit of 34% predicts a hemoglobin near 11.3, not 17.9. That gap is not biological — one number is wrong.</p>
+    <p class="fix"><b>Which one:</b> hemoglobin is a <b>chemical</b> measurement read as light absorbance. Hematocrit is <b>calculated</b> from counted cells × their measured size, and light cannot disturb particle counting. So the light-based number is the liar. Fatty plasma, high bilirubin and a very high white cell count all interfere the same optical way. Fix: swap the fatty plasma for saline and re-run — his true hemoglobin is ~11, and he is anemic, not polycythemic.</p>
+    <p class="fix"><b>Why blood loss fails:</b> whole blood is lost, so both numbers fall <b>together</b>. Neither phase makes two values disagree with each other.</p>
+    <div class="hook">Milky plasma blocks light. The machine can't tell a blockage from hemoglobin, so it counts the fat as hemoglobin.</div>
+  </div>
+
+  <div class="card">
+    <h3>Which white cell has the greatest side scatter?<button class="tick" aria-label="mark reviewed">✓</button></h3>
+    <div class="ab">
+      <div class="pick"><span class="lab">You picked</span>Lymphocyte</div>
+      <div class="ans"><span class="lab">Answer</span>Eosinophil</div>
+    </div>
+    <p class="fix"><b>Two axes, two properties.</b> Forward scatter = <b>size</b>. Side scatter = <b>internal complexity and granularity</b>. The eosinophil's dense bright granules push it far right on the grittiness axis — nothing normal is grainier.</p>
+    <p class="fix">The lymphocyte is the <b>simplest</b> normal white cell — round nucleus, thin rim of cytoplasm — so it sits bottom-left on both axes. The monocyte is the <b>biggest</b>, so it sits high. Ghost cells (lysed in the tube) are low on both and get gated out as debris.</p>
+    <div class="hook">Side scatter = how gritty. Eosinophil granules are the grit. Lymphocyte is the bald cell in the bottom-left corner.</div>
+    <figure>
+      <img loading="lazy" src="assets/final-exam-fig_slide_scattergram-9ee1669985.jpg" alt="Automated differential scattergram plotting forward scatter against side scatter">
+      <figcaption>The scattergram. Size on one axis, grittiness on the other — this is also how the analyzer throws a "blasts?" flag and pulls the slide out for a human to read.</figcaption>
+    </figure>
+  </div>
+
+  <div class="card">
+    <h3>Normal average cell size five days after transfusing a microcytic patient<button class="tick" aria-label="mark reviewed">✓</button></h3>
+    <div class="ab">
+      <div class="pick"><span class="lab">You picked</span>Cold agglutinins clumping cells</div>
+      <div class="ans"><span class="lab">Answer</span>Two red cell populations of different sizes, averaged together</div>
+    </div>
+    <p class="fix"><b>An average hides bimodal data.</b> His own cells are still tiny (68); the donor's are normal. The reported 86 describes <b>no cell actually in his circulation</b>. Two situations do this: transfusing normal blood into a microcytic patient, and a microcytic anemia with a brisk reticulocyte response.</p>
+    <p class="fix"><b>The tell you skipped:</b> a <b>normal average size with a hugely widened spread</b> (red cell distribution width 21.4%). The spread is literally the width of the size curve — it balloons when two populations sit side by side. Ferritin of 7 confirms the untreated iron deficiency underneath.</p>
+    <p class="fix"><b>Why cold agglutinins fail:</b> they do inflate the average size, but they come packaged with a falsely <b>low</b> red cell count and an <b>impossibly high</b> hemoglobin concentration per cell. Neither was present. Look for the package, not the single feature.</p>
+    <div class="hook">Normal average over two abnormal populations. The spread is the truth; the average is the lie. Confirm by looking at the smear.</div>
+  </div>
+</section>
+
+<!-- ============ HEMATOPOIESIS ============ -->
+<section id="marrow">
+  <div class="sec-head"><h2>Hematopoiesis &amp; Marrow</h2><span class="count">4 misses</span></div>
+
+  <div class="card">
+    <h3>Where is erythropoietin made?<button class="tick" aria-label="mark reviewed">✓</button></h3>
+    <div class="ab">
+      <div class="pick"><span class="lab">You picked</span>Proximal convoluted tubular epithelium</div>
+      <div class="ans"><span class="lab">Answer</span>Peritubular interstitial cells of the renal cortex</div>
+    </div>
+    <p class="fix"><b>Beside the tubule, not inside it.</b> These fibroblast-like cells sit in the interstitium between tubules and capillaries — which is the whole design. From there they sense the oxygen in blood already delivered to the energy-hungry tubules, making them a true <b>tissue oxygen sensor</b> rather than a pressure sensor.</p>
+    <p class="fix"><b>Don't confuse the kidney's three jobs:</b> peritubular interstitium → <b>erythropoietin</b>. Proximal tubule → activates <b>vitamin D</b> (the other endocrine failure of kidney disease, giving renal bone disease). Juxtaglomerular cells → <b>renin</b>, which senses pressure, not oxygen.</p>
+    <p class="fix"><b>The buried clue</b> was the <b>low reticulocyte count</b> — it establishes production failure, which is what a missing hormone signal looks like.</p>
+    <div class="hook">Beside the tubule makes blood. Inside the tubule makes bone. Beside the glomerulus makes pressure.</div>
+  </div>
+
+  <div class="card">
+    <h3>The second agent added when stem cell collection fails<button class="tick" aria-label="mark reviewed">✓</button></h3>
+    <div class="ab">
+      <div class="pick"><span class="lab">You picked</span>P-selectin and its glycoprotein ligand</div>
+      <div class="ans"><span class="lab">Answer</span>CXCR4 and CXCL12 — the drug is plerixafor</div>
+    </div>
+    <p class="fix"><b>The niche is an anchor, not a warehouse.</b> Marrow stromal cells secrete CXCL12 (also called stromal cell-derived factor 1); stem cells carry its receptor CXCR4. That bond is the rope tying them in place. Plerixafor is a reversible CXCR4 blocker — cut the rope and stem cells are in the blood within hours, which is exactly the 12-hour rise described.</p>
+    <p class="fix"><b>Why selectins fail:</b> they mediate white cells <b>rolling onto inflamed endothelium</b> to get <b>into</b> tissue. Wrong compartment, wrong direction.</p>
+    <div class="hook">Plerixafor cuts the tether. Selectins are for rolling in, not for letting go.</div>
+  </div>
+
+  <div class="card">
+    <h3>45% marrow cellularity in a 70-year-old with low counts<button class="tick" aria-label="mark reviewed">✓</button></h3>
+    <div class="ab">
+      <div class="pick"><span class="lab">You picked</span>Cellularity rises with age as fat is replaced by marrow</div>
+      <div class="ans"><span class="lab">Answer</span>Cellularity ≈ 100 − age in years</div>
+    </div>
+    <p class="fix"><b>You had the right variable running backwards</b> — that is the designed trap. Marrow is progressively replaced <b>by</b> fat with age, so cellularity <b>falls</b>. Newborn ≈ 100%. You, in your twenties ≈ 75%. A 70-year-old ≈ 30%.</p>
+    <p class="fix">So her predicted value is ~30% and her measured 45% is <b>normal to mildly increased</b>. The trap is reading 45% as "low" because it's under half. A marrow making plenty of cells while the blood counts are low points away from production failure and toward <b>destruction, sequestration, or ineffective production</b>.</p>
+    <div class="hook">100 minus age. Also worth carrying: normal ratio of white-cell to red-cell precursors is about 3 to 1.</div>
+    <figure>
+      <img loading="lazy" src="assets/final-exam-fig_marrow_cellularity-1485a5f28a.jpg" alt="Bone marrow sections labelled hypercellular, normocellular and hypocellular">
+      <figcaption>Hypercellular, normal, hypocellular. "Normal" is only definable once you know the patient's age.</figcaption>
+    </figure>
+  </div>
+
+  <div class="card">
+    <h3>The thin grey layer after spinning a tube of blood<button class="tick" aria-label="mark reviewed">✓</button></h3>
+    <div class="ab">
+      <div class="pick"><span class="lab">You picked</span>Plasma proteins and immunoglobulins</div>
+      <div class="ans"><span class="lab">Answer</span>White cells and platelets — the buffy coat</div>
+    </div>
+    <p class="fix"><b>Only particles sediment.</b> Proteins are <b>dissolved</b> in the plasma — they give the top layer its colour and viscosity but can never form a discrete band. Spinning separates by density: red cells at the bottom (densest, ~45%), white cells and platelets at the interface (~1%), plasma on top (~55%).</p>
+    <p class="fix"><b>One tube is a diagnostic map:</b> bottom layer = the anemias and polycythemias. Middle = the leukemias and low white counts. Top = the paraproteins and clotting disorders. A visibly thick buffy coat means marked leukocytosis; milky plasma means fat.</p>
+    <div class="hook">Three layers, three compartments. Dissolved things don't make a band.</div>
+  </div>
+</section>
+
+<!-- ============ ANEMIA I ============ -->
+<section id="anemia1">
+  <div class="sec-head"><h2>Anemia I · Impaired Production</h2><span class="count">7 misses — your weakest block</span></div>
+
+  <div class="card">
+    <h3>Rheumatoid arthritis, iron tablets for 3 months, no response<button class="tick" aria-label="mark reviewed">✓</button></h3>
+    <div class="ab">
+      <div class="pick"><span class="lab">You picked</span>Ferroportin</div>
+      <div class="ans"><span class="lab">Answer</span>Hepcidin</div>
+    </div>
+    <p class="fix"><b>Right molecule, wrong direction</b> — the designed trap. Inflammation → interleukin-6 → the liver makes more <b>hepcidin</b> → hepcidin binds <b>ferroportin</b>, the only exit iron has from a gut cell or a macrophage, and destroys it. <b>Increased</b> ferroportin would export more iron and <b>improve</b> her. In this disease ferroportin activity is <b>decreased</b>.</p>
+    <p class="fix"><b>Why the tablets failed:</b> oral iron is absorbed into the gut cell normally and then cannot leave it, because the exit is gone. The treatment is to control the arthritis.</p>
+    <div class="hook">Hepcidin is the doorman who locks the exits. Ferroportin is the door. The iron is in the building — it just can't reach the marrow.</div>
+    <figure>
+      <img loading="lazy" src="assets/final-exam-fig_hepcidin-86408daa49.jpg" alt="Diagram of hepcidin binding ferroportin and blocking iron export">
+      <figcaption>Interleukin-6 → hepcidin → ferroportin destroyed → iron locked inside macrophages and gut cells.</figcaption>
+    </figure>
+  </div>
+
+  <div class="card">
+    <h3>Iron, ferritin, binding capacity and marrow iron in untreated Hodgkin lymphoma<button class="tick" aria-label="mark reviewed">✓</button></h3>
+    <div class="ab">
+      <div class="pick"><span class="lab">You picked</span>Low, low, high, absent — <i>the iron deficiency row</i></div>
+      <div class="ans"><span class="lab">Answer</span>Low, high, low, high</div>
+    </div>
+    <p class="fix">Same hepcidin mechanism, asked as a row of four. A normal-sized, low-output anemia months into a malignancy, with a high sedimentation rate and no bleeding, is <b>anemia of inflammation</b>. It can appear as early as 1–2 months after disease onset, and Hodgkin disease is named as a cause.</p>
+    <div class="tw"><table>
+      <tr><th>Test</th><th>Iron deficiency</th><th>Anemia of inflammation</th><th>Why</th></tr>
+      <tr><td><b>Serum iron</b></td><td class="dn">Low</td><td class="dn">Low</td><td>The one test that <b>can't</b> tell them apart</td></tr>
+      <tr><td><b>Ferritin</b></td><td class="dn">Low</td><td class="up">High</td><td>Empty tank vs. full tank (and an acute phase reactant)</td></tr>
+      <tr><td><b>Iron-binding capacity</b></td><td class="up">High</td><td class="dn">Low</td><td>Transferrin is a <b>negative</b> acute phase reactant — fewer cups</td></tr>
+      <tr><td><b>Marrow macrophage iron</b></td><td class="dn">Absent</td><td class="up">Increased</td><td>Exactly where hepcidin locked it</td></tr>
+    </table></div>
+    <div class="hook">Deficiency = empty tank, extra empty cups. Inflammation = full tank, locked doors, fewer cups. <b>Ferritin and binding capacity move in opposite directions</b> — that pair is the whole discriminator.</div>
+  </div>
+
+  <div class="card">
+    <h3>61-year-old man, textbook iron deficiency, negative stool test — next step<button class="tick" aria-label="mark reviewed">✓</button></h3>
+    <div class="ab">
+      <div class="pick"><span class="lab">You picked</span>Marrow aspirate with Prussian blue stain</div>
+      <div class="ans"><span class="lab">Answer</span>Endoscopy of both the upper and lower tract</div>
+    </div>
+    <p class="fix"><b>The diagnosis was already made</b> — small cells, wide spread, low iron, high binding capacity, ferritin of 7, saturation of 6%, reactive high platelets. The question is <b>where the iron went</b>, and a marrow stain cannot answer that. A ferritin of 7 already proves the stores are empty, so the invasive procedure adds nothing.</p>
+    <p class="fix"><b>The highest-yield sentence in the anemia block:</b> iron deficiency in an <b>adult man or a postmenopausal woman</b> is gastrointestinal blood loss until proven otherwise. Colorectal cancer can present with iron deficiency and nothing else.</p>
+    <p class="fix"><b>The decoy:</b> a single negative stool occult blood test. Gut bleeding is <b>intermittent</b>, so one negative does not exclude a source and does not change the plan.</p>
+    <div class="hook">Iron deficiency is a symptom, not a diagnosis. Find the leak.</div>
+    <figure>
+      <img loading="lazy" src="assets/final-exam-fig_ida_progression-82dad29d48.jpg" alt="Stages of iron deficiency from depleted stores through to anemia">
+      <figcaption>Stores empty first (ferritin falls), then transport (saturation falls), then the cells shrink. Ferritin is the earliest number to move.</figcaption>
+    </figure>
+  </div>
+
+  <div class="card">
+    <h3>A special stain on marrow in a 72-year-old with high iron everywhere<button class="tick" aria-label="mark reviewed">✓</button></h3>
+    <div class="ab">
+      <div class="pick"><span class="lab">You picked</span>Myeloperoxidase in primary granules</div>
+      <div class="ans"><span class="lab">Answer</span>Iron inside red cell precursor mitochondria</div>
+    </div>
+    <p class="fix"><b>Prussian blue is the one special stain routinely run on marrow.</b> It answers two questions at once: how much <b>storage</b> iron sits in macrophages, and whether iron is abnormally deposited inside <b>red cell precursors</b>. A ring of blue granules around the nucleus = iron trapped in perinuclear mitochondria because it can't be built into heme = a <b>ringed sideroblast</b>.</p>
+    <p class="fix"><b>The panel set it up:</b> large cells, other low counts, an older man, and iron <b>high across the board</b> — high iron, high ferritin, <b>low</b> binding capacity — with normal B12 and folate. That is iron present but unusable. Here: myelodysplasia. Note the low binding capacity with a high ferritin rules out iron deficiency outright.</p>
+    <p class="fix">Myeloperoxidase is the granulocyte stain — it backs up Auer rods in acute myeloid leukemia, and the stem gave no increase in blasts.</p>
+    <div class="hook">Prussian blue = iron. A blue ring around the nucleus is iron stuck in mitochondria that couldn't finish the heme.</div>
+    <figure>
+      <img loading="lazy" src="assets/final-exam-fig_sideroblast-ed59a57981.jpg" alt="Ringed sideroblasts on Prussian blue stained bone marrow">
+      <figcaption>Ringed sideroblasts — blue iron granules encircling the nucleus.</figcaption>
+    </figure>
+  </div>
+
+  <div class="card">
+    <h3>Lifelong mild anemia, tiny cells, red cell count of 6.1 million<button class="tick" aria-label="mark reviewed">✓</button></h3>
+    <div class="ab">
+      <div class="pick"><span class="lab">You picked</span>Sideroblastic anemia from a marrow disorder</div>
+      <div class="ans"><span class="lab">Answer</span>Beta-thalassemia trait</div>
+    </div>
+    <p class="fix"><b>The red cell count is the discriminator</b>, and it separates the two microcytic anemias from the blood count alone. In <b>thalassemia</b> the marrow makes <b>many</b> small cells — her count is <b>high</b> at 6.1 million. In <b>iron deficiency</b> the marrow makes <b>few</b> small cells, because it can't build hemoglobin at all.</p>
+    <p class="fix">Her normal ferritin (96) and <b>narrow</b> spread (13.1%) agree: thalassemia makes a uniformly small population; iron deficiency widens the spread. <b>Sideroblastic anemia</b> would come with a <b>high</b> ferritin and ringed sideroblasts, and never causes a high red cell count.</p>
+    <p class="fix"><b>The stakes:</b> the treatments are <b>opposite</b>. Thalassemia trait has normal or high iron stores — supplementing gains nothing and risks overload. Confirm with iron studies plus hemoglobin electrophoresis.</p>
+    <div class="hook">Many small cells, narrow spread, normal ferritin = thalassemia. Few small cells, wide spread, low ferritin = iron deficiency.</div>
+    <figure>
+      <img loading="lazy" src="assets/final-exam-fig_beta_thal_uw-c88f541cd3.jpg" alt="Peripheral blood smear in beta thalassemia showing small pale cells and target cells">
+      <figcaption>Beta-thalassemia trait: small, pale cells with target forms — but <i>lots</i> of them.</figcaption>
+    </figure>
+  </div>
+
+  <div class="card">
+    <h3>Raw lake fish, ribbon-like segments in stool, low vitamin B12<button class="tick" aria-label="mark reviewed">✓</button></h3>
+    <div class="ab">
+      <div class="pick"><span class="lab">You picked</span><i>Necator americanus</i> (hookworm)</div>
+      <div class="ans"><span class="lab">Answer</span><i>Diphyllobothrium latum</i> (fish tapeworm)</div>
+    </div>
+    <p class="fix"><b>The mechanism is competitive uptake</b> — something in the gut eats the vitamin B12 before the patient can. The fish tapeworm comes from <b>raw or undercooked freshwater fish</b>, grows to several metres in the small intestine, sheds flat <b>ribbon-like</b> segments in stool, and absorbs B12 avidly. Two buried clues: cured raw Great Lakes fish, and the ribbons. Treat with praziquantel plus B12.</p>
+    <p class="fix"><b>Why hookworm fails:</b> it enters through skin from soil and feeds on <b>blood</b> — that's <b>iron</b> deficiency, giving <b>small</b> cells. This patient's cells are <b>large</b>. Opposite direction.</p>
+    <p class="fix"><b>The other competitive-uptake cause</b> to keep with it: small bowel bacterial overgrowth (suggested by blind loops, strictures, dysmotility).</p>
+    <div class="hook">Ribbons in the stool from raw lake fish = a worm stealing your B12. Hookworm sucks blood, so hookworm costs you iron.</div>
+  </div>
+
+  <div class="card">
+    <h3>Oral vitamin B12 working in pernicious anemia<button class="tick" aria-label="mark reviewed">✓</button></h3>
+    <div class="ab">
+      <div class="pick"><span class="lab">You picked</span>Transcobalamin II uptake across the gastric mucosa</div>
+      <div class="ans"><span class="lab">Answer</span>Passive diffusion of a fraction of a large oral dose</div>
+    </div>
+    <p class="fix"><b>The normal route is permanently closed</b> — no intrinsic factor means no intrinsic-factor-B12 complex and no pickup by cubilin in the terminal ileum. So B12 must be given by a route that <b>doesn't need intrinsic factor</b>: intramuscular injection, or <b>high-dose oral</b>.</p>
+    <p class="fix"><b>The arithmetic is the answer.</b> Passive diffusion moves about <b>1%</b> of an oral dose regardless of intrinsic factor. 1% of 1,000 micrograms ≈ 10 micrograms a day — comfortably above the few micrograms he needs. That is exactly why the dose is enormous.</p>
+    <p class="fix">Transcobalamin II is a <b>plasma</b> carrier that delivers B12 to tissues <b>after</b> absorption, and the stomach is not an absorptive site at all.</p>
+    <p class="fix"><b>Don't drop the third problem:</b> fixing the anemia and the neurology still leaves the atrophic gastritis and its <b>gastric cancer risk</b> needing surveillance.</p>
+    <div class="hook">1% of a huge dose still leaks through. That's the whole reason the tablet is 1,000 micrograms.</div>
+    <figure>
+      <img loading="lazy" src="assets/final-exam-fig_b12_absorption-5f0983be5b.jpg" alt="Diagram of vitamin B12 absorption from food through intrinsic factor to the ileum">
+      <figcaption>The intrinsic factor route (blocked here) versus the tiny passive leak that high-dose tablets exploit.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============ ANEMIA II ============ -->
+<section id="anemia2">
+  <div class="sec-head"><h2>Anemia II · Hemolysis</h2><span class="count">3 misses</span></div>
+
+  <div class="card">
+    <h3>Corrected reticulocyte count: 8% retics, hematocrit 22.5%<button class="tick" aria-label="mark reviewed">✓</button></h3>
+    <div class="ab">
+      <div class="pick"><span class="lab">You picked</span>1.6%</div>
+      <div class="ans"><span class="lab">Answer</span>4.0%</div>
+    </div>
+    <p class="fix"><b>Corrected reticulocytes = reticulocyte % × (patient hematocrit ÷ 45).</b><br>= 8 × (22.5 ÷ 45) = 8 × 0.5 = <b>4.0%</b></p>
+    <p class="fix"><b>Your 1.6% is what you get by dividing by 45 instead of by the ratio</b>, or by correcting twice. It would also wrongly reclassify this brisk hemolysis as a production failure — which is the entire point of the calculation.</p>
+    <p class="fix"><b>Why correct at all:</b> the raw percentage is a fraction, and in anemia the denominator has shrunk, so it always overstates output. <b>Above 2–3% corrected = the marrow is responding</b>, so the anemia is destruction or loss, not underproduction. Everything else agrees: lactate dehydrogenase up, haptoglobin undetectable, indirect bilirubin up, jaundice, big spleen.</p>
+    <div class="hook">Multiply by the ratio, not divide by 45. Hematocrit 22.5 is exactly half of 45, so the count halves.</div>
+    <figure>
+      <img loading="lazy" src="assets/final-exam-fig_retics-a9c806d06c.jpg" alt="Reticulocyte stain showing residual RNA in young red cells">
+      <figcaption>Reticulocytes — young cells still carrying ribosomal RNA. They are larger than mature cells, which matters for the next card.</figcaption>
+    </figure>
+  </div>
+
+  <div class="card">
+    <h3>Hemoglobin concentration per cell of 37.8%<button class="tick" aria-label="mark reviewed">✓</button></h3>
+    <div class="ab">
+      <div class="pick"><span class="lab">You picked</span>Reticulocytosis raising the average hemoglobin content</div>
+      <div class="ans"><span class="lab">Answer</span>Cells with reduced surface area relative to volume — spherocytes</div>
+    </div>
+    <p class="fix"><b>This index asks how densely packed the hemoglobin is.</b> A cell cannot manufacture extra hemoglobin beyond its ceiling, so a high value almost always means the <b>denominator shrank</b>: the cell lost membrane and surface area while keeping its contents, and rounded up into a sphere.</p>
+    <p class="fix"><b>Your answer runs backwards.</b> Reticulocytes are <b>larger</b> and carry proportionally <b>less</b> hemoglobin per unit volume — they raise average cell size and <b>lower</b> this ratio. Wrong direction, same as the marrow cellularity miss.</p>
+    <p class="fix"><b>Carry the rule:</b> a concentration above 36–37% means <b>spherocytes, or an artifact</b> — and the artifacts are cold agglutinins and fatty plasma, both of which this item excluded first. Here: hereditary spherocytosis or immune hemolysis.</p>
+    <div class="hook">It's the one genuinely useful red-flag index on the panel. High = sphere or artifact, nothing else.</div>
+    <figure>
+      <img loading="lazy" src="assets/final-exam-fig_spherocytes_uw-18c7255318.jpg" alt="Spherocytes on a peripheral blood smear, dense round cells without central pallor">
+      <figcaption>Spherocytes: dense, round, no central pale area. Less membrane, same hemoglobin.</figcaption>
+    </figure>
+  </div>
+
+  <div class="card">
+    <h3>Proving destruction happened inside the vessel, not in the spleen<button class="tick" aria-label="mark reviewed">✓</button></h3>
+    <div class="ab">
+      <div class="pick"><span class="lab">You picked</span>Increased unconjugated bilirubin</div>
+      <div class="ans"><span class="lab">Answer</span>Urinary hemosiderin on Prussian blue staining</div>
+    </div>
+    <p class="fix"><b>Four of the five options are shared and therefore localize nothing.</b> Your pick only says heme is being broken down faster than the liver conjugates it — splenic macrophages do that just as efficiently as a bursting vessel.</p>
+    <div class="tw"><table>
+      <tr><th>Shared — useless for location</th><th>Inside the vessel only</th><th>In the spleen only</th></tr>
+      <tr>
+        <td>High reticulocytes<br>High lactate dehydrogenase<br>High unconjugated bilirubin</td>
+        <td>Hemoglobin free in plasma (pink plasma)<br>Hemoglobin in urine<br>Haptoglobin <b>absent</b>, not merely low<br><b>Urine hemosiderin</b></td>
+        <td>Spherocytes<br>Splenomegaly</td>
+      </tr>
+    </table></div>
+    <p class="fix"><b>Why hemosiderin can only mean one thing:</b> free hemoglobin in plasma is filtered → reabsorbed by proximal tubule cells → stored there as hemosiderin → those cells slough into the urine days later. It also <b>outlasts</b> the acute episode, after the plasma has cleared.</p>
+    <div class="hook">Only free plasma hemoglobin ever reaches the kidney. Iron in shed tubular cells means it was loose in the bloodstream.</div>
+    <figure>
+      <img loading="lazy" src="assets/final-exam-fig_aiha-c1fd60b4a6.jpg" alt="Autoimmune hemolytic anemia blood smear with spherocytes and polychromasia">
+      <figcaption>Immune hemolysis: spherocytes plus polychromasia — both <i>extravascular</i> markers, which is why neither answers this question.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============ INFECTION ============ -->
+<section id="infx">
+  <div class="sec-head"><h2>Infection</h2><span class="count">1 miss</span></div>
+
+  <div class="card">
+    <h3>Why malaria from Afghanistan also needs liver-directed therapy<button class="tick" aria-label="mark reviewed">✓</button></h3>
+    <div class="ab">
+      <div class="pick"><span class="lab">You picked</span>Hepatic schizonts resist blood-stage drugs</div>
+      <div class="ans"><span class="lab">Answer</span>Dormant hepatic hypnozoites cause later relapse</div>
+    </div>
+    <p class="fix"><b>Schizonts are the awake liver stage and every species has them</b> — including falciparum, which never relapses. Only <b>vivax and ovale</b> make the <b>dormant</b> form, the hypnozoite, which can reactivate weeks to months later. Clearing the smear leaves that reservoir behind.</p>
+    <p class="fix"><b>Species identification changes management</b>, which is why the rapid test is read as <b>bands</b>: here the vivax/malariae/ovale band was positive and the falciparum band negative. Vivax is also the milder, commoner one in Afghanistan.</p>
+    <p class="fix"><b>Parasite load is reported as a percentage</b> for a reason — it grades severity and tracks response. His is 1.8%. <b>Falciparum</b> can exceed 10% (severe cases 15–20%) because it infects red cells <b>of all ages</b>; vivax prefers young cells, which caps it. Falciparum is the one that causes cerebral malaria and death.</p>
+    <div class="hook">viv<b>O</b>x and <b>O</b>vale make hypn<b>O</b>zoites. The trigger to order a smear at all: <b>fever + travel + low platelets</b> — his count of 47,000 was the number shouting.</div>
+    <figure>
+      <img loading="lazy" src="assets/final-exam-fig_pvivax_smear-db88aa225a.jpg" alt="Giemsa stained blood smear showing Plasmodium vivax inside enlarged red cells">
+      <figcaption><i>Plasmodium vivax</i> — note the parasite progressively filling and consuming the cell.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============ LYMPHATICS ============ -->
+<section id="lymph">
+  <div class="sec-head"><h2>Lymphatics &amp; Thrombosis</h2><span class="count">1 miss</span></div>
+
+  <div class="card">
+    <h3>Why lymphatic blockage swells worse than venous blockage<button class="tick" aria-label="mark reviewed">✓</button></h3>
+    <div class="ab">
+      <div class="pick"><span class="lab">You picked</span>It raises capillary hydrostatic pressure more steeply</div>
+      <div class="ans"><span class="lab">Answer</span>Trapped proteins hold water osmotically</div>
+    </div>
+    <p class="fix"><b>You named the venous mechanism</b> — the exact one the question asked you to contrast against.</p>
+    <p class="fix"><b>Venous blockage:</b> raises the pressure pushing fluid out. The protein-clearing route is still open, so you get a <b>low-protein</b> fluid that pits and responds to elevation.</p>
+    <p class="fix"><b>Lymphatic blockage:</b> lymphatic walls are <b>more permeable</b> than blood capillaries, so they are the <b>only</b> route large proteins have back. Remove it and protein piles up in the tissue, raises the tissue's own osmotic pull, and drags water after it. Over time the retained protein drives collagen deposition — which is why chronic lymphedema turns <b>firm, fibrotic and stops pitting</b>.</p>
+    <p class="fix"><b>Two consequences from the same anatomy:</b> the vessels are tiny (the thoracic duct is 2–3 mm; peripheral lymphatics the width of pencil lead), so there is no good surgical repair. And nodes enlarge because the bacteria, allergens and tumour cells collected there drive lymphocyte proliferation.</p>
+    <div class="hook">Veins push water out. Lymphatics fail to pull protein back — and protein drags water with it, then turns to scar.</div>
+    <figure>
+      <img loading="lazy" src="assets/final-exam-fig_lymph_capillary-597812f757.jpg" alt="Diagram of a lymphatic capillary alongside a blood capillary bed">
+      <figcaption>The lymphatic capillary is the leaky one — that permeability is the whole point, and losing it is the whole problem.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============ PEDIATRICS ============ -->
+<section id="peds">
+  <div class="sec-head"><h2>Pediatrics, Spleen &amp; Prescribing</h2><span class="count">2 misses</span></div>
+
+  <div class="card">
+    <h3>Leukemia versus aplastic anemia in a 4-year-old<button class="tick" aria-label="mark reviewed">✓</button></h3>
+    <div class="ab">
+      <div class="pick"><span class="lab">You picked</span>Mild generalized lymphadenopathy</div>
+      <div class="ans"><span class="lab">Answer</span>A hypercellular marrow packed with immature cells</div>
+    </div>
+    <p class="fix"><b>Both diseases give mild generalized lymphadenopathy</b>, so it discriminates nothing. It's the accompanying <b>splenomegaly</b> that separates them clinically — and the marrow that settles it.</p>
+    <div class="tw"><table>
+      <tr><th></th><th>Aplastic anemia</th><th>Leukemia</th></tr>
+      <tr><td><b>How the child looks</b></td><td><b>Well</b></td><td><b>Sick</b></td></tr>
+      <tr><td><b>Exam</b></td><td>Mild nodes, <b>no</b> organomegaly</td><td>Nodes <b>with</b> splenomegaly; bone pain</td></tr>
+      <tr><td><b>Marrow</b></td><td><b>Acellular</b>, fat replaced it</td><td><b>Packed</b> with blasts</td></tr>
+      <tr><td><b>Clotting studies</b></td><td>Normal</td><td>May be deranged</td></tr>
+      <tr><td><b>Treatment</b></td><td>Marrow transplant from matched sibling</td><td>Risk-stratified chemotherapy</td></tr>
+    </table></div>
+    <p class="fix"><b>The trap in the numbers:</b> his white count was <b>low</b> (2,900). Leukemia does <b>not</b> require a high white count — the marrow is packed with blasts that aren't being released or aren't counted as normal white cells, and the mature cells that should be there are gone.</p>
+    <p class="fix"><b>Numbers worth carrying:</b> ~80% of childhood acute leukemia is lymphoblastic, ~20% myeloid; within lymphoblastic, ~80% precursor-B and ~20% precursor-T. The night-waking leg pain is marrow expanding under the periosteum — a childhood leukemia sign in its own right.</p>
+    <div class="hook">Ask "how does the child look?" before "which disease?" Well = aplastic. Sick with a big spleen = leukemia.</div>
+    <figure>
+      <img loading="lazy" src="assets/final-exam-fig_all_lymphoblasts-9c2625f1d2.jpg" alt="Peripheral blood smear showing lymphoblasts in acute lymphoblastic leukemia">
+      <figcaption>Lymphoblasts — high nucleus-to-cytoplasm ratio, fine chromatin. Present even when the total white count reads low.</figcaption>
+    </figure>
+  </div>
+
+  <div class="card">
+    <h3>Transfusing a 14 kg child with a hemoglobin of 4.1<button class="tick" aria-label="mark reviewed">✓</button></h3>
+    <div class="ab">
+      <div class="pick"><span class="lab">You picked</span>Withhold transfusion, give oral iron alone</div>
+      <div class="ans"><span class="lab">Answer</span>10–15 cc/kg, aiming for a hemoglobin near <b>7</b></div>
+    </div>
+    <p class="fix"><b>Two numbers:</b> 10–15 cc/kg of red cells raises hemoglobin by about <b>2–3 g/dL</b>, and the target is <b>closer to 7, not normal</b>.</p>
+    <p class="fix"><b>Why deliberately partial:</b> in a slow, chronic anemia the child has had time to compensate — higher cardiac output, a right-shifted oxygen curve, expanded plasma volume. She is <b>alert and playful at 4.1</b> precisely because of that. Correcting a chronically expanded circulation fast risks volume overload and heart failure. Same principle as the restrictive threshold in adults: transfuse for symptoms and risk, not to make a number look normal.</p>
+    <p class="fix"><b>Why iron alone isn't enough:</b> oral iron <i>is</i> the definitive treatment and she should get it — but the first measurable response takes about a <b>week</b>, and 4.1 won't wait. Then: ferrous sulfate, <b>cut the cow's milk</b> (part of the treatment, not an aside), expect reticulocytes in ~1 week and ~1 g/dL every 2–3 weeks, and continue iron <b>3–6 months after</b> the hemoglobin normalizes to refill stores.</p>
+    <div class="hook">Transfuse to safe, not to normal. The marrow does the rest once it has iron.</div>
+  </div>
+</section>
+
+<!-- ============ ANTINEOPLASTIC ============ -->
+<section id="anti">
+  <div class="sec-head"><h2>Antineoplastic Pharmacology</h2><span class="count">2 misses</span></div>
+
+  <div class="card">
+    <h3>Diarrhea 20 minutes into an irinotecan infusion<button class="tick" aria-label="mark reviewed">✓</button></h3>
+    <div class="ab">
+      <div class="pick"><span class="lab">You picked</span>Corticosteroids</div>
+      <div class="ans"><span class="lab">Answer</span>Atropine</div>
+    </div>
+    <p class="fix"><b>Timing splits the two irinotecan diarrheas completely.</b></p>
+    <div class="tw"><table>
+      <tr><th></th><th>Early (cholinergic)</th><th>Late</th></tr>
+      <tr><td><b>When</b></td><td>During or within hours of infusion</td><td><b>Days</b> afterwards</td></tr>
+      <tr><td><b>Mechanism</b></td><td>Irinotecan inhibits acetylcholinesterase</td><td>Direct mucosal injury by the active metabolite</td></tr>
+      <tr><td><b>Other signs</b></td><td>Cramping, <b>sweating, tearing, drooling, slow pulse</b></td><td>Diarrhea alone; <b>potentially fatal</b></td></tr>
+      <tr><td><b>Treatment</b></td><td><b>Atropine</b> (antimuscarinic)</td><td><b>Loperamide</b>, often high dose</td></tr>
+    </table></div>
+    <p class="fix"><b>Corticosteroids</b> treat immune-mediated colitis from a <b>checkpoint inhibitor</b> — which develops over <b>weeks</b> and never comes with tearing, drooling and bradycardia.</p>
+    <p class="fix"><b>Background:</b> irinotecan is a topoisomerase I inhibitor; diarrhea is its <b>dose-limiting</b> toxicity, which is why it sits on the gut arm of Chemo Man. The other gut signature to keep separate: <b>5-fluorouracil / capecitabine</b> give diarrhea <b>plus hand-foot syndrome</b>.</p>
+    <div class="hook">Wet and slow during the infusion = atropine. Dry and days later = loperamide.</div>
+  </div>
+
+  <div class="card">
+    <h3>Abiraterone, then hypokalemia and new hypertension<button class="tick" aria-label="mark reviewed">✓</button></h3>
+    <div class="ab">
+      <div class="pick"><span class="lab">You picked</span>A luteinizing hormone surge; add an anti-androgen</div>
+      <div class="ans"><span class="lab">Answer</span>CYP17 blockade shunts precursors down the mineralocorticoid route; add <b>prednisone</b></div>
+    </div>
+    <p class="fix"><b>Abiraterone is the testosterone <i>depleter</i></b>, not a receptor blocker. It inhibits CYP17, the enzyme needed to build androgens from their precursors — and CYP17 sits in testicular, adrenal <b>and</b> prostate tumour tissue alike, which is why it still works after castration.</p>
+    <p class="fix"><b>The toxicity falls straight out of where the block sits.</b> Adrenal precursors that can no longer go down the androgen road get diverted onto the <b>mineralocorticoid</b> road: low potassium, fluid retention, hypertension — and the metabolic alkalosis that comes with renal potassium wasting. That is his exact panel.</p>
+    <p class="fix"><b>Prednisone is mechanistic, not anti-inflammatory:</b> the steroid suppresses the adrenocorticotropic hormone drive generating the excess precursors. Turn off the drive, turn off the shunt. Abiraterone's other named toxicity is <b>liver injury</b>.</p>
+    <p class="fix"><b>Your pick was tumour flare</b> from a GnRH agonist such as leuprolide — worsening bone pain, obstruction or cord compression. Not electrolytes. The receptor <i>antagonists</i> (flutamide, bicalutamide, nilutamide, enzalutamide, apalutamide) instead give <b>gynecomastia</b>.</p>
+    <div class="hook">Block the androgen road and traffic diverts onto the salt road. Prednisone closes the on-ramp.</div>
+    <figure>
+      <img loading="lazy" src="assets/final-exam-fig_chemo_man-7ec8dd38cb.jpg" alt="Chemo Man mnemonic figure mapping drug toxicities onto body regions">
+      <figcaption>Chemo Man. Irinotecan lives on the gut arm; the hormonal agents hang off the endocrine axis.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============ HEMOSTASIS PHARM ============ -->
+<section id="hemo">
+  <div class="sec-head"><h2>Hemostasis Pharmacology</h2><span class="count ok">no misses — but you asked for this</span></div>
+
+  <div class="card">
+    <h3>Heparins — charge and chain length decide everything<button class="tick" aria-label="mark reviewed">✓</button></h3>
+    <div class="tw"><table>
+      <tr><th>Drug</th><th>Size &amp; charge</th><th>Hits</th><th>Reversal</th><th>Watch</th></tr>
+      <tr>
+        <td><b>Unfractionated heparin</b></td>
+        <td>~15,000 Da<br>Strongly <b>negative</b> (acidic polyanion)</td>
+        <td>Factor Xa <b>and</b> thrombin</td>
+        <td><b>Protamine — full.</b> Protamine is a <b>positively charged base</b>; opposite charges neutralize</td>
+        <td>Highest risk of heparin-induced low platelets; raises potassium (blocks aldosterone); bone loss with long use</td>
+      </tr>
+      <tr>
+        <td><b>Low-molecular-weight heparin</b><br><span style="color:var(--mist)">enoxaparin, dalteparin</span></td>
+        <td>~5,000 Da<br>Same negative charge, <b>shorter chain</b></td>
+        <td>Mostly Xa</td>
+        <td><b>Protamine — partial (~60%)</b></td>
+        <td>Renally cleared — reduce dose if creatinine clearance &lt;30. Lower platelet risk, not zero</td>
+      </tr>
+      <tr>
+        <td><b>Fondaparinux</b></td>
+        <td>~1,500 Da pentasaccharide</td>
+        <td>Xa only</td>
+        <td><b>Nothing works.</b> Protamine is ineffective</td>
+        <td>Doesn't bind platelet factor 4 → <b>can't cause</b> heparin-induced low platelets, so it's used to <b>treat</b> it. Avoid if clearance &lt;30</td>
+      </tr>
+    </table></div>
+    <p class="fix">Only a chain long enough to <b>bridge</b> antithrombin to thrombin affects thrombin at all. That single physical fact explains the whole table — why unfractionated heparin prolongs the clotting time and the low-molecular-weight one barely does, and why protamine's grip runs full → partial → none.</p>
+    <div class="hook">Antithrombin is a hand, heparin is the rope. Long rope reaches thrombin <b>and</b> Xa. Short rope reaches Xa. Shortest rope reaches Xa — and nothing can untie it.</div>
+  </div>
+
+  <div class="card">
+    <h3>Heparin-induced low platelets — a clotting emergency, not a bleeding one<button class="tick" aria-label="mark reviewed">✓</button></h3>
+    <p class="fix">Antibodies form against the <b>heparin–platelet factor 4</b> complex and <b>activate</b> platelets. Platelets fall on <b>days 5–10</b>, by more than <b>50%</b>, and the danger is <b>thrombosis</b>.</p>
+    <p class="fix"><b>Management:</b> stop <b>all</b> heparin → start argatroban, bivalirudin or fondaparinux. <b>Never start warfarin alone</b> — protein C falls first and you get limb gangrene.</p>
+    <div class="hook">The platelet count drops and the patient <b>clots</b>. Every intuition here is backwards.</div>
+  </div>
+
+  <div class="card">
+    <h3>Warfarin — the interaction list<button class="tick" aria-label="mark reviewed">✓</button></h3>
+    <p class="fix"><b>Charge/chemistry:</b> not a charge drug — heavily protein-bound, cleared by CYP2C9, target is vitamin K epoxide reductase. Blocks factors <b>2, 7, 9, 10</b> plus proteins C and S. Mnemonic: <b>"1972."</b></p>
+    <div class="tw"><table>
+      <tr><th>Direction</th><th>Agents</th><th>Mechanism</th></tr>
+      <tr><td class="up">↑ INR — bleeding</td><td>Amiodarone, metronidazole, <b>trimethoprim-sulfamethoxazole</b>, fluconazole, ciprofloxacin, fluvoxamine</td><td>CYP2C9 inhibition → less warfarin cleared</td></tr>
+      <tr><td class="up">↑ INR — bleeding</td><td><b>Acute</b> alcohol binge; any gut-flora-killing antibiotic</td><td>Acute enzyme inhibition; loss of bacterial vitamin K</td></tr>
+      <tr><td class="dn">↓ INR — clotting</td><td>Rifampin, carbamazepine, phenytoin, St John's wort, <b>chronic</b> alcohol</td><td>Enzyme induction → cleared faster</td></tr>
+      <tr><td class="dn">↓ INR — clotting</td><td>Leafy greens</td><td>Vitamin K outcompetes warfarin at the target</td></tr>
+      <tr><td>Either, at any INR</td><td>Aspirin and other antiplatelets</td><td>Pharmacodynamic — more bleeding without moving the number</td></tr>
+      <tr><td>Dose varies hugely</td><td><b>CYP2C9</b> and <b>VKORC1</b> variants</td><td>Metabolism speed and target sensitivity — why you titrate to INR, not weight</td></tr>
+    </table></div>
+    <p class="fix"><b>Trimethoprim-sulfamethoxazole is the highest-risk one</b> because it does both at once: inhibits CYP2C9 <b>and</b> kills the gut flora that make vitamin K.</p>
+    <p class="fix"><b>Reversal: vitamin K + 4-factor prothrombin complex concentrate — give both.</b> The concentrate corrects the INR <b>now</b>; vitamin K restores the patient's own factor production so the INR doesn't rebound as the concentrate clears. Plasma only if the concentrate isn't available.</p>
+    <p class="fix"><b>Onset trap:</b> factor 7 has the shortest half-life, so the INR moves <b>before</b> the patient is actually anticoagulated → bridge for <b>at least 5 days</b>. Teratogenic. Counselling point: keep greens <b>consistent</b>, don't avoid them.</p>
+    <div class="hook">Anything that inhibits the enzyme <b>raises</b> the INR; anything that induces it <b>drops</b> it. Alcohol does both — binge raises, chronic lowers.</div>
+    <figure>
+      <img loading="lazy" src="assets/final-exam-fig_slide_vitk-a97b29f61a.jpg" alt="Vitamin K cycle diagram showing warfarin blocking epoxide reductase">
+      <figcaption>The vitamin K cycle. Warfarin blocks the recycling step, so the liver runs out of the reduced form it needs to finish the factors.</figcaption>
+    </figure>
+  </div>
+
+  <div class="card">
+    <h3>Direct oral anticoagulants — interactions and reversal<button class="tick" aria-label="mark reviewed">✓</button></h3>
+    <div class="tw"><table>
+      <tr><th>Drug</th><th>Target</th><th>Interactions &amp; cautions</th><th>Reversal</th></tr>
+      <tr><td><b>Dabigatran</b></td><td>Thrombin, directly</td><td>Renally cleared; dyspepsia; P-glycoprotein substrate; <b>must stay in its original bottle</b> — moisture-sensitive</td><td><b>Idarucizumab</b> — an antibody fragment binding it with ~350× thrombin's affinity; works in minutes. Dialysis clears ~57% over 4 h</td></tr>
+      <tr><td><b>Apixaban<br>Rivaroxaban<br>Edoxaban</b></td><td>Factor Xa, directly</td><td>All three are <b>P-glycoprotein substrates</b> and CYP3A4-dependent. <b>A</b>pixaban safest all round · <b>R</b>ivaroxaban needs a meal · <b>E</b>doxaban avoid if clearance &gt;95</td><td><b>4-factor prothrombin complex concentrate.</b> Andexanet alfa was the specific agent but was withdrawn in 2026</td></tr>
+      <tr><td><b>Argatroban<br>Bivalirudin</b></td><td>Thrombin, directly (given by vein)</td><td>The drugs for heparin-induced low platelets; bivalirudin is the catheterization-lab one</td><td><b>None exists</b> — supportive care, short half-lives</td></tr>
+    </table></div>
+    <div class="hook">Choosing: <b>pregnancy</b> → a heparin. <b>Severe kidney failure</b> → unfractionated heparin. <b>May need to stop fast</b> → unfractionated heparin (short half-life plus a full antidote).</div>
+    <figure>
+      <img loading="lazy" src="assets/final-exam-fig_slide_xaban_reversal-70f7c9eed7.jpg" alt="Slide on reversal of direct oral factor Xa inhibitors">
+      <figcaption>The reversal bench for the factor Xa inhibitors.</figcaption>
+    </figure>
+  </div>
+
+  <div class="card">
+    <h3>Antiplatelets and clot-busters<button class="tick" aria-label="mark reviewed">✓</button></h3>
+    <div class="tw"><table>
+      <tr><th>Drug</th><th>Mechanism</th><th>Interactions &amp; cautions</th><th>Reversal</th></tr>
+      <tr><td><b>Aspirin</b></td><td>Irreversibly acetylates cyclooxygenase-1 for the platelet's <b>7–10 day life</b></td><td>Additive bleeding with everything below</td><td>None — platelet transfusion if bleeding</td></tr>
+      <tr><td><b>Clopidogrel</b></td><td>Irreversible ADP-receptor block</td><td><b>A prodrug needing CYP2C19.</b> Poor metabolizers get little benefit, and <b>omeprazole blunts it</b> — use pantoprazole if a proton pump inhibitor is needed</td><td>None</td></tr>
+      <tr><td><b>Prasugrel</b></td><td>Irreversible</td><td>More potent, more bleeding. <b>Contraindicated after stroke or transient ischemic attack</b>; avoid if age ≥75 or weight &lt;60 kg</td><td>None</td></tr>
+      <tr><td><b>Ticagrelor</b></td><td>Reversible</td><td>Not a prodrug, so no CYP2C19 issue. Causes <b>dyspnea</b> and slow rhythms. Maintenance aspirin must stay <b>≤100 mg/day</b> or it loses effect</td><td>None</td></tr>
+      <tr><td><b>Cangrelor</b></td><td>Reversible, intravenous</td><td>On and off in minutes — the bridge during stenting in a patient who can't swallow</td><td>Stop the drip</td></tr>
+      <tr><td><b>Vorapaxar</b></td><td>Blocks the thrombin receptor on platelets</td><td><b>Intracranial bleeding risk defines this drug</b>; very long-acting</td><td>None practical</td></tr>
+      <tr><td><b>Dipyridamole<br>Cilostazol</b></td><td>Raise cyclic AMP inside the platelet</td><td>Both vasodilate → <b>headache and flushing</b>. Cilostazol carries a boxed warning: <b>contraindicated in heart failure</b></td><td>—</td></tr>
+      <tr><td><b>Thrombolytics</b><br><span style="color:var(--mist)">the "-plase" drugs</span></td><td>Convert plasminogen to plasmin, which eats the fibrin mesh</td><td>These <b>destroy</b> an existing clot rather than prevent one</td><td><b>Cryoprecipitate</b> to replace fibrinogen <b>+ tranexamic or aminocaproic acid</b> to block plasmin</td></tr>
+    </table></div>
+    <div class="hook"><b>White clot vs red clot.</b> Arterial clots are platelet-rich and white (high shear, ruptured plaque) → <b>antiplatelet</b>. Venous clots are fibrin-and-red-cell rich (stasis) → <b>anticoagulant</b>. White = Wall of the artery. Red = Resting vein.</div>
+    <div class="hook"><b>CLO</b>pidogrel needs a <b>CLO</b>ck (prodrug, needs an enzyme) · <b>PRA</b>sugrel is <b>PRO</b>hibited after stroke · <b>TI</b>cagrelor makes you <b>TI</b>red of breathing · <b>CAN</b>grelor <b>CAN</b> be switched off in minutes.</div>
+  </div>
+</section>
+
+<!-- ============ ANEMIA PHARM ============ -->
+<section id="anemiarx">
+  <div class="sec-head"><h2>Anemia Pharmacology</h2><span class="count ok">no misses — but you asked for this</span></div>
+
+  <div class="card">
+    <h3>Iron — absorption, interactions, antidotes<button class="tick" aria-label="mark reviewed">✓</button></h3>
+    <p class="fix"><b>Charge/chemistry:</b> iron is absorbed as the <b>ferrous</b> (Fe²⁺) form and needs an acid stomach to stay that way. Every major interaction is a charge interaction — something binds the metal ion and neither drug gets absorbed.</p>
+    <div class="tw"><table>
+      <tr><th>Situation</th><th>What to know</th></tr>
+      <tr><td><b>Blunts oral iron</b></td><td>Proton pump inhibitors and antacids (less acid), calcium, tea and coffee</td></tr>
+      <tr><td><b>Mutual chelation</b></td><td><b>Tetracyclines and fluoroquinolones</b> — iron binds the antibiotic and neither is absorbed. Separate the doses</td></tr>
+      <tr><td><b>Acute overdose</b></td><td>Almost always a child swallowing adult tablets; among the leading causes of poisoning death in young children. <b>Antidote: deferoxamine</b>, given parenterally — chelates free iron and is excreted in urine, classically turning it a reddish "vin rosé". Plus supportive care and whole-bowel irrigation in massive ingestion</td></tr>
+      <tr><td><b>Chronic overload</b></td><td>The price of lifelong transfusion (thalassemia major, transfused sickle cell). <b>There is no physiologic route to excrete iron</b> — it piles into heart, liver and endocrine organs. Remove with <b>deferasirox</b> or <b>deferiprone</b> (oral) or deferoxamine</td></tr>
+    </table></div>
+    <div class="hook">Every iron chelator contains <b>"fe"</b> — de<b>fe</b>roxamine, de<b>fe</b>rasirox, de<b>fe</b>riprone.</div>
+  </div>
+
+  <div class="card">
+    <h3>Vitamin B12 and folate<button class="tick" aria-label="mark reviewed">✓</button></h3>
+    <p class="fix"><b>Vitamin B12:</b> in pernicious anemia give a route that doesn't need intrinsic factor — intramuscular, or high-dose oral riding the ~1% passive leak (see the Anemia I card). <b>Metformin and proton pump inhibitors both pinch B12</b> — metformin at the ileum, acid blockers by failing to release it from food.</p>
+    <p class="fix"><b>Folate vs folinic acid — the rescue rule.</b> Methotrexate blocks dihydrofolate reductase. Giving plain <b>folic acid</b> is useless, because the enzyme that would activate it is exactly the one methotrexate broke. Give <b>folinic acid (leucovorin)</b> — it is already past the block and converts straight to active folate. You are not reversing methotrexate; you are handing the cell a folate it can still use.</p>
+    <div class="hook"><b>"FoliNic is fiNished"</b> — N for <b>No enzyme needed</b>. And "<b>MetForMin</b> and the <b>PPI Pinch</b> B12."</div>
+  </div>
+
+  <div class="card">
+    <h3>Erythropoiesis-stimulating agents and the newer oral class<button class="tick" aria-label="mark reviewed">✓</button></h3>
+    <p class="fix"><b>The ceiling is 11.</b> Every boxed warning for these agents turns on above a hemoglobin of <b>11 g/dL</b> — harm with no benefit. Also cut the dose if hemoglobin rises more than <b>1 g/dL in 2 weeks</b>. Adverse effects: hypertension, clots, and tumour progression.</p>
+    <p class="fix"><b>Vadadustat</b> (a hypoxia-inducible factor prolyl hydroxylase inhibitor): normally these hydroxylases tag the hypoxia factor for destruction whenever oxygen is plentiful. Block them and the factor accumulates, switching on the erythropoietin gene — it <b>convinces the cell it is at altitude</b>. Oral, for kidney-disease anemia on dialysis ≥3 months; the oral route is the entire selling point. Side effects are exactly what altitude with thick blood gives you: <b>hypertension and clots</b>. (Daprodustat was pulled from the US market in late 2024 for commercial, not safety, reasons.)</p>
+    <p class="fix"><b>Hydroxyurea</b> — an antineoplastic moonlighting as a sickle cell drug, which is its whole side-effect profile in one line. Raises fetal hemoglobin (the threshold to remember: <b>≥20% reduces acute complications</b>), start 15 mg/kg once daily. Two boxed warnings: severe marrow suppression and malignancy.</p>
+    <div class="hook">Eleven is the ceiling. Vadadustat fakes altitude. Hydroxyurea is chemotherapy wearing a different hat.</div>
+  </div>
+</section>
+
+<!-- ============ CLEAN ============ -->
+<div class="clean">
+  <h3>Sections you swept — don't spend tonight here</h3>
+  <p>Transfusion Medicine · Benign White Cell Disorders · Coagulation I (Bleeding) · Coagulation II (Clotting) · Lymph Node Pathology · Hematologic Malignancy · Trauma, Edema &amp; Metastasis · Geriatrics</p>
+  <p style="margin-top:9px"><b>You flagged these but got them right</b> — a glance, not a re-study: posterior iliac crest for marrow biopsy · pernicious anemia → gastric cancer surveillance · leucovorin for methotrexate mouth sores · what the analyzer measures vs calculates · echinocytes in uremia · electrophoresis for lifelong mild anemia · cumulative anthracycline dose before more doxorubicin · lenalidomide plus dexamethasone → venous clots · anal canal below the dentate line drains to <b>superficial inguinal</b> nodes.</p>
+</div>
+
+<!-- ============ GLOSSARY ============ -->
+<section id="gloss">
+  <div class="sec-head"><h2>Glossary</h2><span class="count ok">short forms used above</span></div>
+  <div class="gloss">
+    <dl>
+      <dt>Corrected reticulocyte count</dt><dd>Reticulocyte % × (patient hematocrit ÷ 45). Above 2–3% = marrow responding.</dd>
+      <dt>Red cell distribution width</dt><dd>The <b>spread</b> of red cell sizes — the standard deviation of volume divided by the average volume. Widens when two populations coexist.</dd>
+      <dt>Mean corpuscular volume</dt><dd>Average red cell <b>size</b>.</dd>
+      <dt>Mean corpuscular hemoglobin concentration</dt><dd>How <b>densely packed</b> the hemoglobin is inside the average cell. Above 36–37% = spherocytes or artifact.</dd>
+      <dt>Total iron-binding capacity</dt><dd>How many transferrin "cups" are available. Transferrin is a <b>negative</b> acute phase reactant, so inflammation lowers it.</dd>
+      <dt>Ferritin</dt><dd>Stored iron — and also an acute phase reactant, which is why inflammation raises it even when iron is unavailable.</dd>
+      <dt>Hepcidin / ferroportin</dt><dd>Hepcidin is the liver hormone that destroys ferroportin, the only exit iron has from a gut cell or macrophage.</dd>
+      <dt>Prothrombin time / INR</dt><dd>Tests the tissue-factor arm plus the shared trunk; most sensitive to factor 7. The INR is the standardized version used to dose warfarin.</dd>
+      <dt>Activated partial thromboplastin time</dt><dd>Tests the arm starting on a negatively charged surface (factors 12, 11, 9, 8) plus the shared trunk.</dd>
+      <dt>CYP2C9 / CYP3A4 / CYP2C19</dt><dd>Liver enzymes. 2C9 clears warfarin · 3A4 handles the factor Xa inhibitors · 2C19 <b>activates</b> clopidogrel.</dd>
+      <dt>VKORC1</dt><dd>Vitamin K epoxide reductase — warfarin's actual target. Genetic variants change the dose needed.</dd>
+      <dt>P-glycoprotein</dt><dd>A drug-efflux pump. All three factor Xa inhibitors are substrates, so inhibitors of it raise their levels.</dd>
+      <dt>4-factor prothrombin complex concentrate</dt><dd>A concentrate of clotting factors 2, 7, 9 and 10 — the fast half of warfarin and factor Xa inhibitor reversal.</dd>
+      <dt>Platelet factor 4</dt><dd>The platelet protein heparin binds to form the antigen in heparin-induced low platelets.</dd>
+      <dt>Hypnozoite vs schizont</dt><dd>Hypnozoite = the <b>dormant</b> liver form, only in vivax and ovale, causes relapse. Schizont = the <b>active</b> dividing form, present in every species.</dd>
+      <dt>CXCR4 / CXCL12</dt><dd>The receptor–ligand pair tethering stem cells to the marrow niche. Plerixafor blocks the receptor to release them.</dd>
+    </dl>
+  </div>
+</section>
+
+<footer>23 misses · 8 weak sections · built from your quiz exports of 17 and 20 September 2026</footer>
+
+</div>
+
+<script>
+(function(){
+  var KEY='heme-miss-review-done';
+  var done={};
+  try{ done=JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){ done={}; }
+  document.querySelectorAll('.card').forEach(function(card,i){
+    var id='c'+i;
+    if(done[id]) card.classList.add('done');
+    var btn=card.querySelector('.tick');
+    if(!btn) return;
+    btn.addEventListener('click',function(){
+      card.classList.toggle('done');
+      done[id]=card.classList.contains('done');
+      try{ localStorage.setItem(KEY,JSON.stringify(done)); }catch(e){}
+    });
+  });
+})();
+</script>
+</body>
+</html>
