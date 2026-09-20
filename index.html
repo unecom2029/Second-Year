@@ -2841,9 +2841,9 @@ OMK:{
       {title:"Hematology/Heme Summative Exam 3",icon:"🧪",group:"summative-exam",typeLabel:"Summative",links:[
         {label:"Hematology Key Drug List",href:"OMK/Heme/Hematology_Key_Drug_List_2026_Study_System.html",style:"open"},
         {label:"Objective Review",href:"OMK/Heme/summative/OMK_2A_Heme_Summative_3_Objective_Review.html",style:"open",allowedUsers:["jmehta@une.edu"],privateUntil:"2026-09-16T20:30:00-04:00"},
-        {label:"Drill, Drill, Drill",icon:"🎯",note:"A massive question bank built to hammer home every detail in the study guide. LO selector coming soon.",href:"OMK/Heme/summative/Quiz/Jeevs edition _ summative review.html",style:"dl",allowedUsers:["jmehta@une.edu"]},
-        {label:"Drill, Drill, Drill — Old",href:"OMK/Heme/summative/Quiz/Jeevs edition old.html",style:"dl",allowedUsers:["jmehta@une.edu"]},
-        {label:"Concept Overview",icon:"🧠",note:"UWorld-style questions built from the study guide to reinforce core concepts and clinical reasoning.",href:"OMK/Heme/summative/Quiz/OMK_2A_Heme_Summative_3_Question_Bank.html",style:"dl",allowedUsers:["jmehta@une.edu"]},
+        {label:"Drill, Drill, Drill",icon:"🎯",note:"A massive question bank built to hammer home every detail in the study guide. LO selector coming soon.",href:"OMK/Heme/summative/Jeevs edition _ summative review.html",userHrefs:{"jmehta@une.edu":"OMK/Heme/summative/Quiz/Jeevs edition _ summative review.html"},style:"dl",allowedUsers:["jmehta@une.edu"]},
+        {label:"Drill, Drill, Drill — Old",href:"OMK/Heme/summative/Jeevs edition old.html",userHrefs:{"jmehta@une.edu":"OMK/Heme/summative/Quiz/Jeevs edition old.html"},style:"dl",allowedUsers:["jmehta@une.edu"]},
+        {label:"Concept Overview",icon:"🧠",note:"UWorld-style questions built from the study guide to reinforce core concepts and clinical reasoning.",href:"OMK/Heme/summative/OMK_2A_Heme_Summative_3_Question_Bank.html",userHrefs:{"jmehta@une.edu":"OMK/Heme/summative/Quiz/OMK_2A_Heme_Summative_3_Question_Bank.html"},style:"dl"},
         {label:"Final Review",href:"OMK/Heme/summative/Hardest exam/Jeevs Edition - Hardest Exam.html",style:"open",allowedUsers:["jmehta@une.edu"]},
         {label:"Haad Edition — Final Exam",href:"OMK/Heme/summative/Final exam/Final exam (Haad edition).html",style:"open",allowedUsers:["hnaeem@une.edu","naeemh@une.edu"],availableAfter:"2026-09-16T20:30:00-04:00"}
       ]}
@@ -3311,6 +3311,18 @@ function getResourceGroupMeta(groupKey){
 function getLinkTone(link){
   return link&&link.style==='open'?'primary':'secondary';
 }
+function getLinkHref(link){
+  var fallback=(link&&link.href)||'';
+  var email=AUTH_STATE&&AUTH_STATE.user?normEmail(AUTH_STATE.user.email):'';
+  if(!email||!link||!link.userHrefs)return fallback;
+  var matched='';
+  Object.keys(link.userHrefs).some(function(allowedEmail){
+    if(normEmail(allowedEmail)!==email)return false;
+    matched=link.userHrefs[allowedEmail]||'';
+    return true;
+  });
+  return matched||fallback;
+}
 function getLinkIcon(link){
   if(link&&link.icon)return link.icon;
   var label=((link&&link.label)||'').toLowerCase();
@@ -3337,7 +3349,7 @@ function renderHeroLinks(links){
   if(!visible.length)return '';
   var h='<div class="system-hero-actions">';
   visible.forEach(function(link){
-    h+='<a class="resource-btn '+getLinkTone(link)+'" href="'+link.href+'" target="_blank"><span>'+getLinkIcon(link)+'</span><span>'+link.label+'</span></a>';
+    h+='<a class="resource-btn '+getLinkTone(link)+'" href="'+getLinkHref(link)+'" target="_blank"><span>'+getLinkIcon(link)+'</span><span>'+link.label+'</span></a>';
   });
   return h+'</div>';
 }
@@ -3389,7 +3401,7 @@ groupOrder.forEach(function(groupKey){
     var links=getVisibleLinks(item.links);
     var btns='';
     links.forEach(function(link){
-      btns+='<a class="resource-btn '+getLinkTone(link)+(link.note?' has-note':'')+'" href="'+link.href+'" target="_blank"><span class="resource-btn-icon">'+getLinkIcon(link)+'</span><span class="resource-btn-copy"><span class="resource-btn-label">'+link.label+'</span>'+(link.note?'<span class="resource-btn-note">'+link.note+'</span>':'')+'</span></a>';
+      btns+='<a class="resource-btn '+getLinkTone(link)+(link.note?' has-note':'')+'" href="'+getLinkHref(link)+'" target="_blank"><span class="resource-btn-icon">'+getLinkIcon(link)+'</span><span class="resource-btn-copy"><span class="resource-btn-label">'+link.label+'</span>'+(link.note?'<span class="resource-btn-note">'+link.note+'</span>':'')+'</span></a>';
     });
     h+='<article class="resource-card"><div class="resource-card-top"><span class="resource-icon">'+(item.icon||'📘')+'</span><div><div class="resource-eyebrow">'+getResourceTypeLabel(item)+'</div><h4 class="resource-title">'+formatResourceTitle(item.title)+'</h4><div class="resource-sub">'+DATA[CC].fullName+'</div></div></div><div class="resource-actions">'+btns+'</div></article>';
   });
