@@ -611,19 +611,19 @@ q(
     "pain. Dorsalis pedis and posterior tibial pulses are palpable and the foot is warm and pink. "
     "Which of the following is the most appropriate next step in management?",
     {
-        "Compression ultrasonography of the leg":
+        "Compression ultrasonography":
             "A deep vein thrombosis is worth considering when swelling that had improved worsens "
             "again DAYS after an injury — not at 6 hours, and it does not produce a wood-hard "
             "compartment with pain on passive stretch.",
-        "Elevation of the limb above the level of the heart":
+        "Elevation of the limb":
             "Elevation above heart level lowers arterial inflow pressure and can worsen compartment "
             "perfusion. The limb is kept at heart level while the operating room is prepared.",
         "Emergency fasciotomy": "",
-        "Measurement of serum creatine kinase":
+        "Serum creatine kinase level":
             "Creatine kinase, myoglobinuria, hyperkalemia and acute kidney injury are the downstream "
             "consequences of muscle necrosis and must be watched for — but waiting on that result "
             "means waiting for the muscle to die.",
-        "Observation with serial neurovascular checks":
+        "Serial neurovascular checks":
             "Serial checks are the answer when the diagnosis is genuinely in doubt. Here two early "
             "reliable signs are already present, and the ischemia is progressing hour by hour.",
     },

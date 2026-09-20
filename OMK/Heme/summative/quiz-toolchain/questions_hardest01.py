@@ -43,11 +43,11 @@ q(
     "which of the following is the principal site of blood cell production?",
     {
         "Liver": "",
-        "Marrow of the axial skeleton":
+        "Axial skeleton marrow":
             "This is the ADULT pattern — vertebrae, ribs, sternum and pelvis — after the marrow of "
             "the long bones converts to fat. It is the reason a marrow biopsy is taken from the "
             "posterior iliac crest, not from a fetus's hematopoietic sites.",
-        "Marrow of the long bones":
+        "Long bone marrow":
             "Bone marrow takes over in the LATE fetus and is the dominant site by birth, and in "
             "childhood the long bones are still red. At 23 weeks the long-bone marrow is only "
             "beginning to populate, as this autopsy shows.",

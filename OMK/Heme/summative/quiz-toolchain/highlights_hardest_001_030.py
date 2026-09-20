@@ -380,8 +380,10 @@ HIGHLIGHTS = {
 20: [
  h("The implicated plasma came from a woman with 4 prior pregnancies", F, "A multiparous donor",
    "Pregnancy exposes a woman to paternal HLA antigens, and repeated pregnancies generate "
-   "anti-HLA antibodies. This is why plasma from multiparous donors is preferentially diverted "
-   "away from transfusion."),
+   "anti-HLA antibodies — 14%–20% of women who have been pregnant carry them. Donor anti-HLA or "
+   "anti-NEUTROPHIL antibodies bind the recipient's neutrophils, which are activated and sequestered "
+   "in the pulmonary capillaries, damaging the endothelium and causing permeability edema. This is "
+   "why blood centres screen female donors and avoid high-plasma-volume products from them."),
  h("Jugular venous pressure is not elevated", P, "The finding that splits the differential",
    "Transfusion-related acute lung injury and circulatory overload both present with dyspnea and "
    "bilateral infiltrates within hours. Overload raises filling pressures; TRALI does not."),

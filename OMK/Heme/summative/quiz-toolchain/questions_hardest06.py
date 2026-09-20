@@ -106,7 +106,7 @@ q(
     "The peripheral smear is shown. Which of the following is the most appropriate next step in "
     "management?",
     {
-        "Bone marrow aspiration with Prussian blue staining":
+        "Marrow aspiration with iron staining":
             "A marrow iron stain is the historical gold standard for iron stores, but his ferritin "
             "and transferrin saturation already establish that iron is not the problem, and this is "
             "an invasive test in a well child.",
@@ -171,19 +171,19 @@ q(
     "g/dL, reasoning that a higher hemoglobin will speed her recovery. Which of the following is the "
     "most appropriate response?",
     {
-        "Transfuse 1 unit now and reassess before giving any further units":
+        "Transfuse 1 unit now and reassess":
             "One unit at a time and then reassess is the correct TECHNIQUE whenever transfusion is "
             "indicated — but at 7.6 g/dL in a stable, asymptomatic, euvolemic patient the indication "
             "itself has not been met.",
-        "Transfuse 2 units to a target hemoglobin above 10 g/dL":
+        "Transfuse 2 units to a hemoglobin above 10 g/dL":
             "This is the liberal strategy tested in the TRICC trial, and the liberal arm did WORSE. "
             "It is also two units given reflexively rather than one and a reassessment.",
-        "Transfuse 2 units because her coronary disease requires a higher threshold":
+        "Transfuse 2 units for her coronary disease":
             "Stable coronary disease does not by itself justify a liberal threshold; she has no "
             "ischemic symptoms. Acute coronary syndrome is the setting where a higher trigger is "
             "debated.",
         "Withhold transfusion and continue to monitor": "",
-        "Withhold transfusion and start an erythropoiesis-stimulating agent":
+        "Withhold transfusion and start epoetin alfa":
             "Erythropoiesis-stimulating agents are approved for anemia of chronic kidney disease and "
             "chemotherapy-induced anemia, take weeks to work, and are never a substitute for "
             "transfusion in acute illness. Her creatinine is normal.",
@@ -617,7 +617,7 @@ q(
     "distributed evenly around the entire circumference of each cell. Which of the following terms "
     "best describes these cells, and what do they indicate?",
     {
-        "Acanthocytes, indicating severe liver disease":
+        "Acanthocytes, indicating liver disease":
             "Acanthocytes (spur cells) have FEW, IRREGULAR, unevenly spaced projections and point to "
             "severe liver disease, abetalipoproteinemia or asplenia. His liver tests and albumin are "
             "normal.",
@@ -627,7 +627,7 @@ q(
         "Dacryocytes, indicating marrow fibrosis":
             "Tear-drop cells have a single pointed end and, with immature white cells and nucleated "
             "red cells, indicate marrow infiltration or myelofibrosis.",
-        "Echinocytes, indicating uremia": "",
+        "Echinocytes, indicating renal failure": "",
         "Schistocytes, indicating microangiopathy":
             "Schistocytes are angular FRAGMENTS with two pointed edges and no central pallor, "
             "produced by mechanical shearing in a microangiopathy or on a prosthetic valve.",
@@ -635,7 +635,7 @@ q(
             "Spherocytes are small, round and dense with no central pallor, from membrane loss in "
             "hereditary spherocytosis or antibody-mediated hemolysis.",
     },
-    "Echinocytes, indicating uremia",
+    "Echinocytes, indicating renal failure",
     "Burr cells versus spur cells — two spiky red cells that are constantly confused, and the "
     "distinction is worth having because one is a finding and the other is often an artefact.\n\n"
     "• ECHINOCYTE (burr cell) — MANY, REGULAR, EVENLY SPACED short spicules around the whole cell. "

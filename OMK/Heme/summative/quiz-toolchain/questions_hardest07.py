@@ -1078,7 +1078,7 @@ q(
             "Echinocandins inhibit beta-glucan synthesis and have some theoretical appeal given "
             "this organism's beta-glucan-rich wall, but caspofungin is not an established "
             "treatment and is certainly not monotherapy for severe disease.",
-        "Deferral of antiretroviral therapy for 3 months":
+        "Deferral of antiretroviral therapy":
             "The opposite is recommended: start antiretroviral therapy within 2 weeks of beginning "
             "treatment. Delaying to avoid immune reconstitution syndrome costs more than it saves.",
         "Inhaled pentamidine every month":

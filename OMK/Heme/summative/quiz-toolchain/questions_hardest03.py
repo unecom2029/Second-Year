@@ -255,7 +255,7 @@ q(
             "Marrow fibrosis produces a leukoerythroblastic smear with tear-drop cells, nucleated red "
             "cells and immature granulocytes, plus massive splenomegaly. His smear and examination "
             "are clean.",
-        "Increased numbers of megakaryocytes": "",
+        "Increased numbers of megakaryocytes in the marrow": "",
         "Markedly hypocellular marrow with fat replacement":
             "Aplastic anemia fails every lineage, giving pancytopenia with a low reticulocyte count. "
             "His hemoglobin and white count are normal.",
@@ -267,7 +267,7 @@ q(
             "sick-appearing child, usually with other cytopenias, organomegaly or bone pain, and "
             "blasts on the smear.",
     },
-    "Increased numbers of megakaryocytes",
+    "Increased numbers of megakaryocytes in the marrow",
     "Acute immune thrombocytopenia (ITP) — post-viral, in a well child, with ISOLATED "
     "thrombocytopenia, normal clotting times and an otherwise normal smear.\n\n"
     "Mechanism: IgG autoantibody against platelet surface glycoprotein IIb/IIIa. The antibody is "
@@ -307,7 +307,7 @@ q(
     "The peripheral smear shows reduced platelets and no Howell-Jolly bodies. Which of the following "
     "best explains this patient's findings?",
     {
-        "Development of antibodies against transfused platelets":
+        "Antibodies against transfused platelets":
             "Platelet alloimmunization causes refractoriness to platelet TRANSFUSION. She has not "
             "been transfused, and it would not explain a 5-month remission followed by relapse.",
         "Functioning accessory splenic tissue": "",
@@ -317,7 +317,7 @@ q(
         "Progression to a thrombotic microangiopathy":
             "A microangiopathy would add schistocytes, hemolytic anemia and organ injury. Her "
             "hemoglobin is normal and her smear is clean.",
-        "Recurrent infection stimulating antibody production":
+        "Infection stimulating antibody production":
             "A viral trigger can precipitate childhood ITP, but she has not been ill, and an "
             "infection would not explain the absent Howell-Jolly bodies.",
     },
@@ -438,7 +438,7 @@ q(
         "Antibodies against platelet glycoprotein IIb/IIIa":
             "This is immune thrombocytopenia, which gives an ISOLATED low platelet count with a "
             "normal hemoglobin and no schistocytes.",
-        "Autoantibody inhibition of ADAMTS13": "",
+        "Autoantibody inhibition of ADAMTS13 activity": "",
         "Complement dysregulation from a factor H defect":
             "Atypical hemolytic uremic syndrome produces the same triad but is kidney-dominant, "
             "often recurrent or familial, and is treated with complement blockade. Her creatinine is "
@@ -451,7 +451,7 @@ q(
             "Disseminated intravascular coagulation also shreds red cells, but it consumes clotting "
             "factors: the PT and aPTT are prolonged and fibrinogen falls. Hers are all normal.",
     },
-    "Autoantibody inhibition of ADAMTS13",
+    "Autoantibody inhibition of ADAMTS13 activity",
     "Thrombotic thrombocytopenic purpura (TTP). The mechanism is a failure to trim von Willebrand "
     "factor:\n\n"
     "Endothelial cells secrete von Willebrand factor as ULTRA-LARGE multimers → ADAMTS13 normally "
@@ -505,22 +505,22 @@ q(
     "ADAMTS13 activity is 68% (N=greater than 50%). Which of the following is the most appropriate "
     "treatment?",
     {
-        "Corticosteroids and intravenous immunoglobulin":
+        "Corticosteroids and immunoglobulin":
             "This is the treatment for immune thrombocytopenia, in which the platelet count is low in "
             "isolation with no hemolysis and no renal failure.",
-        "Eculizumab": "",
+        "Eculizumab therapy": "",
         "Plasma exchange":
             "Plasma exchange is the emergency treatment of TTP, where ADAMTS13 activity is severely "
             "reduced — usually under 10%. Hers is normal, which excludes that diagnosis.",
         "Platelet transfusion":
             "Platelets are consumed in every thrombotic microangiopathy, so transfusing them feeds "
             "ongoing microvascular thrombosis and is reserved for life-threatening bleeding.",
-        "Supportive care with dialysis alone":
+        "Dialysis and supportive care":
             "This is correct management for typical Shiga toxin-associated hemolytic uremic syndrome "
             "after a diarrheal illness. Her stool studies are negative and the disease is recurrent "
             "and familial.",
     },
-    "Eculizumab",
+    "Eculizumab therapy",
     "Atypical hemolytic uremic syndrome (aHUS) — a thrombotic microangiopathy driven by uncontrolled "
     "complement activation.\n\n"
     "Work the recognition algorithm. Schistocytes with thrombocytopenia and a normal PT, aPTT and "
@@ -564,22 +564,22 @@ q(
     "drug is being delivered. Which of the following best explains this patient's response to "
     "therapy?",
     {
-        "Antibodies against heparin-platelet factor 4 complexes":
+        "Antibodies to platelet factor 4 complexes":
             "Heparin-induced thrombocytopenia appears 5–10 days after exposure, drops the platelet "
             "count by more than half and causes new thrombosis — it does not make the aPTT resistant "
             "to escalating doses on day one.",
-        "A lupus anticoagulant interfering with the assay":
+        "A lupus anticoagulant affecting the assay":
             "An antiphospholipid antibody PROLONGS the baseline aPTT rather than keeping it short, "
             "which is why an alternative assay is needed to monitor heparin in those patients.",
         "Resistance of factor V to activated protein C":
             "Factor V Leiden explains a tendency to clot, not a failure to respond to heparin — "
             "heparin acts through antithrombin, entirely downstream of protein C.",
-        "Urinary loss of antithrombin": "",
-        "Rapid hepatic clearance of unfractionated heparin":
+        "Loss of antithrombin in the urine": "",
+        "Rapid hepatic clearance of heparin":
             "Heparin is cleared by a saturable cellular mechanism and then renally, and clearance is "
             "not accelerated in nephrotic syndrome to a degree that produces this picture.",
     },
-    "Urinary loss of antithrombin",
+    "Loss of antithrombin in the urine",
     "Acquired antithrombin deficiency causing heparin resistance.\n\n"
     "The key mechanistic fact is that heparin has essentially NO anticoagulant activity of its own. "
     "It works by binding antithrombin and accelerating it — a slow natural brake becomes a fast one. "

@@ -349,7 +349,7 @@ q(
     "precursors, ring sideroblasts on iron staining, and 8% blasts. Which of the following is the "
     "most likely cause of death in this patient?",
     {
-        "Infection or hemorrhage": "",
+        "Overwhelming infection or hemorrhage": "",
         "Hyperviscosity from a paraprotein":
             "This belongs to lymphoplasmacytic lymphoma, where a pentameric IgM thickens the blood — "
             "not to a dysplastic marrow.",
@@ -365,7 +365,7 @@ q(
             "Chronic myeloid leukemia is a distinct disease defined by t(9;22)/BCR-ABL1 and arises de "
             "novo; myelodysplastic syndrome does not turn into it.",
     },
-    "Infection or hemorrhage",
+    "Overwhelming infection or hemorrhage",
     "Myelodysplastic syndrome — and its defining paradox is that the marrow is cellular, often "
     "HYPERcellular, while the patient is cytopenic. Production is not reduced; it is WASTED, because "
     "the cells being made are structurally abnormal and die before or shortly after release. That is "

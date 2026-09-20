@@ -1980,3 +1980,84 @@ Two authoring traps the validator caught, worth knowing before writing more:
 
 The browser renders 632 `<mark>` elements for 569 highlights; the extra 63 are lab-row phrases that
 legitimately split across the name and value cells, highlighting the row as a unit.
+
+---
+
+## Hardest Exam — batch H8: the tutor list and the CBL cases (questions 141–154)
+
+A previous student's "Tutor High-Yield Review Points" list (22 points) was checked against the
+first 140 questions by searching the stem, keyed answer, explanations and highlights of every item.
+Result: 15 points already tested directly, 5 covered only partially, 2 absent from both the quiz and
+the review file. Batch H8 closes the gaps, using the three CBL cases Jeevs supplied as sources
+(extracted from `~/Downloads/*.docx` with `zipfile` + regex — python-docx is not installed).
+
+| Q | Tutor point | Source |
+|---|---|---|
+| 141 | Wells score (DVT): high probability → skip D-dimer → compression US | Jessica Turner CBL |
+| 142 | Age-adjusted D-dimer (age × 10 ng/mL FEU) | Jessica Turner CBL |
+| 143 | Suspected PE, high probability → CTPA; PERC fails; S1Q3T3 ECG | Jessica Turner CBL |
+| 144 | Hb electrophoresis: sickle trait vs SS / SC / S-β-thal | review `s9-globin` |
+| 145 | Hydroxyurea raises HbF, dilutes the HbS polymer | review `s9-globin` |
+| 146 | HDFN: maternal IgG anti-D, predominantly extravascular | review `s12-immuno` |
+| 147 | CAR T mechanism (BCMA), vs bispecific antibody | review `s40` + Lisa Masterson CBL |
+| 148 | Pembrolizumab = anti-PD-1 (vs PD-L1, CTLA-4) | review `s40-targeted-immuno` |
+| 149 | Oncolytic virus therapy (T-VEC) | **not in review or cases** — tutor definition + standard pharmacology |
+| 150 | Busulfan → pulmonary fibrosis | review `s39-chemo-tox` table |
+| 151 | Richter transformation → DLBCL (TP53/MYC) | review `s36b-lpd` |
+| 152 | Therapy-related APL after etoposide (topo II, 1–3 yr latency) | Amir Islam CBL |
+| 153 | Differentiation syndrome on ATRA → dexamethasone | Amir Islam CBL |
+| 154 | Myeloma: lytic lesions, normal ALP and bone scan, low anion gap | Lisa Masterson CBL |
+
+Also: the TRALI point about donor **anti-neutrophil** antibodies (absent from the review) was added
+to Q20's Key Findings rather than given a new question, since Q20 already tests TRALI.
+
+Figures: `fig_hx_pe_ecg` (JT case ECG, S1Q3T3 — stem), `fig_hx_myeloma_skull` (Lisa case,
+raindrop skull — stem), `fig_hx_cart_diagram` (Lisa case, labelled — explanation only). A DVT
+ultrasound from the JT case was **rejected**: after cropping off its printed title, its arrow still
+pointed at a structure labelled "Femoral Arteries", not the clot, so it would have taught the wrong
+thing.
+
+Length audit caught 6/14 keys as uniquely longest before appending (43%). Shortened five; batch now
+14%, file 10.4%.
+
+**State after H8: 154 questions · 134 figures · 25.5 MB · 83/83 objectives · 52 stem images ·
+634 Key Findings highlights, all verified matching in the browser.** Title "Final 154".
+
+Housekeeping warning: the Hardest Exam folder is shared with other sessions (a "one-pager" feature
+was added on 2026-09-18 by another session). When cleaning backups, delete only the ones this
+session created, by exact filename — a wildcard `*.bak` in this build removed that session's
+`pre-onepager.bak` rollback point (the change itself is intact in the live file).
+
+---
+
+## Answer-length rebalance (all 154 questions)
+
+The file had been audited only for one thing, a keyed answer that is *uniquely longest*. A fuller
+audit found the fix had overshot: the keyed answer was the SHORTEST option in **28.6%** of items
+against a chance rate of ~19%. That is the mirror-image tell and just as easy to exploit. The
+worst cases were option sets that mixed a one-word key with long phrase distractors (Q48
+"Eculizumab", Q153 "Dexamethasone", Q92 "Emergency fasciotomy"), and sets with one bloated
+distractor.
+
+`quiz-toolchain/rebalance_options.py` fixed 16 questions (1, 40, 44, 45, 47, 48, 49, 66, 92, 102,
+103, 111, 139, 143, 152, 153). It trims wordy distractors in preference to padding keys; five keys
+were lengthened slightly without adding any clue. In the built file it re-sorts each edited set and
+remaps `correct` and `wrongExplanations`, so the **first-letters constraint no longer applies**. It
+applies the same substitutions to the source modules, and a check confirmed the modules rebuild
+byte-identically to the patched file.
+
+| Metric | Before | After | Chance |
+|---|---|---|---|
+| Key is longest (incl. ties) | 13.6% | 13.6% | ~19% |
+| Key is uniquely longest | 10.4% | 10.4% | — |
+| Key is shortest (incl. ties) | 28.6% | 25.3% | ~19% |
+| Key is uniquely shortest | — | 20.8% | — |
+| Phrase-set spread (max/min), median | — | 1.34 | — |
+
+The remaining shortest-with-ties excess is mostly ties inside pure term lists (three 9-letter drug
+names, for example), which give nothing away. Term lists with ≤4 words per option are exempt from
+spread balancing: a list of drug or organism names is naturally uneven and not a cue.
+
+**Audit to run after any future batch**: key-shortest rate, key-longest rate, key length-rank
+distribution against chance (1/number of options), and max/min spread for phrase-style option sets.
+Both extremes are tells.

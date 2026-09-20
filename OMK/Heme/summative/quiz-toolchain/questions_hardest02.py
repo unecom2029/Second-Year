@@ -1184,7 +1184,7 @@ q(
     "neutrophils, and serum IgG, IgA and IgM concentrations are normal. The organisms that have "
     "infected this patient share which of the following properties?",
     {
-        "Production of a polysaccharide capsule":
+        "Production of a capsule":
             "Encapsulated organisms — Streptococcus pneumoniae, Neisseria meningitidis, Haemophilus "
             "influenzae type b — overwhelm patients without a functioning SPLEEN or without "
             "antibody. Serratia and Aspergillus are not in that group.",
@@ -1195,7 +1195,7 @@ q(
         "Production of IgA protease":
             "IgA protease helps organisms colonize mucosal surfaces and is made by pneumococcus, "
             "meningococcus and Haemophilus — a different group entirely.",
-        "Survival within resting macrophages":
+        "Survival inside macrophages":
             "Intracellular survival characterizes mycobacteria, Listeria and Salmonella, and those "
             "infections dominate when interferon-gamma signalling or T cells fail — not this pattern "
             "of abscesses and fungal pneumonia.",
