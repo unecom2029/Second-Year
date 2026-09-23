@@ -195,6 +195,18 @@ body,.sb,.auth-card,.mn,.tt,.modal-card,.chip,.qbd,.cd,.r-box,.box,.panel,.auth-
   content:'';position:absolute;inset:0;pointer-events:none;
   background:linear-gradient(120deg, rgba(255,255,255,.18), transparent 40%);
 }
+body[data-theme='cardio'] .system-hero{
+  background:
+    radial-gradient(circle at 88% 12%,rgba(208,52,75,.18),transparent 28%),
+    radial-gradient(circle at 4% 100%,rgba(31,78,121,.12),transparent 32%),
+    linear-gradient(135deg,rgba(255,255,255,.96),rgba(255,242,244,.96));
+  border-color:rgba(150,28,48,.13);box-shadow:0 20px 52px rgba(98,20,35,.11)
+}
+body[data-theme='cardio'] .system-hero::after{
+  background:
+    linear-gradient(90deg,transparent 0 68%,rgba(170,32,54,.055) 68% 68.35%,transparent 68.35% 100%),
+    linear-gradient(120deg,rgba(255,255,255,.22),transparent 42%)
+}
 .system-hero-top{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:18px;position:relative;z-index:1}
 .system-hero-kicker{
   display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;
@@ -2845,6 +2857,7 @@ OMK:{
       {title:"Hematology/Heme Summative Exam 3",icon:"🧪",group:"summative-exam",typeLabel:"Summative",links:[
         {label:"Hematology Key Drug List",href:"OMK/Heme/Hematology_Key_Drug_List_2026_Study_System.html",style:"open"},
         {label:"Objective Review",href:"OMK/Heme/summative/OMK_2A_Heme_Summative_3_Objective_Review.html",style:"open",allowedUsers:["jmehta@une.edu"],privateUntil:"2026-09-16T20:30:00-04:00"},
+        {label:"HY; TLDR",icon:"⚡",href:"OMK/Heme/summative/Heme_Summative_3_HY_Review.html",style:"open"},
         {label:"Drill, Drill, Drill",icon:"🎯",note:"A massive question bank built to hammer home every detail in the study guide. LO selector coming soon.",href:"OMK/Heme/summative/Quiz/Jeevs edition _ summative review.html",style:"dl"},
         {label:"Drill, Drill, Drill — Old",href:"OMK/Heme/summative/Jeevs edition old.html",userHrefs:{"jmehta@une.edu":"OMK/Heme/summative/Quiz/Jeevs edition old.html"},style:"dl",allowedUsers:["jmehta@une.edu"]},
         {label:"Concept Overview",icon:"🧠",note:"UWorld-style questions built from the study guide to reinforce core concepts and clinical reasoning.",href:"OMK/Heme/summative/Quiz/OMK_2A_Heme_Summative_3_Question_Bank.html",style:"dl"},
@@ -2852,7 +2865,12 @@ OMK:{
         {label:"Final Review",href:"OMK/Heme/summative/Hardest exam/Jeevs Edition - Hardest Exam.html",style:"open",allowedUsers:["jmehta@une.edu"]},
         {label:"Haad Edition — Final Exam",href:"OMK/Heme/summative/Final exam/Final exam (Haad edition).html",style:"open",allowedUsers:["hnaeem@une.edu","naeemh@une.edu"],availableAfter:"2026-09-16T20:30:00-04:00"}
       ]}
-    ]}
+    ]},
+    13:{label:"Week 13",weekNum:13,heroLinks:[],items:[]},
+    14:{label:"Week 14",weekNum:14,heroLinks:[],items:[]},
+    15:{label:"Week 15",weekNum:15,heroLinks:[],items:[]},
+    16:{label:"Week 16",weekNum:16,heroLinks:[],items:[]},
+    17:{label:"Week 17",weekNum:17,heroLinks:[],items:[]}
   }
 },
 OCS:{
@@ -3038,7 +3056,8 @@ var SYSTEM_CONFIG={
 OMK:{systems:[
   {key:"neuro",name:"Neurology/Neuroanatomy",icon:"🧠",weeks:[1,2,3,4,5,6]},
   {key:"psych",name:"Psychiatry",icon:"🧠",weeks:[7,8,9,90]},
-  {key:"heme",name:"Hematology/Heme",icon:"🩸",weeks:[10,11,12,91]}
+  {key:"heme",name:"Hematology/Heme",icon:"🩸",weeks:[10,11,12,91]},
+  {key:"cardio",name:"Cardiology",icon:"🫀",tagline:"Cardiovascular physiology, pathology, pharmacology, and clinical reasoning.",weeks:[13,14,15,16,17]}
 ]},
 OCS:{systems:[
   {key:"ocs",name:"Osteopathic Clinical Skills",icon:"🩺",weeks:[1,2,3,4,5,6,7,80,8,10,12,90]},
@@ -3049,7 +3068,7 @@ OCS:{systems:[
 
 /* ═══ ENGINE ═══ */
 var HUB_LAST_VIEW_KEY='une_study_hub_last_view_v1';
-var CC='OMK',CW=10,CV='overview',EW={};
+var CC='OMK',CW=13,CV='overview',EW={};
 var AQ=null,CQ=0,AQS={},NC=0,NI=0;
 var TI=null,TS=0,TR=false;
 var CDminutes=10,CDrem=0,CDrun=false,CDint=null;
@@ -3084,7 +3103,7 @@ var WEEK_EXAMS={};
 function findWeekForPt(i){for(var wk in WEEK_EXAMS){for(var x=0;x<WEEK_EXAMS[wk].length;x++){if(WEEK_EXAMS[wk][x].ptIndex===i)return +wk}}return null}
 
 function getDefaultWeek(category){
-  if(category==='OMK')return 10;
+  if(category==='OMK')return 13;
   var groups=getSystemGroups(category);
   return (groups[0]&&groups[0].weeks&&groups[0].weeks[0])||1;
 }
@@ -3152,7 +3171,7 @@ function restoreLastHubView(){
   if(!saved)return;
   var category=isValidCategory(saved.category)?saved.category:'OMK';
   var week=isValidWeek(category,saved.week)?Number(saved.week):getDefaultWeek(category);
-  if(category==='OMK'&&[10,11,12,91].indexOf(week)===-1)week=getDefaultWeek(category);
+  if(category==='OMK'&&[13,14,15,16,17].indexOf(week)===-1)week=getDefaultWeek(category);
   CC=category;
   CW=week;
   CV='overview';
@@ -3374,7 +3393,7 @@ function syncSB(){var sb=document.getElementById('sb');if(!sb||!sb.querySelector
 var items=sb.querySelectorAll('.si');for(var j=0;j<items.length;j++){var item=items[j],itemWeek=+item.getAttribute('data-week'),itemView=item.getAttribute('data-view');item.classList.toggle('on',itemWeek===CW&&itemView===CV);}}
 
 function setSystemThemeForSystem(sys){
-  SYSTEM_THEME=(CC==='OMK'&&sys&&sys.key==='heme')?'heme':null;
+  SYSTEM_THEME=CC==='OMK'&&sys?(sys.key==='heme'?'heme':sys.key==='cardio'?'cardio':null):null;
   applyDynamicTheme(new Date());
   updateThemePanelUI();
 }
@@ -3421,10 +3440,10 @@ return h+'</div></section>';
 
 function rMN(){var wk=DATA[CC].weeks[CW],cn=DATA[CC].fullName,sys=getSystemMeta(CC,CW);
 var title=wk&&wk.label?wk.label:'Week '+CW;
-document.getElementById('hd').innerHTML='<div><h2>'+sys.name+' \u2014 '+title+'</h2><div class="bc">'+cn+' \u203A '+sys.name+'</div><div class="hd-hint">Fresh systems shell for the new year. Notes, quizzes, and embedded materials have been cleared from this view.</div></div>';
+document.getElementById('hd').innerHTML='<div><h2>'+sys.name+' \u2014 '+title+'</h2><div class="bc">'+cn+' \u203A '+sys.name+'</div><div class="hd-hint">'+(sys.tagline||'Notes, quizzes, and study resources organized by course week.')+'</div></div>';
 var resourceBlock=renderWeekItems(wk);
 var heroLinks=renderHeroLinks((wk&&wk.heroLinks)||DATA[CC].heroLinks);
-var b='<div class="system-shell"><section class="system-hero"><div class="system-hero-top"><div class="system-hero-kicker"><span>🧠</span><span>'+cn+'</span></div><div class="system-hero-week">'+title+'</div></div><div class="system-hero-title">'+sys.name+'</div><div class="system-hero-copy">'+(resourceBlock?title+' is live with active course resources. Open the material first, then use follow-up study tools to reinforce it.':title+' is ready for new course materials. Add cases, notes, and quizzes here as the new year content comes together.')+'</div>'+heroLinks+'<div class="system-hero-meta"><div class="system-pill"><span>🗂️</span><span>'+title+'</span></div><div class="system-pill"><span>📚</span><span>'+((wk&&wk.items&&wk.items.length)||0)+' active resource'+(((wk&&wk.items&&wk.items.length)||0)===1?'':'s')+'</span></div></div></section>'+resourceBlock+'</div>';
+var b='<div class="system-shell"><section class="system-hero"><div class="system-hero-top"><div class="system-hero-kicker"><span>'+(sys.icon||'🧠')+'</span><span>'+cn+'</span></div><div class="system-hero-week">'+title+'</div></div><div class="system-hero-title">'+sys.name+'</div><div class="system-hero-copy">'+(resourceBlock?title+' is live with active course resources. Open the material first, then use follow-up study tools to reinforce it.':title+' is ready for new course materials. Add cases, notes, and quizzes here as the block comes together.')+'</div>'+heroLinks+'<div class="system-hero-meta"><div class="system-pill"><span>🗂️</span><span>'+title+'</span></div><div class="system-pill"><span>📚</span><span>'+((wk&&wk.items&&wk.items.length)||0)+' active resource'+(((wk&&wk.items&&wk.items.length)||0)===1?'':'s')+'</span></div></div></section>'+resourceBlock+'</div>';
 document.getElementById('bd').innerHTML=b}
 function rMNpt(i){var p=PTESTS[i];
 document.getElementById('hd').innerHTML='<div><h2>'+p.name+'</h2><div class="bc">'+DATA[CC].fullName+(p.date?' \u203A '+p.date:'')+'</div></div>';
@@ -5420,7 +5439,7 @@ function getFaviconEmoji(date){
 var THEME_OVERRIDE_KEY='une_study_hub_theme_override_v1';
 var THEME_OVERRIDE='auto';
 var SYSTEM_THEME=null;
-var THEME_OPTION_META={auto:'Follows the current vibe',morning:'Bright and fresh',afternoon:'Classic study hub',evening:'Soft and focused',late:'Moody night study',weekend:'Looser weekend energy',exam:'Locked-in intensity',nightshift:'Warm amber — easy on eyes',mono:'Black & white focus mode',heme:'Hematology rose and burgundy'};
+var THEME_OPTION_META={auto:'Follows the current vibe',morning:'Bright and fresh',afternoon:'Classic study hub',evening:'Soft and focused',late:'Moody night study',weekend:'Looser weekend energy',exam:'Locked-in intensity',nightshift:'Warm amber — easy on eyes',mono:'Black & white focus mode',heme:'Hematology rose and burgundy',cardio:'Arterial red and clinical blue'};
 var THEME_SWATCHES={
   auto:      'conic-gradient(from 180deg, #3EC4B2 0%, #D4A843 33%, #E07A5F 66%, #7B5EA7 100%)',
   morning:   'linear-gradient(135deg,#FFD97A 0%,#FF9A6C 50%,#FF6B9D 100%)',
@@ -5431,7 +5450,8 @@ var THEME_SWATCHES={
   exam:      'linear-gradient(135deg,#232526 0%,#C44040 60%,#E07A5F 100%)',
   nightshift:'linear-gradient(135deg,#1C1208 0%,#3D2B0A 50%,#C8831A 100%)',
   mono:      'linear-gradient(135deg,#111 0%,#666 50%,#ddd 100%)',
-  heme:      'linear-gradient(135deg,#fff7f8 0%,#c44850 52%,#4a1d29 100%)'
+  heme:      'linear-gradient(135deg,#fff7f8 0%,#c44850 52%,#4a1d29 100%)',
+  cardio:    'linear-gradient(135deg,#fff6f7 0%,#d0344b 48%,#1f4e79 100%)'
 };
 
 var THEME_PRESETS={
@@ -5492,6 +5512,15 @@ var THEME_PRESETS={
     '--warm':'#FFF7F8','--cream':'#F9EEF0','--white':'#FFFEFE','--rule':'#E4C4CA','--rule2':'#F0D9DE',
     '--red':'#B94149','--red-bg':'#F7D9DD','--amber':'#A86F22','--amber-bg':'#F7E5B8',
     '--green':'#4C7A54','--green-bg':'#DCEEDD'
+  }},
+  cardio:{name:'Cardio mode',vars:{
+    '--teal':'#B51F3A','--teal-deep':'#88162C','--teal-light':'#FCE5E9','--teal-mid':'#CF3D57','--teal-glow':'#F08A9B',
+    '--navy':'#173E63','--navy2':'#102E4B','--coral':'#D95A68','--coral-bg':'#FDEBED','--gold':'#C58B32','--gold-bg':'#FFF3D8','--gold-warm':'#E2B45F',
+    '--plum':'#7A4660','--plum-bg':'#F6EAF0','--sky':'#377FA8','--sky-bg':'#E5F2F8',
+    '--ink':'#25161A','--ink2':'#4B2931','--slate':'#75535C','--mist':'#AD858E',
+    '--warm':'#FFF7F7','--cream':'#FAEFF1','--white':'#FFFEFE','--rule':'#E9C7CE','--rule2':'#F3DDE1',
+    '--red':'#B51F3A','--red-bg':'#FCE5E9','--amber':'#A86F22','--amber-bg':'#FFF3D8',
+    '--green':'#39755B','--green-bg':'#DCEFE6'
   }}
 };
 function getActiveTheme(date){
@@ -5618,7 +5647,7 @@ function setDynamicFavicon(){
   var link=document.getElementById('dynamicFavicon')||document.querySelector('link[rel="icon"]');
   if(!link)return;
   var themeKey=getResolvedTheme(new Date());
-  var emojiMap={morning:'☀️',afternoon:'📚',evening:'🌆',late:'🌙',weekend:'✨',exam:'🧠'};
+  var emojiMap={morning:'☀️',afternoon:'📚',evening:'🌆',late:'🌙',weekend:'✨',exam:'🧠',heme:'🩸',cardio:'🫀'};
   var emoji=emojiMap[themeKey]||getFaviconEmoji(new Date());
   var svg='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><text x="32" y="50" text-anchor="middle" font-size="48">'+emoji+'</text></svg>';
   link.setAttribute('href','data:image/svg+xml,'+encodeURIComponent(svg));

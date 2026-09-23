@@ -145,7 +145,7 @@
 html{scroll-padding-top:16px}
 body{margin:0;padding-left:var(--toc-w);background:var(--paper);color:var(--ink);
   font-family:'Source Serif 4',Georgia,serif;font-size:16px;line-height:1.62;
-  -webkit-font-smoothing:antialiased;transition:background .25s,color .25s}
+  -webkit-font-smoothing:antialiased;transition:background .25s,color .25s,padding-left .22s ease}
 .container{max-width:min(1220px,94%);margin:0 auto}
 p{margin:0 0 13px}
 strong{color:var(--hy-red);font-weight:600}   /* RED = high yield, in every theme */
@@ -172,7 +172,9 @@ a{color:var(--accent2)}
 /* ============ TOC — FIXED LEFT SIDEBAR ============ */
 .toc-bar{position:fixed;top:0;left:0;bottom:0;z-index:90;width:var(--toc-w);
   background:var(--hero-bg);border-right:1px solid rgba(255,255,255,0.10);
-  display:flex;flex-direction:column;overflow:hidden}
+  display:flex;flex-direction:column;overflow:hidden;transition:transform .22s ease}
+body.toc-hidden{padding-left:0}
+body.toc-hidden .toc-bar{transform:translateX(-105%);pointer-events:none}
 .toc-bar::-webkit-scrollbar{width:6px}
 .toc-bar::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.14);border-radius:3px}
 .toc-bar::-webkit-scrollbar-track{background:transparent}
@@ -268,12 +270,61 @@ h3.sub-head.closed .peek{opacity:1}
   padding:8px 10px;border-radius:20px;cursor:pointer;font-family:'JetBrains Mono',monospace;
   font-size:.56rem;font-weight:700;letter-spacing:.06em}
 .toc-collapse-btn:hover{background:rgba(255,255,255,0.16);color:var(--hero-heading)}
+.toc-hide-btn{flex:none;display:block;width:calc(100% - 28px);margin:0 14px 12px;
+  background:transparent;color:var(--hero-sub);border:1px solid rgba(255,255,255,0.18);
+  padding:8px 10px;border-radius:20px;cursor:pointer;font-family:'JetBrains Mono',monospace;
+  font-size:.56rem;font-weight:700;letter-spacing:.06em}
+.toc-hide-btn:hover{background:rgba(255,255,255,0.10);color:var(--hero-heading)}
+.toc-show-btn{position:fixed;left:14px;top:14px;z-index:110;display:none;align-items:center;gap:7px;
+  border:1px solid rgba(255,255,255,.18);border-radius:22px;padding:9px 13px;
+  background:var(--floating-ui-bg);color:var(--floating-ui-fg);box-shadow:var(--floating-ui-shadow);
+  font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.04em;cursor:pointer}
+body.toc-hidden .toc-show-btn{display:inline-flex}
 
 /* ============ MISS / HIGH-YIELD MARKING ============ */
 .miss-count{display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;
   font-size:.58rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
   background:var(--chip-red);color:var(--chip-fg);padding:5px 12px;border-radius:14px}
 .miss-count.clean{background:var(--chip-blue)}
+
+/* ===== MEASURED EXAM WEIGHT (from the 441-question bank, not from any score) ===== */
+.wt{display:inline-flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;
+  font-size:.58rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  padding:5px 12px;border-radius:14px;background:var(--chip-blue);color:var(--chip-fg)}
+.wt .n{font-size:.70rem;letter-spacing:0}
+.wt.t1{background:var(--chip-red);color:var(--chip-fg)}
+.wt.t2{background:var(--chip-gold);color:var(--chip-gold-fg)}
+.wt.t3{background:var(--chip-blue);color:var(--chip-fg)}
+
+/* weight bar inside the triage chart */
+.wbar{display:block;height:13px;border-radius:3px;background:var(--chip-blue);min-width:3px}
+.wbar.t1{background:var(--chip-red)}
+.wbar.t2{background:var(--chip-gold)}
+.wbar.t3{background:var(--chip-blue)}
+table.triage td:nth-child(2),table.triage td:nth-child(3),
+table.triage td:nth-child(4){font-family:'JetBrains Mono',monospace;text-align:right;
+  white-space:nowrap;font-variant-numeric:tabular-nums}
+table.triage td:nth-child(5){width:38%;vertical-align:middle;padding-right:14px}
+table.triage tr.band td{background:var(--panel-dark-bg);color:var(--panel-dark-accent);
+  font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.14em;
+  text-transform:uppercase;font-weight:700;padding:7px 12px}
+/* links in the triage spine must not use --accent: it is blue in Ocean, green in Forest,
+   purple in Lavender, orange in Slate, and fails 4.5:1 on the cream spine. */
+table.triage td a{color:inherit;text-decoration:underline;text-underline-offset:3px;
+  text-decoration-thickness:1px;text-decoration-color:var(--sfx-fg)}
+table.triage td a:hover{color:var(--sfx-fg)}
+@media print{ table.triage td:nth-child(5){width:26%} .wbar{height:9px} }
+
+/* ===== TRANSPOSED GRID: attributes down the side, subtypes across the top ===== */
+table.xpose{table-layout:fixed}
+table.xpose th:first-child,table.xpose td:first-child{width:118px;min-width:118px}
+table.xpose th,table.xpose td{vertical-align:top}
+table.xpose td.pic{width:auto;min-width:0}
+table.xpose td.pic img.pic-img{width:100%;max-width:150px;height:74px}
+@media print{ table.xpose th:first-child,table.xpose td:first-child{width:88px;min-width:88px}
+  table.xpose td.pic img.pic-img{height:52px} }
+
+
 /* RED = HIGH YIELD / WILL BE TESTED */
 mark.miss,span.miss{background:var(--red-bg);color:var(--ink);
   border-bottom:2px solid var(--accent);padding:1px 4px;border-radius:3px;font-weight:600}
@@ -300,11 +351,11 @@ td.na{background:var(--panel-dark-bg)!important;padding:0}
 .callout-key{background:var(--highlight);border-left-color:var(--gold)}
 .callout-key .callout-title{color:#5c4200}
 .callout-concept{background:var(--blue-bg);border-left-color:var(--accent2)}
-.callout-concept .callout-title{color:var(--accent2)}
+.callout-concept .callout-title{color:var(--mech-blue)}
 .callout-clinical{background:var(--green-bg);border-left-color:#2e7d32}
 .callout-clinical .callout-title{color:#1e5b22}
 .callout-warning{background:var(--red-bg);border-left-color:var(--accent)}
-.callout-warning .callout-title{color:var(--accent)}
+.callout-warning .callout-title{color:var(--hy-red)}
 .callout-purple{background:var(--purple-bg);border-left-color:#6a3aa0}
 .callout-purple .callout-title{color:#54307d}
 [data-theme="venous"] .callout-key .callout-title,[data-theme="night"] .callout-key .callout-title{color:var(--gold)}
@@ -388,6 +439,15 @@ td .dn{color:var(--accent2);font-weight:700}
 /* ============ IMAGES ============ */
 .slide-img{width:100%;height:auto;display:block;border:1px solid var(--border);border-radius:10px;
   margin:16px 0 0;cursor:zoom-in;background:var(--cream)}
+/* ===== IN-ROW CELL PICTURES (last column of a morphology chart) ===== */
+td.pic{padding:5px 6px;text-align:center;width:132px;min-width:132px}
+td.pic img.pic-img{width:120px;height:80px;object-fit:cover;border-radius:5px;
+  border:1px solid var(--border);cursor:zoom-in;display:block;margin:0 auto;background:var(--cream)}
+td.pic img.pic-img:hover{border-color:var(--accent);box-shadow:0 0 0 2px rgba(165,20,42,.28)}
+th.pic-h{width:132px;min-width:132px}
+@media print{ td.pic{width:86px;min-width:86px;padding:2px}
+  td.pic img.pic-img{width:80px;height:54px} th.pic-h{width:86px;min-width:86px} }
+
 .slide-caption{font-family:'JetBrains Mono',monospace;font-size:.61rem;line-height:1.55;
   color:var(--muted);margin:7px 0 16px;letter-spacing:.02em}
 .img-2col{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:15px;margin:16px 0}
@@ -514,6 +574,7 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
     border-bottom-color:var(--accent);background:none}
   .toc-num{width:18px;height:18px;font-size:.52rem}
   .toc-pip{margin-left:4px}
+  .toc-hide-btn{width:auto;margin:6px 8px 7px;align-self:flex-start;padding:6px 10px}
   .hero .hy-btn{display:inline-flex}
 }
 
@@ -521,7 +582,7 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
 @media print{
   body{padding-left:0 !important;background:#fff}
   .container{max-width:100% !important}
-  .toc-bar,.floating-stack,.lightbox,.tq-bar,.toc-hy-btn,.hy-btn,.toc-collapse-btn{display:none !important}
+  .toc-bar,.toc-show-btn,.floating-stack,.lightbox,.tq-bar,.toc-hy-btn,.hy-btn,.toc-collapse-btn{display:none !important}
   .sub-outer{grid-template-rows:1fr !important}
   .sub-inner{overflow:visible !important}
   h3.sub-head .caret,h3.sub-head .peek{display:none !important}
@@ -568,6 +629,8 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
   <nav>
     <a href="#orientation"><span class="toc-num dot"></span><span>How to Read This</span></a>
 
+    <a href="#weights"><span class="toc-num dot"></span><span>Where the Questions Are</span></a>
+
     <p class="toc-group">The 18 Topic Areas</p>
     <a href="#s1"><span class="toc-num">1</span><span>Hematopoiesis &amp; Marrow</span></a>
     <a href="#s2"><span class="toc-num">2</span><span>Anemia I · Impaired Production</span></a>
@@ -591,20 +654,22 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
     <p class="toc-group">Reference</p>
     <a href="#glossary"><span class="toc-num dot"></span><span>Glossary</span></a>
   </nav>
+  <button class="toc-hide-btn" id="tocHideBtn" type="button" onclick="setSidebarHidden(true)">⇤ Hide sidebar</button>
 </div>
+<button class="toc-show-btn" id="tocShowBtn" type="button" onclick="setSidebarHidden(false)">☰ Show sidebar</button>
 
 <!-- ==================== HERO ==================== -->
 <div class="hero">
   <div class="container">
     <div class="hero-tag">UNE COM · OMK 2A · Hematology · Summative 3</div>
     <h1>High-Yield <span>Review</span></h1>
-    <p class="hero-sub">All 83 objectives, all 18 areas — high-yield points only. <span class="miss">Red</span> = will be tested · <span class="hy">yellow</span> = the number to memorize · <strong>blue bold</strong> = mechanism. Built for one pass the night before.</p>
+    <p class="hero-sub">All 83 objectives, all 18 areas — high-yield points only. <span class="miss">Red</span> = will be tested · <span class="hy">yellow</span> = the number to memorize · <strong>blue bold</strong> = mechanism. Every section carries a <strong>measured weight</strong> — how many of the 441 bank questions test it. Built for one pass the night before.</p>
     <button class="hy-btn" onclick="openHY()">🎯 High-Yield One-Pager</button>
     <div class="hero-meta">
       <div class="hero-meta-item"><span class="label">Objectives</span><span class="value">83 covered</span></div>
       <div class="hero-meta-item"><span class="label">Topic areas</span><span class="value">18</span></div>
-      <div class="hero-meta-item"><span class="label">Format</span><span class="value">Bullets &amp; tables</span></div>
-      <div class="hero-meta-item"><span class="label">Depth</span><span class="value">One pass</span></div>
+      <div class="hero-meta-item"><span class="label">Bank counted</span><span class="value">441 questions</span></div>
+      <div class="hero-meta-item"><span class="label">Half the bank</span><span class="value">6 areas</span></div>
     </div>
   </div>
 </div>
@@ -620,6 +685,7 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
       <li><span class="hy">Yellow highlight</span> = the specific number, threshold or cutoff to memorize.</li>
       <li><strong>Blue bold</strong> = a mechanism or action. <span class="sfx">Red inside a drug name</span> = the class stem — Ralte<span class="sfx">gravir</span>, api<span class="sfx">xaban</span>, alte<span class="sfx">plase</span>.</li>
       <li><span class="hy-star">★ HY</span> marks the blocks the study guide leans on hardest. A <strong>black cell</strong> in a table means that column does not apply.</li>
+      <li><strong>The chip beside every section title is a measured weight</strong> — <span class="wt t1"><span class="n">51</span> questions · 11.6% · Heavy</span> means 51 of the 441 bank questions test that area. <span class="hy">Red chip = read first, gold = read second, blue = skim.</span> <a href="#weights">All eighteen, ranked</a>.</li>
       <li><strong>Every table is a quiz.</strong> Click <em>🧩 Quiz this table</em>, hide columns, reveal cell by cell. <strong>🔀 Shuffle</strong> stops you memorising positions.</li>
       <li><strong>Click any image</strong> to zoom. <strong>🎯 One-Pager</strong> condenses the whole file to 4 printable pages.</li>
     </ul>
@@ -630,10 +696,57 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
     </div>
   </div>
 </div>
+
+<!-- ==================== WHERE THE QUESTIONS ARE ==================== -->
+<div class="section" id="weights">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Triage</div><div class="wt t1"><span class="n">441</span> questions counted</div></div>
+    <p class="section-label">Measured, not guessed</p>
+    <h2 class="section-title">Where the Questions Actually Are</h2>
+
+    <div class="callout callout-key">
+      <div class="callout-title">🔑 Why this replaced the old red marks <span class="hy-star">★ HY</span></div>
+      <p>Red used to sit wherever a practice question had caught you out. That is a sample of a few dozen questions, so it told you about the sample, not about the exam. <span class="hy">These numbers come from counting all 441 questions in the bank against the objective each one tests.</span> Nothing here depends on how you scored.</p>
+      <p><strong>Six areas carry more than half the bank. Nine carry three quarters.</strong> If you run out of night, you stop at a tier boundary, not in the middle of a list.</p>
+    </div>
+
+    <div class="t-wrap"><table class="triage no-quiz">
+      <tr><th>Topic area</th><th>Questions</th><th>Share</th><th>Running</th><th class="wt-h">Weight</th></tr>
+        <tr class="band"><td colspan="5">Tier 1 · Read first — nine areas, three quarters of the bank</td></tr>
+        <tr><td><a href="#s2">2 — Anemia I · Impaired Production</a></td><td><strong>51</strong></td><td>11.6%</td><td>11.6%</td><td><span class="wbar t1" style="width:100%"></span></td></tr>
+        <tr><td><a href="#s13">13 — Hematologic Malignancy</a></td><td><strong>47</strong></td><td>10.7%</td><td>22.2%</td><td><span class="wbar t1" style="width:92%"></span></td></tr>
+        <tr><td><a href="#s3">3 — Anemia II · Hemolysis</a></td><td><strong>39</strong></td><td>8.8%</td><td>30.6%</td><td><span class="wbar t1" style="width:76%"></span></td></tr>
+        <tr><td><a href="#s7">7 — Infection</a></td><td><strong>39</strong></td><td>8.8%</td><td>39.5%</td><td><span class="wbar t1" style="width:76%"></span></td></tr>
+        <tr><td><a href="#s10">10 — Coagulation I · Bleeding</a></td><td><strong>37</strong></td><td>8.4%</td><td>47.8%</td><td><span class="wbar t1" style="width:73%"></span></td></tr>
+        <tr><td><a href="#s5">5 — Hemostasis Pharmacology</a></td><td><strong>34</strong></td><td>7.7%</td><td>55.6%</td><td><span class="wbar t1" style="width:67%"></span></td></tr>
+        <tr><td><a href="#s4">4 — Transfusion Medicine</a></td><td><strong>32</strong></td><td>7.3%</td><td>62.4%</td><td><span class="wbar t1" style="width:63%"></span></td></tr>
+        <tr><td><a href="#s14">14 — Antineoplastic Pharmacology</a></td><td><strong>31</strong></td><td>7.0%</td><td>68.9%</td><td><span class="wbar t1" style="width:61%"></span></td></tr>
+        <tr><td><a href="#s11">11 — Coagulation II · Clotting</a></td><td><strong>30</strong></td><td>6.8%</td><td>75.3%</td><td><span class="wbar t1" style="width:59%"></span></td></tr>
+        <tr class="band"><td colspan="5">Tier 2 · Read second — five areas, the next fifth</td></tr>
+        <tr><td><a href="#s6">6 — Anemia Pharmacology</a></td><td><strong>22</strong></td><td>5.0%</td><td>79.1%</td><td><span class="wbar t2" style="width:43%"></span></td></tr>
+        <tr><td><a href="#s8">8 — Laboratory Foundations</a></td><td><strong>22</strong></td><td>5.0%</td><td>83.0%</td><td><span class="wbar t2" style="width:43%"></span></td></tr>
+        <tr><td><a href="#s1">1 — Hematopoiesis &amp; Marrow</a></td><td><strong>21</strong></td><td>4.8%</td><td>85.7%</td><td><span class="wbar t2" style="width:41%"></span></td></tr>
+        <tr><td><a href="#s9">9 — Benign White Cell Disorders</a></td><td><strong>21</strong></td><td>4.8%</td><td>89.8%</td><td><span class="wbar t2" style="width:41%"></span></td></tr>
+        <tr><td><a href="#s17">17 — Trauma, Edema &amp; Metastasis</a></td><td><strong>18</strong></td><td>4.1%</td><td>93.9%</td><td><span class="wbar t2" style="width:35%"></span></td></tr>
+        <tr class="band"><td colspan="5">Tier 3 · Skim — four areas, the last six percent</td></tr>
+        <tr><td><a href="#s16">16 — Pediatrics, Spleen &amp; Prescribing</a></td><td><strong>11</strong></td><td>2.5%</td><td>95.9%</td><td><span class="wbar t3" style="width:22%"></span></td></tr>
+        <tr><td><a href="#s12">12 — Lymph Node Pathology</a></td><td><strong>8</strong></td><td>1.8%</td><td>97.7%</td><td><span class="wbar t3" style="width:16%"></span></td></tr>
+        <tr><td><a href="#s15">15 — Lymphatics &amp; Thrombosis</a></td><td><strong>8</strong></td><td>1.8%</td><td>99.3%</td><td><span class="wbar t3" style="width:16%"></span></td></tr>
+        <tr><td><a href="#s18">18 — Geriatrics</a></td><td><strong>5</strong></td><td>1.1%</td><td>100.0%</td><td><span class="wbar t3" style="width:10%"></span></td></tr>
+    </table></div>
+
+    <div class="callout callout-concept">
+      <div class="callout-title">💡 Reading the two numbers</div>
+      <p><strong>Share</strong> is that area's slice of the bank. <strong>Running</strong> is how much of the whole bank you have covered by the time you finish that row — so <span class="hy">finishing Coagulation II means you have seen 75% of what gets asked.</span></p>
+      <p>Counts overlap slightly: a question tagged to two objectives is counted in both areas but only once in the running total. That is why the shares sum past 100 and the running total does not.</p>
+    </div>
+  </div>
+</div>
+
 <!-- ==================== 1. HEMATOPOIESIS & MARROW ==================== -->
 <div class="section" id="s1">
   <div class="container">
-    <div class="badge-row"><div class="lo-badge">1 — Hematopoiesis &amp; Marrow</div><div class="miss-count clean">LO 2 · 81 · 83</div></div>
+    <div class="badge-row"><div class="lo-badge">1 — Hematopoiesis &amp; Marrow</div><div class="miss-count clean">LO 2 · 81 · 83</div><div class="wt t2" title="Questions in the 441-question bank that test this area"><span class="n">21</span> questions · 4.8% · Moderate</div></div>
     <h2 class="section-title">Where Blood Is Made, and How to Read the Marrow</h2>
 
     <div class="t-wrap"><table>
@@ -682,7 +795,7 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
 <!-- ==================== 2. ANEMIA I ==================== -->
 <div class="section" id="s2">
   <div class="container">
-    <div class="badge-row"><div class="lo-badge">2 — Anemia I · Impaired Production</div><div class="miss-count clean">LO 18 · 19 · 20 · 29 · 35 · 42 · 53 · 55</div></div>
+    <div class="badge-row"><div class="lo-badge">2 — Anemia I · Impaired Production</div><div class="miss-count clean">LO 18 · 19 · 20 · 29 · 35 · 42 · 53 · 55</div><div class="wt t1" title="Questions in the 441-question bank that test this area"><span class="n">51</span> questions · 11.6% · Heavy</div></div>
     <h2 class="section-title">The Anemias of Underproduction</h2>
 
     <div class="callout callout-key">
@@ -769,7 +882,7 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
 <!-- ==================== 3. ANEMIA II ==================== -->
 <div class="section" id="s3">
   <div class="container">
-    <div class="badge-row"><div class="lo-badge">3 — Anemia II · Hemolysis</div><div class="miss-count clean">LO 5 · 7 · 25 · 28 · 51</div></div>
+    <div class="badge-row"><div class="lo-badge">3 — Anemia II · Hemolysis</div><div class="miss-count clean">LO 5 · 7 · 25 · 28 · 51</div><div class="wt t1" title="Questions in the 441-question bank that test this area"><span class="n">39</span> questions · 8.8% · Heavy</div></div>
     <h2 class="section-title">The Anemias of Destruction</h2>
 
     <div class="t-wrap"><table class="no-spine">
@@ -787,13 +900,21 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
     </ul>
 
     <div class="t-wrap"><table>
-      <tr><th>Shape</th><th>Disease</th></tr>
-      <tr><td><strong>Ball</strong> (spherocyte)</td><td>Hereditary spherocytosis / autoimmune</td></tr>
-      <tr><td><strong>Bite / blister</strong></td><td>G6PD deficiency</td></tr>
-      <tr><td><strong>Bull's-eye</strong> (target)</td><td>Thalassemia, hemoglobin C, liver, post-splenectomy</td></tr>
-      <tr><td><strong>Crescent</strong></td><td>Sickle cell</td></tr>
-      <tr><td><strong>Fragment</strong> (schistocyte)</td><td>Microangiopathy</td></tr>
-      <tr><td><strong>Howell-Jolly body</strong></td><td>No functioning spleen</td></tr>
+      <tr><th>Shape</th><th>Disease</th><th>Why it looks like that</th><th class="pic-h">Picture</th></tr>
+      <tr><td><strong>Ball</strong><br>spherocyte</td><td>Hereditary spherocytosis · autoimmune hemolysis</td><td><span class="mech">Membrane removed, surface area lost, cell rounds up</span> → <strong>high hemoglobin concentration per cell</strong></td><td class="pic"><img loading="lazy" width="850" height="637" src="assets/final-exam-fig_spherocytes_uw-18c7255318.jpg" alt="Spherocytes on a blood smear" class="pic-img"></td></tr>
+      <tr><td><strong>Bite / blister</strong></td><td>Glucose-6-phosphate dehydrogenase deficiency</td><td><span class="mech">The spleen bites out a precipitated Heinz body</span></td><td class="pic"><img loading="lazy" width="850" height="639" src="assets/final-exam-fig_bite_cells-61adec8de9.jpg" alt="Bite cells on a blood smear" class="pic-img"></td></tr>
+      <tr><td><strong>Heinz body</strong></td><td>Same — needs a <strong>supravital stain</strong></td><td><span class="mech">Precipitated, oxidised hemoglobin</span> — invisible on a routine stain</td><td class="pic"><img loading="lazy" width="850" height="633" src="assets/final-exam-fig_heinz-7afa483033.jpg" alt="Heinz bodies on a supravital stain" class="pic-img"></td></tr>
+      <tr><td><strong>Bull's-eye</strong><br>target cell</td><td>Thalassemia · hemoglobin C · liver disease · post-splenectomy</td><td><span class="mech">Too much membrane for the contents</span></td><td class="pic"><img loading="lazy" width="850" height="583" src="assets/final-exam-fig_target_cells-98ea3dc022.jpg" alt="Target cells on a blood smear" class="pic-img"></td></tr>
+      <tr><td><strong>Crescent</strong><br>sickle cell</td><td>Sickle cell disease</td><td><span class="mech">Deoxygenated hemoglobin S polymerises into rigid rods</span></td><td class="pic"><img loading="lazy" width="850" height="583" src="assets/final-exam-fig_sickle_smear-d571a19e83.jpg" alt="Sickle cells on a blood smear" class="pic-img"></td></tr>
+      <tr><td><strong>Fragment</strong><br>schistocyte</td><td>Microangiopathy — TTP, HUS, DIC</td><td><span class="mech">Sheared across fibrin strands in the microvasculature</span></td><td class="pic"><img loading="lazy" width="850" height="477" src="assets/final-exam-fig_schistocytes-fdaa4c97c2.jpg" alt="Schistocytes on a blood smear" class="pic-img"></td></tr>
+      <tr><td><strong>Howell-Jolly body</strong></td><td><strong>No functioning spleen</strong></td><td><span class="mech">Nuclear remnant nobody is left to pit out</span></td><td class="pic"><img loading="lazy" width="850" height="637" src="assets/final-exam-fig_howell_jolly-6d54c2061b.jpg" alt="Howell-Jolly bodies" class="pic-img"></td></tr>
+      <tr><td><strong>Tear-drop</strong><br>dacrocyte</td><td><strong>Myelofibrosis</strong> · marrow infiltration</td><td><span class="mech">Squeezed leaving a fibrotic marrow</span> — with nucleated red cells = leukoerythroblastic</td><td class="pic"><img loading="lazy" width="850" height="636" src="assets/final-exam-fig_teardrop-3d61518c36.jpg" alt="Teardrop cells on a blood smear" class="pic-img"></td></tr>
+      <tr><td><strong>Small and pale</strong></td><td>Iron deficiency</td><td><span class="mech">Extra divisions before maturation; not enough hemoglobin to fill the cell</span></td><td class="pic"><img loading="lazy" width="850" height="565" src="assets/final-exam-fig_ida_smear-8ad3f12cb1.jpg" alt="Iron deficiency blood smear" class="pic-img"></td></tr>
+      <tr><td><strong>Basophilic stippling</strong></td><td><strong>Lead poisoning</strong> · thalassemia · sideroblastic</td><td><span class="mech">Ribosomal remnants — lead blocks their breakdown</span></td><td class="pic"><img loading="lazy" width="900" height="445" src="assets/final-exam-fig_basophilic_stippling-lib01.jpg" alt="Basophilic stippling of erythrocytes" class="pic-img"></td></tr>
+      <tr><td><strong>Ringed sideroblast</strong></td><td>Sideroblastic anemia · myelodysplasia</td><td><span class="mech">Iron trapped in perinuclear mitochondria</span> — needs <strong>Prussian blue</strong></td><td class="pic"><img loading="lazy" width="850" height="638" src="assets/final-exam-fig_sideroblast-ed59a57981.jpg" alt="Ringed sideroblasts on Prussian blue" class="pic-img"></td></tr>
+      <tr><td><strong>Hypersegmented neutrophil</strong></td><td>Vitamin B12 or folate deficiency</td><td><span class="mech">Impaired DNA synthesis</span> — <strong>6 or more lobes</strong></td><td class="pic"><img loading="lazy" width="850" height="850" src="assets/final-exam-fig_hyperseg-142a405bb2.jpg" alt="Hypersegmented neutrophil" class="pic-img"></td></tr>
+      <tr><td><strong>Nucleated red cell</strong></td><td>Severe marrow stress · asplenia · leukoerythroblastic picture</td><td><span class="mech">Precursor released before it should be</span></td><td class="pic"><img loading="lazy" width="850" height="636" src="assets/final-exam-fig_nrbc-98ab586974.jpg" alt="Nucleated red blood cell" class="pic-img"></td></tr>
+      <tr><td><strong>Toxic granulation</strong></td><td><strong>Reactive</strong> — infection, not a clone</td><td><span class="mech">Retained primary granules in a marrow under pressure</span></td><td class="pic"><img loading="lazy" width="850" height="636" src="assets/final-exam-fig_toxic_granulation-7728b9d0fe.jpg" alt="Toxic granulation in neutrophils" class="pic-img"></td></tr>
     </table></div>
 
     <h3>The four inherited defects <span class="hy-star">★ HY</span></h3>
@@ -829,7 +950,7 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
 <!-- ==================== 4. TRANSFUSION ==================== -->
 <div class="section" id="s4">
   <div class="container">
-    <div class="badge-row"><div class="lo-badge">4 — Transfusion Medicine</div><div class="miss-count clean">LO 31 · 61 · 74</div></div>
+    <div class="badge-row"><div class="lo-badge">4 — Transfusion Medicine</div><div class="miss-count clean">LO 31 · 61 · 74</div><div class="wt t1" title="Questions in the 441-question bank that test this area"><span class="n">32</span> questions · 7.3% · Heavy</div></div>
     <h2 class="section-title">Products, Compatibility and Reactions</h2>
 
     <ul class="notes-list">
@@ -871,7 +992,7 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
 <!-- ==================== 5. HEMOSTASIS PHARM ==================== -->
 <div class="section" id="s5">
   <div class="container">
-    <div class="badge-row"><div class="lo-badge">5 — Hemostasis Pharmacology</div><div class="miss-count clean">LO 8 · 9 · 12 · 26 · 62 · 69 · 71 · 72</div></div>
+    <div class="badge-row"><div class="lo-badge">5 — Hemostasis Pharmacology</div><div class="miss-count clean">LO 8 · 9 · 12 · 26 · 62 · 69 · 71 · 72</div><div class="wt t1" title="Questions in the 441-question bank that test this area"><span class="n">34</span> questions · 7.7% · Heavy</div></div>
     <h2 class="section-title">Anticoagulants, Antiplatelets, Thrombolytics</h2>
 
     <div class="callout callout-key">
@@ -999,7 +1120,7 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
 <!-- ==================== 6. ANEMIA PHARM ==================== -->
 <div class="section" id="s6">
   <div class="container">
-    <div class="badge-row"><div class="lo-badge">6 — Anemia Pharmacology</div><div class="miss-count clean">LO 70 · plus the iron and vitamin objectives</div></div>
+    <div class="badge-row"><div class="lo-badge">6 — Anemia Pharmacology</div><div class="miss-count clean">LO 70 · plus the iron and vitamin objectives</div><div class="wt t2" title="Questions in the 441-question bank that test this area"><span class="n">22</span> questions · 5.0% · Moderate</div></div>
     <h2 class="section-title">Drugs for Anemia</h2>
 
     <h3>Iron, the vitamins and the chelators — master chart <span class="hy-star">★ HY</span></h3>
@@ -1092,7 +1213,7 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
 <!-- ==================== 7. INFECTION ==================== -->
 <div class="section" id="s7">
   <div class="container">
-    <div class="badge-row"><div class="lo-badge">7 — Infection</div><div class="miss-count clean">LO 1 · 13 · 14 · 22 · 23 · 24 · 75 · 77</div></div>
+    <div class="badge-row"><div class="lo-badge">7 — Infection</div><div class="miss-count clean">LO 1 · 13 · 14 · 22 · 23 · 24 · 75 · 77</div><div class="wt t1" title="Questions in the 441-question bank that test this area"><span class="n">39</span> questions · 8.8% · Heavy</div></div>
     <h2 class="section-title">Sepsis, HIV, Parasites &amp; Hemorrhagic Fevers</h2>
 
     <h3>Sepsis</h3>
@@ -1321,7 +1442,7 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
 <!-- ==================== 8. LABORATORY ==================== -->
 <div class="section" id="s8">
   <div class="container">
-    <div class="badge-row"><div class="lo-badge">8 — Laboratory Foundations</div><div class="miss-count clean">LO 27 · 53</div></div>
+    <div class="badge-row"><div class="lo-badge">8 — Laboratory Foundations</div><div class="miss-count clean">LO 27 · 53</div><div class="wt t2" title="Questions in the 441-question bank that test this area"><span class="n">22</span> questions · 5.0% · Moderate</div></div>
     <h2 class="section-title">Inside the Analyzer — and How It Lies</h2>
 
     <h3>Measured versus calculated <span class="hy-star">★ HY</span></h3>
@@ -1390,7 +1511,7 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
 <!-- ==================== 9. BENIGN WHITE CELL ==================== -->
 <div class="section" id="s9">
   <div class="container">
-    <div class="badge-row"><div class="lo-badge">9 — Benign White Cell Disorders</div><div class="miss-count clean">LO 4 · 66 · 76</div></div>
+    <div class="badge-row"><div class="lo-badge">9 — Benign White Cell Disorders</div><div class="miss-count clean">LO 4 · 66 · 76</div><div class="wt t2" title="Questions in the 441-question bank that test this area"><span class="n">21</span> questions · 4.8% · Moderate</div></div>
     <h2 class="section-title">Normal Leukocytes and When They Are Not</h2>
 
     <div class="t-wrap"><table>
@@ -1408,13 +1529,16 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
       <tr><td>Chromatin &amp; nucleoli</td><td>Coarse chromatin, small nucleoli</td><td>Open chromatin, <strong>prominent nucleoli</strong></td></tr>
       <tr><td>Population</td><td><strong>Varied</strong></td><td><strong>Monoclonal</strong>, monotonous</td></tr>
       <tr><td>Other cell lines</td><td>Normal; blast pyramid keeps normal proportions</td><td><strong>Cytopenias.</strong> <span class="hy">More blasts than anything = leukemia</span></td></tr>
-      <tr><td>Settles it</td><td colspan="2"><strong>An Auer rod is malignant. A nucleolus alone is not.</strong></td></tr>
+      <tr><td>Settles it</td><td colspan="2"><strong>An Auer rod is malignant. A nucleolus alone is not.</strong> <span class="hy">Reactive keeps the blast pyramid in normal proportions; malignant inverts it</span></td></tr>
     </table></div>
     <div class="t-wrap"><table>
-      <tr><th>Pattern</th><th>What it means</th></tr>
-      <tr><td>Leukemoid reaction</td><td>Döhle bodies, toxic granulation, vacuoles — a reaction with a trigger, <strong>HIGH</strong> leukocyte alkaline phosphatase</td></tr>
-      <tr><td><strong>Chronic myeloid leukemia</strong></td><td><span class="hy">BCR-ABL positive, <strong>basophilia</strong>, and a <strong>LOW</strong> leukocyte alkaline phosphatase</span></td></tr>
-      <tr><td>Leukoerythroblastic</td><td>Immature granulocytes + nucleated red cells + <strong>tear-drops</strong> → <strong>myelofibrosis or marrow infiltration</strong></td></tr>
+      <tr><th>Pattern</th><th>What it means</th><th class="pic-h">Picture</th></tr>
+      <tr><td><strong>Left shift</strong></td><td>Immature granulocytes released early — a marrow under demand. <strong>Reactive</strong></td><td class="pic"><img loading="lazy" width="1250" height="937" src="assets/wbc-05-blood-smear-showing-left-shift-with-immature-gra.jpg" alt="Left shift with immature granulocytes" class="pic-img"></td></tr>
+      <tr><td><strong>Toxic granulation</strong><br>Döhle bodies, vacuoles</td><td>Retained primary granules in a marrow under pressure — <strong>infection, not a clone</strong>. Goes with a <strong>HIGH leukocyte alkaline phosphatase</strong></td><td class="pic"><img loading="lazy" width="850" height="636" src="assets/final-exam-fig_toxic_granulation-7728b9d0fe.jpg" alt="Toxic granulation in neutrophils" class="pic-img"></td></tr>
+      <tr><td><strong>Leukoerythroblastic</strong></td><td>Immature granulocytes <strong>+ nucleated red cells + tear-drop cells</strong> → <span class="hy"><strong>myelofibrosis or a marrow-occupying lesion</strong></span></td><td class="pic"><img loading="lazy" width="850" height="636" src="assets/final-exam-fig_teardrop-3d61518c36.jpg" alt="Tear-drop cells" class="pic-img"></td></tr>
+      <tr><td><strong>Basophilia</strong></td><td>Think <strong>chronic myeloid leukemia</strong> — BCR-ABL positive, and a <span class="hy"><strong>LOW</strong> leukocyte alkaline phosphatase (a leukemoid reaction runs HIGH)</span></td><td class="pic"><img loading="lazy" width="551" height="415" src="assets/lpd-cll-touch-prep.jpg" alt="Chronic myeloid leukemia smear" class="pic-img"></td></tr>
+      <tr><td><strong>Atypical lymphocytes</strong></td><td>Large, abundant cytoplasm moulding around neighbours — <strong>infectious mononucleosis</strong>, a reactive T-cell response</td><td class="pic"><img loading="lazy" width="780" height="535" src="assets/final-exam-fig_lpd_smudge_cells-d6d9d4eed6.jpg" alt="Atypical and smudged lymphocytes" class="pic-img"></td></tr>
+      <tr><td><strong>An Auer rod</strong></td><td><span class="hy"><strong>Malignant, always.</strong> A nucleolus alone is NOT</span></td><td class="pic"><img loading="lazy" width="850" height="751" src="assets/final-exam-fig_auer_rods-421ded2aa5.jpg" alt="Auer rod in a myeloblast" class="pic-img"></td></tr>
     </table></div>
     <img loading="lazy" width="850" height="636" src="assets/final-exam-fig_toxic_granulation-7728b9d0fe.jpg" alt="Toxic granulation" class="slide-img">
     <p class="slide-caption">Toxic granulation — a reactive marrow, not a clone.</p>
@@ -1422,11 +1546,11 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
     <h3>Primary immunodeficiencies</h3>
     <p>Shares of all cases: <strong>antibody 65%</strong> · combined 15% · phagocyte 10% · cellular 5% · complement 5%.</p>
     <div class="t-wrap"><table>
-      <tr><th>Disease</th><th>Defect</th><th>Signature</th><th>Management</th></tr>
-      <tr><td><strong>Chronic granulomatous</strong></td><td>NADPH oxidase</td><td><strong>Catalase-positive</strong> organisms → granulomas</td><td>Nitroblue tetrazolium; <strong>interferon-gamma</strong> cuts infections up to 70%</td></tr>
-      <tr><td><strong>Bruton</strong></td><td>BTK, X-linked</td><td>Well till <strong>6 months</strong> (maternal IgG); no CD19/CD20; <strong>absent tonsils</strong></td><td>Monthly immunoglobulin</td></tr>
-      <tr><td><strong>DiGeorge</strong></td><td>22q11, 3rd/4th pouch</td><td><strong>CATCH-22</strong>, hypocalcemia</td><td><strong>Irradiated products; NO live vaccines</strong></td></tr>
-      <tr><td><strong>SCID</strong></td><td>Common γ chain or ADA</td><td>Sick from <strong>month 2</strong></td><td>TREC screen; lymphocytes &lt;2,000 → <strong>transplant, earlier is better</strong></td></tr>
+      <tr><th>Disease</th><th>Defect</th><th>Signature</th><th>Management</th><th class="pic-h">Picture</th></tr>
+      <tr><td><strong>Chronic granulomatous disease</strong></td><td><span class="mech">NADPH oxidase — no respiratory burst</span>; 70% X-linked</td><td><strong>Catalase-positive</strong> organisms survive → <strong>granulomas</strong>. <em>Staphylococcus</em>, <em>Serratia</em>, <em>Burkholderia</em>, <em>Aspergillus</em></td><td>Nitroblue tetrazolium or dihydrorhodamine test. <strong>Interferon-gamma cuts infections by up to 70%</strong></td><td class="pic"><img loading="lazy" width="850" height="636" src="assets/final-exam-fig_slide_nadph-b815186a7f.jpg" alt="NADPH oxidase complex" class="pic-img"></td></tr>
+      <tr><td><strong>Bruton agammaglobulinemia</strong></td><td><span class="mech">BTK — B cells never mature</span>, X-linked</td><td>Well until <strong>6 months</strong> (maternal IgG), then encapsulated bacteria. <strong>No CD19/CD20 cells; ABSENT tonsils and nodes</strong></td><td>Monthly immunoglobulin replacement</td><td class="pic"><img loading="lazy" width="850" height="636" src="assets/final-exam-fig_slide_bruton-c5eb2ecb09.jpg" alt="Bruton agammaglobulinemia findings" class="pic-img"></td></tr>
+      <tr><td><strong>DiGeorge syndrome</strong></td><td><span class="mech">22q11 deletion — 3rd and 4th branchial pouches fail, so no thymus</span></td><td><strong>CATCH-22</strong>: Cardiac, Abnormal facies, Thymic aplasia, Cleft palate, Hypocalcemia</td><td><span class="hy"><strong>Irradiated blood products; NO live vaccines</strong></span></td><td class="pic"><img loading="lazy" width="850" height="636" src="assets/final-exam-fig_slide_granuloma-17d33d41c7.jpg" alt="Immune tissue histology" class="pic-img"></td></tr>
+      <tr><td><strong>Severe combined immunodeficiency</strong></td><td><span class="mech">Common gamma chain, or adenosine deaminase deficiency</span></td><td>Sick from <strong>month 2</strong> — no maternal protection is enough. Absent thymic shadow</td><td>TREC newborn screen; absolute lymphocytes under 2,000 → <strong>transplant, and earlier is better</strong></td><td class="pic"><img loading="lazy" width="850" height="636" src="assets/final-exam-fig_slide_scid-e6b2159841.jpg" alt="Severe combined immunodeficiency" class="pic-img"></td></tr>
     </table></div>
 
     <div class="exam-q">
@@ -1439,7 +1563,7 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
 <!-- ==================== 10. COAGULATION I ==================== -->
 <div class="section" id="s10">
   <div class="container">
-    <div class="badge-row"><div class="lo-badge">10 — Coagulation I · Bleeding</div><div class="miss-count clean">LO 32 · 50 · 68 · 79</div></div>
+    <div class="badge-row"><div class="lo-badge">10 — Coagulation I · Bleeding</div><div class="miss-count clean">LO 32 · 50 · 68 · 79</div><div class="wt t1" title="Questions in the 441-question bank that test this area"><span class="n">37</span> questions · 8.4% · Heavy</div></div>
     <h2 class="section-title">Why a Patient Bleeds</h2>
 
     <div class="callout callout-key">
@@ -1485,45 +1609,65 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
 <!-- ==================== 11. COAGULATION II ==================== -->
 <div class="section" id="s11">
   <div class="container">
-    <div class="badge-row"><div class="lo-badge">11 — Coagulation II · Clotting</div><div class="miss-count clean">LO 33 · 43 · 44 · 45 · 46 · 48 · 52</div></div>
+    <div class="badge-row"><div class="lo-badge">11 — Coagulation II · Clotting</div><div class="miss-count clean">LO 33 · 43 · 44 · 45 · 46 · 48 · 52</div><div class="wt t1" title="Questions in the 441-question bank that test this area"><span class="n">30</span> questions · 6.8% · Heavy</div></div>
     <h2 class="section-title">Why a Patient Clots</h2>
 
-    <div class="callout callout-key">
-      <div class="callout-title">🔑 The panel discriminates, not the smear <span class="hy-star">★ HY</span></div>
-      <p><span class="hy">In ALL microangiopathies the PT, aPTT and fibrinogen are NORMAL. In DIC both times prolong and fibrinogen falls.</span> Schistocytes appear in every one, so the smear settles nothing.</p>
-    </div>
-
+    <h3>The thrombotic microangiopathies <span class="hy-star">★ HY</span></h3>
     <div class="t-wrap"><table>
-      <tr><th>Disease</th><th>Mechanism</th><th>Organ</th><th>Treatment</th></tr>
-      <tr><td><strong>TTP</strong></td><td><strong>ADAMTS13</strong> deficient/inhibited → uncleaved ultra-large multimers seize platelets</td><td>Systemic, <strong>brain</strong></td><td><strong>Plasma exchange</strong> (replaces enzyme + removes antibody). <span class="hy">NO platelet transfusion</span></td></tr>
-      <tr><td><strong>HUS</strong></td><td><strong>Shiga toxin</strong>, <em>E. coli</em> O157:H7</td><td><strong>Kidney</strong>, after bloody diarrhea</td><td>Supportive</td></tr>
-      <tr><td><strong>Atypical HUS</strong></td><td>Unregulated <strong>alternative complement</strong> (factor H/I, CD46)</td><td>Kidney</td><td><strong>Eculizu<span class="sfx">mab</span>.</strong> Genotype before transplant — liver-made regulator recurs, kidney-made doesn't</td></tr>
+      <tr><th>Disease</th><th>Mechanism</th><th>Organ hit</th><th>Treatment</th><th class="pic-h">Picture</th></tr>
+      <tr><td><strong>TTP</strong><br>thrombotic thrombocytopenic purpura</td><td><span class="mech"><strong>ADAMTS13</strong> deficient or antibody-inhibited → uncleaved ultra-large von Willebrand multimers seize platelets</span></td><td>Systemic — <strong>brain</strong> prominent</td><td><strong>Plasma exchange</strong> — replaces the enzyme <em>and</em> removes the antibody. <span class="hy">NO platelet transfusion</span></td><td class="pic"><img loading="lazy" width="850" height="636" src="assets/final-exam-fig_slide_adamts13-47af4707ac.jpg" alt="ADAMTS13 deficiency mechanism" class="pic-img"></td></tr>
+      <tr><td><strong>HUS</strong><br>hemolytic uremic syndrome</td><td><span class="mech"><strong>Shiga toxin</strong> from <em>E. coli</em> O157:H7 damages glomerular endothelium</span></td><td><strong>Kidney</strong>, after a bloody diarrhea prodrome</td><td>Supportive</td><td class="pic"><img loading="lazy" width="850" height="636" src="assets/final-exam-fig_slide_hus-97ab145518.jpg" alt="Hemolytic uremic syndrome pathogenesis" class="pic-img"></td></tr>
+      <tr><td><strong>Atypical HUS</strong></td><td><span class="mech">Unregulated <strong>alternative complement</strong> — factor H, factor I, CD46, thrombomodulin</span></td><td>Kidney</td><td><strong>Eculizumab.</strong> Genotype before transplant — a liver-made regulator recurs, a kidney-made one does not</td><td class="pic"><img loading="lazy" width="850" height="636" src="assets/final-exam-fig_slide_maha-0f87b879a7.jpg" alt="Microangiopathic hemolytic anemia" class="pic-img"></td></tr>
+      <tr><td>On the smear</td><td colspan="3"><span class="hy"><strong>Schistocytes appear in ALL of them — the smear cannot discriminate. The COAGULATION PANEL does.</strong></span> In every microangiopathy the prothrombin time, clotting time and fibrinogen stay <strong>NORMAL</strong>; in disseminated intravascular coagulation both times prolong and fibrinogen falls</td><td class="pic"><img loading="lazy" width="850" height="477" src="assets/final-exam-fig_schistocytes-fdaa4c97c2.jpg" alt="Schistocytes on a blood smear" class="pic-img"></td></tr>
     </table></div>
-    <p><strong>TTP pentad</strong> — fever, low platelets, hemolysis, neuro, renal — but <span class="hy">treat before all five appear</span>. Acquired form presents in the 20s–30s.</p>
+    <p><strong>The TTP pentad</strong> — fever, low platelets, microangiopathic hemolysis, neurologic signs, renal impairment — but <span class="hy">treat before all five appear</span>. The acquired form typically presents in the 20s–30s.</p>
 
-    <h3>Thrombophilias</h3>
-    <ul class="notes-list">
-      <li><span class="hy"><strong>Lose a brake</strong> (antithrombin, protein C, protein S) → relative risk <strong>15–19×</strong>. <strong>Push the accelerator</strong> (factor V Leiden, prothrombin G20210A) → only <strong>3–5×</strong>.</span></li>
-      <li><strong>Virchow:</strong> endothelial damage · stasis · hypercoagulability. ~25% of everyone has a thrombophilia; ~60% of DVT patients do.</li>
-      <li><strong>Factor V Leiden</strong> (R506Q) — 5% of Caucasians, 20–30% of venous thromboembolism; mechanism is <strong>activated protein C resistance</strong>. <strong>Prothrombin G20210A</strong> — a <strong>3′ untranslated region</strong> mutation raising mRNA stability: <span class="hy">normal protein, just more of it.</span></li>
-      <li><strong>Antithrombin deficiency:</strong> homozygous lethal; lost in proteinuria → presents as <strong>heparin resistance</strong>. <strong>Homozygous protein C/S</strong> → neonatal <strong>purpura fulminans</strong>.</li>
-    </ul>
-
+    <h3>The inherited and acquired thrombophilias</h3>
+    <div class="callout callout-concept">
+      <div class="callout-title">🧠 Brakes versus accelerators</div>
+      <p><span class="hy"><strong>LOSE A BRAKE</strong> (antithrombin, protein C, protein S) → relative risk <strong>15–19×</strong>. <strong>PUSH THE ACCELERATOR</strong> (factor V Leiden, prothrombin G20210A) → only <strong>3–5×</strong>.</span></p>
+      <p><strong>Virchow's triad:</strong> endothelial damage · stasis · hypercoagulability. About <strong>25% of everyone</strong> carries a thrombophilia; about <strong>60% of deep vein thrombosis patients</strong> do.</p>
+    </div>
+    <div class="t-wrap"><table>
+      <tr><th>Disorder</th><th>Mechanism</th><th>Risk</th><th>Does it change management?</th><th class="pic-h">Picture</th></tr>
+      <tr><td><strong>Factor V Leiden</strong></td><td><span class="mech">Arg506Gln — factor V resists degradation by activated protein C, so it stays switched on</span>. Autosomal dominant</td><td><strong>5% prevalence</strong>, the commonest hereditary defect; <strong>20–30%</strong> of venous thromboembolism. Relative risk <strong>3–5×</strong></td><td><span class="hy"><strong>Does NOT increase recurrence after a first unprovoked event</strong></span> — which is why finding it rarely changes the plan</td><td class="pic"><img loading="lazy" width="850" height="636" src="assets/final-exam-fig_slide_fvl-4d4b38a45f.jpg" alt="Factor V Leiden mechanism" class="pic-img"></td></tr>
+      <tr><td><strong>Prothrombin G20210A</strong></td><td><span class="mech">A 3′ untranslated region mutation raising messenger RNA stability</span> — <strong>normal protein, just more of it</strong></td><td>Relative risk <strong>3–5×</strong></td><td>Same — an accelerator, not a lost brake</td><td class="pic"><img loading="lazy" width="850" height="636" src="assets/final-exam-fig_slide_virchow-4b19e6dbbe.jpg" alt="Virchow triad" class="pic-img"></td></tr>
+      <tr><td><strong>Protein C or S deficiency</strong></td><td><span class="mech">These normally inactivate factors 5a and 8a; losing them leaves the cascade over-active</span></td><td><strong>Lost brake → 15–19×</strong></td><td><span class="hy">Explains <strong>warfarin-induced skin necrosis</strong> — protein C is among the first vitamin K dependent factors to fall.</span> Homozygous → neonatal <strong>purpura fulminans</strong></td><td class="pic"><img loading="lazy" width="850" height="637" src="assets/final-exam-fig_slide_hit-20cb819dc3.jpg" alt="Coagulation regulation" class="pic-img"></td></tr>
+      <tr><td><strong>Antithrombin deficiency</strong></td><td><span class="mech">The main inhibitor of thrombin and factor 10a is missing</span></td><td><strong>Lost brake → 15–19×</strong></td><td>Homozygous is lethal. Lost in <strong>proteinuria</strong> and through chest tubes → presents as <strong>heparin resistance</strong></td><td class="pic"><img loading="lazy" width="850" height="636" src="assets/final-exam-fig_slide_maha-0f87b879a7.jpg" alt="Thrombosis mechanism" class="pic-img"></td></tr>
+      <tr><td><strong>Antiphospholipid syndrome</strong></td><td><span class="mech">Acquired antibody against phospholipid-binding proteins.</span> Associated with lupus, cancer, infection, drugs</td><td>Both <strong>venous AND arterial</strong>; also recurrent pregnancy loss</td><td><span class="hy"><strong>The one that genuinely DOES change management</strong> — it raises recurrence and is the only thrombophilia causing arterial thrombosis. Treat with <strong>WARFARIN</strong></span></td><td class="pic"><img loading="lazy" width="850" height="636" src="assets/final-exam-fig_slide_aps_mixing-c0d89eea97.jpg" alt="Antiphospholipid mixing study" class="pic-img"></td></tr>
+    </table></div>
     <div class="callout callout-warning">
-      <div class="callout-title">⚠️ Antiphospholipid — "lupus anticoagulant" is a double misnomer</div>
-      <p>Usually not lupus, and it <strong>clots rather than bleeds</strong>. <span class="hy">The mix FAILS to correct, but extra phospholipid DOES correct it — that two-step is the diagnosis.</span></p>
-      <p>Anti-cardiolipin → <strong>false-positive syphilis test</strong>. Needs a clinical criterion <strong>plus persistence 12 weeks apart</strong>. <strong>Antibody without the syndrome is not anticoagulated.</strong> <span class="hy">The one setting where direct oral anticoagulants show HARM — use warfarin.</span></p>
+      <div class="callout-title">⚠️ "Lupus anticoagulant" is a double misnomer</div>
+      <p>Usually not lupus, and it <strong>causes clotting, not bleeding</strong>. <span class="hy">The mixing study FAILS to correct, but adding EXTRA phospholipid DOES correct it — that two-step is the diagnosis.</span></p>
+      <p>Anti-cardiolipin antibodies give a <strong>false-positive syphilis test</strong>. Diagnosis needs a clinical criterion <em>plus</em> antibody persistence <strong>12 weeks apart</strong>. <strong>An antibody without the syndrome is not anticoagulated.</strong></p>
     </div>
 
-    <ul class="notes-list">
-      <li><strong>Test if:</strong> family history · age &lt;45 · no risk factors · recurrent · unusual site. <span class="hy">Timing: heparin lowers antithrombin, warfarin lowers proteins C/S, acute illness raises factor 8 → wait months, off anticoagulation.</span> Genetic testing any time, once.</li>
-      <li><strong>Duration:</strong> provoked <strong>3 months</strong> then stop · unprovoked ≥3 then decide · second unprovoked <strong>long-term</strong> · cancer = low-molecular-weight heparin ≥3 months. Recurrence: major transient 3% · minor 5% · <strong>unprovoked 10% in year one</strong>.</li>
-      <li><strong>Inferior vena cava filter:</strong> one indication — absolute contraindication to anticoagulation. It <em>increases</em> recurrent DVT.</li>
-    </ul>
+    <h3>Who should actually be tested? <span class="hy-star">★ HY</span></h3>
+    <div class="t-wrap"><table class="no-spine">
+      <tr><th>YES — test</th><th>REASONABLE — consider</th><th>NO — do not test</th></tr>
+      <tr>
+        <td>Age <strong>under 50</strong> with a family history<br><strong>Cerebral vein</strong> thrombosis<br><strong>Portal or mesenteric vein</strong> thrombosis<br>Recurrent events<br>No identifiable risk factor</td>
+        <td>Venous thromboembolism occurring with<br><strong>oral contraceptives</strong>, hormone replacement,<br>or <strong>pregnancy</strong></td>
+        <td>Age <strong>over 50</strong> with a first idiopathic event<br>Venous thromboembolism <strong>in cancer</strong><br>Elderly with a post-operative clot<br><strong>Retinal</strong> vein thrombosis<br><strong>Arterial</strong> thrombosis (except antiphospholipid)<br>Asymptomatic women starting oral contraceptives with no personal or family history</td>
+      </tr>
+    </table></div>
+    <p><span class="hy">Testing costs roughly $1,000 and usually does not change management when the clot happened in the setting of a major transient risk factor.</span> <strong>Timing:</strong> heparin lowers antithrombin, warfarin lowers proteins C and S, acute illness raises factor 8 — wait months, off anticoagulation. Genetic testing can be done any time, once.</p>
+
+    <h3>Treating and stopping</h3>
+    <div class="t-wrap"><table>
+      <tr><th>Question</th><th>Answer</th></tr>
+      <tr><td><strong>Initial treatment</strong></td><td><strong>Two-drug approach:</strong> unfractionated or low-molecular-weight heparin overlapping with warfarin for <strong>at least 5 days</strong> until the ratio is over 2 for 1–2 days. <strong>One-drug approach:</strong> apixaban or rivaroxaban alone (loading dose, no heparin). Dabigatran and edoxaban still need <strong>days of heparin first</strong></td></tr>
+      <tr><td><strong>When NOT to use a direct oral agent</strong></td><td>Pregnancy or breastfeeding · severe or massive clot · <strong>extremes of weight</strong> (over 300 lb or under 110 lb) · altered gastrointestinal anatomy including <strong>gastric bypass</strong> · <strong>splanchnic vein thrombosis</strong> · heparin-induced thrombocytopenia · recurrence while already anticoagulated · <span class="hy"><strong>antiphospholipid syndrome</strong></span> · major interactions (HIV drugs, phenytoin, carbamazepine)</td></tr>
+      <tr><td><strong>Duration</strong></td><td>Provoked by a major transient factor → <strong>3 months, then stop</strong> · unprovoked → at least 3 months, then decide · <strong>second unprovoked → long-term</strong> · cancer-associated → low-molecular-weight heparin or edoxaban, at least 3 months</td></tr>
+      <tr><td><strong>Recurrence risk</strong></td><td>Major transient <strong>3%</strong> · minor reversible <strong>5%</strong> · <strong>unprovoked 10% in year one</strong>. Risk is highest in the <strong>first 1–2 years</strong>. Extended anticoagulation cuts recurrence by over <strong>90%</strong> — at the cost of more bleeding</td></tr>
+      <tr><td><strong>Reversal, and what it costs</strong></td><td><strong>Idarucizumab</strong> for dabigatran, about <strong>$3,500</strong>. <strong>Andexanet alfa</strong> for the factor 10a inhibitors ran <strong>$25,000–50,000</strong> and was withdrawn in 2026, leaving <strong>4-factor prothrombin complex concentrate</strong> as the practical option</td></tr>
+      <tr><td><strong>Inferior vena cava filter</strong></td><td>One solid indication — <span class="hy"><strong>an absolute contraindication to anticoagulation</strong></span>. Also considered when anticoagulation fails with an acute proximal clot, or a proximal clot in poor cardiopulmonary reserve. <strong>It increases recurrent deep vein thrombosis</strong></td></tr>
+      <tr><td>The evidence</td><td><strong>AMPLIFY-EXTEND:</strong> apixaban 2.5 mg gives full benefit at placebo-level bleeding. <strong>EINSTEIN-CHOICE:</strong> aspirin is markedly inferior and not safer. <strong>VTE-BLEED ≥2</strong> = high bleeding risk (13%); active cancer alone scores 2</td></tr>
+    </table></div>
 
     <div class="exam-q">
-      <p><strong>Q:</strong> aPTT fails to correct on 1:1 mix but corrects with excess phospholipid; two second-trimester losses. Diagnosis and drug?</p>
-      <div class="answer"><div class="label">Answer</div><p><strong>Antiphospholipid syndrome</strong> (confirm at 12 weeks). Use <strong>warfarin</strong> — direct oral agents show evidence of harm here.</p></div>
+      <p><strong>Q:</strong> A 33-year-old woman has a clotting time that fails to correct on a 1:1 mix but corrects when excess phospholipid is added. She has had two second-trimester losses. Diagnosis, and which anticoagulant?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Antiphospholipid syndrome</strong> — confirm with antibody persistence 12 weeks apart. <strong>Use warfarin, not a direct oral anticoagulant</strong> — this is the setting with evidence of harm from the direct agents.</p></div>
     </div>
   </div>
 </div>
@@ -1531,7 +1675,7 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
 <!-- ==================== 12. LYMPH NODE ==================== -->
 <div class="section" id="s12">
   <div class="container">
-    <div class="badge-row"><div class="lo-badge">12 — Lymph Node Pathology</div><div class="miss-count clean">LO 63 · 66</div></div>
+    <div class="badge-row"><div class="lo-badge">12 — Lymph Node Pathology</div><div class="miss-count clean">LO 63 · 66</div><div class="wt t3" title="Questions in the 441-question bank that test this area"><span class="n">8</span> questions · 1.8% · Light</div></div>
     <h2 class="section-title">The Normal Node and the Benign Mimics</h2>
 
     <h3>Architecture — the pattern makes the differential</h3>
@@ -1570,7 +1714,7 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
 <!-- ==================== 13. HEMATOLOGIC MALIGNANCY ==================== -->
 <div class="section" id="s13">
   <div class="container">
-    <div class="badge-row"><div class="lo-badge">13 — Hematologic Malignancy</div><div class="miss-count clean">LO 3 · 6 · 21 · 37–41 · 54 · 56–58 · 67 · 80 · 82</div></div>
+    <div class="badge-row"><div class="lo-badge">13 — Hematologic Malignancy</div><div class="miss-count clean">LO 3 · 6 · 21 · 37–41 · 54 · 56–58 · 67 · 80 · 82</div><div class="wt t1" title="Questions in the 441-question bank that test this area"><span class="n">47</span> questions · 10.7% · Heavy</div></div>
     <h2 class="section-title">Leukemias, Lymphomas, Plasma Cell Disorders</h2>
 
     <div class="callout callout-key">
@@ -1587,11 +1731,22 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
 
     <h3>Myeloid</h3>
     <div class="t-wrap"><table>
-      <tr><th>Disease</th><th>Genetics</th><th>The tested fact</th></tr>
-      <tr><td><strong>Acute promyelocytic</strong></td><td><strong>t(15;17)</strong> PML-RARA</td><td><span class="hy">Start ATRA on SUSPICION — the coagulopathy kills before cytogenetics return.</span> 90% survival. Faggot cells</td></tr>
-      <tr><td><strong>Myelodysplasia</strong></td><td>Epigenetic</td><td><strong>Hypercellular marrow WITH cytopenias</strong> = ineffective production. Hypomethylating agents. 30% → AML, but <strong>50% die of bleeding/infection first</strong></td></tr>
-      <tr><td><strong>Chronic myeloid</strong></td><td><strong>t(9;22)</strong> BCR-ABL, Philadelphia</td><td>TKIs: 2–5 yr median → <strong>95% alive at 10 yr</strong>. T315I → pona<span class="sfx">tinib</span>. Accelerated = blasts 10–19% <em>or</em> basophils ≥20%; blast phase &gt;20%</td></tr>
-      <tr><td><strong>Myeloproliferative</strong></td><td><strong>JAK2</strong></td><td>Danger is <strong>thrombosis</strong>. Polycythemia vera → phlebotomy (hematocrit &lt;45 M / &lt;42 F). Essential thrombocythemia → hydroxyurea. Myelofibrosis → ruxoli<span class="sfx">tinib</span> helps symptoms + survival, <strong>NOT counts</strong></td></tr>
+      <tr><th>Disease</th><th>Genetics</th><th>Diagnosis &amp; key fact</th><th>Prognosis and treatment</th><th class="pic-h">Picture</th></tr>
+      <tr><td><strong>Acute myeloid leukemia</strong></td><td>Varies by subtype; <strong>prior chemotherapy, myelodysplasia and Down syndrome raise risk</strong></td><td>Over <strong>20% blasts</strong>. <strong>Auer rods are definitionally myeloid and definitionally malignant</strong>; myeloperoxidase positive</td><td><strong>Induction "7+3"</strong> — cytarabine 7 days + an anthracycline 3 days; <strong>3–4 week hospitalisation</strong>, goal is cure. Then <strong>consolidation</strong>, with stem cell transplant for intermediate and high risk. <strong>Older patients:</strong> hypomethylating agent (azacitidine, decitabine) ± venetoclax. <strong>Older age worsens outcome</strong></td><td class="pic"><img loading="lazy" width="1028" height="908" src="assets/ss-heme-aml-auer-rods.jpg" alt="Auer rods in acute myeloid leukemia" class="pic-img"></td></tr>
+      <tr><td><strong>Acute promyelocytic leukemia</strong></td><td><strong>t(15;17)</strong> → PML-RARA</td><td><span class="hy">Start all-trans retinoic acid on SUSPICION — severe disseminated intravascular coagulation kills before cytogenetics return</span>. <strong>Faggot cells</strong> — bundles of Auer rods</td><td><strong>Biologically and genetically distinct — and the one curable variant: ~90% survival.</strong> Around <strong>10% still die of bleeding</strong> early. All-trans retinoic acid plus arsenic trioxide</td><td class="pic"><img loading="lazy" width="1074" height="726" src="assets/ss-heme-apl-multiple-auer.jpg" alt="Faggot cell with multiple Auer rods" class="pic-img"></td></tr>
+      <tr><td><strong>Acute lymphoblastic leukemia</strong></td><td><strong>t(12;21)</strong> favourable · <strong>t(9;22)</strong> and <strong>t(1;19)</strong> unfavourable · hyperdiploid good, hypodiploid bad</td><td><strong>The commonest childhood cancer</strong> — 85% paediatric, 15% adult. <span class="hy">Lymphadenopathy, splenomegaly and central nervous system involvement separate it from the myeloid form</span></td><td><strong>Children over 90% survival</strong> · adolescents and young adults <strong>50–70%</strong> · <strong>adults about 30%</strong>. BCR-ABL positive disease responds to oral tyrosine kinase inhibitors</td><td class="pic"><img loading="lazy" width="826" height="850" src="assets/final-exam-fig_all_lymphoblasts-9c2625f1d2.jpg" alt="Lymphoblasts in acute lymphoblastic leukemia" class="pic-img"></td></tr>
+      <tr><td><strong>Myelodysplastic syndrome</strong></td><td>Epigenetic; prior radiation or chemotherapy</td><td><strong>Hypercellular marrow WITH cytopenias</strong> = ineffective production. Dysplasia in all lines — <strong>Pseudo-Pelger-Huët</strong> bilobed neutrophils, ringed sideroblasts, megaloblastoid change. <strong>Under 20% blasts</strong></td><td><span class="hy"><strong>30% progress to acute myeloid leukemia — but 50% die of bleeding or infection first.</strong></span> Supportive care, growth factors, transfusions, hypomethylating agents. <strong>Only cure is allogeneic transplant</strong></td><td class="pic"><img loading="lazy" width="491" height="293" src="assets/ss-heme-myelodysplasia-panel.jpg" alt="Myelodysplasia dysplastic cells" class="pic-img"></td></tr>
+      <tr><td><strong>Chronic myeloid leukemia</strong></td><td><strong>t(9;22)</strong> BCR-ABL1, the Philadelphia chromosome → <span class="mech">constitutive tyrosine kinase activity</span></td><td>High white count with a <strong>hypercellular marrow</strong>, <strong>basophilia</strong>, <strong>megakaryocyte clustering</strong>, and a <span class="hy"><strong>LOW leukocyte alkaline phosphatase</strong> — the split from a leukemoid reaction</span>. Accelerated = blasts 10–19% <em>or</em> basophils 20%+; blast phase over 20%</td><td><strong>Before tyrosine kinase inhibitors: median survival 2–5 years. After: 95% alive at 10 years.</strong> First generation imatinib; second generation nilotinib, dasatinib, bosutinib. <strong>T315I resistance → ponatinib</strong> or omacetaxine. Treatment-free remission is now possible</td><td class="pic"><img loading="lazy" width="551" height="415" src="assets/lpd-cll-touch-prep.jpg" alt="Chronic leukemia peripheral smear" class="pic-img"></td></tr>
+    </table></div>
+
+    <h3>Myeloproliferative neoplasms — mature cells, no blasts</h3>
+    <p><strong>Basic principle:</strong> neoplastic proliferation of <em>mature</em> myeloid cells. A disease of <strong>late adulthood, average 50–60 years</strong>. All myeloid lines increase; classification follows <strong>the dominant cell produced</strong>. Complications: <strong>hyperuricemia and gout</strong> from high cell turnover, and progression to marrow fibrosis or acute leukemia. <span class="hy">The "spent phase" is secondary myelofibrosis — cells stop coming out of the marrow.</span></p>
+    <div class="t-wrap"><table>
+      <tr><th>Disorder</th><th>Pathophysiology</th><th>Clinical features</th><th>Morphology</th><th>Prognosis &amp; treatment</th><th class="pic-h">Picture</th></tr>
+      <tr><td><strong>Chronic myeloid leukemia</strong></td><td><span class="mech">Neoplastic transformation of a myeloid stem cell — mostly granulocytes, also red cells and megakaryocytes</span></td><td>Insidious onset, <strong>left upper quadrant dragging</strong> from splenomegaly. Median survival 3 years untreated</td><td>Blood: <strong>neutrophils, myelocytes, basophils</strong>. Marrow: markedly hypercellular, <strong>raised myeloid-to-erythroid ratio, megakaryocyte clustering</strong></td><td><strong>t(9;22)</strong>. BCR-ABL inhibitors give prolonged survival; transplant is definitive. <strong>Blast phase → all treatment less effective</strong></td><td class="pic"><img loading="lazy" width="551" height="415" src="assets/lpd-cll-touch-prep.jpg" alt="Chronic myeloid leukemia smear" class="pic-img"></td></tr>
+      <tr><td><strong>Polycythemia vera</strong></td><td><span class="mech">Proliferation of erythroid, granulocytic and megakaryocytic elements</span>. <strong>JAK2 mutation</strong></td><td>Mid-to-late age. <strong>Increased blood viscosity</strong> → vascular stasis, thrombosis, infarction. <strong>Pruritus after a hot shower</strong> and <strong>gout</strong></td><td><strong>Absolute increase in red cell mass</strong>, raised hemoglobin, hypercellular marrow, erythroid hyperplasia, <strong>decreased erythropoietin</strong></td><td>Median survival <strong>10 years</strong>. <strong>Therapeutic phlebotomy</strong> to hematocrit under 45 (men) / 42 (women) + myelosuppression. <strong>Spent phase → secondary myelofibrosis</strong></td><td class="pic"><img loading="lazy" width="850" height="636" src="assets/final-exam-fig_nrbc-98ab586974.jpg" alt="Polycythemia blood smear" class="pic-img"></td></tr>
+      <tr><td><strong>Primary myelofibrosis</strong></td><td><span class="mech">Neoplastic megakaryocytes release platelet-derived growth factor → marrow fibrosis</span>. <strong>JAK2 mutation</strong></td><td>Massive <strong>splenomegaly</strong> from extramedullary hematopoiesis in the spleen</td><td><span class="hy"><strong>Leukoerythroblastic smear</strong> — nucleated red cells + immature white cells + <strong>TEAR-DROP cells</strong></span>. Marrow: early hypercellular with bizarre megakaryocytes, late hypocellular with fibrosis</td><td>Worst prognosis of the group. Ruxolitinib helps symptoms and survival, <span class="hy"><strong>NOT the counts</strong></span></td><td class="pic"><img loading="lazy" width="774" height="654" src="assets/ss-heme-myelofibrosis.jpg" alt="Myelofibrosis marrow with fibrosis" class="pic-img"></td></tr>
+      <tr><td><strong>Essential thrombocythemia</strong></td><td><span class="mech">Neoplastic proliferation of mature megakaryocytes → platelets</span>. <strong>JAK2 mutation</strong></td><td><strong>Both thrombosis AND hemorrhage</strong> — the platelets are numerous but dysfunctional</td><td>Platelets markedly raised; large and bizarre forms</td><td><strong>Least common; rare progression</strong> to myelofibrosis or acute leukemia. <strong>No significant gout or hyperuricemia risk.</strong> Hydroxyurea</td><td class="pic"><img loading="lazy" width="850" height="636" src="assets/final-exam-fig_teardrop-3d61518c36.jpg" alt="Platelet and red cell morphology" class="pic-img"></td></tr>
     </table></div>
     <div class="img-2col">
       <div><img loading="lazy" width="850" height="751" src="assets/final-exam-fig_auer_rods-421ded2aa5.jpg" alt="Auer rods" class="slide-img"><p class="slide-caption">Auer rod — myeloid and malignant.</p></div>
@@ -1601,26 +1756,73 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
     <h3>Lymphoid — two questions, then the phenotype <span class="hy-star">★ HY</span></h3>
     <p><span class="hy"><strong>CD5+</strong> → CLL or mantle cell; separate on <strong>CD23: CLL POSITIVE, mantle NEGATIVE</strong> + t(11;14)/cyclin D1. <strong>CD10+</strong> → germinal centre (follicular, Burkitt, some DLBCL). <strong>CD5− and CD10−</strong> → marginal zone, lymphoplasmacytic, hairy cell.</span></p>
     <div class="t-wrap"><table>
-      <tr><th>Lymphoma</th><th>Signature</th><th>Genetics</th></tr>
-      <tr><td><strong>CLL/SLL</strong></td><td><strong>Smudge cells</strong>, soccer-ball chromatin, proliferation centres</td><td>17p/TP53 always bad. <strong>Richter</strong> → large B-cell</td></tr>
-      <tr><td><strong>Follicular</strong></td><td>Back-to-back follicles, <strong>no</strong> tingible body macrophages, <strong>paratrabecular</strong> marrow</td><td><span class="hy">BCL2 POSITIVE, t(14;18)</span>. Indolent, incurable, transforms 1–3%/yr</td></tr>
-      <tr><td><strong>Burkitt</strong></td><td><strong>Starry sky</strong>, medium cells with vacuoles</td><td><span class="hy">BCL2 NEGATIVE, t(8;14) MYC, Ki-67 &gt;95%</span>. Endemic = jaw + EBV</td></tr>
-      <tr><td><strong>DLBCL</strong></td><td>Sheets of large cells</td><td>R-CHOP. <strong>Double hit</strong> (MYC + BCL2/BCL6) ≈ 30% — worse than the worst clinical score</td></tr>
-      <tr><td><strong>MALT</strong></td><td><strong>Lymphoepithelial lesions</strong></td><td>CD5−/CD10−/BCL6−. <span class="hy">Eradicate <em>H. pylori</em> and it can resolve</span></td></tr>
-      <tr><td><strong>Hairy cell</strong></td><td><strong>DRY TAP</strong>, <strong>monocytopenia</strong>, big spleen yet indolent</td><td>BRAF &gt;90%; CD11c/CD25/CD103</td></tr>
-      <tr><td><strong>Mycosis fungoides</strong></td><td><strong>Epidermotropism</strong>, <strong>Pautrier microabscesses</strong>, bathing-trunk</td><td>CD4+, CD7 dim. <strong>Sézary</strong> = erythroderma + &gt;1,000/µL + CD4:CD8 &gt;10:1</td></tr>
-      <tr><td><strong>Anaplastic large cell</strong></td><td><strong>Hallmark cells</strong> (horseshoe nucleus)</td><td>CD30 strong. <strong>ALK+ ~80% vs ALK− ~50% survival</strong></td></tr>
-      <tr><td><strong>ATLL</strong></td><td><strong>Flower cells</strong></td><td>HTLV-1; <strong>hypercalcemia</strong></td></tr>
+      <tr><th>Lymphoma</th><th>Signature</th><th>Genetics / phenotype</th><th class="pic-h">Picture</th></tr>
+      <tr><td><strong>CLL / SLL</strong></td><td><strong>Smudge cells</strong>, soccer-ball chromatin; proliferation centres in the node</td><td>CD5+, <strong>CD23+</strong>, CD20+, CD10−. 17p/TP53 always bad. <strong>Richter transformation</strong> → large B-cell</td><td class="pic"><img loading="lazy" width="780" height="535" src="assets/final-exam-fig_lpd_smudge_cells-d6d9d4eed6.jpg" alt="Smudge cells in chronic lymphocytic leukemia" class="pic-img"></td></tr>
+      <tr><td><strong>Mantle cell</strong></td><td>Monotonous small cells; aggressive despite looking bland</td><td>CD5+, <strong>CD23 NEGATIVE</strong> + <strong>t(11;14) cyclin D1</strong> — that pair separates it from CLL</td><td class="pic"><img loading="lazy" width="1139" height="400" src="assets/lpd-cll-sll-node.jpg" alt="Small lymphocytic infiltrate in a node" class="pic-img"></td></tr>
+      <tr><td><strong>Follicular</strong></td><td>Back-to-back monotonous follicles, <strong>no</strong> tingible body macrophages, <strong>paratrabecular</strong> marrow</td><td><span class="hy">BCL2 POSITIVE, t(14;18)</span>. Indolent, incurable; transforms 1–3%/yr</td><td class="pic"><img loading="lazy" width="551" height="415" src="assets/lpd-follicular-lymphoma-back-to-back.jpg" alt="Follicular lymphoma, back-to-back follicles" class="pic-img"></td></tr>
+      <tr><td><strong>Burkitt</strong></td><td><strong>Starry sky</strong>; medium cells with vacuoles</td><td><span class="hy">BCL2 NEGATIVE, t(8;14) MYC, Ki-67 over 95%</span>. Endemic = jaw + Epstein–Barr virus</td><td class="pic"><img loading="lazy" width="780" height="441" src="assets/final-exam-fig_lpd_burkitt_starry_sky-698663169d.jpg" alt="Starry sky pattern in Burkitt lymphoma" class="pic-img"></td></tr>
+      <tr><td><strong>Diffuse large B-cell</strong></td><td>Sheets of large cells</td><td>R-CHOP. <strong>Double hit</strong> (MYC + BCL2/BCL6) ≈ 30% survival — worse than the worst clinical score</td><td class="pic"><img loading="lazy" width="443" height="374" src="assets/lpd-dlbcl-large-cells.jpg" alt="Large cells in diffuse large B-cell lymphoma" class="pic-img"></td></tr>
+      <tr><td><strong>MALT / marginal zone</strong></td><td><strong>Lymphoepithelial lesions</strong>, monocytoid cells</td><td>CD5−, CD10−, BCL6−. <span class="hy">Eradicate <em>H. pylori</em> and it can resolve</span></td><td class="pic"><img loading="lazy" width="1024" height="771" src="assets/lpd-lymphoepithelial-lesion.jpg" alt="Lymphoepithelial lesion in MALT lymphoma" class="pic-img"></td></tr>
+      <tr><td><strong>Hairy cell</strong></td><td><strong>DRY TAP</strong> from marrow fibrosis · <strong>monocytopenia</strong> · big spleen yet indolent</td><td>BRAF over 90%; CD11c / CD25 / CD103 / annexin A1</td><td class="pic"><img loading="lazy" width="780" height="567" src="assets/final-exam-fig_lpd_hairy_cell-b7dbb131c1.jpg" alt="Hairy cell leukemia cells" class="pic-img"></td></tr>
+      <tr><td><strong>Mycosis fungoides</strong></td><td><strong>Epidermotropism</strong>, <strong>Pautrier microabscesses</strong>, bathing-trunk distribution</td><td>CD4+, CD7 dim/lost</td><td class="pic"><img loading="lazy" width="780" height="585" src="assets/final-exam-fig_lpd_pautrier_microabscesses-39f4e9eaa1.jpg" alt="Pautrier microabscesses in mycosis fungoides" class="pic-img"></td></tr>
+      <tr><td><strong>Sézary syndrome</strong></td><td>Erythroderma + over 1,000 cells/µL + <strong>cerebriform</strong> nucleus</td><td>CD4:CD8 over 10:1; same T-cell clone in blood and skin</td><td class="pic"><img loading="lazy" width="1000" height="754" src="assets/lpd-sezary-cell.jpg" alt="Sezary cell with cerebriform nucleus" class="pic-img"></td></tr>
+      <tr><td><strong>Anaplastic large cell</strong></td><td><strong>Hallmark cells</strong> — horseshoe nucleus, pale paranuclear zone</td><td>CD30 strong and diffuse. <strong>ALK positive ~80% vs ALK negative ~50% survival</strong></td><td class="pic"><img loading="lazy" width="1400" height="1053" src="assets/lpd-alcl-hallmark-cells.jpg" alt="Hallmark cells in anaplastic large cell lymphoma" class="pic-img"></td></tr>
+      <tr><td><strong>Adult T-cell leukemia/lymphoma</strong></td><td><strong>Flower cells</strong> — multilobated petals</td><td>HTLV-1, Japan or the Caribbean. <strong>Hypercalcemia</strong></td><td class="pic"><img loading="lazy" width="780" height="559" src="assets/final-exam-fig_lpd_atll_flower_cells-d8aea11870.jpg" alt="Flower cells in adult T-cell leukemia" class="pic-img"></td></tr>
     </table></div>
 
-    <h3>Hodgkin</h3>
-    <ul class="notes-list">
-      <li><span class="hy">Hodgkin spreads <strong>CONTIGUOUSLY</strong> down axial groups — abdominal nodes are never involved before cervical/mediastinal.</span> Non-Hodgkin is noncontiguous and often extranodal.</li>
-      <li>Bimodal 15–35 and &gt;55; 50% EBV. <strong>EXCISIONAL biopsy.</strong> Alcohol-induced nodal pain, pruritus, eosinophilia. <strong>ABVD</strong>; relapse → brentuxi<span class="sfx">mab</span> (anti-CD30) or nivolu<span class="sfx">mab</span>.</li>
-      <li><strong>Reed–Sternberg cells are &lt;10% of the node.</strong> CD30 strong · CD15 ~75% · <strong>PAX5 weak</strong> · CD20/OCT2/CD45 <strong>negative</strong>.</li>
-      <li><strong>Subtypes:</strong> nodular sclerosis (young, bands + lacunar cells, excellent) · lymphocyte-rich (good) · mixed cellularity (elderly male, aggressive) · lymphocyte-depleted (<strong>worst</strong>, HIV).</li>
-      <li><strong>NLPHL is the mirror image:</strong> <strong>popcorn cells</strong>, CD20/OCT2/CD45 <strong>POSITIVE</strong>, CD30/CD15 negative, PAX5 strong → <strong>R-CHOP works because CD20 is there</strong>.</li>
-    </ul>
+    <h3>Hodgkin lymphoma — the cell, then the five subtypes</h3>
+
+    <div class="callout callout-key">
+      <div class="callout-title">🔑 One principle drives both the subtype and the prognosis <span class="hy-star">★ HY</span></div>
+      <p>The Reed–Sternberg cell is the tumour, but it is <strong>less than 10% of the node.</strong> Everything else is reactive inflammation the tumour recruited. <span class="hy">Subtype and prognosis both track one ratio — Reed–Sternberg cells against inflammatory background.</span></p>
+      <p><strong>More lymphocytes = better prognosis. More Reed–Sternberg cells and less background = more aggressive.</strong> Learn the ratio and four of the five subtypes fall out of it without separate memorising.</p>
+    </div>
+
+    <div class="t-wrap"><table>
+      <tr><th>What to know</th><th>High-yield content</th><th class="pic-h">Picture</th></tr>
+      <tr><td><strong>The tumour cell</strong></td><td><strong>Reed–Sternberg cell</strong> — a <strong>large B-cell</strong> with a multilobed nucleus and prominent <strong>&ldquo;owl eye&rdquo; nucleoli.</strong> Binucleate mirror-image form is the classic picture.</td><td class="pic"><img loading="lazy" width="551" height="372" src="assets/lpd-reed-sternberg-cell.jpg" alt="Reed-Sternberg cell with owl-eye nucleoli" class="pic-img"></td></tr>
+      <tr><td><strong>Immunophenotype</strong></td><td>Classical Hodgkin is <strong>CD15 positive and CD30 positive.</strong> <span class="mech">It has lost the B-cell program</span> — CD20, OCT2 and CD45 <strong>negative</strong>, PAX5 only <strong>weak</strong>.</td><td class="na"></td></tr>
+      <tr><td><strong>Why the &ldquo;B&rdquo; symptoms</strong></td><td>Reed–Sternberg cells <span class="mech">secrete cytokines</span> such as <strong>interleukin-5</strong>, which pull in lymphocytes, plasma cells, macrophages and <strong>eosinophils</strong>. <span class="hy">Fever, chills, weight loss and night sweats are more common in Hodgkin than in non-Hodgkin because of that reactive cytokine storm.</span> The cytokines also drive the fibrosis.</td><td class="na"></td></tr>
+      <tr><td><strong>How it spreads</strong></td><td><span class="hy">Hodgkin spreads <strong>CONTIGUOUSLY</strong> down axial nodal groups</span> — abdominal nodes are never involved before cervical or mediastinal. Non-Hodgkin is noncontiguous and often extranodal.</td><td class="na"></td></tr>
+      <tr><td><strong>Diagnosis</strong></td><td><strong>EXCISIONAL biopsy</strong> — you need the architecture, so a needle core will not do. Alcohol-induced nodal pain, itching and eosinophilia are the classic soft clues.</td><td class="na"></td></tr>
+      <tr><td><strong>Treatment</strong></td><td><strong>ABVD.</strong> Relapse → brentuxi<span class="sfx">mab</span> (<span class="mech">anti-CD30, which is why the CD30 stain matters twice</span>) or nivolu<span class="sfx">mab</span>.</td><td class="na"></td></tr>
+      <tr><td><strong>The ratio, drawn</strong></td><td>Actuarial survival separates cleanly by subtype, and it separates <strong>in lymphocyte order</strong> — predominance on top, depletion on the bottom. <span class="hy">The curve is the principle.</span></td><td class="pic"><img loading="lazy" width="494" height="691" src="assets/lpd-hodgkin-survival-by-subtype.jpg" alt="Actuarial survival by Hodgkin subtype" class="pic-img"></td></tr>
+    </table></div>
+
+    <h3>The five subtypes side by side</h3>
+
+    <div class="t-wrap"><table class="xpose">
+      <tr><th>&nbsp;</th><th>Nodular lymphocyte predominant</th><th>Mixed cellularity</th><th>Lymphocyte depleted</th><th>Nodular sclerosing</th><th>Lymphocyte rich</th></tr>
+      <tr><td><strong>Class</strong></td><td><strong>NON-classical</strong></td><td>Classical</td><td>Classical</td><td>Classical</td><td>Classical</td></tr>
+      <tr><td><strong>Incidence</strong></td><td>Rare</td><td><strong>30%</strong></td><td>Rare</td><td><strong>60% — the common one</strong></td><td>5%</td></tr>
+      <tr><td><strong>Who gets it</strong></td><td>Young <strong>males</strong>, usually under 35</td><td>Males &gt; females; <strong>elderly</strong></td><td>Males &gt; females; <strong>elderly</strong></td><td><strong>FEMALES &gt; males</strong> — young adults and adolescents</td><td>Males &gt; females; elderly</td></tr>
+      <tr><td><strong>Prognosis</strong></td><td>Limited disease, early stage, <strong>excellent</strong></td><td><strong>More aggressive</strong> — disseminated and high stage at diagnosis</td><td><strong>POOR</strong> — high stage, dissemination common</td><td><strong>Excellent</strong>, usually caught at stage 1 or 2</td><td>Limited disease. <strong>Best prognosis of all types</strong></td></tr>
+      <tr><td><strong>What the node looks like</strong></td><td>Sea of mature lymphocytes, few histiocytes, Reed–Sternberg-like cells very rare. <strong>POPCORN cells</strong> (L&amp;H cells)</td><td><strong>Many typical Reed–Sternberg cells</strong>, fewer lymphocytes. Heterogeneous background with <strong>eosinophils</strong> and plasma cells</td><td><strong>Many Reed–Sternberg cells, few benign lymphocytes.</strong> <strong>Fibrotic background</strong></td><td>Many <strong>LACUNAR cells</strong> (Reed–Sternberg variants sitting in clear spaces). Node divided by bands of <strong>collagenous tissue</strong></td><td>Few classic Reed–Sternberg cells. <strong>Many lymphocytes</strong></td></tr>
+      <tr><td><strong>Stains</strong></td><td><span class="hy">The mirror image: <strong>CD20, OCT2 and CD45 POSITIVE</strong>, CD15 and CD30 <strong>negative</strong>, PAX5 strong</span> → <strong>rituximab-based therapy works, because CD20 is there</strong></td><td>CD15+ CD30+</td><td>CD15+ CD30+</td><td>CD15+ CD30+</td><td>CD15+ CD30+</td></tr>
+      <tr><td><strong>Picture</strong></td><td class="pic"><img loading="lazy" width="551" height="415" src="assets/lpd-popcorn-cells.jpg" alt="Popcorn cells in nodular lymphocyte predominant Hodgkin lymphoma" class="pic-img"></td><td class="pic"><img loading="lazy" width="1286" height="840" src="assets/lpd-mixed-cellularity-highpower.jpg" alt="Mixed cellularity Hodgkin lymphoma" class="pic-img"></td><td class="pic"><img loading="lazy" width="551" height="372" src="assets/lpd-lymphocyte-depleted.jpg" alt="Lymphocyte depleted Hodgkin lymphoma" class="pic-img"></td><td class="pic"><img loading="lazy" width="551" height="373" src="assets/lpd-nodular-sclerosis-highpower.jpg" alt="Nodular sclerosing Hodgkin lymphoma with collagen bands" class="pic-img"></td><td class="pic"><img loading="lazy" width="1200" height="810" src="assets/lpd-lymphocyte-rich.jpg" alt="Lymphocyte rich Hodgkin lymphoma" class="pic-img"></td></tr>
+      <tr><td><strong>Also worth seeing</strong></td><td class="na"></td><td class="na"></td><td class="na"></td><td class="pic"><img loading="lazy" width="551" height="372" src="assets/lpd-lacunar-cells.jpg" alt="Lacunar cells sitting in clear spaces" class="pic-img"></td><td class="na"></td></tr>
+    </table></div>
+
+    <div class="callout callout-concept">
+      <div class="callout-title">💡 Two traps inside that grid</div>
+      <p><strong>Nodular sclerosing is the female one.</strong> Every other subtype is male-predominant, and it is also the most common — so a young woman with a mediastinal mass is nodular sclerosing until proven otherwise.</p>
+      <p><strong>Nodular lymphocyte predominant is not just &ldquo;the rare one&rdquo; — it is the inverted one.</strong> <span class="hy">It keeps the B-cell program that classical Hodgkin throws away.</span> Every stain flips. That is why it is classed separately and why it is the one Hodgkin that responds to an anti-CD20 drug.</p>
+    </div>
+
+    <h3>Ann Arbor staging</h3>
+
+    <div class="t-wrap"><table>
+      <tr><th>Stage</th><th>What it means</th></tr>
+      <tr><td><strong>Stage 1</strong></td><td><strong>One</strong> lymph node region — or a single extralymphatic site alone (<strong>Ie</strong>)</td></tr>
+      <tr><td><strong>Stage 2</strong></td><td><strong>Two or more</strong> nodal regions on the <strong>SAME side of the diaphragm</strong> — or one nodal region plus one extralymphatic site (<strong>IIe</strong>)</td></tr>
+      <tr><td><strong>Stage 3</strong></td><td><span class="hy">Nodal regions on <strong>BOTH SIDES of the diaphragm</strong></span> — plus a single extralymphatic site makes it <strong>IIIe</strong></td></tr>
+      <tr><td><strong>Stage 4</strong></td><td><strong>Diffuse</strong> involvement of extralymphatic sites, with or without node enlargement</td></tr>
+    </table></div>
+
+    <div class="callout callout-warning">
+      <div class="callout-title">⚠️ The staging line that gets missed</div>
+      <p><span class="hy">The diaphragm is the whole hinge between stage 2 and stage 3.</span> Count the regions first, then ask which side of the diaphragm each one is on — not the other way round. A lowercase <strong>e</strong> means one extralymphatic site came along; it does not advance the number.</p>
+    </div>
 
     <h3>Plasma cell</h3>
     <ul class="notes-list">
@@ -1640,7 +1842,7 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
 <!-- ==================== 14. ANTINEOPLASTIC ==================== -->
 <div class="section" id="s14">
   <div class="container">
-    <div class="badge-row"><div class="lo-badge">14 — Antineoplastic Pharmacology</div><div class="miss-count clean">LO 11 · 15 · 16 · 17 · 64</div></div>
+    <div class="badge-row"><div class="lo-badge">14 — Antineoplastic Pharmacology</div><div class="miss-count clean">LO 11 · 15 · 16 · 17 · 64</div><div class="wt t1" title="Questions in the 441-question bank that test this area"><span class="n">31</span> questions · 7.0% · Heavy</div></div>
     <h2 class="section-title">The Four Classes and What Each Costs</h2>
 
     <div class="t-wrap"><table>
@@ -1709,7 +1911,7 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
 <!-- ==================== 15. LYMPHATICS ==================== -->
 <div class="section" id="s15">
   <div class="container">
-    <div class="badge-row"><div class="lo-badge">15 — Lymphatics &amp; Thrombosis</div><div class="miss-count clean">LO 10 · 43 · 63</div></div>
+    <div class="badge-row"><div class="lo-badge">15 — Lymphatics &amp; Thrombosis</div><div class="miss-count clean">LO 10 · 43 · 63</div><div class="wt t3" title="Questions in the 441-question bank that test this area"><span class="n">8</span> questions · 1.8% · Light</div></div>
     <h2 class="section-title">The Lymphatic System and Venous Thromboembolism</h2>
 
     <h3>Structure and function</h3>
@@ -1755,7 +1957,7 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
 <!-- ==================== 16. PEDIATRICS ==================== -->
 <div class="section" id="s16">
   <div class="container">
-    <div class="badge-row"><div class="lo-badge">16 — Pediatrics, Spleen &amp; Prescribing</div><div class="miss-count clean">LO 65 · 67 · 77 · 78</div></div>
+    <div class="badge-row"><div class="lo-badge">16 — Pediatrics, Spleen &amp; Prescribing</div><div class="miss-count clean">LO 65 · 67 · 77 · 78</div><div class="wt t3" title="Questions in the 441-question bank that test this area"><span class="n">11</span> questions · 2.5% · Light</div></div>
     <h2 class="section-title">Pediatric Hematology, the Spleen, the Prescription</h2>
 
     <h3>Immune thrombocytopenia</h3>
@@ -1825,7 +2027,7 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
 <!-- ==================== 17. TRAUMA ==================== -->
 <div class="section" id="s17">
   <div class="container">
-    <div class="badge-row"><div class="lo-badge">17 — Trauma, Edema &amp; Metastasis</div><div class="miss-count clean">LO 34 · 47 · 60 · 73</div></div>
+    <div class="badge-row"><div class="lo-badge">17 — Trauma, Edema &amp; Metastasis</div><div class="miss-count clean">LO 34 · 47 · 60 · 73</div><div class="wt t2" title="Questions in the 441-question bank that test this area"><span class="n">18</span> questions · 4.1% · Moderate</div></div>
     <h2 class="section-title">Surgical Hematology</h2>
 
     <h3>Splenic injury — stability decides, not grade</h3>
@@ -1876,7 +2078,7 @@ footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top
 <!-- ==================== 18. GERIATRICS ==================== -->
 <div class="section" id="s18">
   <div class="container">
-    <div class="badge-row"><div class="lo-badge">18 — Geriatrics</div><div class="miss-count clean">LO 77</div></div>
+    <div class="badge-row"><div class="lo-badge">18 — Geriatrics</div><div class="miss-count clean">LO 77</div><div class="wt t3" title="Questions in the 441-question bank that test this area"><span class="n">5</span> questions · 1.1% · Light</div></div>
     <h2 class="section-title">The Geriatric Functional Assessment</h2>
 
     <div class="callout callout-key">
@@ -2367,7 +2569,7 @@ function closeLightbox(){
   lightbox.setAttribute('aria-hidden','true');
   lightboxImg.src = '';
 }
-document.querySelectorAll('.slide-img').forEach(function(img){
+document.querySelectorAll('.slide-img, .pic-img').forEach(function(img){
   img.addEventListener('click', function(){ openLightbox(img); });
 });
 lightbox.addEventListener('click', closeLightbox);
@@ -2389,6 +2591,7 @@ function printHY(){ window.print(); }
 function initTableQuiz(){
   document.querySelectorAll('table').forEach(function(table){
     if(table.classList.contains('hy-mini-table')) return;
+    if(table.classList.contains('no-quiz')) return;
     var headerRow = table.rows[0];
     if(!headerRow) return;
     var headers = Array.prototype.slice.call(headerRow.cells);
@@ -2506,7 +2709,7 @@ function initTableQuiz(){
 }
 
 /* ===== COLLAPSIBLE SUBSECTIONS ===== */
-/* ===== SIDEBAR SUB-NAVIGATION (hover to peek · auto-opens the section you are in) ===== */
+/* ===== SIDEBAR SUB-NAVIGATION (opens only from a deliberate click) ===== */
 var subNav = { items: [], byId: {} };
 
 function buildSubNav(){
@@ -2528,6 +2731,8 @@ function buildSubNav(){
     link.appendChild(twist);
 
     var wrap = document.createElement('div'); wrap.className = 'toc-sub';
+    wrap.setAttribute('aria-hidden','true');
+    link.setAttribute('aria-expanded','false');
     var box  = document.createElement('div');
     wrap.appendChild(box);
 
@@ -2555,20 +2760,13 @@ function buildSubNav(){
     });
 
     item.appendChild(wrap);
-    var rec = {item:item, link:link, wrap:wrap, subLinks:subLinks, secId:secId, hoverT:null};
+    var rec = {item:item, link:link, wrap:wrap, subLinks:subLinks, secId:secId};
     subNav.items.push(rec);
     subNav.byId[secId] = rec;
 
-    // hover to peek
-    item.addEventListener('mouseenter', function(){
-      clearTimeout(rec.hoverT);
-      openSub(rec, true);
-    });
-    item.addEventListener('mouseleave', function(){
-      clearTimeout(rec.hoverT);
-      rec.hoverT = setTimeout(function(){
-        if(!rec.link.classList.contains('active')) openSub(rec, false);
-      }, 260);
+    link.addEventListener('click', function(){
+      var shouldOpen = !rec.item.classList.contains('open');
+      subNav.items.forEach(function(other){ openSub(other, other === rec && shouldOpen); });
     });
   });
 }
@@ -2576,17 +2774,17 @@ function buildSubNav(){
 function openSub(rec, open){
   rec.wrap.classList.toggle('open', open);
   rec.item.classList.toggle('open', open);
+  rec.wrap.setAttribute('aria-hidden',open?'false':'true');
+  rec.link.setAttribute('aria-expanded',open?'true':'false');
 }
 
-// called by the scrollspy: open the section you are reading, close the rest
-function syncSubNav(activeSecId){
-  subNav.items.forEach(function(rec){
-    var isActive = rec.secId === activeSecId;
-    if(isActive) openSub(rec, true);
-    else if(!rec.item.matches(':hover')) openSub(rec, false);
-  });
-  var rec = subNav.byId[activeSecId];
-  if(!rec) return;
+  // Follow the reader: open the current section and close the one just left.
+  function syncSubNav(activeSecId){
+    subNav.items.forEach(function(item){
+      openSub(item, item.secId === activeSecId);
+    });
+    var rec = subNav.byId[activeSecId];
+    if(!rec) return;
   // mark which subsection is actually on screen
   var best = null, bestTop = -Infinity;
   rec.subLinks.forEach(function(sl){
@@ -2680,9 +2878,28 @@ function syncCollapseBtn(){
   btn.textContent = open ? '⊟ Collapse all subsections' : '⊞ Expand all subsections';
 }
 
+/* ===== SIDEBAR VISIBILITY ===== */
+var TOC_VISIBILITY_KEY='heme-summ3-hy-sidebar-hidden';
+function setSidebarHidden(hidden, skipStorage){
+  hidden=!!hidden;
+  document.body.classList.toggle('toc-hidden',hidden);
+  var sidebar=document.querySelector('.toc-bar');
+  var showBtn=document.getElementById('tocShowBtn');
+  if(sidebar)sidebar.setAttribute('aria-hidden',hidden?'true':'false');
+  if(showBtn)showBtn.setAttribute('aria-expanded',hidden?'false':'true');
+  if(hidden&&document.activeElement&&sidebar&&sidebar.contains(document.activeElement))document.activeElement.blur();
+  if(!skipStorage){try{localStorage.setItem(TOC_VISIBILITY_KEY,hidden?'1':'0');}catch(e){}}
+}
+function initSidebarVisibility(){
+  var hidden=false;
+  try{hidden=localStorage.getItem(TOC_VISIBILITY_KEY)==='1';}catch(e){}
+  setSidebarHidden(hidden,true);
+}
+
 /* ===== INIT ===== */
 document.addEventListener('DOMContentLoaded', function(){
   initVisualState();
+  initSidebarVisibility();
   initSubsections();
   buildSubNav();
   initTableQuiz();

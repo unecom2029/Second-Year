@@ -15,7 +15,7 @@ The page is self-contained: no build tools, no frameworks, just one `.html` file
 
 > **Navigation change (current default).** The table of contents is now a **fixed left sidebar**, not a sticky bar across the top — see **Section 5.2**, which supersedes the old horizontal `.toc-bar`. It keeps the `.toc-bar` class name so existing theme and print rules still match, and it degrades to the original horizontal bar below 1000px. Three things elsewhere in this document depend on it: `.container` must use `94%` rather than `94vw` (Section 6), `@media print` must zero `body`'s left padding (Section 12.5, Mistake 3), and `initScrollspy()` joins the `DOMContentLoaded` init list (Section 9).
 
-> **Two variants now exist.** Sections 2–12 below are **Variant 1** — the original system, organized strictly by numbered Learning Objectives, with a 9-theme switcher (Paper/Night/Ocean/Forest/Sepia/Lavender/Rose/Slate/Hemo) and a component vocabulary tuned for pharmacology/pathology content (drug grids, hallmark grids, REMS badges, potency bars). **Section 13 is Variant 2** — a lighter-weight system built for `Introduction_to_Therapy_Study_Notes.html`, better suited to lecture content that isn't cleanly split into 2–3 LOs: a single light/dark toggle instead of named themes, and a component vocabulary built around generic "modality cards," mnemonics, and click-to-reveal cases rather than drug-specific components. Both variants share the same underlying philosophy (self-contained file, base64 images, lightbox, table quiz, optional HY one-pager) — pick whichever fits the lecture's actual content shape, and don't mix components from both within one file. **Section 14 is the Study Tools System** — an optional active-recall/progress layer (Recall Mode, per-section reviewed/confidence tracking, TOC scrollspy, collapsible sections, next-question jumper, pinned compare strip, keyboard shortcuts) first built for `Eating_Disorders_Study_Notes.html` on top of Variant 1; it's designed as an add-on layer and can be applied to either variant.
+> **Two variants now exist.** Sections 2–12 below are **Variant 1** — the original system, organized strictly by numbered Learning Objectives, with a 10-theme switcher (Paper/Night/Ocean/Forest/Sepia/Lavender/Rose/Slate/Hemo/Cardio) and a component vocabulary tuned for pharmacology/pathology content (drug grids, hallmark grids, REMS badges, potency bars). **Section 13 is Variant 2** — a lighter-weight system built for `Introduction_to_Therapy_Study_Notes.html`, better suited to lecture content that isn't cleanly split into 2–3 LOs: a single light/dark toggle instead of named themes, and a component vocabulary built around generic "modality cards," mnemonics, and click-to-reveal cases rather than drug-specific components. Both variants share the same underlying philosophy (self-contained file, base64 images, lightbox, table quiz, optional HY one-pager) — pick whichever fits the lecture's actual content shape, and don't mix components from both within one file. **Section 14 is the Study Tools System** — an optional active-recall/progress layer (Recall Mode, per-section reviewed/confidence tracking, TOC scrollspy, collapsible sections, next-question jumper, pinned compare strip, keyboard shortcuts) first built for `Eating_Disorders_Study_Notes.html` on top of Variant 1; it's designed as an add-on layer and can be applied to either variant.
 
 ---
 
@@ -76,7 +76,7 @@ add flavicon related to the lecture (can be from image from given class notes (p
 
 ## 3. Theme System
 
-The page supports 9 visual themes via a `data-theme` attribute on the `<html>` element. **Paper is the default** — it's what renders when no `data-theme` attribute is present, and it's the theme every file should load with before the person picks something else.
+The page supports 10 visual themes via a `data-theme` attribute on the `<html>` element. **Paper is the default** — it's what renders when no `data-theme` attribute is present, and it's the theme every file should load with before the person picks something else.
 
 ### Available Themes
 
@@ -91,6 +91,7 @@ The page supports 9 visual themes via a `data-theme` attribute on the `<html>` e
 | Rose | Blush pink + wine red / teal accent2 | `rose` |
 | Slate | Cool gray + steel blue / burnt orange accent | `slate` |
 | Hemo | Dark oxblood + arterial crimson / methylene-blue accent2 — built for hematology lectures | `hemo` |
+| Cardio | Soft ECG blush + arterial red / clinical-blue accent2 — built for cardiology lectures | `cardio` |
 
 ### Theme CSS Structure
 Each theme overrides **all** `:root` CSS variables — not just the core palette, but also the hero, floating-ui, quiz-overlay, and dark-panel vars. Example (Night theme, abbreviated):
@@ -155,6 +156,9 @@ Each theme overrides **all** `:root` CSS variables — not just the core palette
   <div class="theme-option" data-theme="hemo" onclick="setTheme('hemo',this)">
     <div class="theme-swatch" style="background:linear-gradient(135deg,#170a0d,#ff6b6b)"></div>Hemo (Blood)
   </div>
+  <div class="theme-option" data-theme="cardio" onclick="setTheme('cardio',this)">
+    <div class="theme-swatch" style="background:linear-gradient(135deg,#fff7f7,#b51f3a 55%,#245f89)"></div>Cardio (Heart)
+  </div>
 </div>
 ```
 
@@ -211,6 +215,7 @@ A handful of components are meant to **always** render as a dark card with light
 [data-theme="forest"] { --panel-dark-bg: #16241a; --panel-dark-text: #f2f7f0; }
 [data-theme="sepia"]  { --panel-dark-bg: #3a2414; --panel-dark-text: #f7ecd9; }
 [data-theme="hemo"]   { --panel-dark-bg: #2e1017; --panel-dark-text: #f9e7e9; }
+[data-theme="cardio"] { --panel-dark-bg: #173e63; --panel-dark-text: #f7fbff; }
 ```
 
 Then use `background: var(--panel-dark-bg); color: var(--panel-dark-text);` on `th`, `.exam-q`, and `.hy-mini-table th` instead of `var(--ink)`/`var(--paper)`. For light themes this pair is just a copy of that theme's `--ink`/`--paper` values (no visual change); for dark themes it's a fixed dark navy/light text pair independent of the flip. **Always spot-check `.exam-q` and a `<table>` header in every theme after writing palettes** — this is the single most common way a theme silently breaks.
@@ -233,7 +238,7 @@ The same mechanism bites `.exam-q strong` and `.exam-q .answer .label`, which us
 }
 ```
 
-Then point the red-family chips (`.lo-badge`, `.exam-q::before`, `.step-list li::before`, `.toc-bar a.active .toc-num`, `.tq-toggle.active`, `.hy-close-btn`) at `--chip-red`/`--chip-fg`, the blue-family chips (`.tq-toggle`, `.tq-col-btn.sel`, `.hy-lo-tag`) at `--chip-blue`/`--chip-fg`, and the two exam-box text colors at `--panel-dark-accent`. Measured after the fix across all nine themes: exam-box bold text **7.9–10.0:1**, LO badge a uniform **6.05:1**, table headers **12.4–17.3:1**.
+Then point the red-family chips (`.lo-badge`, `.exam-q::before`, `.step-list li::before`, `.toc-bar a.active .toc-num`, `.tq-toggle.active`, `.hy-close-btn`) at `--chip-red`/`--chip-fg`, the blue-family chips (`.tq-toggle`, `.tq-col-btn.sel`, `.hy-lo-tag`) at `--chip-blue`/`--chip-fg`, and the two exam-box text colors at `--panel-dark-accent`. Measured after the fix across the original nine themes: exam-box bold text **7.9–10.0:1**, LO badge a uniform **6.05:1**, table headers **12.4–17.3:1**. Run the same contrast checks when adding Cardio to a file.
 
 > **How to catch this yourself:** eyeballing a screenshot will not do it — a gold chip on a dark page *looks* fine until you try to read the white label on it. Loop the themes in the console and compute the ratio. Give the theme **at least ~150ms to settle between switches**, and read `color` and `background-color` in the same tick: switching themes rapidly and measuring immediately returns a mix of the old and new palette and produces nonsense numbers that look like catastrophic failures in themes that are actually fine.
 
@@ -314,6 +319,13 @@ Four light themes (Paper, Ocean, Forest, Sepia) were originally shipped with too
   --blue-bg: #12243c; --purple-bg: #261b3a; --hero-bg: #0c0407;
   --panel-dark-bg: #2e1017; --panel-dark-text: #f9e7e9;
 }
+[data-theme="cardio"] {
+  --ink: #25161a; --paper: #fff7f7; --cream: #f5e2e6;
+  --accent: #b51f3a; --accent2: #245f89; --gold: #b77b22; --muted: #75535c; --border: #dfb9c2;
+  --highlight: #f8e1a9; --highlight2: #d7e9f4; --green-bg: #d9eee2; --red-bg: #f8d5dc;
+  --blue-bg: #d6e9f5; --purple-bg: #eadcf0; --hero-bg: #173e63;
+  --panel-dark-bg: #173e63; --panel-dark-text: #f7fbff;
+}
 ```
 
 **Hemo — the remaining per-theme vars** (same groups every theme must set, spelled out here because Hemo is a *dark* theme and the values are not derivable from the light-theme pattern):
@@ -343,6 +355,37 @@ Four light themes (Paper, Ocean, Forest, Sepia) were originally shipped with too
 ```
 
 > **Contrast notes for Hemo (blood):** Hemo is the second *dark* theme after Night, so pitfall #3 inverts — the risk is a red-on-red page where `--accent` (arterial crimson `#ff6b6b`) and the oxblood `--paper`/`--cream` collapse into one another. Three deliberate choices keep it legible: (1) `--accent2` is a **methylene-blue `#8fb8ea`**, not a red-family color, so links and `<strong>` read as a separate channel — the Wright–Giemsa logic of blue nuclei against pink cytoplasm, which also keeps "concept = cool color" consistent with every other theme; (2) `--cream` (`#2b1218`) sits a full step lighter than `--paper` (`#170a0d`) so drug cards and `.section` blocks visibly layer off the page, and `--red-bg` (`#45151a`) is pushed lighter still so a warning callout is distinguishable from an ordinary card despite both being red; (3) `--panel-dark-bg` (`#2e1017`) is a fixed dark maroon that does **not** track the `--ink`/`--paper` flip, so `th`, `.exam-q`, and `.hy-mini-table th` stay dark-with-light-text exactly as in Night. Rendered and spot-checked at all five callout backgrounds, a table header, and `.exam-q`.
+
+**Cardio — the remaining per-theme vars** (the core palette is above; copy this block with it):
+
+```css
+[data-theme="cardio"] {
+  /* Hero vars */
+  --hero-heading: #f7fbff;
+  --hero-sub: #c8dceb;
+  --hero-meta-bg: rgba(255,255,255,0.08);
+  --hero-meta-border: rgba(240,138,155,0.28);
+  --hero-meta-label: #a9c5d8;
+  --hero-meta-value: #fff1f3;
+
+  /* Floating UI */
+  --floating-ui-bg: #173e63;
+  --floating-ui-fg: #f7fbff;
+  --floating-ui-shadow: 0 3px 12px rgba(23,62,99,0.26);
+
+  /* Quiz overlay */
+  --quiz-overlay: rgba(36,95,137,0.38);
+  --quiz-overlay-hover: rgba(36,95,137,0.62);
+}
+[data-theme="cardio"] .hero {
+  background:
+    radial-gradient(circle at 88% 18%,rgba(181,31,58,0.42),transparent 30%),
+    linear-gradient(135deg,#102e4b,#173e63 62%,#6f1d32);
+}
+[data-theme="cardio"] .toc-bar { background:#173e63; border-color:#2c5f86; }
+```
+
+> **Contrast notes for Cardio:** Cardio is a light, system-specific theme rather than a second Hemo palette. The page uses a soft ECG blush, while `--accent` carries arterial red and `--accent2` carries clinical blue so links and `<strong>` remain visually distinct from warnings. Keep the hero and fixed sidebar blue-dominant; using red as their full background makes the page feel like a warning state. The always-dark table/exam components use clinical blue with near-white text. Spot-check red badges, blue links, callouts, table headers, `.exam-q`, and the High-Yield modal before shipping.
 
 > **Contrast notes for the three newest themes:** all three are light themes, so pitfall #3 from the checklist applies directly. Rose deliberately uses a *teal* `--accent2` (#2c6a72) rather than a pink-family color so links/`<strong>` don't melt into the warm pink page; Slate does the same with a burnt-orange `--accent` (#cf4520) against its cool grays so warnings still pop. Lavender's `--accent2` is the purple itself (#6a4fa0), which is far enough from its near-black violet ink to hold contrast.
 

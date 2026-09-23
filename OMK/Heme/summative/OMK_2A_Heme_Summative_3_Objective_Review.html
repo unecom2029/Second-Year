@@ -245,7 +245,8 @@
 html{scroll-behavior:smooth}
 body{margin:0;padding-left:var(--toc-w);background:var(--paper);color:var(--ink);
   font-family:'Source Serif 4',Georgia,serif;font-size:16px;line-height:1.62;
-  transition:background .25s,color .25s}
+  transition:background .25s,color .25s,padding-left .22s ease}
+body.toc-hidden{padding-left:0}
 h1,h2,h3,h4,h5{font-family:'Playfair Display',Georgia,serif;line-height:1.18}
 a{color:var(--accent2)}
 strong{color:var(--accent2)}
@@ -257,7 +258,9 @@ img{max-width:100%}
 
 /* ============ TOC ============ */
 .toc-bar{position:fixed;top:0;left:0;bottom:0;z-index:90;width:var(--toc-w);
-  background:var(--hero-bg);border-right:1px solid rgba(255,255,255,.10);overflow-y:auto;overflow-x:hidden}
+  background:var(--hero-bg);border-right:1px solid rgba(255,255,255,.10);overflow-y:auto;overflow-x:hidden;
+  transition:transform .22s ease}
+body.toc-hidden .toc-bar{transform:translateX(-105%);pointer-events:none}
 .toc-bar::-webkit-scrollbar{width:6px}
 .toc-bar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14);border-radius:3px}
 .toc-bar::-webkit-scrollbar-track{background:transparent}
@@ -306,6 +309,11 @@ img{max-width:100%}
   font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.05em;padding:7px 9px;
   border-radius:8px;cursor:pointer;text-align:left;transition:background .15s,color .15s}
 .toc-chip:hover{background:rgba(255,255,255,.14);color:var(--hero-heading)}
+.toc-show-btn{position:fixed;left:14px;top:14px;z-index:120;display:none;align-items:center;gap:7px;
+  border:1px solid rgba(255,255,255,.18);border-radius:22px;padding:9px 13px;
+  background:var(--floating-ui-bg);color:var(--floating-ui-fg);box-shadow:var(--floating-ui-shadow);
+  font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.04em;cursor:pointer}
+body.toc-hidden .toc-show-btn{display:inline-flex}
 .toc-hy-btn{display:flex;align-items:center;justify-content:center;gap:7px;width:calc(100% - 24px);
   margin:14px 12px 2px;background:var(--gold);color:#2a1a00;border:none;padding:11px 10px;border-radius:24px;
   cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:.58rem;font-weight:700;letter-spacing:.04em;
@@ -734,6 +742,8 @@ body.nav-open .toc-scrim{opacity:1;pointer-events:auto}
     transition:transform .26s cubic-bezier(.4,0,.2,1);z-index:110;
     box-shadow:6px 0 26px rgba(0,0,0,.34);padding-top:58px}
   body.nav-open .toc-bar{transform:translateX(0)}
+  body.toc-hidden.nav-open .toc-bar{transform:translateX(-105%)}
+  .toc-show-btn{top:58px}
   .toc-head{display:none}
   .toc-hy-btn{margin-top:2px}
   .toc-bar a{padding:11px 16px}
@@ -756,7 +766,7 @@ body.nav-open .toc-scrim{opacity:1;pointer-events:auto}
 @media print{
   body{padding-left:0!important;padding-top:0!important;background:#fff;color:#000}
   .container{max-width:100%!important}
-  .toc-bar,.floating-stack,.floating-left,.progress-bar,.sec-tools,.recall-note,.tq-bar,
+  .toc-bar,.toc-show-btn,.floating-stack,.floating-left,.progress-bar,.sec-tools,.recall-note,.tq-bar,
   .toc-hy-btn,.hy-btn,.cov-filter,.exam-q .reveal-btn,.mnav,.toc-scrim,.lo-tip{display:none!important}
   .section{page-break-inside:auto;border-bottom:1px solid #ccc}
   .section.collapsed .sec-body-outer{grid-template-rows:1fr!important}
@@ -1030,8 +1040,10 @@ html[data-note-auth="locked"] #noteAuthGate{
     <button class="toc-chip" onclick="jumpToNextTodo()">↷ Next unreviewed section</button>
     <button class="toc-chip" onclick="toggleAllSections()">⊟ Collapse / expand all</button>
     <button class="toc-chip" id="tocProgress">0 / 53 reviewed</button>
+    <button class="toc-chip" id="tocHideBtn" type="button" onclick="setSidebarHidden(true)">⇤ Hide sidebar</button>
   </div>
 </aside>
+<button class="toc-show-btn" id="tocShowBtn" type="button" aria-controls="tocBar" aria-expanded="true" onclick="setSidebarHidden(false)">☰ Show sidebar</button>
 
 <div class="floating-left" id="floatingLeft">
   <div class="tools-menu">
@@ -16932,47 +16944,6 @@ function revealAnchor(id){
   });
   return true;
 }
-/* Sub-lists used to open only for the section you happened to be reading, so
-   every other section in the contents looked as though it had none. Pointing at
-   a row (or tabbing to it) now opens that row's list too. */
-var HOVER_DWELL_MS=3000;   /* rest the pointer on a section this long to peek at its subsections */
-function initSubTocPeek(){
-  $$('.toc-bar nav > a').forEach(function(a){
-    var sub=a.nextElementSibling;
-    if(!sub||!sub.classList.contains('toc-sub'))return;
-    var dwell=null;
-    function open(){sub.dataset.peek='1';sub.classList.add('open');}
-    function openAfterDwell(){
-      if(sub.classList.contains('open'))return;   /* already open — nothing to wait for */
-      clearTimeout(dwell);
-      dwell=setTimeout(open,HOVER_DWELL_MS);
-    }
-    function close(){
-      clearTimeout(dwell);
-      delete sub.dataset.peek;
-      if(!a.classList.contains('active'))sub.classList.remove('open');
-    }
-    [a,sub].forEach(function(el){
-      el.addEventListener('pointerenter',openAfterDwell);
-      el.addEventListener('pointerleave',function(ev){
-        var to=ev.relatedTarget;
-        if(to&&(to===a||to===sub||a.contains(to)||sub.contains(to)))return;
-        close();
-      });
-      el.addEventListener('focusin',open);
-      el.addEventListener('focusout',function(ev){
-        var to=ev.relatedTarget;
-        if(to&&(to===a||to===sub||a.contains(to)||sub.contains(to)))return;
-        close();
-      });
-    });
-    /* Touch: a tap navigates, and opening the list straight away means the
-       subsections are visible without waiting for the scroll to land. */
-    a.addEventListener('click',open);
-    /* Clicking a subsection keeps its own list up while the page scrolls. */
-    sub.addEventListener('click',open);
-  });
-}
 function initSubTocNav(){
   $$('.toc-sub a').forEach(function(a){
     a.addEventListener('click',function(ev){
@@ -17039,9 +17010,9 @@ function initScrollspy(){
       if(on){var lbl=a.querySelector('span:nth-child(2)'); if(lbl)setMobileHere(lbl.textContent);}
       var sub=a.nextElementSibling;
       if(sub&&sub.classList.contains('toc-sub')){
-        /* The section being read opens on its own; any other one stays open
-           while the reader is pointing at it or tabbing through it. */
-        sub.classList.toggle('open',on||sub.dataset.peek==='1');
+        /* Exactly one sub-list follows the reading position: the new section
+           opens and the section just left closes. Hover never changes it. */
+        sub.classList.toggle('open',on);
         var sl=sub.querySelectorAll('a'),cs=null;
         if(on)sl.forEach(function(x){var t=document.getElementById(x.getAttribute('href').slice(1));if(t&&t.getBoundingClientRect().top+window.scrollY<=y)cs=x;});
         sl.forEach(function(x){x.classList.toggle('on',x===cs);});
@@ -17072,6 +17043,22 @@ function initMobileNav(){
 }
 /* keeps the mobile bar labelled with the section you are actually in */
 function setMobileHere(txt){var el=$('#mnavHere'); if(el&&txt)el.textContent=txt;}
+
+/* ---------- sidebar visibility ---------- */
+var K_SIDEBAR='heme-summ3-objective-sidebar-hidden';
+window.setSidebarHidden=function(hidden,skipStore){
+  hidden=!!hidden;
+  document.body.classList.toggle('toc-hidden',hidden);
+  var bar=$('#tocBar'),show=$('#tocShowBtn');
+  if(bar)bar.setAttribute('aria-hidden',hidden?'true':'false');
+  if(show)show.setAttribute('aria-expanded',hidden?'false':'true');
+  if(hidden){
+    setNav(false);
+    if(document.activeElement&&bar&&bar.contains(document.activeElement))document.activeElement.blur();
+  }
+  if(!skipStore)set(K_SIDEBAR,hidden?'1':'0');
+};
+function initSidebarVisibility(){setSidebarHidden(get(K_SIDEBAR)==='1',true);}
 
 /* ---------- figure lightbox ---------- */
 var lb=null, lbList=[], lbIdx=0;
@@ -17617,9 +17604,10 @@ document.addEventListener('DOMContentLoaded',function(){
   initExamQ();
   initRecall();
   initProgressBar();
-  buildSubToc();initSubTocNav();initSubTocPeek();initTocFollow();
+  buildSubToc();initSubTocNav();initTocFollow();
   initScrollspy();
   initMobileNav();
+  initSidebarVisibility();
   initLOTips();
   initFigures();
   initKeys();
