@@ -45,11 +45,21 @@ def main(path):
             chk(25 <= w <= 70, "educational objective is %d words (target 30-50)" % w)
         chk("->" in exp or "→" in exp, "explanation has no arrow mechanism chain")
         chk(len(re.findall(r'[.!?]', eli5)) <= 3, "eli5 is longer than 3 sentences")
-        chk(not re.search(r'\b(shown|photograph|image below|figure|the arrow|curve labeled)\b', s, re.I),
-            "stem references an image (this app is text-only)")
+        # Exhibits are HTML inside the stem; judge the prose and the figure separately.
+        figs = re.findall(r'<figure\b.*?</figure>', s, re.I | re.S)
+        prose = re.sub(r'<[^>]+>', ' ', re.sub(r'<figure\b.*?</figure>', ' ', s, flags=re.I | re.S))
+        chk(figs or not re.search(r'\b(shown|photograph|image below|the arrow|curve labeled)\b', prose, re.I),
+            "stem refers to an image but no <figure> is attached")
+        for f in figs:
+            chk(re.search(r'<(img|svg)\b', f, re.I), "<figure> has no <img> or <svg> inside it")
+            chk(not re.search(r'<script|<foreignObject|\son\w+\s*=|javascript:', f, re.I),
+                "figure contains script, foreignObject, or an event attribute")
+            chk("class='qfig'" in f or 'class="qfig"' in f, "figure is missing class='qfig'")
+            for u in re.findall(r'<img[^>]*\ssrc=[\'"]([^\'"]+)', f, re.I):
+                print("   (check by hand) image URL must come from your source content: %s" % u[:100])
         chk(not re.search(r'\b(all of the above|none of the above)\b', " ".join(txt), re.I),
             "option set contains all/none of the above")
-        wc = len(s.split())
+        wc = len(prose.split())
         chk(40 <= wc <= 200,
             "stem is %d words (measured corpus: median 100, p10 63, p90 137)" % wc)
 

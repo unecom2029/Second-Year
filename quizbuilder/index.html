@@ -175,6 +175,28 @@ body.nbme-lock{overflow:hidden}
   box-decoration-break:clone;
 }
 .qstem s{color:var(--mist);text-decoration:line-through}
+.qfig{margin:16px 0 20px;padding:12px;max-width:560px;border:1px solid var(--rule);border-radius:10px;background:var(--white);color:var(--ink)}
+.qfig img,.qfig svg{display:block;max-width:100%;height:auto;margin:0 auto}
+.qfig svg{width:100%}
+.qfig-cap{margin-top:8px;font-size:13px;line-height:1.4;color:var(--slate);text-align:center}
+.qfig-missing{padding:18px 12px;font-size:13px;color:var(--slate);text-align:center}
+.qfig:has(img,svg){position:relative;cursor:zoom-in}
+.qfig:has(img,svg)::after{content:'Click to zoom';position:absolute;top:8px;right:8px;padding:3px 8px;border-radius:6px;background:rgba(18,32,60,.72);color:#fff;font:600 11px var(--font-ui);opacity:0;transition:opacity .15s;pointer-events:none}
+.qfig:has(img,svg):hover::after{opacity:1}
+.exhibit-viewer{position:fixed;inset:0;z-index:1300;display:flex;flex-direction:column;background:rgba(9,17,28,.97)}
+.exhibit-viewer[hidden]{display:none}
+.exv-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;background:#12203C;color:#fff;font-family:var(--font-ui)}
+.exv-title{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px;font-weight:700}
+.exv-tools{display:flex;align-items:center;gap:6px}
+.exv-tools button{min-width:36px;height:34px;padding:0 10px;border:1px solid rgba(255,255,255,.28);border-radius:7px;background:transparent;color:#fff;font:700 15px var(--font-ui);cursor:pointer}
+.exv-tools button:hover,.exv-tools button:focus-visible{background:rgba(255,255,255,.14)}
+.exv-pct{min-width:52px;text-align:center;font-size:13px;font-variant-numeric:tabular-nums}
+.exv-stage{position:relative;flex:1;overflow:hidden;touch-action:none;cursor:grab}
+.exv-stage.dragging{cursor:grabbing}
+.exv-content{position:absolute;left:0;top:0;transform-origin:0 0;background:#fff;color:#1E1E20;box-shadow:0 10px 40px rgba(0,0,0,.4)}
+.exv-content img,.exv-content svg{display:block;width:100%;height:100%;max-width:none;user-select:none;-webkit-user-drag:none}
+.exv-help{padding:6px 14px 8px;background:#12203C;color:rgba(255,255,255,.7);font:12px var(--font-ui);text-align:center}
+@media(max-width:480px){.exv-bar{flex-wrap:wrap}.exv-title{flex-basis:100%}.exv-help{display:none}}
 .ach{display:grid;gap:10px}
 .ac{display:flex;align-items:flex-start;gap:14px;padding:15px 18px;border:1.5px solid rgba(18,32,60,.09);border-radius:18px;cursor:pointer;transition:var(--tr);background:color-mix(in srgb,var(--warm) 78%,var(--white) 22%);box-shadow:0 6px 18px rgba(18,32,60,.04)}
 .ac:hover:not(.dis){border-color:rgba(26,122,109,.4);background:linear-gradient(180deg,#fff,#F0F7F5);transform:translateY(-1px)}
@@ -1162,7 +1184,7 @@ JSON contract (exact):
 - 4 options minimum, 5 is the default, up to 6 (A–F) for ordered series, factorial grids, and matched-set table items, and up to 8 (A–H) for EXTENDED DIAGNOSIS SETS — the long alphabetized differential the real exam uses when a presenting picture has many genuine competitors (the released pool does this for a breast lesion with eight options and for flank pain with seven). Use an extended set when the honest differential really is that wide; do not pad a five-option item to eight with filler. Vary the count across the batch the way the real exam does — do not make every item exactly five.
 - Return exactly ${count} questions in "questions".
 ${quizNameRule}
-- NO IMAGES: this app renders text only. Never write "shown in the photograph," "the arrow indicates," or "labeled region A." When the source concept is image-based (histology, gross specimen, x-ray, ECG, fundus, pedigree, graph), convert it into a described-findings item — put the findings into words in the stem ("A biopsy specimen shows sheets of small round blue cells with rosettes") and make the options named structures/diagnoses instead of letters on a picture.
+- IMAGES ARE ALLOWED IN "stem" (and only in "stem"). The app renders the stem as HTML, so a figure is written as HTML inside the stem string. See the EXHIBITS AND FIGURES section below for exactly when and how. Short version: reuse image URLs that appear in my content, draw line-art figures yourself as inline SVG, NEVER invent an image URL, and fall back to describing the findings in words when neither is possible.
 - Plain-text tables are allowed inside "stem" (aligned columns or pipes) for lab panels and matched-set items.
 - Output ONLY the JSON object.
 
@@ -1200,6 +1222,27 @@ If you are a large/frontier-capable model, ignore this section: do the planning 
 7. Data block when needed — labs as an aligned two-column table. Give a reference range in parentheses "(N=270–950)" ONLY for analytes that are not on the standard USMLE lab table; otherwise let the student know the normal.
 8. Explicit negatives in full sentences ("A heterophile antibody test result is negative." "Test of the stool for occult blood is negative." "Urine toxicology screening is negative."). Every stated negative must eliminate a specific listed option — no atmosphere-only negatives.
 9. Lead-in last, from the inventory below.
+
+════════ EXHIBITS AND FIGURES (images in the stem) ════════
+The real exam puts an image in roughly 1 in 7 items: a photomicrograph, a gross specimen, a skin lesion, a radiograph or CT, an ECG, a peripheral smear, a pedigree, a graph. This app can show them. Where the image comes from decides what you are allowed to do:
+
+SOURCE 1 — IMAGES IN MY CONTENT. If my content contains image URLs (an <img> tag, or a link ending in .png, .jpg, .jpeg, .gif, .webp or .svg, or a link from an image host) or embedded data:image URIs, you may attach them. Copy the URL character for character and never shorten, "fix", or guess at it. In MODE 2 (CONVERT), every image the original question had must come through attached to that same question. In MODE 1 (GENERATE), attach a source image to the item whose testing point it actually shows.
+
+SOURCE 2 — FIGURES YOU DRAW AS INLINE SVG. For anything made of lines, curves, shapes and labels you may draw it yourself: pedigrees; dose-response and log-dose curves (agonist, partial agonist, competitive vs noncompetitive antagonist); Michaelis-Menten and Lineweaver-Burk plots; oxygen-hemoglobin dissociation curves; pressure-volume loops, Frank-Starling and cardiac/vascular function curves, Wiggers-style pressure tracings; flow-volume loops and spirometry tracings; action potential and membrane-potential tracings; drug concentration-time curves; growth curves; survival curves and 2x2 or bar/line charts for biostatistics; gel electrophoresis, Southern/Western blot and hemoglobin electrophoresis band patterns; simple schematics (a nephron with numbered segments, a brachial plexus diagram, a visual pathway with numbered lesion sites). Draw it accurately: the curve shapes, shifts, intercepts and band positions ARE the testing point, so they must be physiologically correct and to scale.
+
+NEVER — do not draw photographs, histology, gross specimens, radiographs, CT/MRI, fundus, skin lesions, or blood smears in SVG (a cartoon of a smear is worse than words), and NEVER invent, recall, or construct an image URL (no Wikimedia, no "example.com", no URL from memory). A fabricated URL shows the student a broken picture. When the concept needs one of these and my content supplied no URL, convert it to a described-findings item: put the findings into words ("A biopsy specimen shows sheets of small round blue cells forming rosettes") and make the options named structures or diagnoses.
+
+HOW TO WRITE A FIGURE (exact HTML, inside the "stem" string):
+<figure class='qfig'><img src='EXACT_SOURCE_URL' alt='Photomicrograph of the renal biopsy specimen'><figcaption class='qfig-cap'>Renal biopsy specimen, hematoxylin and eosin stain</figcaption></figure>
+<figure class='qfig'><svg viewBox='0 0 480 300' xmlns='http://www.w3.org/2000/svg' role='img' aria-label='Dose-response curves for drug X alone and with drug Y' font-family='sans-serif' font-size='13' fill='none' stroke='currentColor'> ... </svg><figcaption class='qfig-cap'>Dose-response curves</figcaption></figure>
+- Use SINGLE QUOTES for every HTML/SVG attribute so the JSON string needs no escaping, and put the whole figure on one line (no raw line breaks inside a JSON string).
+- SVG rules: viewBox about 480 wide, no fixed width/height, stroke and text in currentColor (so it works in dark mode) with at most one or two accent colors used for meaning, not decoration; label both axes with units; give every curve or band a label; filled text needs fill='currentColor' and stroke='none'. Pedigrees use squares for males, circles for females, filled for affected, a slash for deceased, and numbered generations (I, II, III) and individuals. No <script>, no <foreignObject>, no event attributes (onclick, onload), no external references, no <style> blocks.
+- Placement: data block first, then the sentence that introduces the exhibit, then the figure, then the lead-in. Use NBME introduction sentences: "A photomicrograph of the biopsy specimen is shown." · "A photograph of the lesion is shown." · "An x-ray of the chest is shown." · "The patient's pedigree is shown." · "The dose-response curves for drug X alone (curve 1) and after pretreatment with drug Y (curve 2) are shown." Never write "shown" or "the arrow indicates" unless the figure is actually attached in that same stem.
+- Markers on a figure use NUMBERS (1, 2, 3...) or named curves, NEVER letters: the app reshuffles and re-letters the answer choices at run time, so a region labeled "A" would clash with choice A. Options then read "Segment 3", "Curve 2", "Individual III-2", or, better, name the structure or mechanism outright.
+- alt text and caption say WHAT the exhibit is (organ, specimen, stain, axes), never what it SHOWS. "Photomicrograph of the liver biopsy specimen" is correct; "Liver biopsy showing Mallory bodies" gives the item away. The same rule applies to SVG aria-label and to curve labels.
+- The exhibit must be load-bearing: it carries the buried clue or a decisive finding, and the words in the stem must not restate what the figure shows (otherwise the figure is decoration). Exception: in CONVERT mode, keep the original stem wording as written.
+- Because a URL image can fail to load, "explanation" must describe in words what the exhibit shows and why that points to the key ("The photomicrograph shows ... → ..."), so the review stays complete without the picture.
+- Frequency: in GENERATE mode, attach a figure to about 1 in 6 items when the source supports it, never to more than 1 in 3, and only where a picture tests something words cannot test as well. In CONVERT mode, keep exactly the images the source had.
 
 ════════ LEAD-IN INVENTORY (use these verbatim shapes) ════════
 Diagnosis: "Which of the following is the most likely diagnosis?"
@@ -1264,7 +1307,7 @@ H1 — LABORATORY INTERNAL CONSISTENCY (check every number against every other n
 - Never write a value that is "normal" if the disease you chose makes it impossible, unless that is the trap (see H5).
 - Reference ranges: hemoglobin, hematocrit, leukocyte count, platelet count, MCV, reticulocyte %, PT, aPTT, erythrocyte sedimentation rate, bilirubin, LDH, iron, TIBC and ferritin are on the standard USMLE lab table — give no range. DO give "(N=...)" for haptoglobin, fibrinogen, D-dimer, individual factor levels, ristocetin cofactor activity, hemoglobin A2, methylmalonic acid, homocysteine, ADAMTS13 activity, erythropoietin, and leukocyte alkaline phosphatase.
 
-H2 — MORPHOLOGY IN WORDS. This app is text-only, so every smear, marrow, and node finding must be DESCRIBED, never referenced. Write "a peripheral blood smear shows small round cells lacking central pallor," not "the smear shown." Vocabulary to describe precisely, each of which points somewhere different: spherocytes (loss of central pallor) - hereditary spherocytosis or warm autoimmune hemolysis; schistocytes and helmet cells - microangiopathy or a mechanical valve; bite cells with Heinz bodies - G6PD (glucose-6-phosphate dehydrogenase) deficiency after an oxidant; target cells - thalassemia, liver disease, hemoglobin C, post-splenectomy; teardrop cells (dacrocytes) with nucleated red cells and immature granulocytes (a leukoerythroblastic picture) - marrow infiltration or myelofibrosis; basophilic stippling - lead poisoning or thalassemia; Howell-Jolly bodies - absent or non-functioning spleen; hypersegmented neutrophils with five or more lobes - B12 or folate deficiency; rouleaux - a paraprotein; smudge cells - chronic lymphocytic leukemia; Auer rods - acute myeloid leukemia, and heavily granular ones with DIC point to acute promyelocytic leukemia; sickled forms; acanthocytes; ringed sideroblasts; a starry-sky pattern in a node; Reed-Sternberg cells described as large binucleate cells with prominent nucleoli. When the source concept is an image, convert it to described findings and make the options named diagnoses, cells, or mechanisms.
+H2 — MORPHOLOGY IN WORDS. Unless my content supplies an actual smear, marrow, or node image URL (see EXHIBITS AND FIGURES), every smear, marrow, and node finding must be DESCRIBED, never referenced, and never drawn in SVG. Write "a peripheral blood smear shows small round cells lacking central pallor," not "the smear shown." Vocabulary to describe precisely, each of which points somewhere different: spherocytes (loss of central pallor) - hereditary spherocytosis or warm autoimmune hemolysis; schistocytes and helmet cells - microangiopathy or a mechanical valve; bite cells with Heinz bodies - G6PD (glucose-6-phosphate dehydrogenase) deficiency after an oxidant; target cells - thalassemia, liver disease, hemoglobin C, post-splenectomy; teardrop cells (dacrocytes) with nucleated red cells and immature granulocytes (a leukoerythroblastic picture) - marrow infiltration or myelofibrosis; basophilic stippling - lead poisoning or thalassemia; Howell-Jolly bodies - absent or non-functioning spleen; hypersegmented neutrophils with five or more lobes - B12 or folate deficiency; rouleaux - a paraprotein; smudge cells - chronic lymphocytic leukemia; Auer rods - acute myeloid leukemia, and heavily granular ones with DIC point to acute promyelocytic leukemia; sickled forms; acanthocytes; ringed sideroblasts; a starry-sky pattern in a node; Reed-Sternberg cells described as large binucleate cells with prominent nucleoli. When the source concept is an image, convert it to described findings and make the options named diagnoses, cells, or mechanisms.
 
 H3 — HEME OPTION-SET FAMILIES (these are the heme instances of the twelve families above; pick one per item and rotate):
 - IRON STUDIES GRID (family 7): columns Serum iron / Total iron-binding capacity / Ferritin / Transferrin saturation, options are the rows, candidates are iron deficiency, anemia of chronic disease, thalassemia trait, sideroblastic anemia, hereditary hemochromatosis. Include at least one row that is right in two columns and wrong in the others so partial knowledge fails.
@@ -1331,7 +1374,11 @@ Options are ordered alphabetically, so the key lands wherever alphabetization pu
 - Vague durations ("recently," "for a while," "several weeks") when duration matters.
 - Negatives that rule out nothing on the list.
 - Two defensible answers. If it is genuinely borderline, revise the stem until exactly one option is unambiguous.
-- Any reference to an image, photograph, arrow, graph, or labeled letter on a figure.
+- Referring to an image ("shown," "the arrow indicates") that is not actually attached in that same stem.
+- An image URL that did not appear in my content — invented, recalled from memory, or "corrected."
+- A photograph, histology, radiograph, or smear drawn as SVG.
+- A caption, alt text, aria-label, or curve label that names the finding or the diagnosis.
+- Lettered regions on a figure (use numbers — the app re-letters the choices).
 
 ════════ WORKED EXEMPLARS (original, style reference ONLY — never reuse their content) ════════
 EXEMPLAR 1 — differential set, buried clue in the data block:
@@ -1353,12 +1400,17 @@ EXEMPLAR 4 — heme coagulation grid, matched-set rows as options:
 Stem carries the plain-text header row: Prothrombin time / Partial thromboplastin time / Platelet count / Platelet function assay. Options are the rows, e.g. "A. Normal, normal, decreased, normal" ... "C. Normal, prolonged, normal, normal" ... "E. Prolonged, prolonged, decreased, prolonged". Correct: C.
 Architecture: family 7 applied to the coagulation grid. Each row is a real disorder - immune thrombocytopenic purpura, von Willebrand disease, hemophilia A, vitamin K deficiency, disseminated intravascular coagulation - so a student who knows only the platelet column still fails. Buried clue = the mixing study correcting, which separates a factor DEFICIENCY from an inhibitor. Dramatic decoy = the dental bleeding, which surface-reads toward von Willebrand disease; the hemarthrosis, the male maternal uncle, and the absence of mucosal bleeding are what actually decide it. Explicit negative ("no petechiae, no mucosal bleeding") kills the thrombocytopenic and platelet-function rows by name.
 
+EXEMPLAR 5 — drawn exhibit (inline SVG), recall/applied profile:
+"stem" value, exactly as it should appear inside the JSON string: "An investigator studies the contraction of an isolated segment of guinea pig ileum in response to increasing concentrations of acetylcholine. The experiment is repeated after the tissue is incubated with a fixed concentration of drug Y. The dose-response curves for acetylcholine alone (curve 1) and after incubation with drug Y (curve 2) are shown. <figure class='qfig'><svg viewBox='0 0 480 300' xmlns='http://www.w3.org/2000/svg' role='img' aria-label='Dose-response curves 1 and 2' font-family='sans-serif' font-size='13' fill='none' stroke='currentColor'><path d='M60 30 V250 H460' stroke-width='1.5'/><path d='M70 246 C170 246 170 54 270 54 H450' stroke-width='2.5'/><path d='M70 246 H170 C270 246 270 54 370 54 H450' stroke-width='2.5' stroke-dasharray='7 5'/><g fill='currentColor' stroke='none'><text x='52' y='58' text-anchor='end'>100</text><text x='52' y='254' text-anchor='end'>0</text><text x='260' y='285' text-anchor='middle'>Log [acetylcholine]</text><text x='18' y='150' text-anchor='middle' transform='rotate(-90 18 150)'>Contraction (% of maximum)</text><text x='150' y='120'>1</text><text x='318' y='120'>2</text></g></svg><figcaption class='qfig-cap'>Dose-response curves</figcaption></figure> Drug Y is most likely which of the following?"
+Options (alphabetical): A. Competitive antagonist / B. Inverse agonist / C. Irreversible antagonist / D. Partial agonist / E. Physiologic antagonist. Correct: A.
+Architecture: family 1 over drug-receptor interactions. The figure IS the buried clue — a parallel rightward shift with the same maximum — and the prose never states it. Each distractor would draw a different curve 2: irreversible antagonist lowers the maximum, partial agonist gives a lower plateau of its own, and the explanation opens by describing the shift in words.
+
 ════════ QUALITY GATE — run silently on every item before output ════════
-Stem: complete opening line · exact duration · observational not diagnostic wording · vitals/labs in house format · at least one explicit negative that kills a listed option · passes the cover-the-options test · no image references.
+Stem: complete opening line · exact duration · observational not diagnostic wording · vitals/labs in house format · at least one explicit negative that kills a listed option · passes the cover-the-options test · any exhibit is actually attached, load-bearing, introduced by an NBME "is shown" sentence, and either a source URL copied exactly or an accurate SVG line figure · no invented URLs · caption/alt text neutral · explanation describes the exhibit in words.
 Trap: exactly one buried clue · one separate dramatic decoy · the clue alone is decisive.
 Options: one homogeneous family · every distractor passes the counterfactual test · near-miss + surface-read + mechanism-confusion roles present · all plausible to a reader who missed the clue · mutually exclusive · exactly one unambiguously correct · no length/grammar/convergence cue · alphabetically ordered.
 Match: stem type = answer type · management answers conservative-first · diagnosis-workup answers are tests · communication items follow the hierarchy · COMLEX structural findings are confirmatory or rule-out, never decorative · duration math internally consistent.
-Heme items additionally: hematocrit is about 3x hemoglobin · MCV matches the described morphology · the reticulocyte count agrees with production-versus-destruction · the hemolysis panel (LDH, haptoglobin, indirect bilirubin) moves as a unit or the outlier is the testing point · iron studies form one coherent row · PT/aPTT/platelet/fibrinogen are consistent with the single disorder chosen · every smear finding is described in words, never referenced as an image · reference ranges given only for off-table analytes · ancestry is never the discriminator.
+Heme items additionally: hematocrit is about 3x hemoglobin · MCV matches the described morphology · the reticulocyte count agrees with production-versus-destruction · the hemolysis panel (LDH, haptoglobin, indirect bilirubin) moves as a unit or the outlier is the testing point · iron studies form one coherent row · PT/aPTT/platelet/fibrinogen are consistent with the single disorder chosen · every smear finding is described in words unless a source image of it is attached · reference ranges given only for off-table analytes · ancestry is never the discriminator.
 Explanations: "explanation" gives the reasoning chain with arrows; each "wrongExplanations" entry names the one feature that would have made that option correct; "eli5" is plain language, max 3 sentences.
 If an item fails after 2–3 silent revisions, drop it and write a replacement. Never ship a failing item and never show the checklist.
 
@@ -1463,6 +1515,187 @@ function randomizeQuestionChoices(q){
 function randomizeQuestionsForSession(list){
   return list.map(function(q){return randomizeQuestionChoices(q);});
 }
+// A stem image whose URL fails to load is swapped for a note pointing to the explanation,
+// which the prompt requires to describe every exhibit in words.
+document.addEventListener('error',function(e){
+  var img=e.target;
+  if(!img||img.tagName!=='IMG'||!img.closest('.qfig'))return;
+  var note=document.createElement('div');
+  note.className='qfig-missing';
+  note.textContent='Image could not be loaded'+(img.alt?' ('+img.alt+')':'')+'. The explanation describes what it shows.';
+  img.replaceWith(note);
+},true);
+// ── EXHIBIT VIEWER: click a stem figure to open it full screen with zoom and pan ──
+var exhibitView={el:null,stage:null,content:null,w:0,h:0,fit:1,scale:1,x:0,y:0,pointers:{},pinch:null,lastFocus:null};
+function buildExhibitViewer(){
+  if(exhibitView.el)return exhibitView.el;
+  var el=document.createElement('div');
+  el.className='exhibit-viewer';
+  el.hidden=true;
+  el.setAttribute('role','dialog');
+  el.setAttribute('aria-modal','true');
+  el.setAttribute('aria-label','Exhibit viewer');
+  el.innerHTML='<div class="exv-bar"><span class="exv-title"></span><div class="exv-tools">'+
+    '<button type="button" data-exv="out" aria-label="Zoom out" title="Zoom out (-)">&minus;</button>'+
+    '<span class="exv-pct" aria-live="polite">100%</span>'+
+    '<button type="button" data-exv="in" aria-label="Zoom in" title="Zoom in (+)">+</button>'+
+    '<button type="button" data-exv="fit" title="Fit to screen (0)">Fit</button>'+
+    '<button type="button" data-exv="close" aria-label="Close exhibit" title="Close (Esc)">&times;</button>'+
+    '</div></div><div class="exv-stage"><div class="exv-content"></div></div>'+
+    '<div class="exv-help">Scroll or pinch to zoom · drag to move · double-click to zoom in · Esc to close</div>';
+  document.body.appendChild(el);
+  exhibitView.el=el;
+  exhibitView.stage=el.querySelector('.exv-stage');
+  exhibitView.content=el.querySelector('.exv-content');
+  el.querySelector('.exv-tools').addEventListener('click',function(e){
+    var btn=e.target.closest('[data-exv]');
+    if(!btn)return;
+    var act=btn.getAttribute('data-exv');
+    if(act==='close')closeExhibit();
+    else if(act==='fit')fitExhibit();
+    else zoomExhibitAt(act==='in'?1.4:1/1.4);
+  });
+  var stage=exhibitView.stage;
+  stage.addEventListener('wheel',function(e){
+    e.preventDefault();
+    var r=stage.getBoundingClientRect();
+    zoomExhibitAt(Math.exp(-e.deltaY*(e.ctrlKey?0.01:0.0015)),e.clientX-r.left,e.clientY-r.top);
+  },{passive:false});
+  stage.addEventListener('dblclick',function(e){
+    var r=stage.getBoundingClientRect();
+    zoomExhibitAt(2,e.clientX-r.left,e.clientY-r.top);
+  });
+  stage.addEventListener('pointerdown',function(e){
+    stage.setPointerCapture(e.pointerId);
+    exhibitView.pointers[e.pointerId]={x:e.clientX,y:e.clientY};
+    exhibitView.pinch=null;
+    stage.classList.add('dragging');
+  });
+  stage.addEventListener('pointermove',function(e){
+    var p=exhibitView.pointers[e.pointerId];
+    if(!p)return;
+    var ids=Object.keys(exhibitView.pointers);
+    if(ids.length===1){
+      exhibitView.x+=e.clientX-p.x;
+      exhibitView.y+=e.clientY-p.y;
+      p.x=e.clientX;p.y=e.clientY;
+      applyExhibitTransform();
+      return;
+    }
+    p.x=e.clientX;p.y=e.clientY;
+    var a=exhibitView.pointers[ids[0]],b=exhibitView.pointers[ids[1]];
+    var r=stage.getBoundingClientRect();
+    var dist=Math.hypot(a.x-b.x,a.y-b.y),mx=(a.x+b.x)/2-r.left,my=(a.y+b.y)/2-r.top;
+    if(exhibitView.pinch&&exhibitView.pinch.dist>0){
+      exhibitView.x+=mx-exhibitView.pinch.mx;
+      exhibitView.y+=my-exhibitView.pinch.my;
+      zoomExhibitAt(dist/exhibitView.pinch.dist,mx,my);
+    }
+    exhibitView.pinch={dist:dist,mx:mx,my:my};
+  });
+  function endPointer(e){
+    delete exhibitView.pointers[e.pointerId];
+    exhibitView.pinch=null;
+    if(!Object.keys(exhibitView.pointers).length)stage.classList.remove('dragging');
+  }
+  stage.addEventListener('pointerup',endPointer);
+  stage.addEventListener('pointercancel',endPointer);
+  window.addEventListener('resize',function(){if(!exhibitView.el.hidden)fitExhibit();});
+  return el;
+}
+function openExhibit(fig){
+  var src=fig.querySelector('img,svg');
+  if(!src)return;
+  buildExhibitViewer();
+  var clone=src.cloneNode(true);
+  var w,h;
+  if(src.tagName.toLowerCase()==='img'){
+    w=src.naturalWidth||src.clientWidth;h=src.naturalHeight||src.clientHeight;
+  }else{
+    var vb=src.viewBox&&src.viewBox.baseVal;
+    w=vb&&vb.width?vb.width:src.clientWidth;h=vb&&vb.height?vb.height:src.clientHeight;
+    // Vector art is tiny at its viewBox size; lay it out larger so text stays crisp when zoomed.
+    var up=Math.max(1,1200/Math.max(w,1));w*=up;h*=up;
+    clone.removeAttribute('width');clone.removeAttribute('height');
+  }
+  if(!w||!h)return;
+  exhibitView.w=w;exhibitView.h=h;
+  exhibitView.content.innerHTML='';
+  exhibitView.content.appendChild(clone);
+  exhibitView.content.style.width=w+'px';
+  exhibitView.content.style.height=h+'px';
+  var cap=fig.querySelector('.qfig-cap,figcaption');
+  exhibitView.el.querySelector('.exv-title').textContent=(cap&&cap.textContent.trim())||src.getAttribute('alt')||src.getAttribute('aria-label')||'Exhibit';
+  exhibitView.lastFocus=document.activeElement;
+  exhibitView.pointers={};
+  exhibitView.el.hidden=false;
+  fitExhibit();
+  exhibitView.el.querySelector('[data-exv="close"]').focus();
+}
+function closeExhibit(){
+  if(!exhibitView.el||exhibitView.el.hidden)return;
+  exhibitView.el.hidden=true;
+  exhibitView.content.innerHTML='';
+  if(exhibitView.lastFocus&&exhibitView.lastFocus.focus)exhibitView.lastFocus.focus();
+}
+function fitExhibit(){
+  var s=exhibitView.stage;
+  exhibitView.fit=Math.min((s.clientWidth-32)/exhibitView.w,(s.clientHeight-32)/exhibitView.h);
+  exhibitView.scale=exhibitView.fit;
+  exhibitView.x=(s.clientWidth-exhibitView.w*exhibitView.fit)/2;
+  exhibitView.y=(s.clientHeight-exhibitView.h*exhibitView.fit)/2;
+  applyExhibitTransform();
+}
+// Zoom by `factor`, keeping the stage point (px,py) fixed under the cursor/fingers.
+function zoomExhibitAt(factor,px,py){
+  var s=exhibitView.stage;
+  if(px==null){px=s.clientWidth/2;py=s.clientHeight/2;}
+  var next=Math.min(exhibitView.fit*10,Math.max(exhibitView.fit*0.5,exhibitView.scale*factor));
+  var k=next/exhibitView.scale;
+  exhibitView.x=px-(px-exhibitView.x)*k;
+  exhibitView.y=py-(py-exhibitView.y)*k;
+  exhibitView.scale=next;
+  applyExhibitTransform();
+}
+function applyExhibitTransform(){
+  var s=exhibitView.stage,sw=s.clientWidth,sh=s.clientHeight;
+  var cw=exhibitView.w*exhibitView.scale,ch=exhibitView.h*exhibitView.scale;
+  // Keep the exhibit centred when it fits, and never let it be dragged fully out of view.
+  exhibitView.x=cw<=sw?(sw-cw)/2:Math.min(0,Math.max(sw-cw,exhibitView.x));
+  exhibitView.y=ch<=sh?(sh-ch)/2:Math.min(0,Math.max(sh-ch,exhibitView.y));
+  exhibitView.content.style.transform='translate('+exhibitView.x+'px,'+exhibitView.y+'px) scale('+exhibitView.scale+')';
+  exhibitView.el.querySelector('.exv-pct').textContent=Math.round(exhibitView.scale/exhibitView.fit*100)+'%';
+}
+document.addEventListener('click',function(e){
+  var fig=e.target.closest&&e.target.closest('.qfig');
+  if(!fig||fig.closest('.exhibit-viewer'))return;
+  // A drag that selected text for highlighting should not also open the viewer.
+  var sel=window.getSelection&&window.getSelection();
+  if(sel&&!sel.isCollapsed&&String(sel).trim())return;
+  openExhibit(fig);
+});
+// Capture phase so the quiz's own arrow/letter shortcuts do not fire while the viewer is open.
+window.addEventListener('keydown',function(e){
+  if(!exhibitView.el||exhibitView.el.hidden)return;
+  var k=e.key;
+  if(k==='Escape')closeExhibit();
+  else if(k==='+'||k==='=')zoomExhibitAt(1.4);
+  else if(k==='-'||k==='_')zoomExhibitAt(1/1.4);
+  else if(k==='0')fitExhibit();
+  else if(k==='ArrowLeft'||k==='ArrowRight'||k==='ArrowUp'||k==='ArrowDown'){
+    exhibitView.x+=k==='ArrowLeft'?60:k==='ArrowRight'?-60:0;
+    exhibitView.y+=k==='ArrowUp'?60:k==='ArrowDown'?-60:0;
+    applyExhibitTransform();
+  }else if(k==='Tab'){
+    var btns=Array.from(exhibitView.el.querySelectorAll('button'));
+    var i=btns.indexOf(document.activeElement);
+    btns[(i+(e.shiftKey?-1:1)+btns.length)%btns.length].focus();
+  }else if(k==='Enter'||k===' '){
+    if(document.activeElement&&document.activeElement.closest('.exhibit-viewer'))return;
+  }
+  e.preventDefault();
+  e.stopImmediatePropagation();
+},true);
 function normQ(q){
   if(!q.stem||!Array.isArray(q.choices)||q.choices.length<2)return null;
   var allChoices=q.choices.map(String);
@@ -2551,6 +2784,8 @@ function collectTextNodesInRange(range,scope){
   var walker=document.createTreeWalker(scope,NodeFilter.SHOW_TEXT,{
     acceptNode:function(node){
       if(!node.textContent)return NodeFilter.FILTER_REJECT;
+      // Wrapping SVG text in an HTML <mark>/<s> breaks the figure, so exhibits are not annotatable.
+      if(node.parentElement&&node.parentElement.closest('svg,.qfig'))return NodeFilter.FILTER_REJECT;
       return selectionIntersectsNode(range,node)?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT;
     }
   });

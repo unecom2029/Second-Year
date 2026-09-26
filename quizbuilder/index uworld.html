@@ -175,6 +175,28 @@ body.nbme-lock{overflow:hidden}
   box-decoration-break:clone;
 }
 .qstem s{color:var(--mist);text-decoration:line-through}
+.qfig{margin:16px 0 20px;padding:12px;max-width:560px;border:1px solid var(--rule);border-radius:10px;background:var(--white);color:var(--ink)}
+.qfig img,.qfig svg{display:block;max-width:100%;height:auto;margin:0 auto}
+.qfig svg{width:100%}
+.qfig-cap{margin-top:8px;font-size:13px;line-height:1.4;color:var(--slate);text-align:center}
+.qfig-missing{padding:18px 12px;font-size:13px;color:var(--slate);text-align:center}
+.qfig:has(img,svg){position:relative;cursor:zoom-in}
+.qfig:has(img,svg)::after{content:'Click to zoom';position:absolute;top:8px;right:8px;padding:3px 8px;border-radius:6px;background:rgba(18,32,60,.72);color:#fff;font:600 11px var(--font-ui);opacity:0;transition:opacity .15s;pointer-events:none}
+.qfig:has(img,svg):hover::after{opacity:1}
+.exhibit-viewer{position:fixed;inset:0;z-index:1300;display:flex;flex-direction:column;background:rgba(9,17,28,.97)}
+.exhibit-viewer[hidden]{display:none}
+.exv-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;background:#12203C;color:#fff;font-family:var(--font-ui)}
+.exv-title{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px;font-weight:700}
+.exv-tools{display:flex;align-items:center;gap:6px}
+.exv-tools button{min-width:36px;height:34px;padding:0 10px;border:1px solid rgba(255,255,255,.28);border-radius:7px;background:transparent;color:#fff;font:700 15px var(--font-ui);cursor:pointer}
+.exv-tools button:hover,.exv-tools button:focus-visible{background:rgba(255,255,255,.14)}
+.exv-pct{min-width:52px;text-align:center;font-size:13px;font-variant-numeric:tabular-nums}
+.exv-stage{position:relative;flex:1;overflow:hidden;touch-action:none;cursor:grab}
+.exv-stage.dragging{cursor:grabbing}
+.exv-content{position:absolute;left:0;top:0;transform-origin:0 0;background:#fff;color:#1E1E20;box-shadow:0 10px 40px rgba(0,0,0,.4)}
+.exv-content img,.exv-content svg{display:block;width:100%;height:100%;max-width:none;user-select:none;-webkit-user-drag:none}
+.exv-help{padding:6px 14px 8px;background:#12203C;color:rgba(255,255,255,.7);font:12px var(--font-ui);text-align:center}
+@media(max-width:480px){.exv-bar{flex-wrap:wrap}.exv-title{flex-basis:100%}.exv-help{display:none}}
 .ach{display:grid;gap:10px}
 .ac{display:flex;align-items:flex-start;gap:14px;padding:15px 18px;border:1.5px solid rgba(18,32,60,.09);border-radius:18px;cursor:pointer;transition:var(--tr);background:color-mix(in srgb,var(--warm) 78%,var(--white) 22%);box-shadow:0 6px 18px rgba(18,32,60,.04)}
 .ac:hover:not(.dis){border-color:rgba(26,122,109,.4);background:linear-gradient(180deg,#fff,#F0F7F5);transform:translateY(-1px)}
@@ -1160,7 +1182,7 @@ JSON contract (exact — this app parses it literally):
 - Choice strings embed their own letter prefix ("A. ...", "B. ...").
 - Return exactly ${count} questions in "questions".
 ${quizNameRule}
-- NO IMAGES: this app renders text only. Never write "shown in the photograph", "the arrow indicates", "the curve labeled A", or "on the pedigree shown". When the source concept is image-based (histology, gross specimen, x-ray, ECG, dose-response curve, pedigree, agar plate), convert it to a described-findings item: put the findings into words in the stem ("Biopsy shows sheets of small round blue cells forming rosettes") and make the options named structures, organisms, mechanisms, or diagnoses instead of letters on a figure.
+- IMAGES ARE ALLOWED IN "stem" (and only in "stem"). The app renders the stem as HTML, so an exhibit is written as HTML inside the stem string. See EXHIBITS AND FIGURES below for exactly when and how. Short version: reuse image URLs that appear in my content, draw line-art figures yourself as inline SVG, NEVER invent an image URL, and fall back to describing the findings in words when neither is possible.
 - Plain-text tables are allowed inside "stem" (aligned columns) for laboratory panels and matched-column items.
 - Output ONLY the JSON object.
 
@@ -1234,9 +1256,31 @@ ORDER OF ELEMENTS (follow this sequence):
 3. Background in UWorld's compressed phrasing: "His medical conditions include prostate cancer and membranous nephropathy." "Medical history is significant for treatment-resistant major depressive disorder." "He has no chronic medical conditions and takes no daily medications." "He has smoked a pack of cigarettes daily for 36 years." "He does not use tobacco, alcohol, or illicit drugs." Include exposures, travel, occupation, diet, and the full medication list only when one of them is the clincher or a deliberate decoy — but when the answer IS a drug interaction or an adverse effect, the medication list must be complete enough that the item is fair.
 4. Vitals: give ONLY the ones that matter, in a short sentence. UWorld does not recite all four when only two are abnormal. "Blood pressure is 148/60 mm Hg and pulse is 95/min." "Temperature is 38.3 C (100.9 F). The remainder of vital signs are appropriate for age." Use "Vital signs are within normal limits." when vitals are not the point — but measured, that exact sentence appears in only 4.1% of stems, and any vitals at all in 21.7%, so the far more common UWorld move is to give NO vitals rather than to declare them normal. Temperature is written with the unit letter and no degree symbol, and the corpus commonly leads with either scale: "Temperature is 98.6 F (37 C)" or "Temperature is 38.3 C (100.9 F)".
 5. Examination in clipped positive-and-negative form, with the clincher buried inside routine negatives: "On physical examination, the patient appears to be in moderate distress due to pain and is diaphoretic. There is right costovertebral angle tenderness." "The abdomen is soft and nontender with the liver palpable 4 cm below the right costal margin and the spleen palpable 8 cm below the left costal margin." "Physical examination is otherwise normal."
-6. Data block: laboratory values, imaging described in words, or histology described in words. Describe morphology, never reference an image: "A bone marrow biopsy shows macrophages with wrinkled, paperlike cytoplasm due to the accumulation of glycolipids within lysosomes." "Culture of the fluid grows gram-negative rods that form pink colonies on MacConkey agar." "Biopsy of the lymph node reveals anaplastic cells that are diffusely positive for cytokeratin immunohistochemical stain." Give a reference range in parentheses "(N=...)" only for analytes that are not on the standard laboratory reference table.
+6. Data block: laboratory values, imaging described in words, or histology described in words. Describe morphology in words unless an actual exhibit is attached (see EXHIBITS AND FIGURES): "A bone marrow biopsy shows macrophages with wrinkled, paperlike cytoplasm due to the accumulation of glycolipids within lysosomes." "Culture of the fluid grows gram-negative rods that form pink colonies on MacConkey agar." "Biopsy of the lymph node reveals anaplastic cells that are diffusely positive for cytokeratin immunohistochemical stain." Give a reference range in parentheses "(N=...)" only for analytes that are not on the standard laboratory reference table.
 7. UWorld frequently names the diagnosis or the process for you and asks something deeper — this is legitimate and characteristic when the testing point is the mechanism, not the recognition: "Radiation enteritis is suspected." "Serology is consistent with congenital toxoplasmosis." "The physician suspects injury of the reperfused muscles in part due to overproduction of reactive oxygen species." "The diagnosis is established and her current condition is attributed to adverse effects from one of her medications." Use this device for roughly 1 item in 6.
 8. Lead-in as the final sentence of the same paragraph.
+
+================ EXHIBITS AND FIGURES (images in the stem) ================
+Measured: 14.3% of real UWorld items carry an image — about 1 in 7 — most often a photomicrograph, gross specimen, skin lesion, radiograph or CT, peripheral smear, pedigree, labeled anatomic diagram, or physiology graph. This app can show them. Where the image comes from decides what you are allowed to do:
+
+SOURCE 1 — IMAGES IN MY CONTENT. If my content contains image URLs (an <img> tag, or a link ending in .png, .jpg, .jpeg, .gif, .webp or .svg, or a link from an image host) or embedded data:image URIs, you may attach them. Copy the URL character for character and never shorten, "fix", or guess at it. In MODE 2 (CONVERT), every image the original question had must come through attached to that same question. In MODE 1 (GENERATE), attach a source image to the item whose testing point it actually shows.
+
+SOURCE 2 — FIGURES YOU DRAW AS INLINE SVG. For anything made of lines, curves, shapes and labels you may draw it yourself: pedigrees; dose-response and log-dose curves (agonist, partial agonist, competitive vs irreversible antagonist); Michaelis-Menten and Lineweaver-Burk plots; oxygen-hemoglobin dissociation curves; pressure-volume loops, Frank-Starling and cardiac/vascular function curves, Wiggers-style pressure tracings; flow-volume loops and spirometry tracings; action potential and membrane-potential tracings; drug concentration-time curves; survival curves and 2x2 or bar/line charts for biostatistics; gel electrophoresis, Southern/Western blot and hemoglobin electrophoresis band patterns; simple schematics (a nephron with numbered segments, a brachial plexus, a visual pathway or Circle of Willis with numbered lesion sites). Draw it accurately: the curve shapes, shifts, intercepts and band positions ARE the testing point, so they must be physiologically correct and to scale.
+
+NEVER — do not draw photographs, histology, gross specimens, radiographs, CT/MRI, fundus, skin lesions, or blood smears in SVG (a cartoon of a smear is worse than words), and NEVER invent, recall, or construct an image URL (no Wikimedia, no "example.com", no URL from memory). A fabricated URL shows the student a broken picture. When the concept needs one of these and my content supplied no URL, convert it to a described-findings item: put the findings into words ("Biopsy shows sheets of small round blue cells forming rosettes") and make the options named structures, organisms, mechanisms, or diagnoses.
+
+HOW TO WRITE AN EXHIBIT (exact HTML, inside the "stem" string):
+<figure class='qfig'><img src='EXACT_SOURCE_URL' alt='Photomicrograph of the renal biopsy specimen'><figcaption class='qfig-cap'>Renal biopsy specimen, hematoxylin and eosin stain</figcaption></figure>
+<figure class='qfig'><svg viewBox='0 0 480 300' xmlns='http://www.w3.org/2000/svg' role='img' aria-label='Pressure-volume loops before and during the infusion' font-family='sans-serif' font-size='13' fill='none' stroke='currentColor'> ... </svg><figcaption class='qfig-cap'>Solid line = before infusion; dashed line = during infusion</figcaption></figure>
+- Use SINGLE QUOTES for every HTML/SVG attribute so the JSON string needs no escaping, and put the whole exhibit on one line (no raw line breaks inside a JSON string).
+- SVG rules: viewBox about 480 wide, no fixed width/height, stroke and text in currentColor (so it works in dark mode) with at most one or two accent colors used for meaning, not decoration; label both axes with units; distinguish curves by solid versus dashed line and number them; filled text needs fill='currentColor' and stroke='none'. Pedigrees use squares for males, circles for females, filled for affected, a slash for deceased, and numbered generations (I, II, III) and individuals. No <script>, no <foreignObject>, no event attributes (onclick, onload), no external references, no <style> blocks.
+- Placement and wording, as UWorld does it: the data block, then a short sentence introducing the exhibit in UWorld's words — "Peripheral blood smear is shown in the image below." · "Results of the biopsy are shown in the image below." · "A portion of the recording is shown on the slide below." · "The patient's pedigree is shown below." — then the figure, then the lead-in as the last sentence. A legend for line styles goes in the caption ("Solid line = before nitroprusside; dashed line = during nitroprusside infusion"). The lead-in may point into the figure ("Which of the following labeled arteries is most likely occluded?"). Never write "shown" unless the figure is actually attached in that same stem.
+- Markers on a figure use NUMBERS (1, 2, 3...) or named curves, NEVER letters: UWorld letters its regions, but this app reshuffles and re-letters the answer choices at run time, so a region labeled "A" would clash with choice A. Options then read "Segment 3", "Curve 2", "Individual III-2", or, better, name the structure or mechanism outright.
+- alt text and caption say WHAT the exhibit is (organ, specimen, stain, axes, line legend), never what it SHOWS. "Photomicrograph of the liver biopsy specimen" is correct; "Liver biopsy showing Mallory bodies" gives the item away. The same rule applies to SVG aria-label and to curve labels.
+- The exhibit must be load-bearing: it carries the clincher or a decisive finding, and the words in the stem must not restate what the figure shows (otherwise it is decoration). Exception: in CONVERT mode, keep the original stem wording as written.
+- Because a URL image can fail to load, "explanation" must describe in words what the exhibit shows and why that points to the key ("The peripheral smear shows ... -> ..."), before the Educational objective line, so the review stays complete without the picture.
+- An exhibit adds nothing to the word count: the 80-120 word target applies to the prose only.
+- Frequency: in GENERATE mode, attach a figure to about 1 in 7 items when the source supports it (the measured rate), never to more than 1 in 3, and only where a picture tests something words cannot test as well. In CONVERT mode, keep exactly the images the source had.
 
 ================ LEAD-IN INVENTORY (UWorld shapes — use these forms) ================
 Mechanism / process (the workhorse): "Which of the following processes is most likely to occur in the affected brain region?" · "Which of the following cellular processes is most likely responsible for this patient's muscle loss?" · "Which of the following is most likely the primary mechanism responsible for this patient's intestinal changes?" · "This patient's physical examination findings are best explained by which of the following mechanisms?" · "Which of the following mechanisms is most likely responsible for this patient's current condition?" · "Which of the following best explains this patient's current symptoms?"
@@ -1414,7 +1458,7 @@ H2 — LABORATORY INTERNAL CONSISTENCY (check every number against every other n
 - REFERENCE RANGES: hemoglobin, hematocrit, leukocyte count, platelet count, MCV, reticulocyte %, PT, aPTT, bilirubin, LDH, iron and ferritin are on the standard table — give no range. DO give an inline range for off-table analytes, in the corpus's own format: "Total iron-binding capacity 180 ug/dL (normal: 250-460)" and "Plasma fibrinogen 100 mg/dL (normal: 150-400)". Also range haptoglobin, D-dimer, individual factor levels, ristocetin cofactor activity, hemoglobin A2, methylmalonic acid, homocysteine, ADAMTS13 activity, erythropoietin, and leukocyte alkaline phosphatase.
 - Render the laboratory panel as an aligned two-column plain-text block inside "stem", analyte then value, one per line, exactly as the real item does.
 
-H3 — MORPHOLOGY IN WORDS. This app is text-only, so every smear, marrow, and node finding must be DESCRIBED, never referenced. Write "the peripheral smear shows small round cells lacking central pallor", never "the smear shown". Describe precisely, because each finding points somewhere different: spherocytes lacking central pallor (hereditary spherocytosis or warm autoimmune hemolysis); schistocytes and helmet cells (microangiopathy or a mechanical valve); bite cells with Heinz bodies (glucose-6-phosphate dehydrogenase deficiency after an oxidant); target cells (thalassemia, liver disease, hemoglobin C, post-splenectomy); teardrop cells with nucleated red cells and immature granulocytes, a leukoerythroblastic picture (marrow infiltration or myelofibrosis); basophilic stippling (lead poisoning or thalassemia); Howell-Jolly bodies (absent or non-functioning spleen); hypersegmented neutrophils with five or more lobes (B12 or folate deficiency); rouleaux (a paraprotein); smudge cells (chronic lymphocytic leukemia); Auer rods, and heavily granular needle-shaped azurophilic granules with a low fibrinogen (acute promyelocytic leukemia); ringed sideroblasts; Reed-Sternberg cells described as large binucleate cells with prominent nucleoli; a starry-sky pattern in a node.
+H3 — MORPHOLOGY IN WORDS. Unless my content supplies an actual smear, marrow, or node image URL (see EXHIBITS AND FIGURES), every smear, marrow, and node finding must be DESCRIBED, never referenced, and never drawn in SVG. Write "the peripheral smear shows small round cells lacking central pallor", never "the smear shown". Describe precisely, because each finding points somewhere different: spherocytes lacking central pallor (hereditary spherocytosis or warm autoimmune hemolysis); schistocytes and helmet cells (microangiopathy or a mechanical valve); bite cells with Heinz bodies (glucose-6-phosphate dehydrogenase deficiency after an oxidant); target cells (thalassemia, liver disease, hemoglobin C, post-splenectomy); teardrop cells with nucleated red cells and immature granulocytes, a leukoerythroblastic picture (marrow infiltration or myelofibrosis); basophilic stippling (lead poisoning or thalassemia); Howell-Jolly bodies (absent or non-functioning spleen); hypersegmented neutrophils with five or more lobes (B12 or folate deficiency); rouleaux (a paraprotein); smudge cells (chronic lymphocytic leukemia); Auer rods, and heavily granular needle-shaped azurophilic granules with a low fibrinogen (acute promyelocytic leukemia); ringed sideroblasts; Reed-Sternberg cells described as large binucleate cells with prominent nucleoli; a starry-sky pattern in a node.
 
 H4 — HEME OPTION-SET FAMILIES BEYOND THE MECHANISM SWEEP (rotate these):
 - COAGULATION PANEL GRID (the factorial grid of rule 3): header columns Prothrombin time / Partial thromboplastin time / Platelet count / Platelet function or bleeding time, options are the rows written as "Normal, prolonged, normal, normal". Every row must be a real entity: hemophilia A or B (PT normal, aPTT long, platelets normal, mixing study CORRECTS); von Willebrand disease (PT normal, aPTT normal or slightly long, platelets normal, platelet function abnormal, ristocetin cofactor low); immune thrombocytopenia (coagulation times normal, platelets low); DIC (both times long, platelets low, fibrinogen low, D-dimer high); vitamin K deficiency or warfarin (PT prolonged FIRST because factor VII has the shortest half-life); liver disease (PT long but factor VIII normal or high, which is what separates it from DIC); factor XIII deficiency (every screening test normal with delayed bleeding); lupus anticoagulant or an acquired inhibitor (aPTT long and the mixing study does NOT correct).
@@ -1456,7 +1500,7 @@ N5 — THE EMBRYOLOGIC PROCESS SWEEP: neural crest cell migration / notochord fo
 N6 — THE PERIPHERAL NERVE MECHANISM SWEEP: endoneurial arteriole hyalinization (diabetic microvascular neuropathy) / endoneurial inflammatory infiltrate (inflammatory demyelinating polyneuropathy) / mutation of a myelin protein gene (hereditary neuropathy) / nerve compression within an anatomic tunnel (entrapment) / poor transmission at the neuromuscular junction. This is the mechanism-phrase set applied to nerve disease.
 
 N7 — NEURO ITEM DISCIPLINE:
-- About 15% of real neuro items reference an image. You must convert every one of these into described findings: name the vessel, the structure, the imaging pattern, or the smear appearance in words, and make the options named structures or mechanisms rather than lettered regions.
+- About 15% of real neuro items reference an image. Attach an image only when my content supplies its URL, or when it is line art you can draw accurately in SVG (a Circle of Willis, brainstem cross-section schematic, visual pathway, or dermatome map with NUMBERED sites). Convert every CT, MRI, gross brain, or histology image without a source URL into described findings: name the vessel, the structure, the imaging pattern, or the smear appearance in words, and make the options named structures or mechanisms.
 - Cerebrospinal fluid patterns: bacterial meningitis = neutrophil predominance, high protein, low glucose; viral = lymphocyte predominance, normal-to-high protein, normal glucose; fungal and tuberculous = lymphocytes with very low glucose. Route-of-spread items (rule 5) pair naturally with these.
 - Stroke items should fix the territory with one crossed or cortical finding rather than with the word "stroke", and time-course asks ("over the next week") pair with the liquefactive necrosis timeline.
 - Duration and tempo are decisive: seconds to minutes (seizure, transient ischemic attack, migraine aura), hours (stroke, meningitis), days to weeks (abscess, inflammatory demyelination), months to years (degenerative, neoplastic).
@@ -1497,7 +1541,11 @@ THE LENGTH-CUE TALLY (run this second — it catches the failure mode that lette
 - Vague durations ("recently", "for a while") when duration matters.
 - Explicit negatives that rule out nothing on the option list.
 - Two defensible answers. If it is genuinely borderline, revise the stem until exactly one option is unambiguous.
-- Any reference to an image, photograph, arrow, graph, curve label, or lettered region on a figure.
+- Referring to an image ("shown in the image below", "the arrow indicates") that is not actually attached in that same stem.
+- An image URL that did not appear in my content — invented, recalled from memory, or "corrected".
+- A photograph, histology, radiograph, or smear drawn as SVG.
+- A caption, alt text, aria-label, or curve label that names the finding or the diagnosis.
+- Lettered regions on a figure (use numbers — the app re-letters the choices).
 
 ================ WORKED EXEMPLARS (original — style reference ONLY, never reuse this content) ================
 EXEMPLAR 1 — taxonomy sweep + time-course ask + organ-dependent answer:
@@ -1515,13 +1563,19 @@ Stem: "A 62-year-old woman comes to the office due to fatigue. Six weeks ago she
 Options are five quoted statements, alphabetized by the first letter inside the quotation mark. The key explores what the patient hopes the alternative treatment will give her before offering any information about it. Each distractor violates exactly one principle: flat refusal (rapport), immediate correction with evidence (premature education), agreeing to stop without exploration (abandoning beneficence), and referring the conversation to oncology (offloading).
 Educational objective for this item: "When a patient requests an unproven alternative therapy, the physician should first explore the patient's underlying goals and concerns before providing medical information. Understanding the motivation preserves the therapeutic alliance and allows the physician to address the unmet need directly."
 
+EXEMPLAR 4 — drawn exhibit (inline SVG), investigator item:
+"stem" value, exactly as it should appear inside the JSON string: "An investigator studies the contraction of an isolated segment of guinea pig ileum in response to increasing concentrations of acetylcholine. The experiment is repeated after the tissue is incubated with a fixed concentration of drug Y. The results are shown in the image below. <figure class='qfig'><svg viewBox='0 0 480 300' xmlns='http://www.w3.org/2000/svg' role='img' aria-label='Dose-response curves 1 and 2' font-family='sans-serif' font-size='13' fill='none' stroke='currentColor'><path d='M60 30 V250 H460' stroke-width='1.5'/><path d='M70 246 C170 246 170 54 270 54 H450' stroke-width='2.5'/><path d='M70 246 H170 C270 246 270 54 370 54 H450' stroke-width='2.5' stroke-dasharray='7 5'/><g fill='currentColor' stroke='none'><text x='52' y='58' text-anchor='end'>100</text><text x='52' y='254' text-anchor='end'>0</text><text x='260' y='285' text-anchor='middle'>Log [acetylcholine]</text><text x='18' y='150' text-anchor='middle' transform='rotate(-90 18 150)'>Contraction (% of maximum)</text><text x='150' y='120'>1</text><text x='318' y='120'>2</text></g></svg><figcaption class='qfig-cap'>Solid line (1) = acetylcholine alone; dashed line (2) = after incubation with drug Y</figcaption></figure> Drug Y most likely has which of the following properties?"
+Options (alphabetical): A. Binds covalently to the agonist binding site / B. Binds reversibly to the agonist binding site / C. Decreases basal receptor activity / D. Partially activates the receptor / E. Produces an opposing effect through a different receptor. Correct: B.
+Architecture: the taxonomy swept is drug-receptor interaction, written as mechanism phrases. The figure IS the clincher — a parallel rightward shift with an unchanged maximum — and the prose never states it. Each distractor would draw a different curve 2: covalent binding lowers the maximum, a partial agonist has a lower plateau of its own. The explanation opens by describing the shift in words.
+Educational objective for this item: "A competitive antagonist binds reversibly to the agonist site, shifting the dose-response curve to the right without lowering the maximal response, because enough agonist can outcompete it. An irreversible or noncompetitive antagonist instead lowers the maximal response."
+
 ================ QUALITY GATE — run silently on every item before output ================
-Stem: opens with age, sex, arrival verb and "due to" · exact duration · single paragraph with the lead-in as its last sentence · 90-130 words for a standard item · observational wording · only the relevant vitals · at least one explicit negative that kills a listed option · every image concept converted to described findings · passes the cover-the-options test.
+Stem: opens with age, sex, arrival verb and "due to" · exact duration · single paragraph with the lead-in as its last sentence · 90-130 words for a standard item · observational wording · only the relevant vitals · at least one explicit negative that kills a listed option · every exhibit is actually attached, load-bearing, introduced by a UWorld "shown in the image below" sentence, and either a source URL copied exactly or an accurate SVG line figure with numbered markers · no invented URLs · caption/alt text neutral · image concepts with no source URL converted to described findings · passes the cover-the-options test.
 Ask: one layer away from the diagnosis, unless this is a psychiatry or behavioral diagnosis item · lead-in taken from the inventory shapes.
 Options: one taxonomy, fully swept · every distractor passes the sibling test · near sibling, surface read, and adjacent-step roles present · mutually exclusive · exactly one unambiguously correct · median option length short · KEY IS NOT THE UNIQUE LONGEST OPTION AND NOT THE UNIQUE SHORTEST, VERIFIED BY COUNTING WORDS, AND NOT MORE THAN ABOUT 1.3x THE MEAN DISTRACTOR LENGTH · no hedging or convergence cue · alphabetized · count varied across the batch per the distribution.
 Heme items additionally: hematocrit about 3x hemoglobin · MCV matches the described morphology · reticulocyte count agrees with production versus destruction · the hemolysis panel moves as a unit or the outlier is the testing point · iron studies form one coherent row · PT, aPTT, platelets and fibrinogen fit the single disorder chosen · options written as mechanism phrases where the content allows.
-Data: every number consistent with every other number · reference ranges only for off-table analytes · morphology described in words.
-Explanation: names the diagnosis, walks the mechanism with arrows, then a final line beginning "Educational objective:" that states the general rule in 30-50 words with the exception or contrast.
+Data: every number consistent with every other number · reference ranges only for off-table analytes · morphology described in words unless a source image of it is attached.
+Explanation: names the diagnosis, describes any exhibit in words, walks the mechanism with arrows, then a final line beginning "Educational objective:" that states the general rule in 30-50 words with the exception or contrast.
 wrongExplanations: one entry per wrong choice, keyed by actual choice index, each naming where that option IS the right answer plus the finding this patient lacks.
 eli5: plain language, maximum 3 sentences, explains the concept not the vignette.
 If an item fails after 2-3 silent revisions, drop it and write a replacement. Never ship a failing item and never show the checklist.
@@ -1627,6 +1681,187 @@ function randomizeQuestionChoices(q){
 function randomizeQuestionsForSession(list){
   return list.map(function(q){return randomizeQuestionChoices(q);});
 }
+// A stem image whose URL fails to load is swapped for a note pointing to the explanation,
+// which the prompt requires to describe every exhibit in words.
+document.addEventListener('error',function(e){
+  var img=e.target;
+  if(!img||img.tagName!=='IMG'||!img.closest('.qfig'))return;
+  var note=document.createElement('div');
+  note.className='qfig-missing';
+  note.textContent='Image could not be loaded'+(img.alt?' ('+img.alt+')':'')+'. The explanation describes what it shows.';
+  img.replaceWith(note);
+},true);
+// ── EXHIBIT VIEWER: click a stem figure to open it full screen with zoom and pan ──
+var exhibitView={el:null,stage:null,content:null,w:0,h:0,fit:1,scale:1,x:0,y:0,pointers:{},pinch:null,lastFocus:null};
+function buildExhibitViewer(){
+  if(exhibitView.el)return exhibitView.el;
+  var el=document.createElement('div');
+  el.className='exhibit-viewer';
+  el.hidden=true;
+  el.setAttribute('role','dialog');
+  el.setAttribute('aria-modal','true');
+  el.setAttribute('aria-label','Exhibit viewer');
+  el.innerHTML='<div class="exv-bar"><span class="exv-title"></span><div class="exv-tools">'+
+    '<button type="button" data-exv="out" aria-label="Zoom out" title="Zoom out (-)">&minus;</button>'+
+    '<span class="exv-pct" aria-live="polite">100%</span>'+
+    '<button type="button" data-exv="in" aria-label="Zoom in" title="Zoom in (+)">+</button>'+
+    '<button type="button" data-exv="fit" title="Fit to screen (0)">Fit</button>'+
+    '<button type="button" data-exv="close" aria-label="Close exhibit" title="Close (Esc)">&times;</button>'+
+    '</div></div><div class="exv-stage"><div class="exv-content"></div></div>'+
+    '<div class="exv-help">Scroll or pinch to zoom · drag to move · double-click to zoom in · Esc to close</div>';
+  document.body.appendChild(el);
+  exhibitView.el=el;
+  exhibitView.stage=el.querySelector('.exv-stage');
+  exhibitView.content=el.querySelector('.exv-content');
+  el.querySelector('.exv-tools').addEventListener('click',function(e){
+    var btn=e.target.closest('[data-exv]');
+    if(!btn)return;
+    var act=btn.getAttribute('data-exv');
+    if(act==='close')closeExhibit();
+    else if(act==='fit')fitExhibit();
+    else zoomExhibitAt(act==='in'?1.4:1/1.4);
+  });
+  var stage=exhibitView.stage;
+  stage.addEventListener('wheel',function(e){
+    e.preventDefault();
+    var r=stage.getBoundingClientRect();
+    zoomExhibitAt(Math.exp(-e.deltaY*(e.ctrlKey?0.01:0.0015)),e.clientX-r.left,e.clientY-r.top);
+  },{passive:false});
+  stage.addEventListener('dblclick',function(e){
+    var r=stage.getBoundingClientRect();
+    zoomExhibitAt(2,e.clientX-r.left,e.clientY-r.top);
+  });
+  stage.addEventListener('pointerdown',function(e){
+    stage.setPointerCapture(e.pointerId);
+    exhibitView.pointers[e.pointerId]={x:e.clientX,y:e.clientY};
+    exhibitView.pinch=null;
+    stage.classList.add('dragging');
+  });
+  stage.addEventListener('pointermove',function(e){
+    var p=exhibitView.pointers[e.pointerId];
+    if(!p)return;
+    var ids=Object.keys(exhibitView.pointers);
+    if(ids.length===1){
+      exhibitView.x+=e.clientX-p.x;
+      exhibitView.y+=e.clientY-p.y;
+      p.x=e.clientX;p.y=e.clientY;
+      applyExhibitTransform();
+      return;
+    }
+    p.x=e.clientX;p.y=e.clientY;
+    var a=exhibitView.pointers[ids[0]],b=exhibitView.pointers[ids[1]];
+    var r=stage.getBoundingClientRect();
+    var dist=Math.hypot(a.x-b.x,a.y-b.y),mx=(a.x+b.x)/2-r.left,my=(a.y+b.y)/2-r.top;
+    if(exhibitView.pinch&&exhibitView.pinch.dist>0){
+      exhibitView.x+=mx-exhibitView.pinch.mx;
+      exhibitView.y+=my-exhibitView.pinch.my;
+      zoomExhibitAt(dist/exhibitView.pinch.dist,mx,my);
+    }
+    exhibitView.pinch={dist:dist,mx:mx,my:my};
+  });
+  function endPointer(e){
+    delete exhibitView.pointers[e.pointerId];
+    exhibitView.pinch=null;
+    if(!Object.keys(exhibitView.pointers).length)stage.classList.remove('dragging');
+  }
+  stage.addEventListener('pointerup',endPointer);
+  stage.addEventListener('pointercancel',endPointer);
+  window.addEventListener('resize',function(){if(!exhibitView.el.hidden)fitExhibit();});
+  return el;
+}
+function openExhibit(fig){
+  var src=fig.querySelector('img,svg');
+  if(!src)return;
+  buildExhibitViewer();
+  var clone=src.cloneNode(true);
+  var w,h;
+  if(src.tagName.toLowerCase()==='img'){
+    w=src.naturalWidth||src.clientWidth;h=src.naturalHeight||src.clientHeight;
+  }else{
+    var vb=src.viewBox&&src.viewBox.baseVal;
+    w=vb&&vb.width?vb.width:src.clientWidth;h=vb&&vb.height?vb.height:src.clientHeight;
+    // Vector art is tiny at its viewBox size; lay it out larger so text stays crisp when zoomed.
+    var up=Math.max(1,1200/Math.max(w,1));w*=up;h*=up;
+    clone.removeAttribute('width');clone.removeAttribute('height');
+  }
+  if(!w||!h)return;
+  exhibitView.w=w;exhibitView.h=h;
+  exhibitView.content.innerHTML='';
+  exhibitView.content.appendChild(clone);
+  exhibitView.content.style.width=w+'px';
+  exhibitView.content.style.height=h+'px';
+  var cap=fig.querySelector('.qfig-cap,figcaption');
+  exhibitView.el.querySelector('.exv-title').textContent=(cap&&cap.textContent.trim())||src.getAttribute('alt')||src.getAttribute('aria-label')||'Exhibit';
+  exhibitView.lastFocus=document.activeElement;
+  exhibitView.pointers={};
+  exhibitView.el.hidden=false;
+  fitExhibit();
+  exhibitView.el.querySelector('[data-exv="close"]').focus();
+}
+function closeExhibit(){
+  if(!exhibitView.el||exhibitView.el.hidden)return;
+  exhibitView.el.hidden=true;
+  exhibitView.content.innerHTML='';
+  if(exhibitView.lastFocus&&exhibitView.lastFocus.focus)exhibitView.lastFocus.focus();
+}
+function fitExhibit(){
+  var s=exhibitView.stage;
+  exhibitView.fit=Math.min((s.clientWidth-32)/exhibitView.w,(s.clientHeight-32)/exhibitView.h);
+  exhibitView.scale=exhibitView.fit;
+  exhibitView.x=(s.clientWidth-exhibitView.w*exhibitView.fit)/2;
+  exhibitView.y=(s.clientHeight-exhibitView.h*exhibitView.fit)/2;
+  applyExhibitTransform();
+}
+// Zoom by `factor`, keeping the stage point (px,py) fixed under the cursor/fingers.
+function zoomExhibitAt(factor,px,py){
+  var s=exhibitView.stage;
+  if(px==null){px=s.clientWidth/2;py=s.clientHeight/2;}
+  var next=Math.min(exhibitView.fit*10,Math.max(exhibitView.fit*0.5,exhibitView.scale*factor));
+  var k=next/exhibitView.scale;
+  exhibitView.x=px-(px-exhibitView.x)*k;
+  exhibitView.y=py-(py-exhibitView.y)*k;
+  exhibitView.scale=next;
+  applyExhibitTransform();
+}
+function applyExhibitTransform(){
+  var s=exhibitView.stage,sw=s.clientWidth,sh=s.clientHeight;
+  var cw=exhibitView.w*exhibitView.scale,ch=exhibitView.h*exhibitView.scale;
+  // Keep the exhibit centred when it fits, and never let it be dragged fully out of view.
+  exhibitView.x=cw<=sw?(sw-cw)/2:Math.min(0,Math.max(sw-cw,exhibitView.x));
+  exhibitView.y=ch<=sh?(sh-ch)/2:Math.min(0,Math.max(sh-ch,exhibitView.y));
+  exhibitView.content.style.transform='translate('+exhibitView.x+'px,'+exhibitView.y+'px) scale('+exhibitView.scale+')';
+  exhibitView.el.querySelector('.exv-pct').textContent=Math.round(exhibitView.scale/exhibitView.fit*100)+'%';
+}
+document.addEventListener('click',function(e){
+  var fig=e.target.closest&&e.target.closest('.qfig');
+  if(!fig||fig.closest('.exhibit-viewer'))return;
+  // A drag that selected text for highlighting should not also open the viewer.
+  var sel=window.getSelection&&window.getSelection();
+  if(sel&&!sel.isCollapsed&&String(sel).trim())return;
+  openExhibit(fig);
+});
+// Capture phase so the quiz's own arrow/letter shortcuts do not fire while the viewer is open.
+window.addEventListener('keydown',function(e){
+  if(!exhibitView.el||exhibitView.el.hidden)return;
+  var k=e.key;
+  if(k==='Escape')closeExhibit();
+  else if(k==='+'||k==='=')zoomExhibitAt(1.4);
+  else if(k==='-'||k==='_')zoomExhibitAt(1/1.4);
+  else if(k==='0')fitExhibit();
+  else if(k==='ArrowLeft'||k==='ArrowRight'||k==='ArrowUp'||k==='ArrowDown'){
+    exhibitView.x+=k==='ArrowLeft'?60:k==='ArrowRight'?-60:0;
+    exhibitView.y+=k==='ArrowUp'?60:k==='ArrowDown'?-60:0;
+    applyExhibitTransform();
+  }else if(k==='Tab'){
+    var btns=Array.from(exhibitView.el.querySelectorAll('button'));
+    var i=btns.indexOf(document.activeElement);
+    btns[(i+(e.shiftKey?-1:1)+btns.length)%btns.length].focus();
+  }else if(k==='Enter'||k===' '){
+    if(document.activeElement&&document.activeElement.closest('.exhibit-viewer'))return;
+  }
+  e.preventDefault();
+  e.stopImmediatePropagation();
+},true);
 function normQ(q){
   if(!q.stem||!Array.isArray(q.choices)||q.choices.length<2)return null;
   var allChoices=q.choices.map(String);
@@ -2712,6 +2947,8 @@ function collectTextNodesInRange(range,scope){
   var walker=document.createTreeWalker(scope,NodeFilter.SHOW_TEXT,{
     acceptNode:function(node){
       if(!node.textContent)return NodeFilter.FILTER_REJECT;
+      // Wrapping SVG text in an HTML <mark>/<s> breaks the figure, so exhibits are not annotatable.
+      if(node.parentElement&&node.parentElement.closest('svg,.qfig'))return NodeFilter.FILTER_REJECT;
       return selectionIntersectsNode(range,node)?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT;
     }
   });
