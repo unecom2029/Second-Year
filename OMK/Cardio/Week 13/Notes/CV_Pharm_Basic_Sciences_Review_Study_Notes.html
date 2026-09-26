@@ -1,0 +1,1781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+(function(){
+  var NOTE_AUTH_KEY='une-study-hub-remembered-auth-v1';
+  var NOTE_LOGIN_URL='../../../../index.html?login=notes';
+
+  function readCookie(name){
+    try{
+      var prefix=encodeURIComponent(name)+'=';
+      var parts=String(document.cookie||'').split(';');
+      for(var i=0;i<parts.length;i++){
+        var part=parts[i].trim();
+        if(part.indexOf(prefix)===0)return decodeURIComponent(part.slice(prefix.length));
+      }
+    }catch(err){}
+    return null;
+  }
+  function readAuthPayload(){
+    try{
+      var stored=localStorage.getItem(NOTE_AUTH_KEY);
+      if(stored)return stored;
+    }catch(err){}
+    return readCookie(NOTE_AUTH_KEY);
+  }
+  function hasValidNoteAuth(){
+    var raw=readAuthPayload();
+    if(!raw)return false;
+    try{
+      var parsed=JSON.parse(raw);
+      var email=String(parsed&&parsed.email||'').trim().toLowerCase();
+      var expiresAt=Number(parsed&&parsed.expiresAt);
+      return /@une\.edu$/.test(email)&&expiresAt&&Date.now()<expiresAt;
+    }catch(err){return false}
+  }
+  function syncNoteAuth(){
+    document.documentElement.setAttribute('data-note-auth',hasValidNoteAuth()?'unlocked':'locked');
+  }
+  window.openNoteLogin=function(){
+    var loginWindow=window.open(NOTE_LOGIN_URL,'uneStudyHubLogin');
+    if(!loginWindow)window.location.href=NOTE_LOGIN_URL;
+  };
+  window.refreshNoteAuth=syncNoteAuth;
+  window.addEventListener('message',function(event){
+    if(event&&event.data&&event.data.type==='une-study-hub-auth-complete')syncNoteAuth();
+  });
+  window.addEventListener('storage',function(event){
+    if(!event||event.key===NOTE_AUTH_KEY)syncNoteAuth();
+  });
+  window.addEventListener('focus',syncNoteAuth);
+  window.setInterval(syncNoteAuth,1000);
+  syncNoteAuth();
+})();
+</script>
+<title>CV Pharm Basic Sciences Review — Study Notes</title>
+<link rel="icon" href="data:image/svg+xml,<svg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'><text%20y='.9em'%20font-size='56'>⚡</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Cardio (default) — soft ECG blush page, arterial red accent, clinical-blue accent2 */
+  --ink:#25161a; --paper:#fff7f7; --cream:#f5e2e6;
+  --accent:#b51f3a; --accent2:#245f89; --gold:#b77b22; --muted:#75535c; --border:#dfb9c2;
+  --highlight:#f8e1a9; --highlight2:#d7e9f4; --green-bg:#d9eee2; --red-bg:#f8d5dc;
+  --blue-bg:#d6e9f5; --purple-bg:#eadcf0; --hero-bg:#173e63;
+  --panel-dark-bg:#173e63; --panel-dark-text:#f7fbff;
+  /* Theme-INDEPENDENT chip colors (sit on saturated / fixed-dark backgrounds in every theme) */
+  --chip-red:#b51f3a; --chip-blue:#245f89; --chip-fg:#ffffff; --panel-dark-accent:#ffd27a;
+  --hero-heading:#f7fbff; --hero-sub:#c8dceb;
+  --hero-meta-bg:rgba(255,255,255,0.08); --hero-meta-border:rgba(240,138,155,0.28);
+  --hero-meta-label:#a9c5d8; --hero-meta-value:#fff1f3; --hero-accent:#ff9aae;
+  --floating-ui-bg:#173e63; --floating-ui-fg:#f7fbff; --floating-ui-shadow:0 3px 12px rgba(23,62,99,0.26);
+  --quiz-overlay:rgba(36,95,137,.38); --quiz-overlay-hover:rgba(36,95,137,.62);
+}
+html:not([data-theme]) .hero{background:
+  radial-gradient(circle at 88% 18%,rgba(181,31,58,0.42),transparent 30%),
+  linear-gradient(135deg,#102e4b,#173e63 62%,#6f1d32)}
+html:not([data-theme]) .toc-bar{border-right-color:#2c5f86}
+
+[data-theme="hemo"]{
+  --ink:#f3dfe1; --paper:#170a0d; --cream:#2b1218;
+  --accent:#ff6b6b; --accent2:#8fb8ea; --gold:#e7b95c; --muted:#b4919a; --border:#431d25;
+  --highlight:#402c14; --highlight2:#33161f; --green-bg:#11291e; --red-bg:#45151a;
+  --blue-bg:#12243c; --purple-bg:#261b3a; --hero-bg:#0c0407;
+  --panel-dark-bg:#2e1017; --panel-dark-text:#f9e7e9;
+  --hero-heading:#fbeaea; --hero-sub:#c9a3a8;
+  --hero-meta-bg:rgba(255,255,255,0.06); --hero-meta-border:rgba(255,107,107,0.18);
+  --hero-meta-label:#b4919a; --hero-meta-value:#ffd9d0; --hero-accent:#ff6b6b;
+  --floating-ui-bg:#0c0407; --floating-ui-fg:#fbeaea; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.45);
+  --quiz-overlay:rgba(143,184,234,.40); --quiz-overlay-hover:rgba(143,184,234,.62);
+}
+[data-theme="hemo"] .toc-bar{border-right-color:#431d25}
+
+[data-theme="paper"]{
+  --hero-accent:#f08a6e;
+  --ink:#1a1209; --paper:#faf7f2; --cream:#ece1cd;
+  --accent:#a32c14; --accent2:#2c5f8a; --gold:#c9922a; --muted:#6b5e4e; --border:#d4cabb;
+  --highlight:#fbe4a0; --highlight2:#cfe4f7; --green-bg:#d7f0da; --red-bg:#f8d6d0;
+  --blue-bg:#d2e7f9; --purple-bg:#e6dbfa; --hero-bg:#1a1209;
+  --panel-dark-bg:#1a1209; --panel-dark-text:#faf7f2;
+  --hero-heading:#f5ede0; --hero-sub:#c9bcad;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#8a7a6a; --hero-meta-value:#f0e0c8;
+  --floating-ui-bg:#3a3030; --floating-ui-fg:#f5ede0; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(44,95,138,.50); --quiz-overlay-hover:rgba(44,95,138,.78);
+}
+[data-theme="night"]{
+  --hero-accent:#e8b84b;
+  --ink:#e0e8f0; --paper:#0f1923; --cream:#1b2942;
+  --accent:#e8b84b; --accent2:#4aa8d8; --gold:#e8b84b; --muted:#94abc0; --border:#1e3048;
+  --highlight:#3a3016; --highlight2:#12283a; --green-bg:#10281c; --red-bg:#2e1616;
+  --blue-bg:#10233a; --purple-bg:#201a38; --hero-bg:#070e15;
+  --panel-dark-bg:#101a26; --panel-dark-text:#eef5fb;
+  --hero-heading:#f4f9ff; --hero-sub:#b8cad8;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#8fa4b8; --hero-meta-value:#f4f9ff;
+  --floating-ui-bg:#070e15; --floating-ui-fg:#f4f9ff; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(74,168,216,.42); --quiz-overlay-hover:rgba(74,168,216,.62);
+}
+[data-theme="ocean"]{
+  --hero-accent:#ff9aa5;
+  --ink:#0b2436; --paper:#eef7fb; --cream:#cdeaf5;
+  --accent:#a32536; --accent2:#0a5286; --gold:#d9a441; --muted:#4f7185; --border:#a8d4e8;
+  --highlight:#ffe6ad; --highlight2:#bfe3f2; --green-bg:#c9f0dc; --red-bg:#fad9d5;
+  --blue-bg:#c3e4f6; --purple-bg:#e1d7f6; --hero-bg:#0a3a5c;
+  --panel-dark-bg:#0b2436; --panel-dark-text:#eef7fb;
+  --hero-heading:#eaf6fd; --hero-sub:#a9c9dc;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#7ba0b8; --hero-meta-value:#d9edfa;
+  --floating-ui-bg:#0a3a5c; --floating-ui-fg:#eaf6fd; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(15,111,176,.48); --quiz-overlay-hover:rgba(15,111,176,.74);
+}
+[data-theme="forest"]{
+  --hero-accent:#f0a07c;
+  --ink:#16241a; --paper:#f2f7f0; --cream:#d7ead2;
+  --accent:#8f3418; --accent2:#155c39; --gold:#b8860b; --muted:#52684f; --border:#b7d4ae;
+  --highlight:#f3e6a0; --highlight2:#cbe4c4; --green-bg:#c7ecc0; --red-bg:#f7ddd0;
+  --blue-bg:#cbe6df; --purple-bg:#e1dbee; --hero-bg:#12301c;
+  --panel-dark-bg:#16241a; --panel-dark-text:#f2f7f0;
+  --hero-heading:#eef7ea; --hero-sub:#b6cfb0;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#87a382; --hero-meta-value:#e2f2da;
+  --floating-ui-bg:#12301c; --floating-ui-fg:#eef7ea; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(31,122,77,.48); --quiz-overlay-hover:rgba(31,122,77,.74);
+}
+[data-theme="sepia"]{
+  --hero-accent:#f0a57e;
+  --ink:#3a2414; --paper:#f7ecd9; --cream:#ecd7ae;
+  --accent:#9c3b17; --accent2:#2f5f6b; --gold:#8b5a17; --muted:#7a614a; --border:#d9bd8c;
+  --highlight:#f0d38a; --highlight2:#d7c39a; --green-bg:#dbe3bc; --red-bg:#f0d0c0;
+  --blue-bg:#cfdedd; --purple-bg:#e3d3e0; --hero-bg:#3f2814;
+  --panel-dark-bg:#3a2414; --panel-dark-text:#f7ecd9;
+  --hero-heading:#f7ecd9; --hero-sub:#cbb190;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#a08a68; --hero-meta-value:#f2ddb4;
+  --floating-ui-bg:#3f2814; --floating-ui-fg:#f7ecd9; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(47,95,107,.50); --quiz-overlay-hover:rgba(47,95,107,.78);
+}
+[data-theme="slate"]{
+  --hero-accent:#ff9a78;
+  --ink:#1c2229; --paper:#f4f5f7; --cream:#dde3ea;
+  --accent:#9e2c0f; --accent2:#2b5268; --gold:#a8862a; --muted:#5c6a76; --border:#c8d0d8;
+  --highlight:#f2e3ac; --highlight2:#d5e2ec; --green-bg:#d6ead9; --red-bg:#f4d8d0;
+  --blue-bg:#d3e2ef; --purple-bg:#dfd9ec; --hero-bg:#1c2530;
+  --panel-dark-bg:#1c2530; --panel-dark-text:#f4f5f7;
+  --hero-heading:#eef1f5; --hero-sub:#b3bfca;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#8595a3; --hero-meta-value:#e4ebf2;
+  --floating-ui-bg:#1c2530; --floating-ui-fg:#eef1f5; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(51,96,122,.50); --quiz-overlay-hover:rgba(51,96,122,.78);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;padding-left:var(--toc-w);background:var(--paper);color:var(--ink);
+  font-family:'Source Serif 4',Georgia,serif;font-size:16px;line-height:1.65;overflow-wrap:break-word;
+  transition:background .25s,color .25s}
+:root{--toc-w:258px}
+h1,h2,h3,h4{font-family:'Playfair Display',Georgia,serif;line-height:1.18}
+a{color:var(--accent2)}
+strong{color:var(--accent2)}
+.container{max-width:min(1220px,94%);margin:0 auto}
+img{max-width:100%}
+
+/* ---------------- reading progress ---------------- */
+.progress-bar{position:fixed;top:0;left:0;height:3px;width:0;z-index:200;
+  background:linear-gradient(90deg,var(--accent2),var(--accent));transition:width .1s linear}
+
+/* ---------------- TOC sidebar ---------------- */
+.toc-bar{position:fixed;top:0;left:0;bottom:0;z-index:90;width:var(--toc-w);
+  background:var(--hero-bg);border-right:1px solid rgba(255,255,255,.10);overflow-y:auto;overflow-x:hidden}
+.toc-bar::-webkit-scrollbar{width:6px}
+.toc-bar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14);border-radius:3px}
+.toc-bar::-webkit-scrollbar-track{background:transparent}
+.toc-head{padding:24px 20px 16px;border-bottom:1px solid rgba(255,255,255,.10)}
+.toc-eyebrow{display:block;font-family:'JetBrains Mono',monospace;font-size:.5rem;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--hero-meta-label);margin-bottom:7px}
+.toc-name{display:block;font-family:'Playfair Display',serif;font-weight:700;font-size:1.2rem;
+  color:var(--hero-heading);line-height:1.15}
+.toc-name em{font-style:normal;color:var(--hero-accent)}
+.toc-group{font-family:'JetBrains Mono',monospace;font-size:.49rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--hero-meta-label);opacity:.75;margin:0;padding:18px 20px 7px}
+.toc-bar nav{display:flex;flex-direction:column;padding:0 0 26px}
+.toc-bar a{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:'Source Serif 4',Georgia,serif;
+  font-size:.85rem;line-height:1.3;color:var(--hero-sub);padding:8px 16px 8px 17px;
+  border-left:3px solid transparent;transition:color .15s,border-color .15s,background .15s}
+.toc-num{flex:none;width:21px;height:21px;border-radius:50%;border:1px solid rgba(255,255,255,.18);
+  display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;
+  font-size:.56rem;font-weight:700;color:var(--hero-meta-label);transition:all .15s}
+.toc-num.dot{border:none;position:relative}
+.toc-num.dot::before{content:'';width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.28);transition:background .15s}
+.toc-bar a:hover{color:var(--hero-heading);background:rgba(255,255,255,.05)}
+.toc-bar a:hover .toc-num{border-color:rgba(255,255,255,.4);color:var(--hero-heading)}
+.toc-bar a:hover .toc-num.dot::before{background:var(--accent)}
+.toc-bar a.active{color:var(--hero-heading);border-left-color:var(--accent);background:rgba(255,255,255,.06);font-weight:600}
+.toc-bar a.active .toc-num{background:var(--chip-red);border-color:var(--chip-red);color:var(--chip-fg)}
+.toc-bar a.active .toc-num.dot{background:none;border-color:transparent}
+.toc-bar a.active .toc-num.dot::before{background:var(--accent);width:7px;height:7px}
+.toc-check{margin-left:auto;font-size:.72rem;display:none;line-height:1}
+.toc-bar a.done .toc-check{display:inline}
+.toc-bar a.conf-1 .toc-check{color:#e0564a}
+.toc-bar a.conf-2 .toc-check{color:#d6a12a}
+.toc-bar a.conf-3 .toc-check{color:#3d9c5c}
+.toc-tools{display:flex;flex-direction:column;gap:6px;padding:14px 14px 0;margin-top:8px;
+  border-top:1px solid rgba(255,255,255,.10)}
+.toc-chip{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);color:var(--hero-sub);
+  font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.05em;padding:7px 9px;
+  border-radius:8px;cursor:pointer;text-align:left;transition:background .15s,color .15s}
+.toc-chip:hover{background:rgba(255,255,255,.14);color:var(--hero-heading)}
+.toc-hy-btn{display:flex;align-items:center;justify-content:center;gap:7px;width:calc(100% - 28px);
+  margin:15px 14px 2px;background:var(--gold);color:#2a1a00;border:none;padding:11px 10px;border-radius:24px;
+  cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.04em;
+  line-height:1.25;text-align:center;transition:transform .15s,box-shadow .15s}
+.toc-hy-btn:hover{transform:translateY(-1px);box-shadow:0 4px 13px rgba(0,0,0,.32)}
+
+/* ---------------- hero ---------------- */
+.hero{background:var(--hero-bg);padding:52px 0 64px;width:100%;position:relative;overflow:hidden}
+.hero-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--hero-meta-label);margin-bottom:16px}
+.hero h1{margin:0 0 12px;font-size:clamp(2rem,4.4vw,3.3rem);font-weight:900;color:var(--hero-heading);letter-spacing:-.01em}
+.hero h1 span{color:var(--hero-accent)}
+.hero-sub{margin:0 0 20px;max-width:66ch;color:var(--hero-sub);font-size:1.03rem}
+.hero-meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.hero-meta-item{background:var(--hero-meta-bg);border:1px solid var(--hero-meta-border);border-radius:9px;
+  padding:9px 15px;min-width:118px}
+.hero-meta-item .label{display:block;font-family:'JetBrains Mono',monospace;font-size:.5rem;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--hero-meta-label);margin-bottom:4px}
+.hero-meta-item .value{display:block;font-family:'Playfair Display',serif;font-weight:700;font-size:1.02rem;color:var(--hero-meta-value)}
+.hy-btn{display:none;align-items:center;gap:8px;background:var(--gold);color:#2a1a00;border:none;padding:12px 22px;
+  border-radius:30px;font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700;letter-spacing:.04em;
+  cursor:pointer;margin-top:4px;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+
+/* ---------------- sections ---------------- */
+.section{padding:46px 0 8px;border-bottom:1px solid var(--border);scroll-margin-top:20px}
+.section:last-of-type{border-bottom:none}
+.badge-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.lo-badge{display:inline-block;background:var(--chip-red);color:var(--chip-fg);font-family:'JetBrains Mono',monospace;
+  font-size:.6rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;padding:6px 13px;border-radius:20px}
+.lo-badge.alt{background:var(--chip-blue)}
+.section-label{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 6px}
+.section-title{margin:0 0 6px;font-size:clamp(1.55rem,3vw,2.3rem);font-weight:700;
+  border-bottom:3px solid var(--accent);display:inline-block;padding-bottom:6px}
+.section h3{margin:30px 0 8px;font-size:1.24rem;border-left:4px solid var(--accent2);padding-left:11px}
+.section h4{margin:18px 0 6px;font-size:1.03rem}
+.lede{font-size:1.05rem;color:var(--muted);max-width:74ch}
+
+/* section tools (injected) */
+.sec-tools{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:14px 0 4px;padding:8px 12px;
+  background:var(--cream);border:1px solid var(--border);border-radius:9px;
+  font-family:'JetBrains Mono',monospace;font-size:.6rem}
+.sec-tools .st-lab{color:var(--muted);text-transform:uppercase;letter-spacing:.11em}
+.sec-tools button{font-family:'JetBrains Mono',monospace;font-size:.6rem;border:1px solid var(--border);
+  background:var(--paper);color:var(--ink);border-radius:20px;padding:4px 11px;cursor:pointer;transition:all .15s}
+.sec-tools button:hover{border-color:var(--accent2)}
+.sec-tools button.on{background:var(--accent2);color:#fff;border-color:var(--accent2)}
+.sec-tools .st-collapse{margin-left:auto}
+.sec-body-outer{display:grid;grid-template-rows:1fr;transition:grid-template-rows .35s ease}
+.sec-body-inner{overflow:hidden;min-height:0}
+.section.collapsed .sec-body-outer{grid-template-rows:0fr}
+.recall-note{display:none;margin:12px 0;padding:9px 13px;border:1px dashed var(--accent2);border-radius:8px;
+  background:var(--blue-bg);font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--ink)}
+body.recall-mode .recall-note{display:block}
+
+/* ---------------- callouts ---------------- */
+.callout{border-left:5px solid var(--accent2);border-radius:0 9px 9px 0;padding:14px 18px;margin:18px 0;background:var(--blue-bg)}
+.callout p:last-child,.callout ul:last-child{margin-bottom:0}
+.callout p:first-of-type{margin-top:0}
+.callout-title{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;margin-bottom:7px;color:var(--ink)}
+.callout-key{border-left-color:var(--gold);background:var(--highlight)}
+.callout-concept{border-left-color:var(--accent2);background:var(--blue-bg)}
+.callout-clinical{border-left-color:#3d9c5c;background:var(--green-bg)}
+.callout-warning{border-left-color:var(--accent);background:var(--red-bg)}
+.callout-purple{border-left-color:#7a5aa8;background:var(--purple-bg)}
+.callout-hook{border-left-color:var(--gold);background:var(--highlight);border-left-style:dashed;border-left-width:5px}
+
+/* ---------------- lists ---------------- */
+.notes-list{list-style:none;padding-left:0;margin:12px 0}
+.notes-list li{position:relative;padding-left:20px;margin-bottom:7px}
+.notes-list li::before{content:'\203A';position:absolute;left:4px;color:var(--accent);font-weight:700}
+.step-list{list-style:none;counter-reset:st;padding-left:0;margin:16px 0}
+.step-list li{counter-increment:st;position:relative;padding-left:44px;margin-bottom:14px;min-height:30px}
+.step-list li::before{content:counter(st);position:absolute;left:0;top:0;width:30px;height:30px;border-radius:50%;
+  background:var(--chip-red);color:var(--chip-fg);display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:700}
+.step-list li>div>strong:first-child{display:block;margin-bottom:2px;color:var(--accent)}
+
+/* ---------------- tables ---------------- */
+table{width:100%;border-collapse:collapse;margin:6px 0 20px;font-size:.92rem}
+th,td{border:1px solid var(--border);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:var(--panel-dark-bg);color:var(--panel-dark-text);font-family:'JetBrains Mono',monospace;
+  font-size:.63rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700}
+tr:nth-child(even) td{background:var(--cream)}
+tr:hover td{background:var(--highlight2)}
+.tbl-scroll{overflow-x:auto;margin-bottom:20px}
+.tbl-scroll table{margin-bottom:0}
+
+/* ---------------- exam Q ---------------- */
+.exam-q{background:var(--panel-dark-bg);color:var(--panel-dark-text);border-radius:11px;padding:20px 22px 18px;margin:22px 0;position:relative}
+.exam-q::before{content:'Exam Q';position:absolute;top:-10px;left:20px;background:var(--chip-red);color:var(--chip-fg);
+  font-family:'JetBrains Mono',monospace;font-size:.56rem;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;padding:4px 11px;border-radius:12px}
+.exam-q p{margin:6px 0}
+.exam-q strong{color:var(--panel-dark-accent)}
+.exam-q .answer{margin-top:12px;padding-top:12px;border-top:1px dashed rgba(255,255,255,.28);display:none}
+.exam-q.revealed .answer{display:block;animation:fadeIn .32s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.exam-q .answer .label{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--panel-dark-accent);margin-bottom:5px}
+.exam-q .reveal-btn{margin-top:11px;background:transparent;border:1px solid rgba(255,255,255,.4);
+  color:var(--panel-dark-text);font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.09em;
+  text-transform:uppercase;padding:6px 15px;border-radius:20px;cursor:pointer}
+.exam-q .reveal-btn:hover{background:rgba(255,255,255,.14)}
+.exam-q.revealed .reveal-btn{display:none}
+.exam-q.q-flash{outline:3px solid var(--gold);animation:qPulse 1.2s ease 1}
+@keyframes qPulse{0%{box-shadow:0 0 0 0 rgba(201,146,42,.55)}70%{box-shadow:0 0 0 14px rgba(201,146,42,0)}100%{box-shadow:none}}
+
+/* ---------------- cards & grids ---------------- */
+.compare-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:14px;margin:18px 0}
+.compare-card{border:1px solid var(--border);border-radius:11px;padding:16px 18px;background:var(--cream)}
+.compare-card h4{margin:6px 0 6px;font-size:1.08rem}
+.compare-card .card-emoji{font-size:1.5rem;line-height:1}
+.compare-card p{margin:0 0 8px}
+.fact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,235px),1fr));gap:13px;margin:18px 0}
+.fact-card{border:1px solid var(--border);border-top:4px solid var(--accent2);border-radius:10px;
+  padding:14px 16px;background:var(--cream)}
+.fact-card h4{margin:0 0 3px;font-size:1rem}
+.fact-card .generic{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.fact-card p{margin:0;font-size:.87rem}
+.hallmarks-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,215px),1fr));gap:13px;margin:18px 0}
+.hallmark-card{border:1px solid var(--border);border-top:4px solid var(--accent);border-radius:10px;
+  padding:14px 16px;background:var(--cream);position:relative}
+.hallmark-card:nth-child(3n+2){border-top-color:var(--accent2)}
+.hallmark-card:nth-child(3n+3){border-top-color:var(--gold)}
+.hallmark-card h4{margin:6px 0 4px;font-size:.99rem}
+.hallmark-card p{margin:0;font-size:.86rem}
+.hallmark-num{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;color:var(--muted)}
+
+/* inline chips */
+.lab-code{font-family:'JetBrains Mono',monospace;background:var(--cream);border:1px solid var(--border);
+  padding:1px 6px;border-radius:4px;font-size:.82rem;white-space:nowrap}
+.gene-tag{font-family:'JetBrains Mono',monospace;color:var(--accent2);font-size:.88rem;font-weight:600}
+.hy-flag{display:inline-flex;align-items:center;gap:3px;background:var(--highlight);color:var(--gold);
+  border:1px solid var(--gold);font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.6rem;
+  padding:1px 8px;border-radius:20px;letter-spacing:.04em;vertical-align:middle}
+.up{color:#c0392b;font-weight:700}
+.dn{color:#2c7fb8;font-weight:700}
+
+/* ---------------- images ---------------- */
+.slide-img{width:100%;display:block;border:1px solid var(--border);border-radius:10px;margin:18px 0 5px;
+  cursor:zoom-in;background:#fff}
+.slide-caption{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 20px;text-align:center}
+/* small source images: cap the width so they are not upscaled into blur */
+.slide-img.sm{width:auto;max-width:min(100%,540px);margin-left:auto;margin-right:auto}
+/* portrait images: cap the height instead of the width */
+.slide-img.tall{width:auto;max-width:100%;max-height:560px;margin-left:auto;margin-right:auto}
+.img-pair .slide-img.tall{max-height:420px}
+.img-pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px 20px;margin:18px 0;
+  align-items:start}
+.img-pair .slide-img{margin:0}
+.img-pair .slide-img.sm{width:100%;max-width:100%}
+.img-pair .slide-caption{margin:6px 0 0}
+.img-pair>div{display:flex;flex-direction:column}
+.fig{margin:18px 0}
+.fig svg{width:100%;height:auto;display:block;border:1px solid var(--border);border-radius:10px;background:var(--cream)}
+
+/* ---------------- table quiz ---------------- */
+.tq-bar{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:6px;padding:8px 12px;
+  background:var(--cream);border:1px solid var(--border);border-radius:8px}
+.tq-toggle{font-family:'JetBrains Mono',monospace;font-size:.63rem;letter-spacing:.09em;text-transform:uppercase;
+  background:var(--accent2);color:#fff;border:none;border-radius:20px;padding:5px 12px;cursor:pointer}
+.tq-toggle.active{background:var(--chip-red);color:var(--chip-fg)}
+.tq-cols{display:flex;flex-wrap:wrap;gap:5px;flex:1}
+.tq-col-btn{font-size:.7rem;padding:3px 9px;border:1px solid var(--border);border-radius:12px;background:var(--paper);
+  cursor:pointer;font-family:'JetBrains Mono',monospace;color:var(--ink);transition:all .15s}
+.tq-col-btn.sel{background:var(--chip-blue);color:var(--chip-fg);border-color:var(--chip-blue)}
+.tq-start,.tq-shuffle,.tq-reset{font-family:'JetBrains Mono',monospace;font-size:.63rem;color:#fff;border:none;
+  border-radius:20px;padding:5px 12px;cursor:pointer}
+.tq-start{background:#2e7d32}.tq-start:disabled{opacity:.35;cursor:not-allowed}
+.tq-shuffle{background:var(--accent2)}
+.tq-reset{background:var(--accent)}
+.tq-score{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted)}
+.tq-score.done{color:#2e7d32;font-weight:700}
+.quiz-hidden-cell{position:relative!important;cursor:pointer!important}
+.quiz-hidden-cell .tq-cell-content{filter:blur(5px)!important;user-select:none!important;pointer-events:none!important;opacity:.4!important}
+.quiz-hidden-cell::after{content:'tap to reveal'!important;position:absolute!important;inset:0!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;background:var(--quiz-overlay)!important;
+  color:#fff!important;font-family:'JetBrains Mono',monospace!important;font-size:.58rem!important;font-weight:700!important;
+  letter-spacing:.12em!important;text-transform:uppercase!important;border-radius:4px!important}
+.quiz-hidden-cell:hover::after{background:var(--quiz-overlay-hover)!important}
+
+/* ---------------- recall mode ---------------- */
+body.recall-mode .sec-body-inner :is(p,li,td,h4,dd) strong:not(.rc-open){color:transparent;background:var(--highlight2);
+  border-radius:4px;cursor:pointer;box-shadow:inset 0 0 0 1px var(--border);padding:0 2px}
+body.recall-mode .exam-q strong,body.recall-mode .tq-bar strong{color:var(--panel-dark-accent)!important;background:none!important;box-shadow:none!important}
+body.recall-mode .game strong{color:inherit!important;background:none!important;box-shadow:none!important;cursor:auto}
+strong.rc-open{animation:rcReveal .35s ease}
+@keyframes rcReveal{from{background:var(--gold)}to{background:transparent}}
+
+/* ---------------- games ---------------- */
+.game{background:var(--cream);border:1px solid var(--border);border-top:4px solid var(--accent);border-radius:12px;
+  padding:18px 20px;margin:22px 0}
+.g-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:4px}
+.g-head h3{margin:0;font-size:1.16rem;border:none;padding:0}
+.g-emoji{margin-right:.45em}
+.g-score{margin-left:auto;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.72rem;color:var(--muted)}
+.g-intro{font-size:.87rem;color:var(--muted);margin:0 0 10px}
+.g-stage{background:var(--paper);border:1px solid var(--border);border-radius:14px;padding:20px 18px 16px;margin:10px 0 0}
+.g-vign{text-align:left;font-size:.97rem;line-height:1.55;min-height:2.4em}
+.g-vign .lead{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--muted);display:block;margin-bottom:6px}
+.g-opts{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));margin-top:14px}
+.g-opt{border:1px solid var(--border);background:var(--cream);border-radius:11px;padding:9px 14px;font-weight:700;
+  cursor:pointer;font-size:.88rem;font-family:'Source Serif 4',Georgia,serif;color:var(--ink);text-align:center;
+  transition:transform .12s ease,border-color .12s,background .12s}
+.g-opt:hover{transform:translateY(-2px);border-color:var(--accent)}
+.g-opt.correct{background:var(--green-bg);border-color:#2e7d32;color:#1f5c24}
+.g-opt.wrong{background:var(--red-bg);border-color:var(--accent);color:var(--accent)}
+.g-fb{min-height:2.4em;margin-top:12px;font-size:.9rem;line-height:1.55}
+.g-fb .ok{color:#2e7d32;font-weight:700}
+.g-fb .no{color:var(--accent);font-weight:700}
+.g-btn{margin-top:14px;background:var(--accent);color:#fff;border:none;border-radius:22px;padding:8px 20px;
+  font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.06em;cursor:pointer}
+.g-btn:hover{filter:brightness(1.1)}
+.g-bank{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-top:12px}
+.g-bank .g-opt{padding:7px 13px;font-size:.83rem}
+.g-opt.picked{opacity:.5;pointer-events:none}
+.g-slots{display:grid;gap:9px;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));margin-top:12px}
+.g-slot{border:1px dashed var(--border);border-radius:10px;padding:10px 12px;background:var(--cream);min-height:62px}
+.g-slot h5{margin:0 0 6px;font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted)}
+.g-slot.sel{border-style:solid;border-color:var(--accent2);box-shadow:0 0 0 2px var(--blue-bg)}
+.g-slot ul{margin:0;padding-left:16px;font-size:.82rem}
+.g-timer{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--accent);font-weight:700}
+
+/* ---------------- floating UI ---------------- */
+.floating-stack{position:fixed;bottom:18px;right:18px;z-index:100;display:flex;flex-direction:column;align-items:flex-end;gap:9px}
+.font-btn-row{display:flex;align-items:center;background:var(--floating-ui-bg);color:var(--floating-ui-fg);
+  padding:7px 10px;border-radius:30px;box-shadow:var(--floating-ui-shadow);font-family:'JetBrains Mono',monospace;
+  font-size:.62rem;letter-spacing:.1em;gap:2px}
+.font-btn{background:none;border:none;cursor:pointer;color:var(--floating-ui-fg);font-family:'JetBrains Mono',monospace;
+  font-weight:700;font-size:1rem;padding:2px 8px;border-radius:6px;line-height:1}
+.font-btn:hover{background:rgba(255,255,255,.18)}
+.font-sep{color:rgba(255,255,255,.22);padding:0 3px}
+.font-label{font-size:.56rem;opacity:.7;padding:0 5px;text-transform:uppercase;letter-spacing:.1em}
+.theme-btn{display:flex;align-items:center;gap:7px;background:var(--floating-ui-bg);color:var(--floating-ui-fg);
+  border:none;padding:10px 17px;border-radius:30px;box-shadow:var(--floating-ui-shadow);cursor:pointer;
+  font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.09em;text-transform:uppercase}
+.theme-panel{position:absolute;bottom:100%;right:0;margin-bottom:10px;background:var(--floating-ui-bg);
+  color:var(--floating-ui-fg);border-radius:12px;padding:12px 10px;box-shadow:var(--floating-ui-shadow);
+  min-width:196px;display:none}
+.theme-panel.open{display:block}
+.theme-panel-title{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.16em;text-transform:uppercase;
+  opacity:.65;padding:0 8px 8px}
+.theme-option{display:flex;align-items:center;gap:9px;padding:7px 9px;border-radius:8px;cursor:pointer;
+  font-family:'JetBrains Mono',monospace;font-size:.66rem}
+.theme-option:hover{background:rgba(255,255,255,.12)}
+.theme-option.active{background:rgba(255,255,255,.18)}
+.theme-swatch{width:17px;height:17px;border-radius:50%;border:1px solid rgba(255,255,255,.35);flex:none}
+
+.floating-left{position:fixed;bottom:18px;left:calc(var(--toc-w) + 18px);z-index:100;
+  display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+.tools-menu{display:flex;flex-direction:column;gap:7px;opacity:0;pointer-events:none;transform:translateY(10px);
+  transition:opacity .22s,transform .22s}
+.floating-left:hover .tools-menu,.floating-left:focus-within .tools-menu,.floating-left.open .tools-menu{
+  opacity:1;pointer-events:auto;transform:none}
+.tool-btn{background:var(--floating-ui-bg);color:var(--floating-ui-fg);border:none;padding:9px 15px;border-radius:22px;
+  box-shadow:var(--floating-ui-shadow);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:.63rem;
+  letter-spacing:.05em;text-align:left;white-space:nowrap}
+.tool-btn:hover{filter:brightness(1.2)}
+.tool-btn.on{background:var(--accent);color:#fff}
+.tools-trigger{position:relative}
+.tools-trigger .dot{display:none;position:absolute;top:6px;right:8px;width:7px;height:7px;border-radius:50%;background:var(--gold)}
+.tools-trigger.busy .dot{display:block}
+.backtop{display:none}
+.backtop.show{display:block}
+
+/* ---------------- lightbox ---------------- */
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:400;display:none;align-items:center;
+  justify-content:center;cursor:zoom-out;padding:22px}
+.lightbox.active{display:flex}
+.lightbox img{max-width:92vw;max-height:88vh;border-radius:6px}
+
+/* ---------------- HY one-pager ---------------- */
+.hy-modal{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:300;display:none;align-items:flex-start;
+  justify-content:center;overflow-y:auto;padding:30px 16px}
+.hy-modal.open{display:flex}
+.hy-modal-card{background:var(--paper);color:var(--ink);max-width:1060px;width:100%;border-radius:14px;
+  padding:26px 30px 34px;box-shadow:0 20px 60px rgba(0,0,0,.45)}
+.hy-modal-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;
+  border-bottom:3px solid var(--accent);padding-bottom:10px;flex-wrap:wrap}
+.hy-modal-header h2{margin:0;font-size:1.35rem}
+.hy-modal-actions{display:flex;gap:8px;flex:none}
+.hy-action-btn{font-family:'JetBrains Mono',monospace;font-size:.64rem;letter-spacing:.05em;text-transform:uppercase;
+  border:1px solid var(--border);background:var(--cream);color:var(--ink);padding:7px 13px;border-radius:20px;cursor:pointer}
+.hy-close-btn{background:var(--chip-red);color:var(--chip-fg);border:none}
+.hy-subhead{font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--muted);margin:0 0 13px}
+.hy-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;min-width:0}
+@media (max-width:760px){.hy-cols{grid-template-columns:1fr}}
+.hy-cols>div{min-width:0}
+.hy-block{border:1px solid var(--border);border-radius:8px;padding:9px 11px;background:var(--cream);margin-bottom:9px;min-width:0}
+.hy-block h4{margin:0 0 5px;font-size:.76rem;color:var(--accent);border-bottom:1px solid var(--border);padding-bottom:4px}
+.hy-block p,.hy-block li{font-size:.67rem;line-height:1.4;margin:0 0 3px}
+.hy-block ul{margin:0;padding-left:15px}
+.hy-lo-tag{display:block;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;color:var(--chip-fg);
+  background:var(--chip-blue);padding:3px 9px;border-radius:10px;margin-bottom:7px;letter-spacing:.05em;text-align:center}
+.hy-mini-table{width:100%;border-collapse:collapse;font-size:.63rem;margin-top:4px}
+.hy-mini-table th,.hy-mini-table td{border:1px solid var(--border);padding:3px 5px;text-align:left;line-height:1.3}
+.hy-mini-table th{background:var(--panel-dark-bg);color:var(--panel-dark-text);font-size:.56rem;text-transform:uppercase}
+.hy-mini-table tr:nth-child(even) td{background:transparent}
+
+/* ---------------- glossary ---------------- */
+.gloss{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:10px;margin:16px 0}
+.gloss dl{margin:0;border:1px solid var(--border);border-radius:9px;padding:12px 14px;background:var(--cream)}
+.gloss dt{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;color:var(--accent);margin-top:8px}
+.gloss dt:first-child{margin-top:0}
+.gloss dd{margin:2px 0 0;font-size:.86rem}
+.abbr-strip{background:var(--cream);border:1px solid var(--border);border-left:4px solid var(--gold);
+  border-radius:0 9px 9px 0;padding:11px 15px;margin:14px 0;font-size:.85rem}
+.abbr-strip .t{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--muted);display:block;margin-bottom:5px}
+
+footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top:40px;font-size:.83rem}
+footer .container{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center}
+footer kbd{font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.2);
+  border-radius:4px;padding:1px 6px;font-size:.72rem}
+
+/* ---------------- responsive ---------------- */
+@media (max-width:1000px){
+  body{padding-left:0}
+  .toc-bar{position:sticky;top:0;bottom:auto;width:100%;height:auto;border-right:none;
+    border-bottom:1px solid rgba(255,255,255,.12);overflow-x:auto;overflow-y:hidden}
+  .toc-head,.toc-group,.toc-hy-btn,.toc-tools{display:none}
+  .toc-bar nav{flex-direction:row;padding:0 8px;white-space:nowrap}
+  .toc-bar a{padding:11px 13px;border-left:none;border-bottom:2px solid transparent;gap:8px}
+  .toc-bar a:hover,.toc-bar a.active{border-left-color:transparent;border-bottom-color:var(--accent);background:none}
+  .toc-num{width:18px;height:18px;font-size:.53rem}
+  .toc-check{display:none!important}
+  .hero .hy-btn{display:inline-flex}
+  .floating-left{left:14px;bottom:14px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
+
+/* ---------------- print ---------------- */
+@media print{
+  body{padding-left:0!important;background:#fff;color:#000}
+  .container{max-width:100%!important}
+  .toc-bar,.floating-stack,.floating-left,.progress-bar,.sec-tools,.recall-note,.tq-bar,
+  .toc-hy-btn,.hy-btn,.lightbox,.game,.exam-q .reveal-btn{display:none!important}
+  .section{page-break-inside:auto;border-bottom:1px solid #ccc}
+  .section.collapsed .sec-body-outer{grid-template-rows:1fr!important}
+  .exam-q .answer{display:block!important}
+  .hero{background:#fff!important;color:#000;padding:16px 0}
+  .hero h1,.hero-sub,.hero-tag,.hero-meta-item .value,.hero-meta-item .label{color:#000!important}
+  .slide-img{page-break-inside:avoid}
+  body.hy-mode .hero,body.hy-mode .section,body.hy-mode footer{display:none!important}
+  body.hy-mode .hy-modal{position:static!important;inset:auto!important;background:none!important;padding:0!important;
+    display:block!important;overflow:visible!important}
+  body.hy-mode .hy-modal-card{position:static!important;max-width:100%!important;width:100%!important;
+    box-shadow:none!important;padding:4px!important}
+  .hy-modal-actions{display:none!important}
+  .hy-cols{grid-template-columns:repeat(3,1fr);gap:6px}
+  .hy-modal-header h2{font-size:1.02rem}
+  .hy-subhead{font-size:.56rem;margin-bottom:7px}
+  .hy-block{padding:4px 6px;margin-bottom:4px;break-inside:avoid}
+  .hy-block h4{font-size:.60rem;margin-bottom:2px;padding-bottom:1.5px}
+  .hy-block p,.hy-block li{font-size:.50rem;line-height:1.2;margin-bottom:1.5px}
+  .hy-mini-table{font-size:.465rem}
+  .hy-mini-table th,.hy-mini-table td{padding:1px 2.5px;line-height:1.18}
+  .hy-lo-tag{font-size:.53rem;padding:2px 7px;margin-bottom:4px}
+  @page{margin:8mm}
+}
+
+
+#noteAuthGate{display:none}
+html[data-note-auth="locked"] body{
+  min-height:100vh;
+  overflow:hidden;
+  background:#f4f5f7;
+  color:#1f2937;
+}
+html[data-note-auth="locked"] body>*:not(#noteAuthGate){display:none!important}
+html[data-note-auth="locked"] #noteAuthGate{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  background:linear-gradient(135deg,#f4f5f7,#ffffff 52%,#eef2f7);
+}
+.note-auth-card{
+  width:min(460px,100%);
+  padding:30px;
+  border:1px solid rgba(31,41,55,.14);
+  border-radius:14px;
+  background:rgba(255,255,255,.92);
+  box-shadow:0 22px 70px rgba(31,41,55,.16);
+  text-align:center;
+}
+.note-auth-kicker{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.68rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:#cf4520;
+  font-weight:700;
+  margin-bottom:12px;
+}
+.note-auth-card h1{
+  margin:0 0 12px;
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2rem,6vw,3rem);
+  line-height:.98;
+  color:#263241;
+}
+.note-auth-card p{
+  margin:0 0 22px;
+  font-size:1rem;
+  line-height:1.55;
+  color:#556070;
+}
+.note-auth-btn{
+  border:0;
+  border-radius:999px;
+  padding:12px 20px;
+  font:700 .9rem 'JetBrains Mono',monospace;
+  letter-spacing:.04em;
+  color:#fff;
+  background:#263241;
+  cursor:pointer;
+  box-shadow:0 12px 28px rgba(38,50,65,.22);
+}
+.note-auth-btn:hover{background:#cf4520}
+
+/* ---------------- pharmacology components ---------------- */
+.drug-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:13px;margin:18px 0}
+.drug-card{border:1px solid var(--border);border-top:4px solid var(--accent2);border-radius:10px;
+  padding:14px 16px;background:var(--cream)}
+.drug-card h4{margin:0 0 3px;font-size:1rem}
+.drug-card .generic{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.drug-card p{margin:0;font-size:.86rem}
+.drug-card p+p{margin-top:5px}
+.drug-card.span2{grid-column:span 2}
+@media (max-width:760px){.drug-card.span2{grid-column:auto}}
+
+.box-warning{border:2px solid var(--accent);border-left-width:9px;border-radius:9px;background:var(--red-bg);
+  padding:15px 18px 13px;margin:20px 0}
+.bw-label{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;background:var(--chip-red);color:var(--chip-fg);
+  padding:4px 11px;border-radius:5px;margin-bottom:9px}
+.box-warning p{margin:0;font-size:.93rem}
+.box-warning p+p{margin-top:7px}
+
+.rems-badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.55rem;font-weight:700;
+  letter-spacing:.1em;background:var(--purple-bg);color:var(--accent2);border:1px solid var(--border);
+  padding:2px 6px;border-radius:4px;vertical-align:middle;margin-left:3px}
+
+.moa-chain{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:14px 0;padding:13px 15px;
+  background:var(--cream);border:1px solid var(--border);border-radius:10px}
+.moa-chain span{font-family:'JetBrains Mono',monospace;font-size:.7rem;line-height:1.35;
+  background:var(--paper);border:1px solid var(--border);border-radius:6px;padding:5px 9px}
+.moa-chain span.hit{background:var(--highlight);border-color:var(--gold);font-weight:700}
+.moa-chain i{font-style:normal;color:var(--accent);font-weight:700}
+
+.suffix-key{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:10px;margin:16px 0}
+.suffix-key div{border:1px solid var(--border);border-left:4px solid var(--gold);border-radius:8px;
+  padding:9px 12px;background:var(--cream)}
+.suffix-key code{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--accent);font-size:.9rem}
+.suffix-key p{margin:3px 0 0;font-size:.82rem;color:var(--muted)}
+
+.timing-bar{display:flex;align-items:center;gap:10px;margin:7px 0;font-size:.86rem}
+.timing-bar .tl{flex:none;width:min(38%,215px);font-weight:600}
+.timing-bar .tt{flex:1;height:15px;background:var(--cream);border:1px solid var(--border);
+  border-radius:8px;position:relative;overflow:hidden}
+.timing-bar .tf{position:absolute;top:0;bottom:0;background:var(--accent);opacity:.78;border-radius:8px}
+.timing-bar .tv{flex:none;font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--muted);
+  width:min(30%,140px);text-align:right}
+
+
+/* ---------------- Cardio additions ---------------- */
+.hero .container{position:relative;z-index:1}
+.hero-ecg{position:absolute;left:0;right:0;bottom:6px;width:100%;height:58px;z-index:0;pointer-events:none;opacity:.55}
+.hero-ecg path{fill:none;stroke:var(--hero-accent);stroke-width:2;stroke-linejoin:round;stroke-linecap:round;
+  stroke-dasharray:1400;stroke-dashoffset:1400;animation:ecgDraw 4.5s ease-out .3s forwards}
+@keyframes ecgDraw{to{stroke-dashoffset:0}}
+strong.hot{color:var(--accent)}
+.num{background:var(--highlight);color:var(--ink);font-weight:700;padding:0 4px;border-radius:4px;white-space:nowrap}
+.src-tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.55rem;font-weight:700;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--ink);border:1px dashed var(--muted);border-radius:4px;padding:0 5px;
+  vertical-align:middle;white-space:nowrap}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;margin:16px 0 6px;padding:11px 15px;
+  background:var(--cream);border:1px solid var(--border);border-radius:10px;font-size:.86rem}
+.legend-t{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.order-list{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 16px}
+.order-list span{background:var(--cream);border:1px solid var(--border);border-left:4px solid var(--accent);
+  border-radius:8px;padding:6px 12px;font-size:.9rem}
+.tbl-note{font-size:.88rem;color:var(--muted);margin-top:-8px}
+table.dense{font-size:.8rem}
+table.dense td,table.dense th{padding:5px 7px}
+.timeline-table tr.phase td{background:var(--panel-dark-bg)!important;color:var(--panel-dark-text);font-family:'JetBrains Mono',monospace;
+  font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;padding:4px 11px}
+
+/* ---- labeled, lazy-loaded figures (images live in ./assets/, not base64) ---- */
+.fig-card{margin:20px auto;max-width:960px;border:1px solid var(--border);border-radius:12px;background:var(--cream);overflow:hidden;
+  break-inside:avoid;page-break-inside:avoid}
+.fig-frame{position:relative;background:#fff;display:flex;justify-content:center;align-items:center}
+.fig-frame::before{content:'';position:absolute;inset:0;
+  background:linear-gradient(100deg,rgba(0,0,0,0) 30%,rgba(181,31,58,.07) 50%,rgba(0,0,0,0) 70%) #fdf1f3;
+  background-size:220% 100%;animation:figShimmer 1.3s linear infinite;transition:opacity .3s}
+.fig-frame.loaded::before{opacity:0;animation:none}
+@keyframes figShimmer{from{background-position:120% 0}to{background-position:-120% 0}}
+.fig-card .slide-img{position:relative;margin:0;border:none;border-radius:0;width:100%;height:auto;opacity:0;transition:opacity .35s}
+.fig-frame.loaded .slide-img{opacity:1}
+.fig-card.tall .slide-img{width:auto;max-width:100%;max-height:560px}
+.fig-card.sm .slide-img{width:auto;max-width:min(100%,560px)}
+.fig-row .fig-card.tall .slide-img{max-height:440px}
+.fig-card figcaption{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;padding:9px 13px 10px;
+  border-top:1px solid var(--border);font-size:.86rem;line-height:1.4}
+.fig-num{font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  background:var(--chip-blue);color:var(--chip-fg);padding:2px 8px;border-radius:10px;flex:none}
+.fig-title{flex:1 1 220px;color:var(--ink)}
+.fig-src{font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);flex:none}
+.fig-src b{color:var(--accent);font-weight:700}
+.fig-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px;margin:20px 0;align-items:start}
+.fig-row .fig-card{margin:0;max-width:none}
+.lightbox{flex-direction:column;gap:12px}
+.lightbox-cap{max-width:min(92vw,900px);color:#f3f3f3;font-size:.9rem;text-align:center;line-height:1.45}
+.lightbox-cap .fig-num{margin-right:6px}
+
+details.case-box{background:var(--cream);border:1px solid var(--border);border-left:5px solid var(--accent2);
+  border-radius:0 12px 12px 0;margin:16px 0;overflow:hidden}
+details.case-box summary{cursor:pointer;padding:13px 18px;font-family:'Playfair Display',serif;font-weight:700;font-size:1.05rem;
+  list-style:none;display:flex;gap:10px;align-items:center}
+details.case-box summary::-webkit-details-marker{display:none}
+details.case-box summary::before{content:'▸';color:var(--accent);transition:transform .2s}
+details.case-box[open] summary::before{transform:rotate(90deg)}
+details.case-box .case-body{padding:0 18px 12px;border-top:1px solid var(--border)}
+@media print{details.case-box .case-body{display:block}}
+
+/* ---- click-to-play video facade: no YouTube iframe loads until you ask for it ---- */
+.watch{margin:26px 0 8px;padding:14px 16px 16px;border:1px solid var(--border);border-left:5px solid var(--accent);
+  border-radius:0 12px 12px 0;background:var(--cream)}
+.watch-title{font-family:'JetBrains Mono',monospace;font-size:.64rem;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink);margin-bottom:10px}
+.watch-title span{color:var(--muted);font-weight:400;letter-spacing:.04em;text-transform:none}
+.vid-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr));gap:12px}
+.vid{display:flex;flex-direction:column;text-align:left;padding:0;border:1px solid var(--border);border-radius:10px;
+  overflow:hidden;background:var(--paper);color:var(--ink);cursor:pointer;font:inherit;transition:transform .15s,box-shadow .15s}
+.vid:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.14)}
+.vid-thumb{position:relative;aspect-ratio:16/9;background:#1c1c1c;overflow:hidden}
+.vid-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.vid-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:50px;height:36px;border-radius:10px;
+  background:rgba(181,31,58,.92);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1rem;
+  box-shadow:0 3px 10px rgba(0,0,0,.35)}
+.vid-meta{padding:8px 10px 10px;font-size:.8rem;line-height:1.35}
+.vid-meta b{display:block;font-weight:600}
+.vid-meta i{font-style:normal;font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted)}
+.vid.playing{cursor:default;transform:none;box-shadow:none}
+.vid iframe{width:100%;aspect-ratio:16/9;border:0;display:block}
+@media print{
+  .watch{display:none!important}
+  .fig-frame::before{display:none}
+  .fig-card .slide-img{opacity:1!important}
+  .fig-card{background:#fff}
+}
+@media (prefers-reduced-motion:reduce){.hero-ecg path{stroke-dashoffset:0}}
+</style>
+
+</head>
+<body>
+<div id="noteAuthGate" role="dialog" aria-modal="true" aria-labelledby="noteAuthTitle">
+  <div class="note-auth-card">
+    <div class="note-auth-kicker">2nd Year Study Hub</div>
+    <h1 id="noteAuthTitle">Please log in to continue with this note.</h1>
+    <p>Open the Study Hub login, enter your approved UNE email, and this note will unlock automatically.</p>
+    <button class="note-auth-btn" type="button" onclick="openNoteLogin()">Log in to continue</button>
+  </div>
+</div>
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="toc-bar">
+  <div class="toc-head">
+    <span class="toc-eyebrow">OMK 2 · Cardio · Week 13</span>
+    <span class="toc-name">Basic Sciences <em>Review</em></span>
+  </div>
+  <button class="toc-hy-btn" onclick="openHY()">🎯 High-Yield One-Pager</button>
+  <nav>
+    <p class="toc-group">Start</p>
+    <a href="#orientation"><span class="toc-num dot"></span><span>Orientation — recall OMK 1</span><span class="toc-check">✓</span></a>
+    <p class="toc-group">Control systems</p>
+    <a href="#s1-ans"><span class="toc-num">1</span><span>Autonomic Nervous System</span><span class="toc-check">✓</span></a>
+    <a href="#s2-gpcr"><span class="toc-num">2</span><span>G-Protein Signalling</span><span class="toc-check">✓</span></a>
+    <p class="toc-group">The circuit</p>
+    <a href="#s3-map"><span class="toc-num">3</span><span>Blood Pressure Dials &amp; Kidney</span><span class="toc-check">✓</span></a>
+    <a href="#s4-electrical"><span class="toc-num">4</span><span>Electrical Heart &amp; Action Potentials</span><span class="toc-check">✓</span></a>
+    <a href="#s5-lipids"><span class="toc-num">5</span><span>Lipids, Plaque &amp; Clots</span><span class="toc-check">✓</span></a>
+    <p class="toc-group">Apply it</p>
+    <a href="#s6-questions"><span class="toc-num">6</span><span>The Four Class Questions</span><span class="toc-check">✓</span></a>
+    <p class="toc-group">Reference</p>
+    <a href="#glossary"><span class="toc-num dot"></span><span>Glossary &amp; Abbreviations</span><span class="toc-check">✓</span></a>
+  </nav>
+  <div class="toc-tools">
+    <button class="toc-chip" id="progressChip" onclick="jumpToNextTodo()">0/0 reviewed</button>
+    <button class="toc-chip" id="collapseAllBtn" onclick="toggleAllSections()">⊟ Collapse all</button>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="container">
+    <div class="hero-tag">Kyle R. Scully, PhD · Pharmacology · UNE COM · Fall 2025</div>
+    <h1>Cardiovascular Pharmacology: <span>Basic Sciences Review</span></h1>
+    <p class="hero-sub">The OMK 1 autonomic pharmacology and cardiovascular physiology every cardio drug depends on — receptors, G proteins, the blood-pressure dials, action potentials, lipids — and the four in-class reflex questions, worked.</p>
+    <button class="hy-btn" onclick="openHY()">🎯 High-Yield One-Pager</button>
+    <div class="hero-meta"><div class="hero-meta-item"><span class="label">Lecturer</span><span class="value">Kyle R. Scully, PhD</span></div><div class="hero-meta-item"><span class="label">Sources</span><span class="value">Full deck (31 slides) + transcript</span></div><div class="hero-meta-item"><span class="label">Topics</span><span class="value">6</span></div><div class="hero-meta-item"><span class="label">Labeled figures</span><span class="value">34</span></div><div class="hero-meta-item"><span class="label">Exam questions</span><span class="value">11</span></div><div class="hero-meta-item"><span class="label">Videos</span><span class="value">13</span></div></div>
+  </div>
+  <svg class="hero-ecg" viewBox="0 0 1200 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 40 H140 l10 -6 l10 6 H200 l6 6 l10 -40 l10 50 l8 -16 H330 l14 -8 l14 8 H480 l10 -6 l10 6 H540 l6 6 l10 -40 l10 50 l8 -16 H670 l14 -8 l14 8 H820 l10 -6 l10 6 H880 l6 6 l10 -40 l10 50 l8 -16 H1010 l14 -8 l14 8 H1200"/></svg>
+</div>
+
+<!-- ==================== ORIENTATION ==================== -->
+<div class="section" id="orientation">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge alt">Orientation</div></div>
+    <p class="section-label">Learning objective: recall OMK 1 pharmacology + physiology</p>
+    <h2 class="section-title">Unpacking the Boxes in Long-Term Storage</h2>
+
+    <p class="lede">Dr. Scully's one objective for this hour: bring the OMK 1 autonomic pharmacology and cardiovascular physiology forward, because <strong>every cardio drug works by moving one of these physiologic dials</strong> — and Step 1 / Level 1 ask "what changes in the body when this drug is given?", not just "which drug?".</p>
+
+    <div class="legend">
+      <span class="legend-t">How to read the colours</span>
+      <span><strong class="hot">Red bold</strong> = lecturer emphasis / likely tested</span>
+      <span><strong>Blue bold</strong> = key fact or mechanism</span>
+      <span><span class="num">Yellow</span> = number to memorise</span>
+      <span><span class="src-tag">Board add-on</span> = from First Aid / Pathoma / AMBOSS, not said in lecture</span>
+    </div>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>ANS = autonomic nervous system · RAAS = renin–angiotensin–aldosterone system · OMK = Osteopathic Medical Knowledge course</div>
+
+    <h3>What the cardiovascular system is, pharmacologically</h3>
+    <div class="hallmarks-grid">
+      <div class="hallmark-card"><div class="hallmark-num">PUMP</div><h4>Heart</h4><p>Rate, contractility, conduction.</p></div>
+      <div class="hallmark-card"><div class="hallmark-num">PIPES</div><h4>Vasculature</h4><p>Smooth muscle tone = resistance (arterioles) and capacitance (veins).</p></div>
+      <div class="hallmark-card"><div class="hallmark-num">VOLUME</div><h4>Kidneys</h4><p>Sodium and water handling → blood volume → preload.</p></div>
+      <div class="hallmark-card"><div class="hallmark-num">CONTROL</div><h4>ANS (+ endocrine, paracrine)</h4><p>Fast control of all of the above; hormones and local mediators (autacoids) add to it.</p></div>
+    </div>
+
+    <div class="callout callout-key">
+      <div class="callout-title">🔑 Dr. Scully's study advice</div>
+      <ul class="notes-list">
+        <li><strong>Mechanisms and the physiology underneath them</strong> — then adverse effects stop being flashcards: you can walk to them.</li>
+        <li><strong class="hot">Physiologic compensation</strong> — the body defends its set point; every drug triggers a counter-move.</li>
+        <li><strong>Naming conventions</strong> (-olol, -pril, -sartan, -dipine) — some memorisation is unavoidable.</li>
+        <li><strong>Subclasses</strong> — beta-blocker generations; dihydropyridine vs non-dihydropyridine calcium channel blockers.</li>
+        <li>OMK 2 covers fewer drugs than OMK 1 and focuses on pathologies — <strong>the OMK 1 key drug list is closer to what boards expect</strong>. Preview the key drug list, review physiology, review OMK 1 pharmacology.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 1. ANS ==================== -->
+<div class="section" id="s1-ans">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Topic 1</div><span class="hy-flag">⭐ Fluency needed</span></div>
+    <p class="section-label">Where each receptor is and what it does</p>
+    <h2 class="section-title">Autonomic Nervous System Refresher</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>NE = norepinephrine · Epi = epinephrine · ACh = acetylcholine · N<sub>N</sub> = neuronal nicotinic receptor · M2/M3 = muscarinic subtypes · α1/α2/β1/β2 = adrenergic receptor subtypes · JG = juxtaglomerular · GI = gastrointestinal</div>
+
+    <div class="fig-row"><figure class="fig-card" id="fig-b-ans-divisions"><div class="fig-frame"><img class="slide-img" src="assets/basic-science/b-ans-divisions.jpg" alt="Two neuron chains: sympathetic preganglionic neuron releases acetylcholine at the ganglion and the postganglionic neuron releases norepinephrine onto cardiac muscle; parasympathetic releases acetylcholine at both synapses" width="1450" height="357" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig B1</span><span class="fig-title">Sympathetic vs parasympathetic: both release ACh at the ganglion; they differ at the target</span><span class="fig-src"><b>Scully lecture</b> · slide 5</span></figcaption></figure><figure class="fig-card" id="fig-b-ans-map"><div class="fig-frame"><img class="slide-img" src="assets/basic-science/b-ans-map.jpg" alt="Spinal cord outflow diagram: parasympathetic ACh on muscarinic receptors; sympathetic NE on adrenergic receptors of cardiac and smooth muscle; ACh on muscarinic receptors of sweat glands; dopamine on D1 of renal vascular smooth muscle; adrenal medulla releasing epinephrine; somatic ACh on nicotinic receptors of skeletal muscle" width="913" height="625" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig B2</span><span class="fig-title">Autonomic outflow map — transmitter and receptor at every target (incl. adrenal medulla and renal D1)</span><span class="fig-src"><b>Scully lecture</b> · slide 5</span></figcaption></figure></div>
+
+    <h3>Sympathetic = fight or flight</h3>
+    <ul class="notes-list">
+      <li>Mediators: <strong>norepinephrine</strong> (neurocrine, from nerve endings) and <strong>epinephrine</strong> (endocrine, from the adrenal medulla).</li>
+      <li><strong>β1 on the heart</strong> → ↑ heart rate, ↑ contractile force, ↑ conduction velocity → ↑ cardiac output.</li>
+      <li><strong class="hot">β1 is also on the kidney's juxtaglomerular cells → ↑ renin</strong> → RAAS → more volume.</li>
+      <li><strong>α1 on peripheral vascular smooth muscle</strong> → vasoconstriction → ↑ systemic vascular resistance. You don't need fine motor skills or skin perfusion to fight or run.</li>
+      <li><strong>β2 in skeletal-muscle vascular beds</strong> → vasodilation (blood to the muscles); <strong>β2 in the lungs</strong> → bronchodilation (gas exchange). α1 also dilates the pupil.</li>
+      <li><strong>α2</strong> presynaptically and in the CNS → ↓ transmitter release / ↓ sympathetic outflow (the brake — see Topic 6).</li>
+    </ul>
+
+    <div class="tbl-scroll"><table>
+      <tr><th>Receptor</th><th>Location</th><th>Function</th><th>G protein</th></tr>
+      <tr><td><strong>α1</strong></td><td>Vascular smooth muscle (also pupil dilator, GU smooth muscle)</td><td>Contraction → <strong>vasoconstriction</strong></td><td>G<sub>q</sub></td></tr>
+      <tr><td><strong>α2</strong></td><td>Presynaptic terminal · CNS</td><td><strong>Inhibit transmitter release</strong> · ↓ sympathetic outflow</td><td>G<sub>i</sub></td></tr>
+      <tr><td><strong>β1</strong></td><td>Heart · JG cells (kidney)</td><td>↑ HR, ↑ contractile force · <strong>↑ renin</strong></td><td>G<sub>s</sub></td></tr>
+      <tr><td><strong>β2</strong></td><td>Lung · skeletal-muscle vasculature</td><td>Bronchodilation · vasodilation</td><td>G<sub>s</sub></td></tr>
+      <tr><td><strong>M2</strong></td><td>Heart: SA node, AV node</td><td>↓ rate (negative chronotropy) · ↓ AV conduction velocity (negative dromotropy)</td><td>G<sub>i</sub></td></tr>
+      <tr><td><strong>M3</strong></td><td>Smooth muscle (e.g. pupillary constrictor), glands</td><td>Contraction / secretion</td><td>G<sub>q</sub></td></tr>
+      <tr><td><strong>N<sub>N</sub></strong></td><td><strong>All autonomic ganglia</strong> (sympathetic + parasympathetic), adrenal medulla</td><td>Depolarise the postganglionic neuron</td><td>Ion channel</td></tr>
+    </table></div>
+    <figure class="fig-card" id="fig-b-ans-organs"><div class="fig-frame"><img class="slide-img" src="assets/basic-science/b-ans-organs.jpg" alt="Two-column chart listing organ effects of sympathetic (alpha1, beta1, beta2) and parasympathetic (M2, M3) stimulation from eye to bladder" width="1570" height="1000" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig B3</span><span class="fig-title">Sympathetic vs parasympathetic effects organ by organ, with the receptor for each</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure>
+
+    <div class="callout callout-concept">
+      <div class="callout-title">🧠 The nicotinic receptor is shared — why nicotine looks "both"</div>
+      <p>Preganglionic neurons of <strong>both</strong> branches release ACh onto <strong>neuronal nicotinic (N<sub>N</sub>) receptors in the ganglia</strong>. So nicotine drives both: <strong>parasympathetic</strong> (the GI tract "wakes up") and <strong>sympathetic</strong> (arousal, tachycardia). That's also why <strong>nicotine toxicity is unpredictable</strong> — both branches fire. (Sweat glands use ACh too, but on muscarinic receptors — a common mix-up raised in class.)</p>
+    </div>
+    <figure class="fig-card sm" id="fig-b-nicotinic"><div class="fig-frame"><img class="slide-img" src="assets/basic-science/b-nicotinic.jpg" alt="Pentameric ligand-gated channel drawing with acetylcholine binding sites; muscle subunits alpha1 beta1 gamma delta versus neuronal alpha4 beta2" width="762" height="798" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig B4</span><span class="fig-title">Nicotinic receptor: muscle type vs neuronal type (the one at every autonomic ganglion)</span><span class="fig-src"><b>Scully lecture</b> · slide 6</span></figcaption></figure>
+    <div class="callout callout-warning">
+      <div class="callout-title">⚠️ "Muscarinic = cholinergic"</div>
+      <p>Muscarinic receptors <em>are</em> cholinergic receptors — easy to forget under pressure. If a finding fits a muscarinic effect, it will be produced by <strong>cholinomimetics</strong> and blocked by <strong>antimuscarinics</strong> (atropine).</p>
+    </div>
+    <p>One more detail from the lecture: <strong>the peripheral vasculature has no parasympathetic innervation</strong> — its tone comes only from sympathetic α1 signalling, kept "a little on" like a dimmer switch so there is always room to dial it back and dilate.</p>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> A patient receives a drug that selectively activates β1 receptors. Besides tachycardia, what happens to plasma renin, and why?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>Renin rises</strong> — β1 receptors on <strong>juxtaglomerular cells</strong> stimulate renin release (and β-blockers lower renin for the same reason).</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> A smoker trying to quit notices both a racing heart and increased bowel movements after a nicotine lozenge. Explain with one receptor.</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>Neuronal nicotinic (N<sub>N</sub>) receptors sit in both sympathetic and parasympathetic ganglia</strong>, so nicotine activates both branches at once.</p></div>
+    </div>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="U4tkIMxnlUU" data-title="Autonomic Nervous System (sympathetic vs parasympathetic)"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/U4tkIMxnlUU/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Autonomic Nervous System (sympathetic vs parasympathetic)</b><i>Medicosis Perfectionalis · YouTube</i></span></button><button class="vid" type="button" data-yt="qYBg13I0CZc" data-title="Clinical Cuts — Adrenergic receptors"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/qYBg13I0CZc/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Clinical Cuts — Adrenergic receptors</b><i>Osmosis · YouTube</i></span></button><button class="vid" type="button" data-yt="Sa-aYVerr08" data-title="Sympathomimetics — epinephrine, norepinephrine, α &amp; β receptors"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/Sa-aYVerr08/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Sympathomimetics — epinephrine, norepinephrine, α &amp; β receptors</b><i>Medicosis Perfectionalis · YouTube</i></span></button></div></div>
+  </div>
+</div>
+
+<!-- ==================== 2. GPCR SIGNALLING ==================== -->
+<div class="section" id="s2-gpcr">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Topic 2</div></div>
+    <p class="section-label">Gq · Gi · Gs — and what they do to Ca²⁺</p>
+    <h2 class="section-title">G-Protein Signalling in Heart &amp; Smooth Muscle</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>GPCR = G-protein-coupled receptor · PLC = phospholipase C · PIP2 = phosphatidylinositol bisphosphate · IP3 = inositol trisphosphate · DAG = diacylglycerol · PKC / PKA / PKG = protein kinase C / A / G · AC = adenylyl cyclase · cAMP / cGMP = cyclic AMP / GMP · SR = sarcoplasmic reticulum · MLCK = myosin light-chain kinase · MLC = myosin light chain · sGC = soluble guanylyl cyclase · NO = nitric oxide · eNOS = endothelial NO synthase · ROCK = Rho-associated kinase</div>
+
+    <div class="callout callout-hook">
+      <div class="callout-title">🧠 The rule and the exception</div>
+      <p><strong>Odd = G<sub>q</sub>, even = G<sub>i</sub></strong> for muscarinic and α receptors: <strong>M1, M3, α1 → G<sub>q</sub></strong>; <strong>M2, α2 → G<sub>i</sub></strong>. <strong class="hot">"Betas are BS"</strong> — they break the odd/even rule: <strong>every β (β1, β2, β3) → G<sub>s</sub></strong>.</p>
+    </div>
+
+    <div class="tbl-scroll"><table>
+      <tr><th>Pathway</th><th>Receptors</th><th>Cascade</th><th>Result</th></tr>
+      <tr><td><strong>G<sub>q</sub></strong></td><td>M1, M3, α1</td><td>PLC → PIP2 → <strong>IP3</strong> (→ SR Ca²⁺ release) + <strong>DAG</strong> (→ PKC)</td><td><strong>Smooth muscle contraction</strong> (vasoconstriction, miosis via M3)</td></tr>
+      <tr><td><strong>G<sub>i</sub></strong></td><td>M2, α2</td><td>α subunit <strong>inhibits AC</strong> → ↓cAMP; βγ subunit <strong>blocks presynaptic Ca²⁺ influx</strong></td><td>Slower heart (M2); ↓ transmitter release (α2)</td></tr>
+      <tr><td><strong>G<sub>s</sub></strong></td><td>β1, β2 (all β)</td><td><strong>Activates AC</strong> → ↑cAMP → PKA</td><td>Heart: ↑ rate + force. Smooth muscle: <strong>relaxation</strong> (PKA inhibits MLCK)</td></tr>
+    </table></div>
+    <div class="fig-row"><figure class="fig-card" id="fig-b-gq-plc"><div class="fig-frame"><img class="slide-img" src="assets/basic-science/b-gq-plc.jpg" alt="Norepinephrine binding a Gq-coupled receptor activating phospholipase C, cleaving PIP2 to IP3 which releases calcium from the endoplasmic reticulum and DAG which activates protein kinase C" width="1058" height="771" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig B5</span><span class="fig-title">Gq pathway: receptor → phospholipase C → IP3 (Ca²⁺ release) + DAG (PKC)</span><span class="fig-src"><b>Scully lecture</b> · slide 6</span></figcaption></figure><figure class="fig-card" id="fig-b-ac-convergence"><div class="fig-frame"><img class="slide-img" src="assets/basic-science/b-ac-convergence.jpg" alt="Two receptors, one coupled to Gs stimulating and one to Gi inhibiting the same adenylyl cyclase, net result integrated effect" width="1504" height="514" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig B6</span><span class="fig-title">Gs and Gi converge on adenylyl cyclase — the net cAMP is the integrated effect (β1 vs M2 in the SA node)</span><span class="fig-src"><b>Scully lecture</b> · slide 6</span></figcaption></figure></div>
+
+    <h3>In the heart: β1 and M2 pull on the same enzyme</h3>
+    <p><strong>β1 (G<sub>s</sub>)</strong> and <strong>M2 (G<sub>i</sub>)</strong> converge on <strong>adenylyl cyclase</strong>. G<sub>s</sub> → ↑cAMP → PKA phosphorylates Ca²⁺-handling proteins (L-type channel, phospholamban) → faster, stronger beats. G<sub>i</sub> inhibits the same enzyme, so the same proteins are <em>not</em> phosphorylated → slower rate, slower AV conduction. <strong>Net heart rate = the integrated cAMP signal.</strong></p>
+    <figure class="fig-card sm" id="fig-b-b1-myocyte"><div class="fig-frame"><img class="slide-img" src="assets/basic-science/b-b1-myocyte.jpg" alt="Cardiac myocyte: beta1 agonist activates Gs and adenylyl cyclase, cAMP activates PKA which phosphorylates the calcium channel and phospholamban on the sarcoplasmic reticulum; amrinone inhibits phosphodiesterase that degrades cAMP" width="588" height="866" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig B7</span><span class="fig-title">β1 in the cardiac myocyte: Gs → cAMP → PKA → L-type Ca²⁺ channel + phospholamban; amrinone blocks PDE3</span><span class="fig-src"><b>Scully lecture</b> · slide 15</span></figcaption></figure>
+
+    <h3>In vascular smooth muscle: Ca²⁺ is the currency</h3>
+    <p>Contraction = Ca²⁺ in (L-type channels, IP3-released SR stores) → Ca²⁺–calmodulin → <strong>MLCK</strong> phosphorylates myosin → cross-bridges. Tone changes are slow, summed signals — not twitches.</p>
+    <ul class="notes-list">
+      <li><strong>Contract:</strong> α1/G<sub>q</sub> → IP3 → Ca²⁺ ↑ → MLCK on.</li>
+      <li><strong>Relax via cAMP:</strong> β2/G<sub>s</sub> → PKA → <strong class="hot">inhibits MLCK</strong> → dilation (skeletal-muscle beds, bronchioles).</li>
+      <li><strong>Relax via cGMP:</strong> endothelial NO → soluble guanylyl cyclase → cGMP → PKG → <strong>MLC phosphatase</strong> → dilation.</li>
+    </ul>
+    <div class="fig-row"><figure class="fig-card" id="fig-b-sm-calcium"><div class="fig-frame"><img class="slide-img" src="assets/basic-science/b-sm-calcium.jpg" alt="Smooth muscle cell with calcium entering through L-type channels, released from sarcoplasmic reticulum via IP3 and ryanodine receptors, driving actin-myosin contraction, removed by Ca-ATPase and sodium-calcium exchanger" width="1585" height="570" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig B8</span><span class="fig-title">Vascular smooth muscle Ca²⁺ handling: L-type channel, SR release, pumps and exchanger</span><span class="fig-src"><b>Scully lecture</b> · slide 10</span></figcaption></figure><figure class="fig-card" id="fig-b-sm-signaling"><div class="fig-frame"><img class="slide-img" src="assets/basic-science/b-sm-signaling.jpg" alt="Signalling map in vascular smooth muscle: Gq PLC IP3 calcium calmodulin activating myosin light chain kinase; Gs adenylyl cyclase PKA inhibiting MLCK; RhoA ROCK inhibiting MLC phosphatase; nitric oxide soluble guanylyl cyclase cGMP PKG activating MLC phosphatase" width="1423" height="691" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig B9</span><span class="fig-title">Smooth muscle tone: Gq→IP3→MLCK contracts; Gs→PKA ⊣ MLCK and NO→cGMP→PKG→MLC phosphatase relax</span><span class="fig-src"><b>Scully lecture</b> · slide 11</span></figcaption></figure></div>
+    <figure class="fig-card sm" id="fig-b-no-enos"><div class="fig-frame"><img class="slide-img" src="assets/basic-science/b-no-enos.jpg" alt="Endothelial cell with agonist raising calcium, activating eNOS to make NO from L-arginine; NO diffuses into smooth muscle, activates guanylyl cyclase and potassium channels causing hyperpolarization and relaxation" width="504" height="620" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig B10</span><span class="fig-title">Endothelium-derived NO: agonist → Ca²⁺/CaM → eNOS → NO → smooth muscle guanylyl cyclase → relaxation</span><span class="fig-src"><b>Scully lecture</b> · slide 16</span></figcaption></figure>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> Which second-messenger pathway do phenylephrine (α1) and bethanechol acting on the pupillary constrictor (M3) share?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>G<sub>q</sub> → PLC → IP3 + DAG → ↑ intracellular Ca²⁺</strong> → smooth muscle contraction (odd-numbered = G<sub>q</sub>).</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> How does activation of β2 receptors relax bronchial and skeletal-muscle vascular smooth muscle?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p>G<sub>s</sub> → adenylyl cyclase → ↑cAMP → <strong>PKA inhibits myosin light-chain kinase</strong> → less myosin phosphorylation → relaxation.</p></div>
+    </div>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="s7dKt9oRbi4" data-title="G-protein (Gq, Gs, Gi) and other signalling"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/s7dKt9oRbi4/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>G-protein (Gq, Gs, Gi) and other signalling</b><i>Medicosis Perfectionalis · YouTube</i></span></button><button class="vid" type="button" data-yt="erHdQ6cCu_s" data-title="IP3 and Calcium Signalling Pathway"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/erHdQ6cCu_s/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>IP3 and Calcium Signalling Pathway</b><i>JJ Medicine · YouTube</i></span></button></div></div>
+  </div>
+</div>
+
+<!-- ==================== 3. KIDNEY + MAP ==================== -->
+<div class="section" id="s3-map">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Topic 3</div><span class="hy-flag">⭐ Every drug moves one of these</span></div>
+    <p class="section-label">Kidney volume control · MAP = CO × PVR</p>
+    <h2 class="section-title">Blood Pressure: the Dials Drugs Turn</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>MAP = mean arterial pressure · CO = cardiac output · PVR / SVR = peripheral / systemic vascular resistance · HR = heart rate · SV = stroke volume · AT-II = angiotensin II · ADH = antidiuretic hormone · RAAS = renin–angiotensin–aldosterone system · PDE3 = phosphodiesterase 3</div>
+
+    <h3>Kidneys: the long-term volume regulator</h3>
+    <p>The ANS is the <strong>fast responder</strong>; <strong>volume is the long-term answer</strong>. For cardiovascular purposes, the nephron's job is <strong>sodium (and water) handling</strong>. Angiotensin II acts on the <strong>adrenal cortex</strong> (aldosterone), <strong>proximal tubule</strong> (↑ NaCl reabsorption), <strong>efferent arterioles</strong> (constrict, maintain GFR), <strong>hypothalamus</strong> (thirst, ADH) and <strong>heart</strong> (remodelling).</p>
+    <div class="callout callout-purple">
+      <div class="callout-title">💡 Striking fact from lecture</div>
+      <p>The kidney's role in BP is so large that <strong>hypertension can be transplanted</strong>: a kidney from a donor with renal-based hypertension can make the recipient hypertensive.</p>
+    </div>
+    <div class="fig-row"><figure class="fig-card" id="fig-b-raas"><div class="fig-frame"><img class="slide-img" src="assets/basic-science/b-raas.jpg" alt="Flowchart from angiotensinogen via renin to angiotensin I and via ACE to angiotensin II, which acts on adrenal cortex (aldosterone), proximal tubule (NaCl reabsorption), efferent arterioles (maintains GFR), hypothalamus (thirst, ADH) and heart (remodelling); prorenin receptor branch" width="1113" height="819" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig B11</span><span class="fig-title">RAAS and every place angiotensin II acts (adrenal, proximal tubule, efferent arteriole, hypothalamus, heart)</span><span class="fig-src"><b>Scully lecture</b> · slide 12</span></figcaption></figure><figure class="fig-card tall" id="fig-b-nephron-sites"><div class="fig-frame"><img class="slide-img" src="assets/basic-science/b-nephron-sites.jpg" alt="Nephron drawing with glomerulus, juxtaglomerular apparatus and numbered sites: carbonic anhydrase inhibitors in proximal tubule, loop diuretics in thick ascending limb, thiazides in distal convoluted tubule, potassium-sparing in collecting duct" width="506" height="693" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig B12</span><span class="fig-title">Nephron: where each diuretic class acts (1 CA inhibitors · 2 loop · 3 thiazide · 4 K-sparing)</span><span class="fig-src"><b>Scully lecture</b> · slide 12</span></figcaption></figure></div>
+    <p>ACE has a second job worth remembering now: it is also <strong>kininase II</strong>, the enzyme that inactivates <strong>bradykinin</strong> — the basis of ACE-inhibitor cough and angioedema in the hypertension lecture.</p>
+    <figure class="fig-card sm" id="fig-b-ace-bradykinin"><div class="fig-frame"><img class="slide-img" src="assets/basic-science/b-ace-bradykinin.jpg" alt="Parallel pathways: angiotensinogen to angiotensin I to angiotensin II by ACE causing aldosterone and vasoconstriction; kininogen to bradykinin by kallikrein, inactivated by kininase II (the same enzyme as ACE); sites of renin inhibitor, ACE inhibitor and AT1 antagonists" width="560" height="669" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig B13</span><span class="fig-title">ACE does two jobs: makes angiotensin II and destroys bradykinin (kininase II)</span><span class="fig-src"><b>Scully lecture</b> · slide 17</span></figcaption></figure>
+
+    <h3>MAP = CO × PVR</h3>
+    <div class="moa-chain"><span class="hit">MAP = CO × PVR</span><i>→</i><span>CO = HR × SV</span><i>→</i><span>SV ← preload + contractility</span><i>·</i><span>PVR ← arteriolar diameter</span></div>
+    <p>Perfusion is what we are protecting; <strong>MAP</strong> is how we measure it.</p>
+    <div class="fig-row"><figure class="fig-card tall" id="fig-b-bp-tree"><div class="fig-frame"><img class="slide-img" src="assets/basic-science/b-bp-tree.jpg" alt="Tree: blood pressure from cardiac output (heart rate, stroke volume via contractility and preload, venous tone and intravascular volume) and systemic vascular resistance (direct alpha1 innervation, circulating catecholamines and angiotensin II, local regulators such as NO, endothelin, adenosine)" width="565" height="652" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig B14</span><span class="fig-title">What sets blood pressure: CO (HR × SV) × SVR — and what pushes each branch up</span><span class="fig-src"><b>Scully lecture</b> · slide 14</span></figcaption></figure><figure class="fig-card tall" id="fig-b-bp-drug-tree"><div class="fig-frame"><img class="slide-img" src="assets/basic-science/b-bp-drug-tree.jpg" alt="Blood pressure determinant tree annotated with beta antagonists and calcium channel blockers on heart rate and contractility; alpha1 antagonists, central alpha2 agonists, nitroprusside, renin inhibitors, ACE inhibitors, AT1 antagonists and diuretics on preload, volume and resistance" width="507" height="602" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig B15</span><span class="fig-title">The same tree labeled with the drug classes that lower each branch</span><span class="fig-src"><b>Scully lecture</b> · slide 18</span></figcaption></figure></div>
+
+    <div class="tbl-scroll"><table>
+      <tr><th>Dial</th><th>Raise it</th><th>Lower it</th></tr>
+      <tr><td><strong>Heart rate</strong></td><td>Antimuscarinics · β agonists / catecholamines · <strong>PDE3 inhibitors</strong></td><td>Muscarinic agonism · <strong>β antagonists</strong> · <strong>Ca²⁺ channel blockers</strong></td></tr>
+      <tr><td><strong>Preload — venous tone</strong></td><td>Sympathetic tone</td><td><strong>NO</strong> (nitrates, nitroprusside)</td></tr>
+      <tr><td><strong>Preload — intravascular volume</strong></td><td>Thirst / fluids</td><td><strong>RAAS blockade · diuretics</strong></td></tr>
+      <tr><td><strong>Contractility</strong></td><td>Sympathetic / catecholamines (β1)</td><td>β antagonists · Ca²⁺ channel blockers</td></tr>
+      <tr><td><strong>SVR</strong></td><td>Direct <strong>α1</strong> innervation · circulating catecholamines · <strong>AT-II</strong> · Ca²⁺ channels</td><td>α1 antagonists · central α2 agonists · <strong>NO</strong> · RAAS blockers · Ca²⁺ channel blockers</td></tr>
+    </table></div>
+    <figure class="fig-card tall" id="fig-b-circulation"><div class="fig-frame"><img class="slide-img" src="assets/basic-science/b-circulation.jpg" alt="Schematic of the circulation with head, arm, trunk, hepatic, renal, pelvic and leg beds arranged in parallel between arteries on the right and veins on the left" width="939" height="1600" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig B16</span><span class="fig-title">Organs in parallel: arterial (resistance) side vs venous (capacitance) side</span><span class="fig-src"><b>Scully lecture</b> · slide 9</span></figcaption></figure>
+
+    <h3>Preload, afterload and heart failure</h3>
+    <p>The circuit has a <strong>resistance side</strong> (arterioles) and a <strong>capacitance side</strong> (veins). Change <strong>afterload</strong> to change impedance; change <strong>preload</strong> to change how hard the heart contracts (Frank–Starling). In heart failure: <strong class="hot">lower afterload → less contractility needed to move blood forward → ↑ stroke volume</strong>. These same levers give the mortality benefits in heart failure later in the block.</p>
+
+    <div class="callout callout-clinical">
+      <div class="callout-title">🩺 Compensation in action — blood loss</div>
+      <p>Lose volume → ↓ preload → ↓ CO → BP falls. <strong>Acute:</strong> constrict peripheral vessels (α1) + ↑ heart rate (β1). <strong>Long-term:</strong> RAAS + thirst restore volume. <strong class="hot">In hypertension the body treats the high pressure as its set point</strong> and uses these same mechanisms to defend it — the theme of the next lecture.</p>
+    </div>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> A drug dilates arterioles but not veins. Which determinant of blood pressure does it change, and what would the heart of a patient with systolic heart failure gain?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p>It lowers <strong>SVR / afterload</strong>. Lower impedance means the failing ventricle ejects a <strong>larger stroke volume</strong> for the same contractility.</p></div>
+    </div>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="o2k8aGr28ZA" data-title="Cardiac output, stroke volume, EDV/ESV, ejection fraction"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/o2k8aGr28ZA/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Cardiac output, stroke volume, EDV/ESV, ejection fraction</b><i>Medicosis Perfectionalis · YouTube</i></span></button><button class="vid" type="button" data-yt="GBFu80fc5ko" data-title="RAAS — physiology"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/GBFu80fc5ko/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>RAAS — physiology</b><i>Medicosis Perfectionalis · YouTube</i></span></button></div></div>
+  </div>
+</div>
+
+<!-- ==================== 4. ELECTRICAL ==================== -->
+<div class="section" id="s4-electrical">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Topic 4</div></div>
+    <p class="section-label">Needed again for antiarrhythmics</p>
+    <h2 class="section-title">The Heart as an Electrical Organ</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>EKG/ECG = electrocardiogram · SA / AV = sinoatrial / atrioventricular · AP = action potential · I<sub>f</sub> = "funny" current · I<sub>Ca</sub> / I<sub>Na</sub> / I<sub>K</sub> = calcium / sodium / potassium current</div>
+
+    <p>You'll be asked to read EKGs on the fly, so know <strong>where the current is generated, how it propagates, how it causes contraction</strong>, and how it maps to the trace:</p>
+    <div class="fact-grid">
+      <div class="fact-card"><h4>P wave</h4><div class="generic">Atria</div><p>Atrial depolarisation → atrial contraction.</p></div>
+      <div class="fact-card"><h4>QRS</h4><div class="generic">Ventricles</div><p>Ventricular depolarisation.</p></div>
+      <div class="fact-card"><h4>T wave</h4><div class="generic">Ventricles</div><p>Ventricular repolarisation.</p></div>
+    </div>
+    <figure class="fig-card tall" id="fig-b-conduction"><div class="fig-frame"><img class="slide-img" src="assets/basic-science/b-conduction.gif" alt="Animated outline of the heart with a red dot showing electrical activation spreading from the sinoatrial node through the atria, pausing at the AV node and spreading through the ventricles" width="700" height="800" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig B17</span><span class="fig-title">Animation: the impulse travels SA node → atria → AV node → His–Purkinje → ventricles</span><span class="fig-src"><b>Scully lecture</b> · slide 20</span></figcaption></figure>
+
+    <h3>Nodal vs non-nodal action potentials</h3>
+    <div class="compare-grid">
+      <div class="compare-card" style="background:var(--highlight);border-color:var(--gold)">
+        <span class="card-emoji">⏱️</span><h4>SA / AV nodal cell (pacemaker)</h4>
+        <ul class="notes-list">
+          <li><strong>Phase 4:</strong> slow depolarisation — <strong>I<sub>f</sub></strong> (inward, mainly Na⁺)</li>
+          <li><strong>Phase 0 upstroke:</strong> <strong class="hot">Ca²⁺</strong> through voltage-gated channels</li>
+          <li><strong>Phase 3:</strong> repolarisation by <strong>K⁺</strong></li>
+          <li>No stable resting potential; small, slow upstroke</li>
+        </ul>
+      </div>
+      <div class="compare-card" style="background:var(--blue-bg);border-color:var(--accent2)">
+        <span class="card-emoji">💪</span><h4>Ventricular / atrial myocyte</h4>
+        <ul class="notes-list">
+          <li><strong>Phase 4:</strong> stable resting potential (~−85 mV)</li>
+          <li><strong>Phase 0 upstroke:</strong> <strong class="hot">Na⁺</strong> (fast channels)</li>
+          <li><strong>Phase 1:</strong> transient outward K⁺</li>
+          <li><strong>Phase 2 plateau:</strong> inward Ca²⁺ balanced by outward K⁺</li>
+          <li><strong>Phase 3:</strong> repolarisation by <strong>K⁺</strong></li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout callout-key">
+      <div class="callout-title">🔑 The three questions asked in class</div>
+      <p>Myocyte upstroke = <strong>Na⁺</strong>. Nodal upstroke = <strong>Ca²⁺</strong>. Repolarisation in both = <strong>K⁺</strong>. These are exactly the currents antiarrhythmics target.</p>
+    </div>
+    <figure class="fig-card" id="fig-b-heart-ap"><div class="fig-frame"><img class="slide-img" src="assets/basic-science/b-heart-ap.jpg" alt="Two action potential traces: SA node with slow rise to about +10 mV and no stable resting potential; ventricular muscle with rapid upstroke to +45 mV and long plateau, resting near -85 mV" width="1364" height="567" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig B18</span><span class="fig-title">(A) SA node vs (B) ventricular muscle action potential</span><span class="fig-src"><b>Scully lecture</b> · slide 21 · Golan fig 24.1</span></figcaption></figure>
+    <div class="fig-row"><figure class="fig-card tall" id="fig-b-sa-ap"><div class="fig-frame"><img class="slide-img" src="assets/basic-science/b-sa-ap.jpg" alt="Table of SA node phases with currents, SA node action potential with phases 4, 0 and 3, and plot of the underlying funny, calcium and potassium currents" width="488" height="1054" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig B19</span><span class="fig-title">SA node action potential: phase 4 (If), phase 0 (ICa), phase 3 (IK)</span><span class="fig-src"><b>Scully lecture</b> · slide 22 · Golan fig 24.2</span></figcaption></figure><figure class="fig-card tall" id="fig-b-vent-ap"><div class="fig-frame"><img class="slide-img" src="assets/basic-science/b-vent-ap.jpg" alt="Table of ventricular phases with currents, ventricular action potential with phases 0 to 4, and plot of sodium, transient outward, calcium and potassium currents" width="482" height="1202" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig B20</span><span class="fig-title">Ventricular action potential: phases 0–4 and the current behind each</span><span class="fig-src"><b>Scully lecture</b> · slide 23 · Golan fig 24.3</span></figcaption></figure></div>
+    <div class="fig-row"><figure class="fig-card" id="fig-b-sa-table"><div class="fig-frame"><img class="slide-img" src="assets/basic-science/b-sa-table.png" alt="Table: phase 4 slow depolarization by inward funny current carried mainly by sodium; phase 0 upstroke by inward calcium current through voltage-sensitive channels; phase 3 repolarization by outward potassium current" width="621" height="214" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig B21</span><span class="fig-title">SA nodal cells: phase → major current</span><span class="fig-src"><b>Scully lecture</b> · slide 22 · Golan table 24.1</span></figcaption></figure><figure class="fig-card" id="fig-b-vent-table"><div class="fig-frame"><img class="slide-img" src="assets/basic-science/b-vent-table.png" alt="Table: phase 4 resting potential with balanced currents; phase 0 inward sodium; phase 1 transient outward potassium; phase 2 plateau balancing inward calcium and outward potassium; phase 3 rapid repolarization by outward potassium" width="616" height="359" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig B22</span><span class="fig-title">Ventricular myocytes: phase → major current</span><span class="fig-src"><b>Scully lecture</b> · slide 23 · Golan table 24.1</span></figcaption></figure></div>
+    <figure class="fig-card" id="fig-b-ap-along-heart"><div class="fig-frame"><img class="slide-img" src="assets/basic-science/b-ap-along-heart.jpg" alt="Heart outline with action potential traces for sinus node, AV node, bundle of His, Purkinje fibres and ventricular myocardium" width="1597" height="1000" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig B23</span><span class="fig-title">Action potential shape changes along the conduction system</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> A drug blocks L-type Ca²⁺ channels. Which phase of which action potential is slowed most, and what happens to AV conduction?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>Phase 0 of nodal (SA/AV) cells</strong>, whose upstroke is carried by Ca²⁺ → slower SA rate and <strong>slower AV conduction</strong> (↑ PR interval). Myocyte phase 0 (Na⁺) is spared.</p></div>
+    </div>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="BbUcWbtVjT4" data-title="Neuron action potential — physiology (review the ions)"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/BbUcWbtVjT4/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Neuron action potential — physiology (review the ions)</b><i>Osmosis · YouTube</i></span></button></div></div>
+  </div>
+</div>
+
+<!-- ==================== 5. LIPIDS ==================== -->
+<div class="section" id="s5-lipids">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Topic 5</div></div>
+    <p class="section-label">Why we care about the lipid panel</p>
+    <h2 class="section-title">Vasculature: Lipids, Plaque &amp; Clots</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>LDL / HDL = low- / high-density lipoprotein · ox-LDL = oxidised LDL · TG = triglycerides · PCSK9 = proprotein convertase subtilisin/kexin 9 · HMG-CoA = 3-hydroxy-3-methylglutaryl-coenzyme A</div>
+
+    <ol class="step-list">
+      <li><div><strong>Too much LDL</strong>enters the endothelium / intima and is oxidised.</div></li>
+      <li><div><strong>Macrophages take it up → foam cells</strong>→ fatty streak → plaque.</div></li>
+      <li><div><strong>Plaques rupture</strong>→ a site for <strong class="hot">thrombogenesis</strong> → clots that occlude or break off.</div></li>
+      <li><div><strong>Therefore:</strong>nutrition + lipid-lowering drugs to prevent disease, and <strong>antiplatelet drugs</strong> to prevent clotting on plaques in the different pathologies.</div></li>
+    </ol>
+    <div class="fig-row"><figure class="fig-card" id="fig-b-atherosclerosis"><div class="fig-frame"><img class="slide-img" src="assets/basic-science/b-atherosclerosis.jpg" alt="Vessel wall illustration: LDL enters the intima and is oxidized, monocytes adhere and become macrophages then foam cells forming a fatty streak, smooth muscle cells migrate, platelets and thrombus on the lumen" width="600" height="450" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig B24</span><span class="fig-title">Why LDL matters: ox-LDL → monocyte → macrophage → foam cell → fatty streak</span><span class="fig-src"><b>Scully lecture</b> · slide 25 · Khatana 2020</span></figcaption></figure><figure class="fig-card tall" id="fig-b-angina-types"><div class="fig-frame"><img class="slide-img" src="assets/basic-science/b-angina-types.jpg" alt="Four artery cross-sections: normal patent lumen; stable angina with fixed plaque; unstable angina with ruptured plaque, platelet aggregation and thrombus; variant angina with no plaque but intense vasospasm" width="508" height="826" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig B25</span><span class="fig-title">Normal vs stable, unstable and variant angina</span><span class="fig-src"><b>Scully lecture</b> · slide 25</span></figcaption></figure></div>
+    <p>Atherosclerosis rarely travels alone — it co-occurs with hypertension, ischemic heart disease and heart failure. Ischemic heart disease and dyslipidemia are covered later; for assessments you're accountable for the <strong>mechanism of action</strong> of each lipid drug.</p>
+    <figure class="fig-card" id="fig-b-lipid-drugs"><div class="fig-frame"><img class="slide-img" src="assets/basic-science/b-lipid-drugs.jpg" alt="Table of percent change in LDL cholesterol, HDL cholesterol and triglycerides for bile acid sequestrants, ezetimibe, fenofibrate, gemfibrozil, niacin, omega-3 fatty acids, PCSK9 inhibitors, statins and bempedoic acid" width="1600" height="730" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig B26</span><span class="fig-title">Effects of lipid-lowering drugs on LDL-C, HDL-C and triglycerides</span><span class="fig-src"><b>Scully lecture</b> · slide 26 · UpToDate</span></figcaption></figure>
+    <figure class="fig-card sm" id="fig-b-antilipid-sites"><div class="fig-frame"><img class="slide-img" src="assets/basic-science/b-antilipid-sites.jpg" alt="Liver and intestine diagram: statins inhibit cholesterol synthesis, PCSK9 inhibitors increase LDL uptake, ezetimibe blocks intestinal absorption, bile acid sequestrants trap bile acids in the ileum" width="700" height="754" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig B27</span><span class="fig-title">Where the lipid drugs act: statins, PCSK9 inhibitors, ezetimibe, bile acid sequestrants</span><span class="fig-src"><b>UWorld</b></span></figcaption></figure>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> What cell becomes a foam cell, and what event turns a stable plaque into an acute coronary syndrome?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>Macrophages</strong> that ingest oxidised LDL. <strong>Plaque rupture</strong> exposes thrombogenic material → platelet aggregation and thrombus (why antiplatelets are used).</p></div>
+    </div>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="e-x2qkjxPgg" data-title="Health consequences of statin use"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/e-x2qkjxPgg/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Health consequences of statin use</b><i>JJ Medicine · YouTube</i></span></button><button class="vid" type="button" data-yt="0U7YHRW5dyc" data-title="LDL and HDL cholesterol"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/0U7YHRW5dyc/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>LDL and HDL cholesterol</b><i>Nucleus Medical Media · YouTube</i></span></button></div></div>
+  </div>
+</div>
+
+<!-- ==================== 6. PRACTICE QUESTIONS ==================== -->
+<div class="section" id="s6-questions">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Topic 6</div><span class="hy-flag">⭐ The in-class questions</span></div>
+    <p class="section-label">Reflexes, receptor selectivity, converging pathways</p>
+    <h2 class="section-title">Putting It Together: The Four Class Questions</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>NE = norepinephrine · NET = norepinephrine transporter · MAO = monoamine oxidase · COMT = catechol-O-methyltransferase · PDE3 / PDE5 = phosphodiesterase 3 / 5 · HR = heart rate · BP = blood pressure</div>
+
+    <h3>Q1 — Phenylephrine and reflex bradycardia</h3>
+    <ol class="step-list">
+      <li><div><strong>Phenylephrine = α1 agonist</strong>G<sub>q</sub> → IP3 → Ca²⁺ → vasoconstriction → ↑ SVR → ↑ BP. (Oral phenylephrine as a decongestant doesn't really work — but IV it does this.)</div></li>
+      <li><div><strong>Baroreceptors sense the stretch</strong>in the <strong>carotid sinus</strong> and <strong>aortic arch</strong> → brainstem.</div></li>
+      <li><div><strong>Sympathetic dimmer down, parasympathetic up</strong>→ ACh on <strong>M2</strong> in the SA node → <strong class="hot">reflex bradycardia</strong>.</div></li>
+      <li><div><strong>Block it with an M2 antagonist: atropine.</strong></div></li>
+    </ol>
+    <figure class="fig-card" id="fig-b-baroreflex"><div class="fig-frame"><img class="slide-img" src="assets/basic-science/b-baroreflex.jpg" alt="Diagram of carotid sinus and aortic arch baroreceptors signalling via glossopharyngeal and vagus nerves to the solitary nucleus, raising parasympathetic and lowering sympathetic activity when pressure rises" width="1413" height="1000" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig B28</span><span class="fig-title">Baroreceptor reflex: carotid sinus (IX) + aortic arch (X) → brainstem → autonomic output</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure>
+
+    <h3>Q2 — What ends norepinephrine's signal?</h3>
+    <ul class="notes-list">
+      <li>Unlike ACh, NE is mainly <strong>recycled</strong>: <strong class="hot">NET reuptake removes ~<span class="num">70%</span></strong> — the primary termination.</li>
+      <li>What diffuses away is broken down by <strong>MAO</strong> (and <strong>COMT</strong> in the liver) — but high NE does not <em>stimulate</em> MAO.</li>
+      <li><strong>Negative feedback:</strong> NE hits presynaptic <strong>α2 (G<sub>i</sub>)</strong> → the <strong>βγ subunit blocks Ca²⁺ influx</strong> → fewer vesicles released. Same trick as μ-opioid and GABA-B receptors (glutamate, etc.). This is how clonidine / α-methyldopa lower BP.</li>
+      <li>High synaptic NE does <em>not</em> increase NE release (the body isolates signalling tracks) and has nothing to do with dopa decarboxylase.</li>
+    </ul>
+    <figure class="fig-card sm" id="fig-b-synapse"><div class="fig-frame"><img class="slide-img" src="assets/basic-science/b-synapse.jpg" alt="Nerve terminal: tyrosine to dopa to dopamine to norepinephrine in vesicles via VMAT, calcium-triggered release, reuptake by the norepinephrine transporter, presynaptic autoreceptor, diffusion away" width="551" height="609" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig B29</span><span class="fig-title">Adrenergic synapse: synthesis, VMAT, release, NET reuptake and the α2 autoreceptor brake</span><span class="fig-src"><b>Scully lecture</b> · slide 29</span></figcaption></figure>
+
+    <h3>Q3 — M2 antagonist, then IV norepinephrine</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>Receptor</th><th>Does NE activate it?</th><th>Consequence</th></tr>
+      <tr><td>α1</td><td><strong>Yes</strong></td><td>Vasoconstriction (the only driver of peripheral vascular tone)</td></tr>
+      <tr><td>α2</td><td><strong>Yes</strong></td><td>Presynaptic negative feedback</td></tr>
+      <tr><td>β1</td><td><strong>Yes</strong></td><td>Tachycardia (directly)</td></tr>
+      <tr><td>β2</td><td><strong class="hot">No</strong></td><td>No β2 dilation to oppose α1 — you can't nebulise NE for asthma</td></tr>
+    </table></div>
+    <div class="compare-grid">
+      <div class="compare-card"><span class="card-emoji">💉</span><h4>NE alone</h4><p>Unopposed α1 → ↑↑ SVR → ↑ BP → baroreflex → M2 → <strong>HR ↓</strong>. <strong>BP ↑, HR ↓</strong> (the β1 effect is overridden).</p></div>
+      <div class="compare-card" style="background:var(--highlight);border-color:var(--gold)"><span class="card-emoji">🚫</span><h4>NE after an M2 antagonist</h4><p>Reflex bradycardia is blocked, so β1 tachycardia shows: <strong class="hot">HR ↑ and BP ↑</strong>.</p></div>
+    </div>
+    <div class="fig-row"><figure class="fig-card" id="fig-b-ne-epi-iso"><div class="fig-frame"><img class="slide-img" src="assets/basic-science/b-ne-epi-iso.jpg" alt="Three graphs over 15 minutes: norepinephrine raises blood pressure and resistance while pulse falls; epinephrine raises pulse and systolic pressure with little change in resistance; isoproterenol lowers resistance and diastolic pressure while pulse rises" width="958" height="692" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig B30</span><span class="fig-title">Norepinephrine vs epinephrine vs isoproterenol infusions: HR, BP, peripheral resistance</span><span class="fig-src"><b>Scully lecture</b> · slide 30</span></figcaption></figure><figure class="fig-card" id="fig-b-sympathomimetics"><div class="fig-frame"><img class="slide-img" src="assets/basic-science/b-sympathomimetics.jpg" alt="Blood pressure, peripheral resistance and heart rate traces for norepinephrine, epinephrine and isoproterenol annotated with receptor effects, reflex bradycardia and reflex tachycardia" width="1430" height="1000" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig B31</span><span class="fig-title">Same idea, annotated: unopposed α1 → reflex bradycardia; β2 → reflex tachycardia</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure></div>
+
+    <h3>Q4 — Dobutamine and inamrinone</h3>
+    <ul class="notes-list">
+      <li><strong>Dobutamine</strong> = β1 agonist → G<sub>s</sub> → ↑cAMP.</li>
+      <li><strong>Inamrinone (amrinone) / milrinone</strong> = <strong>PDE3 inhibitor</strong> → cAMP isn't broken down. It does <em>not</em> activate a G<sub>s</sub>-coupled receptor.</li>
+      <li>Common ground: <strong class="hot">both increase cAMP</strong> → inotropy + chronotropy. Together → easy clinical overshoot.</li>
+      <li>Same pharmacodynamic shape as <strong>nitrates + PDE5 inhibitors (sildenafil)</strong>: one makes cGMP, the other stops its breakdown → dangerous hypotension.</li>
+    </ul>
+    <div class="fig-row"><figure class="fig-card sm" id="fig-b-dobutamine"><div class="fig-frame"><img class="slide-img" src="assets/basic-science/b-dobutamine.jpg" alt="Flowchart: beta agonist activates adenylyl cyclase raising cAMP; in cardiac muscle activates channels causing positive chronotropy and inotropy; in smooth muscle protein kinase A causes vasodilation" width="520" height="620" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig B32</span><span class="fig-title">Dobutamine: β agonist → ↑cAMP → inotropy, chronotropy, some vasodilation</span><span class="fig-src"><b>UWorld</b></span></figcaption></figure><figure class="fig-card sm" id="fig-b-milrinone"><div class="fig-frame"><img class="slide-img" src="assets/basic-science/b-milrinone.jpg" alt="Flowchart: milrinone inhibits phosphodiesterase 3 so cAMP accumulates, causing positive inotropy in cardiac muscle and vasodilation in smooth muscle" width="370" height="610" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig B33</span><span class="fig-title">Milrinone / inamrinone: block PDE3 → cAMP can&#x27;t be broken down → same endpoint as dobutamine</span><span class="fig-src"><b>UWorld</b></span></figcaption></figure></div>
+    <figure class="fig-card sm" id="fig-b-vasodilators"><div class="fig-frame"><img class="slide-img" src="assets/basic-science/b-vasodilators.jpg" alt="Vascular smooth muscle: nitrates and nitrites supply NO activating guanylyl cyclase to make cGMP; sildenafil inhibits phosphodiesterase breakdown of cGMP; calcium channel blockers reduce calcium entry; result relaxation" width="700" height="700" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig B34</span><span class="fig-title">Nitrates make cGMP, sildenafil stops its breakdown — why the combination crashes BP</span><span class="fig-src"><b>UWorld</b></span></figcaption></figure>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> IV phenylephrine is given and the heart rate falls. What drug blocks this adverse effect?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>Atropine</strong> — the reflex bradycardia is mediated by increased parasympathetic (M2) outflow; block it with an antimuscarinic.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> Increased norepinephrine concentration in an adrenergic synapse causes which of the following? (A) activation of dopa decarboxylase (B) increased NE release (C) activation of presynaptic G<sub>i</sub>-coupled receptors (D) stimulation of MAO</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>C</strong> — presynaptic α2 (G<sub>i</sub>) negative-feedback inhibition.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> A patient receives an M2 antagonist, then IV norepinephrine. (A) HR↑ BP↑ (B) HR↑ BP↓ (C) HR↓ BP↑ (D) HR↓ BP↓</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>A</strong> — the reflex bradycardia is blocked. <strong>C</strong> is what NE does on its own.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> Dobutamine and inamrinone both increase heart rate by: (A) activating G<sub>s</sub> GPCRs (B) inhibiting Na⁺ channels (C) inhibiting Na⁺/K⁺-ATPase (D) increasing cAMP</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>D</strong> — dobutamine is a β1 agonist but inamrinone is not; it inhibits PDE3 so cAMP accumulates.</p></div>
+    </div>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="Td3kpY3FlYU" data-title="Baroreceptor Reflex — carotid sinus, aortic arch"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/Td3kpY3FlYU/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Baroreceptor Reflex — carotid sinus, aortic arch</b><i>Medicosis Perfectionalis · YouTube</i></span></button><button class="vid" type="button" data-yt="MNFNrBW4jEw" data-title="Atropine — antimuscarinics"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/MNFNrBW4jEw/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Atropine — antimuscarinics</b><i>Medicosis Perfectionalis · YouTube</i></span></button><button class="vid" type="button" data-yt="zf28Rjbu3VM" data-title="Vasopressors explained: NE, Epi, vasopressin, dobutamine"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/zf28Rjbu3VM/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Vasopressors explained: NE, Epi, vasopressin, dobutamine</b><i>MedCram · YouTube</i></span></button></div></div>
+  </div>
+</div>
+
+<!-- ==================== GLOSSARY ==================== -->
+<div class="section" id="glossary">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge alt">Reference</div></div>
+    <p class="section-label">Every short form used in these notes</p>
+    <h2 class="section-title">Glossary &amp; Abbreviations</h2>
+    <div class="gloss">
+      <dl>
+        <dt>ACh · NE · Epi</dt><dd>Acetylcholine · norepinephrine · epinephrine</dd>
+        <dt>AC · cAMP · PKA</dt><dd>Adenylyl cyclase · cyclic AMP · protein kinase A</dd>
+        <dt>ANS</dt><dd>Autonomic nervous system</dd>
+        <dt>AP · I<sub>f</sub></dt><dd>Action potential · "funny" pacemaker current</dd>
+        <dt>AT-II</dt><dd>Angiotensin II</dd>
+      </dl>
+      <dl>
+        <dt>CO · SV · HR · MAP</dt><dd>Cardiac output · stroke volume · heart rate · mean arterial pressure</dd>
+        <dt>COMT · MAO</dt><dd>Catechol-O-methyltransferase · monoamine oxidase</dd>
+        <dt>DAG · IP3 · PLC</dt><dd>Diacylglycerol · inositol trisphosphate · phospholipase C</dd>
+        <dt>eNOS · NO · sGC · cGMP · PKG</dt><dd>Endothelial NO synthase · nitric oxide · soluble guanylyl cyclase · cyclic GMP · protein kinase G</dd>
+      </dl>
+      <dl>
+        <dt>G<sub>q</sub> · G<sub>i</sub> · G<sub>s</sub></dt><dd>G proteins: q → PLC; i → inhibit AC; s → stimulate AC</dd>
+        <dt>GPCR</dt><dd>G-protein-coupled receptor</dd>
+        <dt>JG cells</dt><dd>Juxtaglomerular cells — release renin (β1)</dd>
+        <dt>LDL · HDL · TG</dt><dd>Low- / high-density lipoprotein · triglycerides</dd>
+        <dt>MLCK</dt><dd>Myosin light-chain kinase (drives smooth muscle contraction)</dd>
+      </dl>
+      <dl>
+        <dt>NET</dt><dd>Norepinephrine transporter (reuptake, ~70%)</dd>
+        <dt>N<sub>N</sub></dt><dd>Neuronal nicotinic receptor (all autonomic ganglia)</dd>
+        <dt>PDE3 · PDE5</dt><dd>Phosphodiesterase 3 (cAMP; milrinone/inamrinone) · 5 (cGMP; sildenafil)</dd>
+        <dt>PVR / SVR</dt><dd>Peripheral / systemic vascular resistance</dd>
+        <dt>RAAS</dt><dd>Renin–angiotensin–aldosterone system</dd>
+        <dt>SR</dt><dd>Sarcoplasmic reticulum</dd>
+      </dl>
+    </div>
+  </div>
+</div>
+
+
+<div class="hy-modal" id="hyModal">
+  <div class="hy-modal-card">
+    <div class="hy-modal-header">
+      <h2>🎯 CV Pharm Basic Sciences Review — High-Yield One-Pager</h2>
+      <div class="hy-modal-actions">
+        <button class="hy-action-btn" onclick="printHY()">🖨️ Print / Save PDF</button>
+        <button class="hy-action-btn hy-close-btn" onclick="closeHY()">✕ Close</button>
+      </div>
+    </div>
+    <p class="hy-subhead">Scully · OMK 2 Cardio · LO: recall OMK 1 pharmacology + physiology — receptors · signalling · BP dials · electrical · reflex questions</p>
+    <div class="hy-cols">
+      <div>
+        <span class="hy-lo-tag">AUTONOMICS &amp; SIGNALLING</span>
+        <div class="hy-block"><h4>Receptors to know cold</h4><ul>
+          <li><strong>α1</strong> vascular SM → vasoconstriction (G<sub>q</sub>)</li>
+          <li><strong>α2</strong> presynaptic/CNS → ↓ NE release, ↓ sympathetic outflow (G<sub>i</sub>)</li>
+          <li><strong>β1</strong> heart ↑HR/force/conduction + <strong>JG cells ↑ renin</strong> (G<sub>s</sub>)</li>
+          <li><strong>β2</strong> bronchodilation, skeletal-muscle vasodilation (G<sub>s</sub>)</li>
+          <li><strong>M2</strong> SA ↓rate, AV ↓conduction (G<sub>i</sub>) · <strong>M3</strong> SM contraction (G<sub>q</sub>)</li>
+          <li><strong>N<sub>N</sub></strong> in all ganglia → nicotine hits both branches</li>
+          <li>Peripheral vessels: <strong>no parasympathetic</strong> innervation; tone = α1 only</li>
+        </ul></div>
+        <div class="hy-block"><h4>G proteins</h4><ul>
+          <li><strong>Odd = G<sub>q</sub></strong> (M1, M3, α1): PLC → IP3 (Ca²⁺) + DAG (PKC)</li>
+          <li><strong>Even = G<sub>i</sub></strong> (M2, α2): ⊣ AC; βγ blocks presynaptic Ca²⁺ entry</li>
+          <li><strong>"Betas are BS"</strong>: all β = G<sub>s</sub> → AC → cAMP → PKA</li>
+          <li>Heart: β1 and M2 converge on AC → net cAMP</li>
+          <li>SM: MLCK = contraction; <strong>PKA ⊣ MLCK</strong> (β2 relax); <strong>NO → sGC → cGMP → PKG → MLC phosphatase</strong> (relax)</li>
+        </ul></div>
+      </div>
+      <div>
+        <span class="hy-lo-tag">BP DIALS · KIDNEY · ELECTRICAL · LIPIDS</span>
+        <div class="hy-block"><h4>MAP = CO × PVR</h4><ul>
+          <li>CO = HR × SV; SV ← preload + contractility; PVR ← arteriolar diameter</li>
+          <li>↑HR: antimuscarinic, β agonist, PDE3i · ↓HR: M agonist, β-blocker, CCB</li>
+          <li>Preload: venous tone (NO ↓), volume (diuretics, RAAS block ↓)</li>
+          <li>SVR ↑: α1, catecholamines, AT-II, Ca²⁺ · ↓: NO, α1 block, α2 agonists, RASi, CCB</li>
+          <li>HF: ↓ afterload → ↑ SV for same contractility</li>
+          <li>ANS = fast; <strong>kidney Na⁺/volume = long-term</strong>; HTN is transplantable</li>
+          <li>Hypertension = body defends a high set point</li>
+        </ul></div>
+        <div class="hy-block"><h4>Action potentials</h4><ul>
+          <li>P = atrial depol · QRS = ventricular depol · T = ventricular repol</li>
+          <li><strong>Myocyte phase 0 = Na⁺</strong>; plateau = Ca²⁺ vs K⁺</li>
+          <li><strong>Nodal phase 0 = Ca²⁺</strong>; phase 4 = I<sub>f</sub></li>
+          <li><strong>Repolarisation (both) = K⁺</strong></li>
+        </ul></div>
+        <div class="hy-block"><h4>Lipids</h4><ul>
+          <li>LDL → intima → ox-LDL → macrophage <strong>foam cells</strong> → plaque → rupture → <strong>thrombus</strong> (antiplatelets)</li>
+          <li>Know MOA of each lipid drug (statin, ezetimibe, PCSK9i, sequestrant, fibrate, niacin)</li>
+        </ul></div>
+      </div>
+      <div>
+        <span class="hy-lo-tag">THE FOUR CLASS QUESTIONS</span>
+        <div class="hy-block"><h4>Phenylephrine</h4><ul>
+          <li>α1 → ↑SVR → ↑BP → baroreceptors (carotid sinus, aortic arch) → ↑ vagal M2 → <strong>reflex bradycardia</strong></li>
+          <li>Block with <strong>atropine</strong></li>
+        </ul></div>
+        <div class="hy-block"><h4>Ending NE's signal</h4><ul>
+          <li><strong>NET reuptake ~70%</strong> (main); MAO/COMT for the rest</li>
+          <li>↑ synaptic NE → <strong>presynaptic α2 (G<sub>i</sub>)</strong> negative feedback (answer C)</li>
+          <li>Same presynaptic brake as μ-opioid, GABA-B; clonidine/methyldopa exploit it</li>
+        </ul></div>
+        <div class="hy-block"><h4>M2 antagonist + NE</h4><ul>
+          <li>NE: α1 ✓ α2 ✓ β1 ✓ <strong>β2 ✗</strong></li>
+          <li>NE alone: BP↑ HR↓ (reflex)</li>
+          <li>After M2 block: <strong>BP↑ HR↑</strong> (answer A)</li>
+        </ul></div>
+        <div class="hy-block"><h4>Dobutamine + inamrinone</h4><ul>
+          <li>Dobutamine β1 → ↑cAMP; inamrinone <strong>PDE3i</strong> → cAMP not broken down</li>
+          <li>Shared: <strong>↑cAMP</strong> (answer D) → overshoot together</li>
+          <li>Analogy: nitrates (make cGMP) + PDE5i (keep cGMP) → hypotension</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="lightbox" id="lightbox" aria-hidden="true"><img id="lightboxImg" alt="Zoomed figure"><div class="lightbox-cap" id="lightboxCap"></div></div>
+
+<div class="floating-left" id="floatingLeft">
+  <div class="tools-menu">
+    <button class="tool-btn backtop" id="backtopBtn">↑ Top</button>
+    <button class="tool-btn" id="nextQBtn">❓ Next question <span id="qCount"></span></button>
+    <button class="tool-btn" id="recallBtn">🙈 Recall mode <span id="rcCount"></span></button>
+  </div>
+  <button class="tool-btn tools-trigger" id="toolsTrigger" onclick="toggleToolsMenu()">🧰 Study<span class="dot"></span></button>
+</div>
+
+<div class="floating-stack">
+  <div class="theme-panel" id="themePanel">
+    <div class="theme-panel-title">Choose Theme</div>
+    <div class="theme-option active" data-theme="cardio" onclick="setTheme('cardio',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#fff7f7,#b51f3a 55%,#245f89)"></div>Cardio (Default)</div>
+    <div class="theme-option" data-theme="hemo" onclick="setTheme('hemo',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#170a0d,#ff6b6b)"></div>Hemo (Dark)</div>
+    <div class="theme-option" data-theme="paper" onclick="setTheme('paper',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#faf7f2,#1a1209)"></div>Paper</div>
+    <div class="theme-option" data-theme="night" onclick="setTheme('night',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#0f1923,#e8b84b)"></div>Night</div>
+    <div class="theme-option" data-theme="ocean" onclick="setTheme('ocean',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#eef7fb,#0a5286)"></div>Ocean</div>
+    <div class="theme-option" data-theme="forest" onclick="setTheme('forest',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#f2f7f0,#155c39)"></div>Forest</div>
+    <div class="theme-option" data-theme="sepia" onclick="setTheme('sepia',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#f7ecd9,#9c3b17)"></div>Sepia</div>
+    <div class="theme-option" data-theme="slate" onclick="setTheme('slate',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#f4f5f7,#9e2c0f)"></div>Slate</div>
+  </div>
+  <div class="font-btn-row">
+    <span class="font-label">Text</span>
+    <button class="font-btn" onclick="changeFontSize(1)" title="Increase font size">A+</button>
+    <span class="font-sep">|</span>
+    <button class="font-btn" onclick="changeFontSize(-1)" title="Decrease font size">A−</button>
+  </div>
+  <button class="theme-btn" id="themeBtn" onclick="toggleThemePanel()" title="Switch theme"><span>🎨</span><span>Theme</span></button>
+</div>
+
+<footer>
+  <div class="container">
+    <div>Built from <em>Basic Sciences Review</em> — Kyle R. Scully, PhD, Pharmacology · UNE College of Osteopathic Medicine · Fall 2025 (full slide deck + lecture transcript; the posted "_Upload" deck is a subset). Figures are labeled with their source: lecture slides (which credit Golan, Katzung/Lippincott-style figures, the 2025 AHA/ACC guideline and ACOG), AMBOSS, UWorld and <em>Cardiovascular Pathophysiology for Pre-Clinical Students</em>. Items tagged "Board add-on" come from board-review sources, not the lecture. Personal study notes; course material remains the copyright of its authors.</div>
+    <div>Shortcuts: <kbd>J</kbd>/<kbd>K</kbd> section · <kbd>Q</kbd> next question · <kbd>R</kbd> reveal · <kbd>Esc</kbd> close</div>
+  </div>
+</footer>
+
+<script>
+var STORAGE_THEME_KEY='cardio-w13-basic-sciences-review-theme';
+var STORAGE_FONT_KEY='cardio-w13-basic-sciences-review-font';
+var STORAGE_PROGRESS_KEY='cardio-w13-basic-sciences-review-progress';
+var DEFAULT_THEME='cardio';
+var SECTION_IDS=['orientation', 's1-ans', 's2-gpcr', 's3-map', 's4-electrical', 's5-lipids', 's6-questions', 'glossary'];
+
+var $  = function(s,r){return (r||document).querySelector(s);};
+var $$ = function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));};
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function storageGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+function storageSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+
+/* ============ theme ============ */
+var themePanelOpen=false;
+function toggleThemePanel(){themePanelOpen=!themePanelOpen;$('#themePanel').classList.toggle('open',themePanelOpen);}
+function syncThemeOptions(t){$$('.theme-option').forEach(function(o){o.classList.toggle('active',o.dataset.theme===t);});}
+function setTheme(t,el,skipStorage){
+  if(t===DEFAULT_THEME){document.documentElement.removeAttribute('data-theme');}
+  else{document.documentElement.setAttribute('data-theme',t);}
+  syncThemeOptions(t);
+  if(!skipStorage) storageSet(STORAGE_THEME_KEY,t);
+  setTimeout(function(){themePanelOpen=false;var p=$('#themePanel');if(p)p.classList.remove('open');},260);
+}
+document.addEventListener('click',function(e){
+  var p=$('#themePanel'),b=$('#themeBtn');
+  if(themePanelOpen&&p&&b&&!p.contains(e.target)&&!b.contains(e.target)){themePanelOpen=false;p.classList.remove('open');}
+});
+
+/* ============ font size ============ */
+var currentFontSize=16;
+function applyFontSize(size,skipStorage){
+  currentFontSize=Math.min(24,Math.max(12,Number(size)||16));
+  document.documentElement.style.fontSize=currentFontSize+'px';
+  document.body.style.fontSize=currentFontSize+'px';
+  if(!skipStorage)storageSet(STORAGE_FONT_KEY,currentFontSize);
+}
+function changeFontSize(d){applyFontSize(currentFontSize+d);}
+
+function initVisualState(){
+  var t=storageGet(STORAGE_THEME_KEY)||DEFAULT_THEME; setTheme(t,null,true);
+  var f=parseInt(storageGet(STORAGE_FONT_KEY),10);
+  applyFontSize(f&&f>=12&&f<=24?f:currentFontSize,true);
+}
+
+/* ============ lightbox ============ */
+function openLightbox(img){var lb=$('#lightbox');$('#lightboxImg').src=img.currentSrc||img.src;
+  $('#lightboxImg').alt=img.alt||'';
+  var cap=img.closest('figure')?img.closest('figure').querySelector('figcaption'):null;
+  $('#lightboxCap').innerHTML=cap?cap.innerHTML:'';
+  lb.classList.add('active');lb.setAttribute('aria-hidden','false');}
+function closeLightbox(){var lb=$('#lightbox');lb.classList.remove('active');
+  lb.setAttribute('aria-hidden','true');$('#lightboxImg').src='';}
+function initLightbox(){
+  $$('.slide-img').forEach(function(i){i.addEventListener('click',function(){openLightbox(i);});});
+  $('#lightbox').addEventListener('click',closeLightbox);
+}
+
+/* ============ scrollspy ============ */
+function initScrollspy(){
+  var links=$$('.toc-bar nav a'),map={},sections=[];
+  links.forEach(function(a){var id=a.getAttribute('href').slice(1),s=document.getElementById(id);
+    if(s){map[id]=a;sections.push(s);}});
+  if(!sections.length)return;
+  function update(){
+    var best=null,bestTop=-Infinity;
+    sections.forEach(function(s){var top=s.getBoundingClientRect().top;
+      if(top<=140&&top>bestTop){bestTop=top;best=s;}});
+    if(!best)best=sections[0];
+    links.forEach(function(a){a.classList.remove('active');});
+    if(map[best.id])map[best.id].classList.add('active');
+  }
+  window.addEventListener('scroll',update,{passive:true});update();
+}
+
+/* ============ reading progress ============ */
+function initProgress(){
+  var bar=$('#progressBar'),bt=$('#backtopBtn');
+  window.addEventListener('scroll',function(){
+    var h=document.documentElement,max=h.scrollHeight-h.clientHeight;
+    bar.style.width=(max>0?(h.scrollTop/max)*100:0)+'%';
+    if(bt)bt.classList.toggle('show',h.scrollTop>600);
+  },{passive:true});
+}
+
+/* ============ exam question reveal ============ */
+function initExamQ(){
+  $$('.exam-q').forEach(function(q){
+    var ans=q.querySelector('.answer'); if(!ans) return;
+    var b=document.createElement('button');b.className='reveal-btn';b.textContent='Reveal answer';
+    b.addEventListener('click',function(){q.classList.add('revealed');updateQCount();});
+    ans.parentNode.insertBefore(b,ans);
+  });
+  updateQCount();
+}
+function updateQCount(){
+  var all=$$('.exam-q'),done=all.filter(function(q){return q.classList.contains('revealed');});
+  var el=$('#qCount'); if(el) el.textContent=done.length+'/'+all.length;
+}
+function jumpToNextQ(){
+  var all=$$('.exam-q');if(!all.length)return;
+  var y=window.scrollY,pick=null;
+  var todo=all.filter(function(q){return !q.classList.contains('revealed');});
+  var pool=todo.length?todo:all;
+  for(var i=0;i<pool.length;i++){if(pool[i].getBoundingClientRect().top+y>y+120){pick=pool[i];break;}}
+  if(!pick)pick=pool[0];
+  var sec=pick.closest('.section');
+  if(sec&&sec.classList.contains('collapsed'))toggleSection(sec,false);
+  setTimeout(function(){
+    pick.scrollIntoView({behavior:'smooth',block:'center'});
+    pick.classList.remove('q-flash');void pick.offsetWidth;pick.classList.add('q-flash');
+  },sec&&sec.classList.contains('collapsed')?0:60);
+}
+
+/* ============ per-section progress ============ */
+var progress={};
+function loadProgress(){try{progress=JSON.parse(storageGet(STORAGE_PROGRESS_KEY)||'{}');}catch(e){progress={};}}
+function saveProgress(){storageSet(STORAGE_PROGRESS_KEY,JSON.stringify(progress));}
+function renderProgress(){
+  var reviewed=0;
+  SECTION_IDS.forEach(function(id){
+    var st=progress[id]||{},sec=document.getElementById(id);
+    if(st.reviewed)reviewed++;
+    if(sec){
+      var tools=sec.querySelector('.sec-tools');
+      if(tools){
+        tools.querySelector('.st-rev').classList.toggle('on',!!st.reviewed);
+        $$('.st-conf',tools).forEach(function(b){b.classList.toggle('on',+b.dataset.v===st.conf);});
+      }
+    }
+    var link=$('.toc-bar nav a[href="#'+id+'"]');
+    if(link){link.classList.toggle('done',!!st.reviewed);
+      link.classList.remove('conf-1','conf-2','conf-3');
+      if(st.conf)link.classList.add('conf-'+st.conf);}
+  });
+  var chip=$('#progressChip');
+  if(chip)chip.textContent=reviewed+'/'+SECTION_IDS.length+' reviewed';
+}
+function jumpToNextTodo(){
+  var target=null;
+  for(var i=0;i<SECTION_IDS.length&&!target;i++){var st=progress[SECTION_IDS[i]]||{};if(!st.reviewed)target=SECTION_IDS[i];}
+  for(var c=1;c<=2&&!target;c++){
+    for(var j=0;j<SECTION_IDS.length&&!target;j++){var s2=progress[SECTION_IDS[j]]||{};if(s2.conf===c)target=SECTION_IDS[j];}}
+  if(!target)target=SECTION_IDS[0];
+  var sec=document.getElementById(target); if(!sec)return;
+  if(sec.classList.contains('collapsed'))toggleSection(sec,false);
+  sec.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* ============ section tools + collapse ============ */
+function toggleSection(sec,force){
+  var willCollapse=(typeof force==='boolean')?force:!sec.classList.contains('collapsed');
+  sec.classList.toggle('collapsed',willCollapse);
+  var b=sec.querySelector('.st-collapse'); if(b)b.textContent=willCollapse?'▸ Expand':'▾ Collapse';
+}
+function toggleAllSections(){
+  var anyOpen=SECTION_IDS.some(function(id){var s=document.getElementById(id);return s&&!s.classList.contains('collapsed');});
+  SECTION_IDS.forEach(function(id){var s=document.getElementById(id);if(s)toggleSection(s,anyOpen);});
+  var b=$('#collapseAllBtn'); if(b)b.textContent=anyOpen?'⊞ Expand all':'⊟ Collapse all';
+}
+function initSectionTools(){
+  SECTION_IDS.forEach(function(id){
+    var sec=document.getElementById(id); if(!sec)return;
+    var container=sec.querySelector('.container'); if(!container)return;
+    var anchor=container.querySelector('.section-title'); if(!anchor)return;
+    var tools=document.createElement('div');
+    tools.className='sec-tools';
+    tools.innerHTML='<button class="st-rev">✓ Reviewed</button>'+
+      '<span class="st-lab">confidence</span>'+
+      '<button class="st-conf" data-v="1">\u{1F534} Shaky</button>'+
+      '<button class="st-conf" data-v="2">\u{1F7E1} Okay</button>'+
+      '<button class="st-conf" data-v="3">\u{1F7E2} Solid</button>'+
+      '<button class="st-collapse">▾ Collapse</button>';
+    anchor.parentNode.insertBefore(tools,anchor.nextSibling);
+    var note=document.createElement('div');
+    note.className='recall-note';
+    note.textContent='RECALL MODE — every bolded fact below is hidden. Say the answer out loud, then click the block to check it.';
+    tools.parentNode.insertBefore(note,tools.nextSibling);
+    var outer=document.createElement('div');outer.className='sec-body-outer';
+    var inner=document.createElement('div');inner.className='sec-body-inner';
+    outer.appendChild(inner);
+    while(note.nextSibling) inner.appendChild(note.nextSibling);
+    container.appendChild(outer);
+    tools.querySelector('.st-rev').addEventListener('click',function(){
+      progress[id]=progress[id]||{};progress[id].reviewed=!progress[id].reviewed;saveProgress();renderProgress();});
+    $$('.st-conf',tools).forEach(function(b){
+      b.addEventListener('click',function(){
+        progress[id]=progress[id]||{};
+        progress[id].conf=(progress[id].conf===+b.dataset.v)?0:+b.dataset.v;
+        saveProgress();renderProgress();});
+    });
+    tools.querySelector('.st-collapse').addEventListener('click',function(){toggleSection(sec);});
+  });
+  renderProgress();
+}
+
+/* ============ recall mode ============ */
+var recallMode=false;
+function recallTargets(){
+  return $$('.sec-body-inner :is(p,li,td,h4,dd) strong').filter(function(s){
+    return !s.closest('.exam-q')&&!s.closest('.tq-bar')&&!s.closest('.game')&&!s.closest('.abbr-strip')&&!s.closest('.legend')&&!s.closest('.watch');});
+}
+function updateRecallCount(){
+  var t=recallTargets(),o=t.filter(function(s){return s.classList.contains('rc-open');});
+  var el=$('#rcCount'); if(el) el.textContent=recallMode?(o.length+'/'+t.length):'';
+}
+function toggleRecall(){
+  recallMode=!recallMode;
+  document.body.classList.toggle('recall-mode',recallMode);
+  $('#recallBtn').classList.toggle('on',recallMode);
+  if(!recallMode) recallTargets().forEach(function(s){s.classList.remove('rc-open');});
+  else{
+    var allCollapsed=SECTION_IDS.every(function(id){var s=document.getElementById(id);return !s||s.classList.contains('collapsed');});
+    if(allCollapsed) toggleAllSections();
+  }
+  syncToolsDot();updateRecallCount();
+}
+function initRecall(){
+  document.addEventListener('click',function(e){
+    if(!recallMode)return;
+    var s=e.target.closest?e.target.closest('strong'):null;
+    if(!s||s.classList.contains('rc-open'))return;
+    if(s.closest('.exam-q')||s.closest('.game')||s.closest('.abbr-strip'))return;
+    if(!s.closest('.sec-body-inner'))return;
+    e.stopPropagation();s.classList.add('rc-open');updateRecallCount();
+  },true);
+}
+function syncToolsDot(){var t=$('#toolsTrigger');if(t)t.classList.toggle('busy',recallMode);}
+function toggleToolsMenu(){$('#floatingLeft').classList.toggle('open');}
+
+/* ============ HY one-pager ============ */
+function openHY(){var m=$('#hyModal');if(!m)return;m.classList.add('open');
+  document.body.classList.add('hy-mode');document.body.style.overflow='hidden';}
+function closeHY(){var m=$('#hyModal');if(!m)return;m.classList.remove('open');
+  document.body.classList.remove('hy-mode');document.body.style.overflow='';}
+function printHY(){window.print();}
+
+/* ============ table quiz ============ */
+function initTableQuiz(){
+  $$('table').forEach(function(table){
+    if(table.classList.contains('hy-mini-table'))return;
+    if(table.closest('.game'))return;
+    var headRow=table.rows[0]; if(!headRow)return;
+    var headers=Array.prototype.slice.call(headRow.cells).map(function(c){return c.textContent.trim();});
+    if(headers.length<2)return;
+    var bar=document.createElement('div');bar.className='tq-bar';
+    var toggle=document.createElement('button');toggle.className='tq-toggle';toggle.textContent='\u{1F9E9} Quiz this table';
+    var cols=document.createElement('div');cols.className='tq-cols';cols.style.display='none';
+    var start=document.createElement('button');start.className='tq-start';start.textContent='▶ Start';
+    start.disabled=true;start.style.display='none';
+    var shuf=document.createElement('button');shuf.className='tq-shuffle';shuf.textContent='\u{1F500} Shuffle rows';shuf.style.display='none';
+    var reset=document.createElement('button');reset.className='tq-reset';reset.textContent='↺ Reset';reset.style.display='none';
+    var score=document.createElement('span');score.className='tq-score';
+    bar.appendChild(toggle);bar.appendChild(cols);bar.appendChild(shuf);bar.appendChild(start);bar.appendChild(reset);bar.appendChild(score);
+    var host=table.parentNode.classList.contains('tbl-scroll')?table.parentNode:table;
+    host.parentNode.insertBefore(bar,host);
+
+    var sel=new Set(),running=false,hidden=[],revealed=0,originalOrder=null;
+    headers.forEach(function(h,i){
+      var b=document.createElement('button');b.className='tq-col-btn';b.textContent=h||('col '+(i+1));
+      b.addEventListener('click',function(){
+        if(running)return;
+        if(sel.has(i)){sel.delete(i);b.classList.remove('sel');}else{sel.add(i);b.classList.add('sel');}
+        start.disabled=sel.size===0;
+      });
+      cols.appendChild(b);
+    });
+    function dataRows(){
+      var parent=table.tBodies[0]||table;
+      return Array.prototype.slice.call(parent.rows).filter(function(r){return !r.querySelector('th')||r!==headRow;})
+        .filter(function(r){return r!==headRow;});
+    }
+    toggle.addEventListener('click',function(){
+      var open=cols.style.display==='none';
+      cols.style.display=open?'flex':'none';
+      start.style.display=shuf.style.display=open?'':'none';
+      toggle.classList.toggle('active',open);
+      toggle.textContent=open?'✕ Close quiz':'\u{1F9E9} Quiz this table';
+      if(!open)doReset();
+    });
+    shuf.addEventListener('click',function(){
+      var parent=table.tBodies[0]||table;
+      var rows=dataRows();
+      if(!originalOrder)originalOrder=rows.slice();
+      shuffle(rows).forEach(function(r){parent.appendChild(r);});
+    });
+    function updateScore(){
+      score.textContent=revealed+' / '+hidden.length+' revealed';
+      score.classList.toggle('done',hidden.length>0&&revealed===hidden.length);
+      if(hidden.length>0&&revealed===hidden.length)score.textContent='\u{1F389} '+revealed+' / '+hidden.length;
+    }
+    start.addEventListener('click',function(){
+      if(running||!sel.size)return;
+      running=true;hidden=[];revealed=0;
+      dataRows().forEach(function(r){
+        Array.prototype.slice.call(r.cells).forEach(function(c,i){
+          if(!sel.has(i)||!c.textContent.trim())return;
+          var w=document.createElement('span');w.className='tq-cell-content';w.innerHTML=c.innerHTML;
+          c.innerHTML='';c.appendChild(w);c.classList.add('quiz-hidden-cell');
+          c.dataset.tqOrig=w.innerHTML;
+          hidden.push(c);
+        });
+      });
+      reset.style.display='';start.disabled=true;updateScore();
+    });
+    table.addEventListener('click',function(e){
+      var c=e.target.closest?e.target.closest('td.quiz-hidden-cell'):null;
+      if(!c)return;
+      c.classList.remove('quiz-hidden-cell');c.innerHTML=c.dataset.tqOrig;revealed++;updateScore();
+    });
+    function doReset(){
+      hidden.forEach(function(c){if(c.classList.contains('quiz-hidden-cell')){c.classList.remove('quiz-hidden-cell');c.innerHTML=c.dataset.tqOrig;}});
+      if(originalOrder){var parent=table.tBodies[0]||table;originalOrder.forEach(function(r){parent.appendChild(r);});}
+      hidden=[];revealed=0;running=false;score.textContent='';score.classList.remove('done');
+      start.disabled=sel.size===0;reset.style.display='none';
+    }
+    reset.addEventListener('click',doReset);
+  });
+}
+
+/* ============ keyboard shortcuts ============ */
+function initKeys(){
+  document.addEventListener('keydown',function(e){
+    if(e.metaKey||e.ctrlKey||e.altKey)return;
+    var t=e.target,tag=t&&t.tagName;
+    if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT'||(t&&t.isContentEditable))return;
+    var hy=$('#hyModal');
+    if(e.key==='Escape'){ if(hy&&hy.classList.contains('open'))closeHY(); closeLightbox(); return; }
+    if(hy&&hy.classList.contains('open'))return;
+    var k=e.key.toLowerCase();
+    if(k==='q'){e.preventDefault();jumpToNextQ();return;}
+    if(k==='r'){
+      e.preventDefault();
+      var best=null,bd=Infinity,mid=window.innerHeight/2;
+      $$('.exam-q').forEach(function(q){var d=Math.abs(q.getBoundingClientRect().top+q.offsetHeight/2-mid);
+        if(d<bd){bd=d;best=q;}});
+      if(best){best.classList.add('revealed');updateQCount();}
+      return;
+    }
+    if(k==='j'||k==='k'){
+      e.preventDefault();
+      var y=window.scrollY+window.innerHeight*0.3,cur=0;
+      SECTION_IDS.forEach(function(id,i){var s=document.getElementById(id);if(s&&s.offsetTop<=y)cur=i;});
+      var nx=k==='j'?Math.min(SECTION_IDS.length-1,cur+1):Math.max(0,cur-1);
+      var target=document.getElementById(SECTION_IDS[nx]);
+      if(target)target.scrollIntoView({behavior:'smooth',block:'start'});
+    }
+  });
+}
+
+
+/* ============ lazy figures: fade in when loaded; force-load everything before printing ============ */
+function initLazyFigures(){
+  $$('.fig-frame img').forEach(function(img){
+    var done=function(){img.parentNode.classList.add('loaded');};
+    if(img.complete&&img.naturalWidth)done();
+    else{img.addEventListener('load',done);img.addEventListener('error',done);}
+  });
+  window.addEventListener('beforeprint',function(){$$('img[loading="lazy"]').forEach(function(i){i.loading='eager';});});
+}
+/* ============ video facade: swap the thumbnail for the real player only on click ============ */
+function initVideos(){
+  $$('.vid').forEach(function(b){
+    b.addEventListener('click',function(){
+      if(b.classList.contains('playing'))return;
+      var f=document.createElement('iframe');
+      f.src='https://www.youtube-nocookie.com/embed/'+b.dataset.yt+'?autoplay=1&rel=0';
+      f.title=b.dataset.title||'Video';
+      f.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+      f.allowFullscreen=true;
+      var t=b.querySelector('.vid-thumb');t.replaceWith(f);b.classList.add('playing');
+    });
+  });
+}
+
+/* ============ boot ============ */
+document.addEventListener('DOMContentLoaded',function(){
+  initVisualState();
+  loadProgress();
+  initSectionTools();
+  initExamQ();
+  initTableQuiz();
+  initLightbox();
+  initLazyFigures();
+  initVideos();
+  initScrollspy();
+  initProgress();
+  initRecall();
+  initKeys();
+  var hy=$('#hyModal');
+  if(hy) hy.addEventListener('click',function(e){if(e.target===this)closeHY();});
+  var rb=$('#recallBtn'); if(rb) rb.addEventListener('click',toggleRecall);
+  var nq=$('#nextQBtn'); if(nq) nq.addEventListener('click',jumpToNextQ);
+  var bt=$('#backtopBtn'); if(bt) bt.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});
+  document.addEventListener('click',function(e){
+    var fl=$('#floatingLeft');
+    if(fl&&fl.classList.contains('open')&&!fl.contains(e.target))fl.classList.remove('open');
+  });
+});
+
+
+
+
+</script>
+</body>
+</html>

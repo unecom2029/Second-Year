@@ -11,11 +11,13 @@ A single-file HTML study document for a medical school lecture, organized around
 
 The One-Pager is mandatory — build it when the user wants a condensed pre-exam summary; otherwise the full notes stand alone.
 
-The page is self-contained: no build tools, no frameworks, just one `.html` file with embedded CSS, fonts, and JS.
+The page is self-contained code: no build tools, no frameworks, just one `.html` file with embedded CSS, fonts, and JS. **Images are the one exception** — they now live in a sibling `assets/` folder and are lazy-loaded (see the image rule below and Section 15).
+
+> **Image rule (current default — supersedes the old base64 advice in 5.11 Option B and Section 11).** Put every image in a separate `assets/<topic>/` folder next to the HTML, give each file a descriptive kebab-case name (`c-mi-histo.jpg`, not `image59.jpeg`), load it with `loading="lazy" decoding="async"` plus explicit `width`/`height`, and wrap it in a **labeled figure** (`Fig C17` number + one-line title + source chip) — full component in **Section 5.11 Option D**. Pull good images and videos from the figure library at `~/Board Study/figures/` in addition to the lecture slides — how to search it is in **Section 15**. Base64 is now only for a deliberately single-file, email-able copy.
 
 > **Navigation change (current default).** The table of contents is now a **fixed left sidebar**, not a sticky bar across the top — see **Section 5.2**, which supersedes the old horizontal `.toc-bar`. It keeps the `.toc-bar` class name so existing theme and print rules still match, and it degrades to the original horizontal bar below 1000px. Three things elsewhere in this document depend on it: `.container` must use `94%` rather than `94vw` (Section 6), `@media print` must zero `body`'s left padding (Section 12.5, Mistake 3), and `initScrollspy()` joins the `DOMContentLoaded` init list (Section 9).
 
-> **Two variants now exist.** Sections 2–12 below are **Variant 1** — the original system, organized strictly by numbered Learning Objectives, with a 10-theme switcher (Paper/Night/Ocean/Forest/Sepia/Lavender/Rose/Slate/Hemo/Cardio) and a component vocabulary tuned for pharmacology/pathology content (drug grids, hallmark grids, REMS badges, potency bars). **Section 13 is Variant 2** — a lighter-weight system built for `Introduction_to_Therapy_Study_Notes.html`, better suited to lecture content that isn't cleanly split into 2–3 LOs: a single light/dark toggle instead of named themes, and a component vocabulary built around generic "modality cards," mnemonics, and click-to-reveal cases rather than drug-specific components. Both variants share the same underlying philosophy (self-contained file, base64 images, lightbox, table quiz, optional HY one-pager) — pick whichever fits the lecture's actual content shape, and don't mix components from both within one file. **Section 14 is the Study Tools System** — an optional active-recall/progress layer (Recall Mode, per-section reviewed/confidence tracking, TOC scrollspy, collapsible sections, next-question jumper, pinned compare strip, keyboard shortcuts) first built for `Eating_Disorders_Study_Notes.html` on top of Variant 1; it's designed as an add-on layer and can be applied to either variant.
+> **Two variants now exist.** Sections 2–12 below are **Variant 1** — the original system, organized strictly by numbered Learning Objectives, with a 10-theme switcher (Paper/Night/Ocean/Forest/Sepia/Lavender/Rose/Slate/Hemo/Cardio) and a component vocabulary tuned for pharmacology/pathology content (drug grids, hallmark grids, REMS badges, potency bars). **Section 13 is Variant 2** — a lighter-weight system built for `Introduction_to_Therapy_Study_Notes.html`, better suited to lecture content that isn't cleanly split into 2–3 LOs: a single light/dark toggle instead of named themes, and a component vocabulary built around generic "modality cards," mnemonics, and click-to-reveal cases rather than drug-specific components. Both variants share the same underlying philosophy (self-contained file, lazy-loaded labeled images in an `assets/` folder, lightbox, table quiz, optional HY one-pager) — pick whichever fits the lecture's actual content shape, and don't mix components from both within one file. **Section 14 is the Study Tools System** — an optional active-recall/progress layer (Recall Mode, per-section reviewed/confidence tracking, TOC scrollspy, collapsible sections, next-question jumper, pinned compare strip, keyboard shortcuts) first built for `Eating_Disorders_Study_Notes.html` on top of Variant 1; it's designed as an add-on layer and can be applied to either variant.
 
 ---
 
@@ -387,6 +389,13 @@ Four light themes (Paper, Ocean, Forest, Sepia) were originally shipped with too
 
 > **Contrast notes for Cardio:** Cardio is a light, system-specific theme rather than a second Hemo palette. The page uses a soft ECG blush, while `--accent` carries arterial red and `--accent2` carries clinical blue so links and `<strong>` remain visually distinct from warnings. Keep the hero and fixed sidebar blue-dominant; using red as their full background makes the page feel like a warning state. The always-dark table/exam components use clinical blue with near-white text. Spot-check red badges, blue links, callouts, table headers, `.exam-q`, and the High-Yield modal before shipping.
 
+> **Cardio as a lecture's default theme (built for Cardio Week 13).** For cardiology lectures, make Cardio the file's *default* rather than Paper: put the Cardio palette in `:root`, set `DEFAULT_THEME='cardio'`, apply the hero gradient with `html:not([data-theme]) .hero{…}`, and list it first in the theme panel as "Cardio (Default)" with **Hemo** as its dark companion, followed by Paper/Night/Ocean/Forest/Sepia/Slate. Three additions that go with it:
+> 1. **`--hero-accent`** — `.hero h1 span` and `.toc-name em` used `var(--accent)`, but arterial red `#b51f3a` on the blue hero/sidebar is only ~2.5:1. Give every theme a lighter `--hero-accent` for text that sits on the dark hero/sidebar (Cardio `#ff9aae` → 5.5:1; Hemo `#ff6b6b`; Paper `#f08a6e`; Night `#e8b84b`; Ocean `#ff9aa5`; Forest `#f0a07c`; Sepia `#f0a57e`; Slate `#ff9a78`).
+> 2. **`--panel-dark-accent:#ffd27a`** (warm gold) for bold text inside `.exam-q` on the clinical-blue panel → 7.7:1.
+> 3. **ECG hero trace** — an inline SVG `<path>` across the bottom of the hero, stroked in `--hero-accent` at ~55% opacity, drawn once with a `stroke-dashoffset` animation (disabled under `prefers-reduced-motion`). Give `.hero` `position:relative; overflow:hidden` and extra bottom padding (~64px) so the trace doesn't sit under the stat tiles.
+>
+> Measured across all 8 themes in the Week 13 files: `.exam-q strong` 7.7–13.0:1, `th` 10.6–17.3:1, chips 6.8:1, hero accent 5.5–10.5:1; lowest was the small "Board add-on" tag at 4.1:1 in Ocean/Sepia until its text was switched from `--muted` to `--ink`.
+
 > **Contrast notes for the three newest themes:** all three are light themes, so pitfall #3 from the checklist applies directly. Rose deliberately uses a *teal* `--accent2` (#2c6a72) rather than a pink-family color so links/`<strong>` don't melt into the warm pink page; Slate does the same with a burnt-orange `--accent` (#cf4520) against its cool grays so warnings still pop. Lavender's `--accent2` is the purple itself (#6a4fa0), which is far enough from its near-black violet ink to hold contrast.
 
 `--hero-heading`, `--hero-sub`, `--hero-meta-*`, `--floating-ui-*`, and `--quiz-overlay*` still need to be set per theme as before (unchanged pattern from the example above) — only the core palette and the new `--panel-dark-*` pair are shown here for brevity.
@@ -717,7 +726,62 @@ Dark card with a hidden/revealed answer. The red "EXAM Q" label is injected via 
 ```
 
 ### 5.11 Slide Image + Caption
-Images use `.slide-img` and are automatically wired to the click-to-zoom lightbox by the JS at the bottom of the file. Always add a `.slide-caption` below.
+Images use `.slide-img` and are automatically wired to the click-to-zoom lightbox by the JS at the bottom of the file. Always label them. **Use Option D (asset folder + lazy loading + labeled figure) for every new file**; Options A–C below are kept for reference and for older files.
+
+#### Option D — Asset folder + lazy loading + labeled figure (CURRENT DEFAULT)
+First built for `OMK/Cardio/Week 13/Notes/` (Vascular + Cardiac Pathology). Four rules:
+
+1. **Separate folder.** Images live in `Notes/assets/<topic>/` beside the HTML (e.g. `assets/vascular/`, `assets/cardiac/`), referenced by relative path. The `.html` stays small (~200 KB instead of 5–15 MB of base64) and the browser only fetches what you scroll to.
+2. **Descriptive file names.** `<prefix>-<what-it-shows>.<ext>` — `v-aaa-gross.jpg`, `c-mi-histo.jpg`. Never ship `image59.jpeg` or a hash name from the figure library.
+3. **Lazy load, no layout jump.** Every `<img>` gets `loading="lazy" decoding="async"` **and** its real `width`/`height` attributes (so the browser reserves the space before the file arrives). A shimmer placeholder shows until the image loads, then it fades in.
+4. **Labeled.** Every image is a `<figure class="fig-card">` with a `<figcaption>` holding: a numbered chip (`Fig V12` / `Fig C17`, numbered in order down the page, prefix per lecture), a one-line **title that says what to look at** (e.g. "MI histology clock: (A) 1 d wavy fibres · (B) 3 d neutrophils…"), and a **source chip** (`Gardner lecture · slide 63`, `Robbins & Cotran Atlas`, `AMBOSS`, `UWorld`). The `alt` text is a full description of the image content (not a repeat of the title). The lightbox shows the same label under the zoomed image.
+
+```html
+<figure class="fig-card" id="fig-c-mi-histo">
+  <div class="fig-frame"><img class="slide-img" src="assets/cardiac/c-mi-histo.jpg"
+       alt="Five micrographs: A wavy necrotic fibres, B dense neutrophils, …"
+       width="1430" height="885" loading="lazy" decoding="async"></div>
+  <figcaption><span class="fig-num">Fig C17</span>
+    <span class="fig-title">MI histology clock: (A) 1 d wavy fibres · (B) 3 d neutrophils · …</span>
+    <span class="fig-src"><b>Gardner lecture</b> · slide 63</span></figcaption>
+</figure>
+
+<!-- two or three side by side -->
+<div class="fig-row"> <figure class="fig-card">…</figure> <figure class="fig-card tall">…</figure> </div>
+```
+
+```css
+.fig-card{margin:20px auto;max-width:960px;border:1px solid var(--border);border-radius:12px;background:var(--cream);
+  overflow:hidden;break-inside:avoid}
+.fig-frame{position:relative;background:#fff;display:flex;justify-content:center}
+.fig-frame::before{content:'';position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,
+  rgba(181,31,58,.07) 50%,transparent 70%) #fdf1f3;background-size:220% 100%;animation:figShimmer 1.3s linear infinite}
+.fig-frame.loaded::before{opacity:0;animation:none}
+.fig-card .slide-img{margin:0;border:none;border-radius:0;width:100%;height:auto;opacity:0;transition:opacity .35s}
+.fig-frame.loaded .slide-img{opacity:1}
+.fig-card.tall .slide-img{width:auto;max-height:560px}      /* portrait images */
+.fig-card.sm .slide-img{width:auto;max-width:min(100%,560px)} /* small sources — don't upscale into blur */
+.fig-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px}
+.fig-row .fig-card{margin:0;max-width:none}
+.fig-num{font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;background:var(--chip-blue);
+  color:var(--chip-fg);padding:2px 8px;border-radius:10px}
+@media print{.fig-frame::before{display:none}.fig-card .slide-img{opacity:1!important}}
+```
+
+```js
+function initLazyFigures(){   // call from DOMContentLoaded
+  $$('.fig-frame img').forEach(function(img){
+    var done=function(){img.parentNode.classList.add('loaded');};
+    if(img.complete&&img.naturalWidth)done(); else{img.addEventListener('load',done);img.addEventListener('error',done);}
+  });
+  // lazy images below the fold would print blank — force them all to load first
+  window.addEventListener('beforeprint',function(){$$('img[loading="lazy"]').forEach(function(i){i.loading='eager';});});
+}
+```
+
+**Preparing the files** — script it rather than copying by hand: keep a small manifest (`key → source path, title, credit, alt`), and have the script resize to ≤1600 px on the long side, flatten transparency onto white, and save as JPEG q≈84 unless PNG is less than ~1.6× the JPEG size (flat line-art diagrams stay PNG and sharp; histology and photos become JPEG). The Week 13 build came to 105 images / 12.7 MB total, largest ~400 KB. Also write an `assets/README.md` listing every file, its label, and its source, so the folder is self-documenting.
+
+> **Pitfalls found building it:** (1) A "count the colours" photo/diagram test kept H&E histology as 1.5 MB PNGs — compare the actual encoded sizes instead. (2) Without `width`/`height` the page jumps as images arrive, which breaks the scrollspy and `jumpToNextQ()` targets. (3) Opening the file through the in-app browser's file preview renders a `data:` snapshot where relative `assets/` paths don't resolve — test over a local static server (`python3 -m http.server`), not `file://`. (4) Printing without the `beforeprint` hook leaves every not-yet-scrolled figure blank in the PDF.
 
 ```html
 <img src="path/to/slide.png" alt="Description of image content" class="slide-img">
@@ -734,7 +798,7 @@ Point `src` at a file next to (or in a subfolder of) the HTML file. The page wil
 
 This is fine while working locally, but **breaks if you send the HTML file without the images folder**.
 
-#### Option B — Base64 inline (self-contained, recommended for sharing)
+#### Option B — Base64 inline (legacy; only for a deliberate single-file, email-able copy — use Option D otherwise)
 Embed the image data directly in the `src` attribute. The file becomes larger but is completely portable — one file, no dependencies.
 
 **How to get the base64 string:**
@@ -1066,6 +1130,21 @@ The quiz JS automatically queries all `<table>` elements. No classes or `data-` 
 
 ## 8. Lightbox (Click-to-Zoom Images)
 
+> **With labeled figures (Section 5.11 Option D), the lightbox shows the label too.** Add a caption div and copy the figure's `figcaption` into it on open, so the zoomed image still says "Fig C17 · MI histology clock… · Gardner lecture · slide 63":
+> ```html
+> <div class="lightbox" id="lightbox" aria-hidden="true"><img id="lightboxImg" alt="Zoomed figure"><div class="lightbox-cap" id="lightboxCap"></div></div>
+> ```
+> ```js
+> function openLightbox(img){ lightboxImg.src = img.currentSrc || img.src; lightboxImg.alt = img.alt || '';
+>   var cap = img.closest('figure') ? img.closest('figure').querySelector('figcaption') : null;
+>   lightboxCap.innerHTML = cap ? cap.innerHTML : '';
+>   lightbox.classList.add('active'); lightbox.setAttribute('aria-hidden','false'); }
+> ```
+> ```css
+> .lightbox{flex-direction:column;gap:12px}
+> .lightbox-cap{max-width:min(92vw,900px);color:#f3f3f3;font-size:.9rem;text-align:center;line-height:1.45}
+> ```
+
 ```html
 <!-- Place once before </body> -->
 <div class="lightbox" id="lightbox" aria-hidden="true">
@@ -1122,6 +1201,10 @@ When setting up a new lecture file:
 - [ ] Decide whether this file gets a High-Yield One-Pager (Section 12) — optional, build it only if the user wants a condensed pre-exam summary
 - [ ] If using the One-Pager: `.hy-mini-table` excluded from `initTableQuiz()`, print output actually tested (Section 12.6), not just assumed to work
 - [ ] Container/grid widths scale to fill a 16" MacBook Pro browser window (~1512–1728px) without large empty side margins (Section 6) — checked by resizing/rendering at those widths, not just at 1280px
+- [ ] Images: all in `assets/<topic>/` with descriptive names; every `<img>` has `loading="lazy" decoding="async"` + real `width`/`height`; every one is a labeled `fig-card` (number + title + source chip + descriptive `alt`); `initLazyFigures()` in the init list; `assets/README.md` written (Section 5.11 Option D)
+- [ ] Figure library searched (Section 15) — lecture slides first, then Robbins/AMBOSS/UWorld picks **looked at** before use (contact sheet), never matched by filename alone
+- [ ] Every section has a 🎬 Watch block of 1–5 click-to-play videos (Section 15.3); zero `<iframe>`s exist on page load
+- [ ] Verified over `http://localhost` (not `file://`): no broken images (`img.complete && !img.naturalWidth`), images load as you scroll, the lightbox shows the label, and headless print of both the full notes and the one-pager has every figure present
 
 ---
 
@@ -1143,10 +1226,11 @@ When setting up a new lecture file:
 
 ## 11. File Delivery
 
-- Single `.html` file, no external dependencies except Google Fonts CDN
-- Works offline if fonts are cached
-- No framework, no build step — just open in a browser
-- **Images:** use base64-embedded `src` for true portability (one file, zero broken images); use relative paths only if the image folder will always travel with the HTML — see Section 5.11 for the full workflow
+- One `.html` file per lecture + a sibling `assets/` folder; no external dependencies except Google Fonts (and YouTube thumbnails, which only load when scrolled to)
+- Works offline if fonts are cached (videos obviously need a connection)
+- No framework, no build step — just open in a browser (test over `python3 -m http.server`, not `file://` — Section 5.11 Option D pitfall 3)
+- **Images:** in `assets/<topic>/`, descriptive names, lazy-loaded, every one a labeled `fig-card` — Section 5.11 Option D. The `assets/` folder must travel with the HTML (it does automatically inside the Second-Year repo / study hub). Include `assets/README.md` listing each file's label and source.
+- **Videos:** click-to-play facades from the figure library's YouTube lists — Section 15.3
 
 ---
 
@@ -1394,7 +1478,7 @@ Reach for Variant 2 when:
 - The content is conceptual/theory-driven (history, modalities, theory comparison) rather than drug- or pathology-enumeration-driven — Variant 1's drug-grid/hallmarks-grid/p53-grid/REMS-badge/potency-bar vocabulary (5.12–5.17) doesn't map cleanly onto it.
 - A simpler light/dark toggle is preferable to maintaining five full named-theme palettes.
 
-Both variants are single self-contained `.html` files with base64-embedded images, a click-to-zoom lightbox, an interactive table-quiz feature, and an optional printable High-Yield One-Pager modal — the philosophy is identical, only the visual system and component vocabulary differ.
+Both variants are single self-contained `.html` files with lazy-loaded, labeled images in a sibling `assets/` folder (Section 5.11 Option D), a click-to-zoom lightbox, an interactive table-quiz feature, and an optional printable High-Yield One-Pager modal — the philosophy is identical, only the visual system and component vocabulary differ.
 
 ### 13.1 Fonts & Color System
 
@@ -1909,3 +1993,105 @@ Drive the file headlessly (jsdom or Playwright) and assert, at minimum:
 - Revealing an `.exam-q` updates the Next-Q counter; `jumpToNextQ()` on a collapsed section expands it.
 - Quiz shuffle changes row order and Reset restores the original first data row.
 - jsdom gotchas: pass a real `url:` option (opaque origins throw on `localStorage`) and guard `IntersectionObserver` (`typeof … === 'undefined'`) — the guard is also cheap insurance in exotic browsers.
+
+---
+
+## 15. Figure & Video Library (`~/Board Study/figures/`) — First Built for Cardio Week 13
+
+> **Rule:** notes are no longer limited to the lecture's own slides. Use good images and videos from the figure library as well, put the images in the `assets/` folder (Section 5.11 Option D), lazy-load them, and label every one with its source. Lecture slides stay the primary image source; library images fill gaps (a gross specimen the slides only describe, a clean histology panel, a board-classic sign) and are tagged with their source so you can tell lecture from supplement at a glance.
+
+### 15.1 What's in the library and how to search it
+
+| Folder | What it holds | How to find things |
+|---|---|---|
+| `Robbins/` | ~1,200 Robbins & Cotran **Atlas** images, `<Chapter> - <hash>.png`, each with a same-name `.txt` caption | Filter by chapter prefix (`The Heart - *`, `Blood Vessels - *`), then **read the `.txt` captions** — the hash name tells you nothing |
+| `amboss/` | ~1,700 AMBOSS images named by title (`Janeway lesions.png`, `Clinical features of Kawasaki disease.png`) + `.txt` | `ls amboss \| grep -iE 'kawasaki\|aschoff\|…'` |
+| `Uworld images/<COMLEX 1 system>/` | UWorld explanation figures, `NNN_descriptive_name.jpg` (e.g. `…Cardiovascular System/`) | `ls` the system folder; names are descriptive |
+| `Cardio/Cardiovascular pathophys/` | ECG strips + pathophys diagrams, `Topic - N.NN - Title.png` + `.txt` | ECGs (WPW delta wave, long QT, blocks), CHD diagrams |
+| `Cardio/Netters/` | Netter anatomy plates + `.txt` | Normal anatomy |
+| `pathoma-heme/`, `first-aid-heme/`, `lecture/`, `Text/` | Heme-specific figures, earlier lecture decks, source PDFs | Use for heme lectures |
+| `Youtube/*_video_data.json` | Channel lists: `{title, video_id, url, embed_code}` for Osmosis, Rhesus Medicine, JJ Medicine, MedCram, Medicosis Perfectionalis, Zero to Finals, Nucleus Medical Media, AnatomyZone | Keyword-search titles with a regex (below) |
+
+```python
+# Find videos for a lecture — one regex of topic keywords across every channel file
+import json, glob, re
+kw = re.compile(r'atheroscl|aneurysm|dissection|vasculitis|kawasaki|endocarditis|cardiomyopath|myocarditis|chagas|pericard|myxoma', re.I)
+for f in glob.glob('/Users/jeeval/Board Study/figures/Youtube/*.json'):
+    for v in json.load(open(f)):
+        if kw.search(v['title']): print(f.split('/')[-1], v['video_id'], v['title'])
+```
+
+### 15.2 Picking images — look before you use
+
+- **Always look at the candidate images** before adding them. Build labeled contact sheets (PIL: 12 thumbnails per sheet, each stamped with its key and pixel size) and view them. Hash-named Robbins files and even AMBOSS titles can mislead — e.g. an AMBOSS "Osler nodes" photo showed a large palm lesion that reads more like a Janeway lesion, so the lecture's own fingertip image was used instead.
+- **Label from what the image actually shows**, with the time point / panel letters spelled out ("(A) 1 d wavy fibres · (B) 3 d neutrophils…"). If a multi-panel lecture figure's order isn't obvious, render it large and check it against the transcript before writing the caption.
+- Prefer, in order: the lecture slide → Robbins Atlas gross/histology → AMBOSS clinical photos/diagrams → UWorld diagrams. About 50–55 labeled figures per lecture worked well (every major entity gets a picture beside it, which is how Jeeval reviews).
+- Anything written from a board source rather than the lecture gets an inline `<span class="src-tag">Board add-on</span>` tag in the text too, so the notes never pass off board facts as "the lecturer said".
+
+### 15.3 Videos — click-to-play facade, never a live iframe
+
+Twenty-plus YouTube iframes would make the page crawl and would all load on open. Instead each video is a button showing the lazy-loaded thumbnail; the real player (privacy-enhanced `youtube-nocookie.com`) is only created when clicked. Put 1–5 per section in a 🎬 **Watch** block at the end of the section, just after the exam questions.
+
+```html
+<div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div>
+  <div class="vid-grid">
+    <button class="vid" type="button" data-yt="uknEYicaAuU" data-title="Giant Cell Arteritis">
+      <span class="vid-thumb"><img src="https://i.ytimg.com/vi/uknEYicaAuU/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span>
+      <span class="vid-meta"><b>Giant Cell Arteritis</b><i>JJ Medicine · YouTube</i></span>
+    </button>
+  </div>
+</div>
+```
+
+```css
+.watch{margin:26px 0 8px;padding:14px 16px 16px;border:1px solid var(--border);border-left:5px solid var(--accent);border-radius:0 12px 12px 0;background:var(--cream)}
+.vid-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr));gap:12px}
+.vid{display:flex;flex-direction:column;text-align:left;padding:0;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--paper);color:var(--ink);cursor:pointer;font:inherit}
+.vid-thumb{position:relative;aspect-ratio:16/9;background:#1c1c1c}
+.vid-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.vid-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:50px;height:36px;border-radius:10px;background:rgba(181,31,58,.92);color:#fff;display:flex;align-items:center;justify-content:center}
+.vid iframe{width:100%;aspect-ratio:16/9;border:0;display:block}
+@media print{.watch{display:none!important}}
+```
+
+```js
+function initVideos(){   // call from DOMContentLoaded
+  $$('.vid').forEach(function(b){
+    b.addEventListener('click',function(){
+      if(b.classList.contains('playing'))return;
+      var f=document.createElement('iframe');
+      f.src='https://www.youtube-nocookie.com/embed/'+b.dataset.yt+'?autoplay=1&rel=0';
+      f.title=b.dataset.title||'Video';
+      f.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+      f.allowFullscreen=true;
+      b.querySelector('.vid-thumb').replaceWith(f); b.classList.add('playing');
+    });
+  });
+}
+```
+
+Exclude `.watch` from Recall Mode's target list (Section 14.5) and hide it in print. Verify: on load `document.querySelectorAll('iframe').length === 0`; after one click it is 1.
+
+### 15.4 Colour semantics used with library content
+
+Carried over from Jeeval's peer summary sheets and his HY Review style: `<strong class="hot">` = **red bold, lecturer emphasis / likely tested**; ordinary `<strong>` = blue key fact (still a Recall Mode target); `<span class="num">` = yellow highlight for a number to memorise; `<span class="src-tag">Board add-on</span>` = not from the lecture. Put a one-line legend in the Orientation section so the colours are self-explaining.
+
+### 15.5 Build approach that worked (two lectures, one deck)
+
+The Week 13 deck held **two lectures** (Vascular slides 1–45, Cardiac 46–85) with three transcripts, so it became **two notes files sharing one `assets/` folder** (`assets/vascular/`, `assets/cardiac/`, figure prefixes `V`/`C`). Assembling from parts kept it manageable: section fragments written with placeholders (`[[fig key]]`, `[[row k1 k2:tall]]`, `[[vids id|title|channel ;; …]]`), a manifest of figures, and a small Python build that (1) copies the CSS/JS scaffold and the study-hub login gate from the previous week's notes, (2) numbers the figures in page order and writes each `fig-card` with its real width/height, (3) generates the sidebar and hero stat tiles (topic, figure, question and video counts), and (4) fails loudly on an unknown figure key or a TOC link without a matching section. Keep the notes' `index`/login-gate script exactly as in the other OMK notes so the pages lock and unlock with the rest of the study hub.
+
+> **Pitfall — tables clipped on phones.** Section 14.4 wraps each section body in `.sec-body-inner{overflow:hidden}` for the collapse animation, so a bare `<table>` wider than a 390px screen is silently **cut off** (the page shows no horizontal scrollbar, so it looks fine). Wrap every body table in `<div class="tbl-scroll">` (`overflow-x:auto`) — the Week 13 build does it automatically for any table not already wrapped. Check at 390px with `[...document.querySelectorAll('.sec-body-inner > *')].filter(e => e.getBoundingClientRect().right > innerWidth + 1)` → should be empty.
+
+### 15.6 Skills lectures (ECG): add small interactive tools
+
+For a skills lecture (reading ECGs, later chest X-rays), a notes page alone isn't enough — first built for `ECG_Basics_Study_Notes.html`. Add a few **self-contained tools** (plain JS in a `<script>` at the end of the body fragment, styled with a `.tool` card; no libraries, no storage):
+
+- **Calculator** for the step that's pure arithmetic (rate = QRS count × 6 for a 10-s strip, × 10 for a 6-s strip).
+- **Decision helper** for the step that's a lookup (axis: lead I / aVF ± with the lead-II fallback → axis + its differential).
+- **Drill** for the step that needs pattern discrimination (AV-block descriptions → name the block; shuffled, instant feedback, running score).
+- **Localizer** for anatomy mapping (tap the 12 leads with ST elevation → territory + artery; requires ≥2 contiguous leads).
+- A **Practice** section with the lecture's own tracings, each followed by a closed `<details class="case-box">` answer written from the transcript. If a slide was never read aloud, say so and only list what can be verified — don't invent an attending's read.
+
+Verify each tool by driving it from the console (set inputs, click, read the output text) as part of the build check.
+
+**External media the user links:** don't download it into `assets/` without asking (downloads need an explicit yes). Hotlink it as a labeled `fig-card` (`W:` source in the manifest with its width/height read from the file header) and offer to download it later. If the same file already exists locally (the Wikimedia "ECG principle slow" GIF was already inside the Scully deck), reuse the local copy.

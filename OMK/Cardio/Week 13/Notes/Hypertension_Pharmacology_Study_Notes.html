@@ -1,0 +1,1954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+(function(){
+  var NOTE_AUTH_KEY='une-study-hub-remembered-auth-v1';
+  var NOTE_LOGIN_URL='../../../../index.html?login=notes';
+
+  function readCookie(name){
+    try{
+      var prefix=encodeURIComponent(name)+'=';
+      var parts=String(document.cookie||'').split(';');
+      for(var i=0;i<parts.length;i++){
+        var part=parts[i].trim();
+        if(part.indexOf(prefix)===0)return decodeURIComponent(part.slice(prefix.length));
+      }
+    }catch(err){}
+    return null;
+  }
+  function readAuthPayload(){
+    try{
+      var stored=localStorage.getItem(NOTE_AUTH_KEY);
+      if(stored)return stored;
+    }catch(err){}
+    return readCookie(NOTE_AUTH_KEY);
+  }
+  function hasValidNoteAuth(){
+    var raw=readAuthPayload();
+    if(!raw)return false;
+    try{
+      var parsed=JSON.parse(raw);
+      var email=String(parsed&&parsed.email||'').trim().toLowerCase();
+      var expiresAt=Number(parsed&&parsed.expiresAt);
+      return /@une\.edu$/.test(email)&&expiresAt&&Date.now()<expiresAt;
+    }catch(err){return false}
+  }
+  function syncNoteAuth(){
+    document.documentElement.setAttribute('data-note-auth',hasValidNoteAuth()?'unlocked':'locked');
+  }
+  window.openNoteLogin=function(){
+    var loginWindow=window.open(NOTE_LOGIN_URL,'uneStudyHubLogin');
+    if(!loginWindow)window.location.href=NOTE_LOGIN_URL;
+  };
+  window.refreshNoteAuth=syncNoteAuth;
+  window.addEventListener('message',function(event){
+    if(event&&event.data&&event.data.type==='une-study-hub-auth-complete')syncNoteAuth();
+  });
+  window.addEventListener('storage',function(event){
+    if(!event||event.key===NOTE_AUTH_KEY)syncNoteAuth();
+  });
+  window.addEventListener('focus',syncNoteAuth);
+  window.setInterval(syncNoteAuth,1000);
+  syncNoteAuth();
+})();
+</script>
+<title>Pharmacologic Management of Hypertension — Study Notes</title>
+<link rel="icon" href="data:image/svg+xml,<svg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'><text%20y='.9em'%20font-size='56'>🩺</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Cardio (default) — soft ECG blush page, arterial red accent, clinical-blue accent2 */
+  --ink:#25161a; --paper:#fff7f7; --cream:#f5e2e6;
+  --accent:#b51f3a; --accent2:#245f89; --gold:#b77b22; --muted:#75535c; --border:#dfb9c2;
+  --highlight:#f8e1a9; --highlight2:#d7e9f4; --green-bg:#d9eee2; --red-bg:#f8d5dc;
+  --blue-bg:#d6e9f5; --purple-bg:#eadcf0; --hero-bg:#173e63;
+  --panel-dark-bg:#173e63; --panel-dark-text:#f7fbff;
+  /* Theme-INDEPENDENT chip colors (sit on saturated / fixed-dark backgrounds in every theme) */
+  --chip-red:#b51f3a; --chip-blue:#245f89; --chip-fg:#ffffff; --panel-dark-accent:#ffd27a;
+  --hero-heading:#f7fbff; --hero-sub:#c8dceb;
+  --hero-meta-bg:rgba(255,255,255,0.08); --hero-meta-border:rgba(240,138,155,0.28);
+  --hero-meta-label:#a9c5d8; --hero-meta-value:#fff1f3; --hero-accent:#ff9aae;
+  --floating-ui-bg:#173e63; --floating-ui-fg:#f7fbff; --floating-ui-shadow:0 3px 12px rgba(23,62,99,0.26);
+  --quiz-overlay:rgba(36,95,137,.38); --quiz-overlay-hover:rgba(36,95,137,.62);
+}
+html:not([data-theme]) .hero{background:
+  radial-gradient(circle at 88% 18%,rgba(181,31,58,0.42),transparent 30%),
+  linear-gradient(135deg,#102e4b,#173e63 62%,#6f1d32)}
+html:not([data-theme]) .toc-bar{border-right-color:#2c5f86}
+
+[data-theme="hemo"]{
+  --ink:#f3dfe1; --paper:#170a0d; --cream:#2b1218;
+  --accent:#ff6b6b; --accent2:#8fb8ea; --gold:#e7b95c; --muted:#b4919a; --border:#431d25;
+  --highlight:#402c14; --highlight2:#33161f; --green-bg:#11291e; --red-bg:#45151a;
+  --blue-bg:#12243c; --purple-bg:#261b3a; --hero-bg:#0c0407;
+  --panel-dark-bg:#2e1017; --panel-dark-text:#f9e7e9;
+  --hero-heading:#fbeaea; --hero-sub:#c9a3a8;
+  --hero-meta-bg:rgba(255,255,255,0.06); --hero-meta-border:rgba(255,107,107,0.18);
+  --hero-meta-label:#b4919a; --hero-meta-value:#ffd9d0; --hero-accent:#ff6b6b;
+  --floating-ui-bg:#0c0407; --floating-ui-fg:#fbeaea; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.45);
+  --quiz-overlay:rgba(143,184,234,.40); --quiz-overlay-hover:rgba(143,184,234,.62);
+}
+[data-theme="hemo"] .toc-bar{border-right-color:#431d25}
+
+[data-theme="paper"]{
+  --hero-accent:#f08a6e;
+  --ink:#1a1209; --paper:#faf7f2; --cream:#ece1cd;
+  --accent:#a32c14; --accent2:#2c5f8a; --gold:#c9922a; --muted:#6b5e4e; --border:#d4cabb;
+  --highlight:#fbe4a0; --highlight2:#cfe4f7; --green-bg:#d7f0da; --red-bg:#f8d6d0;
+  --blue-bg:#d2e7f9; --purple-bg:#e6dbfa; --hero-bg:#1a1209;
+  --panel-dark-bg:#1a1209; --panel-dark-text:#faf7f2;
+  --hero-heading:#f5ede0; --hero-sub:#c9bcad;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#8a7a6a; --hero-meta-value:#f0e0c8;
+  --floating-ui-bg:#3a3030; --floating-ui-fg:#f5ede0; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(44,95,138,.50); --quiz-overlay-hover:rgba(44,95,138,.78);
+}
+[data-theme="night"]{
+  --hero-accent:#e8b84b;
+  --ink:#e0e8f0; --paper:#0f1923; --cream:#1b2942;
+  --accent:#e8b84b; --accent2:#4aa8d8; --gold:#e8b84b; --muted:#94abc0; --border:#1e3048;
+  --highlight:#3a3016; --highlight2:#12283a; --green-bg:#10281c; --red-bg:#2e1616;
+  --blue-bg:#10233a; --purple-bg:#201a38; --hero-bg:#070e15;
+  --panel-dark-bg:#101a26; --panel-dark-text:#eef5fb;
+  --hero-heading:#f4f9ff; --hero-sub:#b8cad8;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#8fa4b8; --hero-meta-value:#f4f9ff;
+  --floating-ui-bg:#070e15; --floating-ui-fg:#f4f9ff; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(74,168,216,.42); --quiz-overlay-hover:rgba(74,168,216,.62);
+}
+[data-theme="ocean"]{
+  --hero-accent:#ff9aa5;
+  --ink:#0b2436; --paper:#eef7fb; --cream:#cdeaf5;
+  --accent:#a32536; --accent2:#0a5286; --gold:#d9a441; --muted:#4f7185; --border:#a8d4e8;
+  --highlight:#ffe6ad; --highlight2:#bfe3f2; --green-bg:#c9f0dc; --red-bg:#fad9d5;
+  --blue-bg:#c3e4f6; --purple-bg:#e1d7f6; --hero-bg:#0a3a5c;
+  --panel-dark-bg:#0b2436; --panel-dark-text:#eef7fb;
+  --hero-heading:#eaf6fd; --hero-sub:#a9c9dc;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#7ba0b8; --hero-meta-value:#d9edfa;
+  --floating-ui-bg:#0a3a5c; --floating-ui-fg:#eaf6fd; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(15,111,176,.48); --quiz-overlay-hover:rgba(15,111,176,.74);
+}
+[data-theme="forest"]{
+  --hero-accent:#f0a07c;
+  --ink:#16241a; --paper:#f2f7f0; --cream:#d7ead2;
+  --accent:#8f3418; --accent2:#155c39; --gold:#b8860b; --muted:#52684f; --border:#b7d4ae;
+  --highlight:#f3e6a0; --highlight2:#cbe4c4; --green-bg:#c7ecc0; --red-bg:#f7ddd0;
+  --blue-bg:#cbe6df; --purple-bg:#e1dbee; --hero-bg:#12301c;
+  --panel-dark-bg:#16241a; --panel-dark-text:#f2f7f0;
+  --hero-heading:#eef7ea; --hero-sub:#b6cfb0;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#87a382; --hero-meta-value:#e2f2da;
+  --floating-ui-bg:#12301c; --floating-ui-fg:#eef7ea; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(31,122,77,.48); --quiz-overlay-hover:rgba(31,122,77,.74);
+}
+[data-theme="sepia"]{
+  --hero-accent:#f0a57e;
+  --ink:#3a2414; --paper:#f7ecd9; --cream:#ecd7ae;
+  --accent:#9c3b17; --accent2:#2f5f6b; --gold:#8b5a17; --muted:#7a614a; --border:#d9bd8c;
+  --highlight:#f0d38a; --highlight2:#d7c39a; --green-bg:#dbe3bc; --red-bg:#f0d0c0;
+  --blue-bg:#cfdedd; --purple-bg:#e3d3e0; --hero-bg:#3f2814;
+  --panel-dark-bg:#3a2414; --panel-dark-text:#f7ecd9;
+  --hero-heading:#f7ecd9; --hero-sub:#cbb190;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#a08a68; --hero-meta-value:#f2ddb4;
+  --floating-ui-bg:#3f2814; --floating-ui-fg:#f7ecd9; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(47,95,107,.50); --quiz-overlay-hover:rgba(47,95,107,.78);
+}
+[data-theme="slate"]{
+  --hero-accent:#ff9a78;
+  --ink:#1c2229; --paper:#f4f5f7; --cream:#dde3ea;
+  --accent:#9e2c0f; --accent2:#2b5268; --gold:#a8862a; --muted:#5c6a76; --border:#c8d0d8;
+  --highlight:#f2e3ac; --highlight2:#d5e2ec; --green-bg:#d6ead9; --red-bg:#f4d8d0;
+  --blue-bg:#d3e2ef; --purple-bg:#dfd9ec; --hero-bg:#1c2530;
+  --panel-dark-bg:#1c2530; --panel-dark-text:#f4f5f7;
+  --hero-heading:#eef1f5; --hero-sub:#b3bfca;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#8595a3; --hero-meta-value:#e4ebf2;
+  --floating-ui-bg:#1c2530; --floating-ui-fg:#eef1f5; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(51,96,122,.50); --quiz-overlay-hover:rgba(51,96,122,.78);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;padding-left:var(--toc-w);background:var(--paper);color:var(--ink);
+  font-family:'Source Serif 4',Georgia,serif;font-size:16px;line-height:1.65;overflow-wrap:break-word;
+  transition:background .25s,color .25s}
+:root{--toc-w:258px}
+h1,h2,h3,h4{font-family:'Playfair Display',Georgia,serif;line-height:1.18}
+a{color:var(--accent2)}
+strong{color:var(--accent2)}
+.container{max-width:min(1220px,94%);margin:0 auto}
+img{max-width:100%}
+
+/* ---------------- reading progress ---------------- */
+.progress-bar{position:fixed;top:0;left:0;height:3px;width:0;z-index:200;
+  background:linear-gradient(90deg,var(--accent2),var(--accent));transition:width .1s linear}
+
+/* ---------------- TOC sidebar ---------------- */
+.toc-bar{position:fixed;top:0;left:0;bottom:0;z-index:90;width:var(--toc-w);
+  background:var(--hero-bg);border-right:1px solid rgba(255,255,255,.10);overflow-y:auto;overflow-x:hidden}
+.toc-bar::-webkit-scrollbar{width:6px}
+.toc-bar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14);border-radius:3px}
+.toc-bar::-webkit-scrollbar-track{background:transparent}
+.toc-head{padding:24px 20px 16px;border-bottom:1px solid rgba(255,255,255,.10)}
+.toc-eyebrow{display:block;font-family:'JetBrains Mono',monospace;font-size:.5rem;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--hero-meta-label);margin-bottom:7px}
+.toc-name{display:block;font-family:'Playfair Display',serif;font-weight:700;font-size:1.2rem;
+  color:var(--hero-heading);line-height:1.15}
+.toc-name em{font-style:normal;color:var(--hero-accent)}
+.toc-group{font-family:'JetBrains Mono',monospace;font-size:.49rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--hero-meta-label);opacity:.75;margin:0;padding:18px 20px 7px}
+.toc-bar nav{display:flex;flex-direction:column;padding:0 0 26px}
+.toc-bar a{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:'Source Serif 4',Georgia,serif;
+  font-size:.85rem;line-height:1.3;color:var(--hero-sub);padding:8px 16px 8px 17px;
+  border-left:3px solid transparent;transition:color .15s,border-color .15s,background .15s}
+.toc-num{flex:none;width:21px;height:21px;border-radius:50%;border:1px solid rgba(255,255,255,.18);
+  display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;
+  font-size:.56rem;font-weight:700;color:var(--hero-meta-label);transition:all .15s}
+.toc-num.dot{border:none;position:relative}
+.toc-num.dot::before{content:'';width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.28);transition:background .15s}
+.toc-bar a:hover{color:var(--hero-heading);background:rgba(255,255,255,.05)}
+.toc-bar a:hover .toc-num{border-color:rgba(255,255,255,.4);color:var(--hero-heading)}
+.toc-bar a:hover .toc-num.dot::before{background:var(--accent)}
+.toc-bar a.active{color:var(--hero-heading);border-left-color:var(--accent);background:rgba(255,255,255,.06);font-weight:600}
+.toc-bar a.active .toc-num{background:var(--chip-red);border-color:var(--chip-red);color:var(--chip-fg)}
+.toc-bar a.active .toc-num.dot{background:none;border-color:transparent}
+.toc-bar a.active .toc-num.dot::before{background:var(--accent);width:7px;height:7px}
+.toc-check{margin-left:auto;font-size:.72rem;display:none;line-height:1}
+.toc-bar a.done .toc-check{display:inline}
+.toc-bar a.conf-1 .toc-check{color:#e0564a}
+.toc-bar a.conf-2 .toc-check{color:#d6a12a}
+.toc-bar a.conf-3 .toc-check{color:#3d9c5c}
+.toc-tools{display:flex;flex-direction:column;gap:6px;padding:14px 14px 0;margin-top:8px;
+  border-top:1px solid rgba(255,255,255,.10)}
+.toc-chip{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);color:var(--hero-sub);
+  font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.05em;padding:7px 9px;
+  border-radius:8px;cursor:pointer;text-align:left;transition:background .15s,color .15s}
+.toc-chip:hover{background:rgba(255,255,255,.14);color:var(--hero-heading)}
+.toc-hy-btn{display:flex;align-items:center;justify-content:center;gap:7px;width:calc(100% - 28px);
+  margin:15px 14px 2px;background:var(--gold);color:#2a1a00;border:none;padding:11px 10px;border-radius:24px;
+  cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.04em;
+  line-height:1.25;text-align:center;transition:transform .15s,box-shadow .15s}
+.toc-hy-btn:hover{transform:translateY(-1px);box-shadow:0 4px 13px rgba(0,0,0,.32)}
+
+/* ---------------- hero ---------------- */
+.hero{background:var(--hero-bg);padding:52px 0 64px;width:100%;position:relative;overflow:hidden}
+.hero-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--hero-meta-label);margin-bottom:16px}
+.hero h1{margin:0 0 12px;font-size:clamp(2rem,4.4vw,3.3rem);font-weight:900;color:var(--hero-heading);letter-spacing:-.01em}
+.hero h1 span{color:var(--hero-accent)}
+.hero-sub{margin:0 0 20px;max-width:66ch;color:var(--hero-sub);font-size:1.03rem}
+.hero-meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.hero-meta-item{background:var(--hero-meta-bg);border:1px solid var(--hero-meta-border);border-radius:9px;
+  padding:9px 15px;min-width:118px}
+.hero-meta-item .label{display:block;font-family:'JetBrains Mono',monospace;font-size:.5rem;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--hero-meta-label);margin-bottom:4px}
+.hero-meta-item .value{display:block;font-family:'Playfair Display',serif;font-weight:700;font-size:1.02rem;color:var(--hero-meta-value)}
+.hy-btn{display:none;align-items:center;gap:8px;background:var(--gold);color:#2a1a00;border:none;padding:12px 22px;
+  border-radius:30px;font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700;letter-spacing:.04em;
+  cursor:pointer;margin-top:4px;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+
+/* ---------------- sections ---------------- */
+.section{padding:46px 0 8px;border-bottom:1px solid var(--border);scroll-margin-top:20px}
+.section:last-of-type{border-bottom:none}
+.badge-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.lo-badge{display:inline-block;background:var(--chip-red);color:var(--chip-fg);font-family:'JetBrains Mono',monospace;
+  font-size:.6rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;padding:6px 13px;border-radius:20px}
+.lo-badge.alt{background:var(--chip-blue)}
+.section-label{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 6px}
+.section-title{margin:0 0 6px;font-size:clamp(1.55rem,3vw,2.3rem);font-weight:700;
+  border-bottom:3px solid var(--accent);display:inline-block;padding-bottom:6px}
+.section h3{margin:30px 0 8px;font-size:1.24rem;border-left:4px solid var(--accent2);padding-left:11px}
+.section h4{margin:18px 0 6px;font-size:1.03rem}
+.lede{font-size:1.05rem;color:var(--muted);max-width:74ch}
+
+/* section tools (injected) */
+.sec-tools{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:14px 0 4px;padding:8px 12px;
+  background:var(--cream);border:1px solid var(--border);border-radius:9px;
+  font-family:'JetBrains Mono',monospace;font-size:.6rem}
+.sec-tools .st-lab{color:var(--muted);text-transform:uppercase;letter-spacing:.11em}
+.sec-tools button{font-family:'JetBrains Mono',monospace;font-size:.6rem;border:1px solid var(--border);
+  background:var(--paper);color:var(--ink);border-radius:20px;padding:4px 11px;cursor:pointer;transition:all .15s}
+.sec-tools button:hover{border-color:var(--accent2)}
+.sec-tools button.on{background:var(--accent2);color:#fff;border-color:var(--accent2)}
+.sec-tools .st-collapse{margin-left:auto}
+.sec-body-outer{display:grid;grid-template-rows:1fr;transition:grid-template-rows .35s ease}
+.sec-body-inner{overflow:hidden;min-height:0}
+.section.collapsed .sec-body-outer{grid-template-rows:0fr}
+.recall-note{display:none;margin:12px 0;padding:9px 13px;border:1px dashed var(--accent2);border-radius:8px;
+  background:var(--blue-bg);font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--ink)}
+body.recall-mode .recall-note{display:block}
+
+/* ---------------- callouts ---------------- */
+.callout{border-left:5px solid var(--accent2);border-radius:0 9px 9px 0;padding:14px 18px;margin:18px 0;background:var(--blue-bg)}
+.callout p:last-child,.callout ul:last-child{margin-bottom:0}
+.callout p:first-of-type{margin-top:0}
+.callout-title{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;margin-bottom:7px;color:var(--ink)}
+.callout-key{border-left-color:var(--gold);background:var(--highlight)}
+.callout-concept{border-left-color:var(--accent2);background:var(--blue-bg)}
+.callout-clinical{border-left-color:#3d9c5c;background:var(--green-bg)}
+.callout-warning{border-left-color:var(--accent);background:var(--red-bg)}
+.callout-purple{border-left-color:#7a5aa8;background:var(--purple-bg)}
+.callout-hook{border-left-color:var(--gold);background:var(--highlight);border-left-style:dashed;border-left-width:5px}
+
+/* ---------------- lists ---------------- */
+.notes-list{list-style:none;padding-left:0;margin:12px 0}
+.notes-list li{position:relative;padding-left:20px;margin-bottom:7px}
+.notes-list li::before{content:'\203A';position:absolute;left:4px;color:var(--accent);font-weight:700}
+.step-list{list-style:none;counter-reset:st;padding-left:0;margin:16px 0}
+.step-list li{counter-increment:st;position:relative;padding-left:44px;margin-bottom:14px;min-height:30px}
+.step-list li::before{content:counter(st);position:absolute;left:0;top:0;width:30px;height:30px;border-radius:50%;
+  background:var(--chip-red);color:var(--chip-fg);display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:700}
+.step-list li>div>strong:first-child{display:block;margin-bottom:2px;color:var(--accent)}
+
+/* ---------------- tables ---------------- */
+table{width:100%;border-collapse:collapse;margin:6px 0 20px;font-size:.92rem}
+th,td{border:1px solid var(--border);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:var(--panel-dark-bg);color:var(--panel-dark-text);font-family:'JetBrains Mono',monospace;
+  font-size:.63rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700}
+tr:nth-child(even) td{background:var(--cream)}
+tr:hover td{background:var(--highlight2)}
+.tbl-scroll{overflow-x:auto;margin-bottom:20px}
+.tbl-scroll table{margin-bottom:0}
+
+/* ---------------- exam Q ---------------- */
+.exam-q{background:var(--panel-dark-bg);color:var(--panel-dark-text);border-radius:11px;padding:20px 22px 18px;margin:22px 0;position:relative}
+.exam-q::before{content:'Exam Q';position:absolute;top:-10px;left:20px;background:var(--chip-red);color:var(--chip-fg);
+  font-family:'JetBrains Mono',monospace;font-size:.56rem;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;padding:4px 11px;border-radius:12px}
+.exam-q p{margin:6px 0}
+.exam-q strong{color:var(--panel-dark-accent)}
+.exam-q .answer{margin-top:12px;padding-top:12px;border-top:1px dashed rgba(255,255,255,.28);display:none}
+.exam-q.revealed .answer{display:block;animation:fadeIn .32s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.exam-q .answer .label{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--panel-dark-accent);margin-bottom:5px}
+.exam-q .reveal-btn{margin-top:11px;background:transparent;border:1px solid rgba(255,255,255,.4);
+  color:var(--panel-dark-text);font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.09em;
+  text-transform:uppercase;padding:6px 15px;border-radius:20px;cursor:pointer}
+.exam-q .reveal-btn:hover{background:rgba(255,255,255,.14)}
+.exam-q.revealed .reveal-btn{display:none}
+.exam-q.q-flash{outline:3px solid var(--gold);animation:qPulse 1.2s ease 1}
+@keyframes qPulse{0%{box-shadow:0 0 0 0 rgba(201,146,42,.55)}70%{box-shadow:0 0 0 14px rgba(201,146,42,0)}100%{box-shadow:none}}
+
+/* ---------------- cards & grids ---------------- */
+.compare-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:14px;margin:18px 0}
+.compare-card{border:1px solid var(--border);border-radius:11px;padding:16px 18px;background:var(--cream)}
+.compare-card h4{margin:6px 0 6px;font-size:1.08rem}
+.compare-card .card-emoji{font-size:1.5rem;line-height:1}
+.compare-card p{margin:0 0 8px}
+.fact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,235px),1fr));gap:13px;margin:18px 0}
+.fact-card{border:1px solid var(--border);border-top:4px solid var(--accent2);border-radius:10px;
+  padding:14px 16px;background:var(--cream)}
+.fact-card h4{margin:0 0 3px;font-size:1rem}
+.fact-card .generic{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.fact-card p{margin:0;font-size:.87rem}
+.hallmarks-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,215px),1fr));gap:13px;margin:18px 0}
+.hallmark-card{border:1px solid var(--border);border-top:4px solid var(--accent);border-radius:10px;
+  padding:14px 16px;background:var(--cream);position:relative}
+.hallmark-card:nth-child(3n+2){border-top-color:var(--accent2)}
+.hallmark-card:nth-child(3n+3){border-top-color:var(--gold)}
+.hallmark-card h4{margin:6px 0 4px;font-size:.99rem}
+.hallmark-card p{margin:0;font-size:.86rem}
+.hallmark-num{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;color:var(--muted)}
+
+/* inline chips */
+.lab-code{font-family:'JetBrains Mono',monospace;background:var(--cream);border:1px solid var(--border);
+  padding:1px 6px;border-radius:4px;font-size:.82rem;white-space:nowrap}
+.gene-tag{font-family:'JetBrains Mono',monospace;color:var(--accent2);font-size:.88rem;font-weight:600}
+.hy-flag{display:inline-flex;align-items:center;gap:3px;background:var(--highlight);color:var(--gold);
+  border:1px solid var(--gold);font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.6rem;
+  padding:1px 8px;border-radius:20px;letter-spacing:.04em;vertical-align:middle}
+.up{color:#c0392b;font-weight:700}
+.dn{color:#2c7fb8;font-weight:700}
+
+/* ---------------- images ---------------- */
+.slide-img{width:100%;display:block;border:1px solid var(--border);border-radius:10px;margin:18px 0 5px;
+  cursor:zoom-in;background:#fff}
+.slide-caption{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 20px;text-align:center}
+/* small source images: cap the width so they are not upscaled into blur */
+.slide-img.sm{width:auto;max-width:min(100%,540px);margin-left:auto;margin-right:auto}
+/* portrait images: cap the height instead of the width */
+.slide-img.tall{width:auto;max-width:100%;max-height:560px;margin-left:auto;margin-right:auto}
+.img-pair .slide-img.tall{max-height:420px}
+.img-pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px 20px;margin:18px 0;
+  align-items:start}
+.img-pair .slide-img{margin:0}
+.img-pair .slide-img.sm{width:100%;max-width:100%}
+.img-pair .slide-caption{margin:6px 0 0}
+.img-pair>div{display:flex;flex-direction:column}
+.fig{margin:18px 0}
+.fig svg{width:100%;height:auto;display:block;border:1px solid var(--border);border-radius:10px;background:var(--cream)}
+
+/* ---------------- table quiz ---------------- */
+.tq-bar{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:6px;padding:8px 12px;
+  background:var(--cream);border:1px solid var(--border);border-radius:8px}
+.tq-toggle{font-family:'JetBrains Mono',monospace;font-size:.63rem;letter-spacing:.09em;text-transform:uppercase;
+  background:var(--accent2);color:#fff;border:none;border-radius:20px;padding:5px 12px;cursor:pointer}
+.tq-toggle.active{background:var(--chip-red);color:var(--chip-fg)}
+.tq-cols{display:flex;flex-wrap:wrap;gap:5px;flex:1}
+.tq-col-btn{font-size:.7rem;padding:3px 9px;border:1px solid var(--border);border-radius:12px;background:var(--paper);
+  cursor:pointer;font-family:'JetBrains Mono',monospace;color:var(--ink);transition:all .15s}
+.tq-col-btn.sel{background:var(--chip-blue);color:var(--chip-fg);border-color:var(--chip-blue)}
+.tq-start,.tq-shuffle,.tq-reset{font-family:'JetBrains Mono',monospace;font-size:.63rem;color:#fff;border:none;
+  border-radius:20px;padding:5px 12px;cursor:pointer}
+.tq-start{background:#2e7d32}.tq-start:disabled{opacity:.35;cursor:not-allowed}
+.tq-shuffle{background:var(--accent2)}
+.tq-reset{background:var(--accent)}
+.tq-score{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted)}
+.tq-score.done{color:#2e7d32;font-weight:700}
+.quiz-hidden-cell{position:relative!important;cursor:pointer!important}
+.quiz-hidden-cell .tq-cell-content{filter:blur(5px)!important;user-select:none!important;pointer-events:none!important;opacity:.4!important}
+.quiz-hidden-cell::after{content:'tap to reveal'!important;position:absolute!important;inset:0!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;background:var(--quiz-overlay)!important;
+  color:#fff!important;font-family:'JetBrains Mono',monospace!important;font-size:.58rem!important;font-weight:700!important;
+  letter-spacing:.12em!important;text-transform:uppercase!important;border-radius:4px!important}
+.quiz-hidden-cell:hover::after{background:var(--quiz-overlay-hover)!important}
+
+/* ---------------- recall mode ---------------- */
+body.recall-mode .sec-body-inner :is(p,li,td,h4,dd) strong:not(.rc-open){color:transparent;background:var(--highlight2);
+  border-radius:4px;cursor:pointer;box-shadow:inset 0 0 0 1px var(--border);padding:0 2px}
+body.recall-mode .exam-q strong,body.recall-mode .tq-bar strong{color:var(--panel-dark-accent)!important;background:none!important;box-shadow:none!important}
+body.recall-mode .game strong{color:inherit!important;background:none!important;box-shadow:none!important;cursor:auto}
+strong.rc-open{animation:rcReveal .35s ease}
+@keyframes rcReveal{from{background:var(--gold)}to{background:transparent}}
+
+/* ---------------- games ---------------- */
+.game{background:var(--cream);border:1px solid var(--border);border-top:4px solid var(--accent);border-radius:12px;
+  padding:18px 20px;margin:22px 0}
+.g-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:4px}
+.g-head h3{margin:0;font-size:1.16rem;border:none;padding:0}
+.g-emoji{margin-right:.45em}
+.g-score{margin-left:auto;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.72rem;color:var(--muted)}
+.g-intro{font-size:.87rem;color:var(--muted);margin:0 0 10px}
+.g-stage{background:var(--paper);border:1px solid var(--border);border-radius:14px;padding:20px 18px 16px;margin:10px 0 0}
+.g-vign{text-align:left;font-size:.97rem;line-height:1.55;min-height:2.4em}
+.g-vign .lead{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--muted);display:block;margin-bottom:6px}
+.g-opts{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));margin-top:14px}
+.g-opt{border:1px solid var(--border);background:var(--cream);border-radius:11px;padding:9px 14px;font-weight:700;
+  cursor:pointer;font-size:.88rem;font-family:'Source Serif 4',Georgia,serif;color:var(--ink);text-align:center;
+  transition:transform .12s ease,border-color .12s,background .12s}
+.g-opt:hover{transform:translateY(-2px);border-color:var(--accent)}
+.g-opt.correct{background:var(--green-bg);border-color:#2e7d32;color:#1f5c24}
+.g-opt.wrong{background:var(--red-bg);border-color:var(--accent);color:var(--accent)}
+.g-fb{min-height:2.4em;margin-top:12px;font-size:.9rem;line-height:1.55}
+.g-fb .ok{color:#2e7d32;font-weight:700}
+.g-fb .no{color:var(--accent);font-weight:700}
+.g-btn{margin-top:14px;background:var(--accent);color:#fff;border:none;border-radius:22px;padding:8px 20px;
+  font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.06em;cursor:pointer}
+.g-btn:hover{filter:brightness(1.1)}
+.g-bank{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-top:12px}
+.g-bank .g-opt{padding:7px 13px;font-size:.83rem}
+.g-opt.picked{opacity:.5;pointer-events:none}
+.g-slots{display:grid;gap:9px;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));margin-top:12px}
+.g-slot{border:1px dashed var(--border);border-radius:10px;padding:10px 12px;background:var(--cream);min-height:62px}
+.g-slot h5{margin:0 0 6px;font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted)}
+.g-slot.sel{border-style:solid;border-color:var(--accent2);box-shadow:0 0 0 2px var(--blue-bg)}
+.g-slot ul{margin:0;padding-left:16px;font-size:.82rem}
+.g-timer{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--accent);font-weight:700}
+
+/* ---------------- floating UI ---------------- */
+.floating-stack{position:fixed;bottom:18px;right:18px;z-index:100;display:flex;flex-direction:column;align-items:flex-end;gap:9px}
+.font-btn-row{display:flex;align-items:center;background:var(--floating-ui-bg);color:var(--floating-ui-fg);
+  padding:7px 10px;border-radius:30px;box-shadow:var(--floating-ui-shadow);font-family:'JetBrains Mono',monospace;
+  font-size:.62rem;letter-spacing:.1em;gap:2px}
+.font-btn{background:none;border:none;cursor:pointer;color:var(--floating-ui-fg);font-family:'JetBrains Mono',monospace;
+  font-weight:700;font-size:1rem;padding:2px 8px;border-radius:6px;line-height:1}
+.font-btn:hover{background:rgba(255,255,255,.18)}
+.font-sep{color:rgba(255,255,255,.22);padding:0 3px}
+.font-label{font-size:.56rem;opacity:.7;padding:0 5px;text-transform:uppercase;letter-spacing:.1em}
+.theme-btn{display:flex;align-items:center;gap:7px;background:var(--floating-ui-bg);color:var(--floating-ui-fg);
+  border:none;padding:10px 17px;border-radius:30px;box-shadow:var(--floating-ui-shadow);cursor:pointer;
+  font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.09em;text-transform:uppercase}
+.theme-panel{position:absolute;bottom:100%;right:0;margin-bottom:10px;background:var(--floating-ui-bg);
+  color:var(--floating-ui-fg);border-radius:12px;padding:12px 10px;box-shadow:var(--floating-ui-shadow);
+  min-width:196px;display:none}
+.theme-panel.open{display:block}
+.theme-panel-title{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.16em;text-transform:uppercase;
+  opacity:.65;padding:0 8px 8px}
+.theme-option{display:flex;align-items:center;gap:9px;padding:7px 9px;border-radius:8px;cursor:pointer;
+  font-family:'JetBrains Mono',monospace;font-size:.66rem}
+.theme-option:hover{background:rgba(255,255,255,.12)}
+.theme-option.active{background:rgba(255,255,255,.18)}
+.theme-swatch{width:17px;height:17px;border-radius:50%;border:1px solid rgba(255,255,255,.35);flex:none}
+
+.floating-left{position:fixed;bottom:18px;left:calc(var(--toc-w) + 18px);z-index:100;
+  display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+.tools-menu{display:flex;flex-direction:column;gap:7px;opacity:0;pointer-events:none;transform:translateY(10px);
+  transition:opacity .22s,transform .22s}
+.floating-left:hover .tools-menu,.floating-left:focus-within .tools-menu,.floating-left.open .tools-menu{
+  opacity:1;pointer-events:auto;transform:none}
+.tool-btn{background:var(--floating-ui-bg);color:var(--floating-ui-fg);border:none;padding:9px 15px;border-radius:22px;
+  box-shadow:var(--floating-ui-shadow);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:.63rem;
+  letter-spacing:.05em;text-align:left;white-space:nowrap}
+.tool-btn:hover{filter:brightness(1.2)}
+.tool-btn.on{background:var(--accent);color:#fff}
+.tools-trigger{position:relative}
+.tools-trigger .dot{display:none;position:absolute;top:6px;right:8px;width:7px;height:7px;border-radius:50%;background:var(--gold)}
+.tools-trigger.busy .dot{display:block}
+.backtop{display:none}
+.backtop.show{display:block}
+
+/* ---------------- lightbox ---------------- */
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:400;display:none;align-items:center;
+  justify-content:center;cursor:zoom-out;padding:22px}
+.lightbox.active{display:flex}
+.lightbox img{max-width:92vw;max-height:88vh;border-radius:6px}
+
+/* ---------------- HY one-pager ---------------- */
+.hy-modal{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:300;display:none;align-items:flex-start;
+  justify-content:center;overflow-y:auto;padding:30px 16px}
+.hy-modal.open{display:flex}
+.hy-modal-card{background:var(--paper);color:var(--ink);max-width:1060px;width:100%;border-radius:14px;
+  padding:26px 30px 34px;box-shadow:0 20px 60px rgba(0,0,0,.45)}
+.hy-modal-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;
+  border-bottom:3px solid var(--accent);padding-bottom:10px;flex-wrap:wrap}
+.hy-modal-header h2{margin:0;font-size:1.35rem}
+.hy-modal-actions{display:flex;gap:8px;flex:none}
+.hy-action-btn{font-family:'JetBrains Mono',monospace;font-size:.64rem;letter-spacing:.05em;text-transform:uppercase;
+  border:1px solid var(--border);background:var(--cream);color:var(--ink);padding:7px 13px;border-radius:20px;cursor:pointer}
+.hy-close-btn{background:var(--chip-red);color:var(--chip-fg);border:none}
+.hy-subhead{font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--muted);margin:0 0 13px}
+.hy-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;min-width:0}
+@media (max-width:760px){.hy-cols{grid-template-columns:1fr}}
+.hy-cols>div{min-width:0}
+.hy-block{border:1px solid var(--border);border-radius:8px;padding:9px 11px;background:var(--cream);margin-bottom:9px;min-width:0}
+.hy-block h4{margin:0 0 5px;font-size:.76rem;color:var(--accent);border-bottom:1px solid var(--border);padding-bottom:4px}
+.hy-block p,.hy-block li{font-size:.67rem;line-height:1.4;margin:0 0 3px}
+.hy-block ul{margin:0;padding-left:15px}
+.hy-lo-tag{display:block;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;color:var(--chip-fg);
+  background:var(--chip-blue);padding:3px 9px;border-radius:10px;margin-bottom:7px;letter-spacing:.05em;text-align:center}
+.hy-mini-table{width:100%;border-collapse:collapse;font-size:.63rem;margin-top:4px}
+.hy-mini-table th,.hy-mini-table td{border:1px solid var(--border);padding:3px 5px;text-align:left;line-height:1.3}
+.hy-mini-table th{background:var(--panel-dark-bg);color:var(--panel-dark-text);font-size:.56rem;text-transform:uppercase}
+.hy-mini-table tr:nth-child(even) td{background:transparent}
+
+/* ---------------- glossary ---------------- */
+.gloss{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:10px;margin:16px 0}
+.gloss dl{margin:0;border:1px solid var(--border);border-radius:9px;padding:12px 14px;background:var(--cream)}
+.gloss dt{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;color:var(--accent);margin-top:8px}
+.gloss dt:first-child{margin-top:0}
+.gloss dd{margin:2px 0 0;font-size:.86rem}
+.abbr-strip{background:var(--cream);border:1px solid var(--border);border-left:4px solid var(--gold);
+  border-radius:0 9px 9px 0;padding:11px 15px;margin:14px 0;font-size:.85rem}
+.abbr-strip .t{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--muted);display:block;margin-bottom:5px}
+
+footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top:40px;font-size:.83rem}
+footer .container{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center}
+footer kbd{font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.2);
+  border-radius:4px;padding:1px 6px;font-size:.72rem}
+
+/* ---------------- responsive ---------------- */
+@media (max-width:1000px){
+  body{padding-left:0}
+  .toc-bar{position:sticky;top:0;bottom:auto;width:100%;height:auto;border-right:none;
+    border-bottom:1px solid rgba(255,255,255,.12);overflow-x:auto;overflow-y:hidden}
+  .toc-head,.toc-group,.toc-hy-btn,.toc-tools{display:none}
+  .toc-bar nav{flex-direction:row;padding:0 8px;white-space:nowrap}
+  .toc-bar a{padding:11px 13px;border-left:none;border-bottom:2px solid transparent;gap:8px}
+  .toc-bar a:hover,.toc-bar a.active{border-left-color:transparent;border-bottom-color:var(--accent);background:none}
+  .toc-num{width:18px;height:18px;font-size:.53rem}
+  .toc-check{display:none!important}
+  .hero .hy-btn{display:inline-flex}
+  .floating-left{left:14px;bottom:14px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
+
+/* ---------------- print ---------------- */
+@media print{
+  body{padding-left:0!important;background:#fff;color:#000}
+  .container{max-width:100%!important}
+  .toc-bar,.floating-stack,.floating-left,.progress-bar,.sec-tools,.recall-note,.tq-bar,
+  .toc-hy-btn,.hy-btn,.lightbox,.game,.exam-q .reveal-btn{display:none!important}
+  .section{page-break-inside:auto;border-bottom:1px solid #ccc}
+  .section.collapsed .sec-body-outer{grid-template-rows:1fr!important}
+  .exam-q .answer{display:block!important}
+  .hero{background:#fff!important;color:#000;padding:16px 0}
+  .hero h1,.hero-sub,.hero-tag,.hero-meta-item .value,.hero-meta-item .label{color:#000!important}
+  .slide-img{page-break-inside:avoid}
+  body.hy-mode .hero,body.hy-mode .section,body.hy-mode footer{display:none!important}
+  body.hy-mode .hy-modal{position:static!important;inset:auto!important;background:none!important;padding:0!important;
+    display:block!important;overflow:visible!important}
+  body.hy-mode .hy-modal-card{position:static!important;max-width:100%!important;width:100%!important;
+    box-shadow:none!important;padding:4px!important}
+  .hy-modal-actions{display:none!important}
+  .hy-cols{grid-template-columns:repeat(3,1fr);gap:6px}
+  .hy-modal-header h2{font-size:1.02rem}
+  .hy-subhead{font-size:.56rem;margin-bottom:7px}
+  .hy-block{padding:4px 6px;margin-bottom:4px;break-inside:avoid}
+  .hy-block h4{font-size:.60rem;margin-bottom:2px;padding-bottom:1.5px}
+  .hy-block p,.hy-block li{font-size:.50rem;line-height:1.2;margin-bottom:1.5px}
+  .hy-mini-table{font-size:.465rem}
+  .hy-mini-table th,.hy-mini-table td{padding:1px 2.5px;line-height:1.18}
+  .hy-lo-tag{font-size:.53rem;padding:2px 7px;margin-bottom:4px}
+  @page{margin:8mm}
+}
+
+
+#noteAuthGate{display:none}
+html[data-note-auth="locked"] body{
+  min-height:100vh;
+  overflow:hidden;
+  background:#f4f5f7;
+  color:#1f2937;
+}
+html[data-note-auth="locked"] body>*:not(#noteAuthGate){display:none!important}
+html[data-note-auth="locked"] #noteAuthGate{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  background:linear-gradient(135deg,#f4f5f7,#ffffff 52%,#eef2f7);
+}
+.note-auth-card{
+  width:min(460px,100%);
+  padding:30px;
+  border:1px solid rgba(31,41,55,.14);
+  border-radius:14px;
+  background:rgba(255,255,255,.92);
+  box-shadow:0 22px 70px rgba(31,41,55,.16);
+  text-align:center;
+}
+.note-auth-kicker{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.68rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:#cf4520;
+  font-weight:700;
+  margin-bottom:12px;
+}
+.note-auth-card h1{
+  margin:0 0 12px;
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2rem,6vw,3rem);
+  line-height:.98;
+  color:#263241;
+}
+.note-auth-card p{
+  margin:0 0 22px;
+  font-size:1rem;
+  line-height:1.55;
+  color:#556070;
+}
+.note-auth-btn{
+  border:0;
+  border-radius:999px;
+  padding:12px 20px;
+  font:700 .9rem 'JetBrains Mono',monospace;
+  letter-spacing:.04em;
+  color:#fff;
+  background:#263241;
+  cursor:pointer;
+  box-shadow:0 12px 28px rgba(38,50,65,.22);
+}
+.note-auth-btn:hover{background:#cf4520}
+
+/* ---------------- pharmacology components ---------------- */
+.drug-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:13px;margin:18px 0}
+.drug-card{border:1px solid var(--border);border-top:4px solid var(--accent2);border-radius:10px;
+  padding:14px 16px;background:var(--cream)}
+.drug-card h4{margin:0 0 3px;font-size:1rem}
+.drug-card .generic{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.drug-card p{margin:0;font-size:.86rem}
+.drug-card p+p{margin-top:5px}
+.drug-card.span2{grid-column:span 2}
+@media (max-width:760px){.drug-card.span2{grid-column:auto}}
+
+.box-warning{border:2px solid var(--accent);border-left-width:9px;border-radius:9px;background:var(--red-bg);
+  padding:15px 18px 13px;margin:20px 0}
+.bw-label{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;background:var(--chip-red);color:var(--chip-fg);
+  padding:4px 11px;border-radius:5px;margin-bottom:9px}
+.box-warning p{margin:0;font-size:.93rem}
+.box-warning p+p{margin-top:7px}
+
+.rems-badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.55rem;font-weight:700;
+  letter-spacing:.1em;background:var(--purple-bg);color:var(--accent2);border:1px solid var(--border);
+  padding:2px 6px;border-radius:4px;vertical-align:middle;margin-left:3px}
+
+.moa-chain{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:14px 0;padding:13px 15px;
+  background:var(--cream);border:1px solid var(--border);border-radius:10px}
+.moa-chain span{font-family:'JetBrains Mono',monospace;font-size:.7rem;line-height:1.35;
+  background:var(--paper);border:1px solid var(--border);border-radius:6px;padding:5px 9px}
+.moa-chain span.hit{background:var(--highlight);border-color:var(--gold);font-weight:700}
+.moa-chain i{font-style:normal;color:var(--accent);font-weight:700}
+
+.suffix-key{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:10px;margin:16px 0}
+.suffix-key div{border:1px solid var(--border);border-left:4px solid var(--gold);border-radius:8px;
+  padding:9px 12px;background:var(--cream)}
+.suffix-key code{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--accent);font-size:.9rem}
+.suffix-key p{margin:3px 0 0;font-size:.82rem;color:var(--muted)}
+
+.timing-bar{display:flex;align-items:center;gap:10px;margin:7px 0;font-size:.86rem}
+.timing-bar .tl{flex:none;width:min(38%,215px);font-weight:600}
+.timing-bar .tt{flex:1;height:15px;background:var(--cream);border:1px solid var(--border);
+  border-radius:8px;position:relative;overflow:hidden}
+.timing-bar .tf{position:absolute;top:0;bottom:0;background:var(--accent);opacity:.78;border-radius:8px}
+.timing-bar .tv{flex:none;font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--muted);
+  width:min(30%,140px);text-align:right}
+
+
+/* ---------------- Cardio additions ---------------- */
+.hero .container{position:relative;z-index:1}
+.hero-ecg{position:absolute;left:0;right:0;bottom:6px;width:100%;height:58px;z-index:0;pointer-events:none;opacity:.55}
+.hero-ecg path{fill:none;stroke:var(--hero-accent);stroke-width:2;stroke-linejoin:round;stroke-linecap:round;
+  stroke-dasharray:1400;stroke-dashoffset:1400;animation:ecgDraw 4.5s ease-out .3s forwards}
+@keyframes ecgDraw{to{stroke-dashoffset:0}}
+strong.hot{color:var(--accent)}
+.num{background:var(--highlight);color:var(--ink);font-weight:700;padding:0 4px;border-radius:4px;white-space:nowrap}
+.src-tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.55rem;font-weight:700;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--ink);border:1px dashed var(--muted);border-radius:4px;padding:0 5px;
+  vertical-align:middle;white-space:nowrap}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;margin:16px 0 6px;padding:11px 15px;
+  background:var(--cream);border:1px solid var(--border);border-radius:10px;font-size:.86rem}
+.legend-t{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.order-list{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 16px}
+.order-list span{background:var(--cream);border:1px solid var(--border);border-left:4px solid var(--accent);
+  border-radius:8px;padding:6px 12px;font-size:.9rem}
+.tbl-note{font-size:.88rem;color:var(--muted);margin-top:-8px}
+table.dense{font-size:.8rem}
+table.dense td,table.dense th{padding:5px 7px}
+.timeline-table tr.phase td{background:var(--panel-dark-bg)!important;color:var(--panel-dark-text);font-family:'JetBrains Mono',monospace;
+  font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;padding:4px 11px}
+
+/* ---- labeled, lazy-loaded figures (images live in ./assets/, not base64) ---- */
+.fig-card{margin:20px auto;max-width:960px;border:1px solid var(--border);border-radius:12px;background:var(--cream);overflow:hidden;
+  break-inside:avoid;page-break-inside:avoid}
+.fig-frame{position:relative;background:#fff;display:flex;justify-content:center;align-items:center}
+.fig-frame::before{content:'';position:absolute;inset:0;
+  background:linear-gradient(100deg,rgba(0,0,0,0) 30%,rgba(181,31,58,.07) 50%,rgba(0,0,0,0) 70%) #fdf1f3;
+  background-size:220% 100%;animation:figShimmer 1.3s linear infinite;transition:opacity .3s}
+.fig-frame.loaded::before{opacity:0;animation:none}
+@keyframes figShimmer{from{background-position:120% 0}to{background-position:-120% 0}}
+.fig-card .slide-img{position:relative;margin:0;border:none;border-radius:0;width:100%;height:auto;opacity:0;transition:opacity .35s}
+.fig-frame.loaded .slide-img{opacity:1}
+.fig-card.tall .slide-img{width:auto;max-width:100%;max-height:560px}
+.fig-card.sm .slide-img{width:auto;max-width:min(100%,560px)}
+.fig-row .fig-card.tall .slide-img{max-height:440px}
+.fig-card figcaption{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;padding:9px 13px 10px;
+  border-top:1px solid var(--border);font-size:.86rem;line-height:1.4}
+.fig-num{font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  background:var(--chip-blue);color:var(--chip-fg);padding:2px 8px;border-radius:10px;flex:none}
+.fig-title{flex:1 1 220px;color:var(--ink)}
+.fig-src{font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);flex:none}
+.fig-src b{color:var(--accent);font-weight:700}
+.fig-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px;margin:20px 0;align-items:start}
+.fig-row .fig-card{margin:0;max-width:none}
+.lightbox{flex-direction:column;gap:12px}
+.lightbox-cap{max-width:min(92vw,900px);color:#f3f3f3;font-size:.9rem;text-align:center;line-height:1.45}
+.lightbox-cap .fig-num{margin-right:6px}
+
+details.case-box{background:var(--cream);border:1px solid var(--border);border-left:5px solid var(--accent2);
+  border-radius:0 12px 12px 0;margin:16px 0;overflow:hidden}
+details.case-box summary{cursor:pointer;padding:13px 18px;font-family:'Playfair Display',serif;font-weight:700;font-size:1.05rem;
+  list-style:none;display:flex;gap:10px;align-items:center}
+details.case-box summary::-webkit-details-marker{display:none}
+details.case-box summary::before{content:'▸';color:var(--accent);transition:transform .2s}
+details.case-box[open] summary::before{transform:rotate(90deg)}
+details.case-box .case-body{padding:0 18px 12px;border-top:1px solid var(--border)}
+@media print{details.case-box .case-body{display:block}}
+
+/* ---- click-to-play video facade: no YouTube iframe loads until you ask for it ---- */
+.watch{margin:26px 0 8px;padding:14px 16px 16px;border:1px solid var(--border);border-left:5px solid var(--accent);
+  border-radius:0 12px 12px 0;background:var(--cream)}
+.watch-title{font-family:'JetBrains Mono',monospace;font-size:.64rem;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink);margin-bottom:10px}
+.watch-title span{color:var(--muted);font-weight:400;letter-spacing:.04em;text-transform:none}
+.vid-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr));gap:12px}
+.vid{display:flex;flex-direction:column;text-align:left;padding:0;border:1px solid var(--border);border-radius:10px;
+  overflow:hidden;background:var(--paper);color:var(--ink);cursor:pointer;font:inherit;transition:transform .15s,box-shadow .15s}
+.vid:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.14)}
+.vid-thumb{position:relative;aspect-ratio:16/9;background:#1c1c1c;overflow:hidden}
+.vid-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.vid-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:50px;height:36px;border-radius:10px;
+  background:rgba(181,31,58,.92);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1rem;
+  box-shadow:0 3px 10px rgba(0,0,0,.35)}
+.vid-meta{padding:8px 10px 10px;font-size:.8rem;line-height:1.35}
+.vid-meta b{display:block;font-weight:600}
+.vid-meta i{font-style:normal;font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted)}
+.vid.playing{cursor:default;transform:none;box-shadow:none}
+.vid iframe{width:100%;aspect-ratio:16/9;border:0;display:block}
+@media print{
+  .watch{display:none!important}
+  .fig-frame::before{display:none}
+  .fig-card .slide-img{opacity:1!important}
+  .fig-card{background:#fff}
+}
+@media (prefers-reduced-motion:reduce){.hero-ecg path{stroke-dashoffset:0}}
+</style>
+
+</head>
+<body>
+<div id="noteAuthGate" role="dialog" aria-modal="true" aria-labelledby="noteAuthTitle">
+  <div class="note-auth-card">
+    <div class="note-auth-kicker">2nd Year Study Hub</div>
+    <h1 id="noteAuthTitle">Please log in to continue with this note.</h1>
+    <p>Open the Study Hub login, enter your approved UNE email, and this note will unlock automatically.</p>
+    <button class="note-auth-btn" type="button" onclick="openNoteLogin()">Log in to continue</button>
+  </div>
+</div>
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="toc-bar">
+  <div class="toc-head">
+    <span class="toc-eyebrow">OMK 2 · Cardio · Week 13</span>
+    <span class="toc-name">Hypertension <em>Pharmacology</em></span>
+  </div>
+  <button class="toc-hy-btn" onclick="openHY()">🎯 High-Yield One-Pager</button>
+  <nav>
+    <p class="toc-group">Start</p>
+    <a href="#orientation"><span class="toc-num dot"></span><span>Orientation — LOs &amp; exam traps</span><span class="toc-check">✓</span></a>
+    <p class="toc-group">Approach</p>
+    <a href="#s1-htn"><span class="toc-num">1</span><span>What Drives Hypertension</span><span class="toc-check">✓</span></a>
+    <a href="#s2-approach"><span class="toc-num">2</span><span>Rational Approach &amp; Lifestyle</span><span class="toc-check">✓</span></a>
+    <a href="#s3-algorithm"><span class="toc-num">3</span><span>Choosing Initial Therapy</span><span class="toc-check">✓</span></a>
+    <p class="toc-group">Drug classes</p>
+    <a href="#s4-raas"><span class="toc-num">4</span><span>ACE Inhibitors, ARBs, Aliskiren</span><span class="toc-check">✓</span></a>
+    <a href="#s5-ccb"><span class="toc-num">5</span><span>Calcium Channel Blockers</span><span class="toc-check">✓</span></a>
+    <a href="#s6-diuretics"><span class="toc-num">6</span><span>Diuretics</span><span class="toc-check">✓</span></a>
+    <p class="toc-group">Special populations</p>
+    <a href="#s7-special"><span class="toc-num">7</span><span>Race &amp; Pregnancy</span><span class="toc-check">✓</span></a>
+    <p class="toc-group">Apply it</p>
+    <a href="#s8-cases"><span class="toc-num">8</span><span>The Four Cases</span><span class="toc-check">✓</span></a>
+    <p class="toc-group">Reference</p>
+    <a href="#glossary"><span class="toc-num dot"></span><span>Glossary &amp; Abbreviations</span><span class="toc-check">✓</span></a>
+  </nav>
+  <div class="toc-tools">
+    <button class="toc-chip" id="progressChip" onclick="jumpToNextTodo()">0/0 reviewed</button>
+    <button class="toc-chip" id="collapseAllBtn" onclick="toggleAllSections()">⊟ Collapse all</button>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="container">
+    <div class="hero-tag">Kyle R. Scully, PhD · Pharmacology · UNE COM · Fall 2025</div>
+    <h1>Pharmacologic Management of <span>Hypertension</span></h1>
+    <p class="hero-sub">The 2025 guideline approach — lifestyle for everyone, one drug or a single-pill combination by stage and risk — then ACE inhibitors, ARBs, calcium channel blockers and diuretics drug by drug, pregnancy, and the four lecture cases.</p>
+    <button class="hy-btn" onclick="openHY()">🎯 High-Yield One-Pager</button>
+    <div class="hero-meta"><div class="hero-meta-item"><span class="label">Lecturer</span><span class="value">Kyle R. Scully, PhD</span></div><div class="hero-meta-item"><span class="label">Sources</span><span class="value">Full deck (43 slides) + transcript</span></div><div class="hero-meta-item"><span class="label">Topics</span><span class="value">8</span></div><div class="hero-meta-item"><span class="label">Labeled figures</span><span class="value">24</span></div><div class="hero-meta-item"><span class="label">Exam questions</span><span class="value">15</span></div><div class="hero-meta-item"><span class="label">Videos</span><span class="value">16</span></div></div>
+  </div>
+  <svg class="hero-ecg" viewBox="0 0 1200 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 40 H140 l10 -6 l10 6 H200 l6 6 l10 -40 l10 50 l8 -16 H330 l14 -8 l14 8 H480 l10 -6 l10 6 H540 l6 6 l10 -40 l10 50 l8 -16 H670 l14 -8 l14 8 H820 l10 -6 l10 6 H880 l6 6 l10 -40 l10 50 l8 -16 H1010 l14 -8 l14 8 H1200"/></svg>
+</div>
+
+<!-- ==================== ORIENTATION ==================== -->
+<div class="section" id="orientation">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge alt">Orientation</div></div>
+    <p class="section-label">Learning objectives · how you'll be tested</p>
+    <h2 class="section-title">Pharmacologic Management of Hypertension</h2>
+
+    <div class="legend">
+      <span class="legend-t">How to read the colours</span>
+      <span><strong class="hot">Red bold</strong> = lecturer emphasis / likely tested</span>
+      <span><strong>Blue bold</strong> = key fact or mechanism</span>
+      <span><span class="num">Yellow</span> = number to memorise</span>
+      <span><span class="src-tag">Board add-on</span> = from First Aid / Pathoma / AMBOSS, not said in lecture</span>
+    </div>
+
+    <div class="compare-grid">
+      <div class="compare-card" style="background:var(--blue-bg);border-color:var(--accent2)">
+        <span class="card-emoji">🎯</span><h4>LO 1</h4>
+        <p>Identify the <strong>name, indication, mechanism of action, adverse effects, contraindications and drug–drug interactions</strong> of drugs used to treat hypertension.</p>
+      </div>
+      <div class="compare-card" style="background:var(--green-bg);border-color:#2e7d32">
+        <span class="card-emoji">🩺</span><h4>LO 2</h4>
+        <p><strong>Apply</strong> them to a clinical scenario (the lecture is case-based — four cases, Topic 8).</p>
+      </div>
+    </div>
+
+    <div class="callout callout-key">
+      <div class="callout-title">🔑 What Dr. Scully tests</div>
+      <p>Names, indications, MOA, adverse effects, contraindications and DDIs — the <strong>pharmacology domain</strong>. Clinical lectures cover the same topics from the clinical side; his questions only go "clinical" when there's a clear gold-standard best drug or every other option is contraindicated. Tip from lecture: split-screen the <strong>treatment algorithm</strong> (Topic 3) while working the cases.</p>
+    </div>
+    <div class="callout callout-warning">
+      <div class="callout-title">⚠️ The one-word trap</div>
+      <p><strong class="hot">"Pregnant"</strong> can be one word buried in a vignette. Read fast and you'll give a first-line drug (ACE inhibitor / ARB) that's contraindicated. Slow down on patient variables: age, pregnancy, comorbidities, intolerances.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 1. HYPERTENSION ==================== -->
+<div class="section" id="s1-htn">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Topic 1</div></div>
+    <p class="section-label">Four sources of high pressure · the silent killer</p>
+    <h2 class="section-title">What Drives Hypertension</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>CO = cardiac output · SVR = systemic vascular resistance · BP = blood pressure · HF = heart failure</div>
+
+    <div class="tbl-scroll"><table>
+      <tr><th>Type</th><th>Pattern</th><th>Who</th></tr>
+      <tr><td><strong>Cardiac (pump-based)</strong></td><td><strong>↑ CO, normal SVR</strong></td><td>Tends to be <strong>younger</strong> patients</td></tr>
+      <tr><td><strong>Vascular</strong></td><td><strong>Normal CO, ↑ SVR</strong> (endothelial / smooth muscle dysfunction)</td><td>Tends to be the <strong>ageing</strong> population</td></tr>
+      <tr><td><strong>Renal (volume-based)</strong></td><td>Excess Na⁺ and H₂O retention → ↑ CO and ↑ SVR</td><td>—</td></tr>
+      <tr><td><strong>Neuroendocrine</strong> (secondary)</td><td>Catecholamines — <strong>pheochromocytoma</strong> · aldosterone — <strong>primary hyperaldosteronism</strong> · thyroid hormone — <strong>hyperthyroidism</strong></td><td>Treat the cause → may not need to target the pump or RAAS at all</td></tr>
+    </table></div>
+    <p>In reality most patients have a <strong>mix</strong>, and cardiovascular disease is highly comorbid — untreated hypertension <strong>progresses to heart failure</strong>. Hypertension is invisible ("silent killer"), and barriers to primary care (wait-lists, cost, transport, time off work) mean it's often found only when it has already caused a comorbid disease.</p>
+    <div class="fig-row"><figure class="fig-card" id="fig-h-htn-causes"><div class="fig-frame"><img class="slide-img" src="assets/htn-pharm/h-htn-causes.jpg" alt="Body outline with potential sources: blood vessels (low NO, high endothelin, medial hypertrophy), CNS (high sympathetic tone), baroreceptors (desensitized), kidney (RAA dysfunction), adrenal (catecholamine leak)" width="1600" height="824" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig H1</span><span class="fig-title">Where essential hypertension can come from: vessels, CNS, baroreceptors, kidney, adrenal</span><span class="fig-src"><b>CV Pathophysiology</b></span></figcaption></figure><figure class="fig-card" id="fig-h-htn-consequences"><div class="fig-frame"><img class="slide-img" src="assets/htn-pharm/h-htn-consequences.jpg" alt="Flowchart from hypertension to increased afterload causing LVH, systolic and diastolic dysfunction and heart failure, and to arterial damage causing atherosclerosis, aneurysm, stroke, nephrosclerosis and retinopathy" width="1600" height="979" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig H2</span><span class="fig-title">What untreated hypertension does: ↑ afterload and arterial damage → HF, MI, stroke, renal failure, retinopathy</span><span class="fig-src"><b>CV Pathophysiology</b></span></figcaption></figure></div>
+
+    <h3>The set-point problem</h3>
+    <div class="callout callout-concept">
+      <div class="callout-title">🧠 Why follow-up is 2–4 weeks</div>
+      <p>Baroreceptors <strong>reset</strong> to a pressure that's held long enough — so the body defends the <em>high</em> pressure as normal. Hold the pressure low long enough and the compensations fade and the receptors re-set lower. Hence <strong>"see you in 2–4 weeks"</strong> after starting a drug — and the problem of patients lost to follow-up, which pushed the guidelines toward starting two drugs.</p>
+    </div>
+    <figure class="fig-card sm" id="fig-h-autoreg"><div class="fig-frame"><img class="slide-img" src="assets/htn-pharm/h-autoreg.png" alt="Graph of renal blood flow versus mean arterial pressure: in chronic hypertension the curve is shifted right so a rapid reduction in pressure lowers flow into the ischemic range" width="497" height="315" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig H3</span><span class="fig-title">Chronic HTN shifts the autoregulation curve right — a fast BP drop causes ischemia</span><span class="fig-src"><b>UWorld</b></span></figcaption></figure>
+    <p>What counts as <em>hypo</em>tension is harder than a number: it depends on the patient's baseline and symptoms (altered consciousness, dizziness). Normal is roughly ≤120/80.</p>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> A 72-year-old has BP 170/92 with a normal cardiac output and high systemic vascular resistance. Which physiologic type of hypertension is typical of this age group?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>Vascular (endothelial/smooth-muscle) hypertension</strong> — normal CO, increased SVR — typical of the ageing population; pump-based (↑CO) is more typical of younger patients.</p></div>
+    </div>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="OmKVteeuQj0" data-title="Hypertension Explained Clearly — causes, medications, pathophysiology"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/OmKVteeuQj0/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Hypertension Explained Clearly — causes, medications, pathophysiology</b><i>MedCram · YouTube</i></span></button><button class="vid" type="button" data-yt="6lbIs6qt5-0" data-title="How high blood pressure affects your heart"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/6lbIs6qt5-0/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>How high blood pressure affects your heart</b><i>Nucleus Medical Media · YouTube</i></span></button></div></div>
+  </div>
+</div>
+
+<!-- ==================== 2. APPROACH ==================== -->
+<div class="section" id="s2-approach">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Topic 2</div></div>
+    <p class="section-label">Lifestyle for everyone · drugs against compensation</p>
+    <h2 class="section-title">Rational Approach &amp; Lifestyle</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>DASH = Dietary Approaches to Stop Hypertension · RASi = renin–angiotensin system inhibitor · ACEi = ACE inhibitor · ARB = angiotensin receptor blocker · CCB = calcium channel blocker · ASCVD = atherosclerotic cardiovascular disease · SES = socio-economic status</div>
+
+    <h3>Lifestyle modification — every patient</h3>
+    <ul class="notes-list">
+      <li><strong>Weight loss:</strong> about <span class="num">1 mmHg</span> systolic per <span class="num">1 kg</span> lost.</li>
+      <li><strong>Diet:</strong> <strong>DASH</strong> (or Mediterranean), <strong>low sodium</strong>, <strong>more potassium</strong>, low fat.</li>
+      <li><strong>Exercise:</strong> aerobic, dynamic resistance, isometric.</li>
+      <li><strong>Moderate alcohol.</strong></li>
+      <li><strong>Remove secondary causes:</strong> alcohol, oral contraceptives, stimulant drugs.</li>
+      <li>Each measure: ~<span class="num">1–10 mmHg</span>; combined ~<span class="num">10–20 mmHg</span>. Bigger effect in hypertensive than normotensive patients. (Know the evidence exists; don't memorise the table.) The 2025 guideline uses lifestyle alone for elevated BP and <strong>low-risk stage 1</strong>.</li>
+    </ul>
+
+    <h3>Where drugs act — and how the body fights back</h3>
+    <div class="fig-row"><figure class="fig-card tall" id="fig-h-bp-tree"><div class="fig-frame"><img class="slide-img" src="assets/htn-pharm/h-bp-tree.jpg" alt="Tree: blood pressure from cardiac output and systemic vascular resistance with the physiologic factors that raise each" width="520" height="601" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig H4</span><span class="fig-title">Determinants of systemic blood pressure</span><span class="fig-src"><b>Scully lecture</b> · slide 7</span></figcaption></figure><figure class="fig-card tall" id="fig-h-drug-tree"><div class="fig-frame"><img class="slide-img" src="assets/htn-pharm/h-drug-tree.jpg" alt="Blood pressure determinant tree annotated with beta antagonists, calcium channel blockers, alpha1 antagonists, central alpha2 agonists, nitroprusside, renin inhibitors, ACE inhibitors, AT1 antagonists and diuretics" width="507" height="602" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig H5</span><span class="fig-title">Where each antihypertensive class acts on that tree</span><span class="fig-src"><b>Scully lecture</b> · slide 7</span></figcaption></figure></div>
+    <div class="callout callout-warning">
+      <div class="callout-title">⚠️ Compensation undoes monotherapy</div>
+      <p>Lower BP with one drug and two things happen: the <strong>baroreceptor reflex</strong> ↑ sympathetic outflow (↑ HR, contractility, vasoconstriction — the reason you don't faint standing up), and <strong>↓ renal perfusion ↑ renin</strong> → RAAS → Na⁺/H₂O retention + thirst. <strong class="hot">Block one branch and the other can bring BP back</strong> — the rationale for complementary two-drug therapy.</p>
+    </div>
+    <figure class="fig-card sm" id="fig-h-compensation"><div class="fig-frame"><img class="slide-img" src="assets/htn-pharm/h-compensation.jpg" alt="Flowchart: pharmacologic lowering of blood pressure triggers the baroreceptor reflex raising sympathetic outflow, tachycardia and vasoconstriction, and reduced renal perfusion raising renin and sodium-water retention; blocked respectively by alpha1 antagonists, beta antagonists, diuretics, renin inhibitors, ACE inhibitors and AT1 antagonists" width="510" height="467" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig H6</span><span class="fig-title">Why monotherapy gets undone: baroreflex (↑ sympathetic) and ↓ renal perfusion (↑ renin) push BP back up</span><span class="fig-src"><b>Scully lecture</b> · slide 8</span></figcaption></figure>
+
+    <h3>PREVENT risk calculator</h3>
+    <p>Inputs include sex, age, systolic BP, cholesterol, BMI, eGFR, diabetes, smoking. <strong>New: zip code</strong> (social deprivation — food and care deserts). <strong>Removed: race.</strong> The threshold that matters in the algorithm is a 10-year ASCVD risk of <strong class="hot">≥<span class="num">7.5%</span></strong>. (Lecture screenshot was on the ASCVD tab; the numbers come out similar.)</p>
+    <figure class="fig-card sm" id="fig-h-prevent"><div class="fig-frame"><img class="slide-img" src="assets/htn-pharm/h-prevent.png" alt="Screenshot of the PREVENT online calculator with fields for sex, age, cholesterol, HDL, systolic pressure, BMI, eGFR, diabetes, smoking, medications and optional zip code" width="930" height="882" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig H7</span><span class="fig-title">AHA PREVENT calculator — zip code added, race removed</span><span class="fig-src"><b>Scully lecture</b> · slide 11</span></figcaption></figure>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> A patient is started on amlodipine alone. Two weeks later BP has fallen less than expected and plasma renin is up. Why, and what class would complement it?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p>Lower renal perfusion triggered <strong>RAAS compensation</strong> (renin → AII → aldosterone → volume). Add a <strong>RAS inhibitor (ACEi or ARB)</strong> — the preferred single-pill pairing with a dihydropyridine CCB.</p></div>
+    </div>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="Cg3Z3dFf5c0" data-title="Hypertension Guidelines Explained Clearly"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/Cg3Z3dFf5c0/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Hypertension Guidelines Explained Clearly</b><i>MedCram · YouTube</i></span></button></div></div>
+  </div>
+</div>
+
+<!-- ==================== 3. ALGORITHM ==================== -->
+<div class="section" id="s3-algorithm">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Topic 3</div><span class="hy-flag">⭐ Read vignettes with this</span></div>
+    <p class="section-label">2025 guideline · stage + risk → lifestyle, one drug, or two</p>
+    <h2 class="section-title">Choosing Initial Therapy</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>SBP / DBP = systolic / diastolic BP · ASCVD = atherosclerotic cardiovascular disease · CAD = coronary artery disease · TIA = transient ischemic attack · CKD = chronic kidney disease · HF = heart failure · DM = diabetes mellitus · CCB = calcium channel blocker · ACEi / ARB = ACE inhibitor / angiotensin receptor blocker</div>
+
+    <figure class="fig-card" id="fig-h-algorithm"><div class="fig-frame"><img class="slide-img" src="assets/htn-pharm/h-algorithm.jpg" alt="Flowchart: stage 1 (130-139/80-89) with ASCVD, heart failure, diabetes, CKD, age 65 or older or 10-year risk at least 7.5 percent gets monotherapy, otherwise lifestyle for 3 to 6 months; stage 2 (140-180/90-120) gets monotherapy if over 75, underweight or frail, or multiple intolerances, otherwise combination preferably single-pill (dihydropyridine CCB plus ACE inhibitor or ARB); over 180/120 urgent assessment for target-organ damage" width="851" height="703" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig H8</span><span class="fig-title">Selection of initial antihypertensive therapy (2025 guideline) — the flowchart the cases use</span><span class="fig-src"><b>Scully lecture</b> · slide 13</span></figcaption></figure>
+    <div class="tbl-scroll"><table>
+      <tr><th>Stage</th><th>BP</th><th>Ask</th><th>→ Then</th></tr>
+      <tr><td><strong>Stage 1</strong></td><td>SBP <span class="num">130–139</span> and/or DBP <span class="num">80–89</span></td><td>Any of: <strong>ASCVD</strong> (CAD, stroke/TIA, PAD), <strong>HF</strong>, <strong>DM</strong>, <strong>CKD</strong>, <strong>age ≥65</strong>, <strong>10-y ASCVD risk ≥7.5%</strong>?</td><td><strong>Yes → monotherapy.</strong> No → lifestyle; recheck at <span class="num">3–6 months</span>; still &gt;130/80 → monotherapy</td></tr>
+      <tr><td><strong>Stage 2</strong></td><td>SBP <span class="num">140–180</span> and/or DBP <span class="num">90–120</span></td><td>Any of: <strong>age &gt;75</strong>, <strong>underweight or frail</strong>, <strong>multiple medication intolerances</strong>?</td><td><strong>Yes → monotherapy.</strong> <strong class="hot">No → combination therapy, preferably a single pill</strong></td></tr>
+      <tr><td><strong>Severe</strong></td><td>SBP <span class="num">&gt;180</span> and/or DBP <span class="num">&gt;120</span></td><td>Urgent assessment: <strong>acute target-organ damage?</strong></td><td>Yes → <strong>emergency / inpatient care</strong>. No → combination therapy</td></tr>
+    </table></div>
+    <figure class="fig-card sm" id="fig-h-crises"><div class="fig-frame"><img class="slide-img" src="assets/htn-pharm/h-crises.jpg" alt="Body diagram: hypertensive urgency without organ damage (headache, epistaxis) versus emergency with encephalopathy, retinal hemorrhage, heart failure, pulmonary edema, aortic dissection, renal failure; list of triggers" width="1372" height="1000" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig H9</span><span class="fig-title">Hypertensive urgency vs emergency (≥180/120, with vs without acute organ damage)</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure>
+    <ul class="notes-list">
+      <li><strong>Monotherapy default:</strong> an <strong>ACEi, ARB or dihydropyridine CCB</strong> (thiazides are also first-line) — or the one drug that also treats a comorbidity (Inset 1).</li>
+      <li><strong>Preferred combination:</strong> <strong>dihydropyridine CCB + ACEi or ARB</strong>; with comorbidities, pick 2 complementary drugs and avoid the Inset 2 pairs.</li>
+      <li><strong>Why single-pill:</strong> <strong>adherence</strong> is better with one pill (just as once-daily beats twice-daily). <strong>Barrier: cost</strong> — two generics of complementary classes is an acceptable workaround.</li>
+      <li>In practice, &gt;50% of patients who qualify for dual therapy are still on stepped-up monotherapy.</li>
+    </ul>
+
+    <h3>Inset 1 — let the comorbidity choose the drug</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>Comorbidity</th><th>Choose</th><th>Why (mechanism)</th></tr>
+      <tr><td>Osteoporosis, edema, <strong>calcium nephrolithiasis</strong> with hypercalciuria</td><td><strong>Thiazide-like diuretic</strong></td><td>↑ Ca²⁺ reabsorption → less Ca²⁺ in urine, more in bone</td></tr>
+      <tr><td><strong>CKD</strong> with albuminuria</td><td><strong>ACEi or ARB</strong></td><td>Target RAAS (renal protection)</td></tr>
+      <tr><td><strong>Atrial fibrillation</strong></td><td><strong>β-blocker or non-DHP CCB</strong></td><td>Rate control at the AV node (diltiazem does nodes + vessels)</td></tr>
+      <tr><td>Recent <strong>MI</strong></td><td><strong>β-blocker, ACEi or ARB</strong></td><td>Already started for secondary prevention — pick one tuned for BP</td></tr>
+      <tr><td><strong>Orthostatic hypotension</strong></td><td>DHP CCB, ACEi or ARB</td><td>Avoid sympatholytics / diuretics</td></tr>
+      <tr><td><strong>Heart failure</strong> (any EF)</td><td>ACEi, ARB, β-blocker, diuretics, MRA, others</td><td>Mortality-benefit classes</td></tr>
+      <tr><td><strong>May become pregnant</strong></td><td><strong>DHP CCB</strong></td><td>RAS inhibitors are teratogenic</td></tr>
+      <tr><td><strong>BPH</strong> (lecture example)</td><td><strong>α1 antagonist (prazosin)</strong></td><td>Relaxes GU smooth muscle <em>and</em> peripheral vessels — not otherwise first-line</td></tr>
+    </table></div>
+
+    <h3>Inset 2 — combinations to avoid</h3>
+    <div class="box-warning">
+      <span class="bw-label">⛔ Don't combine</span>
+      <p><strong>ACEi + ARB</strong> (or either + <strong>aliskiren</strong>) — stacked <strong class="hot">hyperkalemia</strong>, renal impairment, hypotension. Never give two RAAS blockers.</p>
+      <p><strong>β-blocker + non-dihydropyridine CCB (verapamil, diltiazem)</strong> — additive nodal / cardiac depression; <strong class="hot">IV-push verapamil on a β-blocker → electromechanical decoupling (acute drug-induced heart failure)</strong>.</p>
+      <p><strong>Two sympatholytics</strong> — α1 antagonist + clonidine, β-blocker + clonidine, two α antagonists: only one branch of BP control is hit (compensation persists) while side effects stack → overshoot.</p>
+      <p><strong>ACEi / ARB in anyone who may become pregnant.</strong></p>
+    </div>
+    <figure class="fig-card sm" id="fig-h-insets"><div class="fig-frame"><img class="slide-img" src="assets/htn-pharm/h-insets.jpg" alt="Two tables: indications for specific drug classes by comorbidity, and a list of antihypertensive combinations to avoid" width="445" height="433" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig H10</span><span class="fig-title">Inset 1: which class for which comorbidity · Inset 2: combinations to avoid</span><span class="fig-src"><b>Scully lecture</b> · slide 13</span></figcaption></figure>
+    <p><strong>Three-drug single pills</strong> now exist but are for <strong>stepped care</strong>, not initiation — start with two.</p>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> A 60-year-old with BP 152/96 (confirmed), no frailty, no drug intolerances. Mono or combination therapy, and which?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>Stage 2, age ≤75, not frail → combination therapy, ideally one pill:</strong> a <strong>dihydropyridine CCB + ACEi or ARB</strong> (ACEi/ARB + thiazide also acceptable).</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> A patient on metoprolol for atrial fibrillation develops hypertension. Why is adding verapamil a poor choice?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>β-blocker + non-DHP CCB = additive depression of the SA/AV node and contractility</strong> (bradycardia, heart block, acute heart failure). Add a DHP CCB, ACEi/ARB or thiazide instead.</p></div>
+    </div>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="Y0Zh6xlixpA" data-title="New hypertension guidelines — MedCram interviews Osmosis"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/Y0Zh6xlixpA/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>New hypertension guidelines — MedCram interviews Osmosis</b><i>MedCram · YouTube</i></span></button></div></div>
+  </div>
+</div>
+
+<!-- ==================== 4. RAAS DRUGS ==================== -->
+<div class="section" id="s4-raas">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Topic 4</div><span class="hy-flag">⭐ Cases 1 &amp; 2</span></div>
+    <p class="section-label">-prils, -sartans, aliskiren</p>
+    <h2 class="section-title">ACE Inhibitors, ARBs &amp; Renin Inhibition</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>ACE = angiotensin-converting enzyme · ACEi = ACE inhibitor · ARB = angiotensin II receptor blocker · AT II / AT1R = angiotensin II / angiotensin type-1 receptor · RASi = renin–angiotensin system inhibitor · K⁺ = potassium</div>
+
+    <div class="suffix-key">
+      <div><code>-pril</code><p>ACE inhibitor (captopril, lisinopril, enalapril)</p></div>
+      <div><code>-sartan</code><p>ARB (losartan, valsartan)</p></div>
+      <div><code>-kiren</code><p>Direct renin inhibitor (aliskiren)</p></div>
+    </div>
+    <div class="fig-row"><figure class="fig-card tall" id="fig-h-raas-kinin"><div class="fig-frame"><img class="slide-img" src="assets/htn-pharm/h-raas-kinin.jpg" alt="Parallel angiotensin and kinin pathways with sites of renin inhibitor, ACE inhibitor and AT1 receptor antagonists; bradykinin causes vasodilation and is inactivated by kininase II" width="560" height="669" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig H11</span><span class="fig-title">ACE inhibitors block AII formation AND bradykinin breakdown; ARBs block only the AT1 receptor</span><span class="fig-src"><b>Scully lecture</b> · slides 21, 25</span></figcaption></figure><figure class="fig-card tall" id="fig-h-raas-amboss"><div class="fig-frame"><img class="slide-img" src="assets/htn-pharm/h-raas-amboss.jpg" alt="Flowchart: hypotension, hyponatremia and sympathetic tone release renin; angiotensin II causes aldosterone release with increased potassium secretion and sodium reabsorption, ADH release, thirst and arteriolar constriction" width="848" height="1000" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig H12</span><span class="fig-title">RAAS triggers and effects — incl. ↑K⁺ secretion (why blocking it causes hyperkalemia)</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure></div>
+
+    <div class="drug-grid">
+      <div class="drug-card span2">
+        <h4>ACE inhibitors — captopril, lisinopril, enalapril</h4>
+        <div class="generic">Oral · first-line (hypertension, heart failure)</div>
+        <p><strong>MOA:</strong> block ACE → <strong>no angiotensin II</strong> (less vasoconstriction and aldosterone) <strong>and bradykinin accumulates</strong> (ACE = kininase II) → extra vasodilation.</p>
+        <p><strong>Indications:</strong> hypertension, heart failure.</p>
+        <p><strong>PK (know which is a prodrug):</strong> captopril — active as given + active metabolite · <strong>enalapril — prodrug</strong> → active form · lisinopril — active as given, <strong>excreted unchanged</strong>.</p>
+        <p><strong>Adverse effects:</strong> <strong class="hot">hyperkalemia</strong> · <strong class="hot">angioedema</strong> (<span class="num">5×</span> risk in Black patients; genetic risk factors emerging) · <strong class="hot">dry cough</strong> (bradykinin; common enough that some clinicians start with an ARB).</p>
+        <p><strong>Contraindications:</strong> <strong>history of angioedema</strong> · <strong>pregnancy</strong> (and patients planning pregnancy).</p>
+      </div>
+      <div class="drug-card">
+        <h4>ARBs — losartan, valsartan</h4>
+        <div class="generic">Oral · first-line</div>
+        <p><strong>MOA:</strong> <strong>competitive antagonist at AT1R</strong> — blocks AII's action; <strong>no bradykinin build-up</strong>.</p>
+        <p><strong>Indications:</strong> hypertension · <strong>diabetic nephropathy (losartan)</strong> · heart failure and post-MI (<strong>valsartan</strong>).</p>
+        <p><strong>AEs (slide):</strong> rhabdomyolysis, hepatotoxicity, renal failure, diarrhea (+ hyperkalemia as with any RASi).</p>
+        <p><strong>CI / DDI:</strong> <strong>pregnancy</strong> · with an <strong>ACEi</strong> (renal impairment, hyperkalemia, hypotension) · with <strong>aliskiren in diabetics</strong> · small risk of cross-reactive angioedema.</p>
+      </div>
+      <div class="drug-card">
+        <h4>Aliskiren</h4>
+        <div class="generic">Direct renin inhibitor</div>
+        <p>Blocks renin → no angiotensin I. <strong>Never with another RAAS drug</strong> (esp. ACEi/ARB in diabetics). Contraindicated in pregnancy.</p>
+      </div>
+    </div>
+
+    <h3>Cough and angioedema — one mechanism</h3>
+    <div class="callout callout-concept">
+      <div class="callout-title">🧠 Bradykinin</div>
+      <p>ACE normally destroys bradykinin; block it and bradykinin accumulates → <strong>dry cough</strong> and <strong>angioedema</strong> (lips, tongue, face; also pharynx/larynx). Clinical pearls from lecture:</p>
+      <ul class="notes-list">
+        <li><strong class="hot">A dry cough on an ACEi predicts angioedema</strong> — nearly every patient who develops angioedema had the cough first. Counsel patients.</li>
+        <li>Angioedema can recur <strong>up to 2 years</strong> after stopping (most within the first 2 months).</li>
+        <li>Under-recognised form: <strong>intestinal angioedema</strong> → GI distress and diarrhea.</li>
+        <li>Laryngeal edema: early signs <strong>hoarseness</strong> and <strong>inspiratory stridor</strong>; progresses to airway obstruction in up to <span class="num">10%</span>.</li>
+      </ul>
+    </div>
+    <figure class="fig-card sm" id="fig-h-angioedema"><div class="fig-frame"><img class="slide-img" src="assets/htn-pharm/h-angioedema.jpg" alt="Pathway: kininogen converted by kallikrein to bradykinin causing angioedema without urticaria; ACE converts bradykinin to inactive products; footnote that ACE inhibitors exacerbate attacks" width="520" height="386" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig H13</span><span class="fig-title">Bradykinin-driven angioedema — ACE normally inactivates bradykinin</span><span class="fig-src"><b>UWorld</b></span></figcaption></figure>
+    <div class="callout callout-clinical">
+      <div class="callout-title">🩺 Case 2 answer in one line</div>
+      <p>BP controlled on lisinopril but a persistent dry cough → <strong>bradykinin</strong>. <strong>Switch to an ARB</strong> (keeps the RAAS benefit, no bradykinin build-up) — or to another first-line class.</p>
+    </div>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> Which ACE inhibitor is a prodrug that must be converted to its active form, and which is excreted unchanged?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>Enalapril</strong> is the prodrug; <strong>lisinopril</strong> is active as given and excreted unchanged (captopril is active and has an active metabolite).</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> Why does an ARB cause less cough than an ACE inhibitor while lowering BP just as well?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p>ARBs block the <strong>AT1 receptor</strong> without inhibiting ACE (kininase II), so <strong>bradykinin is still degraded</strong>.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> A patient on lisinopril and losartan (both prescribed by different doctors) presents with weakness and peaked T waves. Mechanism?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>Double RAAS blockade → ↓ aldosterone → ↓ K⁺ secretion → hyperkalemia.</strong> ACEi + ARB is a combination to avoid.</p></div>
+    </div>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="mJENhCXzL6I" data-title="ACE inhibitors, ARBs and direct renin inhibitors"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/mJENhCXzL6I/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>ACE inhibitors, ARBs and direct renin inhibitors</b><i>Osmosis · YouTube</i></span></button><button class="vid" type="button" data-yt="32SLdGvBBpM" data-title="Bradykinin pharmacology and ACE inhibitors"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/32SLdGvBBpM/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Bradykinin pharmacology and ACE inhibitors</b><i>Medicosis Perfectionalis · YouTube</i></span></button><button class="vid" type="button" data-yt="hbgqYqem7lM" data-title="ACE inhibitor side effects and why they occur"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/hbgqYqem7lM/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>ACE inhibitor side effects and why they occur</b><i>JJ Medicine · YouTube</i></span></button></div></div>
+  </div>
+</div>
+
+<!-- ==================== 5. CCBs ==================== -->
+<div class="section" id="s5-ccb">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Topic 5</div></div>
+    <p class="section-label">Heart ↔ vessel selectivity</p>
+    <h2 class="section-title">Calcium Channel Blockers</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>CCB = calcium channel blocker · DHP = dihydropyridine · L-type = long-lasting voltage-gated Ca²⁺ channel · AV = atrioventricular · AF = atrial fibrillation</div>
+
+    <div class="drug-grid">
+      <div class="drug-card span2">
+        <h4>CCBs — nifedipine, amlodipine (DHP) · diltiazem, verapamil (non-DHP)</h4>
+        <div class="generic">Oral · first-line · block voltage-gated L-type Ca²⁺ channels</div>
+        <p><strong>MOA:</strong> ↓ intracellular Ca²⁺ → ↓ contraction of <strong>cardiac myocytes and vascular smooth muscle</strong>. Binding site and channel-conformation selectivity make DHPs and non-DHPs behave differently.</p>
+        <p><strong>Indications:</strong> hypertension · angina (<strong>stable, unstable and vasospastic</strong>).</p>
+        <p><strong>PK:</strong> mostly oral · <strong>first-pass metabolism</strong> · excretion: <strong>DHPs — kidney</strong>, <strong>diltiazem — liver</strong>.</p>
+        <p><strong>AEs:</strong> <strong class="hot">reflex tachycardia</strong> (highest with <strong>nifedipine</strong>) · <strong class="hot">peripheral edema</strong> (↑ transcapillary hydrostatic pressure) · flushing · headache. <strong>Diltiazem</strong> is better tolerated but also affects cardiac conduction.</p>
+      </div>
+    </div>
+    <div class="compare-grid">
+      <div class="compare-card" style="background:var(--red-bg);border-color:var(--accent)"><span class="card-emoji">🫀</span><h4>Verapamil — heart</h4><p>Most <strong>cardioselective</strong>: nodal tissue, conduction velocity, contractility. Never with a β-blocker.</p></div>
+      <div class="compare-card" style="background:var(--highlight);border-color:var(--gold)"><span class="card-emoji">⚖️</span><h4>Diltiazem — both</h4><p>The <strong>"sweet spot"</strong>: nodes + peripheral vessels (neither as strongly) → good for <strong>hypertension with AF</strong>.</p></div>
+      <div class="compare-card" style="background:var(--blue-bg);border-color:var(--accent2)"><span class="card-emoji">🩸</span><h4>"-dipines" — vessels</h4><p><strong>Peripheral vasculature</strong> → ↓ SVR. Amlodipine, nifedipine. Safe in pregnancy; preferred combo partner for ACEi/ARB.</p></div>
+    </div>
+    <div class="fig-row"><figure class="fig-card" id="fig-h-ccb-spectrum"><div class="fig-frame"><img class="slide-img" src="assets/htn-pharm/h-ccb-spectrum.jpg" alt="Arrow from heart to blood vessel with verapamil at the heart end, diltiazem in the middle and dihydropyridines at the vessel end" width="958" height="199" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig H14</span><span class="fig-title">CCB selectivity: verapamil (heart) → diltiazem (both) → &quot;-dipines&quot; (vessels)</span><span class="fig-src"><b>Scully lecture</b> · slide 33</span></figcaption></figure><figure class="fig-card tall" id="fig-h-ccb-sites"><div class="fig-frame"><img class="slide-img" src="assets/htn-pharm/h-ccb-sites.jpg" alt="Heart and circulation diagram: SA node decreased automaticity, AV node decreased conduction, myocytes decreased afterload and oxygen demand, coronary vasodilation, peripheral arteriole vasodilation, minimal venodilation" width="711" height="811" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig H15</span><span class="fig-title">What CCBs do where: nodes, myocytes, coronaries, arterioles (minimal venodilation)</span><span class="fig-src"><b>Scully lecture</b> · slide 33</span></figcaption></figure></div>
+    <figure class="fig-card sm" id="fig-h-verapamil"><div class="fig-frame"><img class="slide-img" src="assets/htn-pharm/h-verapamil.jpg" alt="Membrane diagram: L-type calcium channel coupled to the ryanodine receptor in normal state and blocked by verapamil" width="700" height="507" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig H16</span><span class="fig-title">Verapamil blocks the L-type Ca²⁺ channel</span><span class="fig-src"><b>UWorld</b></span></figcaption></figure>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> Which first-line antihypertensive class most often causes ankle edema, and why doesn't a diuretic fix it well?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>Dihydropyridine CCBs</strong> — arteriolar (pre-capillary) dilation raises <strong>transcapillary hydrostatic pressure</strong>; it's not volume overload, so diuretics help little. <span class="src-tag">Board add-on</span> Adding an ACEi/ARB (venodilation) reduces it.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> Which CCB causes the most reflex tachycardia, and why?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>Nifedipine</strong> (especially immediate-release): strong vessel selectivity drops SVR quickly → baroreflex → sympathetic tachycardia, with no nodal blocking to blunt it.</p></div>
+    </div>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="f2wokakHtXQ" data-title="Dihydropyridine vs non-dihydropyridine CCBs"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/f2wokakHtXQ/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Dihydropyridine vs non-dihydropyridine CCBs</b><i>Rhesus Medicine · YouTube</i></span></button><button class="vid" type="button" data-yt="_LPv9Z4WAjE" data-title="3 most common side effects of amlodipine"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/_LPv9Z4WAjE/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>3 most common side effects of amlodipine</b><i>JJ Medicine · YouTube</i></span></button></div></div>
+  </div>
+</div>
+
+<!-- ==================== 6. DIURETICS ==================== -->
+<div class="section" id="s6-diuretics">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Topic 6</div></div>
+    <p class="section-label">Thiazides first-line · K⁺-sparing add-ons</p>
+    <h2 class="section-title">Diuretics</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>HCTZ = hydrochlorothiazide · NCC = Na⁺-Cl⁻ cotransporter · DCT = distal convoluted tubule · ENaC = epithelial sodium channel · MR / MRA = mineralocorticoid receptor / antagonist · LDL = low-density lipoprotein</div>
+
+    <div class="fig-row"><figure class="fig-card" id="fig-h-diuretic-sites"><div class="fig-frame"><img class="slide-img" src="assets/htn-pharm/h-diuretic-sites.jpg" alt="Nephron with numbered sites: proximal tubule carbonic anhydrase inhibitors, descending limb osmotic, thick ascending limb loop, distal tubule thiazides, collecting duct potassium-sparing" width="604" height="700" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig H17</span><span class="fig-title">Site of action for each diuretic class</span><span class="fig-src"><b>UWorld</b></span></figcaption></figure><figure class="fig-card" id="fig-h-thiazide-dct"><div class="fig-frame"><img class="slide-img" src="assets/htn-pharm/h-thiazide-dct.jpg" alt="Distal convoluted tubule cell: thiazides block the apical sodium-chloride cotransporter; calcium enters via TRPV5 and exits via NCX1; basolateral Na/K-ATPase" width="503" height="520" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig H18</span><span class="fig-title">Thiazides block NCC in the DCT — and Ca²⁺ reabsorption rises</span><span class="fig-src"><b>Scully lecture</b> · slide 38</span></figcaption></figure></div>
+    <div class="drug-grid">
+      <div class="drug-card span2">
+        <h4>Thiazide diuretics — hydrochlorothiazide</h4>
+        <div class="generic">Oral · first-line for hypertension</div>
+        <p><strong>MOA:</strong> competitive antagonist of <strong>NCC</strong> on the luminal membrane of <strong>DCT</strong> cells → natriuresis → ↓ intravascular volume → ↓ preload → ↓ CO → ↓ BP. Also a <strong>direct vasodilatory effect</strong> (mechanism not well understood).</p>
+        <p><strong>Indications:</strong> <strong>hypertension (first line)</strong> · edema (adjunct) · <strong>↓ calcium excretion → osteoporosis, nephrolithiasis</strong>.</p>
+        <p><strong>PK:</strong> high oral bioavailability, long duration of action.</p>
+        <p><strong>AEs:</strong> <strong>hyponatremia</strong> · <strong class="hot">hypokalemic metabolic alkalosis</strong> · <strong class="hot">hyperuricemia → gout</strong> · photosensitivity · <strong>impaired glucose tolerance</strong> (↓ insulin release and tissue glucose use) · <strong>hyperlipidemia</strong> (↑ cholesterol, LDL).</p>
+      </div>
+    </div>
+    <div class="callout callout-hook">
+      <div class="callout-title">🧠 Thiazide AEs = "hyperGLUC" <span class="src-tag">Board add-on</span></div>
+      <p>Hyper<strong>G</strong>lycemia, hyper<strong>L</strong>ipidemia, hyper<strong>U</strong>ricemia, hyper<strong>C</strong>alcemia — plus hypo-Na⁺, hypo-K⁺, metabolic alkalosis, photosensitivity.</p>
+    </div>
+    <div class="fig-row"><figure class="fig-card" id="fig-h-thiazide-ca"><div class="fig-frame"><img class="slide-img" src="assets/htn-pharm/h-thiazide-ca.jpg" alt="Distal tubule diagram: thiazide blocks NaCl entry, lowering cell sodium, which drives more sodium-calcium exchange on the basolateral side and more calcium reabsorption from the lumen" width="700" height="649" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig H19</span><span class="fig-title">Why thiazides help calcium stones and osteoporosis: ↓ intracellular Na⁺ → more basolateral Na⁺/Ca²⁺ exchange → ↑ Ca²⁺ reabsorption</span><span class="fig-src"><b>UWorld</b></span></figcaption></figure><figure class="fig-card" id="fig-h-gout"><div class="fig-frame"><img class="slide-img" src="assets/htn-pharm/h-gout.jpg" alt="Feet with swollen, red first toe joints and chalky tophi" width="1516" height="1000" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig H20</span><span class="fig-title">Gouty tophi — thiazide hyperuricemia can precipitate gout</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure></div>
+
+    <h3>Potassium-sparing diuretics</h3>
+    <p>Unlike other diuretics, they <strong>increase K⁺ reabsorption</strong>, by interrupting Na⁺ handling in <strong>principal cells of the collecting duct</strong>.</p>
+    <div class="drug-grid">
+      <div class="drug-card">
+        <h4>Spironolactone, eplerenone</h4>
+        <div class="generic">Mineralocorticoid receptor antagonists</div>
+        <p><strong>MOA:</strong> bind the <strong>MR</strong> and prevent its nuclear translocation → fewer Na⁺ channels made.</p>
+        <p><strong>Indications:</strong> hypertension, edema, hypokalemia, <strong>hyperaldosteronism</strong>.</p>
+        <p><strong>PK:</strong> doesn't need albumin binding or glomerular filtration → works in <strong>liver failure and nephrotic syndrome</strong>.</p>
+        <p><strong>AEs:</strong> <strong class="hot">hyperkalemia</strong>, hyperchloremic metabolic acidosis, agranulocytosis; <strong>spironolactone only:</strong> <strong class="hot">gynecomastia</strong>, impotence, abnormal menstruation (↑ testosterone clearance, ↑ estradiol, blocks the androgen receptor).</p>
+        <p><strong>CI:</strong> pregnancy (anti-androgenic).</p>
+      </div>
+      <div class="drug-card">
+        <h4>Amiloride, triamterene</h4>
+        <div class="generic">ENaC blockers</div>
+        <p><strong>MOA:</strong> competitive inhibition of <strong>ENaC</strong> in the apical membrane of the principal cell.</p>
+        <p><strong>Indications:</strong> amiloride — hypertension, heart failure · triamterene — edema.</p>
+        <p><strong>AEs:</strong> <strong>hyperkalemia</strong>, hyperkalemic metabolic acidosis, electrolyte imbalances, dyspepsia, headache.</p>
+      </div>
+    </div>
+    <figure class="fig-card tall" id="fig-h-principal-cell"><div class="fig-frame"><img class="slide-img" src="assets/htn-pharm/h-principal-cell.jpg" alt="Collecting duct cells: principal cell with ENaC blocked by amiloride and triamterene, ROMK potassium channel, and the mineralocorticoid receptor blocked by spironolactone preventing aldosterone-driven ENaC and Na/K-ATPase expression" width="499" height="918" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig H21</span><span class="fig-title">Principal cell: spironolactone blocks the mineralocorticoid receptor; amiloride/triamterene block ENaC</span><span class="fig-src"><b>Scully lecture</b> · slide 40</span></figcaption></figure>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> A hypertensive patient with recurrent calcium oxalate stones and osteopenia — which antihypertensive helps all three, and how?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p>A <strong>thiazide</strong>: NCC blockade lowers cell Na⁺ in the DCT → more basolateral Na⁺/Ca²⁺ exchange → <strong>↑ Ca²⁺ reabsorption</strong> → less urinary calcium, more for bone.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> A man on spironolactone for resistant hypertension develops tender breast enlargement. Mechanism, and what swap avoids it?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p>Spironolactone <strong>blocks androgen receptors and shifts testosterone → estradiol</strong>. Switch to <strong>eplerenone</strong> (more MR-selective) <span class="src-tag">Board add-on</span>.</p></div>
+    </div>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="P2_QyGlz8V4" data-title="Thiazide Diuretics"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/P2_QyGlz8V4/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Thiazide Diuretics</b><i>Medicosis Perfectionalis · YouTube</i></span></button><button class="vid" type="button" data-yt="obw6oYOlPUk" data-title="How do thiazide diuretics work?"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/obw6oYOlPUk/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>How do thiazide diuretics work?</b><i>Zero to Finals · YouTube</i></span></button><button class="vid" type="button" data-yt="7reyEtSDMTQ" data-title="Potassium-sparing diuretics (part 1) — spironolactone"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/7reyEtSDMTQ/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Potassium-sparing diuretics (part 1) — spironolactone</b><i>Medicosis Perfectionalis · YouTube</i></span></button></div></div>
+  </div>
+</div>
+
+<!-- ==================== 7. RACE + PREGNANCY ==================== -->
+<div class="section" id="s7-special">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Topic 7</div><span class="hy-flag">⭐ Pregnancy = contraindications</span></div>
+    <p class="section-label">Race-agnostic prescribing · the pregnant patient</p>
+    <h2 class="section-title">Race in Decisions &amp; Hypertension in Pregnancy</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>JNC8 = Eighth Joint National Committee guideline · RASi = renin–angiotensin system inhibitors · MRA = mineralocorticoid receptor antagonist · ACOG = American College of Obstetricians and Gynecologists · DHP CCB = dihydropyridine calcium channel blocker · ER = extended-release</div>
+
+    <h3>Race in treatment decisions</h3>
+    <ul class="notes-list">
+      <li><strong>History (JNC8):</strong> preferred CCBs over RAS inhibitors in Black patients.</li>
+      <li>Despite wide use, <strong>control rates didn't improve and the racial disparity persisted</strong>; ACEi efficacy varies widely among self-identified Black patients.</li>
+      <li><strong class="hot">Race-agnostic prescribing raised control to ~<span class="num">80%</span> and narrowed the disparity from <span class="num">6.3%</span> to <span class="num">2.8%</span>.</strong> Risk calculators have also dropped race.</li>
+      <li>Still true: ACEi angioedema risk is ~5× higher in Black patients (genetic profiling not yet routine).</li>
+    </ul>
+
+    <h3>Pregnancy</h3>
+    <div class="compare-grid">
+      <div class="compare-card" style="background:var(--green-bg);border-color:#2e7d32">
+        <span class="card-emoji">✅</span><h4>Use</h4>
+        <ul class="notes-list">
+          <li><strong>Labetalol</strong></li>
+          <li><strong>Dihydropyridine CCBs</strong> (nifedipine ER, amlodipine) — gaining popularity</li>
+          <li><strong>α-methyldopa</strong> — longest safety record, less effective</li>
+          <li><strong>Hydralazine</strong> — <strong>acute management only</strong></li>
+        </ul>
+      </div>
+      <div class="compare-card" style="background:var(--red-bg);border-color:var(--accent)">
+        <span class="card-emoji">⛔</span><h4>Contraindicated</h4>
+        <ul class="notes-list">
+          <li><strong class="hot">RAS inhibitors: ACEi, ARBs, aliskiren</strong> — fetal renal toxicity → <strong>low amniotic fluid</strong>; true contraindication, also in patients <strong>planning pregnancy</strong></li>
+          <li><strong>Nitroprusside</strong></li>
+          <li><strong>MRAs (spironolactone)</strong> — anti-androgenic</li>
+          <li><strong>Atenolol</strong> — low birth weight, fetal growth restriction</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout callout-clinical">
+      <div class="callout-title">🩺 If she's already on an ACE inhibitor</div>
+      <p>The harm is greatest in the <strong>2nd and 3rd trimesters</strong>. She shouldn't panic — <strong>switch</strong> to another agent.</p>
+    </div>
+
+    <div class="tbl-scroll"><table>
+      <tr><th>Drug</th><th>Mechanism</th><th>Why it's safe / why chosen</th><th>Cautions (ACOG)</th></tr>
+      <tr><td><strong>Labetalol</strong></td><td>3rd-generation β-blocker: <strong>β1/β2 + α1 antagonist</strong></td><td><strong class="hot">Blocking α1 prevents the reflex vasoconstriction</strong> that follows ↓CO — so <strong>placental blood flow is preserved</strong> (metoprolol would reduce it)</td><td>Bronchoconstriction — avoid in asthma, myocardial disease, decompensated HF, heart block, bradycardia</td></tr>
+      <tr><td><strong>Nifedipine</strong> (ER)</td><td>DHP CCB → ↓ SVR</td><td>One of ACOG's top three; effective</td><td>Not sublingual; immediate-release only for severe acute BP in hospital; avoid in tachycardia</td></tr>
+      <tr><td><strong>α-Methyldopa</strong></td><td>Like clonidine — <strong>central α2 agonist</strong> → ↓ sympathetic outflow → ↓ CO and SVR</td><td>Longest safety record (data to 7 years in offspring)</td><td>Less effective; sedation, depression, dizziness</td></tr>
+      <tr><td>Hydrochlorothiazide</td><td>Thiazide</td><td>—</td><td>Second- or third-line</td></tr>
+      <tr><td><strong>Hydralazine</strong></td><td>Direct arteriolar vasodilator</td><td>—</td><td>Acute management only</td></tr>
+    </table></div>
+    <div class="fig-row"><figure class="fig-card" id="fig-h-acog-def"><div class="fig-frame"><img class="slide-img" src="assets/htn-pharm/h-acog-def.png" alt="Table: hypertension in pregnancy 140/90 on two occasions 4 hours apart; severe-range 160/110; chronic hypertension before pregnancy or before 20 weeks or persisting postpartum; chronic hypertension with superimposed preeclampsia" width="659" height="271" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig H22</span><span class="fig-title">ACOG definitions: HTN in pregnancy, severe-range, chronic, superimposed preeclampsia</span><span class="fig-src"><b>Scully lecture</b> · slide 28</span></figcaption></figure><figure class="fig-card" id="fig-h-acog-drugs"><div class="fig-frame"><img class="slide-img" src="assets/htn-pharm/h-acog-drugs.png" alt="Table of labetalol, extended-release nifedipine, methyldopa and hydrochlorothiazide with doses and cautions" width="654" height="357" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig H23</span><span class="fig-title">Oral antihypertensives in pregnancy: labetalol, nifedipine ER, methyldopa (HCTZ 2nd/3rd line)</span><span class="fig-src"><b>Scully lecture</b> · slide 29</span></figcaption></figure></div>
+    <h3>ACOG definitions</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>Disorder</th><th>Definition</th></tr>
+      <tr><td>Hypertension in pregnancy</td><td>SBP ≥<span class="num">140</span> or DBP ≥<span class="num">90</span>, two readings ≥4 h apart</td></tr>
+      <tr><td><strong>Severe-range</strong></td><td>SBP ≥<span class="num">160</span> or DBP ≥<span class="num">110</span>, two readings ≥4 h apart</td></tr>
+      <tr><td><strong>Chronic hypertension</strong></td><td>Before pregnancy or <strong>before 20 weeks</strong>, or first found in pregnancy and <strong>not resolved postpartum</strong></td></tr>
+      <tr><td>Chronic HTN with superimposed preeclampsia</td><td>Preeclampsia in a woman with hypertension before pregnancy or before 20 weeks</td></tr>
+    </table></div>
+    <figure class="fig-card sm" id="fig-h-preeclampsia"><div class="fig-frame"><img class="slide-img" src="assets/htn-pharm/h-preeclampsia.jpg" alt="Normal pregnancy with cytotrophoblast remodeling spiral arteries versus preeclampsia with abnormal invasion, reduced placental perfusion, antiangiogenic factors and widespread maternal endothelial dysfunction" width="700" height="612" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig H24</span><span class="fig-title">Preeclampsia: failed spiral-artery remodeling → placental hypoxia → maternal endothelial dysfunction</span><span class="fig-src"><b>UWorld</b></span></figcaption></figure>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> Why is labetalol preferred over metoprolol for a pregnant patient with hypertension?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p>Blocking β1 alone lowers CO and triggers sympathetic <strong>vasoconstriction, including of the placental bed</strong>. Labetalol's <strong>α1 blockade</strong> prevents that, lowering BP while <strong>preserving placental flow</strong>.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> How does α-methyldopa lower blood pressure?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p>A <strong>central α2 agonist</strong> like clonidine (<span class="src-tag">Board add-on</span> via its metabolite α-methylnorepinephrine) → presynaptic G<sub>i</sub> brake → <strong>↓ sympathetic outflow</strong> → ↓ CO and SVR.</p></div>
+    </div>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="CRhGx8A7Dqg" data-title="Preeclampsia &amp; eclampsia"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/CRhGx8A7Dqg/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Preeclampsia &amp; eclampsia</b><i>Osmosis · YouTube</i></span></button><button class="vid" type="button" data-yt="bZ2RQnSbj-Y" data-title="Beta blockers — beta receptor antagonists"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/bZ2RQnSbj-Y/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Beta blockers — beta receptor antagonists</b><i>Medicosis Perfectionalis · YouTube</i></span></button></div></div>
+  </div>
+</div>
+
+<!-- ==================== 8. CASES ==================== -->
+<div class="section" id="s8-cases">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Topic 8</div><span class="hy-flag">⭐ LO 2 — apply it</span></div>
+    <p class="section-label">The four lecture cases, worked</p>
+    <h2 class="section-title">Case-Based Exploration</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>BP = blood pressure · HR = heart rate · RR = respiratory rate · BMI = body-mass index · ACEi / ARB = ACE inhibitor / angiotensin receptor blocker · CCB = calcium channel blocker · AF = atrial fibrillation</div>
+
+    <details class="case-box" open>
+      <summary>Case 1 — GM, 76-year-old man, employment physical</summary>
+      <div class="case-body">
+        <p>Relaxed, pleasant. <strong>BP 142/98</strong>, HR 88, RR 10, SpO₂ 95%. Otherwise unremarkable. Counselled on diet/exercise, prescribed <strong>lisinopril</strong>, follow-up in 2–4 weeks.</p>
+        <ul class="notes-list">
+          <li><strong>Stage:</strong> 142/98 → borderline <strong>stage 2</strong>.</li>
+          <li><strong>Mono vs combo:</strong> <strong>age &gt;75 → monotherapy</strong> is appropriate.</li>
+          <li><strong>MOA of lisinopril:</strong> ACE inhibitor → ↓ angiotensin II + ↑ bradykinin (vasodilator).</li>
+          <li><strong>Class AEs:</strong> hyperkalemia, angioedema, dry cough.</li>
+        </ul>
+      </div>
+    </details>
+    <details class="case-box" open>
+      <summary>Case 2 — GM, two weeks later</summary>
+      <div class="case-body">
+        <p>Adherent; diet/exercise hard to keep up. <strong>BP 126/84</strong> (matches home readings). <strong>Persistent non-productive cough</strong>; "feels fine"; COVID and other respiratory infections negative.</p>
+        <ul class="notes-list">
+          <li><strong>Explanation:</strong> <strong>bradykinin accumulation</strong> from ACE inhibition.</li>
+          <li><strong>Next step:</strong> BP is controlled by RAAS inhibition → <strong>switch to an ARB</strong> (or another first-line class). Watch — the cough flags angioedema risk.</li>
+        </ul>
+      </div>
+    </details>
+    <details class="case-box" open>
+      <summary>Case 3 — 27-year-old pregnant patient, 16 weeks</summary>
+      <div class="case-body">
+        <p>Prenatal visit showed 158/110; today <strong>160/114</strong>.</p>
+        <ul class="notes-list">
+          <li><strong>Differential:</strong> hypertension <strong>before 20 weeks</strong> → <strong>chronic hypertension</strong> / hypertension in pregnancy at the top; reading is <strong>severe-range</strong> (≥160/110).</li>
+          <li><strong>Monitor</strong> for superimposed preeclampsia; consider white-coat hypertension; lifestyle.</li>
+          <li><strong>Treat with:</strong> labetalol, nifedipine ER or α-methyldopa (hydralazine if acute).</li>
+          <li><strong>Avoid:</strong> ACEi, ARB, aliskiren, nitroprusside, spironolactone, atenolol.</li>
+        </ul>
+      </div>
+    </details>
+    <details class="case-box" open>
+      <summary>Case 4 — 56-year-old, off meds for 2 years because he "felt fine"</summary>
+      <div class="case-body">
+        <p>5-year history of hypertension; no diabetes, CKD, CAD or HF. Non-smoker; <strong>2–3 drinks daily</strong>. <strong>BMI 31.</strong> BP <strong>168/104</strong>, then 164/102 and 170/106 over 2 weeks. No bruits, edema or HF signs.</p>
+        <ul class="notes-list">
+          <li><strong>Stage 2</strong>, age &lt;75, not frail, no intolerances → <strong class="hot">combination therapy, ideally one pill</strong> (DHP CCB + ACEi/ARB, or ACEi/ARB + thiazide).</li>
+          <li><strong>Lifestyle:</strong> cut alcohol, lose weight (≈1 mmHg/kg), DASH, less salt.</li>
+          <li>Single pill + once daily helps the adherence problem that got him here.</li>
+        </ul>
+        <p><strong>Conversation starters from the slide:</strong></p>
+        <ul class="notes-list">
+          <li><em>History of kidney stones?</em> → <strong>thiazide</strong> (↑ Ca²⁺ reabsorption).</li>
+          <li><em>On a diuretic — watch for?</em> → hyponatremia, <strong>hypokalemic metabolic alkalosis</strong>, <strong>hyperuricemia/gout</strong>, glucose intolerance, hyperlipidemia, photosensitivity (thiazide); hyperkalemia (K⁺-sparing).</li>
+          <li><em>Which first-line class causes peripheral edema?</em> → <strong>dihydropyridine CCBs</strong>.</li>
+          <li><em>What if he had AF?</em> → <strong>β-blocker or non-DHP CCB (diltiazem)</strong> — but not both together.</li>
+        </ul>
+      </div>
+    </details>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> (Case 1) A 76-year-old with BP 142/98 is started on lisinopril. What is the mechanism of action?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>Inhibits angiotensin-converting enzyme</strong> → prevents angiotensin I → II (less vasoconstriction and aldosterone) and <strong>prevents bradykinin breakdown</strong> (more vasodilation).</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> (Case 4) What's the most appropriate initial regimen for a 56-year-old with repeated BPs around 168/104 and no comorbidities?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>Two complementary first-line drugs, preferably a single pill</strong> — e.g. amlodipine + an ACEi/ARB — plus alcohol reduction and weight loss.</p></div>
+    </div>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="LnGB7U1xIuw" data-title="Hypertension explained — incl. hypertensive emergency"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/LnGB7U1xIuw/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Hypertension explained — incl. hypertensive emergency</b><i>Rhesus Medicine · YouTube</i></span></button><button class="vid" type="button" data-yt="sbVo9L-ULu0" data-title="How do ACE inhibitors work?"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/sbVo9L-ULu0/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>How do ACE inhibitors work?</b><i>Zero to Finals · YouTube</i></span></button></div></div>
+  </div>
+</div>
+
+<!-- ==================== GLOSSARY ==================== -->
+<div class="section" id="glossary">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge alt">Reference</div></div>
+    <p class="section-label">Every short form used in these notes</p>
+    <h2 class="section-title">Glossary &amp; Abbreviations</h2>
+    <div class="gloss">
+      <dl>
+        <dt>ACEi · ARB · RASi</dt><dd>ACE inhibitor · angiotensin II (AT1) receptor blocker · renin–angiotensin system inhibitor</dd>
+        <dt>ACOG</dt><dd>American College of Obstetricians and Gynecologists</dd>
+        <dt>AF</dt><dd>Atrial fibrillation</dd>
+        <dt>ASCVD</dt><dd>Atherosclerotic cardiovascular disease</dd>
+        <dt>AT1R</dt><dd>Angiotensin II type-1 receptor</dd>
+        <dt>BPH</dt><dd>Benign prostatic hyperplasia</dd>
+      </dl>
+      <dl>
+        <dt>CCB · DHP</dt><dd>Calcium channel blocker · dihydropyridine ("-dipine")</dd>
+        <dt>CKD</dt><dd>Chronic kidney disease</dd>
+        <dt>CO · SVR</dt><dd>Cardiac output · systemic vascular resistance</dd>
+        <dt>DASH</dt><dd>Dietary Approaches to Stop Hypertension</dd>
+        <dt>DCT · NCC</dt><dd>Distal convoluted tubule · Na⁺-Cl⁻ cotransporter (thiazide target)</dd>
+        <dt>DDI</dt><dd>Drug–drug interaction</dd>
+      </dl>
+      <dl>
+        <dt>ENaC</dt><dd>Epithelial sodium channel (amiloride, triamterene)</dd>
+        <dt>ER</dt><dd>Extended-release</dd>
+        <dt>HCTZ</dt><dd>Hydrochlorothiazide</dd>
+        <dt>JNC8</dt><dd>Eighth Joint National Committee (older hypertension guideline)</dd>
+        <dt>MR · MRA</dt><dd>Mineralocorticoid receptor · its antagonist (spironolactone, eplerenone)</dd>
+      </dl>
+      <dl>
+        <dt>PREVENT</dt><dd>AHA 10-year cardiovascular risk calculator (zip code in, race out)</dd>
+        <dt>SBP · DBP</dt><dd>Systolic · diastolic blood pressure</dd>
+        <dt>Stage 1 / 2</dt><dd>130–139/80–89 · 140–180/90–120 mmHg</dd>
+        <dt>TIA</dt><dd>Transient ischemic attack</dd>
+      </dl>
+    </div>
+  </div>
+</div>
+
+
+<div class="hy-modal" id="hyModal">
+  <div class="hy-modal-card">
+    <div class="hy-modal-header">
+      <h2>🎯 Pharmacologic Management of Hypertension — High-Yield One-Pager</h2>
+      <div class="hy-modal-actions">
+        <button class="hy-action-btn" onclick="printHY()">🖨️ Print / Save PDF</button>
+        <button class="hy-action-btn hy-close-btn" onclick="closeHY()">✕ Close</button>
+      </div>
+    </div>
+    <p class="hy-subhead">Scully · OMK 2 Cardio · LO1 name/indication/MOA/AE/CI/DDI · LO2 apply to cases</p>
+    <div class="hy-cols">
+      <div>
+        <span class="hy-lo-tag">APPROACH &amp; ALGORITHM</span>
+        <div class="hy-block"><h4>Types</h4><ul>
+          <li>Cardiac (↑CO, young) · vascular (↑SVR, older) · renal (volume) · neuroendocrine (pheo, hyperaldo, hyperthyroid)</li>
+          <li>Baroreceptors reset → follow-up 2–4 wk</li>
+          <li>Monotherapy undone by <strong>baroreflex (↑ sympathetic)</strong> + <strong>↓ renal perfusion (↑ renin)</strong></li>
+        </ul></div>
+        <div class="hy-block"><h4>Lifestyle (everyone)</h4><ul>
+          <li>~1 mmHg per kg lost · DASH, ↓Na⁺, ↑K⁺ · exercise · ↓ alcohol · stop OCPs/stimulants</li>
+          <li>Each 1–10 mmHg; together 10–20</li>
+        </ul></div>
+        <div class="hy-block"><h4>2025 algorithm</h4><ul>
+          <li><strong>Stage 1</strong> 130–139/80–89: ASCVD, HF, DM, CKD, ≥65, or risk ≥7.5% → mono; else lifestyle 3–6 mo</li>
+          <li><strong>Stage 2</strong> 140–180/90–120: &gt;75, frail/underweight, many intolerances → mono; <strong>else combination single pill</strong></li>
+          <li><strong>&gt;180/120</strong>: organ damage → emergency; none → combination</li>
+          <li>Mono: ACEi, ARB, DHP CCB, thiazide · Combo: <strong>DHP CCB + ACEi/ARB</strong> (or + thiazide)</li>
+          <li>PREVENT: zip code in, race out · race-agnostic → 80% control, disparity 6.3→2.8%</li>
+        </ul></div>
+        <div class="hy-block"><h4>Comorbidity picks · avoid pairs</h4><ul>
+          <li>Stones/osteoporosis → thiazide · CKD+albuminuria → ACEi/ARB · AF → BB or diltiazem · post-MI → BB/ACEi/ARB · pregnancy-possible → DHP CCB · BPH → prazosin</li>
+          <li><strong>Avoid:</strong> ACEi+ARB(+aliskiren) → ↑K⁺ · <strong>BB + verapamil/diltiazem</strong> (IV verapamil → EM decoupling) · two sympatholytics</li>
+        </ul></div>
+      </div>
+      <div>
+        <span class="hy-lo-tag">RAAS DRUGS · CCBs</span>
+        <div class="hy-block"><h4>ACEi — captopril, lisinopril, enalapril</h4><ul>
+          <li>⊣ ACE → ↓AII; <strong>↑ bradykinin</strong></li>
+          <li>HTN, HF · <strong>enalapril prodrug</strong>; lisinopril excreted unchanged; captopril active + metabolite</li>
+          <li>AE: <strong>hyperkalemia, angioedema (5× Black pts), dry cough</strong></li>
+          <li>Cough predicts angioedema; recurrence up to 2 y; intestinal angioedema; stridor/hoarseness</li>
+          <li>CI: prior angioedema, <strong>pregnancy</strong></li>
+          <li>Cough → <strong>switch to ARB</strong></li>
+        </ul></div>
+        <div class="hy-block"><h4>ARB — losartan, valsartan</h4><ul>
+          <li>Competitive <strong>AT1R antagonist</strong>; no bradykinin</li>
+          <li>HTN · diabetic nephropathy (losartan) · HF, MI (valsartan)</li>
+          <li>AE (slide): rhabdo, hepatotoxicity, renal failure, diarrhea</li>
+          <li>CI: pregnancy, + ACEi, + aliskiren in DM; rare cross-angioedema</li>
+        </ul></div>
+        <div class="hy-block"><h4>CCBs — L-type block</h4><ul>
+          <li><strong>Verapamil (heart) → diltiazem (both) → -dipines (vessels)</strong></li>
+          <li>HTN · angina (stable, unstable, vasospastic)</li>
+          <li>First-pass; DHP renal, diltiazem hepatic excretion</li>
+          <li>AE: <strong>reflex tachycardia (nifedipine)</strong>, <strong>peripheral edema</strong> (↑ capillary hydrostatic P), flushing, headache</li>
+        </ul></div>
+      </div>
+      <div>
+        <span class="hy-lo-tag">DIURETICS · PREGNANCY</span>
+        <div class="hy-block"><h4>Thiazide — HCTZ</h4><ul>
+          <li>Blocks <strong>NCC in DCT</strong>; + direct vasodilation</li>
+          <li>HTN first line · edema · <strong>↓ Ca²⁺ excretion</strong> (stones, osteoporosis)</li>
+          <li>AE: ↓Na⁺, <strong>hypokalemic metabolic alkalosis</strong>, <strong>hyperuricemia/gout</strong>, photosensitivity, glucose intolerance, hyperlipidemia</li>
+        </ul></div>
+        <div class="hy-block"><h4>K⁺-sparing</h4><ul>
+          <li><strong>Spironolactone/eplerenone</strong>: block MR nuclear translocation · HTN, edema, hypoK, hyperaldo · works in liver failure/nephrotic</li>
+          <li>AE: <strong>hyperK</strong>, hyperchloremic acidosis, agranulocytosis; spiro: <strong>gynecomastia</strong>, impotence, menstrual changes</li>
+          <li><strong>Amiloride/triamterene</strong>: block ENaC · hyperK, acidosis, dyspepsia, headache</li>
+        </ul></div>
+        <div class="hy-block"><h4>Pregnancy</h4><ul>
+          <li><strong>Use:</strong> labetalol, DHP CCB (nifedipine ER), α-methyldopa; hydralazine acute only</li>
+          <li><strong>Avoid:</strong> ACEi/ARB/aliskiren (fetal renal toxicity, oligohydramnios; worst 2nd–3rd tri — switch, don't panic), nitroprusside, spironolactone, <strong>atenolol</strong> (low birth weight)</li>
+          <li>Labetalol: α1 block keeps <strong>placental flow</strong> · methyldopa: central α2 agonist, longest safety</li>
+          <li>ACOG: ≥140/90; severe ≥160/110; chronic = before 20 wk</li>
+        </ul></div>
+      </div>
+    </div>
+    <div class="hy-block" style="margin-top:4px">
+      <h4>Master drug reference</h4>
+      <table class="hy-mini-table">
+        <tr><th>Drug (class)</th><th>MOA</th><th>Key indications</th><th>Key adverse effects</th><th>Contraindications / DDIs</th></tr>
+        <tr><td>Captopril, lisinopril, enalapril (ACEi)</td><td>Inhibit ACE; ↑ bradykinin</td><td>HTN, HF</td><td>HyperK, angioedema, dry cough</td><td>Angioedema hx, pregnancy; + ARB/aliskiren</td></tr>
+        <tr><td>Losartan, valsartan (ARB)</td><td>AT1R antagonist</td><td>HTN; DN (losartan); HF, MI (valsartan)</td><td>Rhabdo, hepatotoxicity, renal failure, diarrhea, hyperK</td><td>Pregnancy; + ACEi; + aliskiren in DM</td></tr>
+        <tr><td>Aliskiren (renin inhibitor)</td><td>Blocks renin</td><td>HTN</td><td>HyperK</td><td>Pregnancy; any other RASi</td></tr>
+        <tr><td>Amlodipine, nifedipine (DHP CCB)</td><td>L-type block, vessels</td><td>HTN, angina; pregnancy</td><td>Reflex tachycardia, edema, flushing, headache</td><td>IR nifedipine only acute</td></tr>
+        <tr><td>Diltiazem / verapamil (non-DHP)</td><td>L-type block, heart ± vessels</td><td>HTN + AF, angina</td><td>Bradycardia, AV block, ↓ contractility</td><td>+ β-blocker</td></tr>
+        <tr><td>Hydrochlorothiazide</td><td>NCC block (DCT)</td><td>HTN, edema, Ca²⁺ stones, osteoporosis</td><td>↓Na, ↓K alkalosis, gout, ↑glucose, ↑lipids, photosensitivity</td><td>—</td></tr>
+        <tr><td>Spironolactone, eplerenone</td><td>MR antagonist</td><td>HTN, edema, hypoK, hyperaldosteronism</td><td>HyperK, acidosis, gynecomastia (spiro)</td><td>Pregnancy</td></tr>
+        <tr><td>Amiloride, triamterene</td><td>ENaC block</td><td>HTN, HF (amiloride); edema (triamterene)</td><td>HyperK, acidosis</td><td>—</td></tr>
+        <tr><td>Labetalol</td><td>β + α1 antagonist</td><td>HTN in pregnancy</td><td>Bronchoconstriction, bradycardia</td><td>Asthma, heart block</td></tr>
+        <tr><td>α-Methyldopa</td><td>Central α2 agonist</td><td>HTN in pregnancy</td><td>Sedation, depression, dizziness</td><td>—</td></tr>
+        <tr><td>Prazosin</td><td>α1 antagonist</td><td>HTN + BPH</td><td>First-dose hypotension <span class="src-tag">Board</span></td><td>+ clonidine</td></tr>
+        <tr><td>Hydralazine</td><td>Direct arteriolar dilator</td><td>Acute HTN in pregnancy</td><td>Reflex tachycardia <span class="src-tag">Board</span></td><td>—</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+<div class="lightbox" id="lightbox" aria-hidden="true"><img id="lightboxImg" alt="Zoomed figure"><div class="lightbox-cap" id="lightboxCap"></div></div>
+
+<div class="floating-left" id="floatingLeft">
+  <div class="tools-menu">
+    <button class="tool-btn backtop" id="backtopBtn">↑ Top</button>
+    <button class="tool-btn" id="nextQBtn">❓ Next question <span id="qCount"></span></button>
+    <button class="tool-btn" id="recallBtn">🙈 Recall mode <span id="rcCount"></span></button>
+  </div>
+  <button class="tool-btn tools-trigger" id="toolsTrigger" onclick="toggleToolsMenu()">🧰 Study<span class="dot"></span></button>
+</div>
+
+<div class="floating-stack">
+  <div class="theme-panel" id="themePanel">
+    <div class="theme-panel-title">Choose Theme</div>
+    <div class="theme-option active" data-theme="cardio" onclick="setTheme('cardio',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#fff7f7,#b51f3a 55%,#245f89)"></div>Cardio (Default)</div>
+    <div class="theme-option" data-theme="hemo" onclick="setTheme('hemo',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#170a0d,#ff6b6b)"></div>Hemo (Dark)</div>
+    <div class="theme-option" data-theme="paper" onclick="setTheme('paper',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#faf7f2,#1a1209)"></div>Paper</div>
+    <div class="theme-option" data-theme="night" onclick="setTheme('night',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#0f1923,#e8b84b)"></div>Night</div>
+    <div class="theme-option" data-theme="ocean" onclick="setTheme('ocean',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#eef7fb,#0a5286)"></div>Ocean</div>
+    <div class="theme-option" data-theme="forest" onclick="setTheme('forest',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#f2f7f0,#155c39)"></div>Forest</div>
+    <div class="theme-option" data-theme="sepia" onclick="setTheme('sepia',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#f7ecd9,#9c3b17)"></div>Sepia</div>
+    <div class="theme-option" data-theme="slate" onclick="setTheme('slate',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#f4f5f7,#9e2c0f)"></div>Slate</div>
+  </div>
+  <div class="font-btn-row">
+    <span class="font-label">Text</span>
+    <button class="font-btn" onclick="changeFontSize(1)" title="Increase font size">A+</button>
+    <span class="font-sep">|</span>
+    <button class="font-btn" onclick="changeFontSize(-1)" title="Decrease font size">A−</button>
+  </div>
+  <button class="theme-btn" id="themeBtn" onclick="toggleThemePanel()" title="Switch theme"><span>🎨</span><span>Theme</span></button>
+</div>
+
+<footer>
+  <div class="container">
+    <div>Built from <em>Pharmacologic Management of Hypertension</em> — Kyle R. Scully, PhD, Pharmacology · UNE College of Osteopathic Medicine · Fall 2025 (full slide deck + lecture transcript; the posted "_Upload" deck is a subset). Figures are labeled with their source: lecture slides (which credit Golan, Katzung/Lippincott-style figures, the 2025 AHA/ACC guideline and ACOG), AMBOSS, UWorld and <em>Cardiovascular Pathophysiology for Pre-Clinical Students</em>. Items tagged "Board add-on" come from board-review sources, not the lecture. Personal study notes; course material remains the copyright of its authors.</div>
+    <div>Shortcuts: <kbd>J</kbd>/<kbd>K</kbd> section · <kbd>Q</kbd> next question · <kbd>R</kbd> reveal · <kbd>Esc</kbd> close</div>
+  </div>
+</footer>
+
+<script>
+var STORAGE_THEME_KEY='cardio-w13-htn-pharmacology-theme';
+var STORAGE_FONT_KEY='cardio-w13-htn-pharmacology-font';
+var STORAGE_PROGRESS_KEY='cardio-w13-htn-pharmacology-progress';
+var DEFAULT_THEME='cardio';
+var SECTION_IDS=['orientation', 's1-htn', 's2-approach', 's3-algorithm', 's4-raas', 's5-ccb', 's6-diuretics', 's7-special', 's8-cases', 'glossary'];
+
+var $  = function(s,r){return (r||document).querySelector(s);};
+var $$ = function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));};
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function storageGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+function storageSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+
+/* ============ theme ============ */
+var themePanelOpen=false;
+function toggleThemePanel(){themePanelOpen=!themePanelOpen;$('#themePanel').classList.toggle('open',themePanelOpen);}
+function syncThemeOptions(t){$$('.theme-option').forEach(function(o){o.classList.toggle('active',o.dataset.theme===t);});}
+function setTheme(t,el,skipStorage){
+  if(t===DEFAULT_THEME){document.documentElement.removeAttribute('data-theme');}
+  else{document.documentElement.setAttribute('data-theme',t);}
+  syncThemeOptions(t);
+  if(!skipStorage) storageSet(STORAGE_THEME_KEY,t);
+  setTimeout(function(){themePanelOpen=false;var p=$('#themePanel');if(p)p.classList.remove('open');},260);
+}
+document.addEventListener('click',function(e){
+  var p=$('#themePanel'),b=$('#themeBtn');
+  if(themePanelOpen&&p&&b&&!p.contains(e.target)&&!b.contains(e.target)){themePanelOpen=false;p.classList.remove('open');}
+});
+
+/* ============ font size ============ */
+var currentFontSize=16;
+function applyFontSize(size,skipStorage){
+  currentFontSize=Math.min(24,Math.max(12,Number(size)||16));
+  document.documentElement.style.fontSize=currentFontSize+'px';
+  document.body.style.fontSize=currentFontSize+'px';
+  if(!skipStorage)storageSet(STORAGE_FONT_KEY,currentFontSize);
+}
+function changeFontSize(d){applyFontSize(currentFontSize+d);}
+
+function initVisualState(){
+  var t=storageGet(STORAGE_THEME_KEY)||DEFAULT_THEME; setTheme(t,null,true);
+  var f=parseInt(storageGet(STORAGE_FONT_KEY),10);
+  applyFontSize(f&&f>=12&&f<=24?f:currentFontSize,true);
+}
+
+/* ============ lightbox ============ */
+function openLightbox(img){var lb=$('#lightbox');$('#lightboxImg').src=img.currentSrc||img.src;
+  $('#lightboxImg').alt=img.alt||'';
+  var cap=img.closest('figure')?img.closest('figure').querySelector('figcaption'):null;
+  $('#lightboxCap').innerHTML=cap?cap.innerHTML:'';
+  lb.classList.add('active');lb.setAttribute('aria-hidden','false');}
+function closeLightbox(){var lb=$('#lightbox');lb.classList.remove('active');
+  lb.setAttribute('aria-hidden','true');$('#lightboxImg').src='';}
+function initLightbox(){
+  $$('.slide-img').forEach(function(i){i.addEventListener('click',function(){openLightbox(i);});});
+  $('#lightbox').addEventListener('click',closeLightbox);
+}
+
+/* ============ scrollspy ============ */
+function initScrollspy(){
+  var links=$$('.toc-bar nav a'),map={},sections=[];
+  links.forEach(function(a){var id=a.getAttribute('href').slice(1),s=document.getElementById(id);
+    if(s){map[id]=a;sections.push(s);}});
+  if(!sections.length)return;
+  function update(){
+    var best=null,bestTop=-Infinity;
+    sections.forEach(function(s){var top=s.getBoundingClientRect().top;
+      if(top<=140&&top>bestTop){bestTop=top;best=s;}});
+    if(!best)best=sections[0];
+    links.forEach(function(a){a.classList.remove('active');});
+    if(map[best.id])map[best.id].classList.add('active');
+  }
+  window.addEventListener('scroll',update,{passive:true});update();
+}
+
+/* ============ reading progress ============ */
+function initProgress(){
+  var bar=$('#progressBar'),bt=$('#backtopBtn');
+  window.addEventListener('scroll',function(){
+    var h=document.documentElement,max=h.scrollHeight-h.clientHeight;
+    bar.style.width=(max>0?(h.scrollTop/max)*100:0)+'%';
+    if(bt)bt.classList.toggle('show',h.scrollTop>600);
+  },{passive:true});
+}
+
+/* ============ exam question reveal ============ */
+function initExamQ(){
+  $$('.exam-q').forEach(function(q){
+    var ans=q.querySelector('.answer'); if(!ans) return;
+    var b=document.createElement('button');b.className='reveal-btn';b.textContent='Reveal answer';
+    b.addEventListener('click',function(){q.classList.add('revealed');updateQCount();});
+    ans.parentNode.insertBefore(b,ans);
+  });
+  updateQCount();
+}
+function updateQCount(){
+  var all=$$('.exam-q'),done=all.filter(function(q){return q.classList.contains('revealed');});
+  var el=$('#qCount'); if(el) el.textContent=done.length+'/'+all.length;
+}
+function jumpToNextQ(){
+  var all=$$('.exam-q');if(!all.length)return;
+  var y=window.scrollY,pick=null;
+  var todo=all.filter(function(q){return !q.classList.contains('revealed');});
+  var pool=todo.length?todo:all;
+  for(var i=0;i<pool.length;i++){if(pool[i].getBoundingClientRect().top+y>y+120){pick=pool[i];break;}}
+  if(!pick)pick=pool[0];
+  var sec=pick.closest('.section');
+  if(sec&&sec.classList.contains('collapsed'))toggleSection(sec,false);
+  setTimeout(function(){
+    pick.scrollIntoView({behavior:'smooth',block:'center'});
+    pick.classList.remove('q-flash');void pick.offsetWidth;pick.classList.add('q-flash');
+  },sec&&sec.classList.contains('collapsed')?0:60);
+}
+
+/* ============ per-section progress ============ */
+var progress={};
+function loadProgress(){try{progress=JSON.parse(storageGet(STORAGE_PROGRESS_KEY)||'{}');}catch(e){progress={};}}
+function saveProgress(){storageSet(STORAGE_PROGRESS_KEY,JSON.stringify(progress));}
+function renderProgress(){
+  var reviewed=0;
+  SECTION_IDS.forEach(function(id){
+    var st=progress[id]||{},sec=document.getElementById(id);
+    if(st.reviewed)reviewed++;
+    if(sec){
+      var tools=sec.querySelector('.sec-tools');
+      if(tools){
+        tools.querySelector('.st-rev').classList.toggle('on',!!st.reviewed);
+        $$('.st-conf',tools).forEach(function(b){b.classList.toggle('on',+b.dataset.v===st.conf);});
+      }
+    }
+    var link=$('.toc-bar nav a[href="#'+id+'"]');
+    if(link){link.classList.toggle('done',!!st.reviewed);
+      link.classList.remove('conf-1','conf-2','conf-3');
+      if(st.conf)link.classList.add('conf-'+st.conf);}
+  });
+  var chip=$('#progressChip');
+  if(chip)chip.textContent=reviewed+'/'+SECTION_IDS.length+' reviewed';
+}
+function jumpToNextTodo(){
+  var target=null;
+  for(var i=0;i<SECTION_IDS.length&&!target;i++){var st=progress[SECTION_IDS[i]]||{};if(!st.reviewed)target=SECTION_IDS[i];}
+  for(var c=1;c<=2&&!target;c++){
+    for(var j=0;j<SECTION_IDS.length&&!target;j++){var s2=progress[SECTION_IDS[j]]||{};if(s2.conf===c)target=SECTION_IDS[j];}}
+  if(!target)target=SECTION_IDS[0];
+  var sec=document.getElementById(target); if(!sec)return;
+  if(sec.classList.contains('collapsed'))toggleSection(sec,false);
+  sec.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* ============ section tools + collapse ============ */
+function toggleSection(sec,force){
+  var willCollapse=(typeof force==='boolean')?force:!sec.classList.contains('collapsed');
+  sec.classList.toggle('collapsed',willCollapse);
+  var b=sec.querySelector('.st-collapse'); if(b)b.textContent=willCollapse?'▸ Expand':'▾ Collapse';
+}
+function toggleAllSections(){
+  var anyOpen=SECTION_IDS.some(function(id){var s=document.getElementById(id);return s&&!s.classList.contains('collapsed');});
+  SECTION_IDS.forEach(function(id){var s=document.getElementById(id);if(s)toggleSection(s,anyOpen);});
+  var b=$('#collapseAllBtn'); if(b)b.textContent=anyOpen?'⊞ Expand all':'⊟ Collapse all';
+}
+function initSectionTools(){
+  SECTION_IDS.forEach(function(id){
+    var sec=document.getElementById(id); if(!sec)return;
+    var container=sec.querySelector('.container'); if(!container)return;
+    var anchor=container.querySelector('.section-title'); if(!anchor)return;
+    var tools=document.createElement('div');
+    tools.className='sec-tools';
+    tools.innerHTML='<button class="st-rev">✓ Reviewed</button>'+
+      '<span class="st-lab">confidence</span>'+
+      '<button class="st-conf" data-v="1">\u{1F534} Shaky</button>'+
+      '<button class="st-conf" data-v="2">\u{1F7E1} Okay</button>'+
+      '<button class="st-conf" data-v="3">\u{1F7E2} Solid</button>'+
+      '<button class="st-collapse">▾ Collapse</button>';
+    anchor.parentNode.insertBefore(tools,anchor.nextSibling);
+    var note=document.createElement('div');
+    note.className='recall-note';
+    note.textContent='RECALL MODE — every bolded fact below is hidden. Say the answer out loud, then click the block to check it.';
+    tools.parentNode.insertBefore(note,tools.nextSibling);
+    var outer=document.createElement('div');outer.className='sec-body-outer';
+    var inner=document.createElement('div');inner.className='sec-body-inner';
+    outer.appendChild(inner);
+    while(note.nextSibling) inner.appendChild(note.nextSibling);
+    container.appendChild(outer);
+    tools.querySelector('.st-rev').addEventListener('click',function(){
+      progress[id]=progress[id]||{};progress[id].reviewed=!progress[id].reviewed;saveProgress();renderProgress();});
+    $$('.st-conf',tools).forEach(function(b){
+      b.addEventListener('click',function(){
+        progress[id]=progress[id]||{};
+        progress[id].conf=(progress[id].conf===+b.dataset.v)?0:+b.dataset.v;
+        saveProgress();renderProgress();});
+    });
+    tools.querySelector('.st-collapse').addEventListener('click',function(){toggleSection(sec);});
+  });
+  renderProgress();
+}
+
+/* ============ recall mode ============ */
+var recallMode=false;
+function recallTargets(){
+  return $$('.sec-body-inner :is(p,li,td,h4,dd) strong').filter(function(s){
+    return !s.closest('.exam-q')&&!s.closest('.tq-bar')&&!s.closest('.game')&&!s.closest('.abbr-strip')&&!s.closest('.legend')&&!s.closest('.watch');});
+}
+function updateRecallCount(){
+  var t=recallTargets(),o=t.filter(function(s){return s.classList.contains('rc-open');});
+  var el=$('#rcCount'); if(el) el.textContent=recallMode?(o.length+'/'+t.length):'';
+}
+function toggleRecall(){
+  recallMode=!recallMode;
+  document.body.classList.toggle('recall-mode',recallMode);
+  $('#recallBtn').classList.toggle('on',recallMode);
+  if(!recallMode) recallTargets().forEach(function(s){s.classList.remove('rc-open');});
+  else{
+    var allCollapsed=SECTION_IDS.every(function(id){var s=document.getElementById(id);return !s||s.classList.contains('collapsed');});
+    if(allCollapsed) toggleAllSections();
+  }
+  syncToolsDot();updateRecallCount();
+}
+function initRecall(){
+  document.addEventListener('click',function(e){
+    if(!recallMode)return;
+    var s=e.target.closest?e.target.closest('strong'):null;
+    if(!s||s.classList.contains('rc-open'))return;
+    if(s.closest('.exam-q')||s.closest('.game')||s.closest('.abbr-strip'))return;
+    if(!s.closest('.sec-body-inner'))return;
+    e.stopPropagation();s.classList.add('rc-open');updateRecallCount();
+  },true);
+}
+function syncToolsDot(){var t=$('#toolsTrigger');if(t)t.classList.toggle('busy',recallMode);}
+function toggleToolsMenu(){$('#floatingLeft').classList.toggle('open');}
+
+/* ============ HY one-pager ============ */
+function openHY(){var m=$('#hyModal');if(!m)return;m.classList.add('open');
+  document.body.classList.add('hy-mode');document.body.style.overflow='hidden';}
+function closeHY(){var m=$('#hyModal');if(!m)return;m.classList.remove('open');
+  document.body.classList.remove('hy-mode');document.body.style.overflow='';}
+function printHY(){window.print();}
+
+/* ============ table quiz ============ */
+function initTableQuiz(){
+  $$('table').forEach(function(table){
+    if(table.classList.contains('hy-mini-table'))return;
+    if(table.closest('.game'))return;
+    var headRow=table.rows[0]; if(!headRow)return;
+    var headers=Array.prototype.slice.call(headRow.cells).map(function(c){return c.textContent.trim();});
+    if(headers.length<2)return;
+    var bar=document.createElement('div');bar.className='tq-bar';
+    var toggle=document.createElement('button');toggle.className='tq-toggle';toggle.textContent='\u{1F9E9} Quiz this table';
+    var cols=document.createElement('div');cols.className='tq-cols';cols.style.display='none';
+    var start=document.createElement('button');start.className='tq-start';start.textContent='▶ Start';
+    start.disabled=true;start.style.display='none';
+    var shuf=document.createElement('button');shuf.className='tq-shuffle';shuf.textContent='\u{1F500} Shuffle rows';shuf.style.display='none';
+    var reset=document.createElement('button');reset.className='tq-reset';reset.textContent='↺ Reset';reset.style.display='none';
+    var score=document.createElement('span');score.className='tq-score';
+    bar.appendChild(toggle);bar.appendChild(cols);bar.appendChild(shuf);bar.appendChild(start);bar.appendChild(reset);bar.appendChild(score);
+    var host=table.parentNode.classList.contains('tbl-scroll')?table.parentNode:table;
+    host.parentNode.insertBefore(bar,host);
+
+    var sel=new Set(),running=false,hidden=[],revealed=0,originalOrder=null;
+    headers.forEach(function(h,i){
+      var b=document.createElement('button');b.className='tq-col-btn';b.textContent=h||('col '+(i+1));
+      b.addEventListener('click',function(){
+        if(running)return;
+        if(sel.has(i)){sel.delete(i);b.classList.remove('sel');}else{sel.add(i);b.classList.add('sel');}
+        start.disabled=sel.size===0;
+      });
+      cols.appendChild(b);
+    });
+    function dataRows(){
+      var parent=table.tBodies[0]||table;
+      return Array.prototype.slice.call(parent.rows).filter(function(r){return !r.querySelector('th')||r!==headRow;})
+        .filter(function(r){return r!==headRow;});
+    }
+    toggle.addEventListener('click',function(){
+      var open=cols.style.display==='none';
+      cols.style.display=open?'flex':'none';
+      start.style.display=shuf.style.display=open?'':'none';
+      toggle.classList.toggle('active',open);
+      toggle.textContent=open?'✕ Close quiz':'\u{1F9E9} Quiz this table';
+      if(!open)doReset();
+    });
+    shuf.addEventListener('click',function(){
+      var parent=table.tBodies[0]||table;
+      var rows=dataRows();
+      if(!originalOrder)originalOrder=rows.slice();
+      shuffle(rows).forEach(function(r){parent.appendChild(r);});
+    });
+    function updateScore(){
+      score.textContent=revealed+' / '+hidden.length+' revealed';
+      score.classList.toggle('done',hidden.length>0&&revealed===hidden.length);
+      if(hidden.length>0&&revealed===hidden.length)score.textContent='\u{1F389} '+revealed+' / '+hidden.length;
+    }
+    start.addEventListener('click',function(){
+      if(running||!sel.size)return;
+      running=true;hidden=[];revealed=0;
+      dataRows().forEach(function(r){
+        Array.prototype.slice.call(r.cells).forEach(function(c,i){
+          if(!sel.has(i)||!c.textContent.trim())return;
+          var w=document.createElement('span');w.className='tq-cell-content';w.innerHTML=c.innerHTML;
+          c.innerHTML='';c.appendChild(w);c.classList.add('quiz-hidden-cell');
+          c.dataset.tqOrig=w.innerHTML;
+          hidden.push(c);
+        });
+      });
+      reset.style.display='';start.disabled=true;updateScore();
+    });
+    table.addEventListener('click',function(e){
+      var c=e.target.closest?e.target.closest('td.quiz-hidden-cell'):null;
+      if(!c)return;
+      c.classList.remove('quiz-hidden-cell');c.innerHTML=c.dataset.tqOrig;revealed++;updateScore();
+    });
+    function doReset(){
+      hidden.forEach(function(c){if(c.classList.contains('quiz-hidden-cell')){c.classList.remove('quiz-hidden-cell');c.innerHTML=c.dataset.tqOrig;}});
+      if(originalOrder){var parent=table.tBodies[0]||table;originalOrder.forEach(function(r){parent.appendChild(r);});}
+      hidden=[];revealed=0;running=false;score.textContent='';score.classList.remove('done');
+      start.disabled=sel.size===0;reset.style.display='none';
+    }
+    reset.addEventListener('click',doReset);
+  });
+}
+
+/* ============ keyboard shortcuts ============ */
+function initKeys(){
+  document.addEventListener('keydown',function(e){
+    if(e.metaKey||e.ctrlKey||e.altKey)return;
+    var t=e.target,tag=t&&t.tagName;
+    if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT'||(t&&t.isContentEditable))return;
+    var hy=$('#hyModal');
+    if(e.key==='Escape'){ if(hy&&hy.classList.contains('open'))closeHY(); closeLightbox(); return; }
+    if(hy&&hy.classList.contains('open'))return;
+    var k=e.key.toLowerCase();
+    if(k==='q'){e.preventDefault();jumpToNextQ();return;}
+    if(k==='r'){
+      e.preventDefault();
+      var best=null,bd=Infinity,mid=window.innerHeight/2;
+      $$('.exam-q').forEach(function(q){var d=Math.abs(q.getBoundingClientRect().top+q.offsetHeight/2-mid);
+        if(d<bd){bd=d;best=q;}});
+      if(best){best.classList.add('revealed');updateQCount();}
+      return;
+    }
+    if(k==='j'||k==='k'){
+      e.preventDefault();
+      var y=window.scrollY+window.innerHeight*0.3,cur=0;
+      SECTION_IDS.forEach(function(id,i){var s=document.getElementById(id);if(s&&s.offsetTop<=y)cur=i;});
+      var nx=k==='j'?Math.min(SECTION_IDS.length-1,cur+1):Math.max(0,cur-1);
+      var target=document.getElementById(SECTION_IDS[nx]);
+      if(target)target.scrollIntoView({behavior:'smooth',block:'start'});
+    }
+  });
+}
+
+
+/* ============ lazy figures: fade in when loaded; force-load everything before printing ============ */
+function initLazyFigures(){
+  $$('.fig-frame img').forEach(function(img){
+    var done=function(){img.parentNode.classList.add('loaded');};
+    if(img.complete&&img.naturalWidth)done();
+    else{img.addEventListener('load',done);img.addEventListener('error',done);}
+  });
+  window.addEventListener('beforeprint',function(){$$('img[loading="lazy"]').forEach(function(i){i.loading='eager';});});
+}
+/* ============ video facade: swap the thumbnail for the real player only on click ============ */
+function initVideos(){
+  $$('.vid').forEach(function(b){
+    b.addEventListener('click',function(){
+      if(b.classList.contains('playing'))return;
+      var f=document.createElement('iframe');
+      f.src='https://www.youtube-nocookie.com/embed/'+b.dataset.yt+'?autoplay=1&rel=0';
+      f.title=b.dataset.title||'Video';
+      f.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+      f.allowFullscreen=true;
+      var t=b.querySelector('.vid-thumb');t.replaceWith(f);b.classList.add('playing');
+    });
+  });
+}
+
+/* ============ boot ============ */
+document.addEventListener('DOMContentLoaded',function(){
+  initVisualState();
+  loadProgress();
+  initSectionTools();
+  initExamQ();
+  initTableQuiz();
+  initLightbox();
+  initLazyFigures();
+  initVideos();
+  initScrollspy();
+  initProgress();
+  initRecall();
+  initKeys();
+  var hy=$('#hyModal');
+  if(hy) hy.addEventListener('click',function(e){if(e.target===this)closeHY();});
+  var rb=$('#recallBtn'); if(rb) rb.addEventListener('click',toggleRecall);
+  var nq=$('#nextQBtn'); if(nq) nq.addEventListener('click',jumpToNextQ);
+  var bt=$('#backtopBtn'); if(bt) bt.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});
+  document.addEventListener('click',function(e){
+    var fl=$('#floatingLeft');
+    if(fl&&fl.classList.contains('open')&&!fl.contains(e.target))fl.classList.remove('open');
+  });
+});
+
+
+
+
+</script>
+</body>
+</html>

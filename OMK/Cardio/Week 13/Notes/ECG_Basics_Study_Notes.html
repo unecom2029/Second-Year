@@ -1,0 +1,2066 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+(function(){
+  var NOTE_AUTH_KEY='une-study-hub-remembered-auth-v1';
+  var NOTE_LOGIN_URL='../../../../index.html?login=notes';
+
+  function readCookie(name){
+    try{
+      var prefix=encodeURIComponent(name)+'=';
+      var parts=String(document.cookie||'').split(';');
+      for(var i=0;i<parts.length;i++){
+        var part=parts[i].trim();
+        if(part.indexOf(prefix)===0)return decodeURIComponent(part.slice(prefix.length));
+      }
+    }catch(err){}
+    return null;
+  }
+  function readAuthPayload(){
+    try{
+      var stored=localStorage.getItem(NOTE_AUTH_KEY);
+      if(stored)return stored;
+    }catch(err){}
+    return readCookie(NOTE_AUTH_KEY);
+  }
+  function hasValidNoteAuth(){
+    var raw=readAuthPayload();
+    if(!raw)return false;
+    try{
+      var parsed=JSON.parse(raw);
+      var email=String(parsed&&parsed.email||'').trim().toLowerCase();
+      var expiresAt=Number(parsed&&parsed.expiresAt);
+      return /@une\.edu$/.test(email)&&expiresAt&&Date.now()<expiresAt;
+    }catch(err){return false}
+  }
+  function syncNoteAuth(){
+    document.documentElement.setAttribute('data-note-auth',hasValidNoteAuth()?'unlocked':'locked');
+  }
+  window.openNoteLogin=function(){
+    var loginWindow=window.open(NOTE_LOGIN_URL,'uneStudyHubLogin');
+    if(!loginWindow)window.location.href=NOTE_LOGIN_URL;
+  };
+  window.refreshNoteAuth=syncNoteAuth;
+  window.addEventListener('message',function(event){
+    if(event&&event.data&&event.data.type==='une-study-hub-auth-complete')syncNoteAuth();
+  });
+  window.addEventListener('storage',function(event){
+    if(!event||event.key===NOTE_AUTH_KEY)syncNoteAuth();
+  });
+  window.addEventListener('focus',syncNoteAuth);
+  window.setInterval(syncNoteAuth,1000);
+  syncNoteAuth();
+})();
+</script>
+<title>ECG Basics — Study Notes</title>
+<link rel="icon" href="data:image/svg+xml,<svg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'><text%20y='.9em'%20font-size='56'>📈</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Cardio (default) — soft ECG blush page, arterial red accent, clinical-blue accent2 */
+  --ink:#25161a; --paper:#fff7f7; --cream:#f5e2e6;
+  --accent:#b51f3a; --accent2:#245f89; --gold:#b77b22; --muted:#75535c; --border:#dfb9c2;
+  --highlight:#f8e1a9; --highlight2:#d7e9f4; --green-bg:#d9eee2; --red-bg:#f8d5dc;
+  --blue-bg:#d6e9f5; --purple-bg:#eadcf0; --hero-bg:#173e63;
+  --panel-dark-bg:#173e63; --panel-dark-text:#f7fbff;
+  /* Theme-INDEPENDENT chip colors (sit on saturated / fixed-dark backgrounds in every theme) */
+  --chip-red:#b51f3a; --chip-blue:#245f89; --chip-fg:#ffffff; --panel-dark-accent:#ffd27a;
+  --hero-heading:#f7fbff; --hero-sub:#c8dceb;
+  --hero-meta-bg:rgba(255,255,255,0.08); --hero-meta-border:rgba(240,138,155,0.28);
+  --hero-meta-label:#a9c5d8; --hero-meta-value:#fff1f3; --hero-accent:#ff9aae;
+  --floating-ui-bg:#173e63; --floating-ui-fg:#f7fbff; --floating-ui-shadow:0 3px 12px rgba(23,62,99,0.26);
+  --quiz-overlay:rgba(36,95,137,.38); --quiz-overlay-hover:rgba(36,95,137,.62);
+}
+html:not([data-theme]) .hero{background:
+  radial-gradient(circle at 88% 18%,rgba(181,31,58,0.42),transparent 30%),
+  linear-gradient(135deg,#102e4b,#173e63 62%,#6f1d32)}
+html:not([data-theme]) .toc-bar{border-right-color:#2c5f86}
+
+[data-theme="hemo"]{
+  --ink:#f3dfe1; --paper:#170a0d; --cream:#2b1218;
+  --accent:#ff6b6b; --accent2:#8fb8ea; --gold:#e7b95c; --muted:#b4919a; --border:#431d25;
+  --highlight:#402c14; --highlight2:#33161f; --green-bg:#11291e; --red-bg:#45151a;
+  --blue-bg:#12243c; --purple-bg:#261b3a; --hero-bg:#0c0407;
+  --panel-dark-bg:#2e1017; --panel-dark-text:#f9e7e9;
+  --hero-heading:#fbeaea; --hero-sub:#c9a3a8;
+  --hero-meta-bg:rgba(255,255,255,0.06); --hero-meta-border:rgba(255,107,107,0.18);
+  --hero-meta-label:#b4919a; --hero-meta-value:#ffd9d0; --hero-accent:#ff6b6b;
+  --floating-ui-bg:#0c0407; --floating-ui-fg:#fbeaea; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.45);
+  --quiz-overlay:rgba(143,184,234,.40); --quiz-overlay-hover:rgba(143,184,234,.62);
+}
+[data-theme="hemo"] .toc-bar{border-right-color:#431d25}
+
+[data-theme="paper"]{
+  --hero-accent:#f08a6e;
+  --ink:#1a1209; --paper:#faf7f2; --cream:#ece1cd;
+  --accent:#a32c14; --accent2:#2c5f8a; --gold:#c9922a; --muted:#6b5e4e; --border:#d4cabb;
+  --highlight:#fbe4a0; --highlight2:#cfe4f7; --green-bg:#d7f0da; --red-bg:#f8d6d0;
+  --blue-bg:#d2e7f9; --purple-bg:#e6dbfa; --hero-bg:#1a1209;
+  --panel-dark-bg:#1a1209; --panel-dark-text:#faf7f2;
+  --hero-heading:#f5ede0; --hero-sub:#c9bcad;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#8a7a6a; --hero-meta-value:#f0e0c8;
+  --floating-ui-bg:#3a3030; --floating-ui-fg:#f5ede0; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(44,95,138,.50); --quiz-overlay-hover:rgba(44,95,138,.78);
+}
+[data-theme="night"]{
+  --hero-accent:#e8b84b;
+  --ink:#e0e8f0; --paper:#0f1923; --cream:#1b2942;
+  --accent:#e8b84b; --accent2:#4aa8d8; --gold:#e8b84b; --muted:#94abc0; --border:#1e3048;
+  --highlight:#3a3016; --highlight2:#12283a; --green-bg:#10281c; --red-bg:#2e1616;
+  --blue-bg:#10233a; --purple-bg:#201a38; --hero-bg:#070e15;
+  --panel-dark-bg:#101a26; --panel-dark-text:#eef5fb;
+  --hero-heading:#f4f9ff; --hero-sub:#b8cad8;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#8fa4b8; --hero-meta-value:#f4f9ff;
+  --floating-ui-bg:#070e15; --floating-ui-fg:#f4f9ff; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(74,168,216,.42); --quiz-overlay-hover:rgba(74,168,216,.62);
+}
+[data-theme="ocean"]{
+  --hero-accent:#ff9aa5;
+  --ink:#0b2436; --paper:#eef7fb; --cream:#cdeaf5;
+  --accent:#a32536; --accent2:#0a5286; --gold:#d9a441; --muted:#4f7185; --border:#a8d4e8;
+  --highlight:#ffe6ad; --highlight2:#bfe3f2; --green-bg:#c9f0dc; --red-bg:#fad9d5;
+  --blue-bg:#c3e4f6; --purple-bg:#e1d7f6; --hero-bg:#0a3a5c;
+  --panel-dark-bg:#0b2436; --panel-dark-text:#eef7fb;
+  --hero-heading:#eaf6fd; --hero-sub:#a9c9dc;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#7ba0b8; --hero-meta-value:#d9edfa;
+  --floating-ui-bg:#0a3a5c; --floating-ui-fg:#eaf6fd; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(15,111,176,.48); --quiz-overlay-hover:rgba(15,111,176,.74);
+}
+[data-theme="forest"]{
+  --hero-accent:#f0a07c;
+  --ink:#16241a; --paper:#f2f7f0; --cream:#d7ead2;
+  --accent:#8f3418; --accent2:#155c39; --gold:#b8860b; --muted:#52684f; --border:#b7d4ae;
+  --highlight:#f3e6a0; --highlight2:#cbe4c4; --green-bg:#c7ecc0; --red-bg:#f7ddd0;
+  --blue-bg:#cbe6df; --purple-bg:#e1dbee; --hero-bg:#12301c;
+  --panel-dark-bg:#16241a; --panel-dark-text:#f2f7f0;
+  --hero-heading:#eef7ea; --hero-sub:#b6cfb0;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#87a382; --hero-meta-value:#e2f2da;
+  --floating-ui-bg:#12301c; --floating-ui-fg:#eef7ea; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(31,122,77,.48); --quiz-overlay-hover:rgba(31,122,77,.74);
+}
+[data-theme="sepia"]{
+  --hero-accent:#f0a57e;
+  --ink:#3a2414; --paper:#f7ecd9; --cream:#ecd7ae;
+  --accent:#9c3b17; --accent2:#2f5f6b; --gold:#8b5a17; --muted:#7a614a; --border:#d9bd8c;
+  --highlight:#f0d38a; --highlight2:#d7c39a; --green-bg:#dbe3bc; --red-bg:#f0d0c0;
+  --blue-bg:#cfdedd; --purple-bg:#e3d3e0; --hero-bg:#3f2814;
+  --panel-dark-bg:#3a2414; --panel-dark-text:#f7ecd9;
+  --hero-heading:#f7ecd9; --hero-sub:#cbb190;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#a08a68; --hero-meta-value:#f2ddb4;
+  --floating-ui-bg:#3f2814; --floating-ui-fg:#f7ecd9; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(47,95,107,.50); --quiz-overlay-hover:rgba(47,95,107,.78);
+}
+[data-theme="slate"]{
+  --hero-accent:#ff9a78;
+  --ink:#1c2229; --paper:#f4f5f7; --cream:#dde3ea;
+  --accent:#9e2c0f; --accent2:#2b5268; --gold:#a8862a; --muted:#5c6a76; --border:#c8d0d8;
+  --highlight:#f2e3ac; --highlight2:#d5e2ec; --green-bg:#d6ead9; --red-bg:#f4d8d0;
+  --blue-bg:#d3e2ef; --purple-bg:#dfd9ec; --hero-bg:#1c2530;
+  --panel-dark-bg:#1c2530; --panel-dark-text:#f4f5f7;
+  --hero-heading:#eef1f5; --hero-sub:#b3bfca;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#8595a3; --hero-meta-value:#e4ebf2;
+  --floating-ui-bg:#1c2530; --floating-ui-fg:#eef1f5; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(51,96,122,.50); --quiz-overlay-hover:rgba(51,96,122,.78);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;padding-left:var(--toc-w);background:var(--paper);color:var(--ink);
+  font-family:'Source Serif 4',Georgia,serif;font-size:16px;line-height:1.65;overflow-wrap:break-word;
+  transition:background .25s,color .25s}
+:root{--toc-w:258px}
+h1,h2,h3,h4{font-family:'Playfair Display',Georgia,serif;line-height:1.18}
+a{color:var(--accent2)}
+strong{color:var(--accent2)}
+.container{max-width:min(1220px,94%);margin:0 auto}
+img{max-width:100%}
+
+/* ---------------- reading progress ---------------- */
+.progress-bar{position:fixed;top:0;left:0;height:3px;width:0;z-index:200;
+  background:linear-gradient(90deg,var(--accent2),var(--accent));transition:width .1s linear}
+
+/* ---------------- TOC sidebar ---------------- */
+.toc-bar{position:fixed;top:0;left:0;bottom:0;z-index:90;width:var(--toc-w);
+  background:var(--hero-bg);border-right:1px solid rgba(255,255,255,.10);overflow-y:auto;overflow-x:hidden}
+.toc-bar::-webkit-scrollbar{width:6px}
+.toc-bar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14);border-radius:3px}
+.toc-bar::-webkit-scrollbar-track{background:transparent}
+.toc-head{padding:24px 20px 16px;border-bottom:1px solid rgba(255,255,255,.10)}
+.toc-eyebrow{display:block;font-family:'JetBrains Mono',monospace;font-size:.5rem;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--hero-meta-label);margin-bottom:7px}
+.toc-name{display:block;font-family:'Playfair Display',serif;font-weight:700;font-size:1.2rem;
+  color:var(--hero-heading);line-height:1.15}
+.toc-name em{font-style:normal;color:var(--hero-accent)}
+.toc-group{font-family:'JetBrains Mono',monospace;font-size:.49rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--hero-meta-label);opacity:.75;margin:0;padding:18px 20px 7px}
+.toc-bar nav{display:flex;flex-direction:column;padding:0 0 26px}
+.toc-bar a{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:'Source Serif 4',Georgia,serif;
+  font-size:.85rem;line-height:1.3;color:var(--hero-sub);padding:8px 16px 8px 17px;
+  border-left:3px solid transparent;transition:color .15s,border-color .15s,background .15s}
+.toc-num{flex:none;width:21px;height:21px;border-radius:50%;border:1px solid rgba(255,255,255,.18);
+  display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;
+  font-size:.56rem;font-weight:700;color:var(--hero-meta-label);transition:all .15s}
+.toc-num.dot{border:none;position:relative}
+.toc-num.dot::before{content:'';width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.28);transition:background .15s}
+.toc-bar a:hover{color:var(--hero-heading);background:rgba(255,255,255,.05)}
+.toc-bar a:hover .toc-num{border-color:rgba(255,255,255,.4);color:var(--hero-heading)}
+.toc-bar a:hover .toc-num.dot::before{background:var(--accent)}
+.toc-bar a.active{color:var(--hero-heading);border-left-color:var(--accent);background:rgba(255,255,255,.06);font-weight:600}
+.toc-bar a.active .toc-num{background:var(--chip-red);border-color:var(--chip-red);color:var(--chip-fg)}
+.toc-bar a.active .toc-num.dot{background:none;border-color:transparent}
+.toc-bar a.active .toc-num.dot::before{background:var(--accent);width:7px;height:7px}
+.toc-check{margin-left:auto;font-size:.72rem;display:none;line-height:1}
+.toc-bar a.done .toc-check{display:inline}
+.toc-bar a.conf-1 .toc-check{color:#e0564a}
+.toc-bar a.conf-2 .toc-check{color:#d6a12a}
+.toc-bar a.conf-3 .toc-check{color:#3d9c5c}
+.toc-tools{display:flex;flex-direction:column;gap:6px;padding:14px 14px 0;margin-top:8px;
+  border-top:1px solid rgba(255,255,255,.10)}
+.toc-chip{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);color:var(--hero-sub);
+  font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.05em;padding:7px 9px;
+  border-radius:8px;cursor:pointer;text-align:left;transition:background .15s,color .15s}
+.toc-chip:hover{background:rgba(255,255,255,.14);color:var(--hero-heading)}
+.toc-hy-btn{display:flex;align-items:center;justify-content:center;gap:7px;width:calc(100% - 28px);
+  margin:15px 14px 2px;background:var(--gold);color:#2a1a00;border:none;padding:11px 10px;border-radius:24px;
+  cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.04em;
+  line-height:1.25;text-align:center;transition:transform .15s,box-shadow .15s}
+.toc-hy-btn:hover{transform:translateY(-1px);box-shadow:0 4px 13px rgba(0,0,0,.32)}
+
+/* ---------------- hero ---------------- */
+.hero{background:var(--hero-bg);padding:52px 0 64px;width:100%;position:relative;overflow:hidden}
+.hero-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--hero-meta-label);margin-bottom:16px}
+.hero h1{margin:0 0 12px;font-size:clamp(2rem,4.4vw,3.3rem);font-weight:900;color:var(--hero-heading);letter-spacing:-.01em}
+.hero h1 span{color:var(--hero-accent)}
+.hero-sub{margin:0 0 20px;max-width:66ch;color:var(--hero-sub);font-size:1.03rem}
+.hero-meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.hero-meta-item{background:var(--hero-meta-bg);border:1px solid var(--hero-meta-border);border-radius:9px;
+  padding:9px 15px;min-width:118px}
+.hero-meta-item .label{display:block;font-family:'JetBrains Mono',monospace;font-size:.5rem;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--hero-meta-label);margin-bottom:4px}
+.hero-meta-item .value{display:block;font-family:'Playfair Display',serif;font-weight:700;font-size:1.02rem;color:var(--hero-meta-value)}
+.hy-btn{display:none;align-items:center;gap:8px;background:var(--gold);color:#2a1a00;border:none;padding:12px 22px;
+  border-radius:30px;font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700;letter-spacing:.04em;
+  cursor:pointer;margin-top:4px;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+
+/* ---------------- sections ---------------- */
+.section{padding:46px 0 8px;border-bottom:1px solid var(--border);scroll-margin-top:20px}
+.section:last-of-type{border-bottom:none}
+.badge-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.lo-badge{display:inline-block;background:var(--chip-red);color:var(--chip-fg);font-family:'JetBrains Mono',monospace;
+  font-size:.6rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;padding:6px 13px;border-radius:20px}
+.lo-badge.alt{background:var(--chip-blue)}
+.section-label{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 6px}
+.section-title{margin:0 0 6px;font-size:clamp(1.55rem,3vw,2.3rem);font-weight:700;
+  border-bottom:3px solid var(--accent);display:inline-block;padding-bottom:6px}
+.section h3{margin:30px 0 8px;font-size:1.24rem;border-left:4px solid var(--accent2);padding-left:11px}
+.section h4{margin:18px 0 6px;font-size:1.03rem}
+.lede{font-size:1.05rem;color:var(--muted);max-width:74ch}
+
+/* section tools (injected) */
+.sec-tools{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:14px 0 4px;padding:8px 12px;
+  background:var(--cream);border:1px solid var(--border);border-radius:9px;
+  font-family:'JetBrains Mono',monospace;font-size:.6rem}
+.sec-tools .st-lab{color:var(--muted);text-transform:uppercase;letter-spacing:.11em}
+.sec-tools button{font-family:'JetBrains Mono',monospace;font-size:.6rem;border:1px solid var(--border);
+  background:var(--paper);color:var(--ink);border-radius:20px;padding:4px 11px;cursor:pointer;transition:all .15s}
+.sec-tools button:hover{border-color:var(--accent2)}
+.sec-tools button.on{background:var(--accent2);color:#fff;border-color:var(--accent2)}
+.sec-tools .st-collapse{margin-left:auto}
+.sec-body-outer{display:grid;grid-template-rows:1fr;transition:grid-template-rows .35s ease}
+.sec-body-inner{overflow:hidden;min-height:0}
+.section.collapsed .sec-body-outer{grid-template-rows:0fr}
+.recall-note{display:none;margin:12px 0;padding:9px 13px;border:1px dashed var(--accent2);border-radius:8px;
+  background:var(--blue-bg);font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--ink)}
+body.recall-mode .recall-note{display:block}
+
+/* ---------------- callouts ---------------- */
+.callout{border-left:5px solid var(--accent2);border-radius:0 9px 9px 0;padding:14px 18px;margin:18px 0;background:var(--blue-bg)}
+.callout p:last-child,.callout ul:last-child{margin-bottom:0}
+.callout p:first-of-type{margin-top:0}
+.callout-title{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;margin-bottom:7px;color:var(--ink)}
+.callout-key{border-left-color:var(--gold);background:var(--highlight)}
+.callout-concept{border-left-color:var(--accent2);background:var(--blue-bg)}
+.callout-clinical{border-left-color:#3d9c5c;background:var(--green-bg)}
+.callout-warning{border-left-color:var(--accent);background:var(--red-bg)}
+.callout-purple{border-left-color:#7a5aa8;background:var(--purple-bg)}
+.callout-hook{border-left-color:var(--gold);background:var(--highlight);border-left-style:dashed;border-left-width:5px}
+
+/* ---------------- lists ---------------- */
+.notes-list{list-style:none;padding-left:0;margin:12px 0}
+.notes-list li{position:relative;padding-left:20px;margin-bottom:7px}
+.notes-list li::before{content:'\203A';position:absolute;left:4px;color:var(--accent);font-weight:700}
+.step-list{list-style:none;counter-reset:st;padding-left:0;margin:16px 0}
+.step-list li{counter-increment:st;position:relative;padding-left:44px;margin-bottom:14px;min-height:30px}
+.step-list li::before{content:counter(st);position:absolute;left:0;top:0;width:30px;height:30px;border-radius:50%;
+  background:var(--chip-red);color:var(--chip-fg);display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:700}
+.step-list li>div>strong:first-child{display:block;margin-bottom:2px;color:var(--accent)}
+
+/* ---------------- tables ---------------- */
+table{width:100%;border-collapse:collapse;margin:6px 0 20px;font-size:.92rem}
+th,td{border:1px solid var(--border);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:var(--panel-dark-bg);color:var(--panel-dark-text);font-family:'JetBrains Mono',monospace;
+  font-size:.63rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700}
+tr:nth-child(even) td{background:var(--cream)}
+tr:hover td{background:var(--highlight2)}
+.tbl-scroll{overflow-x:auto;margin-bottom:20px}
+.tbl-scroll table{margin-bottom:0}
+
+/* ---------------- exam Q ---------------- */
+.exam-q{background:var(--panel-dark-bg);color:var(--panel-dark-text);border-radius:11px;padding:20px 22px 18px;margin:22px 0;position:relative}
+.exam-q::before{content:'Exam Q';position:absolute;top:-10px;left:20px;background:var(--chip-red);color:var(--chip-fg);
+  font-family:'JetBrains Mono',monospace;font-size:.56rem;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;padding:4px 11px;border-radius:12px}
+.exam-q p{margin:6px 0}
+.exam-q strong{color:var(--panel-dark-accent)}
+.exam-q .answer{margin-top:12px;padding-top:12px;border-top:1px dashed rgba(255,255,255,.28);display:none}
+.exam-q.revealed .answer{display:block;animation:fadeIn .32s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.exam-q .answer .label{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--panel-dark-accent);margin-bottom:5px}
+.exam-q .reveal-btn{margin-top:11px;background:transparent;border:1px solid rgba(255,255,255,.4);
+  color:var(--panel-dark-text);font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.09em;
+  text-transform:uppercase;padding:6px 15px;border-radius:20px;cursor:pointer}
+.exam-q .reveal-btn:hover{background:rgba(255,255,255,.14)}
+.exam-q.revealed .reveal-btn{display:none}
+.exam-q.q-flash{outline:3px solid var(--gold);animation:qPulse 1.2s ease 1}
+@keyframes qPulse{0%{box-shadow:0 0 0 0 rgba(201,146,42,.55)}70%{box-shadow:0 0 0 14px rgba(201,146,42,0)}100%{box-shadow:none}}
+
+/* ---------------- cards & grids ---------------- */
+.compare-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:14px;margin:18px 0}
+.compare-card{border:1px solid var(--border);border-radius:11px;padding:16px 18px;background:var(--cream)}
+.compare-card h4{margin:6px 0 6px;font-size:1.08rem}
+.compare-card .card-emoji{font-size:1.5rem;line-height:1}
+.compare-card p{margin:0 0 8px}
+.fact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,235px),1fr));gap:13px;margin:18px 0}
+.fact-card{border:1px solid var(--border);border-top:4px solid var(--accent2);border-radius:10px;
+  padding:14px 16px;background:var(--cream)}
+.fact-card h4{margin:0 0 3px;font-size:1rem}
+.fact-card .generic{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.fact-card p{margin:0;font-size:.87rem}
+.hallmarks-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,215px),1fr));gap:13px;margin:18px 0}
+.hallmark-card{border:1px solid var(--border);border-top:4px solid var(--accent);border-radius:10px;
+  padding:14px 16px;background:var(--cream);position:relative}
+.hallmark-card:nth-child(3n+2){border-top-color:var(--accent2)}
+.hallmark-card:nth-child(3n+3){border-top-color:var(--gold)}
+.hallmark-card h4{margin:6px 0 4px;font-size:.99rem}
+.hallmark-card p{margin:0;font-size:.86rem}
+.hallmark-num{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;color:var(--muted)}
+
+/* inline chips */
+.lab-code{font-family:'JetBrains Mono',monospace;background:var(--cream);border:1px solid var(--border);
+  padding:1px 6px;border-radius:4px;font-size:.82rem;white-space:nowrap}
+.gene-tag{font-family:'JetBrains Mono',monospace;color:var(--accent2);font-size:.88rem;font-weight:600}
+.hy-flag{display:inline-flex;align-items:center;gap:3px;background:var(--highlight);color:var(--gold);
+  border:1px solid var(--gold);font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.6rem;
+  padding:1px 8px;border-radius:20px;letter-spacing:.04em;vertical-align:middle}
+.up{color:#c0392b;font-weight:700}
+.dn{color:#2c7fb8;font-weight:700}
+
+/* ---------------- images ---------------- */
+.slide-img{width:100%;display:block;border:1px solid var(--border);border-radius:10px;margin:18px 0 5px;
+  cursor:zoom-in;background:#fff}
+.slide-caption{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 20px;text-align:center}
+/* small source images: cap the width so they are not upscaled into blur */
+.slide-img.sm{width:auto;max-width:min(100%,540px);margin-left:auto;margin-right:auto}
+/* portrait images: cap the height instead of the width */
+.slide-img.tall{width:auto;max-width:100%;max-height:560px;margin-left:auto;margin-right:auto}
+.img-pair .slide-img.tall{max-height:420px}
+.img-pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px 20px;margin:18px 0;
+  align-items:start}
+.img-pair .slide-img{margin:0}
+.img-pair .slide-img.sm{width:100%;max-width:100%}
+.img-pair .slide-caption{margin:6px 0 0}
+.img-pair>div{display:flex;flex-direction:column}
+.fig{margin:18px 0}
+.fig svg{width:100%;height:auto;display:block;border:1px solid var(--border);border-radius:10px;background:var(--cream)}
+
+/* ---------------- table quiz ---------------- */
+.tq-bar{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:6px;padding:8px 12px;
+  background:var(--cream);border:1px solid var(--border);border-radius:8px}
+.tq-toggle{font-family:'JetBrains Mono',monospace;font-size:.63rem;letter-spacing:.09em;text-transform:uppercase;
+  background:var(--accent2);color:#fff;border:none;border-radius:20px;padding:5px 12px;cursor:pointer}
+.tq-toggle.active{background:var(--chip-red);color:var(--chip-fg)}
+.tq-cols{display:flex;flex-wrap:wrap;gap:5px;flex:1}
+.tq-col-btn{font-size:.7rem;padding:3px 9px;border:1px solid var(--border);border-radius:12px;background:var(--paper);
+  cursor:pointer;font-family:'JetBrains Mono',monospace;color:var(--ink);transition:all .15s}
+.tq-col-btn.sel{background:var(--chip-blue);color:var(--chip-fg);border-color:var(--chip-blue)}
+.tq-start,.tq-shuffle,.tq-reset{font-family:'JetBrains Mono',monospace;font-size:.63rem;color:#fff;border:none;
+  border-radius:20px;padding:5px 12px;cursor:pointer}
+.tq-start{background:#2e7d32}.tq-start:disabled{opacity:.35;cursor:not-allowed}
+.tq-shuffle{background:var(--accent2)}
+.tq-reset{background:var(--accent)}
+.tq-score{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted)}
+.tq-score.done{color:#2e7d32;font-weight:700}
+.quiz-hidden-cell{position:relative!important;cursor:pointer!important}
+.quiz-hidden-cell .tq-cell-content{filter:blur(5px)!important;user-select:none!important;pointer-events:none!important;opacity:.4!important}
+.quiz-hidden-cell::after{content:'tap to reveal'!important;position:absolute!important;inset:0!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;background:var(--quiz-overlay)!important;
+  color:#fff!important;font-family:'JetBrains Mono',monospace!important;font-size:.58rem!important;font-weight:700!important;
+  letter-spacing:.12em!important;text-transform:uppercase!important;border-radius:4px!important}
+.quiz-hidden-cell:hover::after{background:var(--quiz-overlay-hover)!important}
+
+/* ---------------- recall mode ---------------- */
+body.recall-mode .sec-body-inner :is(p,li,td,h4,dd) strong:not(.rc-open){color:transparent;background:var(--highlight2);
+  border-radius:4px;cursor:pointer;box-shadow:inset 0 0 0 1px var(--border);padding:0 2px}
+body.recall-mode .exam-q strong,body.recall-mode .tq-bar strong{color:var(--panel-dark-accent)!important;background:none!important;box-shadow:none!important}
+body.recall-mode .game strong{color:inherit!important;background:none!important;box-shadow:none!important;cursor:auto}
+strong.rc-open{animation:rcReveal .35s ease}
+@keyframes rcReveal{from{background:var(--gold)}to{background:transparent}}
+
+/* ---------------- games ---------------- */
+.game{background:var(--cream);border:1px solid var(--border);border-top:4px solid var(--accent);border-radius:12px;
+  padding:18px 20px;margin:22px 0}
+.g-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:4px}
+.g-head h3{margin:0;font-size:1.16rem;border:none;padding:0}
+.g-emoji{margin-right:.45em}
+.g-score{margin-left:auto;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.72rem;color:var(--muted)}
+.g-intro{font-size:.87rem;color:var(--muted);margin:0 0 10px}
+.g-stage{background:var(--paper);border:1px solid var(--border);border-radius:14px;padding:20px 18px 16px;margin:10px 0 0}
+.g-vign{text-align:left;font-size:.97rem;line-height:1.55;min-height:2.4em}
+.g-vign .lead{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--muted);display:block;margin-bottom:6px}
+.g-opts{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));margin-top:14px}
+.g-opt{border:1px solid var(--border);background:var(--cream);border-radius:11px;padding:9px 14px;font-weight:700;
+  cursor:pointer;font-size:.88rem;font-family:'Source Serif 4',Georgia,serif;color:var(--ink);text-align:center;
+  transition:transform .12s ease,border-color .12s,background .12s}
+.g-opt:hover{transform:translateY(-2px);border-color:var(--accent)}
+.g-opt.correct{background:var(--green-bg);border-color:#2e7d32;color:#1f5c24}
+.g-opt.wrong{background:var(--red-bg);border-color:var(--accent);color:var(--accent)}
+.g-fb{min-height:2.4em;margin-top:12px;font-size:.9rem;line-height:1.55}
+.g-fb .ok{color:#2e7d32;font-weight:700}
+.g-fb .no{color:var(--accent);font-weight:700}
+.g-btn{margin-top:14px;background:var(--accent);color:#fff;border:none;border-radius:22px;padding:8px 20px;
+  font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.06em;cursor:pointer}
+.g-btn:hover{filter:brightness(1.1)}
+.g-bank{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-top:12px}
+.g-bank .g-opt{padding:7px 13px;font-size:.83rem}
+.g-opt.picked{opacity:.5;pointer-events:none}
+.g-slots{display:grid;gap:9px;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));margin-top:12px}
+.g-slot{border:1px dashed var(--border);border-radius:10px;padding:10px 12px;background:var(--cream);min-height:62px}
+.g-slot h5{margin:0 0 6px;font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted)}
+.g-slot.sel{border-style:solid;border-color:var(--accent2);box-shadow:0 0 0 2px var(--blue-bg)}
+.g-slot ul{margin:0;padding-left:16px;font-size:.82rem}
+.g-timer{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--accent);font-weight:700}
+
+/* ---------------- floating UI ---------------- */
+.floating-stack{position:fixed;bottom:18px;right:18px;z-index:100;display:flex;flex-direction:column;align-items:flex-end;gap:9px}
+.font-btn-row{display:flex;align-items:center;background:var(--floating-ui-bg);color:var(--floating-ui-fg);
+  padding:7px 10px;border-radius:30px;box-shadow:var(--floating-ui-shadow);font-family:'JetBrains Mono',monospace;
+  font-size:.62rem;letter-spacing:.1em;gap:2px}
+.font-btn{background:none;border:none;cursor:pointer;color:var(--floating-ui-fg);font-family:'JetBrains Mono',monospace;
+  font-weight:700;font-size:1rem;padding:2px 8px;border-radius:6px;line-height:1}
+.font-btn:hover{background:rgba(255,255,255,.18)}
+.font-sep{color:rgba(255,255,255,.22);padding:0 3px}
+.font-label{font-size:.56rem;opacity:.7;padding:0 5px;text-transform:uppercase;letter-spacing:.1em}
+.theme-btn{display:flex;align-items:center;gap:7px;background:var(--floating-ui-bg);color:var(--floating-ui-fg);
+  border:none;padding:10px 17px;border-radius:30px;box-shadow:var(--floating-ui-shadow);cursor:pointer;
+  font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.09em;text-transform:uppercase}
+.theme-panel{position:absolute;bottom:100%;right:0;margin-bottom:10px;background:var(--floating-ui-bg);
+  color:var(--floating-ui-fg);border-radius:12px;padding:12px 10px;box-shadow:var(--floating-ui-shadow);
+  min-width:196px;display:none}
+.theme-panel.open{display:block}
+.theme-panel-title{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.16em;text-transform:uppercase;
+  opacity:.65;padding:0 8px 8px}
+.theme-option{display:flex;align-items:center;gap:9px;padding:7px 9px;border-radius:8px;cursor:pointer;
+  font-family:'JetBrains Mono',monospace;font-size:.66rem}
+.theme-option:hover{background:rgba(255,255,255,.12)}
+.theme-option.active{background:rgba(255,255,255,.18)}
+.theme-swatch{width:17px;height:17px;border-radius:50%;border:1px solid rgba(255,255,255,.35);flex:none}
+
+.floating-left{position:fixed;bottom:18px;left:calc(var(--toc-w) + 18px);z-index:100;
+  display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+.tools-menu{display:flex;flex-direction:column;gap:7px;opacity:0;pointer-events:none;transform:translateY(10px);
+  transition:opacity .22s,transform .22s}
+.floating-left:hover .tools-menu,.floating-left:focus-within .tools-menu,.floating-left.open .tools-menu{
+  opacity:1;pointer-events:auto;transform:none}
+.tool-btn{background:var(--floating-ui-bg);color:var(--floating-ui-fg);border:none;padding:9px 15px;border-radius:22px;
+  box-shadow:var(--floating-ui-shadow);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:.63rem;
+  letter-spacing:.05em;text-align:left;white-space:nowrap}
+.tool-btn:hover{filter:brightness(1.2)}
+.tool-btn.on{background:var(--accent);color:#fff}
+.tools-trigger{position:relative}
+.tools-trigger .dot{display:none;position:absolute;top:6px;right:8px;width:7px;height:7px;border-radius:50%;background:var(--gold)}
+.tools-trigger.busy .dot{display:block}
+.backtop{display:none}
+.backtop.show{display:block}
+
+/* ---------------- lightbox ---------------- */
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:400;display:none;align-items:center;
+  justify-content:center;cursor:zoom-out;padding:22px}
+.lightbox.active{display:flex}
+.lightbox img{max-width:92vw;max-height:88vh;border-radius:6px}
+
+/* ---------------- HY one-pager ---------------- */
+.hy-modal{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:300;display:none;align-items:flex-start;
+  justify-content:center;overflow-y:auto;padding:30px 16px}
+.hy-modal.open{display:flex}
+.hy-modal-card{background:var(--paper);color:var(--ink);max-width:1060px;width:100%;border-radius:14px;
+  padding:26px 30px 34px;box-shadow:0 20px 60px rgba(0,0,0,.45)}
+.hy-modal-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;
+  border-bottom:3px solid var(--accent);padding-bottom:10px;flex-wrap:wrap}
+.hy-modal-header h2{margin:0;font-size:1.35rem}
+.hy-modal-actions{display:flex;gap:8px;flex:none}
+.hy-action-btn{font-family:'JetBrains Mono',monospace;font-size:.64rem;letter-spacing:.05em;text-transform:uppercase;
+  border:1px solid var(--border);background:var(--cream);color:var(--ink);padding:7px 13px;border-radius:20px;cursor:pointer}
+.hy-close-btn{background:var(--chip-red);color:var(--chip-fg);border:none}
+.hy-subhead{font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--muted);margin:0 0 13px}
+.hy-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;min-width:0}
+@media (max-width:760px){.hy-cols{grid-template-columns:1fr}}
+.hy-cols>div{min-width:0}
+.hy-block{border:1px solid var(--border);border-radius:8px;padding:9px 11px;background:var(--cream);margin-bottom:9px;min-width:0}
+.hy-block h4{margin:0 0 5px;font-size:.76rem;color:var(--accent);border-bottom:1px solid var(--border);padding-bottom:4px}
+.hy-block p,.hy-block li{font-size:.67rem;line-height:1.4;margin:0 0 3px}
+.hy-block ul{margin:0;padding-left:15px}
+.hy-lo-tag{display:block;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;color:var(--chip-fg);
+  background:var(--chip-blue);padding:3px 9px;border-radius:10px;margin-bottom:7px;letter-spacing:.05em;text-align:center}
+.hy-mini-table{width:100%;border-collapse:collapse;font-size:.63rem;margin-top:4px}
+.hy-mini-table th,.hy-mini-table td{border:1px solid var(--border);padding:3px 5px;text-align:left;line-height:1.3}
+.hy-mini-table th{background:var(--panel-dark-bg);color:var(--panel-dark-text);font-size:.56rem;text-transform:uppercase}
+.hy-mini-table tr:nth-child(even) td{background:transparent}
+
+/* ---------------- glossary ---------------- */
+.gloss{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:10px;margin:16px 0}
+.gloss dl{margin:0;border:1px solid var(--border);border-radius:9px;padding:12px 14px;background:var(--cream)}
+.gloss dt{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;color:var(--accent);margin-top:8px}
+.gloss dt:first-child{margin-top:0}
+.gloss dd{margin:2px 0 0;font-size:.86rem}
+.abbr-strip{background:var(--cream);border:1px solid var(--border);border-left:4px solid var(--gold);
+  border-radius:0 9px 9px 0;padding:11px 15px;margin:14px 0;font-size:.85rem}
+.abbr-strip .t{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--muted);display:block;margin-bottom:5px}
+
+footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top:40px;font-size:.83rem}
+footer .container{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center}
+footer kbd{font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.2);
+  border-radius:4px;padding:1px 6px;font-size:.72rem}
+
+/* ---------------- responsive ---------------- */
+@media (max-width:1000px){
+  body{padding-left:0}
+  .toc-bar{position:sticky;top:0;bottom:auto;width:100%;height:auto;border-right:none;
+    border-bottom:1px solid rgba(255,255,255,.12);overflow-x:auto;overflow-y:hidden}
+  .toc-head,.toc-group,.toc-hy-btn,.toc-tools{display:none}
+  .toc-bar nav{flex-direction:row;padding:0 8px;white-space:nowrap}
+  .toc-bar a{padding:11px 13px;border-left:none;border-bottom:2px solid transparent;gap:8px}
+  .toc-bar a:hover,.toc-bar a.active{border-left-color:transparent;border-bottom-color:var(--accent);background:none}
+  .toc-num{width:18px;height:18px;font-size:.53rem}
+  .toc-check{display:none!important}
+  .hero .hy-btn{display:inline-flex}
+  .floating-left{left:14px;bottom:14px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
+
+/* ---------------- print ---------------- */
+@media print{
+  body{padding-left:0!important;background:#fff;color:#000}
+  .container{max-width:100%!important}
+  .toc-bar,.floating-stack,.floating-left,.progress-bar,.sec-tools,.recall-note,.tq-bar,
+  .toc-hy-btn,.hy-btn,.lightbox,.game,.exam-q .reveal-btn{display:none!important}
+  .section{page-break-inside:auto;border-bottom:1px solid #ccc}
+  .section.collapsed .sec-body-outer{grid-template-rows:1fr!important}
+  .exam-q .answer{display:block!important}
+  .hero{background:#fff!important;color:#000;padding:16px 0}
+  .hero h1,.hero-sub,.hero-tag,.hero-meta-item .value,.hero-meta-item .label{color:#000!important}
+  .slide-img{page-break-inside:avoid}
+  body.hy-mode .hero,body.hy-mode .section,body.hy-mode footer{display:none!important}
+  body.hy-mode .hy-modal{position:static!important;inset:auto!important;background:none!important;padding:0!important;
+    display:block!important;overflow:visible!important}
+  body.hy-mode .hy-modal-card{position:static!important;max-width:100%!important;width:100%!important;
+    box-shadow:none!important;padding:4px!important}
+  .hy-modal-actions{display:none!important}
+  .hy-cols{grid-template-columns:repeat(3,1fr);gap:6px}
+  .hy-modal-header h2{font-size:1.02rem}
+  .hy-subhead{font-size:.56rem;margin-bottom:7px}
+  .hy-block{padding:4px 6px;margin-bottom:4px;break-inside:avoid}
+  .hy-block h4{font-size:.60rem;margin-bottom:2px;padding-bottom:1.5px}
+  .hy-block p,.hy-block li{font-size:.50rem;line-height:1.2;margin-bottom:1.5px}
+  .hy-mini-table{font-size:.465rem}
+  .hy-mini-table th,.hy-mini-table td{padding:1px 2.5px;line-height:1.18}
+  .hy-lo-tag{font-size:.53rem;padding:2px 7px;margin-bottom:4px}
+  @page{margin:8mm}
+}
+
+
+#noteAuthGate{display:none}
+html[data-note-auth="locked"] body{
+  min-height:100vh;
+  overflow:hidden;
+  background:#f4f5f7;
+  color:#1f2937;
+}
+html[data-note-auth="locked"] body>*:not(#noteAuthGate){display:none!important}
+html[data-note-auth="locked"] #noteAuthGate{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  background:linear-gradient(135deg,#f4f5f7,#ffffff 52%,#eef2f7);
+}
+.note-auth-card{
+  width:min(460px,100%);
+  padding:30px;
+  border:1px solid rgba(31,41,55,.14);
+  border-radius:14px;
+  background:rgba(255,255,255,.92);
+  box-shadow:0 22px 70px rgba(31,41,55,.16);
+  text-align:center;
+}
+.note-auth-kicker{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.68rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:#cf4520;
+  font-weight:700;
+  margin-bottom:12px;
+}
+.note-auth-card h1{
+  margin:0 0 12px;
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2rem,6vw,3rem);
+  line-height:.98;
+  color:#263241;
+}
+.note-auth-card p{
+  margin:0 0 22px;
+  font-size:1rem;
+  line-height:1.55;
+  color:#556070;
+}
+.note-auth-btn{
+  border:0;
+  border-radius:999px;
+  padding:12px 20px;
+  font:700 .9rem 'JetBrains Mono',monospace;
+  letter-spacing:.04em;
+  color:#fff;
+  background:#263241;
+  cursor:pointer;
+  box-shadow:0 12px 28px rgba(38,50,65,.22);
+}
+.note-auth-btn:hover{background:#cf4520}
+
+/* ---------------- pharmacology components ---------------- */
+.drug-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:13px;margin:18px 0}
+.drug-card{border:1px solid var(--border);border-top:4px solid var(--accent2);border-radius:10px;
+  padding:14px 16px;background:var(--cream)}
+.drug-card h4{margin:0 0 3px;font-size:1rem}
+.drug-card .generic{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.drug-card p{margin:0;font-size:.86rem}
+.drug-card p+p{margin-top:5px}
+.drug-card.span2{grid-column:span 2}
+@media (max-width:760px){.drug-card.span2{grid-column:auto}}
+
+.box-warning{border:2px solid var(--accent);border-left-width:9px;border-radius:9px;background:var(--red-bg);
+  padding:15px 18px 13px;margin:20px 0}
+.bw-label{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;background:var(--chip-red);color:var(--chip-fg);
+  padding:4px 11px;border-radius:5px;margin-bottom:9px}
+.box-warning p{margin:0;font-size:.93rem}
+.box-warning p+p{margin-top:7px}
+
+.rems-badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.55rem;font-weight:700;
+  letter-spacing:.1em;background:var(--purple-bg);color:var(--accent2);border:1px solid var(--border);
+  padding:2px 6px;border-radius:4px;vertical-align:middle;margin-left:3px}
+
+.moa-chain{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:14px 0;padding:13px 15px;
+  background:var(--cream);border:1px solid var(--border);border-radius:10px}
+.moa-chain span{font-family:'JetBrains Mono',monospace;font-size:.7rem;line-height:1.35;
+  background:var(--paper);border:1px solid var(--border);border-radius:6px;padding:5px 9px}
+.moa-chain span.hit{background:var(--highlight);border-color:var(--gold);font-weight:700}
+.moa-chain i{font-style:normal;color:var(--accent);font-weight:700}
+
+.suffix-key{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:10px;margin:16px 0}
+.suffix-key div{border:1px solid var(--border);border-left:4px solid var(--gold);border-radius:8px;
+  padding:9px 12px;background:var(--cream)}
+.suffix-key code{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--accent);font-size:.9rem}
+.suffix-key p{margin:3px 0 0;font-size:.82rem;color:var(--muted)}
+
+.timing-bar{display:flex;align-items:center;gap:10px;margin:7px 0;font-size:.86rem}
+.timing-bar .tl{flex:none;width:min(38%,215px);font-weight:600}
+.timing-bar .tt{flex:1;height:15px;background:var(--cream);border:1px solid var(--border);
+  border-radius:8px;position:relative;overflow:hidden}
+.timing-bar .tf{position:absolute;top:0;bottom:0;background:var(--accent);opacity:.78;border-radius:8px}
+.timing-bar .tv{flex:none;font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--muted);
+  width:min(30%,140px);text-align:right}
+
+
+/* ---------------- Cardio additions ---------------- */
+.hero .container{position:relative;z-index:1}
+.hero-ecg{position:absolute;left:0;right:0;bottom:6px;width:100%;height:58px;z-index:0;pointer-events:none;opacity:.55}
+.hero-ecg path{fill:none;stroke:var(--hero-accent);stroke-width:2;stroke-linejoin:round;stroke-linecap:round;
+  stroke-dasharray:1400;stroke-dashoffset:1400;animation:ecgDraw 4.5s ease-out .3s forwards}
+@keyframes ecgDraw{to{stroke-dashoffset:0}}
+strong.hot{color:var(--accent)}
+.num{background:var(--highlight);color:var(--ink);font-weight:700;padding:0 4px;border-radius:4px;white-space:nowrap}
+.src-tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.55rem;font-weight:700;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--ink);border:1px dashed var(--muted);border-radius:4px;padding:0 5px;
+  vertical-align:middle;white-space:nowrap}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;margin:16px 0 6px;padding:11px 15px;
+  background:var(--cream);border:1px solid var(--border);border-radius:10px;font-size:.86rem}
+.legend-t{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.order-list{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 16px}
+.order-list span{background:var(--cream);border:1px solid var(--border);border-left:4px solid var(--accent);
+  border-radius:8px;padding:6px 12px;font-size:.9rem}
+.tbl-note{font-size:.88rem;color:var(--muted);margin-top:-8px}
+table.dense{font-size:.8rem}
+table.dense td,table.dense th{padding:5px 7px}
+.timeline-table tr.phase td{background:var(--panel-dark-bg)!important;color:var(--panel-dark-text);font-family:'JetBrains Mono',monospace;
+  font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;padding:4px 11px}
+
+/* ---- labeled, lazy-loaded figures (images live in ./assets/, not base64) ---- */
+.fig-card{margin:20px auto;max-width:960px;border:1px solid var(--border);border-radius:12px;background:var(--cream);overflow:hidden;
+  break-inside:avoid;page-break-inside:avoid}
+.fig-frame{position:relative;background:#fff;display:flex;justify-content:center;align-items:center}
+.fig-frame::before{content:'';position:absolute;inset:0;
+  background:linear-gradient(100deg,rgba(0,0,0,0) 30%,rgba(181,31,58,.07) 50%,rgba(0,0,0,0) 70%) #fdf1f3;
+  background-size:220% 100%;animation:figShimmer 1.3s linear infinite;transition:opacity .3s}
+.fig-frame.loaded::before{opacity:0;animation:none}
+@keyframes figShimmer{from{background-position:120% 0}to{background-position:-120% 0}}
+.fig-card .slide-img{position:relative;margin:0;border:none;border-radius:0;width:100%;height:auto;opacity:0;transition:opacity .35s}
+.fig-frame.loaded .slide-img{opacity:1}
+.fig-card.tall .slide-img{width:auto;max-width:100%;max-height:560px}
+.fig-card.sm .slide-img{width:auto;max-width:min(100%,560px)}
+.fig-row .fig-card.tall .slide-img{max-height:440px}
+.fig-card figcaption{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;padding:9px 13px 10px;
+  border-top:1px solid var(--border);font-size:.86rem;line-height:1.4}
+.fig-num{font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  background:var(--chip-blue);color:var(--chip-fg);padding:2px 8px;border-radius:10px;flex:none}
+.fig-title{flex:1 1 220px;color:var(--ink)}
+.fig-src{font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);flex:none}
+.fig-src b{color:var(--accent);font-weight:700}
+.fig-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px;margin:20px 0;align-items:start}
+.fig-row .fig-card{margin:0;max-width:none}
+.lightbox{flex-direction:column;gap:12px}
+.lightbox-cap{max-width:min(92vw,900px);color:#f3f3f3;font-size:.9rem;text-align:center;line-height:1.45}
+.lightbox-cap .fig-num{margin-right:6px}
+
+details.case-box{background:var(--cream);border:1px solid var(--border);border-left:5px solid var(--accent2);
+  border-radius:0 12px 12px 0;margin:16px 0;overflow:hidden}
+details.case-box summary{cursor:pointer;padding:13px 18px;font-family:'Playfair Display',serif;font-weight:700;font-size:1.05rem;
+  list-style:none;display:flex;gap:10px;align-items:center}
+details.case-box summary::-webkit-details-marker{display:none}
+details.case-box summary::before{content:'▸';color:var(--accent);transition:transform .2s}
+details.case-box[open] summary::before{transform:rotate(90deg)}
+details.case-box .case-body{padding:0 18px 12px;border-top:1px solid var(--border)}
+@media print{details.case-box .case-body{display:block}}
+
+/* ---- click-to-play video facade: no YouTube iframe loads until you ask for it ---- */
+.watch{margin:26px 0 8px;padding:14px 16px 16px;border:1px solid var(--border);border-left:5px solid var(--accent);
+  border-radius:0 12px 12px 0;background:var(--cream)}
+.watch-title{font-family:'JetBrains Mono',monospace;font-size:.64rem;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink);margin-bottom:10px}
+.watch-title span{color:var(--muted);font-weight:400;letter-spacing:.04em;text-transform:none}
+.vid-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr));gap:12px}
+.vid{display:flex;flex-direction:column;text-align:left;padding:0;border:1px solid var(--border);border-radius:10px;
+  overflow:hidden;background:var(--paper);color:var(--ink);cursor:pointer;font:inherit;transition:transform .15s,box-shadow .15s}
+.vid:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.14)}
+.vid-thumb{position:relative;aspect-ratio:16/9;background:#1c1c1c;overflow:hidden}
+.vid-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.vid-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:50px;height:36px;border-radius:10px;
+  background:rgba(181,31,58,.92);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1rem;
+  box-shadow:0 3px 10px rgba(0,0,0,.35)}
+.vid-meta{padding:8px 10px 10px;font-size:.8rem;line-height:1.35}
+.vid-meta b{display:block;font-weight:600}
+.vid-meta i{font-style:normal;font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted)}
+.vid.playing{cursor:default;transform:none;box-shadow:none}
+.vid iframe{width:100%;aspect-ratio:16/9;border:0;display:block}
+@media print{
+  .watch{display:none!important}
+  .fig-frame::before{display:none}
+  .fig-card .slide-img{opacity:1!important}
+  .fig-card{background:#fff}
+}
+@media (prefers-reduced-motion:reduce){.hero-ecg path{stroke-dashoffset:0}}
+</style>
+
+</head>
+<body>
+<div id="noteAuthGate" role="dialog" aria-modal="true" aria-labelledby="noteAuthTitle">
+  <div class="note-auth-card">
+    <div class="note-auth-kicker">2nd Year Study Hub</div>
+    <h1 id="noteAuthTitle">Please log in to continue with this note.</h1>
+    <p>Open the Study Hub login, enter your approved UNE email, and this note will unlock automatically.</p>
+    <button class="note-auth-btn" type="button" onclick="openNoteLogin()">Log in to continue</button>
+  </div>
+</div>
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="toc-bar">
+  <div class="toc-head">
+    <span class="toc-eyebrow">OMK 2 · Cardio · Week 13</span>
+    <span class="toc-name">ECG <em>Basics</em></span>
+  </div>
+  <button class="toc-hy-btn" onclick="openHY()">🎯 High-Yield One-Pager</button>
+  <nav>
+    <p class="toc-group">Start</p>
+    <a href="#orientation"><span class="toc-num dot"></span><span>Orientation — the system</span><span class="toc-check">✓</span></a>
+    <p class="toc-group">Foundations</p>
+    <a href="#s1-basics"><span class="toc-num">1</span><span>Paper, Waves &amp; Leads</span><span class="toc-check">✓</span></a>
+    <p class="toc-group">The read, step by step</p>
+    <a href="#s2-rate"><span class="toc-num">2</span><span>Rate</span><span class="toc-check">✓</span></a>
+    <a href="#s3-rhythm"><span class="toc-num">3</span><span>Rhythm</span><span class="toc-check">✓</span></a>
+    <a href="#s4-axis"><span class="toc-num">4</span><span>Axis</span><span class="toc-check">✓</span></a>
+    <a href="#s5-pr"><span class="toc-num">5</span><span>PR Interval &amp; AV Block</span><span class="toc-check">✓</span></a>
+    <a href="#s6-qrs"><span class="toc-num">6</span><span>Wide QRS: BBB &amp; Fascicles</span><span class="toc-check">✓</span></a>
+    <a href="#s7-qt"><span class="toc-num">7</span><span>QT / QTc</span><span class="toc-check">✓</span></a>
+    <a href="#s8-chambers"><span class="toc-num">8</span><span>Chamber Enlargement</span><span class="toc-check">✓</span></a>
+    <a href="#s9-ischemia"><span class="toc-num">9</span><span>Ischemia &amp; Infarction</span><span class="toc-check">✓</span></a>
+    <p class="toc-group">Practise</p>
+    <a href="#s10-practice"><span class="toc-num">10</span><span>The Lecture ECGs</span><span class="toc-check">✓</span></a>
+    <p class="toc-group">Reference</p>
+    <a href="#glossary"><span class="toc-num dot"></span><span>Glossary &amp; Abbreviations</span><span class="toc-check">✓</span></a>
+  </nav>
+  <div class="toc-tools">
+    <button class="toc-chip" id="progressChip" onclick="jumpToNextTodo()">0/0 reviewed</button>
+    <button class="toc-chip" id="collapseAllBtn" onclick="toggleAllSections()">⊟ Collapse all</button>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="container">
+    <div class="hero-tag">Amina Qazi, DO FACC · Cardiology · UNE COM · 2025</div>
+    <h1>ECG <span>Basics</span></h1>
+    <p class="hero-sub">One system, the same way every time: rate, rhythm, axis, intervals, chamber enlargement, ischemia — with interactive tools for the hard parts and the class ECGs to practise on.</p>
+    <button class="hy-btn" onclick="openHY()">🎯 High-Yield One-Pager</button>
+    <div class="hero-meta"><div class="hero-meta-item"><span class="label">Lecturer</span><span class="value">Amina Qazi, DO FACC</span></div><div class="hero-meta-item"><span class="label">Sources</span><span class="value">Deck + 2 transcripts + 2 crib sheets</span></div><div class="hero-meta-item"><span class="label">Topics</span><span class="value">10</span></div><div class="hero-meta-item"><span class="label">Labeled figures</span><span class="value">60</span></div><div class="hero-meta-item"><span class="label">Exam questions</span><span class="value">13</span></div><div class="hero-meta-item"><span class="label">Videos</span><span class="value">20</span></div></div>
+  </div>
+  <svg class="hero-ecg" viewBox="0 0 1200 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 40 H140 l10 -6 l10 6 H200 l6 6 l10 -40 l10 50 l8 -16 H330 l14 -8 l14 8 H480 l10 -6 l10 6 H540 l6 6 l10 -40 l10 50 l8 -16 H670 l14 -8 l14 8 H820 l10 -6 l10 6 H880 l6 6 l10 -40 l10 50 l8 -16 H1010 l14 -8 l14 8 H1200"/></svg>
+</div>
+
+<style>
+.tool{background:var(--cream);border:1px solid var(--border);border-top:4px solid var(--accent2);border-radius:12px;padding:16px 18px;margin:22px 0}
+.tool h4{margin:0 0 4px;font-size:1.08rem}
+.tool .t-intro{font-size:.86rem;color:var(--muted);margin:0 0 12px}
+.tool .t-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0}
+.tool .t-lab{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);min-width:90px}
+.tool button.tb{border:1px solid var(--border);background:var(--paper);color:var(--ink);border-radius:20px;padding:6px 14px;cursor:pointer;
+  font-family:'Source Serif 4',Georgia,serif;font-size:.9rem;transition:all .15s}
+.tool button.tb:hover{border-color:var(--accent2)}
+.tool button.tb.on{background:var(--chip-blue);color:var(--chip-fg);border-color:var(--chip-blue)}
+.tool input[type=number]{width:90px;padding:6px 10px;border:1px solid var(--border);border-radius:8px;background:var(--paper);color:var(--ink);font-size:1rem}
+.tool .t-out{margin-top:12px;padding:12px 14px;border-radius:10px;background:var(--paper);border:1px dashed var(--border);min-height:2.2em;font-size:.95rem;line-height:1.55}
+.tool .t-out b{color:var(--accent)}
+.lead-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;max-width:460px}
+.lead-grid button.tb{border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:.8rem;padding:8px 4px}
+.lead-grid button.tb.on{background:var(--chip-red);border-color:var(--chip-red)}
+.drill .d-q{font-size:.97rem;line-height:1.55;margin:4px 0 10px}
+.drill .d-opts{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr))}
+.drill .d-opts button.tb.right{background:var(--green-bg);border-color:#2e7d32;color:#1f5c24}
+.drill .d-opts button.tb.wrong{background:var(--red-bg);border-color:var(--accent);color:var(--accent)}
+.drill .d-nav{display:flex;gap:10px;align-items:center;margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted)}
+.checklist{list-style:none;padding:0;margin:10px 0;counter-reset:ck}
+.checklist li{counter-increment:ck;display:flex;gap:10px;align-items:flex-start;padding:9px 12px;margin:6px 0;border:1px solid var(--border);border-radius:10px;background:var(--cream)}
+.checklist li::before{content:counter(ck);flex:none;width:26px;height:26px;border-radius:50%;background:var(--chip-red);color:var(--chip-fg);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.75rem;font-weight:700}
+.checklist li b{display:block}
+.paper-svg{width:100%;max-width:640px;display:block;margin:10px auto;border:1px solid var(--border);border-radius:10px;background:#fff}
+details.case-box.ecg summary{font-size:1rem}
+</style>
+
+<!-- ==================== ORIENTATION ==================== -->
+<div class="section" id="orientation">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge alt">Orientation</div></div>
+    <p class="section-label">"Look at it the same way every single time"</p>
+    <h2 class="section-title">A System for Reading Any ECG</h2>
+
+    <p class="lede">Dr. Qazi reads an ECG in half a second — after hundreds of thousands of them. Her point: <strong>you</strong> get there only by using the <strong>same step-by-step system every time</strong> so nothing is missed. The first ECG you read alone will take a long time. That's expected. Even veteran ER doctors call cardiology to ask, "can you look at this ECG?"</p>
+
+    <div class="legend">
+      <span class="legend-t">How to read the colours</span>
+      <span><strong class="hot">Red bold</strong> = lecturer emphasis / "this will be on the boards"</span>
+      <span><strong>Blue bold</strong> = key criterion</span>
+      <span><span class="num">Yellow</span> = number to memorise</span>
+      <span><span class="src-tag">Board add-on</span> = crib sheets / Dubin / board sources, not said in lecture</span>
+    </div>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>ECG / EKG = electrocardiogram (same thing) · SA / AV = sinoatrial / atrioventricular · LBBB / RBBB = left / right bundle branch block · LAFB / LPFB = left anterior / posterior fascicular block · LVH / RVH = left / right ventricular hypertrophy · QTc = corrected QT · STEMI / NSTEMI = ST-elevation / non-ST-elevation myocardial infarction</div>
+
+    <h3>The order Dr. Qazi uses</h3>
+    <ol class="checklist">
+      <li><div><b>Rate</b>Count QRS on the rhythm strip × 6. Tachy ≥100, brady &lt;60.</div></li>
+      <li><div><b>Rhythm</b>Regular? If yes — is it sinus (the 5 criteria)? If irregular — which of the 5 irregular rhythms?</div></li>
+      <li><div><b>Axis</b>QRS in lead I and aVF (lead II as back-up). Left or right? Then ask <em>why</em>.</div></li>
+      <li><div><b>Intervals</b>PR (AV block?) → QRS (bundle branch block?) → QT/QTc (torsades risk?).</div></li>
+      <li><div><b>Chamber enlargement</b>P waves in II and V1 (atria); voltage + axis (LVH); R-wave progression + axis (RVH).</div></li>
+      <li><div><b>Ischemia / injury / infarction</b>ST elevation (transmural), ST depression (subendocardial), Q waves (dead, old) — in which territory?</div></li>
+      <li><div><b>Put it into one sentence</b>e.g. "Sinus bradycardia, rate 42, normal axis, 2:1 AV block."</div></li>
+    </ol>
+    <figure class="fig-card sm" id="fig-k-algorithm"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-algorithm.jpg" alt="Annotated 12-lead ECG with boxes for rhythm and rate, axis, P wave, PR interval, QRS complex, ST segment and T wave" width="931" height="1000" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K1</span><span class="fig-title">The systematic read, on one page: rhythm/rate → axis → P → PR → QRS → ST/T</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure>
+
+    <h3>Start here — watch before reading</h3>
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="RYZ4daFwMa8" data-title="Cardiac Conduction System and Understanding ECG (animation)"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/RYZ4daFwMa8/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Cardiac Conduction System and Understanding ECG (animation)</b><i>Alila Medical Media · YouTube</i></span></button><button class="vid" type="button" data-yt="30FmTdIqtSE" data-title="How to Read ECG/EKG, Part 1 (animation)"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/30FmTdIqtSE/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>How to Read ECG/EKG, Part 1 (animation)</b><i>Alila Medical Media · YouTube</i></span></button><button class="vid" type="button" data-yt="wPKC1X0yUQ4" data-title="How to Read ECG/EKG, Part 2 (animation)"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/wPKC1X0yUQ4/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>How to Read ECG/EKG, Part 2 (animation)</b><i>Alila Medical Media · YouTube</i></span></button><button class="vid" type="button" data-yt="47zCZojlGjU" data-title="INTERACTIVE: Cardiac Conduction System and Understanding ECG"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/47zCZojlGjU/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>INTERACTIVE: Cardiac Conduction System and Understanding ECG</b><i>Alila Medical Media · YouTube</i></span></button><button class="vid" type="button" data-yt="KmNHqqrFqG8" data-title="The Cardiac Cycle is SO EASY!"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/KmNHqqrFqG8/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>The Cardiac Cycle is SO EASY!</b><i>Interactive Biology · YouTube</i></span></button></div></div>
+  </div>
+</div>
+
+<!-- ==================== 1. BASICS ==================== -->
+<div class="section" id="s1-basics">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Topic 1</div></div>
+    <p class="section-label">Paper · waves · leads — the vocabulary</p>
+    <h2 class="section-title">Before You Read: Paper, Waves &amp; Leads</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>mm = millimetre · ms = millisecond · mV = millivolt · aVR / aVL / aVF = augmented limb leads (right arm / left arm / foot) · V1–V6 = precordial (chest) leads</div>
+
+    <p>The ECG draws the heart's electricity. Each wave is one step of conduction: <strong>SA node → atria (P wave) → pause in the AV node (PR segment) → His → bundle branches → Purkinje → ventricles (QRS) → ventricular repolarisation (T wave)</strong>. The SA node sets the pace simply because it is the fastest pacemaker.</p>
+    <div class="fig-row"><figure class="fig-card tall" id="fig-k-conduction-gif"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-conduction-gif.gif" alt="Animated heart outline with the activation front spreading while an ECG trace is drawn beneath it" width="700" height="800" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K2</span><span class="fig-title">Animation: each part of the trace = one step of conduction (SA → atria → AV pause → His–Purkinje → ventricles)</span><span class="fig-src"><b>Scully lecture</b> · Wikimedia Commons &quot;ECG principle slow&quot; (CC BY-SA)</span></figcaption></figure><figure class="fig-card tall" id="fig-k-cycle-gif"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-cycle-gif.gif" alt="Animated heart with chambers filling and ejecting, synchronised with an ECG trace and phase labels" width="900" height="1400" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K3</span><span class="fig-title">Animation: the cardiac cycle phases lined up against the ECG</span><span class="fig-src"><b>humanbiomedia.org</b> · animation</span></figcaption></figure></div>
+    <figure class="fig-card sm" id="fig-k-conduction"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-conduction.jpg" alt="Cutaway heart showing sinoatrial node, atrioventricular node, bundle of His, right and left bundle branches and Purkinje fibres" width="700" height="625" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K4</span><span class="fig-title">The conduction system: SA node → AV node → His → right/left bundles → Purkinje</span><span class="fig-src"><b>UWorld</b></span></figcaption></figure>
+
+    <h3>The paper (standard speed 25 mm/s)</h3>
+    <svg class="paper-svg" viewBox="0 0 640 230" role="img" aria-label="ECG paper diagram: a small box is 1 millimetre, 0.04 seconds and 0.1 millivolt; a big box is 5 small boxes, 0.2 seconds; 5 big boxes are 1 second">
+      <defs>
+        <pattern id="pSmall" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M10 0H0V10" fill="none" stroke="#f3b3be" stroke-width=".6"/></pattern>
+        <pattern id="pBig" width="50" height="50" patternUnits="userSpaceOnUse"><rect width="50" height="50" fill="url(#pSmall)"/><path d="M50 0H0V50" fill="none" stroke="#e0788c" stroke-width="1.4"/></pattern>
+      </defs>
+      <rect x="20" y="20" width="600" height="150" fill="url(#pBig)"/>
+      <path d="M20 120 H70 q10 -14 20 0 H112 l6 6 l8 -76 l8 90 l6 -20 H190 q18 -30 36 0 H270 q10 -14 20 0 H312 l6 6 l8 -76 l8 90 l6 -20 H390 q18 -30 36 0 H470 q10 -14 20 0 H512 l6 6 l8 -76 l8 90 l6 -20 H590 q10 -18 20 -6" fill="none" stroke="#1b1b1b" stroke-width="2"/>
+      <rect x="20" y="20" width="10" height="10" fill="none" stroke="#245f89" stroke-width="2"/>
+      <text x="36" y="16" font-size="11" fill="#245f89" font-family="monospace">1 small box = 1 mm = 0.04 s (40 ms) · 0.1 mV tall</text>
+      <rect x="120" y="20" width="50" height="50" fill="none" stroke="#b51f3a" stroke-width="2.4"/>
+      <text x="176" y="44" font-size="11" fill="#b51f3a" font-family="monospace">1 big box = 5 small = 0.20 s (200 ms)</text>
+      <path d="M20 190 H270" stroke="#173e63" stroke-width="2"/>
+      <text x="22" y="208" font-size="11" fill="#173e63" font-family="monospace">5 big boxes = 1 second · a standard 12-lead = 10 s</text>
+    </svg>
+    <div class="fact-grid">
+      <div class="fact-card"><h4>PR interval</h4><div class="generic">Start of P → start of QRS</div><p>Normal ≤ <span class="num">200 ms</span> = <strong>1 big box</strong> (crib sheet: 120–200 ms). Long = AV-node delay.</p></div>
+      <div class="fact-card"><h4>QRS duration</h4><div class="generic">Start → end of QRS</div><p>Normal &lt; <span class="num">120 ms</span> = <strong>3 small boxes</strong>. Wide = bundle branch block (or ventricular origin).</p></div>
+      <div class="fact-card"><h4>QT / QTc</h4><div class="generic">Start of QRS → end of T</div><p>QTc normal &lt; <span class="num">450 ms</span> men / <span class="num">460 ms</span> women. Clinical danger &gt; <span class="num">500 ms</span>.</p></div>
+    </div>
+    <div class="fig-row"><figure class="fig-card sm" id="fig-k-waves"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-waves.jpg" alt="Labelled single ECG complex with P wave, Q, R, S, T wave, PR segment, ST segment, PR interval, QRS complex and QT interval" width="965" height="999" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K5</span><span class="fig-title">One beat: P, QRS, T — the PR and QT intervals, PR and ST segments</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure><figure class="fig-card sm" id="fig-k-qrs-terms"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-qrs-terms.jpg" alt="Grid of QRS examples labelled qRs, R, Rs, rS, QR, qR, Qr, QS, rsR prime, rR prime and fragmented QRS" width="1077" height="1000" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K6</span><span class="fig-title">Naming QRS shapes: Q = first negative, R = first positive, S = negative after R (lower-case = small)</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure></div>
+    <div class="callout callout-key">
+      <div class="callout-title">🔑 Naming the QRS (you'll need it for every criterion)</div>
+      <p><strong>Q</strong> = first <strong>negative</strong> deflection · <strong>R</strong> = first <strong>positive</strong> deflection · <strong>S</strong> = the negative deflection <strong>after</strong> the R. A second R is R′ ("R-prime"). Big letters = big waves, small letters = small waves. You won't always see a Q or an S.</p>
+    </div>
+
+    <h3>Leads</h3>
+    <p><strong>12 views</strong> from 10 electrodes: 6 limb leads (I, II, III, aVR, aVL, aVF — the frontal plane) and 6 chest leads (V1–V6 — the horizontal plane). The printout shows ~2.5 s per lead, and the <strong class="hot">bottom strip is the full 10-second rhythm strip, almost always lead II</strong>.</p>
+    <div class="fig-row"><figure class="fig-card" id="fig-k-electrodes"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-electrodes.jpg" alt="Body diagram with limb electrodes on wrists and ankles and precordial electrodes V1 to V6 from 4th intercostal space right sternal border to mid-axillary line" width="1600" height="711" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K7</span><span class="fig-title">12-lead placement: 4 limb electrodes + V1–V6 across the chest</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure><figure class="fig-card" id="fig-k-normal-12"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-normal-12.jpg" alt="Normal 12-lead ECG in sinus rhythm" width="1600" height="873" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K8</span><span class="fig-title">A normal 12-lead ECG</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure></div>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> How long is one small box, one big box, and a standard 12-lead tracing?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p>Small box <strong>0.04 s (40 ms)</strong>; big box <strong>0.2 s (200 ms)</strong>; standard 12-lead <strong>10 seconds</strong> (5 big boxes = 1 s).</p></div>
+    </div>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="j8Y8ONy9Fpw" data-title="Introduction to ECG — paper, PQRST, rate, rhythm, axis, intervals"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/j8Y8ONy9Fpw/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Introduction to ECG — paper, PQRST, rate, rhythm, axis, intervals</b><i>JJ Medicine · YouTube</i></span></button><button class="vid" type="button" data-yt="BKJfB9KyQxc" data-title="Introduction to ECG — Einthoven&#x27;s triangle and the 12 leads"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/BKJfB9KyQxc/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Introduction to ECG — Einthoven&#x27;s triangle and the 12 leads</b><i>JJ Medicine · YouTube</i></span></button></div></div>
+  </div>
+</div>
+
+<!-- ==================== 2. RATE ==================== -->
+<div class="section" id="s2-rate">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Topic 2</div></div>
+    <p class="section-label">Step 1</p>
+    <h2 class="section-title">Rate</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>bpm = beats per minute · QRS = ventricular complex · EMS = emergency medical services</div>
+
+    <div class="callout callout-key">
+      <div class="callout-title">🔑 Dr. Qazi's method — works for any rhythm, regular or not</div>
+      <p><strong class="hot">Count every QRS on the rhythm strip × 6</strong> (a standard 12-lead is <span class="num">10 s</span>). A <span class="num">6-s</span> monitor strip → × 10. That's it.</p>
+    </div>
+    <ul class="notes-list">
+      <li><strong>Tachycardia ≥ <span class="num">100</span></strong> · <strong>normal 60–99</strong> · <strong>bradycardia &lt; <span class="num">60</span></strong>. Sinus rhythm at 110 must be called <strong>sinus tachycardia</strong>.</li>
+      <li>The machine's rate is right ~90% of the time; artifact and movement fool it.</li>
+      <li><span class="src-tag">Board add-on</span> For regular rhythms, <strong>300 – 150 – 100 – 75 – 60 – 50</strong> by big boxes between two R waves (or 1500 ÷ small boxes). Only works when the rhythm is regular.</li>
+    </ul>
+    <div class="fig-row"><figure class="fig-card" id="fig-k-sinus-brady"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-sinus-brady.jpg" alt="Rhythm strip with widely spaced normal P-QRS-T complexes" width="1600" height="252" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K9</span><span class="fig-title">Sinus bradycardia (&amp;lt;60)</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure><figure class="fig-card" id="fig-k-sinus-tachy"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-sinus-tachy.jpg" alt="12-lead ECG with fast regular narrow complexes each preceded by a P wave" width="1600" height="810" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K10</span><span class="fig-title">Sinus tachycardia (≥100)</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure></div>
+
+    <div class="tool" id="rateTool">
+      <h4>🧮 Rate calculator</h4>
+      <p class="t-intro">Count the QRS complexes on the rhythm strip and pick the strip length.</p>
+      <div class="t-row"><span class="t-lab">QRS count</span><input type="number" id="rtN" min="0" max="60" value="7"></div>
+      <div class="t-row"><span class="t-lab">Strip</span>
+        <button class="tb on" data-sec="10">12-lead (10 s)</button><button class="tb" data-sec="6">Monitor (6 s)</button></div>
+      <div class="t-out" id="rtOut"></div>
+    </div>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> A standard 12-lead shows 7 QRS complexes on the rhythm strip. Rate and label?</p>
+      <div class="answer"><div class="label">Answer</div><p>7 × 6 = <strong>42 bpm → bradycardia</strong>.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 3. RHYTHM ==================== -->
+<div class="section" id="s3-rhythm">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Topic 3</div><span class="hy-flag">⭐ Know the 5 irregular rhythms</span></div>
+    <p class="section-label">Step 2 — regular or irregular?</p>
+    <h2 class="section-title">Rhythm</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>NSR = normal sinus rhythm · AF / Afib = atrial fibrillation · MAT = multifocal atrial tachycardia · WAP = wandering atrial pacemaker · RA / LA = right / left atrium</div>
+
+    <h3>Regular → is it sinus? All five must be true</h3>
+    <ol class="step-list">
+      <li><div><strong>R–R regular</strong>march the QRSs out with calipers.</div></li>
+      <li><div><strong>P–P regular</strong>(matters later for AV block).</div></li>
+      <li><div><strong>PR constant</strong>measure it beat to beat.</div></li>
+      <li><div><strong>A P for every QRS</strong>(proven by 1–3).</div></li>
+      <li><div><strong class="hot">P upright in lead II</strong>— the impulse started in the SA node. (In <strong>V1</strong> the normal P is <strong>biphasic</strong>, like a sine wave.)</div></li>
+    </ol>
+    <div class="fig-row"><figure class="fig-card sm" id="fig-k-p-limb"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-p-limb.jpg" alt="Hexaxial diagram with small P wave shapes beside each limb lead" width="1403" height="1000" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K11</span><span class="fig-title">Normal P wave in each limb lead — upright in II, inverted in aVR</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure><figure class="fig-card sm" id="fig-k-p-normal"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-p-normal.jpg" alt="Diagram of P wave in II and V1 split into right atrial and left atrial components" width="756" height="1000" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K12</span><span class="fig-title">Normal P wave: RA then LA depolarisation — upright in II, biphasic in V1</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure></div>
+
+    <h3>Irregular → five things</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>#</th><th>Rhythm</th><th>What you see</th></tr>
+      <tr><td>1</td><td><strong>Atrial fibrillation</strong></td><td><strong>No P waves</strong>, <strong class="hot">irregularly irregular</strong> R–R (no pattern), undulating baseline. The arrhythmia you'll see most (~90% of rhythm problems in adult cardiology).</td></tr>
+      <tr><td>2</td><td><strong>Sinus arrhythmia</strong></td><td>Sinus P waves, rate varies with <strong>respiration</strong>; common in the young (normal).</td></tr>
+      <tr><td>3</td><td><strong>2nd-degree AV block</strong></td><td>Dropped beats (a P with no QRS) make it look irregular — may have a pattern.</td></tr>
+      <tr><td>4</td><td><strong>Wandering atrial pacemaker</strong></td><td>Impulses from several atrial foci: <strong>≥3 P-wave morphologies</strong>, rate <strong>&lt;100</strong>.</td></tr>
+      <tr><td>5</td><td><strong>Multifocal atrial tachycardia</strong></td><td>Same, but rate <strong>≥100</strong>. <span class="src-tag">Board add-on</span> classic in COPD.</td></tr>
+    </table></div>
+    <div class="fig-row"><figure class="fig-card" id="fig-k-afib"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-afib.jpg" alt="12-lead ECG with irregularly irregular narrow QRS complexes and no discrete P waves" width="1600" height="790" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K13</span><span class="fig-title">Atrial fibrillation: no P waves, irregularly irregular, undulating baseline</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure><figure class="fig-card" id="fig-k-sinus-arrhythmia"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-sinus-arrhythmia.jpg" alt="12-lead ECG in sinus rhythm with slightly varying R-R intervals" width="1600" height="992" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K14</span><span class="fig-title">Sinus arrhythmia: normal P waves, R–R varies with breathing (young patients)</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure></div>
+    <figure class="fig-card" id="fig-k-mat"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-mat.jpg" alt="12-lead ECG with a fast irregular rhythm and P waves of varying shape" width="1600" height="872" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K15</span><span class="fig-title">Multifocal atrial tachycardia: ≥3 P-wave shapes, rate ≥100</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure>
+
+    <h3>Atrial flutter — "highly tested"</h3>
+    <div class="callout callout-warning">
+      <div class="callout-title">⚠️ Sawtooth</div>
+      <p><strong class="hot">Flutter waves in a "sawtooth" pattern</strong> (best in II, III, aVF), often with a fixed ratio of flutter waves to QRS (e.g. 4:1) or <strong>variable</strong> block (irregular). Origin: typical flutter circles in the <strong>right atrium</strong> around the <strong>cavotricuspid isthmus</strong>; atrial fibrillation starts around the <strong>pulmonary veins in the left atrium</strong>.</p>
+    </div>
+    <div class="fig-row"><figure class="fig-card" id="fig-k-flutter"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-flutter.jpg" alt="12-lead ECG with regular sawtooth flutter waves, four per QRS complex" width="1600" height="749" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K16</span><span class="fig-title">Atrial flutter with 4:1 conduction — sawtooth flutter waves</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure><figure class="fig-card" id="fig-k-case-flutter"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-case-flutter.jpg" alt="12-lead ECG with sawtooth flutter waves in inferior leads and irregular QRS" width="768" height="351" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K17</span><span class="fig-title">Class ECG 6 — atrial flutter with variable block: sawtooth waves in II, III, aVF</span><span class="fig-src"><b>Qazi lecture</b> · deck slide 16</span></figcaption></figure></div>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> An irregular narrow-complex rhythm at 118 bpm has three different P-wave shapes. Name it, and what would it be called at 82 bpm?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Multifocal atrial tachycardia</strong>; at &lt;100 it's a <strong>wandering atrial pacemaker</strong>.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> What are the five criteria for calling a rhythm "sinus"?</p>
+      <div class="answer"><div class="label">Answer</div><p>Regular R–R, regular P–P, constant PR, a P for every QRS, and an <strong>upright P in lead II</strong>.</p></div>
+    </div>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="phkyvvrr4EQ" data-title="Recognizing Atrial Fibrillation"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/phkyvvrr4EQ/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Recognizing Atrial Fibrillation</b><i>MedCram · YouTube</i></span></button><button class="vid" type="button" data-yt="samrg0so46M" data-title="Understanding ECG Basics and Sinus Rhythm"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/samrg0so46M/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Understanding ECG Basics and Sinus Rhythm</b><i>Zero to Finals · YouTube</i></span></button></div></div>
+  </div>
+</div>
+
+<!-- ==================== 4. AXIS ==================== -->
+<div class="section" id="s4-axis">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Topic 4</div></div>
+    <p class="section-label">Step 3 — two seconds, then ask "why?"</p>
+    <h2 class="section-title">Axis</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>LAD = left axis deviation (here, not the artery) · RAD = right axis deviation · LAFB / LPFB = left anterior / posterior fascicular block · LVH / RVH = left / right ventricular hypertrophy</div>
+
+    <p>Dr. Qazi's take: axis matters mainly as a <strong>criterion for other diagnoses</strong>. Skip the quadrants — just look at the <strong>QRS</strong> in <strong>lead I</strong> and <strong>aVF</strong>.</p>
+    <div class="tbl-scroll"><table>
+      <tr><th>Axis</th><th>Lead I</th><th>aVF</th><th>Memory hook</th></tr>
+      <tr><td><strong>Normal</strong></td><td>+</td><td>+</td><td>"Two thumbs up"</td></tr>
+      <tr><td><strong>Left</strong></td><td>+</td><td>−</td><td>Peaks point <strong>away</strong> from each other</td></tr>
+      <tr><td><strong>Right</strong></td><td>−</td><td>+</td><td>Peaks point <strong>toward</strong> each other</td></tr>
+    </table></div>
+    <p><strong>aVF isoelectric?</strong> Use <strong>lead II</strong> instead of aVF — same pattern (normal +, left −, right +). That gets you ~95%. <span class="src-tag">Board add-on</span> Normal ≈ −30° to +90°.</p>
+
+    <div class="tool" id="axisTool">
+      <h4>🧭 Axis finder</h4>
+      <p class="t-intro">Is the QRS mostly up (+), down (−) or equal (≈0)?</p>
+      <div class="t-row"><span class="t-lab">Lead I</span><button class="tb" data-l="I" data-v="+">+ up</button><button class="tb" data-l="I" data-v="-">− down</button></div>
+      <div class="t-row"><span class="t-lab">aVF</span><button class="tb" data-l="F" data-v="+">+ up</button><button class="tb" data-l="F" data-v="-">− down</button><button class="tb" data-l="F" data-v="0">≈0 isoelectric</button></div>
+      <div class="t-row" id="axisIIrow" style="display:none"><span class="t-lab">Lead II</span><button class="tb" data-l="II" data-v="+">+ up</button><button class="tb" data-l="II" data-v="-">− down</button></div>
+      <div class="t-out" id="axisOut">Pick lead I and aVF.</div>
+    </div>
+
+    <div class="compare-grid">
+      <div class="compare-card" style="background:var(--blue-bg);border-color:var(--accent2)">
+        <span class="card-emoji">⬅️</span><h4>Left axis — 4 causes</h4>
+        <ol class="notes-list"><li><strong>LVH</strong></li><li><strong>LBBB</strong></li><li><strong>Left anterior fascicular block</strong></li><li><strong>Old inferior MI</strong> (Q waves in II, III, aVF make aVF negative)</li></ol>
+      </div>
+      <div class="compare-card" style="background:var(--red-bg);border-color:var(--accent)">
+        <span class="card-emoji">➡️</span><h4>Right axis — 3 causes</h4>
+        <ol class="notes-list"><li><strong>RVH</strong></li><li><strong>Left posterior fascicular block</strong></li><li><strong>Old lateral MI</strong> (Q waves in I, aVL)</li></ol>
+        <p style="font-size:.85rem;color:var(--muted)">Lung disease also shifts it right — but doesn't change the read.</p>
+      </div>
+    </div>
+    <div class="callout callout-warning">
+      <div class="callout-title">⚠️ The classic wrong answer</div>
+      <p><strong class="hot">RBBB has a normal axis.</strong> RBBB + right axis = <strong>RBBB + left posterior fascicular block</strong>.</p>
+    </div>
+    <div class="fig-row"><figure class="fig-card" id="fig-k-axis-circle"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-axis-circle.jpg" alt="Hexaxial reference circle with limb leads, normal axis sector shaded green, left and right axis deviation sectors, lead I and aVF tracings highlighted" width="1584" height="1000" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K18</span><span class="fig-title">Axis on the hexaxial circle: normal ≈ −30° to +90° — QRS up in I and aVF</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure><figure class="fig-card" id="fig-k-lad-ecg"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-lad-ecg.jpg" alt="12-lead ECG with positive QRS in lead I and negative QRS in aVF and II" width="1439" height="1000" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K19</span><span class="fig-title">Left axis deviation: QRS up in I, down in aVF</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure></div>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> QRS is positive in lead I and negative in aVF, the QRS is narrow, there's no LVH and no Q waves in II, III, aVF. Diagnosis?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Left anterior fascicular block</strong> — a left axis with no other cause.</p></div>
+    </div>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="vzats80adBg" data-title="Understanding ECG Axis and Axis Deviation"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/vzats80adBg/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Understanding ECG Axis and Axis Deviation</b><i>Zero to Finals · YouTube</i></span></button></div></div>
+  </div>
+</div>
+
+<!-- ==================== 5. PR / AV BLOCK ==================== -->
+<div class="section" id="s5-pr">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Topic 5</div><span class="hy-flag">⭐ P–P, R–R, PR every time</span></div>
+    <p class="section-label">Step 4a — PR interval</p>
+    <h2 class="section-title">PR Interval &amp; AV Block</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>AVB = atrioventricular block · P–P / R–R = interval between consecutive P waves / R waves · PR = start of P to start of QRS · CHB = complete heart block</div>
+
+    <p>Normal PR ≤ <span class="num">200 ms</span> (one big box). <strong>Long PR = slowed conduction through the AV node → think AV block.</strong> Dr. Qazi's rule: for every AV block, measure the same three things.</p>
+    <div class="tbl-scroll"><table>
+      <tr><th>Block</th><th>P–P</th><th>R–R</th><th>PR</th><th>Key</th></tr>
+      <tr><td><strong>1st degree</strong></td><td>Regular</td><td>Regular</td><td><strong>Long (&gt;200 ms) but constant</strong></td><td>Every P conducts — it's just slow</td></tr>
+      <tr><td><strong>2nd degree, Mobitz I (Wenckebach)</strong></td><td>Regular</td><td>Irregular</td><td><strong>Progressively lengthens → dropped QRS</strong></td><td><strong class="hot">PR after the drop is shorter than the PR before it</strong> (easier to see than the gradual lengthening). Benign.</td></tr>
+      <tr><td><strong>2nd degree, Mobitz II</strong></td><td>Regular</td><td>Irregular</td><td><strong>Constant</strong></td><td>A P suddenly doesn't conduct (often a pattern, e.g. every 3rd). <strong class="hot">High-grade → pacemaker.</strong></td></tr>
+      <tr><td><strong>3rd degree (complete)</strong></td><td><strong>Regular</strong></td><td><strong>Regular</strong></td><td><strong>All over the place</strong></td><td><strong>AV dissociation</strong>: Ps and QRSs each march out on their own; atrial rate usually faster than ventricular</td></tr>
+    </table></div>
+    <p>In every AV block the <strong>P–P interval is constant</strong> — if the Ps don't march out, think of something else.</p>
+    <div class="fig-row"><figure class="fig-card" id="fig-k-1avb"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-1avb.jpg" alt="12-lead ECG with long constant PR interval" width="1339" height="999" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K20</span><span class="fig-title">First-degree AV block: PR &amp;gt;200 ms but constant, every P conducts</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure><figure class="fig-card" id="fig-k-mobitz1-strip"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-mobitz1-strip.jpg" alt="Rhythm strip with progressively lengthening PR intervals labelled 0.24, 0.28, 0.32, 0.36, a missing QRS, then PR back to 0.24" width="1600" height="410" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K21</span><span class="fig-title">Mobitz I (Wenckebach): PR 0.24 → 0.28 → 0.32 → 0.36 s, dropped QRS, then short PR again</span><span class="fig-src"><b>CV Pathophysiology</b></span></figcaption></figure></div>
+    <div class="fig-row"><figure class="fig-card sm" id="fig-k-mobitz2"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-mobitz2.jpg" alt="Schematic strip with constant PR intervals and an occasional non-conducted P wave" width="1600" height="777" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K22</span><span class="fig-title">Mobitz II (3:2): constant PR, then a P with no QRS</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure><figure class="fig-card tall" id="fig-k-3avb"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-3avb.jpg" alt="Three schematic strips showing P waves at a regular fast rate and QRS complexes at a slower independent rate" width="1384" height="1000" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K23</span><span class="fig-title">Third-degree block: P waves march on their own, QRS on their own — no relationship</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure></div>
+
+    <div class="callout callout-purple">
+      <div class="callout-title">🧩 2:1 AV block — the trick ECG</div>
+      <p>Every other P is blocked, so there are <strong>never two conducted P waves in a row</strong> → you <strong class="hot">cannot tell Mobitz I from Mobitz II</strong>. Call it "2:1 AV block" and let the <strong>history</strong> decide: an asymptomatic 25-year-old → probably Mobitz I (benign); an 80-year-old with syncope or exhaustion → treat as Mobitz II (pacemaker); a young patient with syncope → think congenital AV block, ask about family history. Look for the hidden P inside the T wave — it looks identical to the other P waves.</p>
+    </div>
+    <div class="fig-row"><figure class="fig-card" id="fig-k-2to1"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-2to1.jpg" alt="12-lead ECG with two P waves for each QRS" width="1600" height="982" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K24</span><span class="fig-title">2:1 AV block — every other P is dropped; type I vs II can&#x27;t be told apart</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure><figure class="fig-card" id="fig-k-case-2to1"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-case-2to1.jpg" alt="12-lead ECG with slow rate and two P waves for every QRS, one looking like part of the T wave" width="1024" height="428" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K25</span><span class="fig-title">Class ECG 5 — 2:1 AV block (rate ~42): a hidden P sits in each T wave</span><span class="fig-src"><b>Qazi lecture</b> · deck slide 15</span></figcaption></figure></div>
+
+    <div class="tool drill" id="avDrill">
+      <h4>🎯 AV-block drill</h4>
+      <p class="t-intro">Read the description, name the block. (Shuffles each time you open the page.)</p>
+      <div class="d-q" id="avQ"></div>
+      <div class="d-opts" id="avOpts"></div>
+      <div class="t-out" id="avOut"></div>
+      <div class="d-nav"><button class="tb" id="avNext">Next ▸</button><span id="avScore"></span></div>
+    </div>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> P–P regular, R–R regular, but the PR changes from beat to beat; atrial rate 80, ventricular rate 36. Diagnosis?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Third-degree (complete) AV block</strong> — AV dissociation.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> Why does telling Mobitz I from Mobitz II matter?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Mobitz I is benign</strong>; <strong>Mobitz II is high-grade and needs a pacemaker</strong>.</p></div>
+    </div>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="lGTjE6jE3P4" data-title="Heart Blocks Made Easy — 1st, 2nd (Mobitz I &amp; II), 3rd"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/lGTjE6jE3P4/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Heart Blocks Made Easy — 1st, 2nd (Mobitz I &amp; II), 3rd</b><i>Rhesus Medicine · YouTube</i></span></button><button class="vid" type="button" data-yt="4csEu-GyRA8" data-title="Heart Blocks Explained — first, second, third degree and bundle branch"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/4csEu-GyRA8/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Heart Blocks Explained — first, second, third degree and bundle branch</b><i>MedCram · YouTube</i></span></button></div></div>
+  </div>
+</div>
+
+<!-- ==================== 6. QRS / BBB ==================== -->
+<div class="section" id="s6-qrs">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Topic 6</div></div>
+    <p class="section-label">Step 4b — QRS duration</p>
+    <h2 class="section-title">Wide QRS: Bundle Branch &amp; Fascicular Blocks</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>BBB = bundle branch block · LBBB / RBBB = left / right BBB · LAFB / LPFB = left anterior / posterior fascicular block · WPW = Wolff–Parkinson–White</div>
+
+    <p>Normal QRS &lt; <span class="num">120 ms</span> (3 small boxes). <strong>Wide QRS → first think bundle branch block</strong>: conduction delayed below the His bundle. Anatomy to picture: His → <strong>right bundle</strong> + <strong>left bundle</strong>; the left bundle splits into <strong>anterior</strong> and <strong>posterior fascicles</strong>.</p>
+
+    <div class="compare-grid">
+      <div class="compare-card" style="background:var(--blue-bg);border-color:var(--accent2)">
+        <span class="card-emoji">⬅️</span><h4>LBBB</h4>
+        <ul class="notes-list">
+          <li>QRS ≥ <span class="num">120 ms</span></li>
+          <li><strong>Left axis</strong> (required, per lecture)</li>
+          <li><strong>V1–V3 negative</strong> — rS / mostly negative, 100% of the time</li>
+          <li><strong>I, aVL, V5–V6 positive</strong> — broad R, sometimes notched at the peak</li>
+        </ul>
+      </div>
+      <div class="compare-card" style="background:var(--red-bg);border-color:var(--accent)">
+        <span class="card-emoji">➡️</span><h4>RBBB</h4>
+        <ul class="notes-list">
+          <li>QRS ≥ <span class="num">120 ms</span></li>
+          <li><strong>Normal axis</strong></li>
+          <li><strong>rSR′ ("rabbit ears") in V1–V2</strong> — or at least mostly positive</li>
+          <li><strong>Slurred S waves in I, aVL, V5–V6</strong></li>
+          <li>Wide QRS + rSR′ in V1–V2 → call it</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout callout-hook">
+      <div class="callout-title">🧠 "WiLLiaM MaRRoW" <span class="src-tag">Board add-on</span></div>
+      <p><strong>LBBB = W in V1, M in V6</strong> (WiLLiaM). <strong>RBBB = M in V1, W in V6</strong> (MaRRoW).</p>
+    </div>
+    <div class="fig-row"><figure class="fig-card tall" id="fig-k-lbbb"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-lbbb.jpg" alt="Two columns of precordial complexes comparing normal with left bundle branch block" width="623" height="999" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K26</span><span class="fig-title">LBBB vs normal, V1–V6: deep negative V1–V3, broad notched R in V5–V6</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure><figure class="fig-card tall" id="fig-k-rbbb"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-rbbb.jpg" alt="Two columns of precordial complexes comparing normal with right bundle branch block" width="623" height="999" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K27</span><span class="fig-title">RBBB vs normal, V1–V6: rSR′ &quot;rabbit ears&quot; in V1–V2, slurred S in V5–V6</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure></div>
+    <div class="fig-row"><figure class="fig-card" id="fig-k-case-lbbb"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-case-lbbb.jpg" alt="12-lead ECG with wide QRS, deep negative complexes in V1 to V3, broad positive complexes in I and aVL, long PR" width="1200" height="616" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K28</span><span class="fig-title">Class ECG 1 — sinus 60, left axis, first-degree AV block + LBBB</span><span class="fig-src"><b>Qazi lecture</b> · deck slide 11</span></figcaption></figure><figure class="fig-card" id="fig-k-case-rbbb"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-case-rbbb.jpg" alt="12-lead ECG with wide QRS, rSR prime in V1 and V2 and slurred S waves in I and V6" width="1024" height="377" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K29</span><span class="fig-title">Class ECG 2 — sinus ~78, leftward axis, RBBB (not enough axis for LAFB)</span><span class="fig-src"><b>Qazi lecture</b> · deck slide 12</span></figcaption></figure></div>
+
+    <h3>Fascicular blocks — the QRS is <em>normal</em></h3>
+    <div class="fact-grid">
+      <div class="fact-card"><h4>Left anterior fascicular block</h4><div class="generic">Common on its own</div><p><strong>Left axis with no other explanation</strong> — no LVH, no LBBB, normal QRS width, no inferior Q waves.</p></div>
+      <div class="fact-card"><h4>Left posterior fascicular block</h4><div class="generic">Rare alone</div><p><strong>Right axis with no other explanation</strong> — no RVH, no old lateral MI. Usually seen as <strong>RBBB + right axis = RBBB + LPFB</strong>.</p></div>
+    </div>
+    <p><span class="src-tag">Board add-on</span> A short PR with a slurred QRS upstroke (<strong>delta wave</strong>) is pre-excitation (<strong>WPW</strong>) — covered with arrhythmias in Dr. Cecilberg's lecture.</p>
+    <figure class="fig-card sm" id="fig-k-delta"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-delta.jpg" alt="Normal complex above a complex with a short PR and a slurred initial upstroke labelled delta" width="700" height="1000" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K30</span><span class="fig-title">Delta wave (pre-excitation, WPW): short PR + slurred QRS upstroke</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> QRS 140 ms, rSR′ in V1–V2, slurred S in I and V6, and <strong>right axis deviation</strong>. Full read of the conduction?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>RBBB + left posterior fascicular block</strong> (RBBB alone has a normal axis).</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> QRS 150 ms, left axis, deep negative QRS in V1–V3 and broad notched R in I, aVL, V6. Diagnosis?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Left bundle branch block.</strong></p></div>
+    </div>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="LfipQ-GYTqk" data-title="Bundle branch block — causes, ECG, pathology"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/LfipQ-GYTqk/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Bundle branch block — causes, ECG, pathology</b><i>Osmosis · YouTube</i></span></button></div></div>
+  </div>
+</div>
+
+<!-- ==================== 7. QT ==================== -->
+<div class="section" id="s7-qt">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Topic 7</div><span class="hy-flag">⭐ Long QT → torsades (boards)</span></div>
+    <p class="section-label">Step 4c — the clinically dangerous interval</p>
+    <h2 class="section-title">QT / QTc</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>QTc = QT corrected for heart rate · RR = interval between R waves (in seconds) · VT = ventricular tachycardia · Mg / K = magnesium / potassium · HIV = human immunodeficiency virus</div>
+
+    <div class="moa-chain"><span class="hit">Bazett: QTc = QT ÷ √RR</span><i>·</i><span>Normal &lt; 450 ms (men) / 460 ms (women)</span><i>·</i><span class="hit">Worry &gt; 500 ms</span></div>
+    <ul class="notes-list">
+      <li><strong>Eyeball test:</strong> mark halfway between two R waves. If the T wave ends <strong>before</strong> the halfway point, the QT is ~90% likely normal; at or beyond it → calculate.</li>
+      <li><strong>Why it matters:</strong> a long QT sets up <strong class="hot">polymorphic VT = torsades de pointes</strong> ("twisting" ribbon of changing amplitude) — tested on the boards.</li>
+      <li>Over <span class="num">500 ms</span> the torsades risk rises sharply (a wide QRS from a BBB lengthens the QT itself — account for it).</li>
+    </ul>
+    <div class="fig-row"><figure class="fig-card" id="fig-k-long-qt"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-long-qt.jpg" alt="12-lead ECG with a long QT interval" width="1600" height="766" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K31</span><span class="fig-title">Prolonged QT interval</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure><figure class="fig-card" id="fig-k-torsades"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-torsades.jpg" alt="Multi-lead strip with polymorphic ventricular tachycardia whose amplitude waxes and wanes" width="1600" height="897" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K32</span><span class="fig-title">Torsades de pointes — polymorphic VT that &quot;twists&quot; around the baseline</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure></div>
+
+    <h3>What lengthens it</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>Cause</th><th>Lecture points</th></tr>
+      <tr><td><strong>Class III antiarrhythmics</strong></td><td><strong>Dofetilide</strong> — the only drug she's actually seen cause torsades; sotalol with electrolyte problems; amiodarone prolongs QT but she has never seen torsades from it</td></tr>
+      <tr><td><strong>Electrolytes</strong></td><td><strong>Low Mg</strong>, <strong>low K</strong> (high K prolongs everything — wide QRS, long PR)</td></tr>
+      <tr><td><strong>Other drugs</strong></td><td><strong>Fluoroquinolones</strong> and other antibiotics, <strong>every antidepressant</strong>, antipsychotics, HIV drugs — an ever-growing list. Check the med list + electrolytes before prescribing (her story: a patient died of polymorphic VT after a new fluoroquinolone)</td></tr>
+      <tr><td><strong>Congenital long QT</strong></td><td>Young athlete who collapses — the 12-lead is the key first test (though the commonest cause of on-field sudden death is hypertrophic cardiomyopathy)</td></tr>
+    </table></div>
+    <div class="fig-row"><figure class="fig-card" id="fig-k-hypok"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-hypok.jpg" alt="Lead V4 strip with a small T wave followed by a prominent U wave, labelled" width="1600" height="782" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K33</span><span class="fig-title">Hypokalemia: flat T, prominent U wave (QT/QU looks long)</span><span class="fig-src"><b>CV Pathophysiology</b></span></figcaption></figure><figure class="fig-card" id="fig-k-hyperk"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-hyperk.jpg" alt="Lead V5 strip with tall narrow peaked T waves, arrow" width="1600" height="890" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K34</span><span class="fig-title">Hyperkalemia: tall, narrow, peaked T waves (severe → every interval widens)</span><span class="fig-src"><b>CV Pathophysiology</b></span></figcaption></figure></div>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> A patient on dofetilide for AF is started on ondansetron; K⁺ is 3.1 and Mg²⁺ low. What rhythm are you worried about and why?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Torsades de pointes</strong> (polymorphic VT) — stacked QT-prolonging drugs + hypokalemia/hypomagnesemia.</p></div>
+    </div>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="2QRcWw97RaM" data-title="ECG changes in hyperkalemia"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/2QRcWw97RaM/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>ECG changes in hyperkalemia</b><i>Rhesus Medicine · YouTube</i></span></button></div></div>
+  </div>
+</div>
+
+<!-- ==================== 8. CHAMBERS ==================== -->
+<div class="section" id="s8-chambers">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Topic 8</div></div>
+    <p class="section-label">Step 5 — P waves, voltage, R-wave progression</p>
+    <h2 class="section-title">Chamber Enlargement &amp; Hypertrophy</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>LAE / RAE = left / right atrial enlargement · LVH / RVH = left / right ventricular hypertrophy · TWI = T-wave inversion · mm = millimetre (1 small box tall)</div>
+
+    <h3>Atria — look at the P in II and V1</h3>
+    <div class="compare-grid">
+      <div class="compare-card" style="background:var(--blue-bg);border-color:var(--accent2)">
+        <span class="card-emoji">↔️</span><h4>Left atrial enlargement</h4>
+        <p>Lead II: P still upright but <strong>wider</strong> (<span class="src-tag">Board add-on</span> &gt;120 ms, notched "P mitrale"). V1: <strong>mostly negative</strong> — big terminal negative part. Common with ageing (stiff LV), athletes.</p>
+      </div>
+      <div class="compare-card" style="background:var(--red-bg);border-color:var(--accent)">
+        <span class="card-emoji">↕️</span><h4>Right atrial enlargement</h4>
+        <p>Lead II: <strong>tall, peaked</strong> P (<span class="src-tag">Board add-on</span> &gt;2.5 mm, "P pulmonale"). V1: <strong>mostly positive</strong> — big initial part. In children, think congenital heart disease.</p>
+      </div>
+    </div>
+    <div class="fig-row"><figure class="fig-card sm" id="fig-k-p-normal-35"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-p-normal.jpg" alt="Diagram of P wave in II and V1 split into right atrial and left atrial components" width="756" height="1000" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K35</span><span class="fig-title">Normal P wave: RA then LA depolarisation — upright in II, biphasic in V1</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure><figure class="fig-card sm" id="fig-k-p-pulmonale"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-p-pulmonale.jpg" alt="Diagram of enlarged right atrial component making a tall P in II and a mostly positive P in V1" width="755" height="999" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K36</span><span class="fig-title">Right atrial enlargement (&quot;P pulmonale&quot;): tall peaked P in II, big initial positive P in V1</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure></div>
+
+    <h3>LVH — why it matters</h3>
+    <p>New heart failure + LVH on the ECG starts the work-up; LVH also brings TWI / ST depression ("strain") that can be mistaken for ischemia.</p>
+    <div class="tbl-scroll"><table>
+      <tr><th>Criterion</th><th>Rule</th><th>Note</th></tr>
+      <tr><td><strong>Left axis</strong></td><td>Required</td><td>Leftward forces</td></tr>
+      <tr><td><strong>R in aVL</strong></td><td><strong>&gt; <span class="num">11 mm</span></strong></td><td><strong>Most specific</strong></td></tr>
+      <tr><td><strong>S (V1 or V2) + R (V5 or V6)</strong></td><td><strong>≥ <span class="num">35 mm</span></strong></td><td><strong>Most sensitive</strong> (Sokolow–Lyon)</td></tr>
+    </table></div>
+    <p>Call LVH with the <strong>left axis + either voltage criterion</strong> (or both).</p>
+    <div class="fig-row"><figure class="fig-card" id="fig-k-lvh"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-lvh.jpg" alt="12-lead ECG with very tall R waves in lateral leads and deep S waves in V1 to V2" width="1523" height="999" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K37</span><span class="fig-title">Left ventricular hypertrophy: huge precordial voltages</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure><figure class="fig-card" id="fig-k-case-lvh"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-case-lvh.jpg" alt="12-lead ECG with tall R in aVL, left axis and deep S waves in V1 to V3" width="1024" height="557" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K38</span><span class="fig-title">Class ECG 4 — LVH: left axis, R in aVL &amp;gt;11 mm, big precordial voltages</span><span class="fig-src"><b>Qazi lecture</b> · deck slide 14</span></figcaption></figure></div>
+
+    <h3>Normal R-wave progression → RVH</h3>
+    <p>Normal: V1 = small r, deep S → R grows → <strong>transition (R = S) at V3–V4</strong> → V5–V6 tall R, small s. <strong>RVH = right axis + the progression reverses</strong> (tall R in V1, getting smaller toward V6). Rare in adults; think congenital disease.</p>
+    <div class="fig-row"><figure class="fig-card sm" id="fig-k-r-progression"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-r-progression.jpg" alt="Six precordial complexes from V1 to V6 with R wave growing, transition zone between V3 and V4 marked" width="1370" height="1000" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K39</span><span class="fig-title">Normal R-wave progression: small r/deep S in V1 → transition V3–V4 → tall R in V5–V6</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure><figure class="fig-card" id="fig-k-rvh"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-rvh.jpg" alt="12-lead ECG with dominant R in V1 and right axis deviation" width="1600" height="978" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K40</span><span class="fig-title">Right ventricular hypertrophy with right axis: tall R in V1, reversed R-wave progression</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure></div>
+    <p><span class="src-tag">Board add-on</span> A tall R in V1 also appears in RBBB, posterior MI and HCM; poor R-wave progression in prior anteroseptal MI, LVH, LBBB, COPD.</p>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> Left axis; S in V2 = 22 mm, R in V5 = 18 mm; R in aVL = 13 mm. Diagnosis and which criterion is most specific?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>LVH</strong> — both voltage criteria met (22 + 18 = 40 ≥ 35); <strong>R in aVL &gt;11 mm is the most specific</strong>.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 9. ISCHEMIA ==================== -->
+<div class="section" id="s9-ischemia">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Topic 9</div><span class="hy-flag">⭐ Dr. Qazi's "favourite part"</span></div>
+    <p class="section-label">Step 6 — which artery, how acute?</p>
+    <h2 class="section-title">Ischemia, Injury &amp; Infarction</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>RCA = right coronary artery · PDA = posterior descending artery · LMT = left main trunk · LCx = left circumflex · LAD = left anterior descending (the artery, here) · STE / STD = ST elevation / depression · MI = myocardial infarction · TWI = T-wave inversion</div>
+
+    <h3>Coronary anatomy in one table</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>Artery</th><th>Course</th><th>Supplies</th><th>Leads</th></tr>
+      <tr><td><strong>RCA</strong> → PDA</td><td>Anterior AV groove → PDA in the inferior interventricular groove (<strong>right-dominant ~80%</strong>)</td><td><strong>Inferior wall</strong> + inferior ⅓ of septum</td><td><strong>II, III, aVF</strong></td></tr>
+      <tr><td><strong>LCx</strong> (from left main)</td><td>Posterior AV groove, obtuse marginals (gives the PDA in ~20% — left-dominant)</td><td><strong>Inferolateral ("posterior") wall</strong></td><td>No direct leads → <strong>reciprocal changes in V1–V3</strong></td></tr>
+      <tr><td><strong>LAD</strong> (from left main) — "widowmaker"</td><td>Anterior interventricular groove; septal perforators + diagonals; ~40%+ of LV</td><td><strong>Anterior</strong> wall, <strong>anteroseptum</strong> (top ⅔), <strong>anterolateral</strong> wall</td><td><strong>V1–V3</strong> anteroseptal · <strong>V4–V6</strong> anterior · <strong>I, aVL</strong> anterolateral</td></tr>
+    </table></div>
+    <div class="fig-row"><figure class="fig-card" id="fig-k-dominance"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-dominance.jpg" alt="Two short-axis ventricle diagrams coloured by artery: LAD anterior and anteroseptal, circumflex anterolateral and inferolateral, right coronary inferior and inferoseptal in right-dominant, circumflex taking inferior wall in left-dominant" width="1400" height="1008" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K41</span><span class="fig-title">Which artery feeds which wall — right- vs left-dominant circulation</span><span class="fig-src"><b>UWorld</b></span></figcaption></figure><figure class="fig-card" id="fig-k-territories"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-territories.jpg" alt="12-lead ECG with boxes grouping leads by coronary territory" width="1600" height="688" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K42</span><span class="fig-title">Lead territories on a real 12-lead: II/III/aVF = RCA (or LCx); V1–V4 = LAD; I/aVL/V5–V6 = LCx or diagonal</span><span class="fig-src"><b>CV Pathophysiology</b></span></figcaption></figure></div>
+
+    <h3>The three findings — what each means</h3>
+    <div class="hallmarks-grid">
+      <div class="hallmark-card"><div class="hallmark-num">ST ELEVATION</div><h4>Transmural injury = STEMI</h4><p>Usually plaque rupture → <strong>100% occlusion</strong>. ≥<span class="num">1 mm</span> in <strong class="hot">≥2 contiguous leads</strong> (an anatomic pattern). → <strong>open the artery now</strong> (cath lab, or thrombolytics then transfer). "Time is muscle."</p></div>
+      <div class="hallmark-card"><div class="hallmark-num">ST DEPRESSION</div><h4>Subendocardial injury = NSTEMI</h4><p>Rupture → 70–90% narrowing, some flow continues. ≥1 mm below baseline; often <strong>diffuse</strong>, not one territory. Stabilise first — <strong>no emergent revascularisation</strong>.</p></div>
+      <div class="hallmark-card"><div class="hallmark-num">Q WAVES</div><h4>Dead myocardium = old MI</h4><p>≥<span class="num">1 small box</span> wide and deep, in an anatomic pattern. The infarct is <strong>completed</strong> (usually by 12–24 h, varies). Normal only in <strong>lead III</strong> (lecture).</p></div>
+      <div class="hallmark-card"><div class="hallmark-num">T INVERSION</div><h4>Non-specific</h4><p>Ischemia, electrolytes, metabolic — "I don't know what TWI means" without context.</p></div>
+    </div>
+    <div class="fig-row"><figure class="fig-card sm" id="fig-k-ste-types"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-ste-types.jpg" alt="Schematic of a normal complex beside complexes with ST-segment elevation" width="828" height="999" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K43</span><span class="fig-title">Normal vs ST elevation (acute transmural injury)</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure><figure class="fig-card sm" id="fig-k-std-types"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-std-types.jpg" alt="Five schematic complexes showing different ST depression shapes" width="1402" height="1000" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K44</span><span class="fig-title">ST depression shapes: upsloping, horizontal, downsloping (horizontal/down-sloping = significant)</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure><figure class="fig-card sm" id="fig-k-q-wave"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-q-wave.jpg" alt="Normal complex above a complex with a wide deep Q wave" width="460" height="999" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K45</span><span class="fig-title">Pathological Q wave (≥1 small box wide/deep) = dead myocardium, old infarct</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure></div>
+    <div class="callout callout-concept">
+      <div class="callout-title">🧠 Reciprocal changes confirm a STEMI</div>
+      <p>ST elevation in one territory with <strong>ST depression in the opposite leads</strong> is an electrical mirror image and <strong>confirms</strong> the STEMI — e.g. inferior STE (II, III, aVF) with STD in aVL/anterior leads.</p>
+    </div>
+    <p><span class="src-tag">Board add-on</span> (crib sheet) V2–V3 need more: ≥2 mm men ≥40 y, ≥2.5 mm men &lt;40 y, ≥1.5 mm women. <strong>Evolution:</strong> hyperacute T waves → STE → Q waves + TWI as ST returns to baseline. <strong>Posterior MI:</strong> ST depression + tall R + upright T in V1–V3. Known LBBB or pacing makes ischemia hard to read.</p>
+    <div class="fig-row"><figure class="fig-card" id="fig-k-stemi-timeline"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-stemi-timeline.jpg" alt="Timeline table of ECG complexes from seconds to years after coronary occlusion" width="1206" height="999" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K46</span><span class="fig-title">STEMI evolution: hyperacute T → ST elevation → Q waves + T inversion → variable resolution</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure><figure class="fig-card tall" id="fig-k-hyperacute"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-hyperacute.jpg" alt="Leads V2 and V3 with broad, tall, symmetric T waves" width="590" height="682" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K47</span><span class="fig-title">Hyperacute T waves in V2–V3 — the earliest sign of occlusion</span><span class="fig-src"><b>CV Pathophysiology</b></span></figcaption></figure></div>
+    <div class="fig-row"><figure class="fig-card" id="fig-k-inferior-stemi"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-inferior-stemi.jpg" alt="12-lead ECG with ST elevation in inferior leads and ST depression in lateral leads" width="1600" height="862" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K48</span><span class="fig-title">Acute inferior STEMI: ST↑ in II, III, aVF with reciprocal ST↓ in I/aVL</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure><figure class="fig-card" id="fig-k-anterior-stemi"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-anterior-stemi.jpg" alt="12-lead ECG with ST elevation in V1 to V5" width="1600" height="894" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K49</span><span class="fig-title">Acute anterior STEMI: ST↑ across the precordial leads (LAD)</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure></div>
+    <div class="fig-row"><figure class="fig-card" id="fig-k-tombstone"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-tombstone.jpg" alt="Leads V2 and V3 with ST elevation, J point marked, beside a tombstone photograph" width="1600" height="1125" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K50</span><span class="fig-title">&quot;Tombstoning&quot;: massive ST elevation merging with the T wave (anterior STEMI)</span><span class="fig-src"><b>CV Pathophysiology</b></span></figcaption></figure><figure class="fig-card" id="fig-k-nstemi"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-nstemi.jpg" alt="12-lead ECG with ST depression in several leads" width="1019" height="618" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K51</span><span class="fig-title">NSTEMI: ST depression (often diffuse) — subendocardial injury</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure></div>
+    <figure class="fig-card sm" id="fig-k-posterior"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-posterior.jpg" alt="Lead V2 strip with ST-segment depression and a prominent R wave, the reciprocal picture of a posterior infarct" width="1600" height="708" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K52</span><span class="fig-title">Posterior MI seen from the front: ST depression + tall R in V2 (the mirror image)</span><span class="fig-src"><b>CV Pathophysiology</b></span></figcaption></figure>
+
+    <div class="tool" id="stemiTool">
+      <h4>📍 STEMI localizer</h4>
+      <p class="t-intro">Tap the leads that show ST elevation. The tool names the territory and artery.</p>
+      <div class="lead-grid" id="leadGrid"></div>
+      <div class="t-row"><button class="tb" id="stReset">↺ Clear</button></div>
+      <div class="t-out" id="stOut">No leads selected.</div>
+    </div>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> ST elevation in II, III, aVF with ST depression in I and aVL, and a heart rate of 38 with dissociated P waves. Which artery, and why the slow rate?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>RCA</strong> (inferior STEMI with reciprocal changes); the RCA supplies the AV node in most people → <strong>complete heart block</strong> — exactly class ECG 3.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> Q waves in II, III, aVF but a flat ST segment. What does this mean?</p>
+      <div class="answer"><div class="label">Answer</div><p>An <strong>old (completed) inferior MI</strong> — dead myocardium, not acute injury (and a cause of left axis deviation).</p></div>
+    </div>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="ond98UVBvyE" data-title="ACS — unstable angina vs NSTEMI vs STEMI, with ECGs"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/ond98UVBvyE/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>ACS — unstable angina vs NSTEMI vs STEMI, with ECGs</b><i>Rhesus Medicine · YouTube</i></span></button><button class="vid" type="button" data-yt="8ajWCLqz3VQ" data-title="ST elevation — ECG case"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/8ajWCLqz3VQ/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>ST elevation — ECG case</b><i>MedCram · YouTube</i></span></button><button class="vid" type="button" data-yt="qeOrWiUdjmw" data-title="MI vs pericarditis on ECG"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/qeOrWiUdjmw/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>MI vs pericarditis on ECG</b><i>MedCram · YouTube</i></span></button></div></div>
+  </div>
+</div>
+
+<!-- ==================== 10. PRACTICE ==================== -->
+<div class="section" id="s10-practice">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Topic 10</div><span class="hy-flag">⭐ Do these yourself first</span></div>
+    <p class="section-label">The class ECGs, read with the system</p>
+    <h2 class="section-title">Practice: The Lecture ECGs</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>AVB = AV block · CHB = complete heart block · STEMI = ST-elevation MI · LVH = left ventricular hypertrophy · LAFB = left anterior fascicular block</div>
+
+    <p>Zoom each ECG (click it), run the 7 steps, commit to a one-line read, <em>then</em> open the answer.</p>
+
+    <figure class="fig-card" id="fig-k-case-lbbb-53"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-case-lbbb.jpg" alt="12-lead ECG with wide QRS, deep negative complexes in V1 to V3, broad positive complexes in I and aVL, long PR" width="1200" height="616" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K53</span><span class="fig-title">Class ECG 1 — sinus 60, left axis, first-degree AV block + LBBB</span><span class="fig-src"><b>Qazi lecture</b> · deck slide 11</span></figcaption></figure>
+    <details class="case-box ecg"><summary>Answer — class ECG 1</summary><div class="case-body">
+      <ol class="notes-list"><li><strong>Rate</strong> 10 QRS × 6 = <strong>60</strong>. <strong>Rhythm</strong> regular, a P before every QRS → sinus.</li>
+      <li><strong>Axis</strong> left. <strong>PR</strong> &gt;1 big box, constant, no dropped beats → <strong>1st-degree AVB</strong>.</li>
+      <li><strong>QRS</strong> &gt;3 small boxes; V1 mostly negative (tiny r), V6 positive and notched; I/aVL positive → <strong>LBBB</strong>.</li>
+      <li><strong>Read:</strong> sinus rhythm 60, first-degree AV block, left bundle branch block. (Dr. Qazi also pointed out double P waves — this patient had a transplanted heart.)</li></ol>
+    </div></details>
+
+    <figure class="fig-card" id="fig-k-case-rbbb-54"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-case-rbbb.jpg" alt="12-lead ECG with wide QRS, rSR prime in V1 and V2 and slurred S waves in I and V6" width="1024" height="377" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K54</span><span class="fig-title">Class ECG 2 — sinus ~78, leftward axis, RBBB (not enough axis for LAFB)</span><span class="fig-src"><b>Qazi lecture</b> · deck slide 12</span></figcaption></figure>
+    <details class="case-box ecg"><summary>Answer — class ECG 2</summary><div class="case-body">
+      <ol class="notes-list"><li><strong>Rate</strong> ~13 × 6 ≈ <strong>78</strong>, sinus.</li>
+      <li><strong>Axis</strong> leftward (I +, aVF mostly −/biphasic) — "leans left".</li>
+      <li><strong>QRS</strong> prolonged (&gt;3 small boxes); <strong>rSR′ in V1–V2</strong>; slurred S in I, aVL, V5–V6 → <strong>RBBB</strong>.</li>
+      <li>Not convincingly left enough to add LAFB. <strong>Read:</strong> sinus rhythm, right bundle branch block.</li></ol>
+    </div></details>
+
+    <figure class="fig-card" id="fig-k-case-chb-stemi"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-case-chb-stemi.jpg" alt="12-lead ECG with slow regular QRS, P waves unrelated to QRS, marked ST elevation in II, III, aVF and ST depression in aVL and V2" width="1024" height="587" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K55</span><span class="fig-title">Class ECG 3 — complete heart block (~36/min) + acute inferior STEMI with reciprocal changes</span><span class="fig-src"><b>Qazi lecture</b> · deck slide 13</span></figcaption></figure>
+    <details class="case-box ecg"><summary>Answer — class ECG 3</summary><div class="case-body">
+      <ol class="notes-list"><li><strong>Rate</strong> 6 × 6 = <strong>36</strong> → bradycardia; R–R regular.</li>
+      <li>P waves present but the <strong>PR varies</strong>; P–P marches out (some Ps buried in QRS) → <strong>third-degree AV block</strong>.</li>
+      <li>Axis normal; QRS narrow; no chamber enlargement.</li>
+      <li><strong>ST elevation II, III, aVF</strong> with <strong>reciprocal ST depression</strong> in the opposite leads → <strong>acute inferior STEMI (RCA)</strong>.</li>
+      <li><strong>Read:</strong> sinus rhythm with complete AV dissociation (complete heart block), bradycardia, acute inferior STEMI with reciprocal changes.</li></ol>
+    </div></details>
+
+    <figure class="fig-card" id="fig-k-case-lvh-56"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-case-lvh.jpg" alt="12-lead ECG with tall R in aVL, left axis and deep S waves in V1 to V3" width="1024" height="557" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K56</span><span class="fig-title">Class ECG 4 — LVH: left axis, R in aVL &amp;gt;11 mm, big precordial voltages</span><span class="fig-src"><b>Qazi lecture</b> · deck slide 14</span></figcaption></figure>
+    <details class="case-box ecg"><summary>Answer — class ECG 4</summary><div class="case-body">
+      <p>Sinus rhythm, <strong>left axis</strong>, <strong>R in aVL &gt;11 mm</strong>, S(V1/V2) + R(V5/V6) &gt;35 mm → <strong>LVH</strong>.</p>
+    </div></details>
+
+    <figure class="fig-card" id="fig-k-case-2to1-57"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-case-2to1.jpg" alt="12-lead ECG with slow rate and two P waves for every QRS, one looking like part of the T wave" width="1024" height="428" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K57</span><span class="fig-title">Class ECG 5 — 2:1 AV block (rate ~42): a hidden P sits in each T wave</span><span class="fig-src"><b>Qazi lecture</b> · deck slide 15</span></figcaption></figure>
+    <details class="case-box ecg"><summary>Answer — class ECG 5</summary><div class="case-body">
+      <ol class="notes-list"><li><strong>Rate</strong> 7 × 6 = <strong>42</strong>, regular; a P before every QRS with a constant PR — looks like sinus…</li>
+      <li>…but <strong>an extra P hides in each T wave</strong> (it looks exactly like the conducted P) → every other P is unconducted.</li>
+      <li><strong>Read:</strong> <strong>2:1 AV block</strong> — type I vs II <strong>can't be determined</strong> from the ECG; use the clinical history.</li></ol>
+    </div></details>
+
+    <figure class="fig-card" id="fig-k-case-flutter-58"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-case-flutter.jpg" alt="12-lead ECG with sawtooth flutter waves in inferior leads and irregular QRS" width="768" height="351" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K58</span><span class="fig-title">Class ECG 6 — atrial flutter with variable block: sawtooth waves in II, III, aVF</span><span class="fig-src"><b>Qazi lecture</b> · deck slide 16</span></figcaption></figure>
+    <details class="case-box ecg"><summary>Answer — class ECG 6</summary><div class="case-body">
+      <p><strong>Atrial flutter</strong> — sawtooth flutter waves (inferior leads) with <strong>variable block</strong>, so the QRSs are irregular. Typical flutter circles the right atrium at the cavotricuspid isthmus. <strong class="hot">Highly tested.</strong></p>
+    </div></details>
+
+    <figure class="fig-card" id="fig-k-case-7"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-case-7.jpg" alt="12-lead ECG with slow rate and narrow QRS complexes for self-practice" width="1200" height="552" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K59</span><span class="fig-title">Practice ECG 7 (slide 17 — not read aloud in the recording)</span><span class="fig-src"><b>Qazi lecture</b> · deck slide 17</span></figcaption></figure>
+    <details class="case-box ecg"><summary>Notes — practice ECG 7 (not read in the recording)</summary><div class="case-body">
+      <p>This slide wasn't interpreted aloud in the recorded session, so there's no lecturer answer. Work it with the 7 steps and check it at the review session. What's verifiable: ~8 QRS on the rhythm strip (≈48/min, bradycardia), narrow QRS; look carefully at the P–P and PR intervals.</p>
+    </div></details>
+
+    <figure class="fig-card" id="fig-k-case-8"><div class="fig-frame"><img class="slide-img" src="assets/ekg/k-case-8.jpg" alt="12-lead ECG with short PR, slurred QRS upstroke and tall R waves in V1 to V3" width="1200" height="656" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig K60</span><span class="fig-title">Practice ECG 8 (slide 18 — not read aloud in the recording)</span><span class="fig-src"><b>Qazi lecture</b> · deck slide 18</span></figcaption></figure>
+    <details class="case-box ecg"><summary>Notes — practice ECG 8 (not read in the recording)</summary><div class="case-body">
+      <p>Also not read aloud. Features worth noticing: a <strong>short PR</strong>, a <strong>slurred QRS upstroke</strong> in several leads and <strong>tall R waves in V1–V3</strong> — a pattern that suggests <strong>pre-excitation (WPW)</strong> <span class="src-tag">Board add-on</span>. Confirm at review; arrhythmias and WPW are Dr. Cecilberg's lecture.</p>
+    </div></details>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="EMmjwgwHkO0" data-title="ECG Interpretation Made Easy — how to read a 12-lead systematically"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/EMmjwgwHkO0/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>ECG Interpretation Made Easy — how to read a 12-lead systematically</b><i>MedCram · YouTube</i></span></button><button class="vid" type="button" data-yt="vq3ba4BhddM" data-title="Most Common ECG Patterns You Should Know"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/vq3ba4BhddM/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Most Common ECG Patterns You Should Know</b><i>Rhesus Medicine · YouTube</i></span></button><button class="vid" type="button" data-yt="u1m3HKW1VqU" data-title="ECG Interpretation Made Easy (13 minutes)"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/u1m3HKW1VqU/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>ECG Interpretation Made Easy (13 minutes)</b><i>Rhesus Medicine · YouTube</i></span></button></div></div>
+  </div>
+</div>
+
+<!-- ==================== GLOSSARY ==================== -->
+<div class="section" id="glossary">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge alt">Reference</div></div>
+    <p class="section-label">Every short form used in these notes</p>
+    <h2 class="section-title">Glossary &amp; Abbreviations</h2>
+    <div class="gloss">
+      <dl>
+        <dt>AF / Afib</dt><dd>Atrial fibrillation</dd>
+        <dt>AVB · CHB</dt><dd>Atrioventricular block · complete (3rd-degree) heart block</dd>
+        <dt>aVR · aVL · aVF</dt><dd>Augmented limb leads — right arm, left arm, foot</dd>
+        <dt>BBB · LBBB · RBBB</dt><dd>Bundle branch block — left, right</dd>
+        <dt>Bazett</dt><dd>QTc = QT ÷ √RR</dd>
+      </dl>
+      <dl>
+        <dt>LAD</dt><dd>Left axis deviation <em>or</em> left anterior descending artery (context!)</dd>
+        <dt>LAE · RAE</dt><dd>Left / right atrial enlargement</dd>
+        <dt>LAFB · LPFB</dt><dd>Left anterior / posterior fascicular block (hemiblock)</dd>
+        <dt>LCx · RCA · PDA</dt><dd>Left circumflex · right coronary · posterior descending artery</dd>
+        <dt>LVH · RVH</dt><dd>Left / right ventricular hypertrophy</dd>
+      </dl>
+      <dl>
+        <dt>MAT · WAP</dt><dd>Multifocal atrial tachycardia · wandering atrial pacemaker</dd>
+        <dt>Mobitz I / Wenckebach</dt><dd>2nd-degree AVB with lengthening PR; benign</dd>
+        <dt>Mobitz II</dt><dd>2nd-degree AVB with constant PR and sudden drops; needs pacemaker</dd>
+        <dt>PR · QRS · QT · QTc</dt><dd>Intervals: AV conduction · ventricular depolarisation · depol + repol · rate-corrected QT</dd>
+      </dl>
+      <dl>
+        <dt>rSR′</dt><dd>"Rabbit ears" — small r, S, then second R (RBBB in V1)</dd>
+        <dt>STE · STD</dt><dd>ST elevation · ST depression</dd>
+        <dt>STEMI · NSTEMI</dt><dd>ST-elevation (transmural) · non-ST-elevation (subendocardial) MI</dd>
+        <dt>TWI</dt><dd>T-wave inversion</dd>
+        <dt>WPW</dt><dd>Wolff–Parkinson–White (accessory pathway, delta wave)</dd>
+      </dl>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  /* ---- rate calculator ---- */
+  var sec=10, n=document.getElementById('rtN'), out=document.getElementById('rtOut');
+  function rate(){ var q=parseInt(n.value,10)||0, hr=q*(60/sec);
+    var lab=hr>=100?'<b>tachycardia</b> (≥100)':(hr<60?'<b>bradycardia</b> (&lt;60)':'normal (60–99)');
+    out.innerHTML=q+' QRS × '+(60/sec)+' = <b>'+hr+' bpm</b> → '+lab; }
+  document.querySelectorAll('#rateTool [data-sec]').forEach(function(b){ b.addEventListener('click',function(){
+    sec=+b.dataset.sec; document.querySelectorAll('#rateTool [data-sec]').forEach(function(x){x.classList.toggle('on',x===b);}); rate(); }); });
+  n.addEventListener('input',rate); rate();
+
+  /* ---- axis finder ---- */
+  var ax={I:null,F:null,II:null}, aOut=document.getElementById('axisOut'), iiRow=document.getElementById('axisIIrow');
+  var DDX={normal:'Normal axis — move on.',
+    left:'<b>Left axis deviation.</b> Ask why: LVH? LBBB (wide QRS)? old inferior MI (Q in II, III, aVF)? If none → <b>left anterior fascicular block</b>.',
+    right:'<b>Right axis deviation.</b> Ask why: RVH (reversed R progression)? old lateral MI (Q in I, aVL)? If none → <b>left posterior fascicular block</b> (usually with RBBB).',
+    extreme:'<b>Extreme axis</b> (both negative) <span class="src-tag">Board add-on</span> — think ventricular rhythm, lead misplacement.'};
+  function axis(){
+    iiRow.style.display=ax.F==='0'?'flex':'none';
+    var f=ax.F==='0'?ax.II:ax.F;
+    if(!ax.I||!f){aOut.innerHTML=ax.F==='0'?'aVF is isoelectric → now use <b>lead II</b>.':'Pick lead I and aVF.';return;}
+    var k=ax.I==='+'&&f==='+'?'normal':ax.I==='+'&&f==='-'?'left':ax.I==='-'&&f==='+'?'right':'extreme';
+    aOut.innerHTML=(ax.F==='0'?'(using lead II) ':'')+DDX[k]; }
+  document.querySelectorAll('#axisTool [data-l]').forEach(function(b){ b.addEventListener('click',function(){
+    ax[b.dataset.l]=b.dataset.v; document.querySelectorAll('#axisTool [data-l="'+b.dataset.l+'"]').forEach(function(x){x.classList.toggle('on',x===b);}); axis(); }); });
+
+  /* ---- AV block drill ---- */
+  var OPTS=['1st-degree AV block','Mobitz I (Wenckebach)','Mobitz II','2:1 AV block','3rd-degree (complete) block','Normal sinus rhythm'];
+  var QS=[
+    ['P–P regular, R–R regular, PR 260 ms on every beat, every P followed by a QRS.',0,'Long but <b>constant</b> PR, nothing dropped.'],
+    ['P–P regular. PR 200 → 240 → 300 ms, then a P with no QRS; the next PR is 200 ms.',1,'Progressive lengthening and a <b>shorter PR after the drop</b>.'],
+    ['P–P regular. PR fixed at 180 ms, but every 3rd P has no QRS after it.',2,'<b>Constant PR</b> with sudden non-conducted Ps → high-grade, pacemaker.'],
+    ['Rate 42. A P before every QRS with a constant PR, plus an identical P buried in each T wave.',3,'Every other P is dropped → you <b>can’t tell type I from II</b>.'],
+    ['P–P regular at 85, R–R regular at 38, PR different on every beat.',4,'Ps and QRSs march independently → <b>AV dissociation</b>.'],
+    ['Rate 72, regular R–R and P–P, PR 160 ms and constant, P upright in II.',5,'All five sinus criteria met.'],
+    ['An 80-year-old with syncope; ECG shows 2 Ps for each QRS with constant PR on conducted beats.',3,'2:1 — but with this history, treat it as <b>Mobitz II</b> (pacemaker).'],
+    ['P–P regular, R–R regular but slower than the atrial rate, some Ps land inside QRS complexes, PR varies.',4,'Classic <b>complete heart block</b> (class ECG 3).']];
+  for(var i=QS.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=QS[i];QS[i]=QS[j];QS[j]=t;}
+  var qi=0, right=0, done=0, qEl=document.getElementById('avQ'), oEl=document.getElementById('avOpts'), fb=document.getElementById('avOut'), sc=document.getElementById('avScore');
+  function show(){ var q=QS[qi%QS.length]; qEl.innerHTML='<b>'+((qi%QS.length)+1)+'.</b> '+q[0]; fb.innerHTML=''; oEl.innerHTML='';
+    OPTS.forEach(function(o,k){ var b=document.createElement('button'); b.className='tb'; b.textContent=o;
+      b.addEventListener('click',function(){ if(oEl.dataset.answered)return; oEl.dataset.answered='1'; done++;
+        if(k===q[1]){right++; b.classList.add('right'); fb.innerHTML='✅ '+q[2];}
+        else{ b.classList.add('wrong'); oEl.children[q[1]].classList.add('right'); fb.innerHTML='❌ It’s <b>'+OPTS[q[1]]+'</b>. '+q[2]; }
+        sc.textContent=right+' / '+done+' correct'; });
+      oEl.appendChild(b); }); delete oEl.dataset.answered; }
+  document.getElementById('avNext').addEventListener('click',function(){qi++;show();}); show();
+
+  /* ---- STEMI localizer ---- */
+  var LEADS=['I','aVR','V1','V4','II','aVL','V2','V5','III','aVF','V3','V6'], sel={}, g=document.getElementById('leadGrid'), so=document.getElementById('stOut');
+  LEADS.forEach(function(L){ var b=document.createElement('button'); b.className='tb'; b.textContent=L;
+    b.addEventListener('click',function(){ sel[L]=!sel[L]; b.classList.toggle('on',!!sel[L]); loc(); }); g.appendChild(b); });
+  function has(a){return a.filter(function(L){return sel[L];}).length;}
+  function loc(){ var inf=has(['II','III','aVF']), sep=has(['V1','V2','V3']), ant=has(['V4','V5','V6']), lat=has(['I','aVL']), tot=Object.keys(sel).filter(function(k){return sel[k];}).length;
+    if(!tot){so.innerHTML='No leads selected.';return;}
+    var r=[];
+    if(inf>=2) r.push('<b>Inferior STEMI</b> (II, III, aVF) → <b>RCA</b> (~80%, right-dominant) or LCx (left-dominant). Look for reciprocal ST↓ in I/aVL; watch for heart block/bradycardia.');
+    if(sep>=2&&ant>=1&&lat>=1) r.push('<b>Extensive anterior STEMI</b> (V1–V6 + I, aVL) → <b>proximal LAD</b> — "this patient could die at any moment".');
+    else { if(sep>=2) r.push('<b>Anteroseptal</b> (V1–V3) → <b>LAD</b> (septal perforators).');
+      if(ant>=2) r.push('<b>Anterior</b> (V4–V6) → <b>LAD</b>.');
+      if(lat>=2) r.push('<b>Anterolateral / high lateral</b> (I, aVL) → LAD diagonal (or LCx).'); }
+    if(!r.length) r.push('Not ≥2 <b>contiguous</b> leads in one territory yet — a STEMI needs an anatomic pattern, not random leads.');
+    so.innerHTML=r.join('<br>'); }
+  document.getElementById('stReset').addEventListener('click',function(){ sel={}; g.querySelectorAll('button').forEach(function(b){b.classList.remove('on');}); loc(); });
+})();
+</script>
+
+
+<div class="hy-modal" id="hyModal">
+  <div class="hy-modal-card">
+    <div class="hy-modal-header">
+      <h2>🎯 ECG Basics — High-Yield One-Pager</h2>
+      <div class="hy-modal-actions">
+        <button class="hy-action-btn" onclick="printHY()">🖨️ Print / Save PDF</button>
+        <button class="hy-action-btn hy-close-btn" onclick="closeHY()">✕ Close</button>
+      </div>
+    </div>
+    <p class="hy-subhead">Amina Qazi, DO FACC · OMK 2 Cardio · Rate → rhythm → axis → intervals → chambers → ischemia, every time</p>
+    <div class="hy-cols">
+      <div>
+        <span class="hy-lo-tag">RATE · RHYTHM · AXIS</span>
+        <div class="hy-block"><h4>Paper</h4><ul>
+          <li>Small box 1 mm = <strong>0.04 s</strong>, 0.1 mV · big box = <strong>0.2 s</strong> · 12-lead = <strong>10 s</strong>; bottom strip = lead II</li>
+          <li>Q = first −, R = first +, S = − after R</li>
+        </ul></div>
+        <div class="hy-block"><h4>Rate</h4><ul>
+          <li><strong>QRS on rhythm strip × 6</strong> (6-s strip × 10)</li>
+          <li>Tachy ≥100 · brady &lt;60 · (300-150-100-75-60-50 if regular)</li>
+        </ul></div>
+        <div class="hy-block"><h4>Sinus = all 5</h4><ul>
+          <li>Regular R–R · regular P–P · constant PR · P for every QRS · <strong>P upright in II</strong> (biphasic in V1)</li>
+        </ul></div>
+        <div class="hy-block"><h4>5 irregular rhythms</h4><ul>
+          <li><strong>AF</strong>: no P, irregularly irregular · <strong>sinus arrhythmia</strong> (breathing, young) · <strong>2° AVB</strong> · <strong>WAP</strong> ≥3 P shapes &lt;100 · <strong>MAT</strong> ≥3 P shapes ≥100</li>
+          <li><strong>Flutter</strong>: sawtooth (II, III, aVF), RA cavotricuspid isthmus; AF = pulmonary veins, LA</li>
+        </ul></div>
+        <div class="hy-block"><h4>Axis (I, aVF; II if aVF ≈0)</h4><ul>
+          <li>++ normal · +− left · −+ right</li>
+          <li><strong>Left</strong>: LVH, LBBB, LAFB, old inferior MI</li>
+          <li><strong>Right</strong>: RVH, LPFB, old lateral MI</li>
+          <li><strong>RBBB = normal axis</strong>; RBBB + RAD = + LPFB</li>
+        </ul></div>
+      </div>
+      <div>
+        <span class="hy-lo-tag">INTERVALS</span>
+        <div class="hy-block"><h4>PR ≤ 200 ms (1 big box)</h4><ul>
+          <li><strong>1°</strong>: long, constant PR</li>
+          <li><strong>Mobitz I</strong>: PR lengthens → drop; <strong>PR after drop shorter</strong>; benign</li>
+          <li><strong>Mobitz II</strong>: constant PR, sudden drop; <strong>pacemaker</strong></li>
+          <li><strong>2:1</strong>: can't type it — history decides</li>
+          <li><strong>3°</strong>: P–P and R–R regular, <strong>PR random</strong> (AV dissociation)</li>
+          <li>All AV blocks: P–P constant</li>
+        </ul></div>
+        <div class="hy-block"><h4>QRS &lt; 120 ms (3 small boxes)</h4><ul>
+          <li><strong>LBBB</strong>: wide, left axis, V1–V3 negative, I/aVL/V5–6 broad (notched) R</li>
+          <li><strong>RBBB</strong>: wide, normal axis, <strong>rSR′ V1–V2</strong>, slurred S I/aVL/V5–6</li>
+          <li><strong>LAFB</strong> = left axis, no other cause · <strong>LPFB</strong> = right axis, no other cause (QRS normal)</li>
+          <li>WiLLiaM MaRRoW · delta wave + short PR = WPW</li>
+        </ul></div>
+        <div class="hy-block"><h4>QT</h4><ul>
+          <li><strong>QTc = QT/√RR</strong>; normal &lt;450 M / 460 F; <strong>&gt;500 = danger</strong></li>
+          <li>Eyeball: T ends before half the R–R → likely normal</li>
+          <li>Long QT → <strong>torsades</strong>. Causes: dofetilide (sotalol), ↓Mg, ↓K, fluoroquinolones, antidepressants, antipsychotics, HIV drugs, congenital</li>
+          <li>↑K: peaked T → everything widens · ↓K: flat T, U wave</li>
+        </ul></div>
+      </div>
+      <div>
+        <span class="hy-lo-tag">CHAMBERS · ISCHEMIA</span>
+        <div class="hy-block"><h4>Atria (II + V1)</h4><ul>
+          <li><strong>LAE</strong>: wide P in II, <strong>mostly negative in V1</strong></li>
+          <li><strong>RAE</strong>: tall peaked P in II, <strong>mostly positive in V1</strong></li>
+        </ul></div>
+        <div class="hy-block"><h4>Ventricles</h4><ul>
+          <li><strong>LVH</strong> = left axis + (<strong>R aVL &gt;11 mm</strong> most specific, or <strong>S V1/2 + R V5/6 ≥35</strong> most sensitive)</li>
+          <li>Normal R progression: transition V3–V4</li>
+          <li><strong>RVH</strong> = right axis + <strong>reversed</strong> R progression (tall R V1)</li>
+        </ul></div>
+        <div class="hy-block"><h4>Territories</h4><ul>
+          <li><strong>II, III, aVF</strong> = inferior → <strong>RCA</strong> (80%) / LCx</li>
+          <li><strong>V1–V3</strong> anteroseptal · <strong>V4–V6</strong> anterior · <strong>I, aVL</strong> anterolateral → <strong>LAD</strong></li>
+          <li>All → proximal LAD ("widowmaker")</li>
+          <li>Posterior (LCx/RCA): STD + tall R in V1–V3</li>
+        </ul></div>
+        <div class="hy-block"><h4>What each finding means</h4><ul>
+          <li><strong>STE</strong> ≥1 mm, ≥2 contiguous leads = transmural, 100% occlusion → open artery now</li>
+          <li><strong>STD</strong> = subendocardial (NSTEMI), often diffuse → stabilise</li>
+          <li><strong>Q</strong> ≥1 box = dead, old MI (normal in III)</li>
+          <li>TWI non-specific · <strong>reciprocal STD confirms STEMI</strong></li>
+          <li>Evolution: hyperacute T → STE → Q + TWI</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="lightbox" id="lightbox" aria-hidden="true"><img id="lightboxImg" alt="Zoomed figure"><div class="lightbox-cap" id="lightboxCap"></div></div>
+
+<div class="floating-left" id="floatingLeft">
+  <div class="tools-menu">
+    <button class="tool-btn backtop" id="backtopBtn">↑ Top</button>
+    <button class="tool-btn" id="nextQBtn">❓ Next question <span id="qCount"></span></button>
+    <button class="tool-btn" id="recallBtn">🙈 Recall mode <span id="rcCount"></span></button>
+  </div>
+  <button class="tool-btn tools-trigger" id="toolsTrigger" onclick="toggleToolsMenu()">🧰 Study<span class="dot"></span></button>
+</div>
+
+<div class="floating-stack">
+  <div class="theme-panel" id="themePanel">
+    <div class="theme-panel-title">Choose Theme</div>
+    <div class="theme-option active" data-theme="cardio" onclick="setTheme('cardio',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#fff7f7,#b51f3a 55%,#245f89)"></div>Cardio (Default)</div>
+    <div class="theme-option" data-theme="hemo" onclick="setTheme('hemo',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#170a0d,#ff6b6b)"></div>Hemo (Dark)</div>
+    <div class="theme-option" data-theme="paper" onclick="setTheme('paper',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#faf7f2,#1a1209)"></div>Paper</div>
+    <div class="theme-option" data-theme="night" onclick="setTheme('night',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#0f1923,#e8b84b)"></div>Night</div>
+    <div class="theme-option" data-theme="ocean" onclick="setTheme('ocean',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#eef7fb,#0a5286)"></div>Ocean</div>
+    <div class="theme-option" data-theme="forest" onclick="setTheme('forest',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#f2f7f0,#155c39)"></div>Forest</div>
+    <div class="theme-option" data-theme="sepia" onclick="setTheme('sepia',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#f7ecd9,#9c3b17)"></div>Sepia</div>
+    <div class="theme-option" data-theme="slate" onclick="setTheme('slate',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#f4f5f7,#9e2c0f)"></div>Slate</div>
+  </div>
+  <div class="font-btn-row">
+    <span class="font-label">Text</span>
+    <button class="font-btn" onclick="changeFontSize(1)" title="Increase font size">A+</button>
+    <span class="font-sep">|</span>
+    <button class="font-btn" onclick="changeFontSize(-1)" title="Decrease font size">A−</button>
+  </div>
+  <button class="theme-btn" id="themeBtn" onclick="toggleThemePanel()" title="Switch theme"><span>🎨</span><span>Theme</span></button>
+</div>
+
+<footer>
+  <div class="container">
+    <div>Built from <em>ECG Basics</em> — Amina Qazi, DO FACC (slides + both session transcripts), with the ECG crib sheet (H. Del Rosario, MD) and Dubin's <em>Rapid Interpretation of EKG's</em> quick-reference sheets as cross-checks. Figures are labeled with their source: the lecture ECGs, AMBOSS, UWorld, <em>Cardiovascular Pathophysiology for Pre-Clinical Students</em>, Wikimedia Commons (CC BY-SA) and a humanbiomedia.org animation. Items tagged "Board add-on" are not from the lecture. Personal study notes; course material remains the copyright of its authors.</div>
+    <div>Shortcuts: <kbd>J</kbd>/<kbd>K</kbd> section · <kbd>Q</kbd> next question · <kbd>R</kbd> reveal · <kbd>Esc</kbd> close</div>
+  </div>
+</footer>
+
+<script>
+var STORAGE_THEME_KEY='cardio-w13-ecg-basics-theme';
+var STORAGE_FONT_KEY='cardio-w13-ecg-basics-font';
+var STORAGE_PROGRESS_KEY='cardio-w13-ecg-basics-progress';
+var DEFAULT_THEME='cardio';
+var SECTION_IDS=['orientation', 's1-basics', 's2-rate', 's3-rhythm', 's4-axis', 's5-pr', 's6-qrs', 's7-qt', 's8-chambers', 's9-ischemia', 's10-practice', 'glossary'];
+
+var $  = function(s,r){return (r||document).querySelector(s);};
+var $$ = function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));};
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function storageGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+function storageSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+
+/* ============ theme ============ */
+var themePanelOpen=false;
+function toggleThemePanel(){themePanelOpen=!themePanelOpen;$('#themePanel').classList.toggle('open',themePanelOpen);}
+function syncThemeOptions(t){$$('.theme-option').forEach(function(o){o.classList.toggle('active',o.dataset.theme===t);});}
+function setTheme(t,el,skipStorage){
+  if(t===DEFAULT_THEME){document.documentElement.removeAttribute('data-theme');}
+  else{document.documentElement.setAttribute('data-theme',t);}
+  syncThemeOptions(t);
+  if(!skipStorage) storageSet(STORAGE_THEME_KEY,t);
+  setTimeout(function(){themePanelOpen=false;var p=$('#themePanel');if(p)p.classList.remove('open');},260);
+}
+document.addEventListener('click',function(e){
+  var p=$('#themePanel'),b=$('#themeBtn');
+  if(themePanelOpen&&p&&b&&!p.contains(e.target)&&!b.contains(e.target)){themePanelOpen=false;p.classList.remove('open');}
+});
+
+/* ============ font size ============ */
+var currentFontSize=16;
+function applyFontSize(size,skipStorage){
+  currentFontSize=Math.min(24,Math.max(12,Number(size)||16));
+  document.documentElement.style.fontSize=currentFontSize+'px';
+  document.body.style.fontSize=currentFontSize+'px';
+  if(!skipStorage)storageSet(STORAGE_FONT_KEY,currentFontSize);
+}
+function changeFontSize(d){applyFontSize(currentFontSize+d);}
+
+function initVisualState(){
+  var t=storageGet(STORAGE_THEME_KEY)||DEFAULT_THEME; setTheme(t,null,true);
+  var f=parseInt(storageGet(STORAGE_FONT_KEY),10);
+  applyFontSize(f&&f>=12&&f<=24?f:currentFontSize,true);
+}
+
+/* ============ lightbox ============ */
+function openLightbox(img){var lb=$('#lightbox');$('#lightboxImg').src=img.currentSrc||img.src;
+  $('#lightboxImg').alt=img.alt||'';
+  var cap=img.closest('figure')?img.closest('figure').querySelector('figcaption'):null;
+  $('#lightboxCap').innerHTML=cap?cap.innerHTML:'';
+  lb.classList.add('active');lb.setAttribute('aria-hidden','false');}
+function closeLightbox(){var lb=$('#lightbox');lb.classList.remove('active');
+  lb.setAttribute('aria-hidden','true');$('#lightboxImg').src='';}
+function initLightbox(){
+  $$('.slide-img').forEach(function(i){i.addEventListener('click',function(){openLightbox(i);});});
+  $('#lightbox').addEventListener('click',closeLightbox);
+}
+
+/* ============ scrollspy ============ */
+function initScrollspy(){
+  var links=$$('.toc-bar nav a'),map={},sections=[];
+  links.forEach(function(a){var id=a.getAttribute('href').slice(1),s=document.getElementById(id);
+    if(s){map[id]=a;sections.push(s);}});
+  if(!sections.length)return;
+  function update(){
+    var best=null,bestTop=-Infinity;
+    sections.forEach(function(s){var top=s.getBoundingClientRect().top;
+      if(top<=140&&top>bestTop){bestTop=top;best=s;}});
+    if(!best)best=sections[0];
+    links.forEach(function(a){a.classList.remove('active');});
+    if(map[best.id])map[best.id].classList.add('active');
+  }
+  window.addEventListener('scroll',update,{passive:true});update();
+}
+
+/* ============ reading progress ============ */
+function initProgress(){
+  var bar=$('#progressBar'),bt=$('#backtopBtn');
+  window.addEventListener('scroll',function(){
+    var h=document.documentElement,max=h.scrollHeight-h.clientHeight;
+    bar.style.width=(max>0?(h.scrollTop/max)*100:0)+'%';
+    if(bt)bt.classList.toggle('show',h.scrollTop>600);
+  },{passive:true});
+}
+
+/* ============ exam question reveal ============ */
+function initExamQ(){
+  $$('.exam-q').forEach(function(q){
+    var ans=q.querySelector('.answer'); if(!ans) return;
+    var b=document.createElement('button');b.className='reveal-btn';b.textContent='Reveal answer';
+    b.addEventListener('click',function(){q.classList.add('revealed');updateQCount();});
+    ans.parentNode.insertBefore(b,ans);
+  });
+  updateQCount();
+}
+function updateQCount(){
+  var all=$$('.exam-q'),done=all.filter(function(q){return q.classList.contains('revealed');});
+  var el=$('#qCount'); if(el) el.textContent=done.length+'/'+all.length;
+}
+function jumpToNextQ(){
+  var all=$$('.exam-q');if(!all.length)return;
+  var y=window.scrollY,pick=null;
+  var todo=all.filter(function(q){return !q.classList.contains('revealed');});
+  var pool=todo.length?todo:all;
+  for(var i=0;i<pool.length;i++){if(pool[i].getBoundingClientRect().top+y>y+120){pick=pool[i];break;}}
+  if(!pick)pick=pool[0];
+  var sec=pick.closest('.section');
+  if(sec&&sec.classList.contains('collapsed'))toggleSection(sec,false);
+  setTimeout(function(){
+    pick.scrollIntoView({behavior:'smooth',block:'center'});
+    pick.classList.remove('q-flash');void pick.offsetWidth;pick.classList.add('q-flash');
+  },sec&&sec.classList.contains('collapsed')?0:60);
+}
+
+/* ============ per-section progress ============ */
+var progress={};
+function loadProgress(){try{progress=JSON.parse(storageGet(STORAGE_PROGRESS_KEY)||'{}');}catch(e){progress={};}}
+function saveProgress(){storageSet(STORAGE_PROGRESS_KEY,JSON.stringify(progress));}
+function renderProgress(){
+  var reviewed=0;
+  SECTION_IDS.forEach(function(id){
+    var st=progress[id]||{},sec=document.getElementById(id);
+    if(st.reviewed)reviewed++;
+    if(sec){
+      var tools=sec.querySelector('.sec-tools');
+      if(tools){
+        tools.querySelector('.st-rev').classList.toggle('on',!!st.reviewed);
+        $$('.st-conf',tools).forEach(function(b){b.classList.toggle('on',+b.dataset.v===st.conf);});
+      }
+    }
+    var link=$('.toc-bar nav a[href="#'+id+'"]');
+    if(link){link.classList.toggle('done',!!st.reviewed);
+      link.classList.remove('conf-1','conf-2','conf-3');
+      if(st.conf)link.classList.add('conf-'+st.conf);}
+  });
+  var chip=$('#progressChip');
+  if(chip)chip.textContent=reviewed+'/'+SECTION_IDS.length+' reviewed';
+}
+function jumpToNextTodo(){
+  var target=null;
+  for(var i=0;i<SECTION_IDS.length&&!target;i++){var st=progress[SECTION_IDS[i]]||{};if(!st.reviewed)target=SECTION_IDS[i];}
+  for(var c=1;c<=2&&!target;c++){
+    for(var j=0;j<SECTION_IDS.length&&!target;j++){var s2=progress[SECTION_IDS[j]]||{};if(s2.conf===c)target=SECTION_IDS[j];}}
+  if(!target)target=SECTION_IDS[0];
+  var sec=document.getElementById(target); if(!sec)return;
+  if(sec.classList.contains('collapsed'))toggleSection(sec,false);
+  sec.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* ============ section tools + collapse ============ */
+function toggleSection(sec,force){
+  var willCollapse=(typeof force==='boolean')?force:!sec.classList.contains('collapsed');
+  sec.classList.toggle('collapsed',willCollapse);
+  var b=sec.querySelector('.st-collapse'); if(b)b.textContent=willCollapse?'▸ Expand':'▾ Collapse';
+}
+function toggleAllSections(){
+  var anyOpen=SECTION_IDS.some(function(id){var s=document.getElementById(id);return s&&!s.classList.contains('collapsed');});
+  SECTION_IDS.forEach(function(id){var s=document.getElementById(id);if(s)toggleSection(s,anyOpen);});
+  var b=$('#collapseAllBtn'); if(b)b.textContent=anyOpen?'⊞ Expand all':'⊟ Collapse all';
+}
+function initSectionTools(){
+  SECTION_IDS.forEach(function(id){
+    var sec=document.getElementById(id); if(!sec)return;
+    var container=sec.querySelector('.container'); if(!container)return;
+    var anchor=container.querySelector('.section-title'); if(!anchor)return;
+    var tools=document.createElement('div');
+    tools.className='sec-tools';
+    tools.innerHTML='<button class="st-rev">✓ Reviewed</button>'+
+      '<span class="st-lab">confidence</span>'+
+      '<button class="st-conf" data-v="1">\u{1F534} Shaky</button>'+
+      '<button class="st-conf" data-v="2">\u{1F7E1} Okay</button>'+
+      '<button class="st-conf" data-v="3">\u{1F7E2} Solid</button>'+
+      '<button class="st-collapse">▾ Collapse</button>';
+    anchor.parentNode.insertBefore(tools,anchor.nextSibling);
+    var note=document.createElement('div');
+    note.className='recall-note';
+    note.textContent='RECALL MODE — every bolded fact below is hidden. Say the answer out loud, then click the block to check it.';
+    tools.parentNode.insertBefore(note,tools.nextSibling);
+    var outer=document.createElement('div');outer.className='sec-body-outer';
+    var inner=document.createElement('div');inner.className='sec-body-inner';
+    outer.appendChild(inner);
+    while(note.nextSibling) inner.appendChild(note.nextSibling);
+    container.appendChild(outer);
+    tools.querySelector('.st-rev').addEventListener('click',function(){
+      progress[id]=progress[id]||{};progress[id].reviewed=!progress[id].reviewed;saveProgress();renderProgress();});
+    $$('.st-conf',tools).forEach(function(b){
+      b.addEventListener('click',function(){
+        progress[id]=progress[id]||{};
+        progress[id].conf=(progress[id].conf===+b.dataset.v)?0:+b.dataset.v;
+        saveProgress();renderProgress();});
+    });
+    tools.querySelector('.st-collapse').addEventListener('click',function(){toggleSection(sec);});
+  });
+  renderProgress();
+}
+
+/* ============ recall mode ============ */
+var recallMode=false;
+function recallTargets(){
+  return $$('.sec-body-inner :is(p,li,td,h4,dd) strong').filter(function(s){
+    return !s.closest('.exam-q')&&!s.closest('.tq-bar')&&!s.closest('.game')&&!s.closest('.abbr-strip')&&!s.closest('.legend')&&!s.closest('.watch');});
+}
+function updateRecallCount(){
+  var t=recallTargets(),o=t.filter(function(s){return s.classList.contains('rc-open');});
+  var el=$('#rcCount'); if(el) el.textContent=recallMode?(o.length+'/'+t.length):'';
+}
+function toggleRecall(){
+  recallMode=!recallMode;
+  document.body.classList.toggle('recall-mode',recallMode);
+  $('#recallBtn').classList.toggle('on',recallMode);
+  if(!recallMode) recallTargets().forEach(function(s){s.classList.remove('rc-open');});
+  else{
+    var allCollapsed=SECTION_IDS.every(function(id){var s=document.getElementById(id);return !s||s.classList.contains('collapsed');});
+    if(allCollapsed) toggleAllSections();
+  }
+  syncToolsDot();updateRecallCount();
+}
+function initRecall(){
+  document.addEventListener('click',function(e){
+    if(!recallMode)return;
+    var s=e.target.closest?e.target.closest('strong'):null;
+    if(!s||s.classList.contains('rc-open'))return;
+    if(s.closest('.exam-q')||s.closest('.game')||s.closest('.abbr-strip'))return;
+    if(!s.closest('.sec-body-inner'))return;
+    e.stopPropagation();s.classList.add('rc-open');updateRecallCount();
+  },true);
+}
+function syncToolsDot(){var t=$('#toolsTrigger');if(t)t.classList.toggle('busy',recallMode);}
+function toggleToolsMenu(){$('#floatingLeft').classList.toggle('open');}
+
+/* ============ HY one-pager ============ */
+function openHY(){var m=$('#hyModal');if(!m)return;m.classList.add('open');
+  document.body.classList.add('hy-mode');document.body.style.overflow='hidden';}
+function closeHY(){var m=$('#hyModal');if(!m)return;m.classList.remove('open');
+  document.body.classList.remove('hy-mode');document.body.style.overflow='';}
+function printHY(){window.print();}
+
+/* ============ table quiz ============ */
+function initTableQuiz(){
+  $$('table').forEach(function(table){
+    if(table.classList.contains('hy-mini-table'))return;
+    if(table.closest('.game'))return;
+    var headRow=table.rows[0]; if(!headRow)return;
+    var headers=Array.prototype.slice.call(headRow.cells).map(function(c){return c.textContent.trim();});
+    if(headers.length<2)return;
+    var bar=document.createElement('div');bar.className='tq-bar';
+    var toggle=document.createElement('button');toggle.className='tq-toggle';toggle.textContent='\u{1F9E9} Quiz this table';
+    var cols=document.createElement('div');cols.className='tq-cols';cols.style.display='none';
+    var start=document.createElement('button');start.className='tq-start';start.textContent='▶ Start';
+    start.disabled=true;start.style.display='none';
+    var shuf=document.createElement('button');shuf.className='tq-shuffle';shuf.textContent='\u{1F500} Shuffle rows';shuf.style.display='none';
+    var reset=document.createElement('button');reset.className='tq-reset';reset.textContent='↺ Reset';reset.style.display='none';
+    var score=document.createElement('span');score.className='tq-score';
+    bar.appendChild(toggle);bar.appendChild(cols);bar.appendChild(shuf);bar.appendChild(start);bar.appendChild(reset);bar.appendChild(score);
+    var host=table.parentNode.classList.contains('tbl-scroll')?table.parentNode:table;
+    host.parentNode.insertBefore(bar,host);
+
+    var sel=new Set(),running=false,hidden=[],revealed=0,originalOrder=null;
+    headers.forEach(function(h,i){
+      var b=document.createElement('button');b.className='tq-col-btn';b.textContent=h||('col '+(i+1));
+      b.addEventListener('click',function(){
+        if(running)return;
+        if(sel.has(i)){sel.delete(i);b.classList.remove('sel');}else{sel.add(i);b.classList.add('sel');}
+        start.disabled=sel.size===0;
+      });
+      cols.appendChild(b);
+    });
+    function dataRows(){
+      var parent=table.tBodies[0]||table;
+      return Array.prototype.slice.call(parent.rows).filter(function(r){return !r.querySelector('th')||r!==headRow;})
+        .filter(function(r){return r!==headRow;});
+    }
+    toggle.addEventListener('click',function(){
+      var open=cols.style.display==='none';
+      cols.style.display=open?'flex':'none';
+      start.style.display=shuf.style.display=open?'':'none';
+      toggle.classList.toggle('active',open);
+      toggle.textContent=open?'✕ Close quiz':'\u{1F9E9} Quiz this table';
+      if(!open)doReset();
+    });
+    shuf.addEventListener('click',function(){
+      var parent=table.tBodies[0]||table;
+      var rows=dataRows();
+      if(!originalOrder)originalOrder=rows.slice();
+      shuffle(rows).forEach(function(r){parent.appendChild(r);});
+    });
+    function updateScore(){
+      score.textContent=revealed+' / '+hidden.length+' revealed';
+      score.classList.toggle('done',hidden.length>0&&revealed===hidden.length);
+      if(hidden.length>0&&revealed===hidden.length)score.textContent='\u{1F389} '+revealed+' / '+hidden.length;
+    }
+    start.addEventListener('click',function(){
+      if(running||!sel.size)return;
+      running=true;hidden=[];revealed=0;
+      dataRows().forEach(function(r){
+        Array.prototype.slice.call(r.cells).forEach(function(c,i){
+          if(!sel.has(i)||!c.textContent.trim())return;
+          var w=document.createElement('span');w.className='tq-cell-content';w.innerHTML=c.innerHTML;
+          c.innerHTML='';c.appendChild(w);c.classList.add('quiz-hidden-cell');
+          c.dataset.tqOrig=w.innerHTML;
+          hidden.push(c);
+        });
+      });
+      reset.style.display='';start.disabled=true;updateScore();
+    });
+    table.addEventListener('click',function(e){
+      var c=e.target.closest?e.target.closest('td.quiz-hidden-cell'):null;
+      if(!c)return;
+      c.classList.remove('quiz-hidden-cell');c.innerHTML=c.dataset.tqOrig;revealed++;updateScore();
+    });
+    function doReset(){
+      hidden.forEach(function(c){if(c.classList.contains('quiz-hidden-cell')){c.classList.remove('quiz-hidden-cell');c.innerHTML=c.dataset.tqOrig;}});
+      if(originalOrder){var parent=table.tBodies[0]||table;originalOrder.forEach(function(r){parent.appendChild(r);});}
+      hidden=[];revealed=0;running=false;score.textContent='';score.classList.remove('done');
+      start.disabled=sel.size===0;reset.style.display='none';
+    }
+    reset.addEventListener('click',doReset);
+  });
+}
+
+/* ============ keyboard shortcuts ============ */
+function initKeys(){
+  document.addEventListener('keydown',function(e){
+    if(e.metaKey||e.ctrlKey||e.altKey)return;
+    var t=e.target,tag=t&&t.tagName;
+    if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT'||(t&&t.isContentEditable))return;
+    var hy=$('#hyModal');
+    if(e.key==='Escape'){ if(hy&&hy.classList.contains('open'))closeHY(); closeLightbox(); return; }
+    if(hy&&hy.classList.contains('open'))return;
+    var k=e.key.toLowerCase();
+    if(k==='q'){e.preventDefault();jumpToNextQ();return;}
+    if(k==='r'){
+      e.preventDefault();
+      var best=null,bd=Infinity,mid=window.innerHeight/2;
+      $$('.exam-q').forEach(function(q){var d=Math.abs(q.getBoundingClientRect().top+q.offsetHeight/2-mid);
+        if(d<bd){bd=d;best=q;}});
+      if(best){best.classList.add('revealed');updateQCount();}
+      return;
+    }
+    if(k==='j'||k==='k'){
+      e.preventDefault();
+      var y=window.scrollY+window.innerHeight*0.3,cur=0;
+      SECTION_IDS.forEach(function(id,i){var s=document.getElementById(id);if(s&&s.offsetTop<=y)cur=i;});
+      var nx=k==='j'?Math.min(SECTION_IDS.length-1,cur+1):Math.max(0,cur-1);
+      var target=document.getElementById(SECTION_IDS[nx]);
+      if(target)target.scrollIntoView({behavior:'smooth',block:'start'});
+    }
+  });
+}
+
+
+/* ============ lazy figures: fade in when loaded; force-load everything before printing ============ */
+function initLazyFigures(){
+  $$('.fig-frame img').forEach(function(img){
+    var done=function(){img.parentNode.classList.add('loaded');};
+    if(img.complete&&img.naturalWidth)done();
+    else{img.addEventListener('load',done);img.addEventListener('error',done);}
+  });
+  window.addEventListener('beforeprint',function(){$$('img[loading="lazy"]').forEach(function(i){i.loading='eager';});});
+}
+/* ============ video facade: swap the thumbnail for the real player only on click ============ */
+function initVideos(){
+  $$('.vid').forEach(function(b){
+    b.addEventListener('click',function(){
+      if(b.classList.contains('playing'))return;
+      var f=document.createElement('iframe');
+      f.src='https://www.youtube-nocookie.com/embed/'+b.dataset.yt+'?autoplay=1&rel=0';
+      f.title=b.dataset.title||'Video';
+      f.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+      f.allowFullscreen=true;
+      var t=b.querySelector('.vid-thumb');t.replaceWith(f);b.classList.add('playing');
+    });
+  });
+}
+
+/* ============ boot ============ */
+document.addEventListener('DOMContentLoaded',function(){
+  initVisualState();
+  loadProgress();
+  initSectionTools();
+  initExamQ();
+  initTableQuiz();
+  initLightbox();
+  initLazyFigures();
+  initVideos();
+  initScrollspy();
+  initProgress();
+  initRecall();
+  initKeys();
+  var hy=$('#hyModal');
+  if(hy) hy.addEventListener('click',function(e){if(e.target===this)closeHY();});
+  var rb=$('#recallBtn'); if(rb) rb.addEventListener('click',toggleRecall);
+  var nq=$('#nextQBtn'); if(nq) nq.addEventListener('click',jumpToNextQ);
+  var bt=$('#backtopBtn'); if(bt) bt.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});
+  document.addEventListener('click',function(e){
+    var fl=$('#floatingLeft');
+    if(fl&&fl.classList.contains('open')&&!fl.contains(e.target))fl.classList.remove('open');
+  });
+});
+
+
+
+
+</script>
+</body>
+</html>
