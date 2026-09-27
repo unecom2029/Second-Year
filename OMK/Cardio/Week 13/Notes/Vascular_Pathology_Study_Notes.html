@@ -1,0 +1,2162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+(function(){
+  var NOTE_AUTH_KEY='une-study-hub-remembered-auth-v1';
+  var NOTE_LOGIN_URL='../../../../index.html?login=notes';
+
+  function readCookie(name){
+    try{
+      var prefix=encodeURIComponent(name)+'=';
+      var parts=String(document.cookie||'').split(';');
+      for(var i=0;i<parts.length;i++){
+        var part=parts[i].trim();
+        if(part.indexOf(prefix)===0)return decodeURIComponent(part.slice(prefix.length));
+      }
+    }catch(err){}
+    return null;
+  }
+  function readAuthPayload(){
+    try{
+      var stored=localStorage.getItem(NOTE_AUTH_KEY);
+      if(stored)return stored;
+    }catch(err){}
+    return readCookie(NOTE_AUTH_KEY);
+  }
+  function hasValidNoteAuth(){
+    var raw=readAuthPayload();
+    if(!raw)return false;
+    try{
+      var parsed=JSON.parse(raw);
+      var email=String(parsed&&parsed.email||'').trim().toLowerCase();
+      var expiresAt=Number(parsed&&parsed.expiresAt);
+      return /@une\.edu$/.test(email)&&expiresAt&&Date.now()<expiresAt;
+    }catch(err){return false}
+  }
+  function syncNoteAuth(){
+    document.documentElement.setAttribute('data-note-auth',hasValidNoteAuth()?'unlocked':'locked');
+  }
+  window.openNoteLogin=function(){
+    var loginWindow=window.open(NOTE_LOGIN_URL,'uneStudyHubLogin');
+    if(!loginWindow)window.location.href=NOTE_LOGIN_URL;
+  };
+  window.refreshNoteAuth=syncNoteAuth;
+  window.addEventListener('message',function(event){
+    if(event&&event.data&&event.data.type==='une-study-hub-auth-complete')syncNoteAuth();
+  });
+  window.addEventListener('storage',function(event){
+    if(!event||event.key===NOTE_AUTH_KEY)syncNoteAuth();
+  });
+  window.addEventListener('focus',syncNoteAuth);
+  window.setInterval(syncNoteAuth,1000);
+  syncNoteAuth();
+})();
+</script>
+<title>Vascular Pathology — Study Notes</title>
+<link rel="icon" href="data:image/svg+xml,<svg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'><circle%20cx='32'%20cy='32'%20r='29'%20fill='%23f5e2e6'%20stroke='%23b51f3a'%20stroke-width='5'/><circle%20cx='32'%20cy='32'%20r='19'%20fill='none'%20stroke='%23245f89'%20stroke-width='4'/><circle%20cx='32'%20cy='32'%20r='10'%20fill='%23b51f3a'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Cardio (default) — soft ECG blush page, arterial red accent, clinical-blue accent2 */
+  --ink:#25161a; --paper:#fff7f7; --cream:#f5e2e6;
+  --accent:#b51f3a; --accent2:#245f89; --gold:#b77b22; --muted:#75535c; --border:#dfb9c2;
+  --highlight:#f8e1a9; --highlight2:#d7e9f4; --green-bg:#d9eee2; --red-bg:#f8d5dc;
+  --blue-bg:#d6e9f5; --purple-bg:#eadcf0; --hero-bg:#173e63;
+  --panel-dark-bg:#173e63; --panel-dark-text:#f7fbff;
+  /* Theme-INDEPENDENT chip colors (sit on saturated / fixed-dark backgrounds in every theme) */
+  --chip-red:#b51f3a; --chip-blue:#245f89; --chip-fg:#ffffff; --panel-dark-accent:#ffd27a;
+  --hero-heading:#f7fbff; --hero-sub:#c8dceb;
+  --hero-meta-bg:rgba(255,255,255,0.08); --hero-meta-border:rgba(240,138,155,0.28);
+  --hero-meta-label:#a9c5d8; --hero-meta-value:#fff1f3; --hero-accent:#ff9aae;
+  --floating-ui-bg:#173e63; --floating-ui-fg:#f7fbff; --floating-ui-shadow:0 3px 12px rgba(23,62,99,0.26);
+  --quiz-overlay:rgba(36,95,137,.38); --quiz-overlay-hover:rgba(36,95,137,.62);
+}
+html:not([data-theme]) .hero{background:
+  radial-gradient(circle at 88% 18%,rgba(181,31,58,0.42),transparent 30%),
+  linear-gradient(135deg,#102e4b,#173e63 62%,#6f1d32)}
+html:not([data-theme]) .toc-bar{border-right-color:#2c5f86}
+
+[data-theme="hemo"]{
+  --ink:#f3dfe1; --paper:#170a0d; --cream:#2b1218;
+  --accent:#ff6b6b; --accent2:#8fb8ea; --gold:#e7b95c; --muted:#b4919a; --border:#431d25;
+  --highlight:#402c14; --highlight2:#33161f; --green-bg:#11291e; --red-bg:#45151a;
+  --blue-bg:#12243c; --purple-bg:#261b3a; --hero-bg:#0c0407;
+  --panel-dark-bg:#2e1017; --panel-dark-text:#f9e7e9;
+  --hero-heading:#fbeaea; --hero-sub:#c9a3a8;
+  --hero-meta-bg:rgba(255,255,255,0.06); --hero-meta-border:rgba(255,107,107,0.18);
+  --hero-meta-label:#b4919a; --hero-meta-value:#ffd9d0; --hero-accent:#ff6b6b;
+  --floating-ui-bg:#0c0407; --floating-ui-fg:#fbeaea; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.45);
+  --quiz-overlay:rgba(143,184,234,.40); --quiz-overlay-hover:rgba(143,184,234,.62);
+}
+[data-theme="hemo"] .toc-bar{border-right-color:#431d25}
+
+[data-theme="paper"]{
+  --hero-accent:#f08a6e;
+  --ink:#1a1209; --paper:#faf7f2; --cream:#ece1cd;
+  --accent:#a32c14; --accent2:#2c5f8a; --gold:#c9922a; --muted:#6b5e4e; --border:#d4cabb;
+  --highlight:#fbe4a0; --highlight2:#cfe4f7; --green-bg:#d7f0da; --red-bg:#f8d6d0;
+  --blue-bg:#d2e7f9; --purple-bg:#e6dbfa; --hero-bg:#1a1209;
+  --panel-dark-bg:#1a1209; --panel-dark-text:#faf7f2;
+  --hero-heading:#f5ede0; --hero-sub:#c9bcad;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#8a7a6a; --hero-meta-value:#f0e0c8;
+  --floating-ui-bg:#3a3030; --floating-ui-fg:#f5ede0; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(44,95,138,.50); --quiz-overlay-hover:rgba(44,95,138,.78);
+}
+[data-theme="night"]{
+  --hero-accent:#e8b84b;
+  --ink:#e0e8f0; --paper:#0f1923; --cream:#1b2942;
+  --accent:#e8b84b; --accent2:#4aa8d8; --gold:#e8b84b; --muted:#94abc0; --border:#1e3048;
+  --highlight:#3a3016; --highlight2:#12283a; --green-bg:#10281c; --red-bg:#2e1616;
+  --blue-bg:#10233a; --purple-bg:#201a38; --hero-bg:#070e15;
+  --panel-dark-bg:#101a26; --panel-dark-text:#eef5fb;
+  --hero-heading:#f4f9ff; --hero-sub:#b8cad8;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#8fa4b8; --hero-meta-value:#f4f9ff;
+  --floating-ui-bg:#070e15; --floating-ui-fg:#f4f9ff; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(74,168,216,.42); --quiz-overlay-hover:rgba(74,168,216,.62);
+}
+[data-theme="ocean"]{
+  --hero-accent:#ff9aa5;
+  --ink:#0b2436; --paper:#eef7fb; --cream:#cdeaf5;
+  --accent:#a32536; --accent2:#0a5286; --gold:#d9a441; --muted:#4f7185; --border:#a8d4e8;
+  --highlight:#ffe6ad; --highlight2:#bfe3f2; --green-bg:#c9f0dc; --red-bg:#fad9d5;
+  --blue-bg:#c3e4f6; --purple-bg:#e1d7f6; --hero-bg:#0a3a5c;
+  --panel-dark-bg:#0b2436; --panel-dark-text:#eef7fb;
+  --hero-heading:#eaf6fd; --hero-sub:#a9c9dc;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#7ba0b8; --hero-meta-value:#d9edfa;
+  --floating-ui-bg:#0a3a5c; --floating-ui-fg:#eaf6fd; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(15,111,176,.48); --quiz-overlay-hover:rgba(15,111,176,.74);
+}
+[data-theme="forest"]{
+  --hero-accent:#f0a07c;
+  --ink:#16241a; --paper:#f2f7f0; --cream:#d7ead2;
+  --accent:#8f3418; --accent2:#155c39; --gold:#b8860b; --muted:#52684f; --border:#b7d4ae;
+  --highlight:#f3e6a0; --highlight2:#cbe4c4; --green-bg:#c7ecc0; --red-bg:#f7ddd0;
+  --blue-bg:#cbe6df; --purple-bg:#e1dbee; --hero-bg:#12301c;
+  --panel-dark-bg:#16241a; --panel-dark-text:#f2f7f0;
+  --hero-heading:#eef7ea; --hero-sub:#b6cfb0;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#87a382; --hero-meta-value:#e2f2da;
+  --floating-ui-bg:#12301c; --floating-ui-fg:#eef7ea; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(31,122,77,.48); --quiz-overlay-hover:rgba(31,122,77,.74);
+}
+[data-theme="sepia"]{
+  --hero-accent:#f0a57e;
+  --ink:#3a2414; --paper:#f7ecd9; --cream:#ecd7ae;
+  --accent:#9c3b17; --accent2:#2f5f6b; --gold:#8b5a17; --muted:#7a614a; --border:#d9bd8c;
+  --highlight:#f0d38a; --highlight2:#d7c39a; --green-bg:#dbe3bc; --red-bg:#f0d0c0;
+  --blue-bg:#cfdedd; --purple-bg:#e3d3e0; --hero-bg:#3f2814;
+  --panel-dark-bg:#3a2414; --panel-dark-text:#f7ecd9;
+  --hero-heading:#f7ecd9; --hero-sub:#cbb190;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#a08a68; --hero-meta-value:#f2ddb4;
+  --floating-ui-bg:#3f2814; --floating-ui-fg:#f7ecd9; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(47,95,107,.50); --quiz-overlay-hover:rgba(47,95,107,.78);
+}
+[data-theme="slate"]{
+  --hero-accent:#ff9a78;
+  --ink:#1c2229; --paper:#f4f5f7; --cream:#dde3ea;
+  --accent:#9e2c0f; --accent2:#2b5268; --gold:#a8862a; --muted:#5c6a76; --border:#c8d0d8;
+  --highlight:#f2e3ac; --highlight2:#d5e2ec; --green-bg:#d6ead9; --red-bg:#f4d8d0;
+  --blue-bg:#d3e2ef; --purple-bg:#dfd9ec; --hero-bg:#1c2530;
+  --panel-dark-bg:#1c2530; --panel-dark-text:#f4f5f7;
+  --hero-heading:#eef1f5; --hero-sub:#b3bfca;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#8595a3; --hero-meta-value:#e4ebf2;
+  --floating-ui-bg:#1c2530; --floating-ui-fg:#eef1f5; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(51,96,122,.50); --quiz-overlay-hover:rgba(51,96,122,.78);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;padding-left:var(--toc-w);background:var(--paper);color:var(--ink);
+  font-family:'Source Serif 4',Georgia,serif;font-size:16px;line-height:1.65;overflow-wrap:break-word;
+  transition:background .25s,color .25s}
+:root{--toc-w:258px}
+h1,h2,h3,h4{font-family:'Playfair Display',Georgia,serif;line-height:1.18}
+a{color:var(--accent2)}
+strong{color:var(--accent2)}
+.container{max-width:min(1220px,94%);margin:0 auto}
+img{max-width:100%}
+
+/* ---------------- reading progress ---------------- */
+.progress-bar{position:fixed;top:0;left:0;height:3px;width:0;z-index:200;
+  background:linear-gradient(90deg,var(--accent2),var(--accent));transition:width .1s linear}
+
+/* ---------------- TOC sidebar ---------------- */
+.toc-bar{position:fixed;top:0;left:0;bottom:0;z-index:90;width:var(--toc-w);
+  background:var(--hero-bg);border-right:1px solid rgba(255,255,255,.10);overflow-y:auto;overflow-x:hidden}
+.toc-bar::-webkit-scrollbar{width:6px}
+.toc-bar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14);border-radius:3px}
+.toc-bar::-webkit-scrollbar-track{background:transparent}
+.toc-head{padding:24px 20px 16px;border-bottom:1px solid rgba(255,255,255,.10)}
+.toc-eyebrow{display:block;font-family:'JetBrains Mono',monospace;font-size:.5rem;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--hero-meta-label);margin-bottom:7px}
+.toc-name{display:block;font-family:'Playfair Display',serif;font-weight:700;font-size:1.2rem;
+  color:var(--hero-heading);line-height:1.15}
+.toc-name em{font-style:normal;color:var(--hero-accent)}
+.toc-group{font-family:'JetBrains Mono',monospace;font-size:.49rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--hero-meta-label);opacity:.75;margin:0;padding:18px 20px 7px}
+.toc-bar nav{display:flex;flex-direction:column;padding:0 0 26px}
+.toc-bar a{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:'Source Serif 4',Georgia,serif;
+  font-size:.85rem;line-height:1.3;color:var(--hero-sub);padding:8px 16px 8px 17px;
+  border-left:3px solid transparent;transition:color .15s,border-color .15s,background .15s}
+.toc-num{flex:none;width:21px;height:21px;border-radius:50%;border:1px solid rgba(255,255,255,.18);
+  display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;
+  font-size:.56rem;font-weight:700;color:var(--hero-meta-label);transition:all .15s}
+.toc-num.dot{border:none;position:relative}
+.toc-num.dot::before{content:'';width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.28);transition:background .15s}
+.toc-bar a:hover{color:var(--hero-heading);background:rgba(255,255,255,.05)}
+.toc-bar a:hover .toc-num{border-color:rgba(255,255,255,.4);color:var(--hero-heading)}
+.toc-bar a:hover .toc-num.dot::before{background:var(--accent)}
+.toc-bar a.active{color:var(--hero-heading);border-left-color:var(--accent);background:rgba(255,255,255,.06);font-weight:600}
+.toc-bar a.active .toc-num{background:var(--chip-red);border-color:var(--chip-red);color:var(--chip-fg)}
+.toc-bar a.active .toc-num.dot{background:none;border-color:transparent}
+.toc-bar a.active .toc-num.dot::before{background:var(--accent);width:7px;height:7px}
+.toc-check{margin-left:auto;font-size:.72rem;display:none;line-height:1}
+.toc-bar a.done .toc-check{display:inline}
+.toc-bar a.conf-1 .toc-check{color:#e0564a}
+.toc-bar a.conf-2 .toc-check{color:#d6a12a}
+.toc-bar a.conf-3 .toc-check{color:#3d9c5c}
+.toc-tools{display:flex;flex-direction:column;gap:6px;padding:14px 14px 0;margin-top:8px;
+  border-top:1px solid rgba(255,255,255,.10)}
+.toc-chip{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);color:var(--hero-sub);
+  font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.05em;padding:7px 9px;
+  border-radius:8px;cursor:pointer;text-align:left;transition:background .15s,color .15s}
+.toc-chip:hover{background:rgba(255,255,255,.14);color:var(--hero-heading)}
+.toc-hy-btn{display:flex;align-items:center;justify-content:center;gap:7px;width:calc(100% - 28px);
+  margin:15px 14px 2px;background:var(--gold);color:#2a1a00;border:none;padding:11px 10px;border-radius:24px;
+  cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.04em;
+  line-height:1.25;text-align:center;transition:transform .15s,box-shadow .15s}
+.toc-hy-btn:hover{transform:translateY(-1px);box-shadow:0 4px 13px rgba(0,0,0,.32)}
+
+/* ---------------- hero ---------------- */
+.hero{background:var(--hero-bg);padding:52px 0 64px;width:100%;position:relative;overflow:hidden}
+.hero-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--hero-meta-label);margin-bottom:16px}
+.hero h1{margin:0 0 12px;font-size:clamp(2rem,4.4vw,3.3rem);font-weight:900;color:var(--hero-heading);letter-spacing:-.01em}
+.hero h1 span{color:var(--hero-accent)}
+.hero-sub{margin:0 0 20px;max-width:66ch;color:var(--hero-sub);font-size:1.03rem}
+.hero-meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.hero-meta-item{background:var(--hero-meta-bg);border:1px solid var(--hero-meta-border);border-radius:9px;
+  padding:9px 15px;min-width:118px}
+.hero-meta-item .label{display:block;font-family:'JetBrains Mono',monospace;font-size:.5rem;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--hero-meta-label);margin-bottom:4px}
+.hero-meta-item .value{display:block;font-family:'Playfair Display',serif;font-weight:700;font-size:1.02rem;color:var(--hero-meta-value)}
+.hy-btn{display:none;align-items:center;gap:8px;background:var(--gold);color:#2a1a00;border:none;padding:12px 22px;
+  border-radius:30px;font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700;letter-spacing:.04em;
+  cursor:pointer;margin-top:4px;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+
+/* ---------------- sections ---------------- */
+.section{padding:46px 0 8px;border-bottom:1px solid var(--border);scroll-margin-top:20px}
+.section:last-of-type{border-bottom:none}
+.badge-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.lo-badge{display:inline-block;background:var(--chip-red);color:var(--chip-fg);font-family:'JetBrains Mono',monospace;
+  font-size:.6rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;padding:6px 13px;border-radius:20px}
+.lo-badge.alt{background:var(--chip-blue)}
+.section-label{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 6px}
+.section-title{margin:0 0 6px;font-size:clamp(1.55rem,3vw,2.3rem);font-weight:700;
+  border-bottom:3px solid var(--accent);display:inline-block;padding-bottom:6px}
+.section h3{margin:30px 0 8px;font-size:1.24rem;border-left:4px solid var(--accent2);padding-left:11px}
+.section h4{margin:18px 0 6px;font-size:1.03rem}
+.lede{font-size:1.05rem;color:var(--muted);max-width:74ch}
+
+/* section tools (injected) */
+.sec-tools{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:14px 0 4px;padding:8px 12px;
+  background:var(--cream);border:1px solid var(--border);border-radius:9px;
+  font-family:'JetBrains Mono',monospace;font-size:.6rem}
+.sec-tools .st-lab{color:var(--muted);text-transform:uppercase;letter-spacing:.11em}
+.sec-tools button{font-family:'JetBrains Mono',monospace;font-size:.6rem;border:1px solid var(--border);
+  background:var(--paper);color:var(--ink);border-radius:20px;padding:4px 11px;cursor:pointer;transition:all .15s}
+.sec-tools button:hover{border-color:var(--accent2)}
+.sec-tools button.on{background:var(--accent2);color:#fff;border-color:var(--accent2)}
+.sec-tools .st-collapse{margin-left:auto}
+.sec-body-outer{display:grid;grid-template-rows:1fr;transition:grid-template-rows .35s ease}
+.sec-body-inner{overflow:hidden;min-height:0}
+.section.collapsed .sec-body-outer{grid-template-rows:0fr}
+.recall-note{display:none;margin:12px 0;padding:9px 13px;border:1px dashed var(--accent2);border-radius:8px;
+  background:var(--blue-bg);font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--ink)}
+body.recall-mode .recall-note{display:block}
+
+/* ---------------- callouts ---------------- */
+.callout{border-left:5px solid var(--accent2);border-radius:0 9px 9px 0;padding:14px 18px;margin:18px 0;background:var(--blue-bg)}
+.callout p:last-child,.callout ul:last-child{margin-bottom:0}
+.callout p:first-of-type{margin-top:0}
+.callout-title{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;margin-bottom:7px;color:var(--ink)}
+.callout-key{border-left-color:var(--gold);background:var(--highlight)}
+.callout-concept{border-left-color:var(--accent2);background:var(--blue-bg)}
+.callout-clinical{border-left-color:#3d9c5c;background:var(--green-bg)}
+.callout-warning{border-left-color:var(--accent);background:var(--red-bg)}
+.callout-purple{border-left-color:#7a5aa8;background:var(--purple-bg)}
+.callout-hook{border-left-color:var(--gold);background:var(--highlight);border-left-style:dashed;border-left-width:5px}
+
+/* ---------------- lists ---------------- */
+.notes-list{list-style:none;padding-left:0;margin:12px 0}
+.notes-list li{position:relative;padding-left:20px;margin-bottom:7px}
+.notes-list li::before{content:'\203A';position:absolute;left:4px;color:var(--accent);font-weight:700}
+.step-list{list-style:none;counter-reset:st;padding-left:0;margin:16px 0}
+.step-list li{counter-increment:st;position:relative;padding-left:44px;margin-bottom:14px;min-height:30px}
+.step-list li::before{content:counter(st);position:absolute;left:0;top:0;width:30px;height:30px;border-radius:50%;
+  background:var(--chip-red);color:var(--chip-fg);display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:700}
+.step-list li>div>strong:first-child{display:block;margin-bottom:2px;color:var(--accent)}
+
+/* ---------------- tables ---------------- */
+table{width:100%;border-collapse:collapse;margin:6px 0 20px;font-size:.92rem}
+th,td{border:1px solid var(--border);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:var(--panel-dark-bg);color:var(--panel-dark-text);font-family:'JetBrains Mono',monospace;
+  font-size:.63rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700}
+tr:nth-child(even) td{background:var(--cream)}
+tr:hover td{background:var(--highlight2)}
+.tbl-scroll{overflow-x:auto;margin-bottom:20px}
+.tbl-scroll table{margin-bottom:0}
+
+/* ---------------- exam Q ---------------- */
+.exam-q{background:var(--panel-dark-bg);color:var(--panel-dark-text);border-radius:11px;padding:20px 22px 18px;margin:22px 0;position:relative}
+.exam-q::before{content:'Exam Q';position:absolute;top:-10px;left:20px;background:var(--chip-red);color:var(--chip-fg);
+  font-family:'JetBrains Mono',monospace;font-size:.56rem;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;padding:4px 11px;border-radius:12px}
+.exam-q p{margin:6px 0}
+.exam-q strong{color:var(--panel-dark-accent)}
+.exam-q .answer{margin-top:12px;padding-top:12px;border-top:1px dashed rgba(255,255,255,.28);display:none}
+.exam-q.revealed .answer{display:block;animation:fadeIn .32s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.exam-q .answer .label{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--panel-dark-accent);margin-bottom:5px}
+.exam-q .reveal-btn{margin-top:11px;background:transparent;border:1px solid rgba(255,255,255,.4);
+  color:var(--panel-dark-text);font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.09em;
+  text-transform:uppercase;padding:6px 15px;border-radius:20px;cursor:pointer}
+.exam-q .reveal-btn:hover{background:rgba(255,255,255,.14)}
+.exam-q.revealed .reveal-btn{display:none}
+.exam-q.q-flash{outline:3px solid var(--gold);animation:qPulse 1.2s ease 1}
+@keyframes qPulse{0%{box-shadow:0 0 0 0 rgba(201,146,42,.55)}70%{box-shadow:0 0 0 14px rgba(201,146,42,0)}100%{box-shadow:none}}
+
+/* ---------------- cards & grids ---------------- */
+.compare-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:14px;margin:18px 0}
+.compare-card{border:1px solid var(--border);border-radius:11px;padding:16px 18px;background:var(--cream)}
+.compare-card h4{margin:6px 0 6px;font-size:1.08rem}
+.compare-card .card-emoji{font-size:1.5rem;line-height:1}
+.compare-card p{margin:0 0 8px}
+.fact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,235px),1fr));gap:13px;margin:18px 0}
+.fact-card{border:1px solid var(--border);border-top:4px solid var(--accent2);border-radius:10px;
+  padding:14px 16px;background:var(--cream)}
+.fact-card h4{margin:0 0 3px;font-size:1rem}
+.fact-card .generic{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.fact-card p{margin:0;font-size:.87rem}
+.hallmarks-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,215px),1fr));gap:13px;margin:18px 0}
+.hallmark-card{border:1px solid var(--border);border-top:4px solid var(--accent);border-radius:10px;
+  padding:14px 16px;background:var(--cream);position:relative}
+.hallmark-card:nth-child(3n+2){border-top-color:var(--accent2)}
+.hallmark-card:nth-child(3n+3){border-top-color:var(--gold)}
+.hallmark-card h4{margin:6px 0 4px;font-size:.99rem}
+.hallmark-card p{margin:0;font-size:.86rem}
+.hallmark-num{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;color:var(--muted)}
+
+/* inline chips */
+.lab-code{font-family:'JetBrains Mono',monospace;background:var(--cream);border:1px solid var(--border);
+  padding:1px 6px;border-radius:4px;font-size:.82rem;white-space:nowrap}
+.gene-tag{font-family:'JetBrains Mono',monospace;color:var(--accent2);font-size:.88rem;font-weight:600}
+.hy-flag{display:inline-flex;align-items:center;gap:3px;background:var(--highlight);color:var(--gold);
+  border:1px solid var(--gold);font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.6rem;
+  padding:1px 8px;border-radius:20px;letter-spacing:.04em;vertical-align:middle}
+.up{color:#c0392b;font-weight:700}
+.dn{color:#2c7fb8;font-weight:700}
+
+/* ---------------- images ---------------- */
+.slide-img{width:100%;display:block;border:1px solid var(--border);border-radius:10px;margin:18px 0 5px;
+  cursor:zoom-in;background:#fff}
+.slide-caption{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 20px;text-align:center}
+/* small source images: cap the width so they are not upscaled into blur */
+.slide-img.sm{width:auto;max-width:min(100%,540px);margin-left:auto;margin-right:auto}
+/* portrait images: cap the height instead of the width */
+.slide-img.tall{width:auto;max-width:100%;max-height:560px;margin-left:auto;margin-right:auto}
+.img-pair .slide-img.tall{max-height:420px}
+.img-pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px 20px;margin:18px 0;
+  align-items:start}
+.img-pair .slide-img{margin:0}
+.img-pair .slide-img.sm{width:100%;max-width:100%}
+.img-pair .slide-caption{margin:6px 0 0}
+.img-pair>div{display:flex;flex-direction:column}
+.fig{margin:18px 0}
+.fig svg{width:100%;height:auto;display:block;border:1px solid var(--border);border-radius:10px;background:var(--cream)}
+
+/* ---------------- table quiz ---------------- */
+.tq-bar{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:6px;padding:8px 12px;
+  background:var(--cream);border:1px solid var(--border);border-radius:8px}
+.tq-toggle{font-family:'JetBrains Mono',monospace;font-size:.63rem;letter-spacing:.09em;text-transform:uppercase;
+  background:var(--accent2);color:#fff;border:none;border-radius:20px;padding:5px 12px;cursor:pointer}
+.tq-toggle.active{background:var(--chip-red);color:var(--chip-fg)}
+.tq-cols{display:flex;flex-wrap:wrap;gap:5px;flex:1}
+.tq-col-btn{font-size:.7rem;padding:3px 9px;border:1px solid var(--border);border-radius:12px;background:var(--paper);
+  cursor:pointer;font-family:'JetBrains Mono',monospace;color:var(--ink);transition:all .15s}
+.tq-col-btn.sel{background:var(--chip-blue);color:var(--chip-fg);border-color:var(--chip-blue)}
+.tq-start,.tq-shuffle,.tq-reset{font-family:'JetBrains Mono',monospace;font-size:.63rem;color:#fff;border:none;
+  border-radius:20px;padding:5px 12px;cursor:pointer}
+.tq-start{background:#2e7d32}.tq-start:disabled{opacity:.35;cursor:not-allowed}
+.tq-shuffle{background:var(--accent2)}
+.tq-reset{background:var(--accent)}
+.tq-score{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted)}
+.tq-score.done{color:#2e7d32;font-weight:700}
+.quiz-hidden-cell{position:relative!important;cursor:pointer!important}
+.quiz-hidden-cell .tq-cell-content{filter:blur(5px)!important;user-select:none!important;pointer-events:none!important;opacity:.4!important}
+.quiz-hidden-cell::after{content:'tap to reveal'!important;position:absolute!important;inset:0!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;background:var(--quiz-overlay)!important;
+  color:#fff!important;font-family:'JetBrains Mono',monospace!important;font-size:.58rem!important;font-weight:700!important;
+  letter-spacing:.12em!important;text-transform:uppercase!important;border-radius:4px!important}
+.quiz-hidden-cell:hover::after{background:var(--quiz-overlay-hover)!important}
+
+/* ---------------- recall mode ---------------- */
+body.recall-mode .sec-body-inner :is(p,li,td,h4,dd) strong:not(.rc-open){color:transparent;background:var(--highlight2);
+  border-radius:4px;cursor:pointer;box-shadow:inset 0 0 0 1px var(--border);padding:0 2px}
+body.recall-mode .exam-q strong,body.recall-mode .tq-bar strong{color:var(--panel-dark-accent)!important;background:none!important;box-shadow:none!important}
+body.recall-mode .game strong{color:inherit!important;background:none!important;box-shadow:none!important;cursor:auto}
+strong.rc-open{animation:rcReveal .35s ease}
+@keyframes rcReveal{from{background:var(--gold)}to{background:transparent}}
+
+/* ---------------- games ---------------- */
+.game{background:var(--cream);border:1px solid var(--border);border-top:4px solid var(--accent);border-radius:12px;
+  padding:18px 20px;margin:22px 0}
+.g-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:4px}
+.g-head h3{margin:0;font-size:1.16rem;border:none;padding:0}
+.g-emoji{margin-right:.45em}
+.g-score{margin-left:auto;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.72rem;color:var(--muted)}
+.g-intro{font-size:.87rem;color:var(--muted);margin:0 0 10px}
+.g-stage{background:var(--paper);border:1px solid var(--border);border-radius:14px;padding:20px 18px 16px;margin:10px 0 0}
+.g-vign{text-align:left;font-size:.97rem;line-height:1.55;min-height:2.4em}
+.g-vign .lead{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--muted);display:block;margin-bottom:6px}
+.g-opts{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));margin-top:14px}
+.g-opt{border:1px solid var(--border);background:var(--cream);border-radius:11px;padding:9px 14px;font-weight:700;
+  cursor:pointer;font-size:.88rem;font-family:'Source Serif 4',Georgia,serif;color:var(--ink);text-align:center;
+  transition:transform .12s ease,border-color .12s,background .12s}
+.g-opt:hover{transform:translateY(-2px);border-color:var(--accent)}
+.g-opt.correct{background:var(--green-bg);border-color:#2e7d32;color:#1f5c24}
+.g-opt.wrong{background:var(--red-bg);border-color:var(--accent);color:var(--accent)}
+.g-fb{min-height:2.4em;margin-top:12px;font-size:.9rem;line-height:1.55}
+.g-fb .ok{color:#2e7d32;font-weight:700}
+.g-fb .no{color:var(--accent);font-weight:700}
+.g-btn{margin-top:14px;background:var(--accent);color:#fff;border:none;border-radius:22px;padding:8px 20px;
+  font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.06em;cursor:pointer}
+.g-btn:hover{filter:brightness(1.1)}
+.g-bank{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-top:12px}
+.g-bank .g-opt{padding:7px 13px;font-size:.83rem}
+.g-opt.picked{opacity:.5;pointer-events:none}
+.g-slots{display:grid;gap:9px;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));margin-top:12px}
+.g-slot{border:1px dashed var(--border);border-radius:10px;padding:10px 12px;background:var(--cream);min-height:62px}
+.g-slot h5{margin:0 0 6px;font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted)}
+.g-slot.sel{border-style:solid;border-color:var(--accent2);box-shadow:0 0 0 2px var(--blue-bg)}
+.g-slot ul{margin:0;padding-left:16px;font-size:.82rem}
+.g-timer{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--accent);font-weight:700}
+
+/* ---------------- floating UI ---------------- */
+.floating-stack{position:fixed;bottom:18px;right:18px;z-index:100;display:flex;flex-direction:column;align-items:flex-end;gap:9px}
+.font-btn-row{display:flex;align-items:center;background:var(--floating-ui-bg);color:var(--floating-ui-fg);
+  padding:7px 10px;border-radius:30px;box-shadow:var(--floating-ui-shadow);font-family:'JetBrains Mono',monospace;
+  font-size:.62rem;letter-spacing:.1em;gap:2px}
+.font-btn{background:none;border:none;cursor:pointer;color:var(--floating-ui-fg);font-family:'JetBrains Mono',monospace;
+  font-weight:700;font-size:1rem;padding:2px 8px;border-radius:6px;line-height:1}
+.font-btn:hover{background:rgba(255,255,255,.18)}
+.font-sep{color:rgba(255,255,255,.22);padding:0 3px}
+.font-label{font-size:.56rem;opacity:.7;padding:0 5px;text-transform:uppercase;letter-spacing:.1em}
+.theme-btn{display:flex;align-items:center;gap:7px;background:var(--floating-ui-bg);color:var(--floating-ui-fg);
+  border:none;padding:10px 17px;border-radius:30px;box-shadow:var(--floating-ui-shadow);cursor:pointer;
+  font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.09em;text-transform:uppercase}
+.theme-panel{position:absolute;bottom:100%;right:0;margin-bottom:10px;background:var(--floating-ui-bg);
+  color:var(--floating-ui-fg);border-radius:12px;padding:12px 10px;box-shadow:var(--floating-ui-shadow);
+  min-width:196px;display:none}
+.theme-panel.open{display:block}
+.theme-panel-title{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.16em;text-transform:uppercase;
+  opacity:.65;padding:0 8px 8px}
+.theme-option{display:flex;align-items:center;gap:9px;padding:7px 9px;border-radius:8px;cursor:pointer;
+  font-family:'JetBrains Mono',monospace;font-size:.66rem}
+.theme-option:hover{background:rgba(255,255,255,.12)}
+.theme-option.active{background:rgba(255,255,255,.18)}
+.theme-swatch{width:17px;height:17px;border-radius:50%;border:1px solid rgba(255,255,255,.35);flex:none}
+
+.floating-left{position:fixed;bottom:18px;left:calc(var(--toc-w) + 18px);z-index:100;
+  display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+.tools-menu{display:flex;flex-direction:column;gap:7px;opacity:0;pointer-events:none;transform:translateY(10px);
+  transition:opacity .22s,transform .22s}
+.floating-left:hover .tools-menu,.floating-left:focus-within .tools-menu,.floating-left.open .tools-menu{
+  opacity:1;pointer-events:auto;transform:none}
+.tool-btn{background:var(--floating-ui-bg);color:var(--floating-ui-fg);border:none;padding:9px 15px;border-radius:22px;
+  box-shadow:var(--floating-ui-shadow);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:.63rem;
+  letter-spacing:.05em;text-align:left;white-space:nowrap}
+.tool-btn:hover{filter:brightness(1.2)}
+.tool-btn.on{background:var(--accent);color:#fff}
+.tools-trigger{position:relative}
+.tools-trigger .dot{display:none;position:absolute;top:6px;right:8px;width:7px;height:7px;border-radius:50%;background:var(--gold)}
+.tools-trigger.busy .dot{display:block}
+.backtop{display:none}
+.backtop.show{display:block}
+
+/* ---------------- lightbox ---------------- */
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:400;display:none;align-items:center;
+  justify-content:center;cursor:zoom-out;padding:22px}
+.lightbox.active{display:flex}
+.lightbox img{max-width:92vw;max-height:88vh;border-radius:6px}
+
+/* ---------------- HY one-pager ---------------- */
+.hy-modal{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:300;display:none;align-items:flex-start;
+  justify-content:center;overflow-y:auto;padding:30px 16px}
+.hy-modal.open{display:flex}
+.hy-modal-card{background:var(--paper);color:var(--ink);max-width:1060px;width:100%;border-radius:14px;
+  padding:26px 30px 34px;box-shadow:0 20px 60px rgba(0,0,0,.45)}
+.hy-modal-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;
+  border-bottom:3px solid var(--accent);padding-bottom:10px;flex-wrap:wrap}
+.hy-modal-header h2{margin:0;font-size:1.35rem}
+.hy-modal-actions{display:flex;gap:8px;flex:none}
+.hy-action-btn{font-family:'JetBrains Mono',monospace;font-size:.64rem;letter-spacing:.05em;text-transform:uppercase;
+  border:1px solid var(--border);background:var(--cream);color:var(--ink);padding:7px 13px;border-radius:20px;cursor:pointer}
+.hy-close-btn{background:var(--chip-red);color:var(--chip-fg);border:none}
+.hy-subhead{font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--muted);margin:0 0 13px}
+.hy-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;min-width:0}
+@media (max-width:760px){.hy-cols{grid-template-columns:1fr}}
+.hy-cols>div{min-width:0}
+.hy-block{border:1px solid var(--border);border-radius:8px;padding:9px 11px;background:var(--cream);margin-bottom:9px;min-width:0}
+.hy-block h4{margin:0 0 5px;font-size:.76rem;color:var(--accent);border-bottom:1px solid var(--border);padding-bottom:4px}
+.hy-block p,.hy-block li{font-size:.67rem;line-height:1.4;margin:0 0 3px}
+.hy-block ul{margin:0;padding-left:15px}
+.hy-lo-tag{display:block;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;color:var(--chip-fg);
+  background:var(--chip-blue);padding:3px 9px;border-radius:10px;margin-bottom:7px;letter-spacing:.05em;text-align:center}
+.hy-mini-table{width:100%;border-collapse:collapse;font-size:.63rem;margin-top:4px}
+.hy-mini-table th,.hy-mini-table td{border:1px solid var(--border);padding:3px 5px;text-align:left;line-height:1.3}
+.hy-mini-table th{background:var(--panel-dark-bg);color:var(--panel-dark-text);font-size:.56rem;text-transform:uppercase}
+.hy-mini-table tr:nth-child(even) td{background:transparent}
+
+/* ---------------- glossary ---------------- */
+.gloss{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:10px;margin:16px 0}
+.gloss dl{margin:0;border:1px solid var(--border);border-radius:9px;padding:12px 14px;background:var(--cream)}
+.gloss dt{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;color:var(--accent);margin-top:8px}
+.gloss dt:first-child{margin-top:0}
+.gloss dd{margin:2px 0 0;font-size:.86rem}
+.abbr-strip{background:var(--cream);border:1px solid var(--border);border-left:4px solid var(--gold);
+  border-radius:0 9px 9px 0;padding:11px 15px;margin:14px 0;font-size:.85rem}
+.abbr-strip .t{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--muted);display:block;margin-bottom:5px}
+
+footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top:40px;font-size:.83rem}
+footer .container{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center}
+footer kbd{font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.2);
+  border-radius:4px;padding:1px 6px;font-size:.72rem}
+
+/* ---------------- responsive ---------------- */
+@media (max-width:1000px){
+  body{padding-left:0}
+  .toc-bar{position:sticky;top:0;bottom:auto;width:100%;height:auto;border-right:none;
+    border-bottom:1px solid rgba(255,255,255,.12);overflow-x:auto;overflow-y:hidden}
+  .toc-head,.toc-group,.toc-hy-btn,.toc-tools{display:none}
+  .toc-bar nav{flex-direction:row;padding:0 8px;white-space:nowrap}
+  .toc-bar a{padding:11px 13px;border-left:none;border-bottom:2px solid transparent;gap:8px}
+  .toc-bar a:hover,.toc-bar a.active{border-left-color:transparent;border-bottom-color:var(--accent);background:none}
+  .toc-num{width:18px;height:18px;font-size:.53rem}
+  .toc-check{display:none!important}
+  .hero .hy-btn{display:inline-flex}
+  .floating-left{left:14px;bottom:14px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
+
+/* ---------------- print ---------------- */
+@media print{
+  body{padding-left:0!important;background:#fff;color:#000}
+  .container{max-width:100%!important}
+  .toc-bar,.floating-stack,.floating-left,.progress-bar,.sec-tools,.recall-note,.tq-bar,
+  .toc-hy-btn,.hy-btn,.lightbox,.game,.exam-q .reveal-btn{display:none!important}
+  .section{page-break-inside:auto;border-bottom:1px solid #ccc}
+  .section.collapsed .sec-body-outer{grid-template-rows:1fr!important}
+  .exam-q .answer{display:block!important}
+  .hero{background:#fff!important;color:#000;padding:16px 0}
+  .hero h1,.hero-sub,.hero-tag,.hero-meta-item .value,.hero-meta-item .label{color:#000!important}
+  .slide-img{page-break-inside:avoid}
+  body.hy-mode .hero,body.hy-mode .section,body.hy-mode footer{display:none!important}
+  body.hy-mode .hy-modal{position:static!important;inset:auto!important;background:none!important;padding:0!important;
+    display:block!important;overflow:visible!important}
+  body.hy-mode .hy-modal-card{position:static!important;max-width:100%!important;width:100%!important;
+    box-shadow:none!important;padding:4px!important}
+  .hy-modal-actions{display:none!important}
+  .hy-cols{grid-template-columns:repeat(3,1fr);gap:6px}
+  .hy-modal-header h2{font-size:1.02rem}
+  .hy-subhead{font-size:.56rem;margin-bottom:7px}
+  .hy-block{padding:4px 6px;margin-bottom:4px;break-inside:avoid}
+  .hy-block h4{font-size:.60rem;margin-bottom:2px;padding-bottom:1.5px}
+  .hy-block p,.hy-block li{font-size:.50rem;line-height:1.2;margin-bottom:1.5px}
+  .hy-mini-table{font-size:.465rem}
+  .hy-mini-table th,.hy-mini-table td{padding:1px 2.5px;line-height:1.18}
+  .hy-lo-tag{font-size:.53rem;padding:2px 7px;margin-bottom:4px}
+  @page{margin:8mm}
+}
+
+
+#noteAuthGate{display:none}
+html[data-note-auth="locked"] body{
+  min-height:100vh;
+  overflow:hidden;
+  background:#f4f5f7;
+  color:#1f2937;
+}
+html[data-note-auth="locked"] body>*:not(#noteAuthGate){display:none!important}
+html[data-note-auth="locked"] #noteAuthGate{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  background:linear-gradient(135deg,#f4f5f7,#ffffff 52%,#eef2f7);
+}
+.note-auth-card{
+  width:min(460px,100%);
+  padding:30px;
+  border:1px solid rgba(31,41,55,.14);
+  border-radius:14px;
+  background:rgba(255,255,255,.92);
+  box-shadow:0 22px 70px rgba(31,41,55,.16);
+  text-align:center;
+}
+.note-auth-kicker{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.68rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:#cf4520;
+  font-weight:700;
+  margin-bottom:12px;
+}
+.note-auth-card h1{
+  margin:0 0 12px;
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2rem,6vw,3rem);
+  line-height:.98;
+  color:#263241;
+}
+.note-auth-card p{
+  margin:0 0 22px;
+  font-size:1rem;
+  line-height:1.55;
+  color:#556070;
+}
+.note-auth-btn{
+  border:0;
+  border-radius:999px;
+  padding:12px 20px;
+  font:700 .9rem 'JetBrains Mono',monospace;
+  letter-spacing:.04em;
+  color:#fff;
+  background:#263241;
+  cursor:pointer;
+  box-shadow:0 12px 28px rgba(38,50,65,.22);
+}
+.note-auth-btn:hover{background:#cf4520}
+
+/* ---------------- pharmacology components ---------------- */
+.drug-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:13px;margin:18px 0}
+.drug-card{border:1px solid var(--border);border-top:4px solid var(--accent2);border-radius:10px;
+  padding:14px 16px;background:var(--cream)}
+.drug-card h4{margin:0 0 3px;font-size:1rem}
+.drug-card .generic{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.drug-card p{margin:0;font-size:.86rem}
+.drug-card p+p{margin-top:5px}
+.drug-card.span2{grid-column:span 2}
+@media (max-width:760px){.drug-card.span2{grid-column:auto}}
+
+.box-warning{border:2px solid var(--accent);border-left-width:9px;border-radius:9px;background:var(--red-bg);
+  padding:15px 18px 13px;margin:20px 0}
+.bw-label{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;background:var(--chip-red);color:var(--chip-fg);
+  padding:4px 11px;border-radius:5px;margin-bottom:9px}
+.box-warning p{margin:0;font-size:.93rem}
+.box-warning p+p{margin-top:7px}
+
+.rems-badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.55rem;font-weight:700;
+  letter-spacing:.1em;background:var(--purple-bg);color:var(--accent2);border:1px solid var(--border);
+  padding:2px 6px;border-radius:4px;vertical-align:middle;margin-left:3px}
+
+.moa-chain{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:14px 0;padding:13px 15px;
+  background:var(--cream);border:1px solid var(--border);border-radius:10px}
+.moa-chain span{font-family:'JetBrains Mono',monospace;font-size:.7rem;line-height:1.35;
+  background:var(--paper);border:1px solid var(--border);border-radius:6px;padding:5px 9px}
+.moa-chain span.hit{background:var(--highlight);border-color:var(--gold);font-weight:700}
+.moa-chain i{font-style:normal;color:var(--accent);font-weight:700}
+
+.suffix-key{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:10px;margin:16px 0}
+.suffix-key div{border:1px solid var(--border);border-left:4px solid var(--gold);border-radius:8px;
+  padding:9px 12px;background:var(--cream)}
+.suffix-key code{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--accent);font-size:.9rem}
+.suffix-key p{margin:3px 0 0;font-size:.82rem;color:var(--muted)}
+
+.timing-bar{display:flex;align-items:center;gap:10px;margin:7px 0;font-size:.86rem}
+.timing-bar .tl{flex:none;width:min(38%,215px);font-weight:600}
+.timing-bar .tt{flex:1;height:15px;background:var(--cream);border:1px solid var(--border);
+  border-radius:8px;position:relative;overflow:hidden}
+.timing-bar .tf{position:absolute;top:0;bottom:0;background:var(--accent);opacity:.78;border-radius:8px}
+.timing-bar .tv{flex:none;font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--muted);
+  width:min(30%,140px);text-align:right}
+
+
+/* ---------------- Cardio additions ---------------- */
+.hero .container{position:relative;z-index:1}
+.hero-ecg{position:absolute;left:0;right:0;bottom:6px;width:100%;height:58px;z-index:0;pointer-events:none;opacity:.55}
+.hero-ecg path{fill:none;stroke:var(--hero-accent);stroke-width:2;stroke-linejoin:round;stroke-linecap:round;
+  stroke-dasharray:1400;stroke-dashoffset:1400;animation:ecgDraw 4.5s ease-out .3s forwards}
+@keyframes ecgDraw{to{stroke-dashoffset:0}}
+strong.hot{color:var(--accent)}
+.num{background:var(--highlight);color:var(--ink);font-weight:700;padding:0 4px;border-radius:4px;white-space:nowrap}
+.src-tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.55rem;font-weight:700;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--ink);border:1px dashed var(--muted);border-radius:4px;padding:0 5px;
+  vertical-align:middle;white-space:nowrap}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;margin:16px 0 6px;padding:11px 15px;
+  background:var(--cream);border:1px solid var(--border);border-radius:10px;font-size:.86rem}
+.legend-t{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.order-list{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 16px}
+.order-list span{background:var(--cream);border:1px solid var(--border);border-left:4px solid var(--accent);
+  border-radius:8px;padding:6px 12px;font-size:.9rem}
+.tbl-note{font-size:.88rem;color:var(--muted);margin-top:-8px}
+table.dense{font-size:.8rem}
+table.dense td,table.dense th{padding:5px 7px}
+.timeline-table tr.phase td{background:var(--panel-dark-bg)!important;color:var(--panel-dark-text);font-family:'JetBrains Mono',monospace;
+  font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;padding:4px 11px}
+
+/* ---- labeled, lazy-loaded figures (images live in ./assets/, not base64) ---- */
+.fig-card{margin:20px auto;max-width:960px;border:1px solid var(--border);border-radius:12px;background:var(--cream);overflow:hidden;
+  break-inside:avoid;page-break-inside:avoid}
+.fig-frame{position:relative;background:#fff;display:flex;justify-content:center;align-items:center}
+.fig-frame::before{content:'';position:absolute;inset:0;
+  background:linear-gradient(100deg,rgba(0,0,0,0) 30%,rgba(181,31,58,.07) 50%,rgba(0,0,0,0) 70%) #fdf1f3;
+  background-size:220% 100%;animation:figShimmer 1.3s linear infinite;transition:opacity .3s}
+.fig-frame.loaded::before{opacity:0;animation:none}
+@keyframes figShimmer{from{background-position:120% 0}to{background-position:-120% 0}}
+.fig-card .slide-img{position:relative;margin:0;border:none;border-radius:0;width:100%;height:auto;opacity:0;transition:opacity .35s}
+.fig-frame.loaded .slide-img{opacity:1}
+.fig-card.tall .slide-img{width:auto;max-width:100%;max-height:560px}
+.fig-card.sm .slide-img{width:auto;max-width:min(100%,560px)}
+.fig-row .fig-card.tall .slide-img{max-height:440px}
+.fig-card figcaption{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;padding:9px 13px 10px;
+  border-top:1px solid var(--border);font-size:.86rem;line-height:1.4}
+.fig-num{font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  background:var(--chip-blue);color:var(--chip-fg);padding:2px 8px;border-radius:10px;flex:none}
+.fig-title{flex:1 1 220px;color:var(--ink)}
+.fig-src{font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);flex:none}
+.fig-src b{color:var(--accent);font-weight:700}
+.fig-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px;margin:20px 0;align-items:start}
+.fig-row .fig-card{margin:0;max-width:none}
+.lightbox{flex-direction:column;gap:12px}
+.lightbox-cap{max-width:min(92vw,900px);color:#f3f3f3;font-size:.9rem;text-align:center;line-height:1.45}
+.lightbox-cap .fig-num{margin-right:6px}
+
+details.case-box{background:var(--cream);border:1px solid var(--border);border-left:5px solid var(--accent2);
+  border-radius:0 12px 12px 0;margin:16px 0;overflow:hidden}
+details.case-box summary{cursor:pointer;padding:13px 18px;font-family:'Playfair Display',serif;font-weight:700;font-size:1.05rem;
+  list-style:none;display:flex;gap:10px;align-items:center}
+details.case-box summary::-webkit-details-marker{display:none}
+details.case-box summary::before{content:'▸';color:var(--accent);transition:transform .2s}
+details.case-box[open] summary::before{transform:rotate(90deg)}
+details.case-box .case-body{padding:0 18px 12px;border-top:1px solid var(--border)}
+@media print{details.case-box .case-body{display:block}}
+
+/* ---- click-to-play video facade: no YouTube iframe loads until you ask for it ---- */
+.watch{margin:26px 0 8px;padding:14px 16px 16px;border:1px solid var(--border);border-left:5px solid var(--accent);
+  border-radius:0 12px 12px 0;background:var(--cream)}
+.watch-title{font-family:'JetBrains Mono',monospace;font-size:.64rem;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink);margin-bottom:10px}
+.watch-title span{color:var(--muted);font-weight:400;letter-spacing:.04em;text-transform:none}
+.vid-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr));gap:12px}
+.vid{display:flex;flex-direction:column;text-align:left;padding:0;border:1px solid var(--border);border-radius:10px;
+  overflow:hidden;background:var(--paper);color:var(--ink);cursor:pointer;font:inherit;transition:transform .15s,box-shadow .15s}
+.vid:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.14)}
+.vid-thumb{position:relative;aspect-ratio:16/9;background:#1c1c1c;overflow:hidden}
+.vid-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.vid-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:50px;height:36px;border-radius:10px;
+  background:rgba(181,31,58,.92);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1rem;
+  box-shadow:0 3px 10px rgba(0,0,0,.35)}
+.vid-meta{padding:8px 10px 10px;font-size:.8rem;line-height:1.35}
+.vid-meta b{display:block;font-weight:600}
+.vid-meta i{font-style:normal;font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted)}
+.vid.playing{cursor:default;transform:none;box-shadow:none}
+.vid iframe{width:100%;aspect-ratio:16/9;border:0;display:block}
+@media print{
+  .watch{display:none!important}
+  .fig-frame::before{display:none}
+  .fig-card .slide-img{opacity:1!important}
+  .fig-card{background:#fff}
+}
+@media (prefers-reduced-motion:reduce){.hero-ecg path{stroke-dashoffset:0}}
+</style>
+
+</head>
+<body>
+<div id="noteAuthGate" role="dialog" aria-modal="true" aria-labelledby="noteAuthTitle">
+  <div class="note-auth-card">
+    <div class="note-auth-kicker">2nd Year Study Hub</div>
+    <h1 id="noteAuthTitle">Please log in to continue with this note.</h1>
+    <p>Open the Study Hub login, enter your approved UNE email, and this note will unlock automatically.</p>
+    <button class="note-auth-btn" type="button" onclick="openNoteLogin()">Log in to continue</button>
+  </div>
+</div>
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="toc-bar">
+  <div class="toc-head">
+    <span class="toc-eyebrow">OMK 2 · Cardio · Week 13</span>
+    <span class="toc-name">Vascular <em>Pathology</em></span>
+  </div>
+  <button class="toc-hy-btn" onclick="openHY()">🎯 High-Yield One-Pager</button>
+  <nav>
+    <p class="toc-group">Start</p>
+    <a href="#orientation"><span class="toc-num dot"></span><span>Orientation — plumbing meets pathology</span><span class="toc-check">✓</span></a>
+    <p class="toc-group">Vessel wall &amp; plaque</p>
+    <a href="#s1-wall"><span class="toc-num">1</span><span>Vessel Wall &amp; Endothelium</span><span class="toc-check">✓</span></a>
+    <a href="#s2-arterio"><span class="toc-num">2</span><span>Arteriosclerosis Subtypes</span><span class="toc-check">✓</span></a>
+    <a href="#s3-athero"><span class="toc-num">3</span><span>Atherosclerosis</span><span class="toc-check">✓</span></a>
+    <p class="toc-group">Pressure &amp; structure</p>
+    <a href="#s4-htn"><span class="toc-num">4</span><span>Blood Pressure &amp; Hypertension</span><span class="toc-check">✓</span></a>
+    <a href="#s5-aneurysm"><span class="toc-num">5</span><span>Aneurysms &amp; Dissection</span><span class="toc-check">✓</span></a>
+    <p class="toc-group">Inflammation</p>
+    <a href="#s6-vasc-large"><span class="toc-num">6</span><span>Vasculitis — Large &amp; Medium</span><span class="toc-check">✓</span></a>
+    <a href="#s7-vasc-small"><span class="toc-num">7</span><span>Vasculitis — Small &amp; Review Table</span><span class="toc-check">✓</span></a>
+    <p class="toc-group">Veins &amp; tumours</p>
+    <a href="#s8-veins"><span class="toc-num">8</span><span>Raynaud, Veins &amp; Obstruction</span><span class="toc-check">✓</span></a>
+    <a href="#s9-tumors"><span class="toc-num">9</span><span>Vascular Tumours</span><span class="toc-check">✓</span></a>
+    <p class="toc-group">Reference</p>
+    <a href="#glossary"><span class="toc-num dot"></span><span>Glossary &amp; Abbreviations</span><span class="toc-check">✓</span></a>
+  </nav>
+  <div class="toc-tools">
+    <button class="toc-chip" id="progressChip" onclick="jumpToNextTodo()">0/0 reviewed</button>
+    <button class="toc-chip" id="collapseAllBtn" onclick="toggleAllSections()">⊟ Collapse all</button>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="container">
+    <div class="hero-tag">Humphrey Gardner, MD FCAP · Anatomic Pathology · UNE COM · Fall 2025</div>
+    <h1>Vascular <span>Pathology</span></h1>
+    <p class="hero-sub">From the endothelium outward: how a high-pressure plumbing system turns ordinary cell injury into plaque, aneurysm, dissection and vasculitis — and the veins and vascular tumours at the end.</p>
+    <button class="hy-btn" onclick="openHY()">🎯 High-Yield One-Pager</button>
+    <div class="hero-meta"><div class="hero-meta-item"><span class="label">Lecturer</span><span class="value">Humphrey Gardner, MD FCAP</span></div><div class="hero-meta-item"><span class="label">Sources</span><span class="value">Slides 1–45 + transcript</span></div><div class="hero-meta-item"><span class="label">Topics</span><span class="value">9</span></div><div class="hero-meta-item"><span class="label">Labeled figures</span><span class="value">49</span></div><div class="hero-meta-item"><span class="label">Exam questions</span><span class="value">23</span></div><div class="hero-meta-item"><span class="label">Videos</span><span class="value">22</span></div></div>
+  </div>
+  <svg class="hero-ecg" viewBox="0 0 1200 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 40 H140 l10 -6 l10 6 H200 l6 6 l10 -40 l10 50 l8 -16 H330 l14 -8 l14 8 H480 l10 -6 l10 6 H540 l6 6 l10 -40 l10 50 l8 -16 H670 l14 -8 l14 8 H820 l10 -6 l10 6 H880 l6 6 l10 -40 l10 50 l8 -16 H1010 l14 -8 l14 8 H1200"/></svg>
+</div>
+
+<!-- ==================== ORIENTATION ==================== -->
+<div class="section" id="orientation">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge alt">Orientation</div></div>
+    <p class="section-label">How to read this lecture</p>
+    <h2 class="section-title">High-Pressure Plumbing Meets Cell Pathology</h2>
+
+    <p class="lede">Dr. Gardner's framing: almost every vascular disease is ordinary cell pathology (inflammation, necrosis, repair) happening inside a <strong>high-pressure plumbing system</strong>. Small problems early in life, like a collagen mutation or a low-grade infection of a vessel, can take <strong>decades</strong> of blood flow to show up. And because the pressure is so high, a minor lesion can become a catastrophe.</p>
+
+    <div class="legend">
+      <span class="legend-t">How to read the colours</span>
+      <span><strong class="hot">Red bold</strong> = lecturer emphasis / likely tested</span>
+      <span><strong>Blue bold</strong> = key fact or mechanism</span>
+      <span><span class="num">Yellow</span> = number to memorise</span>
+      <span><span class="src-tag">Board add-on</span> = from First Aid / Pathoma / AMBOSS, not said in lecture</span>
+    </div>
+
+    <h3>The cast of cells</h3>
+    <div class="fact-grid">
+      <div class="fact-card"><h4>Endothelial cells</h4><div class="generic">Line every vessel + heart</div><p>Keep blood from clotting; control what crosses the wall.</p></div>
+      <div class="fact-card"><h4>Vascular smooth muscle cells</h4><div class="generic">Media</div><p>Contract and relax to set <strong>vascular tone</strong> → blood pressure and flow.</p></div>
+      <div class="fact-card"><h4>Fibroblasts</h4><div class="generic">Adventitia + heart</div><p>Make the collagen matrix that gives vessels their <strong>structural strength</strong>.</p></div>
+      <div class="fact-card"><h4>Cardiomyocytes</h4><div class="generic">Heart</div><p>Contract rhythmically on their own; pass action potentials cell to cell in a branching pattern.</p></div>
+      <div class="fact-card"><h4>Monocytes / macrophages</h4><div class="generic">Repair crew</div><p>Repair vessel damage, but can also <strong>perpetuate</strong> it, as in atherosclerotic plaque.</p></div>
+      <div class="fact-card"><h4>Platelets</h4><div class="generic">Megakaryocyte fragments</div><p>Stick to <strong>any surface not covered by intact endothelium</strong> and start clotting.</p></div>
+    </div>
+
+    <div class="callout callout-key">
+      <div class="callout-title">🔑 The one idea that runs through everything</div>
+      <p>Intact endothelium = no clot, no inflammation, relaxed vessel. <strong class="hot">Damaged or "activated" endothelium</strong> = clotting, leak, inflammation and constriction. Atherosclerosis, hypertension, vasculitis and thrombosis are all versions of that switch being flipped.</p>
+    </div>
+
+    <p>The lecturer also asked you to <em>read</em> (not study) the Robbins vascular chapter once, straight through, "like a novel": the same themes repeat and will stick.</p>
+  </div>
+</div>
+
+<!-- ==================== 1. VESSEL WALL ==================== -->
+<div class="section" id="s1-wall">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Topic 1</div></div>
+    <p class="section-label">Normal structure → how injury starts</p>
+    <h2 class="section-title">The Vessel Wall &amp; the Endothelium</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations in this section</span>EC = endothelial cell · SMC = smooth muscle cell · IEL / EEL = internal / external elastic lamina · BBB = blood–brain barrier · NO = nitric oxide · vWF = von Willebrand factor · PDGF = platelet-derived growth factor · TGF-β = transforming growth factor beta · VCAM-1 = vascular cell adhesion molecule 1</div>
+
+    <h3>Three layers</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>Layer</th><th>What it contains</th><th>Boundary</th></tr>
+      <tr><td><strong>Intima</strong></td><td>Endothelial cells facing the blood + the thin connective tissue under them</td><td>Ends at the <strong>internal elastic lamina</strong></td></tr>
+      <tr><td><strong>Media</strong></td><td>Smooth muscle + elastic fibres (+ collagen). Big arteries: <strong>elastic fibres dominate</strong> (absorb the pulse). Small arteries/arterioles: <strong>smooth muscle dominates</strong> (sets end-organ pressure)</td><td>Between IEL and EEL</td></tr>
+      <tr><td><strong>Adventitia</strong></td><td>Collagen-rich connective tissue, fibroblasts; big vessels also carry their own blood supply here (<strong>vasa vasorum</strong>)</td><td>Starts at the <strong>external elastic lamina</strong></td></tr>
+    </table></div>
+
+    <figure class="fig-card" id="fig-v-wall-by-vessel"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-wall-by-vessel.jpg" alt="Diagram of the circulation from aorta to capillary to vena cava, with cross-sections showing thick elastic arteries, muscular arteries, thin capillaries with pericytes, and thin-walled veins" width="777" height="512" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V1</span><span class="fig-title">Vessel wall structure changes with the job each vessel does</span><span class="fig-src"><b>Gardner lecture</b> · slide 6</span></figcaption></figure>
+
+    <div class="compare-grid">
+      <div class="compare-card" style="background:var(--red-bg);border-color:var(--accent)">
+        <span class="card-emoji">💪</span><h4>Arteries — pressure tolerance</h4>
+        <p><strong>Elasticity</strong> is key. Aorta = elastic artery; then muscular arteries.</p>
+      </div>
+      <div class="compare-card" style="background:var(--green-bg);border-color:#2e7d32">
+        <span class="card-emoji">🔁</span><h4>Capillaries — exchange</h4>
+        <p><strong>Selective permeability</strong> is key. Just endothelium + supporting <strong>pericytes</strong>.</p>
+      </div>
+      <div class="compare-card" style="background:var(--blue-bg);border-color:var(--accent2)">
+        <span class="card-emoji">🎈</span><h4>Veins — capacitance</h4>
+        <p><strong>Expansibility</strong> is key. Thin, attenuated media; they hold the "back capacity" of blood for the next beat.</p>
+      </div>
+    </div>
+
+    <h3>What endothelium does</h3>
+    <ul class="notes-list">
+      <li>Forms one <strong>continuous, intact surface</strong> from the cardiac chambers to every capillary and back — extremely thin, huge area, resists shear, held together by <strong>tight junctions</strong>.</li>
+      <li>Thinnest where gas exchange happens (alveoli). Stores clotting factors in <strong>Weibel–Palade bodies</strong>.</li>
+      <li>Controls white-cell traffic by opening and closing tight junctions locally.</li>
+      <li>Two extremes of permeability: <strong>brain</strong> (maximal sealing = <strong>BBB</strong>) vs most end-organ capillaries (permissive to macromolecules and cells).</li>
+      <li><strong class="hot">Strip the endothelium off and collagen is exposed → platelets bind immediately</strong> and clotting starts.</li>
+    </ul>
+
+    <div class="tbl-scroll"><table>
+      <tr><th>Job</th><th>Mediators</th></tr>
+      <tr><td>Permeability barrier</td><td>Tight junctions, transcytosis</td></tr>
+      <tr><td><strong>Anti</strong>coagulant / fibrinolytic</td><td><strong>Prostacyclin</strong>, <strong>thrombomodulin</strong>, heparin-like molecules, <strong>plasminogen activator</strong></td></tr>
+      <tr><td><strong>Pro</strong>thrombotic</td><td><strong>von Willebrand factor</strong>, <strong>tissue factor</strong>, plasminogen activator inhibitor</td></tr>
+      <tr><td>Matrix</td><td>Collagen, proteoglycans</td></tr>
+      <tr><td>Vascular tone</td><td>Constrict: <strong>endothelin</strong>, ACE (angiotensin-converting enzyme) · Dilate: <strong>NO</strong>, prostacyclin</td></tr>
+      <tr><td>Inflammation</td><td>IL-1, IL-6, chemokines; adhesion molecules VCAM-1, ICAM, E-selectin, P-selectin</td></tr>
+      <tr><td>Growth</td><td>Stimulate: PDGF, CSF, FGF · Inhibit: heparin, TGF-β</td></tr>
+    </table></div>
+
+    <h3>Flow decides endothelial behaviour</h3>
+    <p>Classic experiment: under <strong>laminar (smooth) flow</strong> cultured endothelial cells line up like paving stones. <strong class="hot">Turbulent flow</strong> with local high-flow spots makes them stressed, turn over faster, undergo some apoptosis and develop a rough surface. That is why plaques form at <strong>branch points</strong>.</p>
+    <div class="fig-row"><figure class="fig-card" id="fig-v-flow-culture"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-flow-culture.jpg" alt="Two micrographs of cultured endothelial cells: B shows cells elongated and aligned in the direction of laminar flow; C shows disorganized, rounded cells under turbulent flow" width="451" height="310" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V2</span><span class="fig-title">Endothelial cells in a dish: laminar flow (B) lines them up, turbulent flow (C) scrambles them</span><span class="fig-src"><b>Gardner lecture</b> · slide 8 · Gimbrone, PNAS 1985</span></figcaption></figure><figure class="fig-card" id="fig-v-endothelium-states"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-endothelium-states.jpg" alt="Diagram: laminar flow, normotension and growth factors keep endothelium in a non-adhesive, non-thrombogenic basal state; turbulent flow, hypertension, cytokines, lipids, glycation end-products, viruses and smoke push it to an activated, procoagulant, pro-inflammatory state" width="766" height="638" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V3</span><span class="fig-title">Basal (quiet) vs activated endothelium, and what flips the switch</span><span class="fig-src"><b>Gardner lecture</b> · slide 7</span></figcaption></figure></div>
+
+    <h3>Endothelial dysfunction</h3>
+    <p>Healthy endothelium: relaxed vessel, tight permeability, controlled clotting and inflammation. Dysfunctional endothelium: <strong>vasoconstriction + hypoxia, leak/edema, thrombosis, white-cell accumulation (inflammation)</strong> — seen on labs as prolonged clotting times, raised <strong>D-dimer</strong> (fibrin breakdown product) and raised <strong>CRP</strong> (C-reactive protein).</p>
+    <figure class="fig-card" id="fig-v-endothelial-dysfunction"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-endothelial-dysfunction.jpg" alt="Side-by-side vessel diagram: healthy endothelium with vasodilation, tight permeability, anti-thrombosis; dysfunctional endothelium with vasoconstriction, leaky permeability, thrombosis, inflammation and rising D-dimer, CRP, IL-6" width="1600" height="987" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V4</span><span class="fig-title">Healthy vs dysfunctional endothelium</span><span class="fig-src"><b>Gardner lecture</b> · slide 10</span></figcaption></figure>
+    <p>Diseases with major endothelial dysfunction: <strong class="hot">diabetes (ultimately a microvascular disease)</strong>, inflammatory bowel disease, hypertension, heart and kidney failure, stroke, atherosclerosis. Newer idea: <strong>amyloid-β is toxic to brain endothelium</strong> and may add a thrombotic route to Alzheimer disease.</p>
+
+    <h3>The stereotyped response to injury</h3>
+    <figure class="fig-card" id="fig-v-intimal-thickening"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-intimal-thickening.jpg" alt="Schematic: smooth muscle cells migrate from the media across the internal elastic lamina into the intima, proliferate and lay down extracellular matrix, thickening the intima" width="769" height="396" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V5</span><span class="fig-title">The stereotyped response to any vascular injury: intimal thickening</span><span class="fig-src"><b>Gardner lecture</b> · slide 11</span></figcaption></figure>
+    <div class="callout callout-concept">
+      <div class="callout-title">🧠 Mechanism</div>
+      <p>Any injury that strips endothelium (or reaches the media) → smooth muscle cells migrate into the intima, proliferate and lay down matrix → <strong>intimal thickening</strong>. It partly resolves, but the long-run tendency is toward <strong>stenosis</strong>. In large vessels, repeated injury → <strong>atherosclerosis</strong>.</p>
+    </div>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> A surgeon scrapes the endothelium off a segment of artery. What is the very first cellular event at the exposed surface, and what does the vessel wall look like weeks later?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>Platelets adhere to exposed subendothelial collagen</strong> (via von Willebrand factor) and trigger clotting. Weeks later: <strong>intimal thickening</strong> from smooth muscle cells that migrated in from the media and deposited matrix — the stereotyped response that trends toward stenosis.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> Why do atherosclerotic plaques cluster at arterial branch points and ostia?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>Turbulent flow</strong> there activates and injures endothelium (higher turnover, rough surface, loss of the laminar-flow "quiet" state), while laminar flow elsewhere is protective.</p></div>
+    </div>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="c0Aj_eeJA-M" data-title="The Smooth Endothelium — how your body prevents clotting"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/c0Aj_eeJA-M/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>The Smooth Endothelium — how your body prevents clotting</b><i>Medicosis Perfectionalis · YouTube</i></span></button><button class="vid" type="button" data-yt="ydFy85JCJxo" data-title="Vascular Disorders overview — vasculitis, atherosclerosis, aneurysms, hypertension"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/ydFy85JCJxo/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Vascular Disorders overview — vasculitis, atherosclerosis, aneurysms, hypertension</b><i>Medicosis Perfectionalis · YouTube</i></span></button></div></div>
+  </div>
+</div>
+
+<!-- ==================== 2. ARTERIOSCLEROSIS ==================== -->
+<div class="section" id="s2-arterio">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Topic 2</div></div>
+    <p class="section-label">"Hardening of the arteries" — four subtypes</p>
+    <h2 class="section-title">Arteriosclerosis vs Atherosclerosis</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>SMC = smooth muscle cell · IEL = internal elastic lamina · FMD = fibromuscular dysplasia · HTN = hypertension</div>
+
+    <div class="callout callout-key">
+      <div class="callout-title">🔑 "Two annoying words"</div>
+      <p><strong class="hot">Arteriosclerosis</strong> = any hardening of arteries (the umbrella). <strong class="hot">Atherosclerosis</strong> = the <em>subset</em> caused by <strong>atheroma</strong> (atherosclerotic plaque). All atherosclerosis is arteriosclerosis; not the reverse.</p>
+    </div>
+
+    <div class="tbl-scroll"><table>
+      <tr><th>Subtype</th><th>What happens</th><th>Where / who</th><th>Consequence</th></tr>
+      <tr><td><strong>Hyaline arteriolosclerosis</strong></td><td>Pink, glassy wall from plasma proteins leaking across injured endothelium + extra SMC matrix</td><td>Small arteries &amp; arterioles; <strong>benign HTN, diabetes</strong>, ageing</td><td>Narrow lumen → e.g. nephrosclerosis</td></tr>
+      <tr><td><strong>Hyperplastic arteriolosclerosis</strong></td><td>Concentric <strong class="hot">"onion-skin"</strong> layers of SMCs with reduplicated basement membrane ± fibrinoid necrosis</td><td><strong class="hot">Malignant HTN</strong>, pre-eclampsia</td><td>Lumen obliteration, necrotizing arteriolitis (kidney)</td></tr>
+      <tr><td><strong>Mönckeberg medial sclerosis</strong></td><td><strong>Calcium in the media</strong>, along the IEL</td><td>Ageing; visible on X-ray</td><td>Usually <strong>asymptomatic</strong> (lumen spared); "pipe-stem" vessels that tear easily with trauma</td></tr>
+      <tr><td><strong>Fibromuscular intimal hyperplasia</strong></td><td>Progressive intimal thickening from chronic immune or mechanical injury</td><td>After <strong>stents / balloons</strong>; transplanted organs and grafts</td><td>Common cause of <strong>vascular and organ graft failure</strong></td></tr>
+      <tr><td><strong>Atherosclerosis</strong></td><td>Intimal plaque: lipid, cells, matrix, calcium</td><td>Large and medium arteries</td><td>~<span class="num">40%</span> of global mortality</td></tr>
+    </table></div>
+
+    <div class="fig-row"><figure class="fig-card" id="fig-v-hyaline-hyperplastic"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-hyaline-hyperplastic.jpg" alt="Two micrographs: A, arteriole with a thick homogeneous pink hyaline wall and narrow lumen; B, arteriole with concentric laminated onion-skin layers nearly closing the lumen" width="779" height="373" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V6</span><span class="fig-title">(A) Hyaline arteriolosclerosis · (B) Hyperplastic &quot;onion-skin&quot; arteriolosclerosis</span><span class="fig-src"><b>Gardner lecture</b> · slide 25</span></figcaption></figure><figure class="fig-card" id="fig-v-onion-skin"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-onion-skin.jpg" alt="Arteriole with concentric lamellated smooth muscle and basement membrane layers around a pinpoint lumen" width="1275" height="835" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V7</span><span class="fig-title">Onion-skinning up close — malignant hypertension</span><span class="fig-src"><b>Robbins &amp; Cotran Atlas</b></span></figcaption></figure></div>
+    <div class="fig-row"><figure class="fig-card" id="fig-v-monckeberg"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-monckeberg.jpg" alt="H&amp;E of a muscular artery with dark purple calcium deposits in the media and an open lumen" width="1500" height="1000" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V8</span><span class="fig-title">Mönckeberg medial calcific sclerosis — calcium in the media, lumen spared</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure><figure class="fig-card tall" id="fig-v-fmd-beads"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-fmd-beads.jpg" alt="Angiogram with alternating narrowing and dilation of an artery giving a beaded appearance, marked by a red diamond" width="683" height="1600" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V9</span><span class="fig-title">Fibromuscular dysplasia — &quot;string of beads&quot; on angiography</span><span class="fig-src"><b>Robbins &amp; Cotran Atlas</b></span></figcaption></figure></div>
+
+    <div class="callout callout-warning">
+      <div class="callout-title">⚠️ Don't confuse the look-alike names</div>
+      <p><strong>Fibromuscular intimal <em>hyperplasia</em></strong> = acquired, after stents/balloons/grafts. <strong>Fibromuscular <em>dysplasia</em> (FMD)</strong> = a rare, largely inherited condition where segments of artery wall are replaced by connective tissue → <strong>"string of beads"</strong> angiogram and multisite aneurysms. <span class="src-tag">Board add-on</span> FMD classically hits the <strong>renal arteries of young women</strong> → secondary hypertension.</p>
+    </div>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> An 80-year-old has an incidental plain film showing "tram-track" calcification of the femoral arteries. Pulses are normal and he has no claudication. What lesion is this and why is he asymptomatic?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>Mönckeberg medial calcific sclerosis</strong> — calcium sits in the <strong>media</strong>, so the lumen is not narrowed. It is a consequence of ageing and usually asymptomatic.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> A kidney biopsy from a patient with BP 230/140, headache and papilledema shows arterioles with concentric, laminated wall thickening and fibrinoid necrosis. Name the lesion.</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>Hyperplastic ("onion-skin") arteriolosclerosis</strong> with necrotizing arteriolitis — the lesion of <strong>malignant hypertension</strong>.</p></div>
+    </div>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="OCj_pxWI21M" data-title="Renal Artery Stenosis"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/OCj_pxWI21M/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Renal Artery Stenosis</b><i>Medicosis Perfectionalis · YouTube</i></span></button></div></div>
+  </div>
+</div>
+
+<!-- ==================== 3. ATHEROSCLEROSIS ==================== -->
+<div class="section" id="s3-athero">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Topic 3</div></div>
+    <p class="section-label">"A gift from the West" · a chronic inflammatory lesion</p>
+    <h2 class="section-title">Atherosclerosis</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>LDL / HDL = low- / high-density lipoprotein · CV = cardiovascular · LVH = left ventricular hypertrophy · ECM = extracellular matrix · SMC = smooth muscle cell · MI = myocardial infarction</div>
+
+    <h3>Risk factors</h3>
+    <div class="hallmarks-grid">
+      <div class="hallmark-card"><div class="hallmark-num">DRIVER</div><h4>Hyperlipidemia</h4><p><strong>The main driver</strong>; LDL is directly toxic to endothelium.</p></div>
+      <div class="hallmark-card"><div class="hallmark-num">INJURY</div><h4>Smoking</h4><p>Major contributor to the <strong>initial endothelial injury</strong>.</p></div>
+      <div class="hallmark-card"><div class="hallmark-num">INJURY</div><h4>Hypertension</h4><p>Pressure and turbulent flow damage endothelium.</p></div>
+      <div class="hallmark-card"><div class="hallmark-num">INJURY</div><h4>Diabetes</h4><p>High sugar → <strong>glycation</strong> of endothelial surface proteins.</p></div>
+      <div class="hallmark-card"><div class="hallmark-num">FIXED</div><h4>Age, sex, family history</h4><p>Family history ≈ inherited lipid handling and clotting responses.</p></div>
+    </div>
+    <figure class="fig-card" id="fig-v-risk-chart"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-risk-chart.jpg" alt="Bar chart for men and women: estimated 10-year cardiovascular risk climbs from about 5 percent to about 57 percent as systolic pressure, cholesterol, low HDL, diabetes, smoking and ECG-proven LVH are added" width="627" height="346" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V10</span><span class="fig-title">10-year cardiovascular risk at age 55 as risk factors stack up</span><span class="fig-src"><b>Gardner lecture</b> · slide 14</span></figcaption></figure>
+    <p>Stack the risk factors at age 55 (high systolic BP + high cholesterol + low HDL + diabetes + smoking + LVH on ECG) and the 10-year CV risk climbs past <span class="num">50%</span>. Online risk estimators show a typical person's 10-year CV risk is <strong>about the same as their 10-year cancer risk</strong>.</p>
+
+    <h3>Pathogenesis — response to injury, step by step</h3>
+    <ol class="step-list">
+      <li><div><strong>Endothelial injury</strong>Hyperlipidemia, hypertension/turbulent flow, smoking, glycation, viruses that "nick" endothelium.</div></li>
+      <li><div><strong>LDL gets into the intima</strong>and is oxidized; injured endothelium releases cytokines and adhesion molecules.</div></li>
+      <li><div><strong>Monocytes enter → macrophages → foam cells</strong>by eating the lipid — an aberrant wound-healing response.</div></li>
+      <li><div><strong>Platelets adhere and release factors</strong>(e.g. PDGF).</div></li>
+      <li><div><strong>SMCs migrate in from the media and proliferate</strong>with more ECM and T cells → fibrous tissue.</div></li>
+      <li><div><strong>Lipid accumulates; cells die; calcium deposits</strong>→ necrotic core, often visible on X-ray.</div></li>
+    </ol>
+    <div class="fig-row"><figure class="fig-card tall" id="fig-v-injury-1"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-injury-1.jpg" alt="Three vessel cross-sections: chronic endothelial injury; endothelial dysfunction with monocyte and platelet adhesion; macrophage activation and smooth muscle recruitment" width="793" height="1227" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V11</span><span class="fig-title">Response to injury, steps 1–3: injury → endothelial dysfunction → macrophage activation</span><span class="fig-src"><b>Gardner lecture</b> · slide 16</span></figcaption></figure><figure class="fig-card tall" id="fig-v-injury-2"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-injury-2.jpg" alt="Two cross-sections: fatty streak with lipid-laden macrophages and T lymphocytes; fibrofatty atheroma with smooth muscle proliferation, collagen and lipid debris" width="798" height="897" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V12</span><span class="fig-title">Steps 4–5: foam cells → fibrofatty atheroma</span><span class="fig-src"><b>Gardner lecture</b> · slide 16</span></figcaption></figure></div>
+    <figure class="fig-card" id="fig-v-plaque-cellular"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-plaque-cellular.jpg" alt="Detailed schematic: LDL enters the intima and is oxidized, monocytes adhere and become macrophages then foam cells, cytokines recruit smooth muscle cells from the media that proliferate and deposit matrix" width="767" height="797" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V13</span><span class="fig-title">The cellular story of a plaque, from LDL entry to smooth muscle migration</span><span class="fig-src"><b>Gardner lecture</b> · slide 17</span></figcaption></figure>
+
+    <h3>Anatomy of the plaque</h3>
+    <figure class="fig-card" id="fig-v-plaque-anatomy"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-plaque-anatomy.jpg" alt="Cross-section of an atheroma: fibrous cap of smooth muscle, macrophages, foam cells and collagen over a necrotic centre of cell debris, cholesterol crystals and calcium, sitting on the media" width="780" height="313" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V14</span><span class="fig-title">Anatomy of an atheroma: fibrous cap over a necrotic core, all inside the intima</span><span class="fig-src"><b>Gardner lecture</b> · slide 17</span></figcaption></figure>
+    <p>Everything sits <strong>inside the intima, inside the internal elastic lamina</strong>: endothelium on top → <strong>fibrous cap</strong> (SMCs, macrophages, foam cells, collagen) → <strong>necrotic core</strong> (cholesterol crystals seen as <strong>clefts</strong> on histology, cell debris, foam cells, calcium). Components in one line: <strong>cells, matrix, lipids, calcium</strong>.</p>
+    <figure class="fig-card" id="fig-v-cholesterol-clefts"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-cholesterol-clefts.jpg" alt="Artery with a large triangular atheromatous plaque narrowing the lumen, filled with needle-shaped cholesterol clefts" width="1600" height="1120" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V15</span><span class="fig-title">Atheroma histology: cholesterol clefts in the necrotic core</span><span class="fig-src"><b>Robbins &amp; Cotran Atlas</b></span></figcaption></figure>
+
+    <h3>Where plaques form</h3>
+    <p>Plaques are <strong>patchy, not circumferential</strong>, and favour <strong>branch points</strong> with turbulent flow. Commonest sites, in order the lecture gave them:</p>
+    <div class="order-list">
+      <span>1 · <strong>Abdominal aorta</strong> &amp; iliacs</span><span>2 · <strong>Coronary arteries</strong></span><span>3 · Popliteal arteries</span><span>4 · Internal carotids</span><span>5 · Circle of Willis</span>
+    </div>
+
+    <h3>Thin cap vs thick cap</h3>
+    <figure class="fig-card" id="fig-v-plaque-outcomes"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-plaque-outcomes.jpg" alt="Flow diagram: normal to fatty streak to intimal thickening to plaque expansion; thin-cap plaques rupture causing sudden death, thick-cap plaques erode and thrombose, fibrocalcific plaques cause critical stenosis" width="768" height="575" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V16</span><span class="fig-title">Plaque types and what each one does: thin cap ruptures, thick cap erodes, fibrotic plaque stenoses</span><span class="fig-src"><b>Gardner lecture</b> · slide 19</span></figcaption></figure>
+    <div class="compare-grid">
+      <div class="compare-card" style="background:var(--red-bg);border-color:var(--accent)">
+        <span class="card-emoji">💥</span><h4>Thin-cap plaque (vulnerable)</h4>
+        <p>Prone to <strong class="hot">rupture and hemorrhage</strong> → sudden thrombosis of the vessel → <strong>MI, sudden cardiac death</strong>.</p>
+      </div>
+      <div class="compare-card" style="background:var(--blue-bg);border-color:var(--accent2)">
+        <span class="card-emoji">🧱</span><h4>Thick-cap / fibrocalcific plaque (stable)</h4>
+        <p>More collagen; chronic injury, surface erosion, calcification → slowly progressive <strong>critical stenosis</strong> → angina.</p>
+      </div>
+    </div>
+
+    <h3>Outcomes of a plaque</h3>
+    <ul class="notes-list">
+      <li><strong>Thrombosis</strong> on the surface → occlusion</li>
+      <li><strong>Hemorrhage into the plaque</strong> → sudden instability or occlusion</li>
+      <li><strong>Rupture</strong> + thrombosis → <strong>embolism</strong> downstream</li>
+      <li>Ongoing inflammatory remodelling → <strong>aneurysm</strong> → rupture or dissection</li>
+      <li>Net result: <strong class="hot">MI, stroke and peripheral vascular disease are all consequences of atherosclerosis</strong></li>
+    </ul>
+
+    <div class="fig-row"><figure class="fig-card tall" id="fig-v-plaque-progression"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-plaque-progression.jpg" alt="Robbins page: gross aorta with small yellow fatty streaks around branch ostia, histology of foam cells, and later raised yellow plaques" width="706" height="1600" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V17</span><span class="fig-title">How it started: fatty streaks in a teenager&#x27;s aorta → established plaques</span><span class="fig-src"><b>Gardner lecture</b> · slide 18</span></figcaption></figure><figure class="fig-card" id="fig-v-severe-aorta"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-severe-aorta.jpg" alt="Opened aorta whose whole surface is ulcerated, calcified, with adherent thrombus" width="792" height="524" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V18</span><span class="fig-title">How it&#x27;s going: an aorta with no intact endothelium left</span><span class="fig-src"><b>Gardner lecture</b> · slide 20 · PEIR</span></figcaption></figure></div>
+    <figure class="fig-card tall" id="fig-v-cad-death"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-cad-death.jpg" alt="Two coronary artery cross-sections: A, plaque with thin fibrous cap and ruptured surface; B, occlusive thrombus overlying a plaque with hemorrhage, arrow" width="683" height="1451" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V19</span><span class="fig-title">Atherosclerotic cardiovascular death in one slide — plaque hemorrhage and occlusive thrombus</span><span class="fig-src"><b>Gardner lecture</b> · slide 21</span></figcaption></figure>
+    <div class="callout callout-clinical">
+      <div class="callout-title">🩺 "Atherosclerotic cardiovascular death in one slide"</div>
+      <p>Left main coronary: lipid, foam cells, cholesterol clefts under a thin cap → <strong>hemorrhage into the plaque</strong> leaks into the lumen → thrombus occludes the artery → fatal MI. <strong>Forty years of slow injury, then a sudden event.</strong></p>
+    </div>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> Which type of atherosclerotic plaque is most likely to cause sudden cardiac death, and by what mechanism?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p>A <strong>thin-cap (vulnerable) plaque</strong>: it <strong>ruptures or bleeds</strong>, exposing thrombogenic core → acute occlusive thrombus. Thick-cap fibrocalcific plaques cause gradual critical stenosis (stable angina) instead.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> In which layer of the artery does an atheroma — including its necrotic core — sit?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p>The <strong>intima</strong> (inside the internal elastic lamina). The media may secondarily thin under it.</p></div>
+    </div>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="wbShOXhO6p8" data-title="Heart Attack Due to Atherosclerosis (animation)"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/wbShOXhO6p8/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Heart Attack Due to Atherosclerosis (animation)</b><i>Nucleus Medical Media · YouTube</i></span></button><button class="vid" type="button" data-yt="OHE1ig4k64M" data-title="Atherosclerosis (animation)"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/OHE1ig4k64M/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Atherosclerosis (animation)</b><i>Nucleus Medical Media · YouTube</i></span></button></div></div>
+  </div>
+</div>
+
+<!-- ==================== 4. HYPERTENSION ==================== -->
+<div class="section" id="s4-htn">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Topic 4</div></div>
+    <p class="section-label">Physiology you need → primary vs secondary → damage</p>
+    <h2 class="section-title">Blood Pressure &amp; Hypertension</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>BP = blood pressure · CO = cardiac output · SVR = systemic vascular resistance · SV = stroke volume · HR = heart rate · RAAS = renin–angiotensin–aldosterone system · AI / AII = angiotensin I / II · ACE = angiotensin-converting enzyme · Na⁺ = sodium · ICP = intracranial pressure</div>
+
+    <h3>The equation</h3>
+    <div class="moa-chain"><span class="hit">BP = CO × SVR</span><i>like</i><span>Voltage = Current × Resistance</span><i>and</i><span class="hit">CO = SV × HR</span></div>
+    <ul class="notes-list">
+      <li><strong>Resistance</strong> is set at the <strong>arterioles</strong> (smooth muscle tone), by nerves and hormones.</li>
+      <li><strong>Cardiac output</strong> depends on heart rate and stroke volume, which depends heavily on <strong>blood volume</strong>.</li>
+      <li><strong>Blood volume</strong> is set mainly by the <strong>kidney's sodium handling</strong> — water follows sodium.</li>
+    </ul>
+    <figure class="fig-card" id="fig-v-bp-determinants"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-bp-determinants.jpg" alt="Diagram: blood pressure equals cardiac output (blood volume, heart rate, contractility) times peripheral resistance (humoral constrictors and dilators, neural alpha and beta input, local autoregulation)" width="770" height="347" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V20</span><span class="fig-title">Blood pressure = cardiac output × peripheral resistance</span><span class="fig-src"><b>Gardner lecture</b> · slide 22</span></figcaption></figure>
+
+    <h3>RAAS in five steps</h3>
+    <ol class="step-list">
+      <li><div><strong>Low pressure at the afferent arteriole</strong>→ kidney releases <strong>renin</strong>.</div></li>
+      <li><div><strong>Renin cleaves angiotensinogen → angiotensin I</strong></div></li>
+      <li><div><strong>Endothelial cells (ACE) convert AI → AII</strong></div></li>
+      <li><div><strong>Angiotensin II</strong>raises SMC tone (vasoconstriction) and makes the adrenal secrete <strong>aldosterone</strong>.</div></li>
+      <li><div><strong>Aldosterone → renal Na⁺ reabsorption</strong>→ water follows → blood volume and BP rise.</div></li>
+    </ol>
+    <figure class="fig-card sm" id="fig-v-raas"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-raas.jpg" alt="Flowchart: low renal flow triggers renin, angiotensinogen to angiotensin I, ACE to angiotensin II, which causes aldosterone release, sodium retention and vasoconstriction; beta-blockers, renin inhibitors, ACE inhibitors, ARBs and aldosterone antagonists mark their sites" width="542" height="620" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V21</span><span class="fig-title">Renin–angiotensin–aldosterone system and where antihypertensives act</span><span class="fig-src"><b>UWorld</b></span></figcaption></figure>
+
+    <h3>Primary (essential) vs secondary</h3>
+    <div class="compare-grid">
+      <div class="compare-card">
+        <span class="card-emoji">🧬</span><h4>Primary = essential <span class="num">90–95%</span></h4>
+        <p>Many small genetic variants in BP control (e.g. <strong>sodium sensitivity</strong>, angiotensin-receptor promoter variants), all moderated by <strong>lifestyle — mostly sodium intake</strong> — and by medication. "Primary" and "essential" mean the same thing.</p>
+      </div>
+      <div class="compare-card" style="background:var(--highlight);border-color:var(--gold)">
+        <span class="card-emoji">🔎</span><h4>Secondary = rare, don't-miss</h4>
+        <p>Think <strong class="hot">vascular, renal, endocrine, intracranial</strong>.</p>
+      </div>
+    </div>
+
+    <div class="tbl-scroll"><table>
+      <tr><th>Category</th><th>Causes</th></tr>
+      <tr><td><strong>Renal</strong></td><td>Glomerulonephritis, chronic kidney disease, <strong>polycystic kidney disease</strong>, <strong>renal artery stenosis</strong>, renal vasculitis, renin-producing tumours</td></tr>
+      <tr><td><strong>Endocrine</strong></td><td>Cushing syndrome, <strong>primary aldosteronism</strong>, congenital adrenal hyperplasia, licorice; exogenous glucocorticoids, estrogen/oral contraceptives, sympathomimetics, tyramine + MAO inhibitors; <strong>pheochromocytoma</strong>; acromegaly; hyperthyroidism; <strong class="hot">pre-eclampsia (probably the commonest secondary cause)</strong></td></tr>
+      <tr><td><strong>Cardiovascular</strong></td><td><strong>Coarctation of the aorta</strong> (kidneys under-perfused → volume up; high pressure above the narrowing), <strong>polyarteritis nodosa</strong>, ↑ intravascular volume, ↑ cardiac output, rigid aorta</td></tr>
+      <tr><td><strong>Neurologic</strong></td><td>Psychogenic, <strong>raised intracranial pressure</strong> (tumour, encephalitis…), sleep apnea, acute stress/surgery</td></tr>
+    </table></div>
+
+    <div class="callout callout-clinical">
+      <div class="callout-title">🩺 Clinical pearl — Cushing reflex</div>
+      <p><strong class="hot">High systolic, normal diastolic + bradycardia = think intracranial cause</strong> (raised ICP). Named for Harvey Cushing, head of neurosurgery at Johns Hopkins at 32. <span class="src-tag">Board add-on</span> Full Cushing triad = hypertension (wide pulse pressure), bradycardia, irregular respirations.</p>
+    </div>
+
+    <h3>What chronic hypertension does to vessels</h3>
+    <ol class="step-list">
+      <li><div><strong>Chronic endothelial injury</strong>barrier fails → plasma proteins pile up under the endothelium.</div></li>
+      <li><div><strong>SMC proliferation</strong>the vessel "fights back" and thickens.</div></li>
+      <li><div><strong>Arterioles can no longer relax</strong>→ loss of end-organ BP control, higher capillary pressure, end-organ damage and, paradoxically, <strong>end-organ hypoxia</strong>.</div></li>
+    </ol>
+    <div class="callout callout-warning">
+      <div class="callout-title">⚠️ The treatment trap</div>
+      <p>Because the arterioles are fixed-narrow, dropping BP quickly to "normal" can <strong class="hot">under-perfuse the brain</strong> — common when elderly patients start antihypertensives for the first time.</p>
+    </div>
+    <div class="callout callout-purple">
+      <div class="callout-title">🚨 Malignant hypertension</div>
+      <p>A <strong>medical emergency</strong>. Classic patient in lecture: African American men in their 30s–40s. Lesion: hyperplastic onion-skin arteriolosclerosis ± fibrinoid necrosis (kidney). Now very treatable with modern drugs; <strong>pre-eclampsia</strong> is the bigger clinical challenge today.</p>
+    </div>
+    <p><em>Pulmonary hypertension is a separate set of pathologies covered elsewhere.</em></p>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> A patient with a posterior fossa tumour develops BP 190/80 and HR 48. Why?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>Cushing reflex</strong> from raised intracranial pressure: the body raises systolic pressure to perfuse the brain, and baroreceptors respond with <strong>bradycardia</strong>.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> A 28-year-old woman has resistant hypertension and an abdominal bruit. Angiography shows a beaded renal artery. Mechanism of her hypertension?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>Renovascular (secondary) hypertension</strong> from <strong>fibromuscular dysplasia</strong>: low afferent pressure → <strong>renin ↑ → angiotensin II ↑ → aldosterone ↑</strong> → vasoconstriction and Na⁺/water retention.</p></div>
+    </div>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="Qm5kB5X70oA" data-title="Hypertension — causes, symptoms, pathology"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/Qm5kB5X70oA/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Hypertension — causes, symptoms, pathology</b><i>Osmosis · YouTube</i></span></button><button class="vid" type="button" data-yt="zFyVG5flJPQ" data-title="Cushing Reflex / Cushing Triad"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/zFyVG5flJPQ/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Cushing Reflex / Cushing Triad</b><i>Medicosis Perfectionalis · YouTube</i></span></button></div></div>
+  </div>
+</div>
+
+<!-- ==================== 5. ANEURYSMS & DISSECTION ==================== -->
+<div class="section" id="s5-aneurysm">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Topic 5</div></div>
+    <p class="section-label">Outpouchings and splits</p>
+    <h2 class="section-title">Aneurysms &amp; Aortic Dissection</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>AAA = abdominal aortic aneurysm · TAA = thoracic aortic aneurysm · EDS = Ehlers–Danlos syndrome · TGF-β = transforming growth factor beta · MMP = matrix metalloproteinase · SAH = subarachnoid hemorrhage · MVP = mitral valve prolapse</div>
+
+    <h3>Vocabulary</h3>
+    <figure class="fig-card" id="fig-v-aneurysm-types"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-aneurysm-types.jpg" alt="Five vessel drawings: normal; true saccular aneurysm bulging on one side; true fusiform circumferential dilation; false aneurysm with extravascular hematoma; dissection with blood splitting the wall" width="772" height="384" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V22</span><span class="fig-title">Aneurysm vocabulary: saccular, fusiform, false, dissection</span><span class="fig-src"><b>Gardner lecture</b> · slide 26</span></figcaption></figure>
+    <div class="tbl-scroll"><table>
+      <tr><th>Term</th><th>Definition</th></tr>
+      <tr><td><strong>True aneurysm — saccular</strong></td><td>Outpouching on <strong>one side</strong> of the wall; all layers intact</td></tr>
+      <tr><td><strong>True aneurysm — fusiform</strong></td><td><strong>Circumferential</strong> dilation of a segment</td></tr>
+      <tr><td><strong>False aneurysm (pseudoaneurysm)</strong></td><td>Wall breached (trauma, local atherosclerosis) → <strong>extravascular hematoma</strong> held in by adventitia/surrounding tissue; the vessel layers themselves have not dilated</td></tr>
+      <tr><td><strong>Dissection</strong></td><td>Blood enters <strong>through an intimal tear</strong> and tracks <strong>within the media</strong>, splitting the wall; the flap can block the lumen fast</td></tr>
+    </table></div>
+
+    <h3>Why vessel walls give way</h3>
+    <div class="hallmarks-grid">
+      <div class="hallmark-card"><div class="hallmark-num">1 · WEAK MATERIAL</div><h4>Poor connective tissue</h4><p><strong>Ehlers–Danlos</strong> (collagen, vascular type = <strong>collagen III</strong>), <strong>Marfan</strong> (<strong>fibrillin-1</strong>), altered <strong>TGF-β</strong> signalling.</p></div>
+      <div class="hallmark-card"><div class="hallmark-num">2 · REMODELLING</div><h4>Inflammation + matrix turnover</h4><p>MMP (metalloproteinase) polymorphisms, chronic plaque inflammation, hypertension lifting damaged endothelium.</p></div>
+      <div class="hallmark-card"><div class="hallmark-num">3 · ISCHEMIA</div><h4>Vasa vasorum narrowing</h4><p>Thick walls need their own blood supply; constrict it → media dies back → weak wall.</p></div>
+      <div class="hallmark-card"><div class="hallmark-num">4 · INFECTION</div><h4>Syphilis &amp; mycotic</h4><p><strong>Tertiary syphilis</strong> inflames and blocks the <strong>vasa vasorum</strong> (thoracic aorta). <strong>Mycotic</strong> aneurysm = infected wall.</p></div>
+    </div>
+
+    <h3>Where they occur</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>Location</th><th>Key facts</th><th>Main cause</th></tr>
+      <tr><td><strong>Abdominal aortic (AAA)</strong></td><td><strong class="hot">Most common</strong>. Lower aorta, usually <strong>below the renal arteries</strong>, often into the iliac bifurcation. Risk: <strong>smoking</strong>, hypertension, age</td><td>Atherosclerosis</td></tr>
+      <tr><td><strong>Thoracic aortic (TAA)</strong></td><td>Ascending, arch or descending; ascending strongly tied to <strong>Marfan</strong>; also hypertension</td><td>Connective tissue disease</td></tr>
+      <tr><td><strong>Cerebral "berry" aneurysm</strong></td><td>Branch points of the <strong>circle of Willis</strong>; rupture → <strong>subarachnoid hemorrhage</strong></td><td>Primarily congenital</td></tr>
+      <tr><td><strong>Peripheral</strong></td><td>Popliteal (behind the knee), femoral, carotid, splenic, mesenteric, coronary</td><td>Atherosclerosis</td></tr>
+      <tr><td><strong>Ventricular (heart)</strong></td><td>Late complication of MI: scarred, non-contractile wall bulges</td><td>Post-infarct scar</td></tr>
+    </table></div>
+    <div class="fig-row"><figure class="fig-card" id="fig-v-aaa-gross"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-aaa-gross.jpg" alt="Gross specimen of aorta and both kidneys with a large fusiform bulge of the aorta below the renal arteries" width="1600" height="1184" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V23</span><span class="fig-title">Infrarenal abdominal aortic aneurysm (asterisk) below the renal arteries</span><span class="fig-src"><b>Robbins &amp; Cotran Atlas</b></span></figcaption></figure><figure class="fig-card sm" id="fig-v-aaa-ct"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-aaa-ct.jpg" alt="3D CT angiogram of the abdominal aorta showing a dilated infrarenal segment" width="300" height="300" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V24</span><span class="fig-title">Abdominal aortic aneurysm on CT angiography</span><span class="fig-src"><b>Gardner lecture</b> · slide 27</span></figcaption></figure></div>
+
+    <h3>Aortic dissection — a high-stakes emergency</h3>
+    <ol class="step-list">
+      <li><div><strong>Intimal tear</strong>often traumatic (e.g. deceleration injury in a car crash) or on a diseased/hypertensive wall.</div></li>
+      <li><div><strong>Blood tracks through the media</strong>forward, and sometimes <strong>backwards to the aortic valve ring</strong>.</div></li>
+      <li><div><strong>Three bad endings</strong>breach of the adventitia → rapid fatal hemorrhage; extension into <strong>great vessels or coronary ostia</strong> → stroke or MI; or recanalization → a chronic <strong>"double-barreled aorta"</strong> (sometimes managed conservatively, esp. DeBakey III).</div></li>
+    </ol>
+    <div class="callout callout-clinical">
+      <div class="callout-title">🩺 Presentation</div>
+      <p><strong class="hot">Excruciating chest pain that moves to the back and downward</strong> as the dissection propagates. Medical and surgical emergency.</p>
+    </div>
+    <figure class="fig-card" id="fig-v-debakey"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-debakey.jpg" alt="Three aorta drawings: DeBakey I involving ascending aorta, arch and descending; II ascending only; III descending only. I and II grouped as Stanford type A, III as type B" width="798" height="834" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V25</span><span class="fig-title">DeBakey I, II, III → Stanford A (ascending, operate) vs B (descending only)</span><span class="fig-src"><b>Gardner lecture</b> · slide 29 · Radiopaedia</span></figcaption></figure>
+    <div class="tbl-scroll"><table>
+      <tr><th>DeBakey</th><th>Extent</th><th>Stanford</th><th>Management</th></tr>
+      <tr><td><strong>I</strong></td><td>Ascending + arch + descending</td><td rowspan="2"><strong>Type A</strong> (involves ascending)</td><td rowspan="2"><strong>Surgery</strong></td></tr>
+      <tr><td><strong>II</strong></td><td>Ascending only</td></tr>
+      <tr><td><strong>III</strong></td><td>Descending only (distal to left subclavian)</td><td><strong>Type B</strong></td><td>Often <strong>conservative</strong> (BP control)</td></tr>
+    </table></div>
+    <div class="fig-row"><figure class="fig-card" id="fig-v-double-barrel"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-double-barrel.jpg" alt="Axial contrast CT of the chest showing an intimal flap splitting the descending aorta into two lumens, yellow arrow" width="1290" height="878" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V26</span><span class="fig-title">CT: double-barreled descending aorta — true and false lumen (arrow)</span><span class="fig-src"><b>Gardner lecture</b> · slide 29</span></figcaption></figure><figure class="fig-card" id="fig-v-dissection-gross"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-dissection-gross.jpg" alt="Opened aorta with a linear intimal tear and blood-filled false channel in the wall, marked with a diamond" width="1600" height="1041" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V27</span><span class="fig-title">Aortic dissection, gross: intimal tear opening into a false lumen in the media</span><span class="fig-src"><b>Robbins &amp; Cotran Atlas</b></span></figcaption></figure></div>
+
+    <h3>Marfan vs Ehlers–Danlos (vascular type IV)</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>Feature</th><th>Marfan</th><th>Vascular EDS (type IV)</th></tr>
+      <tr><td>Mutation</td><td><strong>Fibrillin-1</strong></td><td><strong>Collagen III (α1 chain)</strong></td></tr>
+      <tr><td>Aortic root dilation</td><td><strong>Very common</strong>, progressive (root + ascending)</td><td>Fairly common</td></tr>
+      <tr><td>Aortic aneurysm</td><td>Frequent, ascending aorta</td><td>Multiple arterial sites</td></tr>
+      <tr><td>Aortic dissection</td><td>Lifetime risk up to <span class="num">30%</span>; Type A most common</td><td>Significant; can be spontaneous</td></tr>
+      <tr><td>Aortic regurgitation</td><td>Common (root dilation)</td><td>Less frequent</td></tr>
+      <tr><td>Mitral valve prolapse</td><td><strong>Very common (&gt;90%)</strong></td><td>Some types</td></tr>
+      <tr><td>Arterial rupture</td><td>Rare</td><td><strong class="hot">High risk</strong> — medium arteries</td></tr>
+      <tr><td>Cerebrovascular</td><td>↑ stroke/dissection</td><td>Significant; carotid–cavernous fistula</td></tr>
+      <tr><td>Coronary involvement</td><td>Rare</td><td>Dissection/rupture possible</td></tr>
+    </table></div>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> A tall 25-year-old with long fingers and lens dislocation has sudden tearing chest pain radiating to the back and a new diastolic murmur. Diagnosis and defective protein?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>Type A aortic dissection</strong> (with aortic regurgitation from root involvement) in <strong>Marfan syndrome — fibrillin-1</strong>. Surgical emergency.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> A 70-year-old smoker has a pulsatile abdominal mass. Where is the aneurysm, and what is the main underlying process?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>Infrarenal abdominal aorta</strong>; driven by <strong>atherosclerosis</strong> (risk factors smoking, hypertension, age).</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> Tertiary syphilis causes aneurysms of which part of the aorta, and how?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p>The <strong>thoracic (ascending) aorta</strong> — obliterative inflammation of the <strong>vasa vasorum</strong> starves the media, weakening the wall. <span class="src-tag">Board add-on</span> Gross: "tree-bark" intima.</p></div>
+    </div>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="A5MEe0lb0YA" data-title="Aneurysms — causes, symptoms, pathology"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/A5MEe0lb0YA/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Aneurysms — causes, symptoms, pathology</b><i>Osmosis · YouTube</i></span></button><button class="vid" type="button" data-yt="GUagU8YrJZc" data-title="Aortic Dissection — causes, symptoms, pathology"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/GUagU8YrJZc/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Aortic Dissection — causes, symptoms, pathology</b><i>Osmosis · YouTube</i></span></button><button class="vid" type="button" data-yt="gcxhJK5T37w" data-title="Marfan vs Ehlers–Danlos"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/gcxhJK5T37w/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Marfan vs Ehlers–Danlos</b><i>Medicosis Perfectionalis · YouTube</i></span></button></div></div>
+  </div>
+</div>
+
+<!-- ==================== 6. VASCULITIS: LARGE & MEDIUM ==================== -->
+<div class="section" id="s6-vasc-large">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Topic 6</div><span class="hy-flag">⭐ Lecturer: "they tend to get tested"</span></div>
+    <p class="section-label">Sort by vessel size first</p>
+    <h2 class="section-title">Vasculitis I — Large &amp; Medium Vessels</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>GCA = giant cell arteritis · PMR = polymyalgia rheumatica · ESR = erythrocyte sedimentation rate · PAN = polyarteritis nodosa · HBV = hepatitis B virus · IVIG = intravenous immunoglobulin</div>
+
+    <div class="callout callout-key">
+      <div class="callout-title">🔑 Why learn a list of rare diseases?</div>
+      <p>Most vasculitides are rare, but they <strong>mimic other diseases</strong>, are <strong>devastating if untreated</strong>, and are mostly immune-driven and <strong>highly treatable if caught early</strong> (usually steroids or other anti-inflammatories first). Lecturer's advice: in the ER, <strong>just thinking of vasculitis and calling the right specialist is a win</strong> — the boards will still want the details.</p>
+    </div>
+    <figure class="fig-card" id="fig-v-vasc-by-size"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-vasc-by-size.jpg" alt="Diagram of aorta to arteries to arterioles to capillaries to venules: large vessel (giant cell, Takayasu), medium vessel (polyarteritis nodosa, Kawasaki), small vessel ANCA (microscopic polyangiitis, GPA, EGPA) and immune complex (SLE, IgA, cryoglobulin, anti-GBM)" width="1432" height="643" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V28</span><span class="fig-title">Vasculitides sorted by the caliber of vessel they hit</span><span class="fig-src"><b>Gardner lecture</b> · slide 32</span></figcaption></figure>
+
+    <h3>Large vessel</h3>
+    <div class="compare-grid">
+      <div class="compare-card" style="background:var(--highlight);border-color:var(--gold)">
+        <span class="card-emoji">👴</span><h4>Giant cell (temporal) arteritis</h4>
+        <ul class="notes-list">
+          <li><strong>Older adults (&gt;50)</strong>, modest male preponderance in lecture <span class="src-tag">Board add-on</span> most sources say female &gt; male</li>
+          <li>Scalp arteries, esp. <strong>temporal artery</strong></li>
+          <li><strong>Headache, jaw claudication, scalp tenderness</strong></li>
+          <li><strong class="hot">Ophthalmic artery involvement → blindness if untreated</strong></li>
+          <li>Associated with <strong>polymyalgia rheumatica</strong></li>
+          <li>Diagnosed by <strong>temporal artery biopsy</strong>: granulomas, giant cells, <strong>fragmented internal elastic lamina</strong>; thrombosis possible</li>
+          <li>Common (for a vasculitis) and very treatable</li>
+        </ul>
+      </div>
+      <div class="compare-card" style="background:var(--purple-bg);border-color:#7a5aa8">
+        <span class="card-emoji">🫥</span><h4>Takayasu arteritis — "pulseless disease"</h4>
+        <ul class="notes-list">
+          <li><strong>Younger women</strong>, esp. <strong>Asian descent</strong></li>
+          <li><strong>Aorta and its main branches</strong> (carotids, subclavians)</li>
+          <li><strong>Arm/leg claudication, weak or absent pulses</strong>, hypertension, <strong>bruits</strong></li>
+          <li>Angiogram: focal narrowings of arch branches; gross: massively thickened wall</li>
+        </ul>
+      </div>
+    </div>
+    <div class="fig-row"><figure class="fig-card" id="fig-v-gca-temporal"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-gca-temporal.jpg" alt="Side of an older patient&#x27;s head with a prominent, cord-like temporal artery, arrow" width="689" height="1009" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V29</span><span class="fig-title">The clinical clue: a thick, tender, nodular temporal artery</span><span class="fig-src"><b>Gardner lecture</b> · slide 34</span></figcaption></figure><figure class="fig-card tall" id="fig-v-gca-histo"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-gca-histo.jpg" alt="H&amp;E of a temporal artery wall with chronic inflammation and a multinucleated giant cell, arrow" width="672" height="963" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V30</span><span class="fig-title">Giant cell arteritis: granulomatous inflammation with a giant cell (arrow)</span><span class="fig-src"><b>Gardner lecture</b> · slide 34</span></figcaption></figure><figure class="fig-card tall" id="fig-v-gca-elastic"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-gca-elastic.jpg" alt="Elastic-stained temporal artery with a broken, frayed internal elastic lamina and a thickened intima narrowing the lumen" width="677" height="921" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V31</span><span class="fig-title">GCA, elastic stain: fragmented internal elastic lamina (arrow), thick intima (IT)</span><span class="fig-src"><b>Gardner lecture</b> · slide 34</span></figcaption></figure></div>
+    <figure class="fig-card tall" id="fig-v-takayasu"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-takayasu.jpg" alt="A, aortic arch angiogram with focal narrowing of the great vessel origins, arrows; B, cross-sections of a carotid artery with a markedly thickened wall and small lumen" width="762" height="781" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V32</span><span class="fig-title">Takayasu arteritis: (A) arch angiogram with narrowed branches · (B) thick-walled carotid</span><span class="fig-src"><b>Gardner lecture</b> · slide 35</span></figcaption></figure>
+
+    <h3>Medium vessel</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>Disease</th><th>Who</th><th>Vessels / organs</th><th>Clues</th><th>Must-know complication</th></tr>
+      <tr><td><strong>Polyarteritis nodosa (PAN)</strong></td><td>Adults</td><td>Medium arteries of <strong>kidney, heart, GI tract, nerves</strong> — <strong>spares the lung</strong> <span class="src-tag">Board add-on</span></td><td>Hypertension, abdominal pain, renal dysfunction, rash, neuropathy; <strong class="hot">hepatitis B</strong>; ANCA-negative</td><td>Aneurysms / stenoses ("rosary" on angiogram) <span class="src-tag">Board add-on</span></td></tr>
+      <tr><td><strong>Kawasaki disease</strong></td><td><strong>Children &lt;5</strong></td><td>Medium arteries, esp. <strong>coronaries</strong></td><td>Fever, rash, conjunctivitis, <strong>strawberry tongue</strong>/red lips, swollen hands/feet, lymphadenopathy</td><td><strong class="hot">Coronary artery aneurysm</strong> → treat promptly (IVIG + aspirin <span class="src-tag">Board add-on</span>)</td></tr>
+      <tr><td><strong>Buerger disease</strong> (thromboangiitis obliterans)</td><td><strong>Heavy tobacco users</strong> (young male smokers)</td><td>Limb vessels; <strong>does not affect organs</strong></td><td>Claudication, <strong>Raynaud</strong>, <strong>gangrene</strong> of hands/feet</td><td>Only cure: <strong class="hot">stop smoking</strong></td></tr>
+    </table></div>
+    <div class="fig-row"><figure class="fig-card" id="fig-v-kawasaki"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-kawasaki.jpg" alt="Child illustration: fever over 5 days, non-exudative conjunctivitis, strawberry tongue and cracked lips, cervical lymphadenopathy, polymorphous rash, swollen red hands and feet, desquamation, coronary aneurysms" width="1190" height="1000" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V33</span><span class="fig-title">Kawasaki disease clinical features — think &quot;CRASH and burn&quot;</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure><figure class="fig-card" id="fig-v-pan-fibrinoid"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-pan-fibrinoid.jpg" alt="Medium artery with bright pink fibrinoid necrosis replacing part of the wall and surrounding inflammation" width="1275" height="837" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V34</span><span class="fig-title">Polyarteritis nodosa: fibrinoid necrosis of a medium-sized artery</span><span class="fig-src"><b>Robbins &amp; Cotran Atlas</b></span></figcaption></figure></div>
+
+    <div class="callout callout-hook">
+      <div class="callout-title">🧠 Memory hooks <span class="src-tag">Board add-on</span></div>
+      <p><strong>Kawasaki = "CRASH and burn"</strong>: <strong>C</strong>onjunctivitis, <strong>R</strong>ash, <strong>A</strong>denopathy (cervical), <strong>S</strong>trawberry tongue, <strong>H</strong>ands/feet swelling + <strong>burn</strong> = fever ≥5 days. <strong>PAN = "P</strong>ulmonary-<strong>A</strong>voiding, <strong>N</strong>o ANCA", with hepatitis B.</p>
+    </div>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> A 72-year-old woman has new temporal headaches, pain chewing, and shoulder/hip stiffness. What must be started today, and why?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>High-dose steroids</strong> for <strong>giant cell arteritis</strong> (with polymyalgia rheumatica) — before biopsy results — because ophthalmic artery involvement causes <strong>irreversible blindness</strong>.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> A 25-year-old Japanese woman has arm claudication, unequal arm BPs and absent radial pulse. Diagnosis and vessels involved?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>Takayasu arteritis</strong> ("pulseless disease") — granulomatous inflammation of the <strong>aortic arch and its major branches</strong>.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> A 3-year-old has 6 days of fever, cracked red lips, conjunctival injection and peeling fingertips. What complication are you screening for?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>Coronary artery aneurysm</strong> (Kawasaki disease, medium-vessel vasculitis) — get an echocardiogram.</p></div>
+    </div>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="uknEYicaAuU" data-title="Giant Cell Arteritis"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/uknEYicaAuU/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Giant Cell Arteritis</b><i>JJ Medicine · YouTube</i></span></button><button class="vid" type="button" data-yt="Fqfgzi7i3jA" data-title="Takayasu&#x27;s Arteritis (Pulseless Disease)"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/Fqfgzi7i3jA/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Takayasu&#x27;s Arteritis (Pulseless Disease)</b><i>JJ Medicine · YouTube</i></span></button><button class="vid" type="button" data-yt="MdsKkpgRyXc" data-title="Polyarteritis Nodosa"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/MdsKkpgRyXc/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Polyarteritis Nodosa</b><i>JJ Medicine · YouTube</i></span></button><button class="vid" type="button" data-yt="31oOO8Q4s5o" data-title="Kawasaki Disease (criteria + mnemonic)"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/31oOO8Q4s5o/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Kawasaki Disease (criteria + mnemonic)</b><i>Rhesus Medicine · YouTube</i></span></button><button class="vid" type="button" data-yt="DxyvSg5wMVw" data-title="Buerger&#x27;s Disease"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/DxyvSg5wMVw/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Buerger&#x27;s Disease</b><i>JJ Medicine · YouTube</i></span></button></div></div>
+  </div>
+</div>
+
+<!-- ==================== 7. VASCULITIS: SMALL & VARIABLE ==================== -->
+<div class="section" id="s7-vasc-small">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Topic 7</div><span class="hy-flag">⭐ High yield</span></div>
+    <p class="section-label">ANCA-associated vs immune-complex · plus variable-vessel</p>
+    <h2 class="section-title">Vasculitis II — Small Vessels &amp; the Review Table</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>ANCA = anti-neutrophil cytoplasmic antibody · c-ANCA = cytoplasmic pattern (anti-PR3, proteinase 3) · p-ANCA = perinuclear pattern (anti-MPO, myeloperoxidase) · GPA = granulomatosis with polyangiitis · MPA = microscopic polyangiitis · EGPA = eosinophilic GPA · HSP = Henoch–Schönlein purpura · GBM = glomerular basement membrane · URI = upper respiratory infection · NETs = neutrophil extracellular traps</div>
+
+    <h3>Group 1 — ANCA-associated</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>Disease</th><th>Old name</th><th>Granulomas?</th><th>Organs / clues</th><th>ANCA</th></tr>
+      <tr><td><strong>Granulomatosis with polyangiitis (GPA)</strong></td><td>Wegener</td><td><strong>Yes</strong></td><td><strong>Upper respiratory tract + lungs + kidneys</strong>: chronic sinusitis, nosebleeds, lung infiltrates, glomerulonephritis</td><td><strong class="hot">c-ANCA (PR3)</strong> ~75%</td></tr>
+      <tr><td><strong>Microscopic polyangiitis (MPA)</strong></td><td>—</td><td><strong>No</strong></td><td>Kidneys + lungs: glomerulonephritis, pulmonary capillaritis/hemorrhage, hematuria, fever, weight loss; often <strong>drug-associated</strong> ± infection</td><td><strong class="hot">p-ANCA (MPO)</strong> ~60%</td></tr>
+      <tr><td><strong>Eosinophilic GPA (EGPA)</strong></td><td>Churg–Strauss</td><td>Yes</td><td><strong>Asthma, eosinophilia</strong>, allergic rhinitis, peripheral neuropathy, rash; sometimes kidney/heart</td><td>p-ANCA ~45% (half are ANCA-negative)</td></tr>
+    </table></div>
+
+    <div class="fig-row"><figure class="fig-card" id="fig-v-c-anca"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-c-anca.jpg" alt="Immunofluorescence of two neutrophils with granular orange staining filling the cytoplasm" width="946" height="999" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V35</span><span class="fig-title">c-ANCA: diffuse cytoplasmic staining (anti-PR3)</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure><figure class="fig-card" id="fig-v-p-anca"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-p-anca.jpg" alt="Immunofluorescence of two neutrophils with orange staining hugging the lobed nucleus" width="882" height="999" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V36</span><span class="fig-title">p-ANCA: rim around the nucleus (anti-MPO)</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure></div>
+    <div class="callout callout-concept">
+      <div class="callout-title">🧠 How ANCA actually hurts</div>
+      <p>The names are just lab staining patterns: anti-MPO lights up around the nucleus (<strong>p</strong>erinuclear), anti-PR3 fills the <strong>c</strong>ytoplasm. But the antibodies are also <strong>pathogenic</strong>: they bind the surface of cytokine-primed neutrophils → <strong>positive feedback of neutrophil + complement activation</strong> → endothelial damage → T cells and monocytes follow; activated neutrophils throw out <strong>NETs</strong> that add inflammation and thrombosis.</p>
+    </div>
+    <div class="fig-row"><figure class="fig-card" id="fig-v-anca-mechanism"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-anca-mechanism.jpg" alt="Sequence: cytokines prime a neutrophil to show ANCA antigens, ANCA binds and activates it, it releases reactive oxygen species, proteases and neutrophil extracellular traps onto endothelium; T cells and monocytes follow" width="1520" height="570" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V37</span><span class="fig-title">How ANCA injures vessels: primed neutrophils → activation → NETs → endothelial damage</span><span class="fig-src"><b>Gardner lecture</b> · slide 38</span></figcaption></figure><figure class="fig-card sm" id="fig-v-anca-table"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-anca-table.png" alt="Table: GPA 75 percent PR3/c-ANCA, 20 percent MPO; MPA 30 percent PR3, 60 percent MPO/p-ANCA; EGPA 5 percent PR3, 45 percent MPO, 50 percent ANCA negative" width="643" height="277" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V38</span><span class="fig-title">Which ANCA goes with which disease (percent positive)</span><span class="fig-src"><b>Gardner lecture</b> · slide 38</span></figcaption></figure></div>
+
+    <h3>Group 2 — immune-complex ("leukocytoclastic")</h3>
+    <p><strong>Leukocytoclastic</strong> = leukocyte + <em>klasis</em> (Greek, "breaking"): on histology you see <strong>neutrophils blown apart into tiny nuclear fragments ("nuclear dust")</strong> around small vessels.</p>
+    <div class="fig-row"><figure class="fig-card" id="fig-v-leukocytoclastic"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-leukocytoclastic.jpg" alt="H&amp;E of skin with small vessels surrounded by neutrophils and many tiny dark nuclear fragments" width="463" height="459" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V39</span><span class="fig-title">Leukocytoclastic vasculitis: neutrophils blown apart into &quot;nuclear dust&quot;</span><span class="fig-src"><b>Gardner lecture</b> · slide 40</span></figcaption></figure><figure class="fig-card" id="fig-v-palpable-purpura"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-palpable-purpura.jpg" alt="Foot and ankle with many raised dark red-purple spots" width="1275" height="900" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V40</span><span class="fig-title">Palpable purpura on the foot — small-vessel (immune-complex) vasculitis</span><span class="fig-src"><b>Robbins &amp; Cotran Atlas</b></span></figcaption></figure></div>
+    <div class="tbl-scroll"><table>
+      <tr><th>Disease</th><th>Deposit / cause</th><th>Who</th><th>Features</th></tr>
+      <tr><td><strong>Henoch–Schönlein purpura (HSP)</strong></td><td><strong>IgA</strong> immune complexes</td><td><strong>Children</strong>, after a <strong>URI</strong></td><td>Tetrad: <strong class="hot">palpable purpura, arthritis, abdominal pain, glomerulonephritis</strong></td></tr>
+      <tr><td><strong>IgA vasculitis (adult HSP)</strong></td><td>IgA</td><td>Adults</td><td>Skin, kidney, GI — <strong>worse kidney involvement</strong> in adults</td></tr>
+      <tr><td><strong>Cryoglobulinemic vasculitis</strong></td><td><strong>Cryoglobulins</strong> — antibodies that precipitate in the cold</td><td><strong class="hot">Hepatitis C</strong>, Sjögren syndrome</td><td>Purpura, joint pain, neuropathy, kidney involvement</td></tr>
+      <tr><td><strong>Anti-GBM disease (Goodpasture)</strong></td><td>Antibodies to <strong>glomerular basement membrane</strong> that cross-react with <strong>alveolar capillary</strong> basement membrane; often after a viral illness</td><td>—</td><td><strong>Glomerulonephritis + pulmonary hemorrhage</strong> — needs rapid treatment</td></tr>
+    </table></div>
+
+    <h3>Variable-vessel vasculitis</h3>
+    <div class="compare-grid">
+      <div class="compare-card">
+        <span class="card-emoji">🌍</span><h4>Behçet disease</h4>
+        <p>Any size artery <em>or vein</em>. <strong>Recurrent oral + genital ulcers</strong>, skin lesions, <strong>uveitis</strong>; GI, CNS; aneurysms, <strong>renal failure</strong> (biggest single consequence per lecture). Rare overall but <strong class="hot">very common in the Middle East/Turkey — HLA-B51</strong> (~500/100,000 there vs ~5 in the US).</p>
+      </div>
+      <div class="compare-card">
+        <span class="card-emoji">👁️👂</span><h4>Cogan syndrome</h4>
+        <p>Very rare. <strong>Interstitial keratitis + inner-ear disease (hearing loss, vertigo)</strong>; sometimes large/medium arteritis. Driven by antibody to a <strong>reovirus peptide via molecular mimicry</strong>. Differential: syphilis, psittacosis.</p>
+      </div>
+    </div>
+
+    <h3>Vasculitis review table (lecture slide 42)</h3>
+    <div class="tbl-scroll"><table class="dense">
+      <tr><th>Feature</th><th>GCA / Takayasu</th><th>GPA</th><th>Churg–Strauss (EGPA)</th><th>PAN</th><th>Leukocytoclastic</th><th>Buerger</th><th>Behçet</th></tr>
+      <tr><td>Aorta</td><td><strong>Yes</strong></td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td></tr>
+      <tr><td>Medium arteries</td><td>Yes</td><td>Yes</td><td>Yes</td><td><strong>Yes</strong></td><td>No</td><td>Yes</td><td>Yes</td></tr>
+      <tr><td>Small arteries</td><td>No</td><td>Yes</td><td>Yes</td><td>Yes</td><td><strong>Yes</strong></td><td>Yes</td><td>Yes</td></tr>
+      <tr><td>Capillaries</td><td>No</td><td>No</td><td>No</td><td>No</td><td><strong>Yes</strong></td><td>No</td><td>Yes</td></tr>
+      <tr><td>Veins</td><td>No</td><td>No</td><td>No</td><td>No</td><td>Yes</td><td><strong>Yes</strong></td><td><strong>Yes</strong></td></tr>
+      <tr><td>Neutrophils</td><td>Rare</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Sometimes</td><td>Sometimes</td><td><strong>Always</strong></td></tr>
+      <tr><td>Eosinophils</td><td>Very rare</td><td>Sometimes</td><td><strong>Always</strong></td><td>Sometimes</td><td>Sometimes</td><td>Sometimes</td><td>Sometimes</td></tr>
+      <tr><td>Granulomas</td><td>Yes</td><td><strong>Always</strong></td><td>Sometimes</td><td>No</td><td>No</td><td>No</td><td>No</td></tr>
+      <tr><td>Giant cells</td><td>Often (not required)</td><td>Sometimes</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td></tr>
+      <tr><td>Thrombosis</td><td>Sometimes</td><td>Sometimes</td><td>Sometimes</td><td>Sometimes</td><td>Sometimes</td><td><strong>Always</strong></td><td>Sometimes</td></tr>
+      <tr><td>ANCA</td><td>No</td><td><strong>Yes</strong></td><td>Yes</td><td>No</td><td>No</td><td>No</td><td>No</td></tr>
+      <tr><td>Clinical history</td><td>&gt;40 y, ± PMR</td><td>—</td><td><strong>Asthma, atopy</strong></td><td>Any</td><td>—</td><td><strong>Young male smoker</strong></td><td><strong>Orogenital ulcers</strong></td></tr>
+      <tr><td>Etiology</td><td>HLA, autoimmunity</td><td>Weak immune response, hyper-Th17</td><td>HLA / drugs / infection</td><td>Immune complex (hepatitis) or unknown</td><td>Infection-driven autoimmunity</td><td>Tobacco-driven autoimmunity</td><td>HLA + infection</td></tr>
+      <tr><td>Incidence /100,000</td><td><span class="num">100</span></td><td>0.5</td><td>1</td><td>3</td><td>5 (+30 HSP)</td><td>20</td><td>5 US · <span class="num">500 Turkey</span></td></tr>
+    </table></div>
+    <p class="tbl-note">Lecturer's take: most of these are vanishingly rare — <strong>GCA/Takayasu are the relatively common ones</strong>, and Behçet if you are in the right population. Pay attention to ethnicity when building a differential.</p>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> A 45-year-old has chronic bloody sinusitis, cavitating lung nodules and red cell casts in the urine. Which antibody and which histology?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>GPA (Wegener)</strong>: <strong>c-ANCA / anti-PR3</strong>; <strong>necrotizing granulomas</strong> + small-vessel vasculitis in upper airway, lung and kidney.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> An asthmatic adult develops foot drop, purpura and eosinophils of 20%. Diagnosis?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>Eosinophilic granulomatosis with polyangiitis (Churg–Strauss)</strong> — often p-ANCA (MPO), about half ANCA-negative.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> A 7-year-old, two weeks after a cold, has palpable purpura on the buttocks and legs, knee pain, colicky abdominal pain and hematuria. What deposits in the vessel walls?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>IgA immune complexes</strong> — <strong>Henoch–Schönlein purpura</strong> (IgA vasculitis); leukocytoclastic small-vessel vasculitis.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> Purpura, arthralgia and neuropathy in a patient with chronic hepatitis C. Name the vasculitis and the unusual lab property of the culprit protein.</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>Cryoglobulinemic vasculitis</strong> — the immunoglobulins <strong>precipitate in the cold</strong>.</p></div>
+    </div>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="HSlDDGPU0Ko" data-title="Granulomatosis with Polyangiitis (Wegener&#x27;s)"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/HSlDDGPU0Ko/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Granulomatosis with Polyangiitis (Wegener&#x27;s)</b><i>JJ Medicine · YouTube</i></span></button><button class="vid" type="button" data-yt="wuEysh3MmYY" data-title="EGPA / Churg–Strauss"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/wuEysh3MmYY/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>EGPA / Churg–Strauss</b><i>JJ Medicine · YouTube</i></span></button><button class="vid" type="button" data-yt="nm9OfS-r-2g" data-title="Henoch–Schönlein Purpura (mnemonic)"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/nm9OfS-r-2g/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Henoch–Schönlein Purpura (mnemonic)</b><i>Medicosis Perfectionalis · YouTube</i></span></button><button class="vid" type="button" data-yt="Yu-K0w7omXo" data-title="Behçet&#x27;s Disease"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/Yu-K0w7omXo/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Behçet&#x27;s Disease</b><i>Rhesus Medicine · YouTube</i></span></button></div></div>
+  </div>
+</div>
+
+<!-- ==================== 8. RAYNAUD + VEINS ==================== -->
+<div class="section" id="s8-veins">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Topic 8</div></div>
+    <p class="section-label">Hyperreactive arteries · veins · lymphatics</p>
+    <h2 class="section-title">Raynaud, Veins &amp; Obstruction Syndromes</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>SMC = smooth muscle cell · SLE = systemic lupus erythematosus · PE = pulmonary embolism · DVT = deep vein thrombosis · SVC = superior vena cava</div>
+
+    <h3>Raynaud phenomenon — vessel hyperreactivity</h3>
+    <p>Exaggerated <strong>vasoconstriction of arteries and arterioles</strong> in response to <strong>cold or emotion</strong>; fingers blanch (then blue, then red <span class="src-tag">Board add-on</span>). Attacks can last hours; patients learn to avoid cold, wear gloves, massage the hand.</p>
+    <div class="compare-grid">
+      <div class="compare-card" style="background:var(--green-bg);border-color:#2e7d32">
+        <span class="card-emoji">🧤</span><h4>Primary Raynaud</h4>
+        <p><span class="num">3–5%</span> of people (lecture also said ~1 in 20); <strong>young women</strong>; <strong>intrinsic hyperreactivity of medial SMCs</strong>; <strong>symmetric</strong>, stays stable → reassure.</p>
+      </div>
+      <div class="compare-card" style="background:var(--red-bg);border-color:var(--accent)">
+        <span class="card-emoji">🚩</span><h4>Secondary Raynaud</h4>
+        <p>Driven by <strong>SLE, scleroderma, Buerger disease</strong>, even atherosclerosis. <strong class="hot">Asymmetric and progressively worse</strong>. About <span class="num">10%</span> of diagnosed Raynaud turns out to have an autoimmune cause.</p>
+      </div>
+    </div>
+    <figure class="fig-card sm" id="fig-v-raynaud"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-raynaud.jpg" alt="Back of a hand with one finger white from the base to the tip" width="862" height="908" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V41</span><span class="fig-title">Raynaud phenomenon: a sharply blanched finger</span><span class="fig-src"><b>Gardner lecture</b> · slide 43</span></figcaption></figure>
+
+    <h3>Veins</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>Problem</th><th>Forms / causes</th><th>Consequences</th></tr>
+      <tr><td><strong>Varicosities</strong></td><td><strong>Leg</strong> (superficial veins) · <strong>esophageal</strong> and <strong>hemorrhoidal</strong> varices (different etiology — portal hypertension <span class="src-tag">Board add-on</span>)</td><td>Stasis, edema, stasis dermatitis, ulcers; variceal bleeding</td></tr>
+      <tr><td><strong>Thrombophlebitis</strong></td><td><strong>Decreased flow (stasis)</strong> + <strong>hypercoagulability</strong> (injury, sepsis, inherited clotting disorders)</td><td><strong>Thrombosis</strong> → clot released to right heart → <strong class="hot">pulmonary embolism</strong></td></tr>
+      <tr><td><strong>Obstruction</strong></td><td><strong>SVC syndrome</strong> <span class="src-tag">Board add-on</span> (usually lung cancer or lymphoma compressing the SVC → facial/arm swelling, distended neck veins) · <strong>lymphedema</strong> (blocked major lymphatics)</td><td>Edema of the drained region</td></tr>
+    </table></div>
+    <div class="fig-row"><figure class="fig-card" id="fig-v-varicose"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-varicose.jpg" alt="Ankle with a web of dilated superficial blue veins" width="1275" height="840" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V42</span><span class="fig-title">Superficial varicosities at the ankle</span><span class="fig-src"><b>Robbins &amp; Cotran Atlas</b></span></figcaption></figure><figure class="fig-card" id="fig-v-stasis"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-stasis.jpg" alt="Lower leg with brown hyperpigmented, scaly skin" width="1275" height="712" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V43</span><span class="fig-title">Chronic venous stasis dermatitis — hyperpigmentation and scaling</span><span class="fig-src"><b>Robbins &amp; Cotran Atlas</b></span></figcaption></figure></div>
+    <figure class="fig-card" id="fig-v-saddle-pe"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-saddle-pe.jpg" alt="Opened pulmonary arteries with a long dark red thrombus lying across the bifurcation into both lungs" width="504" height="331" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V44</span><span class="fig-title">Saddle embolus straddling the pulmonary artery bifurcation</span><span class="fig-src"><b>Gardner lecture</b> · slide 44</span></figcaption></figure>
+    <div class="callout callout-warning">
+      <div class="callout-title">⚠️ Saddle embolus</div>
+      <p>A long leg-vein thrombus travels through the right heart and lodges <strong>across the pulmonary artery bifurcation</strong>, blocking both sides at once → rapid death.</p>
+    </div>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> A 45-year-old woman's Raynaud attacks have become asymmetric and worse over a year, and her fingertips have small ulcers and tight skin. What does this pattern suggest?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>Secondary Raynaud</strong> — look for an underlying autoimmune disease such as <strong>scleroderma</strong> (or SLE). Primary Raynaud is symmetric and non-progressive.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> Which two factors combine to produce thrombophlebitis, per the lecture?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>Reduced flow (stasis)</strong> plus a <strong>hypercoagulable state</strong> (injury, sepsis, inherited thrombophilia).</p></div>
+    </div>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="aBMVbMHRfGo" data-title="Raynaud Phenomenon"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/aBMVbMHRfGo/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Raynaud Phenomenon</b><i>Osmosis · YouTube</i></span></button><button class="vid" type="button" data-yt="fpiyGin5nGk" data-title="Understanding Varicose Veins"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/fpiyGin5nGk/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Understanding Varicose Veins</b><i>Zero to Finals · YouTube</i></span></button></div></div>
+  </div>
+</div>
+
+<!-- ==================== 9. TUMOURS ==================== -->
+<div class="section" id="s9-tumors">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Topic 9</div></div>
+    <p class="section-label">A small corner of vascular pathology</p>
+    <h2 class="section-title">Tumours of Blood Vessels</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>HHV-8 = human herpesvirus 8 · HIV = human immunodeficiency virus · CD31 = endothelial marker</div>
+
+    <div class="compare-grid">
+      <div class="compare-card" style="background:var(--green-bg);border-color:#2e7d32">
+        <span class="card-emoji">🍓</span><h4>Benign — hemangiomas</h4>
+        <ul class="notes-list">
+          <li><strong>Juvenile "strawberry" (capillary) hemangioma</strong>: present at birth, surprising-looking, <strong>regresses in the first decade</strong>, often leaving no trace</li>
+          <li><strong>Cavernous</strong> hemangioma</li>
+          <li><strong>Pyogenic granuloma</strong>: <strong>reactive granulation tissue that doesn't know when to stop</strong></li>
+          <li><strong>Bacillary angiomatosis</strong>: reactive, <strong>infection-induced</strong> (<em>Bartonella</em> in immunocompromised <span class="src-tag">Board add-on</span>)</li>
+        </ul>
+      </div>
+      <div class="compare-card" style="background:var(--red-bg);border-color:var(--accent)">
+        <span class="card-emoji">⚠️</span><h4>Malignant</h4>
+        <ul class="notes-list">
+          <li><strong>Angiosarcoma</strong>: vanishingly rare; the classic <strong>occupational</strong> cause is <strong class="hot">vinyl chloride</strong> (liver angiosarcoma), now mostly historical. Locally aggressive, metastasizes.</li>
+          <li><strong>Kaposi sarcoma</strong>: more indolent; <strong class="hot">HHV-8</strong>, typically in <strong>HIV</strong>; also a sporadic form in older <strong>Mediterranean men</strong>.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="fig-row"><figure class="fig-card" id="fig-v-strawberry"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-strawberry.jpg" alt="Infant forehead with a raised bright red lobulated lesion" width="432" height="307" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V45</span><span class="fig-title">Juvenile &quot;strawberry&quot; capillary hemangioma — regresses on its own</span><span class="fig-src"><b>Gardner lecture</b> · slide 45</span></figcaption></figure><figure class="fig-card" id="fig-v-pyogenic"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-pyogenic.jpg" alt="Low-power H&amp;E of a polypoid skin lesion made of lobules of small capillaries under a collarette of epidermis" width="1333" height="1000" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V46</span><span class="fig-title">Pyogenic granuloma: lobules of capillaries (reactive granulation tissue that won&#x27;t stop)</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure></div>
+    <div class="fig-row"><figure class="fig-card" id="fig-v-angiosarcoma"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-angiosarcoma.jpg" alt="Three panels: hemorrhagic tumour mass; H&amp;E with irregular vascular spaces lined by atypical cells; brown immunostain for the endothelial marker" width="754" height="377" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V47</span><span class="fig-title">Angiosarcoma: hemorrhagic mass, atypical vascular channels, CD31-positive</span><span class="fig-src"><b>Gardner lecture</b> · slide 45</span></figcaption></figure><figure class="fig-card" id="fig-v-kaposi"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-kaposi.jpg" alt="Four panels: purple tongue lesion; spindle-cell tumour; slit-like vascular spaces; red-purple skin lesion" width="760" height="495" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V48</span><span class="fig-title">Kaposi sarcoma (HHV-8): purple lesions, spindle cells, slit-like vessels</span><span class="fig-src"><b>Gardner lecture</b> · slide 45</span></figcaption></figure></div>
+    <figure class="fig-card sm" id="fig-v-kaposi-skin"><div class="fig-frame"><img class="slide-img" src="assets/vascular/v-kaposi-skin.jpg" alt="Arm with multiple violaceous plaques and nodules, one ulcerated" width="1000" height="976" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig V49</span><span class="fig-title">Kaposi sarcoma: violaceous plaques and nodules</span><span class="fig-src"><b>Robbins &amp; Cotran Atlas</b></span></figcaption></figure>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> A former PVC-plant worker develops a hemorrhagic liver mass with atypical, CD31-positive vascular channels. Tumour and exposure?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>Hepatic angiosarcoma</strong> from <strong>vinyl chloride</strong> exposure.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> A man with advanced HIV has violaceous plaques on his legs and palate; biopsy shows spindle cells around slit-like vessels. Causative agent?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>HHV-8</strong> → <strong>Kaposi sarcoma</strong>.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> Parents worry about a raised red lesion that appeared on their newborn's forehead and grew for months. What is the expected course?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>Juvenile (strawberry) capillary hemangioma</strong> — it <strong>regresses spontaneously</strong> during the first decade, usually without trace.</p></div>
+    </div>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="Bq4gdno-fVU" data-title="Vascular tumors — Kaposi, hemangioma, angiosarcoma"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/Bq4gdno-fVU/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Vascular tumors — Kaposi, hemangioma, angiosarcoma</b><i>Osmosis · YouTube</i></span></button></div></div>
+  </div>
+</div>
+
+<!-- ==================== GLOSSARY ==================== -->
+<div class="section" id="glossary">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge alt">Reference</div></div>
+    <p class="section-label">Every short form used in these notes</p>
+    <h2 class="section-title">Glossary &amp; Abbreviations</h2>
+    <div class="gloss">
+      <dl>
+        <dt>AAA / TAA</dt><dd>Abdominal / thoracic aortic aneurysm</dd>
+        <dt>ACE</dt><dd>Angiotensin-converting enzyme (on endothelium; AI → AII)</dd>
+        <dt>ANCA</dt><dd>Anti-neutrophil cytoplasmic antibody; c-ANCA = anti-PR3 (proteinase 3), p-ANCA = anti-MPO (myeloperoxidase)</dd>
+        <dt>BBB</dt><dd>Blood–brain barrier</dd>
+        <dt>BP · CO · SVR · SV · HR</dt><dd>Blood pressure · cardiac output · systemic vascular resistance · stroke volume · heart rate</dd>
+        <dt>CRP</dt><dd>C-reactive protein (inflammation marker)</dd>
+      </dl>
+      <dl>
+        <dt>D-dimer</dt><dd>Fibrin breakdown fragment — marks active clotting + clot breakdown</dd>
+        <dt>EDS</dt><dd>Ehlers–Danlos syndrome (vascular type IV = collagen III)</dd>
+        <dt>EGPA · GPA · MPA</dt><dd>Eosinophilic granulomatosis with polyangiitis (Churg–Strauss) · granulomatosis with polyangiitis (Wegener) · microscopic polyangiitis</dd>
+        <dt>FMD</dt><dd>Fibromuscular dysplasia ("string of beads")</dd>
+        <dt>GBM</dt><dd>Glomerular basement membrane (anti-GBM = Goodpasture)</dd>
+        <dt>GCA · PMR</dt><dd>Giant cell arteritis · polymyalgia rheumatica</dd>
+      </dl>
+      <dl>
+        <dt>HHV-8</dt><dd>Human herpesvirus 8 — Kaposi sarcoma</dd>
+        <dt>HSP</dt><dd>Henoch–Schönlein purpura (IgA vasculitis)</dd>
+        <dt>ICP</dt><dd>Intracranial pressure</dd>
+        <dt>IEL / EEL</dt><dd>Internal / external elastic lamina</dd>
+        <dt>LDL / HDL</dt><dd>Low- / high-density lipoprotein</dd>
+        <dt>Leukocytoclastic</dt><dd>"White cells breaking apart" — nuclear dust around small vessels</dd>
+      </dl>
+      <dl>
+        <dt>MMP</dt><dd>Matrix metalloproteinase (breaks down vessel matrix)</dd>
+        <dt>NETs</dt><dd>Neutrophil extracellular traps (extruded chromatin)</dd>
+        <dt>NO</dt><dd>Nitric oxide (vasodilator)</dd>
+        <dt>PAN</dt><dd>Polyarteritis nodosa</dd>
+        <dt>RAAS</dt><dd>Renin–angiotensin–aldosterone system</dd>
+        <dt>SMC · EC</dt><dd>Smooth muscle cell · endothelial cell</dd>
+        <dt>SVC</dt><dd>Superior vena cava</dd>
+        <dt>vWF</dt><dd>von Willebrand factor</dd>
+      </dl>
+    </div>
+  </div>
+</div>
+
+
+<div class="hy-modal" id="hyModal">
+  <div class="hy-modal-card">
+    <div class="hy-modal-header">
+      <h2>🎯 Vascular Pathology — High-Yield One-Pager</h2>
+      <div class="hy-modal-actions">
+        <button class="hy-action-btn" onclick="printHY()">🖨️ Print / Save PDF</button>
+        <button class="hy-action-btn hy-close-btn" onclick="closeHY()">✕ Close</button>
+      </div>
+    </div>
+    <p class="hy-subhead">Gardner · OMK 2 Cardio Week 13 · Wall &amp; plaque · Pressure &amp; aneurysm · Vasculitis &amp; veins</p>
+    <div class="hy-cols">
+      <div>
+        <span class="hy-lo-tag">WALL · ARTERIOSCLEROSIS · ATHEROMA · BP</span>
+        <div class="hy-block"><h4>Endothelium</h4><ul>
+          <li>Intact = no clot; <strong>denuded → collagen exposed → platelets</strong></li>
+          <li>Laminar flow = quiet; <strong>turbulent flow (branch points)</strong> = activated → plaques</li>
+          <li>Any injury → SMCs into intima → <strong>intimal thickening → stenosis</strong></li>
+          <li>Anti-clot: prostacyclin, thrombomodulin, heparin-like, tPA · Pro-clot: <strong>vWF</strong>, tissue factor, PAI · Tone: endothelin vs NO</li>
+        </ul></div>
+        <div class="hy-block"><h4>Arteriosclerosis subtypes</h4><ul>
+          <li><strong>Hyaline</strong>: pink glassy arterioles — benign HTN, diabetes</li>
+          <li><strong>Hyperplastic "onion-skin"</strong> ± fibrinoid necrosis — <strong>malignant HTN</strong>, pre-eclampsia</li>
+          <li><strong>Mönckeberg</strong>: medial calcium, lumen spared, asymptomatic, X-ray visible</li>
+          <li><strong>Fibromuscular intimal hyperplasia</strong>: after stents/balloons, graft failure (≠ FMD "string of beads")</li>
+          <li>Atherosclerosis = subset caused by atheroma; ~40% of global deaths</li>
+        </ul></div>
+        <div class="hy-block"><h4>Atherosclerosis</h4><ul>
+          <li>Risk: <strong>hyperlipidemia (main)</strong>, smoking, HTN, diabetes (glycation), age/sex/family</li>
+          <li>Injury → LDL in → monocytes → <strong>foam cells</strong> → platelets → SMC migration + ECM → necrotic core + <strong>cholesterol clefts</strong> + Ca²⁺ — all <strong>in the intima</strong></li>
+          <li>Sites: <strong>abdominal aorta/iliacs</strong> &gt; coronary &gt; popliteal &gt; ICA &gt; circle of Willis; patchy, branch points</li>
+          <li><strong>Thin cap → rupture/hemorrhage → thrombus (MI, SCD)</strong>; thick cap → erosion, critical stenosis (angina)</li>
+          <li>Outcomes: thrombosis, plaque hemorrhage, embolism, aneurysm</li>
+        </ul></div>
+        <div class="hy-block"><h4>Blood pressure &amp; HTN</h4><ul>
+          <li><strong>BP = CO × SVR</strong>; SVR at arterioles; volume via renal Na⁺</li>
+          <li>RAAS: ↓ afferent pressure → renin → AI → (ACE on endothelium) AII → tone + aldosterone → Na⁺ retention</li>
+          <li><strong>Primary 90–95%</strong> (polygenic + salt); secondary: <strong>renal, endocrine, vascular, intracranial</strong> — pre-eclampsia commonest</li>
+          <li><strong>↑ systolic + normal diastolic + bradycardia = ↑ ICP (Cushing)</strong></li>
+          <li>Chronic HTN → fixed-narrow arterioles → end-organ hypoxia; rapid BP drop can under-perfuse the brain</li>
+        </ul></div>
+      </div>
+      <div>
+        <span class="hy-lo-tag">ANEURYSM · DISSECTION · LARGE/MEDIUM VASCULITIS</span>
+        <div class="hy-block"><h4>Aneurysm types &amp; causes</h4><ul>
+          <li>True: <strong>saccular</strong> (one side), <strong>fusiform</strong> (circumferential) · <strong>False</strong> = contained extravascular hematoma · <strong>Dissection</strong> = blood in the media via intimal tear</li>
+          <li>Causes: weak CT (<strong>Marfan fibrillin-1</strong>, <strong>EDS IV collagen III</strong>, TGF-β), inflammation/MMPs, vasa vasorum ischemia, <strong>syphilis</strong>, mycotic</li>
+          <li><strong>AAA most common</strong> — infrarenal, atherosclerosis, smokers · TAA — Marfan · <strong>berry</strong> — circle of Willis, congenital, SAH · ventricular — late post-MI</li>
+        </ul></div>
+        <div class="hy-block"><h4>Aortic dissection</h4><ul>
+          <li>Tearing chest pain <strong>moving to the back and down</strong></li>
+          <li>Kills by adventitial rupture, great-vessel or <strong>coronary occlusion</strong>, retrograde to valve (AR)</li>
+          <li><strong>DeBakey I/II = Stanford A → surgery</strong>; <strong>III = B → often conservative</strong>; chronic → double-barreled aorta</li>
+          <li>Marfan: dissection risk ~30%, MVP &gt;90% · vEDS: arterial rupture high risk</li>
+        </ul></div>
+        <div class="hy-block"><h4>Large-vessel vasculitis</h4><ul>
+          <li><strong>GCA</strong>: &gt;50, temporal artery, headache, <strong>jaw claudication</strong>, scalp tenderness, <strong>blindness</strong>, PMR; biopsy = granulomas, giant cells, broken IEL → steroids now</li>
+          <li><strong>Takayasu</strong>: young Asian women, arch + branches, <strong>pulseless</strong>, arm claudication, bruits, HTN</li>
+        </ul></div>
+        <div class="hy-block"><h4>Medium-vessel vasculitis</h4><ul>
+          <li><strong>PAN</strong>: kidney, heart, GI, nerves (spares lung), HTN, abdominal pain, <strong>hepatitis B</strong>, ANCA-neg, aneurysms</li>
+          <li><strong>Kawasaki</strong>: &lt;5 y, fever + CRASH, <strong>coronary aneurysm</strong></li>
+          <li><strong>Buerger</strong>: heavy smoker, limb claudication, Raynaud, gangrene, no organs; cure = <strong>quit smoking</strong></li>
+        </ul></div>
+      </div>
+      <div>
+        <span class="hy-lo-tag">SMALL VASCULITIS · RAYNAUD · VEINS · TUMOURS</span>
+        <div class="hy-block"><h4>ANCA-associated</h4><ul>
+          <li><strong>GPA (Wegener)</strong>: granulomas; sinus + lung + kidney; <strong>c-ANCA / PR3</strong></li>
+          <li><strong>MPA</strong>: no granulomas; kidney + lung hemorrhage; <strong>p-ANCA / MPO</strong>; drugs</li>
+          <li><strong>EGPA (Churg–Strauss)</strong>: <strong>asthma + eosinophilia</strong> + neuropathy; p-ANCA or negative</li>
+          <li>ANCA bind primed neutrophils → complement + NETs → endothelial damage</li>
+        </ul></div>
+        <div class="hy-block"><h4>Immune-complex (leukocytoclastic = nuclear dust)</h4><ul>
+          <li><strong>HSP</strong>: child after URI, <strong>IgA</strong>; purpura + arthritis + abdominal pain + GN · adult IgA vasculitis → worse kidneys</li>
+          <li><strong>Cryoglobulinemic</strong>: <strong>hepatitis C</strong>, Sjögren; cold-precipitating Ig</li>
+          <li><strong>Anti-GBM (Goodpasture)</strong>: GN + pulmonary hemorrhage</li>
+          <li><strong>Behçet</strong>: orogenital ulcers + uveitis, <strong>HLA-B51</strong>, Turkey/Middle East · <strong>Cogan</strong>: keratitis + hearing loss</li>
+        </ul></div>
+        <div class="hy-block"><h4>Raynaud</h4><ul>
+          <li>Primary: 3–5%, young women, medial SMC hyperreactivity, symmetric, stable</li>
+          <li><strong>Secondary</strong>: SLE, scleroderma, Buerger; <strong>asymmetric + progressive</strong>; ~10% autoimmune</li>
+        </ul></div>
+        <div class="hy-block"><h4>Veins</h4><ul>
+          <li>Varices: leg, esophageal, hemorrhoidal</li>
+          <li>Thrombophlebitis = <strong>stasis + hypercoagulability</strong> → DVT → <strong>PE / saddle embolus</strong></li>
+          <li>Obstruction: SVC syndrome, lymphedema</li>
+        </ul></div>
+        <div class="hy-block"><h4>Tumours</h4><ul>
+          <li><strong>Strawberry hemangioma</strong> regresses · pyogenic granuloma = runaway granulation tissue · bacillary angiomatosis (infection)</li>
+          <li><strong>Angiosarcoma</strong>: <strong>vinyl chloride</strong> (liver)</li>
+          <li><strong>Kaposi</strong>: <strong>HHV-8</strong>, HIV; also older Mediterranean men</li>
+        </ul></div>
+      </div>
+    </div>
+    <div class="hy-block" style="margin-top:4px">
+      <h4>Master vasculitis table</h4>
+      <table class="hy-mini-table">
+        <tr><th>Disease</th><th>Vessel</th><th>Who</th><th>Hallmark</th><th>Lab / histology</th><th>Complication</th></tr>
+        <tr><td>Giant cell arteritis</td><td>Large</td><td>&gt;50</td><td>Headache, jaw claudication, PMR</td><td>Granulomas, giant cells, broken IEL; ↑ESR</td><td>Blindness</td></tr>
+        <tr><td>Takayasu</td><td>Large</td><td>Young Asian women</td><td>Pulseless arms, bruits</td><td>Thick arch branches</td><td>Stenosis, HTN</td></tr>
+        <tr><td>PAN</td><td>Medium</td><td>Adults, HBV</td><td>Renal/GI/nerve, spares lung</td><td>Fibrinoid necrosis; ANCA −</td><td>Aneurysms</td></tr>
+        <tr><td>Kawasaki</td><td>Medium</td><td>&lt;5 y</td><td>Fever + CRASH</td><td>—</td><td>Coronary aneurysm</td></tr>
+        <tr><td>Buerger</td><td>Medium limb</td><td>Heavy smokers</td><td>Claudication, Raynaud</td><td>Thrombosis always</td><td>Gangrene</td></tr>
+        <tr><td>GPA (Wegener)</td><td>Small</td><td>Adults</td><td>Sinus + lung + kidney</td><td>c-ANCA/PR3; granulomas</td><td>RPGN</td></tr>
+        <tr><td>MPA</td><td>Small</td><td>Adults, drugs</td><td>Kidney + lung</td><td>p-ANCA/MPO; no granulomas</td><td>Pulmonary hemorrhage</td></tr>
+        <tr><td>EGPA (Churg–Strauss)</td><td>Small</td><td>Asthmatics</td><td>Asthma, eosinophilia, neuropathy</td><td>p-ANCA / −; eosinophils</td><td>Heart, kidney</td></tr>
+        <tr><td>HSP / IgA vasculitis</td><td>Small</td><td>Child post-URI</td><td>Purpura, arthritis, abdominal pain, GN</td><td>IgA; leukocytoclasis</td><td>Renal (worse in adults)</td></tr>
+        <tr><td>Cryoglobulinemic</td><td>Small</td><td>HCV, Sjögren</td><td>Purpura, joints, neuropathy</td><td>Cold-precipitating Ig</td><td>GN</td></tr>
+        <tr><td>Anti-GBM</td><td>Small</td><td>Post-viral</td><td>GN + lung hemorrhage</td><td>Anti-GBM Ab</td><td>Renal failure</td></tr>
+        <tr><td>Behçet</td><td>Variable</td><td>Turkey/Middle East, HLA-B51</td><td>Oral + genital ulcers, uveitis</td><td>Neutrophils always</td><td>Aneurysm, renal failure</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+<div class="lightbox" id="lightbox" aria-hidden="true"><img id="lightboxImg" alt="Zoomed figure"><div class="lightbox-cap" id="lightboxCap"></div></div>
+
+<div class="floating-left" id="floatingLeft">
+  <div class="tools-menu">
+    <button class="tool-btn backtop" id="backtopBtn">↑ Top</button>
+    <button class="tool-btn" id="nextQBtn">❓ Next question <span id="qCount"></span></button>
+    <button class="tool-btn" id="recallBtn">🙈 Recall mode <span id="rcCount"></span></button>
+  </div>
+  <button class="tool-btn tools-trigger" id="toolsTrigger" onclick="toggleToolsMenu()">🧰 Study<span class="dot"></span></button>
+</div>
+
+<div class="floating-stack">
+  <div class="theme-panel" id="themePanel">
+    <div class="theme-panel-title">Choose Theme</div>
+    <div class="theme-option active" data-theme="cardio" onclick="setTheme('cardio',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#fff7f7,#b51f3a 55%,#245f89)"></div>Cardio (Default)</div>
+    <div class="theme-option" data-theme="hemo" onclick="setTheme('hemo',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#170a0d,#ff6b6b)"></div>Hemo (Dark)</div>
+    <div class="theme-option" data-theme="paper" onclick="setTheme('paper',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#faf7f2,#1a1209)"></div>Paper</div>
+    <div class="theme-option" data-theme="night" onclick="setTheme('night',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#0f1923,#e8b84b)"></div>Night</div>
+    <div class="theme-option" data-theme="ocean" onclick="setTheme('ocean',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#eef7fb,#0a5286)"></div>Ocean</div>
+    <div class="theme-option" data-theme="forest" onclick="setTheme('forest',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#f2f7f0,#155c39)"></div>Forest</div>
+    <div class="theme-option" data-theme="sepia" onclick="setTheme('sepia',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#f7ecd9,#9c3b17)"></div>Sepia</div>
+    <div class="theme-option" data-theme="slate" onclick="setTheme('slate',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#f4f5f7,#9e2c0f)"></div>Slate</div>
+  </div>
+  <div class="font-btn-row">
+    <span class="font-label">Text</span>
+    <button class="font-btn" onclick="changeFontSize(1)" title="Increase font size">A+</button>
+    <span class="font-sep">|</span>
+    <button class="font-btn" onclick="changeFontSize(-1)" title="Decrease font size">A−</button>
+  </div>
+  <button class="theme-btn" id="themeBtn" onclick="toggleThemePanel()" title="Switch theme"><span>🎨</span><span>Theme</span></button>
+</div>
+
+<footer>
+  <div class="container">
+    <div>Built from <em>Vascular Pathology (slides 1–45 of Cardiac Pathology – Gardner 2025)</em> — Humphrey Gardner, MD FCAP · UNE College of Osteopathic Medicine · Fall 2025 (slides + lecture transcripts). Figures are labeled with their source: lecture slides (which credit Robbins &amp; Cotran and the literature on each slide), the Robbins &amp; Cotran Atlas of Pathology, AMBOSS, UWorld and <em>Cardiovascular Pathophysiology for Pre-Clinical Students</em>. Items tagged "Board add-on" come from board-review sources, not the lecture. Personal study notes; course material remains the copyright of its authors.</div>
+    <div>Shortcuts: <kbd>J</kbd>/<kbd>K</kbd> section · <kbd>Q</kbd> next question · <kbd>R</kbd> reveal · <kbd>Esc</kbd> close</div>
+  </div>
+</footer>
+
+<script>
+var STORAGE_THEME_KEY='cardio-w13-vascular-pathology-theme';
+var STORAGE_FONT_KEY='cardio-w13-vascular-pathology-font';
+var STORAGE_PROGRESS_KEY='cardio-w13-vascular-pathology-progress';
+var DEFAULT_THEME='cardio';
+var SECTION_IDS=['orientation', 's1-wall', 's2-arterio', 's3-athero', 's4-htn', 's5-aneurysm', 's6-vasc-large', 's7-vasc-small', 's8-veins', 's9-tumors', 'glossary'];
+
+var $  = function(s,r){return (r||document).querySelector(s);};
+var $$ = function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));};
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function storageGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+function storageSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+
+/* ============ theme ============ */
+var themePanelOpen=false;
+function toggleThemePanel(){themePanelOpen=!themePanelOpen;$('#themePanel').classList.toggle('open',themePanelOpen);}
+function syncThemeOptions(t){$$('.theme-option').forEach(function(o){o.classList.toggle('active',o.dataset.theme===t);});}
+function setTheme(t,el,skipStorage){
+  if(t===DEFAULT_THEME){document.documentElement.removeAttribute('data-theme');}
+  else{document.documentElement.setAttribute('data-theme',t);}
+  syncThemeOptions(t);
+  if(!skipStorage) storageSet(STORAGE_THEME_KEY,t);
+  setTimeout(function(){themePanelOpen=false;var p=$('#themePanel');if(p)p.classList.remove('open');},260);
+}
+document.addEventListener('click',function(e){
+  var p=$('#themePanel'),b=$('#themeBtn');
+  if(themePanelOpen&&p&&b&&!p.contains(e.target)&&!b.contains(e.target)){themePanelOpen=false;p.classList.remove('open');}
+});
+
+/* ============ font size ============ */
+var currentFontSize=16;
+function applyFontSize(size,skipStorage){
+  currentFontSize=Math.min(24,Math.max(12,Number(size)||16));
+  document.documentElement.style.fontSize=currentFontSize+'px';
+  document.body.style.fontSize=currentFontSize+'px';
+  if(!skipStorage)storageSet(STORAGE_FONT_KEY,currentFontSize);
+}
+function changeFontSize(d){applyFontSize(currentFontSize+d);}
+
+function initVisualState(){
+  var t=storageGet(STORAGE_THEME_KEY)||DEFAULT_THEME; setTheme(t,null,true);
+  var f=parseInt(storageGet(STORAGE_FONT_KEY),10);
+  applyFontSize(f&&f>=12&&f<=24?f:currentFontSize,true);
+}
+
+/* ============ lightbox ============ */
+function openLightbox(img){var lb=$('#lightbox');$('#lightboxImg').src=img.currentSrc||img.src;
+  $('#lightboxImg').alt=img.alt||'';
+  var cap=img.closest('figure')?img.closest('figure').querySelector('figcaption'):null;
+  $('#lightboxCap').innerHTML=cap?cap.innerHTML:'';
+  lb.classList.add('active');lb.setAttribute('aria-hidden','false');}
+function closeLightbox(){var lb=$('#lightbox');lb.classList.remove('active');
+  lb.setAttribute('aria-hidden','true');$('#lightboxImg').src='';}
+function initLightbox(){
+  $$('.slide-img').forEach(function(i){i.addEventListener('click',function(){openLightbox(i);});});
+  $('#lightbox').addEventListener('click',closeLightbox);
+}
+
+/* ============ scrollspy ============ */
+function initScrollspy(){
+  var links=$$('.toc-bar nav a'),map={},sections=[];
+  links.forEach(function(a){var id=a.getAttribute('href').slice(1),s=document.getElementById(id);
+    if(s){map[id]=a;sections.push(s);}});
+  if(!sections.length)return;
+  function update(){
+    var best=null,bestTop=-Infinity;
+    sections.forEach(function(s){var top=s.getBoundingClientRect().top;
+      if(top<=140&&top>bestTop){bestTop=top;best=s;}});
+    if(!best)best=sections[0];
+    links.forEach(function(a){a.classList.remove('active');});
+    if(map[best.id])map[best.id].classList.add('active');
+  }
+  window.addEventListener('scroll',update,{passive:true});update();
+}
+
+/* ============ reading progress ============ */
+function initProgress(){
+  var bar=$('#progressBar'),bt=$('#backtopBtn');
+  window.addEventListener('scroll',function(){
+    var h=document.documentElement,max=h.scrollHeight-h.clientHeight;
+    bar.style.width=(max>0?(h.scrollTop/max)*100:0)+'%';
+    if(bt)bt.classList.toggle('show',h.scrollTop>600);
+  },{passive:true});
+}
+
+/* ============ exam question reveal ============ */
+function initExamQ(){
+  $$('.exam-q').forEach(function(q){
+    var ans=q.querySelector('.answer'); if(!ans) return;
+    var b=document.createElement('button');b.className='reveal-btn';b.textContent='Reveal answer';
+    b.addEventListener('click',function(){q.classList.add('revealed');updateQCount();});
+    ans.parentNode.insertBefore(b,ans);
+  });
+  updateQCount();
+}
+function updateQCount(){
+  var all=$$('.exam-q'),done=all.filter(function(q){return q.classList.contains('revealed');});
+  var el=$('#qCount'); if(el) el.textContent=done.length+'/'+all.length;
+}
+function jumpToNextQ(){
+  var all=$$('.exam-q');if(!all.length)return;
+  var y=window.scrollY,pick=null;
+  var todo=all.filter(function(q){return !q.classList.contains('revealed');});
+  var pool=todo.length?todo:all;
+  for(var i=0;i<pool.length;i++){if(pool[i].getBoundingClientRect().top+y>y+120){pick=pool[i];break;}}
+  if(!pick)pick=pool[0];
+  var sec=pick.closest('.section');
+  if(sec&&sec.classList.contains('collapsed'))toggleSection(sec,false);
+  setTimeout(function(){
+    pick.scrollIntoView({behavior:'smooth',block:'center'});
+    pick.classList.remove('q-flash');void pick.offsetWidth;pick.classList.add('q-flash');
+  },sec&&sec.classList.contains('collapsed')?0:60);
+}
+
+/* ============ per-section progress ============ */
+var progress={};
+function loadProgress(){try{progress=JSON.parse(storageGet(STORAGE_PROGRESS_KEY)||'{}');}catch(e){progress={};}}
+function saveProgress(){storageSet(STORAGE_PROGRESS_KEY,JSON.stringify(progress));}
+function renderProgress(){
+  var reviewed=0;
+  SECTION_IDS.forEach(function(id){
+    var st=progress[id]||{},sec=document.getElementById(id);
+    if(st.reviewed)reviewed++;
+    if(sec){
+      var tools=sec.querySelector('.sec-tools');
+      if(tools){
+        tools.querySelector('.st-rev').classList.toggle('on',!!st.reviewed);
+        $$('.st-conf',tools).forEach(function(b){b.classList.toggle('on',+b.dataset.v===st.conf);});
+      }
+    }
+    var link=$('.toc-bar nav a[href="#'+id+'"]');
+    if(link){link.classList.toggle('done',!!st.reviewed);
+      link.classList.remove('conf-1','conf-2','conf-3');
+      if(st.conf)link.classList.add('conf-'+st.conf);}
+  });
+  var chip=$('#progressChip');
+  if(chip)chip.textContent=reviewed+'/'+SECTION_IDS.length+' reviewed';
+}
+function jumpToNextTodo(){
+  var target=null;
+  for(var i=0;i<SECTION_IDS.length&&!target;i++){var st=progress[SECTION_IDS[i]]||{};if(!st.reviewed)target=SECTION_IDS[i];}
+  for(var c=1;c<=2&&!target;c++){
+    for(var j=0;j<SECTION_IDS.length&&!target;j++){var s2=progress[SECTION_IDS[j]]||{};if(s2.conf===c)target=SECTION_IDS[j];}}
+  if(!target)target=SECTION_IDS[0];
+  var sec=document.getElementById(target); if(!sec)return;
+  if(sec.classList.contains('collapsed'))toggleSection(sec,false);
+  sec.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* ============ section tools + collapse ============ */
+function toggleSection(sec,force){
+  var willCollapse=(typeof force==='boolean')?force:!sec.classList.contains('collapsed');
+  sec.classList.toggle('collapsed',willCollapse);
+  var b=sec.querySelector('.st-collapse'); if(b)b.textContent=willCollapse?'▸ Expand':'▾ Collapse';
+}
+function toggleAllSections(){
+  var anyOpen=SECTION_IDS.some(function(id){var s=document.getElementById(id);return s&&!s.classList.contains('collapsed');});
+  SECTION_IDS.forEach(function(id){var s=document.getElementById(id);if(s)toggleSection(s,anyOpen);});
+  var b=$('#collapseAllBtn'); if(b)b.textContent=anyOpen?'⊞ Expand all':'⊟ Collapse all';
+}
+function initSectionTools(){
+  SECTION_IDS.forEach(function(id){
+    var sec=document.getElementById(id); if(!sec)return;
+    var container=sec.querySelector('.container'); if(!container)return;
+    var anchor=container.querySelector('.section-title'); if(!anchor)return;
+    var tools=document.createElement('div');
+    tools.className='sec-tools';
+    tools.innerHTML='<button class="st-rev">✓ Reviewed</button>'+
+      '<span class="st-lab">confidence</span>'+
+      '<button class="st-conf" data-v="1">\u{1F534} Shaky</button>'+
+      '<button class="st-conf" data-v="2">\u{1F7E1} Okay</button>'+
+      '<button class="st-conf" data-v="3">\u{1F7E2} Solid</button>'+
+      '<button class="st-collapse">▾ Collapse</button>';
+    anchor.parentNode.insertBefore(tools,anchor.nextSibling);
+    var note=document.createElement('div');
+    note.className='recall-note';
+    note.textContent='RECALL MODE — every bolded fact below is hidden. Say the answer out loud, then click the block to check it.';
+    tools.parentNode.insertBefore(note,tools.nextSibling);
+    var outer=document.createElement('div');outer.className='sec-body-outer';
+    var inner=document.createElement('div');inner.className='sec-body-inner';
+    outer.appendChild(inner);
+    while(note.nextSibling) inner.appendChild(note.nextSibling);
+    container.appendChild(outer);
+    tools.querySelector('.st-rev').addEventListener('click',function(){
+      progress[id]=progress[id]||{};progress[id].reviewed=!progress[id].reviewed;saveProgress();renderProgress();});
+    $$('.st-conf',tools).forEach(function(b){
+      b.addEventListener('click',function(){
+        progress[id]=progress[id]||{};
+        progress[id].conf=(progress[id].conf===+b.dataset.v)?0:+b.dataset.v;
+        saveProgress();renderProgress();});
+    });
+    tools.querySelector('.st-collapse').addEventListener('click',function(){toggleSection(sec);});
+  });
+  renderProgress();
+}
+
+/* ============ recall mode ============ */
+var recallMode=false;
+function recallTargets(){
+  return $$('.sec-body-inner :is(p,li,td,h4,dd) strong').filter(function(s){
+    return !s.closest('.exam-q')&&!s.closest('.tq-bar')&&!s.closest('.game')&&!s.closest('.abbr-strip')&&!s.closest('.legend')&&!s.closest('.watch');});
+}
+function updateRecallCount(){
+  var t=recallTargets(),o=t.filter(function(s){return s.classList.contains('rc-open');});
+  var el=$('#rcCount'); if(el) el.textContent=recallMode?(o.length+'/'+t.length):'';
+}
+function toggleRecall(){
+  recallMode=!recallMode;
+  document.body.classList.toggle('recall-mode',recallMode);
+  $('#recallBtn').classList.toggle('on',recallMode);
+  if(!recallMode) recallTargets().forEach(function(s){s.classList.remove('rc-open');});
+  else{
+    var allCollapsed=SECTION_IDS.every(function(id){var s=document.getElementById(id);return !s||s.classList.contains('collapsed');});
+    if(allCollapsed) toggleAllSections();
+  }
+  syncToolsDot();updateRecallCount();
+}
+function initRecall(){
+  document.addEventListener('click',function(e){
+    if(!recallMode)return;
+    var s=e.target.closest?e.target.closest('strong'):null;
+    if(!s||s.classList.contains('rc-open'))return;
+    if(s.closest('.exam-q')||s.closest('.game')||s.closest('.abbr-strip'))return;
+    if(!s.closest('.sec-body-inner'))return;
+    e.stopPropagation();s.classList.add('rc-open');updateRecallCount();
+  },true);
+}
+function syncToolsDot(){var t=$('#toolsTrigger');if(t)t.classList.toggle('busy',recallMode);}
+function toggleToolsMenu(){$('#floatingLeft').classList.toggle('open');}
+
+/* ============ HY one-pager ============ */
+function openHY(){var m=$('#hyModal');if(!m)return;m.classList.add('open');
+  document.body.classList.add('hy-mode');document.body.style.overflow='hidden';}
+function closeHY(){var m=$('#hyModal');if(!m)return;m.classList.remove('open');
+  document.body.classList.remove('hy-mode');document.body.style.overflow='';}
+function printHY(){window.print();}
+
+/* ============ table quiz ============ */
+function initTableQuiz(){
+  $$('table').forEach(function(table){
+    if(table.classList.contains('hy-mini-table'))return;
+    if(table.closest('.game'))return;
+    var headRow=table.rows[0]; if(!headRow)return;
+    var headers=Array.prototype.slice.call(headRow.cells).map(function(c){return c.textContent.trim();});
+    if(headers.length<2)return;
+    var bar=document.createElement('div');bar.className='tq-bar';
+    var toggle=document.createElement('button');toggle.className='tq-toggle';toggle.textContent='\u{1F9E9} Quiz this table';
+    var cols=document.createElement('div');cols.className='tq-cols';cols.style.display='none';
+    var start=document.createElement('button');start.className='tq-start';start.textContent='▶ Start';
+    start.disabled=true;start.style.display='none';
+    var shuf=document.createElement('button');shuf.className='tq-shuffle';shuf.textContent='\u{1F500} Shuffle rows';shuf.style.display='none';
+    var reset=document.createElement('button');reset.className='tq-reset';reset.textContent='↺ Reset';reset.style.display='none';
+    var score=document.createElement('span');score.className='tq-score';
+    bar.appendChild(toggle);bar.appendChild(cols);bar.appendChild(shuf);bar.appendChild(start);bar.appendChild(reset);bar.appendChild(score);
+    var host=table.parentNode.classList.contains('tbl-scroll')?table.parentNode:table;
+    host.parentNode.insertBefore(bar,host);
+
+    var sel=new Set(),running=false,hidden=[],revealed=0,originalOrder=null;
+    headers.forEach(function(h,i){
+      var b=document.createElement('button');b.className='tq-col-btn';b.textContent=h||('col '+(i+1));
+      b.addEventListener('click',function(){
+        if(running)return;
+        if(sel.has(i)){sel.delete(i);b.classList.remove('sel');}else{sel.add(i);b.classList.add('sel');}
+        start.disabled=sel.size===0;
+      });
+      cols.appendChild(b);
+    });
+    function dataRows(){
+      var parent=table.tBodies[0]||table;
+      return Array.prototype.slice.call(parent.rows).filter(function(r){return !r.querySelector('th')||r!==headRow;})
+        .filter(function(r){return r!==headRow;});
+    }
+    toggle.addEventListener('click',function(){
+      var open=cols.style.display==='none';
+      cols.style.display=open?'flex':'none';
+      start.style.display=shuf.style.display=open?'':'none';
+      toggle.classList.toggle('active',open);
+      toggle.textContent=open?'✕ Close quiz':'\u{1F9E9} Quiz this table';
+      if(!open)doReset();
+    });
+    shuf.addEventListener('click',function(){
+      var parent=table.tBodies[0]||table;
+      var rows=dataRows();
+      if(!originalOrder)originalOrder=rows.slice();
+      shuffle(rows).forEach(function(r){parent.appendChild(r);});
+    });
+    function updateScore(){
+      score.textContent=revealed+' / '+hidden.length+' revealed';
+      score.classList.toggle('done',hidden.length>0&&revealed===hidden.length);
+      if(hidden.length>0&&revealed===hidden.length)score.textContent='\u{1F389} '+revealed+' / '+hidden.length;
+    }
+    start.addEventListener('click',function(){
+      if(running||!sel.size)return;
+      running=true;hidden=[];revealed=0;
+      dataRows().forEach(function(r){
+        Array.prototype.slice.call(r.cells).forEach(function(c,i){
+          if(!sel.has(i)||!c.textContent.trim())return;
+          var w=document.createElement('span');w.className='tq-cell-content';w.innerHTML=c.innerHTML;
+          c.innerHTML='';c.appendChild(w);c.classList.add('quiz-hidden-cell');
+          c.dataset.tqOrig=w.innerHTML;
+          hidden.push(c);
+        });
+      });
+      reset.style.display='';start.disabled=true;updateScore();
+    });
+    table.addEventListener('click',function(e){
+      var c=e.target.closest?e.target.closest('td.quiz-hidden-cell'):null;
+      if(!c)return;
+      c.classList.remove('quiz-hidden-cell');c.innerHTML=c.dataset.tqOrig;revealed++;updateScore();
+    });
+    function doReset(){
+      hidden.forEach(function(c){if(c.classList.contains('quiz-hidden-cell')){c.classList.remove('quiz-hidden-cell');c.innerHTML=c.dataset.tqOrig;}});
+      if(originalOrder){var parent=table.tBodies[0]||table;originalOrder.forEach(function(r){parent.appendChild(r);});}
+      hidden=[];revealed=0;running=false;score.textContent='';score.classList.remove('done');
+      start.disabled=sel.size===0;reset.style.display='none';
+    }
+    reset.addEventListener('click',doReset);
+  });
+}
+
+/* ============ keyboard shortcuts ============ */
+function initKeys(){
+  document.addEventListener('keydown',function(e){
+    if(e.metaKey||e.ctrlKey||e.altKey)return;
+    var t=e.target,tag=t&&t.tagName;
+    if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT'||(t&&t.isContentEditable))return;
+    var hy=$('#hyModal');
+    if(e.key==='Escape'){ if(hy&&hy.classList.contains('open'))closeHY(); closeLightbox(); return; }
+    if(hy&&hy.classList.contains('open'))return;
+    var k=e.key.toLowerCase();
+    if(k==='q'){e.preventDefault();jumpToNextQ();return;}
+    if(k==='r'){
+      e.preventDefault();
+      var best=null,bd=Infinity,mid=window.innerHeight/2;
+      $$('.exam-q').forEach(function(q){var d=Math.abs(q.getBoundingClientRect().top+q.offsetHeight/2-mid);
+        if(d<bd){bd=d;best=q;}});
+      if(best){best.classList.add('revealed');updateQCount();}
+      return;
+    }
+    if(k==='j'||k==='k'){
+      e.preventDefault();
+      var y=window.scrollY+window.innerHeight*0.3,cur=0;
+      SECTION_IDS.forEach(function(id,i){var s=document.getElementById(id);if(s&&s.offsetTop<=y)cur=i;});
+      var nx=k==='j'?Math.min(SECTION_IDS.length-1,cur+1):Math.max(0,cur-1);
+      var target=document.getElementById(SECTION_IDS[nx]);
+      if(target)target.scrollIntoView({behavior:'smooth',block:'start'});
+    }
+  });
+}
+
+
+/* ============ lazy figures: fade in when loaded; force-load everything before printing ============ */
+function initLazyFigures(){
+  $$('.fig-frame img').forEach(function(img){
+    var done=function(){img.parentNode.classList.add('loaded');};
+    if(img.complete&&img.naturalWidth)done();
+    else{img.addEventListener('load',done);img.addEventListener('error',done);}
+  });
+  window.addEventListener('beforeprint',function(){$$('img[loading="lazy"]').forEach(function(i){i.loading='eager';});});
+}
+/* ============ video facade: swap the thumbnail for the real player only on click ============ */
+function initVideos(){
+  $$('.vid').forEach(function(b){
+    b.addEventListener('click',function(){
+      if(b.classList.contains('playing'))return;
+      var f=document.createElement('iframe');
+      f.src='https://www.youtube-nocookie.com/embed/'+b.dataset.yt+'?autoplay=1&rel=0';
+      f.title=b.dataset.title||'Video';
+      f.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+      f.allowFullscreen=true;
+      var t=b.querySelector('.vid-thumb');t.replaceWith(f);b.classList.add('playing');
+    });
+  });
+}
+
+/* ============ boot ============ */
+document.addEventListener('DOMContentLoaded',function(){
+  initVisualState();
+  loadProgress();
+  initSectionTools();
+  initExamQ();
+  initTableQuiz();
+  initLightbox();
+  initLazyFigures();
+  initVideos();
+  initScrollspy();
+  initProgress();
+  initRecall();
+  initKeys();
+  var hy=$('#hyModal');
+  if(hy) hy.addEventListener('click',function(e){if(e.target===this)closeHY();});
+  var rb=$('#recallBtn'); if(rb) rb.addEventListener('click',toggleRecall);
+  var nq=$('#nextQBtn'); if(nq) nq.addEventListener('click',jumpToNextQ);
+  var bt=$('#backtopBtn'); if(bt) bt.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});
+  document.addEventListener('click',function(e){
+    var fl=$('#floatingLeft');
+    if(fl&&fl.classList.contains('open')&&!fl.contains(e.target))fl.classList.remove('open');
+  });
+});
+
+
+
+
+</script>
+</body>
+</html>

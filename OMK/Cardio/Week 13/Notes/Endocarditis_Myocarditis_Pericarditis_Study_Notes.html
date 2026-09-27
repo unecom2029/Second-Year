@@ -1,0 +1,2072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+(function(){
+  var NOTE_AUTH_KEY='une-study-hub-remembered-auth-v1';
+  var NOTE_LOGIN_URL='../../../../index.html?login=notes';
+
+  function readCookie(name){
+    try{
+      var prefix=encodeURIComponent(name)+'=';
+      var parts=String(document.cookie||'').split(';');
+      for(var i=0;i<parts.length;i++){
+        var part=parts[i].trim();
+        if(part.indexOf(prefix)===0)return decodeURIComponent(part.slice(prefix.length));
+      }
+    }catch(err){}
+    return null;
+  }
+  function readAuthPayload(){
+    try{
+      var stored=localStorage.getItem(NOTE_AUTH_KEY);
+      if(stored)return stored;
+    }catch(err){}
+    return readCookie(NOTE_AUTH_KEY);
+  }
+  function hasValidNoteAuth(){
+    var raw=readAuthPayload();
+    if(!raw)return false;
+    try{
+      var parsed=JSON.parse(raw);
+      var email=String(parsed&&parsed.email||'').trim().toLowerCase();
+      var expiresAt=Number(parsed&&parsed.expiresAt);
+      return /@une\.edu$/.test(email)&&expiresAt&&Date.now()<expiresAt;
+    }catch(err){return false}
+  }
+  function syncNoteAuth(){
+    document.documentElement.setAttribute('data-note-auth',hasValidNoteAuth()?'unlocked':'locked');
+  }
+  window.openNoteLogin=function(){
+    var loginWindow=window.open(NOTE_LOGIN_URL,'uneStudyHubLogin');
+    if(!loginWindow)window.location.href=NOTE_LOGIN_URL;
+  };
+  window.refreshNoteAuth=syncNoteAuth;
+  window.addEventListener('message',function(event){
+    if(event&&event.data&&event.data.type==='une-study-hub-auth-complete')syncNoteAuth();
+  });
+  window.addEventListener('storage',function(event){
+    if(!event||event.key===NOTE_AUTH_KEY)syncNoteAuth();
+  });
+  window.addEventListener('focus',syncNoteAuth);
+  window.setInterval(syncNoteAuth,1000);
+  syncNoteAuth();
+})();
+</script>
+<title>Endocarditis, Myocarditis & Pericarditis — Study Notes</title>
+<link rel="icon" href="data:image/svg+xml,<svg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'><text%20y='.9em'%20font-size='56'>🦠</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Cardio (default) — soft ECG blush page, arterial red accent, clinical-blue accent2 */
+  --ink:#25161a; --paper:#fff7f7; --cream:#f5e2e6;
+  --accent:#b51f3a; --accent2:#245f89; --gold:#b77b22; --muted:#75535c; --border:#dfb9c2;
+  --highlight:#f8e1a9; --highlight2:#d7e9f4; --green-bg:#d9eee2; --red-bg:#f8d5dc;
+  --blue-bg:#d6e9f5; --purple-bg:#eadcf0; --hero-bg:#173e63;
+  --panel-dark-bg:#173e63; --panel-dark-text:#f7fbff;
+  /* Theme-INDEPENDENT chip colors (sit on saturated / fixed-dark backgrounds in every theme) */
+  --chip-red:#b51f3a; --chip-blue:#245f89; --chip-fg:#ffffff; --panel-dark-accent:#ffd27a;
+  --hero-heading:#f7fbff; --hero-sub:#c8dceb;
+  --hero-meta-bg:rgba(255,255,255,0.08); --hero-meta-border:rgba(240,138,155,0.28);
+  --hero-meta-label:#a9c5d8; --hero-meta-value:#fff1f3; --hero-accent:#ff9aae;
+  --floating-ui-bg:#173e63; --floating-ui-fg:#f7fbff; --floating-ui-shadow:0 3px 12px rgba(23,62,99,0.26);
+  --quiz-overlay:rgba(36,95,137,.38); --quiz-overlay-hover:rgba(36,95,137,.62);
+}
+html:not([data-theme]) .hero{background:
+  radial-gradient(circle at 88% 18%,rgba(181,31,58,0.42),transparent 30%),
+  linear-gradient(135deg,#102e4b,#173e63 62%,#6f1d32)}
+html:not([data-theme]) .toc-bar{border-right-color:#2c5f86}
+
+[data-theme="hemo"]{
+  --ink:#f3dfe1; --paper:#170a0d; --cream:#2b1218;
+  --accent:#ff6b6b; --accent2:#8fb8ea; --gold:#e7b95c; --muted:#b4919a; --border:#431d25;
+  --highlight:#402c14; --highlight2:#33161f; --green-bg:#11291e; --red-bg:#45151a;
+  --blue-bg:#12243c; --purple-bg:#261b3a; --hero-bg:#0c0407;
+  --panel-dark-bg:#2e1017; --panel-dark-text:#f9e7e9;
+  --hero-heading:#fbeaea; --hero-sub:#c9a3a8;
+  --hero-meta-bg:rgba(255,255,255,0.06); --hero-meta-border:rgba(255,107,107,0.18);
+  --hero-meta-label:#b4919a; --hero-meta-value:#ffd9d0; --hero-accent:#ff6b6b;
+  --floating-ui-bg:#0c0407; --floating-ui-fg:#fbeaea; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.45);
+  --quiz-overlay:rgba(143,184,234,.40); --quiz-overlay-hover:rgba(143,184,234,.62);
+}
+[data-theme="hemo"] .toc-bar{border-right-color:#431d25}
+
+[data-theme="paper"]{
+  --hero-accent:#f08a6e;
+  --ink:#1a1209; --paper:#faf7f2; --cream:#ece1cd;
+  --accent:#a32c14; --accent2:#2c5f8a; --gold:#c9922a; --muted:#6b5e4e; --border:#d4cabb;
+  --highlight:#fbe4a0; --highlight2:#cfe4f7; --green-bg:#d7f0da; --red-bg:#f8d6d0;
+  --blue-bg:#d2e7f9; --purple-bg:#e6dbfa; --hero-bg:#1a1209;
+  --panel-dark-bg:#1a1209; --panel-dark-text:#faf7f2;
+  --hero-heading:#f5ede0; --hero-sub:#c9bcad;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#8a7a6a; --hero-meta-value:#f0e0c8;
+  --floating-ui-bg:#3a3030; --floating-ui-fg:#f5ede0; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(44,95,138,.50); --quiz-overlay-hover:rgba(44,95,138,.78);
+}
+[data-theme="night"]{
+  --hero-accent:#e8b84b;
+  --ink:#e0e8f0; --paper:#0f1923; --cream:#1b2942;
+  --accent:#e8b84b; --accent2:#4aa8d8; --gold:#e8b84b; --muted:#94abc0; --border:#1e3048;
+  --highlight:#3a3016; --highlight2:#12283a; --green-bg:#10281c; --red-bg:#2e1616;
+  --blue-bg:#10233a; --purple-bg:#201a38; --hero-bg:#070e15;
+  --panel-dark-bg:#101a26; --panel-dark-text:#eef5fb;
+  --hero-heading:#f4f9ff; --hero-sub:#b8cad8;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#8fa4b8; --hero-meta-value:#f4f9ff;
+  --floating-ui-bg:#070e15; --floating-ui-fg:#f4f9ff; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(74,168,216,.42); --quiz-overlay-hover:rgba(74,168,216,.62);
+}
+[data-theme="ocean"]{
+  --hero-accent:#ff9aa5;
+  --ink:#0b2436; --paper:#eef7fb; --cream:#cdeaf5;
+  --accent:#a32536; --accent2:#0a5286; --gold:#d9a441; --muted:#4f7185; --border:#a8d4e8;
+  --highlight:#ffe6ad; --highlight2:#bfe3f2; --green-bg:#c9f0dc; --red-bg:#fad9d5;
+  --blue-bg:#c3e4f6; --purple-bg:#e1d7f6; --hero-bg:#0a3a5c;
+  --panel-dark-bg:#0b2436; --panel-dark-text:#eef7fb;
+  --hero-heading:#eaf6fd; --hero-sub:#a9c9dc;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#7ba0b8; --hero-meta-value:#d9edfa;
+  --floating-ui-bg:#0a3a5c; --floating-ui-fg:#eaf6fd; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(15,111,176,.48); --quiz-overlay-hover:rgba(15,111,176,.74);
+}
+[data-theme="forest"]{
+  --hero-accent:#f0a07c;
+  --ink:#16241a; --paper:#f2f7f0; --cream:#d7ead2;
+  --accent:#8f3418; --accent2:#155c39; --gold:#b8860b; --muted:#52684f; --border:#b7d4ae;
+  --highlight:#f3e6a0; --highlight2:#cbe4c4; --green-bg:#c7ecc0; --red-bg:#f7ddd0;
+  --blue-bg:#cbe6df; --purple-bg:#e1dbee; --hero-bg:#12301c;
+  --panel-dark-bg:#16241a; --panel-dark-text:#f2f7f0;
+  --hero-heading:#eef7ea; --hero-sub:#b6cfb0;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#87a382; --hero-meta-value:#e2f2da;
+  --floating-ui-bg:#12301c; --floating-ui-fg:#eef7ea; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(31,122,77,.48); --quiz-overlay-hover:rgba(31,122,77,.74);
+}
+[data-theme="sepia"]{
+  --hero-accent:#f0a57e;
+  --ink:#3a2414; --paper:#f7ecd9; --cream:#ecd7ae;
+  --accent:#9c3b17; --accent2:#2f5f6b; --gold:#8b5a17; --muted:#7a614a; --border:#d9bd8c;
+  --highlight:#f0d38a; --highlight2:#d7c39a; --green-bg:#dbe3bc; --red-bg:#f0d0c0;
+  --blue-bg:#cfdedd; --purple-bg:#e3d3e0; --hero-bg:#3f2814;
+  --panel-dark-bg:#3a2414; --panel-dark-text:#f7ecd9;
+  --hero-heading:#f7ecd9; --hero-sub:#cbb190;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#a08a68; --hero-meta-value:#f2ddb4;
+  --floating-ui-bg:#3f2814; --floating-ui-fg:#f7ecd9; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(47,95,107,.50); --quiz-overlay-hover:rgba(47,95,107,.78);
+}
+[data-theme="slate"]{
+  --hero-accent:#ff9a78;
+  --ink:#1c2229; --paper:#f4f5f7; --cream:#dde3ea;
+  --accent:#9e2c0f; --accent2:#2b5268; --gold:#a8862a; --muted:#5c6a76; --border:#c8d0d8;
+  --highlight:#f2e3ac; --highlight2:#d5e2ec; --green-bg:#d6ead9; --red-bg:#f4d8d0;
+  --blue-bg:#d3e2ef; --purple-bg:#dfd9ec; --hero-bg:#1c2530;
+  --panel-dark-bg:#1c2530; --panel-dark-text:#f4f5f7;
+  --hero-heading:#eef1f5; --hero-sub:#b3bfca;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#8595a3; --hero-meta-value:#e4ebf2;
+  --floating-ui-bg:#1c2530; --floating-ui-fg:#eef1f5; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(51,96,122,.50); --quiz-overlay-hover:rgba(51,96,122,.78);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;padding-left:var(--toc-w);background:var(--paper);color:var(--ink);
+  font-family:'Source Serif 4',Georgia,serif;font-size:16px;line-height:1.65;overflow-wrap:break-word;
+  transition:background .25s,color .25s}
+:root{--toc-w:258px}
+h1,h2,h3,h4{font-family:'Playfair Display',Georgia,serif;line-height:1.18}
+a{color:var(--accent2)}
+strong{color:var(--accent2)}
+.container{max-width:min(1220px,94%);margin:0 auto}
+img{max-width:100%}
+
+/* ---------------- reading progress ---------------- */
+.progress-bar{position:fixed;top:0;left:0;height:3px;width:0;z-index:200;
+  background:linear-gradient(90deg,var(--accent2),var(--accent));transition:width .1s linear}
+
+/* ---------------- TOC sidebar ---------------- */
+.toc-bar{position:fixed;top:0;left:0;bottom:0;z-index:90;width:var(--toc-w);
+  background:var(--hero-bg);border-right:1px solid rgba(255,255,255,.10);overflow-y:auto;overflow-x:hidden}
+.toc-bar::-webkit-scrollbar{width:6px}
+.toc-bar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14);border-radius:3px}
+.toc-bar::-webkit-scrollbar-track{background:transparent}
+.toc-head{padding:24px 20px 16px;border-bottom:1px solid rgba(255,255,255,.10)}
+.toc-eyebrow{display:block;font-family:'JetBrains Mono',monospace;font-size:.5rem;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--hero-meta-label);margin-bottom:7px}
+.toc-name{display:block;font-family:'Playfair Display',serif;font-weight:700;font-size:1.2rem;
+  color:var(--hero-heading);line-height:1.15}
+.toc-name em{font-style:normal;color:var(--hero-accent)}
+.toc-group{font-family:'JetBrains Mono',monospace;font-size:.49rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--hero-meta-label);opacity:.75;margin:0;padding:18px 20px 7px}
+.toc-bar nav{display:flex;flex-direction:column;padding:0 0 26px}
+.toc-bar a{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:'Source Serif 4',Georgia,serif;
+  font-size:.85rem;line-height:1.3;color:var(--hero-sub);padding:8px 16px 8px 17px;
+  border-left:3px solid transparent;transition:color .15s,border-color .15s,background .15s}
+.toc-num{flex:none;width:21px;height:21px;border-radius:50%;border:1px solid rgba(255,255,255,.18);
+  display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;
+  font-size:.56rem;font-weight:700;color:var(--hero-meta-label);transition:all .15s}
+.toc-num.dot{border:none;position:relative}
+.toc-num.dot::before{content:'';width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.28);transition:background .15s}
+.toc-bar a:hover{color:var(--hero-heading);background:rgba(255,255,255,.05)}
+.toc-bar a:hover .toc-num{border-color:rgba(255,255,255,.4);color:var(--hero-heading)}
+.toc-bar a:hover .toc-num.dot::before{background:var(--accent)}
+.toc-bar a.active{color:var(--hero-heading);border-left-color:var(--accent);background:rgba(255,255,255,.06);font-weight:600}
+.toc-bar a.active .toc-num{background:var(--chip-red);border-color:var(--chip-red);color:var(--chip-fg)}
+.toc-bar a.active .toc-num.dot{background:none;border-color:transparent}
+.toc-bar a.active .toc-num.dot::before{background:var(--accent);width:7px;height:7px}
+.toc-check{margin-left:auto;font-size:.72rem;display:none;line-height:1}
+.toc-bar a.done .toc-check{display:inline}
+.toc-bar a.conf-1 .toc-check{color:#e0564a}
+.toc-bar a.conf-2 .toc-check{color:#d6a12a}
+.toc-bar a.conf-3 .toc-check{color:#3d9c5c}
+.toc-tools{display:flex;flex-direction:column;gap:6px;padding:14px 14px 0;margin-top:8px;
+  border-top:1px solid rgba(255,255,255,.10)}
+.toc-chip{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);color:var(--hero-sub);
+  font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.05em;padding:7px 9px;
+  border-radius:8px;cursor:pointer;text-align:left;transition:background .15s,color .15s}
+.toc-chip:hover{background:rgba(255,255,255,.14);color:var(--hero-heading)}
+.toc-hy-btn{display:flex;align-items:center;justify-content:center;gap:7px;width:calc(100% - 28px);
+  margin:15px 14px 2px;background:var(--gold);color:#2a1a00;border:none;padding:11px 10px;border-radius:24px;
+  cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.04em;
+  line-height:1.25;text-align:center;transition:transform .15s,box-shadow .15s}
+.toc-hy-btn:hover{transform:translateY(-1px);box-shadow:0 4px 13px rgba(0,0,0,.32)}
+
+/* ---------------- hero ---------------- */
+.hero{background:var(--hero-bg);padding:52px 0 64px;width:100%;position:relative;overflow:hidden}
+.hero-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--hero-meta-label);margin-bottom:16px}
+.hero h1{margin:0 0 12px;font-size:clamp(2rem,4.4vw,3.3rem);font-weight:900;color:var(--hero-heading);letter-spacing:-.01em}
+.hero h1 span{color:var(--hero-accent)}
+.hero-sub{margin:0 0 20px;max-width:66ch;color:var(--hero-sub);font-size:1.03rem}
+.hero-meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.hero-meta-item{background:var(--hero-meta-bg);border:1px solid var(--hero-meta-border);border-radius:9px;
+  padding:9px 15px;min-width:118px}
+.hero-meta-item .label{display:block;font-family:'JetBrains Mono',monospace;font-size:.5rem;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--hero-meta-label);margin-bottom:4px}
+.hero-meta-item .value{display:block;font-family:'Playfair Display',serif;font-weight:700;font-size:1.02rem;color:var(--hero-meta-value)}
+.hy-btn{display:none;align-items:center;gap:8px;background:var(--gold);color:#2a1a00;border:none;padding:12px 22px;
+  border-radius:30px;font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700;letter-spacing:.04em;
+  cursor:pointer;margin-top:4px;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+
+/* ---------------- sections ---------------- */
+.section{padding:46px 0 8px;border-bottom:1px solid var(--border);scroll-margin-top:20px}
+.section:last-of-type{border-bottom:none}
+.badge-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.lo-badge{display:inline-block;background:var(--chip-red);color:var(--chip-fg);font-family:'JetBrains Mono',monospace;
+  font-size:.6rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;padding:6px 13px;border-radius:20px}
+.lo-badge.alt{background:var(--chip-blue)}
+.section-label{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 6px}
+.section-title{margin:0 0 6px;font-size:clamp(1.55rem,3vw,2.3rem);font-weight:700;
+  border-bottom:3px solid var(--accent);display:inline-block;padding-bottom:6px}
+.section h3{margin:30px 0 8px;font-size:1.24rem;border-left:4px solid var(--accent2);padding-left:11px}
+.section h4{margin:18px 0 6px;font-size:1.03rem}
+.lede{font-size:1.05rem;color:var(--muted);max-width:74ch}
+
+/* section tools (injected) */
+.sec-tools{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:14px 0 4px;padding:8px 12px;
+  background:var(--cream);border:1px solid var(--border);border-radius:9px;
+  font-family:'JetBrains Mono',monospace;font-size:.6rem}
+.sec-tools .st-lab{color:var(--muted);text-transform:uppercase;letter-spacing:.11em}
+.sec-tools button{font-family:'JetBrains Mono',monospace;font-size:.6rem;border:1px solid var(--border);
+  background:var(--paper);color:var(--ink);border-radius:20px;padding:4px 11px;cursor:pointer;transition:all .15s}
+.sec-tools button:hover{border-color:var(--accent2)}
+.sec-tools button.on{background:var(--accent2);color:#fff;border-color:var(--accent2)}
+.sec-tools .st-collapse{margin-left:auto}
+.sec-body-outer{display:grid;grid-template-rows:1fr;transition:grid-template-rows .35s ease}
+.sec-body-inner{overflow:hidden;min-height:0}
+.section.collapsed .sec-body-outer{grid-template-rows:0fr}
+.recall-note{display:none;margin:12px 0;padding:9px 13px;border:1px dashed var(--accent2);border-radius:8px;
+  background:var(--blue-bg);font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--ink)}
+body.recall-mode .recall-note{display:block}
+
+/* ---------------- callouts ---------------- */
+.callout{border-left:5px solid var(--accent2);border-radius:0 9px 9px 0;padding:14px 18px;margin:18px 0;background:var(--blue-bg)}
+.callout p:last-child,.callout ul:last-child{margin-bottom:0}
+.callout p:first-of-type{margin-top:0}
+.callout-title{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;margin-bottom:7px;color:var(--ink)}
+.callout-key{border-left-color:var(--gold);background:var(--highlight)}
+.callout-concept{border-left-color:var(--accent2);background:var(--blue-bg)}
+.callout-clinical{border-left-color:#3d9c5c;background:var(--green-bg)}
+.callout-warning{border-left-color:var(--accent);background:var(--red-bg)}
+.callout-purple{border-left-color:#7a5aa8;background:var(--purple-bg)}
+.callout-hook{border-left-color:var(--gold);background:var(--highlight);border-left-style:dashed;border-left-width:5px}
+
+/* ---------------- lists ---------------- */
+.notes-list{list-style:none;padding-left:0;margin:12px 0}
+.notes-list li{position:relative;padding-left:20px;margin-bottom:7px}
+.notes-list li::before{content:'\203A';position:absolute;left:4px;color:var(--accent);font-weight:700}
+.step-list{list-style:none;counter-reset:st;padding-left:0;margin:16px 0}
+.step-list li{counter-increment:st;position:relative;padding-left:44px;margin-bottom:14px;min-height:30px}
+.step-list li::before{content:counter(st);position:absolute;left:0;top:0;width:30px;height:30px;border-radius:50%;
+  background:var(--chip-red);color:var(--chip-fg);display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:700}
+.step-list li>div>strong:first-child{display:block;margin-bottom:2px;color:var(--accent)}
+
+/* ---------------- tables ---------------- */
+table{width:100%;border-collapse:collapse;margin:6px 0 20px;font-size:.92rem}
+th,td{border:1px solid var(--border);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:var(--panel-dark-bg);color:var(--panel-dark-text);font-family:'JetBrains Mono',monospace;
+  font-size:.63rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700}
+tr:nth-child(even) td{background:var(--cream)}
+tr:hover td{background:var(--highlight2)}
+.tbl-scroll{overflow-x:auto;margin-bottom:20px}
+.tbl-scroll table{margin-bottom:0}
+
+/* ---------------- exam Q ---------------- */
+.exam-q{background:var(--panel-dark-bg);color:var(--panel-dark-text);border-radius:11px;padding:20px 22px 18px;margin:22px 0;position:relative}
+.exam-q::before{content:'Exam Q';position:absolute;top:-10px;left:20px;background:var(--chip-red);color:var(--chip-fg);
+  font-family:'JetBrains Mono',monospace;font-size:.56rem;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;padding:4px 11px;border-radius:12px}
+.exam-q p{margin:6px 0}
+.exam-q strong{color:var(--panel-dark-accent)}
+.exam-q .answer{margin-top:12px;padding-top:12px;border-top:1px dashed rgba(255,255,255,.28);display:none}
+.exam-q.revealed .answer{display:block;animation:fadeIn .32s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.exam-q .answer .label{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--panel-dark-accent);margin-bottom:5px}
+.exam-q .reveal-btn{margin-top:11px;background:transparent;border:1px solid rgba(255,255,255,.4);
+  color:var(--panel-dark-text);font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.09em;
+  text-transform:uppercase;padding:6px 15px;border-radius:20px;cursor:pointer}
+.exam-q .reveal-btn:hover{background:rgba(255,255,255,.14)}
+.exam-q.revealed .reveal-btn{display:none}
+.exam-q.q-flash{outline:3px solid var(--gold);animation:qPulse 1.2s ease 1}
+@keyframes qPulse{0%{box-shadow:0 0 0 0 rgba(201,146,42,.55)}70%{box-shadow:0 0 0 14px rgba(201,146,42,0)}100%{box-shadow:none}}
+
+/* ---------------- cards & grids ---------------- */
+.compare-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:14px;margin:18px 0}
+.compare-card{border:1px solid var(--border);border-radius:11px;padding:16px 18px;background:var(--cream)}
+.compare-card h4{margin:6px 0 6px;font-size:1.08rem}
+.compare-card .card-emoji{font-size:1.5rem;line-height:1}
+.compare-card p{margin:0 0 8px}
+.fact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,235px),1fr));gap:13px;margin:18px 0}
+.fact-card{border:1px solid var(--border);border-top:4px solid var(--accent2);border-radius:10px;
+  padding:14px 16px;background:var(--cream)}
+.fact-card h4{margin:0 0 3px;font-size:1rem}
+.fact-card .generic{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.fact-card p{margin:0;font-size:.87rem}
+.hallmarks-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,215px),1fr));gap:13px;margin:18px 0}
+.hallmark-card{border:1px solid var(--border);border-top:4px solid var(--accent);border-radius:10px;
+  padding:14px 16px;background:var(--cream);position:relative}
+.hallmark-card:nth-child(3n+2){border-top-color:var(--accent2)}
+.hallmark-card:nth-child(3n+3){border-top-color:var(--gold)}
+.hallmark-card h4{margin:6px 0 4px;font-size:.99rem}
+.hallmark-card p{margin:0;font-size:.86rem}
+.hallmark-num{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;color:var(--muted)}
+
+/* inline chips */
+.lab-code{font-family:'JetBrains Mono',monospace;background:var(--cream);border:1px solid var(--border);
+  padding:1px 6px;border-radius:4px;font-size:.82rem;white-space:nowrap}
+.gene-tag{font-family:'JetBrains Mono',monospace;color:var(--accent2);font-size:.88rem;font-weight:600}
+.hy-flag{display:inline-flex;align-items:center;gap:3px;background:var(--highlight);color:var(--gold);
+  border:1px solid var(--gold);font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.6rem;
+  padding:1px 8px;border-radius:20px;letter-spacing:.04em;vertical-align:middle}
+.up{color:#c0392b;font-weight:700}
+.dn{color:#2c7fb8;font-weight:700}
+
+/* ---------------- images ---------------- */
+.slide-img{width:100%;display:block;border:1px solid var(--border);border-radius:10px;margin:18px 0 5px;
+  cursor:zoom-in;background:#fff}
+.slide-caption{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 20px;text-align:center}
+/* small source images: cap the width so they are not upscaled into blur */
+.slide-img.sm{width:auto;max-width:min(100%,540px);margin-left:auto;margin-right:auto}
+/* portrait images: cap the height instead of the width */
+.slide-img.tall{width:auto;max-width:100%;max-height:560px;margin-left:auto;margin-right:auto}
+.img-pair .slide-img.tall{max-height:420px}
+.img-pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px 20px;margin:18px 0;
+  align-items:start}
+.img-pair .slide-img{margin:0}
+.img-pair .slide-img.sm{width:100%;max-width:100%}
+.img-pair .slide-caption{margin:6px 0 0}
+.img-pair>div{display:flex;flex-direction:column}
+.fig{margin:18px 0}
+.fig svg{width:100%;height:auto;display:block;border:1px solid var(--border);border-radius:10px;background:var(--cream)}
+
+/* ---------------- table quiz ---------------- */
+.tq-bar{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:6px;padding:8px 12px;
+  background:var(--cream);border:1px solid var(--border);border-radius:8px}
+.tq-toggle{font-family:'JetBrains Mono',monospace;font-size:.63rem;letter-spacing:.09em;text-transform:uppercase;
+  background:var(--accent2);color:#fff;border:none;border-radius:20px;padding:5px 12px;cursor:pointer}
+.tq-toggle.active{background:var(--chip-red);color:var(--chip-fg)}
+.tq-cols{display:flex;flex-wrap:wrap;gap:5px;flex:1}
+.tq-col-btn{font-size:.7rem;padding:3px 9px;border:1px solid var(--border);border-radius:12px;background:var(--paper);
+  cursor:pointer;font-family:'JetBrains Mono',monospace;color:var(--ink);transition:all .15s}
+.tq-col-btn.sel{background:var(--chip-blue);color:var(--chip-fg);border-color:var(--chip-blue)}
+.tq-start,.tq-shuffle,.tq-reset{font-family:'JetBrains Mono',monospace;font-size:.63rem;color:#fff;border:none;
+  border-radius:20px;padding:5px 12px;cursor:pointer}
+.tq-start{background:#2e7d32}.tq-start:disabled{opacity:.35;cursor:not-allowed}
+.tq-shuffle{background:var(--accent2)}
+.tq-reset{background:var(--accent)}
+.tq-score{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted)}
+.tq-score.done{color:#2e7d32;font-weight:700}
+.quiz-hidden-cell{position:relative!important;cursor:pointer!important}
+.quiz-hidden-cell .tq-cell-content{filter:blur(5px)!important;user-select:none!important;pointer-events:none!important;opacity:.4!important}
+.quiz-hidden-cell::after{content:'tap to reveal'!important;position:absolute!important;inset:0!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;background:var(--quiz-overlay)!important;
+  color:#fff!important;font-family:'JetBrains Mono',monospace!important;font-size:.58rem!important;font-weight:700!important;
+  letter-spacing:.12em!important;text-transform:uppercase!important;border-radius:4px!important}
+.quiz-hidden-cell:hover::after{background:var(--quiz-overlay-hover)!important}
+
+/* ---------------- recall mode ---------------- */
+body.recall-mode .sec-body-inner :is(p,li,td,h4,dd) strong:not(.rc-open){color:transparent;background:var(--highlight2);
+  border-radius:4px;cursor:pointer;box-shadow:inset 0 0 0 1px var(--border);padding:0 2px}
+body.recall-mode .exam-q strong,body.recall-mode .tq-bar strong{color:var(--panel-dark-accent)!important;background:none!important;box-shadow:none!important}
+body.recall-mode .game strong{color:inherit!important;background:none!important;box-shadow:none!important;cursor:auto}
+strong.rc-open{animation:rcReveal .35s ease}
+@keyframes rcReveal{from{background:var(--gold)}to{background:transparent}}
+
+/* ---------------- games ---------------- */
+.game{background:var(--cream);border:1px solid var(--border);border-top:4px solid var(--accent);border-radius:12px;
+  padding:18px 20px;margin:22px 0}
+.g-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:4px}
+.g-head h3{margin:0;font-size:1.16rem;border:none;padding:0}
+.g-emoji{margin-right:.45em}
+.g-score{margin-left:auto;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.72rem;color:var(--muted)}
+.g-intro{font-size:.87rem;color:var(--muted);margin:0 0 10px}
+.g-stage{background:var(--paper);border:1px solid var(--border);border-radius:14px;padding:20px 18px 16px;margin:10px 0 0}
+.g-vign{text-align:left;font-size:.97rem;line-height:1.55;min-height:2.4em}
+.g-vign .lead{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--muted);display:block;margin-bottom:6px}
+.g-opts{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));margin-top:14px}
+.g-opt{border:1px solid var(--border);background:var(--cream);border-radius:11px;padding:9px 14px;font-weight:700;
+  cursor:pointer;font-size:.88rem;font-family:'Source Serif 4',Georgia,serif;color:var(--ink);text-align:center;
+  transition:transform .12s ease,border-color .12s,background .12s}
+.g-opt:hover{transform:translateY(-2px);border-color:var(--accent)}
+.g-opt.correct{background:var(--green-bg);border-color:#2e7d32;color:#1f5c24}
+.g-opt.wrong{background:var(--red-bg);border-color:var(--accent);color:var(--accent)}
+.g-fb{min-height:2.4em;margin-top:12px;font-size:.9rem;line-height:1.55}
+.g-fb .ok{color:#2e7d32;font-weight:700}
+.g-fb .no{color:var(--accent);font-weight:700}
+.g-btn{margin-top:14px;background:var(--accent);color:#fff;border:none;border-radius:22px;padding:8px 20px;
+  font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.06em;cursor:pointer}
+.g-btn:hover{filter:brightness(1.1)}
+.g-bank{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-top:12px}
+.g-bank .g-opt{padding:7px 13px;font-size:.83rem}
+.g-opt.picked{opacity:.5;pointer-events:none}
+.g-slots{display:grid;gap:9px;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));margin-top:12px}
+.g-slot{border:1px dashed var(--border);border-radius:10px;padding:10px 12px;background:var(--cream);min-height:62px}
+.g-slot h5{margin:0 0 6px;font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted)}
+.g-slot.sel{border-style:solid;border-color:var(--accent2);box-shadow:0 0 0 2px var(--blue-bg)}
+.g-slot ul{margin:0;padding-left:16px;font-size:.82rem}
+.g-timer{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--accent);font-weight:700}
+
+/* ---------------- floating UI ---------------- */
+.floating-stack{position:fixed;bottom:18px;right:18px;z-index:100;display:flex;flex-direction:column;align-items:flex-end;gap:9px}
+.font-btn-row{display:flex;align-items:center;background:var(--floating-ui-bg);color:var(--floating-ui-fg);
+  padding:7px 10px;border-radius:30px;box-shadow:var(--floating-ui-shadow);font-family:'JetBrains Mono',monospace;
+  font-size:.62rem;letter-spacing:.1em;gap:2px}
+.font-btn{background:none;border:none;cursor:pointer;color:var(--floating-ui-fg);font-family:'JetBrains Mono',monospace;
+  font-weight:700;font-size:1rem;padding:2px 8px;border-radius:6px;line-height:1}
+.font-btn:hover{background:rgba(255,255,255,.18)}
+.font-sep{color:rgba(255,255,255,.22);padding:0 3px}
+.font-label{font-size:.56rem;opacity:.7;padding:0 5px;text-transform:uppercase;letter-spacing:.1em}
+.theme-btn{display:flex;align-items:center;gap:7px;background:var(--floating-ui-bg);color:var(--floating-ui-fg);
+  border:none;padding:10px 17px;border-radius:30px;box-shadow:var(--floating-ui-shadow);cursor:pointer;
+  font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.09em;text-transform:uppercase}
+.theme-panel{position:absolute;bottom:100%;right:0;margin-bottom:10px;background:var(--floating-ui-bg);
+  color:var(--floating-ui-fg);border-radius:12px;padding:12px 10px;box-shadow:var(--floating-ui-shadow);
+  min-width:196px;display:none}
+.theme-panel.open{display:block}
+.theme-panel-title{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.16em;text-transform:uppercase;
+  opacity:.65;padding:0 8px 8px}
+.theme-option{display:flex;align-items:center;gap:9px;padding:7px 9px;border-radius:8px;cursor:pointer;
+  font-family:'JetBrains Mono',monospace;font-size:.66rem}
+.theme-option:hover{background:rgba(255,255,255,.12)}
+.theme-option.active{background:rgba(255,255,255,.18)}
+.theme-swatch{width:17px;height:17px;border-radius:50%;border:1px solid rgba(255,255,255,.35);flex:none}
+
+.floating-left{position:fixed;bottom:18px;left:calc(var(--toc-w) + 18px);z-index:100;
+  display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+.tools-menu{display:flex;flex-direction:column;gap:7px;opacity:0;pointer-events:none;transform:translateY(10px);
+  transition:opacity .22s,transform .22s}
+.floating-left:hover .tools-menu,.floating-left:focus-within .tools-menu,.floating-left.open .tools-menu{
+  opacity:1;pointer-events:auto;transform:none}
+.tool-btn{background:var(--floating-ui-bg);color:var(--floating-ui-fg);border:none;padding:9px 15px;border-radius:22px;
+  box-shadow:var(--floating-ui-shadow);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:.63rem;
+  letter-spacing:.05em;text-align:left;white-space:nowrap}
+.tool-btn:hover{filter:brightness(1.2)}
+.tool-btn.on{background:var(--accent);color:#fff}
+.tools-trigger{position:relative}
+.tools-trigger .dot{display:none;position:absolute;top:6px;right:8px;width:7px;height:7px;border-radius:50%;background:var(--gold)}
+.tools-trigger.busy .dot{display:block}
+.backtop{display:none}
+.backtop.show{display:block}
+
+/* ---------------- lightbox ---------------- */
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:400;display:none;align-items:center;
+  justify-content:center;cursor:zoom-out;padding:22px}
+.lightbox.active{display:flex}
+.lightbox img{max-width:92vw;max-height:88vh;border-radius:6px}
+
+/* ---------------- HY one-pager ---------------- */
+.hy-modal{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:300;display:none;align-items:flex-start;
+  justify-content:center;overflow-y:auto;padding:30px 16px}
+.hy-modal.open{display:flex}
+.hy-modal-card{background:var(--paper);color:var(--ink);max-width:1060px;width:100%;border-radius:14px;
+  padding:26px 30px 34px;box-shadow:0 20px 60px rgba(0,0,0,.45)}
+.hy-modal-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;
+  border-bottom:3px solid var(--accent);padding-bottom:10px;flex-wrap:wrap}
+.hy-modal-header h2{margin:0;font-size:1.35rem}
+.hy-modal-actions{display:flex;gap:8px;flex:none}
+.hy-action-btn{font-family:'JetBrains Mono',monospace;font-size:.64rem;letter-spacing:.05em;text-transform:uppercase;
+  border:1px solid var(--border);background:var(--cream);color:var(--ink);padding:7px 13px;border-radius:20px;cursor:pointer}
+.hy-close-btn{background:var(--chip-red);color:var(--chip-fg);border:none}
+.hy-subhead{font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--muted);margin:0 0 13px}
+.hy-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;min-width:0}
+@media (max-width:760px){.hy-cols{grid-template-columns:1fr}}
+.hy-cols>div{min-width:0}
+.hy-block{border:1px solid var(--border);border-radius:8px;padding:9px 11px;background:var(--cream);margin-bottom:9px;min-width:0}
+.hy-block h4{margin:0 0 5px;font-size:.76rem;color:var(--accent);border-bottom:1px solid var(--border);padding-bottom:4px}
+.hy-block p,.hy-block li{font-size:.67rem;line-height:1.4;margin:0 0 3px}
+.hy-block ul{margin:0;padding-left:15px}
+.hy-lo-tag{display:block;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;color:var(--chip-fg);
+  background:var(--chip-blue);padding:3px 9px;border-radius:10px;margin-bottom:7px;letter-spacing:.05em;text-align:center}
+.hy-mini-table{width:100%;border-collapse:collapse;font-size:.63rem;margin-top:4px}
+.hy-mini-table th,.hy-mini-table td{border:1px solid var(--border);padding:3px 5px;text-align:left;line-height:1.3}
+.hy-mini-table th{background:var(--panel-dark-bg);color:var(--panel-dark-text);font-size:.56rem;text-transform:uppercase}
+.hy-mini-table tr:nth-child(even) td{background:transparent}
+
+/* ---------------- glossary ---------------- */
+.gloss{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:10px;margin:16px 0}
+.gloss dl{margin:0;border:1px solid var(--border);border-radius:9px;padding:12px 14px;background:var(--cream)}
+.gloss dt{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;color:var(--accent);margin-top:8px}
+.gloss dt:first-child{margin-top:0}
+.gloss dd{margin:2px 0 0;font-size:.86rem}
+.abbr-strip{background:var(--cream);border:1px solid var(--border);border-left:4px solid var(--gold);
+  border-radius:0 9px 9px 0;padding:11px 15px;margin:14px 0;font-size:.85rem}
+.abbr-strip .t{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--muted);display:block;margin-bottom:5px}
+
+footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top:40px;font-size:.83rem}
+footer .container{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center}
+footer kbd{font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.2);
+  border-radius:4px;padding:1px 6px;font-size:.72rem}
+
+/* ---------------- responsive ---------------- */
+@media (max-width:1000px){
+  body{padding-left:0}
+  .toc-bar{position:sticky;top:0;bottom:auto;width:100%;height:auto;border-right:none;
+    border-bottom:1px solid rgba(255,255,255,.12);overflow-x:auto;overflow-y:hidden}
+  .toc-head,.toc-group,.toc-hy-btn,.toc-tools{display:none}
+  .toc-bar nav{flex-direction:row;padding:0 8px;white-space:nowrap}
+  .toc-bar a{padding:11px 13px;border-left:none;border-bottom:2px solid transparent;gap:8px}
+  .toc-bar a:hover,.toc-bar a.active{border-left-color:transparent;border-bottom-color:var(--accent);background:none}
+  .toc-num{width:18px;height:18px;font-size:.53rem}
+  .toc-check{display:none!important}
+  .hero .hy-btn{display:inline-flex}
+  .floating-left{left:14px;bottom:14px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
+
+/* ---------------- print ---------------- */
+@media print{
+  body{padding-left:0!important;background:#fff;color:#000}
+  .container{max-width:100%!important}
+  .toc-bar,.floating-stack,.floating-left,.progress-bar,.sec-tools,.recall-note,.tq-bar,
+  .toc-hy-btn,.hy-btn,.lightbox,.game,.exam-q .reveal-btn{display:none!important}
+  .section{page-break-inside:auto;border-bottom:1px solid #ccc}
+  .section.collapsed .sec-body-outer{grid-template-rows:1fr!important}
+  .exam-q .answer{display:block!important}
+  .hero{background:#fff!important;color:#000;padding:16px 0}
+  .hero h1,.hero-sub,.hero-tag,.hero-meta-item .value,.hero-meta-item .label{color:#000!important}
+  .slide-img{page-break-inside:avoid}
+  body.hy-mode .hero,body.hy-mode .section,body.hy-mode footer{display:none!important}
+  body.hy-mode .hy-modal{position:static!important;inset:auto!important;background:none!important;padding:0!important;
+    display:block!important;overflow:visible!important}
+  body.hy-mode .hy-modal-card{position:static!important;max-width:100%!important;width:100%!important;
+    box-shadow:none!important;padding:4px!important}
+  .hy-modal-actions{display:none!important}
+  .hy-cols{grid-template-columns:repeat(3,1fr);gap:6px}
+  .hy-modal-header h2{font-size:1.02rem}
+  .hy-subhead{font-size:.56rem;margin-bottom:7px}
+  .hy-block{padding:4px 6px;margin-bottom:4px;break-inside:avoid}
+  .hy-block h4{font-size:.60rem;margin-bottom:2px;padding-bottom:1.5px}
+  .hy-block p,.hy-block li{font-size:.50rem;line-height:1.2;margin-bottom:1.5px}
+  .hy-mini-table{font-size:.465rem}
+  .hy-mini-table th,.hy-mini-table td{padding:1px 2.5px;line-height:1.18}
+  .hy-lo-tag{font-size:.53rem;padding:2px 7px;margin-bottom:4px}
+  @page{margin:8mm}
+}
+
+
+#noteAuthGate{display:none}
+html[data-note-auth="locked"] body{
+  min-height:100vh;
+  overflow:hidden;
+  background:#f4f5f7;
+  color:#1f2937;
+}
+html[data-note-auth="locked"] body>*:not(#noteAuthGate){display:none!important}
+html[data-note-auth="locked"] #noteAuthGate{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  background:linear-gradient(135deg,#f4f5f7,#ffffff 52%,#eef2f7);
+}
+.note-auth-card{
+  width:min(460px,100%);
+  padding:30px;
+  border:1px solid rgba(31,41,55,.14);
+  border-radius:14px;
+  background:rgba(255,255,255,.92);
+  box-shadow:0 22px 70px rgba(31,41,55,.16);
+  text-align:center;
+}
+.note-auth-kicker{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.68rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:#cf4520;
+  font-weight:700;
+  margin-bottom:12px;
+}
+.note-auth-card h1{
+  margin:0 0 12px;
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2rem,6vw,3rem);
+  line-height:.98;
+  color:#263241;
+}
+.note-auth-card p{
+  margin:0 0 22px;
+  font-size:1rem;
+  line-height:1.55;
+  color:#556070;
+}
+.note-auth-btn{
+  border:0;
+  border-radius:999px;
+  padding:12px 20px;
+  font:700 .9rem 'JetBrains Mono',monospace;
+  letter-spacing:.04em;
+  color:#fff;
+  background:#263241;
+  cursor:pointer;
+  box-shadow:0 12px 28px rgba(38,50,65,.22);
+}
+.note-auth-btn:hover{background:#cf4520}
+
+/* ---------------- pharmacology components ---------------- */
+.drug-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:13px;margin:18px 0}
+.drug-card{border:1px solid var(--border);border-top:4px solid var(--accent2);border-radius:10px;
+  padding:14px 16px;background:var(--cream)}
+.drug-card h4{margin:0 0 3px;font-size:1rem}
+.drug-card .generic{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.drug-card p{margin:0;font-size:.86rem}
+.drug-card p+p{margin-top:5px}
+.drug-card.span2{grid-column:span 2}
+@media (max-width:760px){.drug-card.span2{grid-column:auto}}
+
+.box-warning{border:2px solid var(--accent);border-left-width:9px;border-radius:9px;background:var(--red-bg);
+  padding:15px 18px 13px;margin:20px 0}
+.bw-label{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;background:var(--chip-red);color:var(--chip-fg);
+  padding:4px 11px;border-radius:5px;margin-bottom:9px}
+.box-warning p{margin:0;font-size:.93rem}
+.box-warning p+p{margin-top:7px}
+
+.rems-badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.55rem;font-weight:700;
+  letter-spacing:.1em;background:var(--purple-bg);color:var(--accent2);border:1px solid var(--border);
+  padding:2px 6px;border-radius:4px;vertical-align:middle;margin-left:3px}
+
+.moa-chain{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:14px 0;padding:13px 15px;
+  background:var(--cream);border:1px solid var(--border);border-radius:10px}
+.moa-chain span{font-family:'JetBrains Mono',monospace;font-size:.7rem;line-height:1.35;
+  background:var(--paper);border:1px solid var(--border);border-radius:6px;padding:5px 9px}
+.moa-chain span.hit{background:var(--highlight);border-color:var(--gold);font-weight:700}
+.moa-chain i{font-style:normal;color:var(--accent);font-weight:700}
+
+.suffix-key{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:10px;margin:16px 0}
+.suffix-key div{border:1px solid var(--border);border-left:4px solid var(--gold);border-radius:8px;
+  padding:9px 12px;background:var(--cream)}
+.suffix-key code{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--accent);font-size:.9rem}
+.suffix-key p{margin:3px 0 0;font-size:.82rem;color:var(--muted)}
+
+.timing-bar{display:flex;align-items:center;gap:10px;margin:7px 0;font-size:.86rem}
+.timing-bar .tl{flex:none;width:min(38%,215px);font-weight:600}
+.timing-bar .tt{flex:1;height:15px;background:var(--cream);border:1px solid var(--border);
+  border-radius:8px;position:relative;overflow:hidden}
+.timing-bar .tf{position:absolute;top:0;bottom:0;background:var(--accent);opacity:.78;border-radius:8px}
+.timing-bar .tv{flex:none;font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--muted);
+  width:min(30%,140px);text-align:right}
+
+
+/* ---------------- Cardio additions ---------------- */
+.hero .container{position:relative;z-index:1}
+.hero-ecg{position:absolute;left:0;right:0;bottom:6px;width:100%;height:58px;z-index:0;pointer-events:none;opacity:.55}
+.hero-ecg path{fill:none;stroke:var(--hero-accent);stroke-width:2;stroke-linejoin:round;stroke-linecap:round;
+  stroke-dasharray:1400;stroke-dashoffset:1400;animation:ecgDraw 4.5s ease-out .3s forwards}
+@keyframes ecgDraw{to{stroke-dashoffset:0}}
+strong.hot{color:var(--accent)}
+.num{background:var(--highlight);color:var(--ink);font-weight:700;padding:0 4px;border-radius:4px;white-space:nowrap}
+.src-tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.55rem;font-weight:700;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--ink);border:1px dashed var(--muted);border-radius:4px;padding:0 5px;
+  vertical-align:middle;white-space:nowrap}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;margin:16px 0 6px;padding:11px 15px;
+  background:var(--cream);border:1px solid var(--border);border-radius:10px;font-size:.86rem}
+.legend-t{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.order-list{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 16px}
+.order-list span{background:var(--cream);border:1px solid var(--border);border-left:4px solid var(--accent);
+  border-radius:8px;padding:6px 12px;font-size:.9rem}
+.tbl-note{font-size:.88rem;color:var(--muted);margin-top:-8px}
+table.dense{font-size:.8rem}
+table.dense td,table.dense th{padding:5px 7px}
+.timeline-table tr.phase td{background:var(--panel-dark-bg)!important;color:var(--panel-dark-text);font-family:'JetBrains Mono',monospace;
+  font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;padding:4px 11px}
+
+/* ---- labeled, lazy-loaded figures (images live in ./assets/, not base64) ---- */
+.fig-card{margin:20px auto;max-width:960px;border:1px solid var(--border);border-radius:12px;background:var(--cream);overflow:hidden;
+  break-inside:avoid;page-break-inside:avoid}
+.fig-frame{position:relative;background:#fff;display:flex;justify-content:center;align-items:center}
+.fig-frame::before{content:'';position:absolute;inset:0;
+  background:linear-gradient(100deg,rgba(0,0,0,0) 30%,rgba(181,31,58,.07) 50%,rgba(0,0,0,0) 70%) #fdf1f3;
+  background-size:220% 100%;animation:figShimmer 1.3s linear infinite;transition:opacity .3s}
+.fig-frame.loaded::before{opacity:0;animation:none}
+@keyframes figShimmer{from{background-position:120% 0}to{background-position:-120% 0}}
+.fig-card .slide-img{position:relative;margin:0;border:none;border-radius:0;width:100%;height:auto;opacity:0;transition:opacity .35s}
+.fig-frame.loaded .slide-img{opacity:1}
+.fig-card.tall .slide-img{width:auto;max-width:100%;max-height:560px}
+.fig-card.sm .slide-img{width:auto;max-width:min(100%,560px)}
+.fig-row .fig-card.tall .slide-img{max-height:440px}
+.fig-card figcaption{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;padding:9px 13px 10px;
+  border-top:1px solid var(--border);font-size:.86rem;line-height:1.4}
+.fig-num{font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  background:var(--chip-blue);color:var(--chip-fg);padding:2px 8px;border-radius:10px;flex:none}
+.fig-title{flex:1 1 220px;color:var(--ink)}
+.fig-src{font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);flex:none}
+.fig-src b{color:var(--accent);font-weight:700}
+.fig-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px;margin:20px 0;align-items:start}
+.fig-row .fig-card{margin:0;max-width:none}
+.lightbox{flex-direction:column;gap:12px}
+.lightbox-cap{max-width:min(92vw,900px);color:#f3f3f3;font-size:.9rem;text-align:center;line-height:1.45}
+.lightbox-cap .fig-num{margin-right:6px}
+
+details.case-box{background:var(--cream);border:1px solid var(--border);border-left:5px solid var(--accent2);
+  border-radius:0 12px 12px 0;margin:16px 0;overflow:hidden}
+details.case-box summary{cursor:pointer;padding:13px 18px;font-family:'Playfair Display',serif;font-weight:700;font-size:1.05rem;
+  list-style:none;display:flex;gap:10px;align-items:center}
+details.case-box summary::-webkit-details-marker{display:none}
+details.case-box summary::before{content:'▸';color:var(--accent);transition:transform .2s}
+details.case-box[open] summary::before{transform:rotate(90deg)}
+details.case-box .case-body{padding:0 18px 12px;border-top:1px solid var(--border)}
+@media print{details.case-box .case-body{display:block}}
+
+/* ---- click-to-play video facade: no YouTube iframe loads until you ask for it ---- */
+.watch{margin:26px 0 8px;padding:14px 16px 16px;border:1px solid var(--border);border-left:5px solid var(--accent);
+  border-radius:0 12px 12px 0;background:var(--cream)}
+.watch-title{font-family:'JetBrains Mono',monospace;font-size:.64rem;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink);margin-bottom:10px}
+.watch-title span{color:var(--muted);font-weight:400;letter-spacing:.04em;text-transform:none}
+.vid-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr));gap:12px}
+.vid{display:flex;flex-direction:column;text-align:left;padding:0;border:1px solid var(--border);border-radius:10px;
+  overflow:hidden;background:var(--paper);color:var(--ink);cursor:pointer;font:inherit;transition:transform .15s,box-shadow .15s}
+.vid:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.14)}
+.vid-thumb{position:relative;aspect-ratio:16/9;background:#1c1c1c;overflow:hidden}
+.vid-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.vid-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:50px;height:36px;border-radius:10px;
+  background:rgba(181,31,58,.92);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1rem;
+  box-shadow:0 3px 10px rgba(0,0,0,.35)}
+.vid-meta{padding:8px 10px 10px;font-size:.8rem;line-height:1.35}
+.vid-meta b{display:block;font-weight:600}
+.vid-meta i{font-style:normal;font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted)}
+.vid.playing{cursor:default;transform:none;box-shadow:none}
+.vid iframe{width:100%;aspect-ratio:16/9;border:0;display:block}
+@media print{
+  .watch{display:none!important}
+  .fig-frame::before{display:none}
+  .fig-card .slide-img{opacity:1!important}
+  .fig-card{background:#fff}
+}
+@media (prefers-reduced-motion:reduce){.hero-ecg path{stroke-dashoffset:0}}
+</style>
+
+</head>
+<body>
+<div id="noteAuthGate" role="dialog" aria-modal="true" aria-labelledby="noteAuthTitle">
+  <div class="note-auth-card">
+    <div class="note-auth-kicker">2nd Year Study Hub</div>
+    <h1 id="noteAuthTitle">Please log in to continue with this note.</h1>
+    <p>Open the Study Hub login, enter your approved UNE email, and this note will unlock automatically.</p>
+    <button class="note-auth-btn" type="button" onclick="openNoteLogin()">Log in to continue</button>
+  </div>
+</div>
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="toc-bar">
+  <div class="toc-head">
+    <span class="toc-eyebrow">OMK 2 · Cardio · Week 13</span>
+    <span class="toc-name">Endo · Myo · <em>Pericarditis</em></span>
+  </div>
+  <button class="toc-hy-btn" onclick="openHY()">🎯 High-Yield One-Pager</button>
+  <nav>
+    <p class="toc-group">Start</p>
+    <a href="#orientation"><span class="toc-num dot"></span><span>Orientation — three layers</span><span class="toc-check">✓</span></a>
+    <p class="toc-group">Infective endocarditis</p>
+    <a href="#s1-ie"><span class="toc-num">1</span><span>What IE Is</span><span class="toc-check">✓</span></a>
+    <a href="#s2-risk"><span class="toc-num">2</span><span>Risk Factors</span><span class="toc-check">✓</span></a>
+    <a href="#s3-patho"><span class="toc-num">3</span><span>Pathogenesis &amp; Vegetation</span><span class="toc-check">✓</span></a>
+    <a href="#s4-micro"><span class="toc-num">4</span><span>Organisms</span><span class="toc-check">✓</span></a>
+    <a href="#s5-clinical"><span class="toc-num">5</span><span>Clinical &amp; Right-Sided IE</span><span class="toc-check">✓</span></a>
+    <a href="#s6-dx"><span class="toc-num">6</span><span>Diagnosis — Duke 2023</span><span class="toc-check">✓</span></a>
+    <a href="#s7-tx"><span class="toc-num">7</span><span>Treatment</span><span class="toc-check">✓</span></a>
+    <p class="toc-group">Myocardium &amp; pericardium</p>
+    <a href="#s8-myo"><span class="toc-num">8</span><span>Infectious Myocarditis</span><span class="toc-check">✓</span></a>
+    <a href="#s9-peri"><span class="toc-num">9</span><span>Infectious Pericarditis</span><span class="toc-check">✓</span></a>
+    <p class="toc-group">Reference</p>
+    <a href="#glossary"><span class="toc-num dot"></span><span>Glossary &amp; Abbreviations</span><span class="toc-check">✓</span></a>
+  </nav>
+  <div class="toc-tools">
+    <button class="toc-chip" id="progressChip" onclick="jumpToNextTodo()">0/0 reviewed</button>
+    <button class="toc-chip" id="collapseAllBtn" onclick="toggleAllSections()">⊟ Collapse all</button>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="container">
+    <div class="hero-tag">Infectious Disease · OMK 2 Cardio · 2026</div>
+    <h1>Infective <span>Endocarditis</span>, Myocarditis &amp; Pericarditis</h1>
+    <p class="hero-sub">The infectious side of cardio: how a sterile clot becomes a septic vegetation, the organisms and the patients they pick, Duke 2023, targeted antibiotics — then myocarditis (mostly viral) and pericarditis (that pain pattern).</p>
+    <button class="hy-btn" onclick="openHY()">🎯 High-Yield One-Pager</button>
+    <div class="hero-meta"><div class="hero-meta-item"><span class="label">Lecturer</span><span class="value">Infectious Disease (Microbiology)</span></div><div class="hero-meta-item"><span class="label">Sources</span><span class="value">Deck (44 slides) + 2 transcripts + outline + Rx table</span></div><div class="hero-meta-item"><span class="label">Topics</span><span class="value">9</span></div><div class="hero-meta-item"><span class="label">Labeled figures</span><span class="value">35</span></div><div class="hero-meta-item"><span class="label">Exam questions</span><span class="value">17</span></div><div class="hero-meta-item"><span class="label">Videos</span><span class="value">17</span></div></div>
+  </div>
+  <svg class="hero-ecg" viewBox="0 0 1200 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 40 H140 l10 -6 l10 6 H200 l6 6 l10 -40 l10 50 l8 -16 H330 l14 -8 l14 8 H480 l10 -6 l10 6 H540 l6 6 l10 -40 l10 50 l8 -16 H670 l14 -8 l14 8 H820 l10 -6 l10 6 H880 l6 6 l10 -40 l10 50 l8 -16 H1010 l14 -8 l14 8 H1200"/></svg>
+</div>
+
+<!-- ==================== ORIENTATION ==================== -->
+<div class="section" id="orientation">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge alt">Orientation</div></div>
+    <p class="section-label">The infectious side of cardio — endo, myo, peri</p>
+    <h2 class="section-title">Three Layers, Three Infections</h2>
+
+    <p class="lede">One lecture over two sessions: <strong>infective endocarditis</strong> (the big one — lining and valves), then a "fairly brief" pass through <strong>myocarditis</strong> and <strong>pericarditis</strong> ("Myo and Peri — sounds like a sixties singing group that didn't make it"). The microbiology is the core: which organism, which patient, which valve, which drug.</p>
+
+    <div class="legend">
+      <span class="legend-t">How to read the colours</span>
+      <span><strong class="hot">Red bold</strong> = lecturer emphasis / "they'll throw this at you"</span>
+      <span><strong>Blue bold</strong> = key fact or mechanism</span>
+      <span><span class="num">Yellow</span> = number to memorise</span>
+      <span><span class="src-tag">Board add-on</span> = from First Aid / Pathoma / AMBOSS, not said in lecture</span>
+    </div>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>IE = infective endocarditis · IDU / PWID = injection drug use / people who inject drugs · CIED = cardiac implantable electronic device</div>
+
+    <div class="compare-grid">
+      <div class="compare-card" style="background:var(--red-bg);border-color:var(--accent)"><span class="card-emoji">🫀</span><h4>Endocarditis</h4><p>Endocardium — mostly <strong>valves</strong>. Bacteria (staph, strep, enterococci) &gt; fungi. <strong>Viruses: no.</strong> Usually &gt;50 y.</p></div>
+      <div class="compare-card" style="background:var(--blue-bg);border-color:var(--accent2)"><span class="card-emoji">💪</span><h4>Myocarditis</h4><p>Myocardium. <strong>Viruses are the main cause.</strong> Any age, peak 20–50 y. Often undiagnosed.</p></div>
+      <div class="compare-card" style="background:var(--green-bg);border-color:#2e7d32"><span class="card-emoji">🎈</span><h4>Pericarditis</h4><p>Pericardial sac. Mostly viral; bacterial = "purulent". <strong>Sharp pain better leaning forward, rub, ST↑/PR↓.</strong></p></div>
+    </div>
+
+    <div class="callout callout-warning">
+      <div class="callout-title">⚠️ Where the sources disagree (flagged in the notes)</div>
+      <ul class="notes-list">
+        <li><strong>IE incidence:</strong> lecture said ~<span class="num">1–3</span>/100,000; the outline says 3–7/100,000.</li>
+        <li><strong>Leukopenia:</strong> lecture said it is "not usually seen in IE"; the outline lists it with the hematology findings.</li>
+        <li><strong>MSSA treatment:</strong> the handout reads "nafcillin/oxacillin/flucloxacillin: 3–5 days" — almost certainly a typo; standard native-valve MSSA therapy is <strong>~6 weeks</strong> <span class="src-tag">Board add-on</span>.</li>
+        <li><strong>Bartonella:</strong> the lecturer corrected his chart in class — <strong>doxycycline + rifampin</strong>, not gentamicin.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 1. IE BASICS ==================== -->
+<div class="section" id="s1-ie">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Topic 1</div></div>
+    <p class="section-label">Definition · acute vs subacute · the numbers</p>
+    <h2 class="section-title">Infective Endocarditis: What It Is</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>IE = infective endocarditis · MRSA / MSSA = methicillin-resistant / -sensitive <em>Staphylococcus aureus</em> · CHF = congestive heart failure · WBC = white blood cells</div>
+
+    <p><strong>Infective endocarditis</strong> = relatively rare, <strong>non-contagious</strong>, chronic, often life-threatening infection and inflammation of the <strong>endocardial surface</strong> — mostly <strong>native or prosthetic valves</strong>, but also mural endocardium, septal defects (usually ventricular), arteriovenous/arterial shunts and intravascular devices. <strong class="hot">Untreated, it is almost invariably fatal</strong>; survivors often carry lasting effects.</p>
+
+    <h3>Acute vs subacute — "not used anymore", still used everywhere</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>Feature</th><th>Acute</th><th>Subacute</th></tr>
+      <tr><td>Course</td><td><strong>Fulminant</strong>, abrupt</td><td><strong>Indolent</strong></td></tr>
+      <tr><td>Fever / signs</td><td>High fever, systemic toxicity, ↑ WBC</td><td>Low-grade fever, night sweats, weight loss</td></tr>
+      <tr><td>Valve</td><td>Can hit a <strong>normal valve</strong></td><td><strong>Previously damaged valve</strong> (historically rheumatic)</td></tr>
+      <tr><td>Organisms</td><td>"Professional" pathogens: <strong><em>S. aureus</em></strong>, <em>S. pneumoniae</em>, <em>S. pyogenes</em></td><td>Less virulent, often normal flora: <strong>viridans strep</strong>, enterococci</td></tr>
+      <tr><td>Death (untreated)</td><td>&lt; <span class="num">6 weeks</span> — catastrophic heart failure</td><td>6 weeks → months — CHF</td></tr>
+      <tr><td>Empiric antibiotics it triggers</td><td><strong>Broad</strong> (think MRSA)</td><td>More <strong>targeted</strong> (viridans, enterococci)</td></tr>
+    </table></div>
+    <p>The "official" modern scheme is <strong>etiology-based</strong> (organism → course, likelihood of pre-existing heart disease, antibiotic choice), but clinicians, UpToDate and even the 2023 Duke criteria still use acute/subacute as a bedside read of <strong>speed and expected virulence</strong>. Don't correct your attending.</p>
+
+    <h3>The numbers</h3>
+    <div class="fact-grid">
+      <div class="fact-card"><h4>Incidence</h4><div class="generic">US</div><p>~<span class="num">1–3</span>/100,000 (lecture; outline 3–7), rising slightly. <strong>The US has the highest incidence among Western countries.</strong></p></div>
+      <div class="fact-card"><h4>Mortality</h4><div class="generic">Hospital vs 1 year</div><p>In-hospital <span class="num">15–20%</span>; <strong>1-year up to <span class="num">40%</span></strong>.</p></div>
+      <div class="fact-card"><h4>Surgery</h4><div class="generic">Valve</div><p>About <strong>half</strong> eventually need valve surgery (usually replacement).</p></div>
+      <div class="fact-card"><h4>The flip</h4><div class="generic">Antibiotic era</div><p>Acute was ~20%, subacute ~75%. Now in industrialised countries <strong class="hot">~<span class="num">75%</span> is acute</strong> — mostly <em>S. aureus</em> (plus <em>S. epidermidis</em>, enterococci).</p></div>
+    </div>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> A patient develops high fever, rigors and rapidly worsening heart failure over 10 days; the valve was previously normal. Which organism class tops the differential, and how broad should empiric therapy be?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>Acute IE — <em>Staphylococcus aureus</em></strong> (a "professional pathogen" that attacks normal valves). Empiric therapy must be <strong>broad, covering MRSA</strong>.</p></div>
+    </div>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="dY7vvk04EFc" data-title="Understanding Infective Endocarditis"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/dY7vvk04EFc/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Understanding Infective Endocarditis</b><i>Zero to Finals · YouTube</i></span></button><button class="vid" type="button" data-yt="CdTCdHK77Zw" data-title="Clinician&#x27;s Corner: Endocarditis"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/CdTCdHK77Zw/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Clinician&#x27;s Corner: Endocarditis</b><i>Osmosis · YouTube</i></span></button></div></div>
+  </div>
+</div>
+
+<!-- ==================== 2. RISK ==================== -->
+<div class="section" id="s2-risk">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Topic 2</div></div>
+    <p class="section-label">Who gets it — and why IDU is its own story</p>
+    <h2 class="section-title">Risk Factors</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>IDU = injection drug use · VSD = ventricular septal defect · PDA = patent ductus arteriosus · MVP = mitral valve prolapse · RHD = rheumatic heart disease · GAS = group A streptococcus · CIED = cardiac implantable electronic device · HIV = human immunodeficiency virus</div>
+
+    <div class="tbl-scroll"><table>
+      <tr><th>Risk factor</th><th>Detail</th></tr>
+      <tr><td><strong>Age / sex</strong></td><td>&gt;50% of patients are <strong>&gt;50 years</strong>; rare in children unless there's a <strong>congenital structural defect</strong>. <strong>Men &gt; women</strong> (3:1 to 9:1) — except women &lt;35, whose risk is slightly higher.</td></tr>
+      <tr><td><strong class="hot">Poor dentition / recent dental surgery</strong></td><td>Chronic odontogenic infection (gingivitis, periodontitis, abscess) → systemic inflammation damaging endothelium <em>plus</em> <strong>intermittent bacteremia</strong>. Riskiest procedures manipulate or perforate the <strong>gingiva, oral mucosa or periapical region</strong>.</td></tr>
+      <tr><td><strong>Structural heart disease</strong></td><td>Present in <span class="num">75%</span> of IE patients. Children: congenital (<strong>VSD, bicuspid aortic valve, PDA</strong>, coarctation).</td></tr>
+      <tr><td><strong>Valve disease</strong></td><td><strong>RHD</strong> (GAS M-protein cross-reactivity) was the historic #1 precursor → subacute viridans IE — now ~<span class="num">9%</span> in the US (higher in low-income countries). Replaced by <strong>MVP with regurgitation (~30%)</strong>, aortic stenosis/regurgitation; tricuspid regurgitation mainly in IDU.</td></tr>
+      <tr><td>Prior IE</td><td><span class="num">2–8%</span> recur</td></tr>
+      <tr><td>Recent valve replacement</td><td>Only ~1–6% of US cases</td></tr>
+      <tr><td><strong>Indwelling vascular devices / CIEDs</strong> (pacemakers, ICDs)</td><td>~<span class="num">23%</span> of cases — skin flora (<em>S. epidermidis</em>) carried in at placement</td></tr>
+      <tr><td><strong>Injection drug use</strong></td><td>See box → right-sided IE</td></tr>
+      <tr><td>Cardiac bypass surgery</td><td>Nosocomial IE</td></tr>
+      <tr><td><strong>Chronic hemodialysis</strong></td><td>~<span class="num">300/100,000</span> — "huge"</td></tr>
+      <tr><td>Immunosuppression</td><td>HIV, steroids, malignancy</td></tr>
+      <tr><td><strong>Poorly controlled diabetes</strong></td><td>Hyperglycemia impairs immunity; more <em>S. aureus</em> skin colonisation; endothelial damage; frequent punctures / dialysis; worse prognosis</td></tr>
+    </table></div>
+
+    <div class="callout callout-purple">
+      <div class="callout-title">💉 Why injection drug use is such a strong risk (a USMLE favourite)</div>
+      <ul class="notes-list">
+        <li><strong>Younger patients</strong> (20–30 y), men &gt; women.</li>
+        <li>Many injections a day → <strong>skin contamination</strong>; contaminated diluents and fillers; <strong>shared needles/syringes</strong> (early studies: up to 10<sup>8</sup> bacteria/mL).</li>
+        <li><strong>Saliva as diluent</strong> → oral flora (viridans strep).</li>
+        <li>More likely <strong>colonised with <em>S. aureus</em></strong> (skin, anterior nares) → <strong class="hot"><em>S. aureus</em> is the most common IDU organism</strong>.</li>
+        <li>Particulates (<strong>talc</strong>) directly damage <strong>tricuspid and pulmonic</strong> endothelium; many drugs blunt the immune response.</li>
+      </ul>
+    </div>
+    <figure class="fig-card tall" id="fig-e-bacteremia-procedures"><div class="fig-frame"><img class="slide-img" src="assets/endocarditis/e-bacteremia-procedures.jpg" alt="Table of percent positive blood cultures after procedures: dental extraction 18-85, periodontal surgery 32-88, tooth brushing 0-26, tonsillectomy, endoscopy, colonoscopy, urethral dilation, TURP, vaginal delivery and others" width="800" height="1037" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig E1</span><span class="fig-title">Transient bacteremia after everyday procedures — dental extraction tops the list</span><span class="fig-src"><b>ID lecture</b> · deck</span></figcaption></figure>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> Why do people who inject drugs get right-sided (tricuspid) endocarditis, and which organism is most likely?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p>Injected particulates such as <strong>talc damage the tricuspid/pulmonic endothelium</strong>, and injected skin bacteria reach the right heart first. <strong><em>S. aureus</em></strong> (skin/nares colonisation) is most common.</p></div>
+    </div>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="fLzOiSZHaD8" data-title="Infective Endocarditis — fever &amp; new murmur, modified Duke criteria"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/fLzOiSZHaD8/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Infective Endocarditis — fever &amp; new murmur, modified Duke criteria</b><i>Medicosis Perfectionalis · YouTube</i></span></button></div></div>
+  </div>
+</div>
+
+<!-- ==================== 3. PATHOGENESIS ==================== -->
+<div class="section" id="s3-patho">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Topic 3</div><span class="hy-flag">⭐ Vegetation = hallmark</span></div>
+    <p class="section-label">Injury → sterile clot → bacteremia → biofilm → vegetation</p>
+    <h2 class="section-title">Pathogenesis &amp; the Vegetation</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>NBTE = non-bacterial thrombotic endocarditis (sterile vegetation) · CNS = central nervous system · IDU = injection drug use</div>
+
+    <p>Normal endocardium resists bacteria and fungi (which is why IE is hard to reproduce in animal models). You need <strong>two things: an endocardial injury and a bacteremia.</strong></p>
+    <ol class="step-list">
+      <li><div><strong>Endocardial injury</strong>congenital defect, <strong>turbulent flow</strong> (high → low velocity), faulty or leaky valves, catheter trauma, IDU particulates (talc).</div></li>
+      <li><div><strong>Platelets + fibrin stick</strong>to exposed collagen → coagulation cascade → more fibrin. <strong>No bugs yet</strong> — a sterile nidus ("sterile vegetation"), native or prosthetic valve.</div></li>
+      <li><div><strong>Transient bacteremia</strong>any traumatised colonised mucosa: dental work, <strong>toothbrushing</strong>, GI/GU/OB procedures. Usually cleared.</div></li>
+      <li><div><strong>Bacteria adhere to the platelet–fibrin nidus and colonise</strong>→ more platelets/fibrin → more coagulation; aggressive species (<em>S. aureus</em>) invade contiguous tissue. Antibodies form → <strong>immune complexes</strong>.</div></li>
+      <li><div><strong>Biofilm + vegetation</strong>a sheath of fibrin, leukocytes, RBCs, platelets, organisms and biofilm. Up to <span class="num">10<sup>9</sup></span> bacteria per gram. Cytokines and proteases injure valve tissue.</div></li>
+    </ol>
+    <div class="fig-row"><figure class="fig-card tall" id="fig-e-nbte"><div class="fig-frame"><img class="slide-img" src="assets/endocarditis/e-nbte.jpg" alt="Mitral valve and chordae with small sterile vegetations along the line of closure" width="682" height="1024" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig E2</span><span class="fig-title">Sterile (non-bacterial thrombotic) vegetations — the platelet-fibrin nidus bacteria stick to</span><span class="fig-src"><b>CV Pathophysiology</b></span></figcaption></figure><figure class="fig-card" id="fig-e-mitral-veg"><div class="fig-frame"><img class="slide-img" src="assets/endocarditis/e-mitral-veg.jpg" alt="Opened left heart with large irregular vegetations along the mitral leaflets and chordae" width="878" height="578" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig E3</span><span class="fig-title">Septic vegetations on the mitral valve leaflets</span><span class="fig-src"><b>ID lecture</b> · deck</span></figcaption></figure></div>
+
+    <div class="callout callout-concept">
+      <div class="callout-title">🧠 Why IE is so hard to cure — biofilm</div>
+      <p>The best IE pathogens (<strong><em>S. aureus</em>, <em>S. epidermidis</em></strong>) are biofilm producers. Biofilm bacteria are ~<span class="num">500×</span> more antibiotic-resistant: drugs and antibodies penetrate poorly, <strong class="hot">and the bacteria slow or stop growing — while most antibiotics (cell-wall, protein-synthesis, nucleic-acid inhibitors) need actively growing bacteria.</strong></p>
+    </div>
+    <div class="fig-row"><figure class="fig-card" id="fig-e-biofilm-sem"><div class="fig-frame"><img class="slide-img" src="assets/endocarditis/e-biofilm-sem.jpg" alt="Scanning electron micrograph of clustered cocci embedded in an extracellular matrix, 20 micrometre scale bar, inset at higher magnification" width="1320" height="1066" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig E4</span><span class="fig-title">S. aureus biofilm (scanning EM) — the bacteria that antibiotics can&#x27;t reach</span><span class="fig-src"><b>ID lecture</b> · deck</span></figcaption></figure><figure class="fig-card" id="fig-e-biofilm-cycle"><div class="fig-frame"><img class="slide-img" src="assets/endocarditis/e-biofilm-cycle.jpg" alt="Diagram from free planktonic cells through reversible adhesion, irreversible binding, exopolysaccharide production and mature biofilm with decreased antimicrobial susceptibility, to detachment and dispersal" width="700" height="398" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig E5</span><span class="fig-title">Biofilm life cycle: attach → grow → matrix → mature (slow, antibiotic-tolerant) → disperse</span><span class="fig-src"><b>UWorld</b></span></figcaption></figure></div>
+
+    <h3>The vegetation drives the disease — three ways</h3>
+    <div class="hallmarks-grid">
+      <div class="hallmark-card"><div class="hallmark-num">1 · SEEDING</div><h4>Continuous bacteremia</h4><p>High-inoculum seeding of the blood → metastatic infection (esp. <em>S. aureus</em>, which infects anything it hits).</p></div>
+      <div class="hallmark-card"><div class="hallmark-num">2 · DESTRUCTION</div><h4>Valve invasion</h4><p>Cytokines + proteases + bacteria destroy the valve → perforation, rupture, abscess, aneurysm.</p></div>
+      <div class="hallmark-card"><div class="hallmark-num">3 · EMBOLI</div><h4>Septic emboli</h4><p>Friable vegetations break off → <strong>septic</strong> emboli: ischemic stroke, cerebral hemorrhage, meningitis, brain abscess, <strong>mycotic aneurysm</strong>, organ infarcts.</p></div>
+    </div>
+    <div class="fig-row"><figure class="fig-card tall" id="fig-e-aortic-veg"><div class="fig-frame"><img class="slide-img" src="assets/endocarditis/e-aortic-veg.jpg" alt="Opened aortic valve with raised tan vegetations on the cusps" width="400" height="519" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig E6</span><span class="fig-title">Vegetations on the aortic valve cusps</span><span class="fig-src"><b>ID lecture</b> · deck</span></figcaption></figure><figure class="fig-card" id="fig-e-aortic-perforation"><div class="fig-frame"><img class="slide-img" src="assets/endocarditis/e-aortic-perforation.jpg" alt="Opened aortic valve with friable vegetation, ulceration and perforation of the cusps" width="1444" height="1072" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig E7</span><span class="fig-title">Acute bacterial endocarditis of the aortic valve: friable vegetation, ulceration, perforated cusps</span><span class="fig-src"><b>ID lecture</b> · deck</span></figcaption></figure></div>
+    <figure class="fig-card" id="fig-e-prosthetic-veg"><div class="fig-frame"><img class="slide-img" src="assets/endocarditis/e-prosthetic-veg.jpg" alt="Two photographs: a prosthetic valve ring covered with red vegetations, and a native mitral valve with bulky vegetations" width="700" height="264" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig E8</span><span class="fig-title">Vegetations on a prosthetic valve (left) and a native mitral valve (right)</span><span class="fig-src"><b>ID lecture</b> · deck</span></figcaption></figure>
+
+    <h3>Where</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>Side</th><th>Valve</th><th>Frequency</th></tr>
+      <tr><td rowspan="3"><strong>Left</strong></td><td><strong>Mitral</strong></td><td><span class="num">28–45%</span> — most common</td></tr>
+      <tr><td>Aortic</td><td>5–36%</td></tr>
+      <tr><td>Mitral + aortic</td><td>0–35% (usually one or the other)</td></tr>
+      <tr><td rowspan="2"><strong>Right</strong></td><td><strong>Tricuspid</strong></td><td>0–6% — but <strong class="hot">~60% in IDU</strong></td></tr>
+      <tr><td>Pulmonic</td><td>Rare (≤10% in IDU)</td></tr>
+    </table></div>
+    <h3>Other organs</h3>
+    <ul class="notes-list">
+      <li><strong>Kidney:</strong> embolic infarcts, abscesses (and immune-complex glomerulonephritis).</li>
+      <li><strong>CNS:</strong> cerebral emboli (common).</li>
+      <li><strong>Lung:</strong> right-sided IE → <strong>septic pulmonary emboli</strong>; left-sided → pulmonary edema, pleural effusion.</li>
+      <li><strong>Systemic:</strong> can present as severe sepsis / septic shock / multi-organ failure — especially toxin/superantigen producers (<em>S. aureus</em>, <em>S. pyogenes</em>).</li>
+    </ul>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> Why does IE need prolonged bactericidal therapy even with a susceptible organism?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p>Organisms sit inside a <strong>fibrin–platelet vegetation and biofilm</strong> at up to 10<sup>9</sup>/g, poorly penetrated and <strong>metabolically slow</strong>, so drugs that need growing bacteria work poorly — you must <strong>kill</strong>, not just inhibit, for weeks.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 4. MICROBIOLOGY ==================== -->
+<div class="section" id="s4-micro">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Topic 4</div><span class="hy-flag">⭐ The organism table</span></div>
+    <p class="section-label">Staph, strep, enterococci = 80–90%</p>
+    <h2 class="section-title">Who Causes IE</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>CoNS = coagulase-negative staphylococci · GPC = gram-positive cocci · GNR = gram-negative rods · HACEK = <em>Haemophilus</em>, <em>Aggregatibacter</em>, <em>Cardiobacterium</em>, <em>Eikenella</em>, <em>Kingella</em> · IBD = inflammatory bowel disease · UTI = urinary tract infection · PCR = polymerase chain reaction · PVE = prosthetic valve endocarditis</div>
+
+    <div class="tbl-scroll"><table>
+      <tr><th>Organism</th><th>% of IE (slide)</th><th>Classic setting</th></tr>
+      <tr><td><strong><em>S. aureus</em></strong></td><td><span class="num">31%</span></td><td><strong>Most common</strong>; acute; any valve incl. normal, prosthetic, right-sided; IDU</td></tr>
+      <tr><td><strong>Viridans strep</strong></td><td>17%</td><td>Subacute; damaged valve; dental/oral source</td></tr>
+      <tr><td><strong>Coagulase-negative staph</strong></td><td>11%</td><td><strong>Prosthetic valves</strong>, devices, nosocomial</td></tr>
+      <tr><td><strong>Enterococci</strong></td><td>11%</td><td>Nosocomial — urinary catheters, IV lines</td></tr>
+      <tr><td><strong><em>S. gallolyticus</em> (<em>bovis</em>)</strong></td><td>7%</td><td><strong class="hot">Colon cancer / IBD</strong></td></tr>
+      <tr><td>Other streptococci</td><td>5%</td><td>—</td></tr>
+      <tr><td>Culture-negative (<em>Bartonella</em>, <em>Coxiella</em>…)</td><td>8%</td><td>Animal contact; prior antibiotics</td></tr>
+      <tr><td>Anaerobes</td><td>2–16%</td><td>Odontogenic; prosthetic valves</td></tr>
+      <tr><td>GNR (non-HACEK)</td><td>2%</td><td>Elderly, silent UTI; health-care contact</td></tr>
+      <tr><td>HACEK</td><td>2%</td><td>Damaged valves; oral/GI flora</td></tr>
+      <tr><td>Fungi (<em>Candida</em>, <em>Aspergillus</em>)</td><td>2%</td><td>Immunocompromised only</td></tr>
+      <tr><td>Viruses</td><td>?</td><td>No conclusive evidence</td></tr>
+    </table></div>
+
+    <div class="drug-grid">
+      <div class="drug-card">
+        <h4><em>Staphylococcus aureus</em></h4>
+        <div class="generic">GPC · catalase + · coagulase +</div>
+        <p><strong class="hot">GPC + catalase-positive + coagulase-positive = <em>S. aureus</em></strong> — sometimes that's all a board question gives you.</p>
+        <p>Most common cause; fulminant/acute; normal, prosthetic and right-sided valves; survival &lt;<span class="num">70%</span>.</p>
+      </div>
+      <div class="drug-card">
+        <h4><em>S. epidermidis</em> (CoNS)</h4>
+        <div class="generic">Coagulase − · biofilm</div>
+        <p><strong>Most common bacterium on skin</strong> → anything touching skin then going inside (valve, line, Foley, CIED) carries it in. <strong>Prosthetic valve IE</strong> (outline: ~<span class="num">40%</span> of PVE); subacute; nosocomial; most are methicillin-resistant.</p>
+      </div>
+      <div class="drug-card">
+        <h4>Viridans group streptococci</h4>
+        <div class="generic">α-hemolytic · a group, not a species</div>
+        <p><strong>There is no "Streptococcus viridans."</strong> Subgroups: <strong>sanguinis, bovis, mutans, mitior</strong>. Pre-antibiotic era #1 cause (RHD, subacute) — now &lt;<span class="num">9%</span> in the US, 17% worldwide.</p>
+      </div>
+      <div class="drug-card">
+        <h4><em>S. gallolyticus</em> (bovis group)</h4>
+        <div class="generic">Only 5–7% — but a board favourite</div>
+        <p><strong class="hot">IE with <em>S. gallolyticus</em> → look for colon cancer or IBD</strong> ("I'm giving you the answer to a board question"). <span class="src-tag">Board add-on</span> → colonoscopy.</p>
+      </div>
+      <div class="drug-card">
+        <h4>Enterococci (mostly <em>E. faecalis</em>)</h4>
+        <div class="generic">Nosocomial</div>
+        <p>Urinary/renal catheters, IV lines; usually damaged valves.</p>
+      </div>
+      <div class="drug-card">
+        <h4>Gram-negative rods &amp; HACEK</h4>
+        <div class="generic">~2% each</div>
+        <p>Non-HACEK: <em>E. coli</em>, <em>Klebsiella</em> — elderly with undiagnosed UTIs. <strong>HACEK</strong>: slow-growing oral/GI gram-negatives on damaged valves — rare but over-tested.</p>
+      </div>
+      <div class="drug-card">
+        <h4>Anaerobes</h4>
+        <div class="generic">&lt;10% · often odontogenic</div>
+        <p><em>Propionibacterium</em>*, <em>Lactobacillus</em>*, <em>Clostridium</em>*, <em>Bacteroides fragilis</em>, <em>Fusobacterium</em>*, <em>Porphyromonas</em>* (*oral origin) — periodontitis, gingivitis, dental abscess. Mostly prosthetic valves; mortality 21–43%.</p>
+      </div>
+      <div class="drug-card">
+        <h4>Fungi</h4>
+        <div class="generic">&lt;2% · immunocompromised</div>
+        <p><em>Candida</em>, <em>Aspergillus</em> (± <em>Trichosporon</em>). <strong>Large, bulky vegetations</strong> that embolise and invade myocardium; antifungals penetrate poorly and are toxic → <strong class="hot">survival &lt;<span class="num">50%</span></strong>, usually needs surgery.</p>
+      </div>
+    </div>
+    <div class="fig-row"><figure class="fig-card" id="fig-e-candida-veg"><div class="fig-frame"><img class="slide-img" src="assets/endocarditis/e-candida-veg.jpg" alt="Opened left ventricle with a large dark bulky vegetation on the valve apparatus" width="880" height="585" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig E9</span><span class="fig-title">Fungal (Candida) endocarditis: an exuberant, bulky vegetation</span><span class="fig-src"><b>ID lecture</b> · deck</span></figcaption></figure><figure class="fig-card" id="fig-e-aspergillus-veg"><div class="fig-frame"><img class="slide-img" src="assets/endocarditis/e-aspergillus-veg.jpg" alt="Gross specimen with large yellow-tan friable vegetations on valve leaflets" width="1518" height="1000" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig E10</span><span class="fig-title">Aspergillus endocarditis — bulky fungal vegetations</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure></div>
+    <figure class="fig-card sm" id="fig-e-strep-id"><div class="fig-frame"><img class="slide-img" src="assets/endocarditis/e-strep-id.jpg" alt="Flowchart: gram-positive cocci, catalase-positive staphylococcus versus catalase-negative streptococcus, split by alpha, beta and gamma hemolysis, optochin, bile, bacitracin, PYR and growth in bile and 6.5 percent NaCl; viridans streptococci subacute endocarditis, Enterococcus subacute endocarditis, S. gallolyticus bacteremia with colorectal cancer" width="700" height="688" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig E11</span><span class="fig-title">Lab ID of streptococci — where viridans, S. gallolyticus and Enterococcus sit</span><span class="fig-src"><b>UWorld</b></span></figcaption></figure>
+
+    <div class="callout callout-hook">
+      <div class="callout-title">🧠 HACEK</div>
+      <p><strong>H</strong>aemophilus · <strong>A</strong>ggregatibacter · <strong>C</strong>ardiobacterium · <strong>E</strong>ikenella · <strong>K</strong>ingella — slow-growing gram-negatives, pre-existing valve disease, ~2%.</p>
+    </div>
+
+    <h3>Culture-negative IE</h3>
+    <ul class="notes-list">
+      <li><strong class="hot">Most common reason: antibiotics given before blood cultures</strong> mask ordinary staph/strep/enterococci → <strong>always draw 3 sets first</strong>.</li>
+      <li>Oddballs that won't grow on agar: <strong><em>Coxiella burnetii</em></strong> (Q fever — needs cell culture) and <strong><em>Bartonella</em></strong> (henselae, quintana — very slow); also <em>Chlamydophila</em>, <em>Tropheryma whipplei</em>, <em>Legionella</em>, <em>Mycoplasma</em>, <em>Brucella</em>.</li>
+      <li><strong>PCR</strong> has cut the culture-negative rate and shown <em>Coxiella</em> and <em>Bartonella</em> are the commonest.</li>
+      <li>~<span class="num">25%</span> of IE is now polymicrobial.</li>
+    </ul>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> A 68-year-old with iron-deficiency anemia has endocarditis; blood cultures grow a non-enterococcal group D streptococcus. What else must you investigate?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong><em>Streptococcus gallolyticus</em> (bovis)</strong> IE is associated with <strong>colorectal cancer</strong> (and IBD) → colonoscopy.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> Three months after an aortic valve replacement, a patient develops subacute IE. Most likely organism and its key virulence factor?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong><em>Staphylococcus epidermidis</em></strong> (coagulase-negative) introduced from skin — protected by <strong>biofilm</strong> on the prosthetic material.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> A shepherd with fevers has echo-proven vegetations but three negative blood cultures. Likely organism and how is it confirmed?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong><em>Coxiella burnetii</em></strong> (Q fever) — culture-negative IE from animal contact; confirm by <strong>PCR</strong> or <strong>phase I IgG titre &gt;1:800</strong> (a Duke major criterion).</p></div>
+    </div>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="ZBug-sELMzc" data-title="Streptococcus bovis (gallolyticus)"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/ZBug-sELMzc/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Streptococcus bovis (gallolyticus)</b><i>Medicosis Perfectionalis · YouTube</i></span></button><button class="vid" type="button" data-yt="2IvdkNWBHUE" data-title="Viridans group streptococci"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/2IvdkNWBHUE/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Viridans group streptococci</b><i>Medicosis Perfectionalis · YouTube</i></span></button><button class="vid" type="button" data-yt="r5BM28ij9Cs" data-title="Staphylococcus aureus — lab diagnosis and treatment"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/r5BM28ij9Cs/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Staphylococcus aureus — lab diagnosis and treatment</b><i>Medicosis Perfectionalis · YouTube</i></span></button><button class="vid" type="button" data-yt="0hDIDs08PrA" data-title="Coxiella burnetii (Q fever)"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/0hDIDs08PrA/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Coxiella burnetii (Q fever)</b><i>Osmosis · YouTube</i></span></button></div></div>
+  </div>
+</div>
+
+<!-- ==================== 5. CLINICAL ==================== -->
+<div class="section" id="s5-clinical">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Topic 5</div></div>
+    <p class="section-label">"It's a mess" — fever, murmur, signs</p>
+    <h2 class="section-title">Clinical Findings &amp; Right-Sided IE</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>MR / AR / TR = mitral / aortic / tricuspid regurgitation · IDU = injection drug use · HCV / HBV = hepatitis C / B virus</div>
+
+    <p>Presentation ranges from rapidly progressive to indolent, so diagnosis is often <strong>delayed</strong> — clinicians chase the embolic or immune consequence (e.g. a "renal problem") instead of the source.</p>
+    <div class="compare-grid">
+      <div class="compare-card" style="background:var(--red-bg);border-color:var(--accent)"><span class="card-emoji">🌡️</span><h4>Fever — <span class="num">90%</span></h4><p>With chills, anorexia, headache, myalgia/arthralgia, night sweats, dyspnea, pleuritic pain. Common — but not diagnostic.</p></div>
+      <div class="compare-card" style="background:var(--blue-bg);border-color:var(--accent2)"><span class="card-emoji">🩺</span><h4>New / changed murmur — <span class="num">85%</span></h4><p>1. <strong>Holosystolic (MR)</strong> · 2. <strong>Diastolic (AR)</strong> · 3. Holosystolic <strong>TR</strong> (right-sided).</p></div>
+    </div>
+    <figure class="fig-card" id="fig-e-ie-overview"><div class="fig-frame"><img class="slide-img" src="assets/endocarditis/e-ie-overview.jpg" alt="Body diagram: Roth spots, splinter hemorrhages, Osler nodes, Janeway lesions, glomerulonephritis; cardiac murmur, heart failure, arrhythmia; constitutional fever, chills, malaise, night sweats, dyspnea, tachycardia, arthritis" width="1181" height="999" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig E12</span><span class="fig-title">IE at a glance: cardiac, constitutional, embolic and immunologic findings</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure>
+
+    <h3>Signs — supportive vs the rare "question-writer" ones</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>Sign</th><th>How common</th><th>Mechanism</th><th>Notes</th></tr>
+      <tr><td><strong>Splenomegaly</strong></td><td>~<span class="num">40%</span></td><td>Systemic infection</td><td>Supportive</td></tr>
+      <tr><td><strong>Petechiae</strong></td><td>~<span class="num">40%</span></td><td>Microemboli break capillaries</td><td>Conjunctiva, buccal mucosa/palate, extremities; more with <em>S. aureus</em></td></tr>
+      <tr><td><strong>Splinter hemorrhages</strong></td><td>Supportive</td><td>Capillary hemorrhage + clot</td><td>Non-blanching red/brown linear streaks under nails; left-sided, <em>S. aureus</em></td></tr>
+      <tr><td>Clubbing</td><td>&lt;10%</td><td>Vasodilation from clumped platelets</td><td>—</td></tr>
+      <tr><td><strong>Osler nodes</strong></td><td>&lt;10%</td><td><strong class="hot">Immune complexes</strong></td><td><strong>Painful</strong> nodules, finger/toe pads</td></tr>
+      <tr><td><strong>Janeway lesions</strong></td><td>&lt;10%</td><td><strong class="hot">Septic emboli → dermal micro-abscesses</strong></td><td>Painless hemorrhagic plaques, palms/soles; <em>S. aureus</em></td></tr>
+      <tr><td><strong>Roth spots</strong></td><td>&lt;10%</td><td><strong class="hot">Immune complexes</strong></td><td>Retinal hemorrhages (pale centre)</td></tr>
+    </table></div>
+    <div class="fig-row"><figure class="fig-card tall" id="fig-e-petechiae-conj"><div class="fig-frame"><img class="slide-img" src="assets/endocarditis/e-petechiae-conj.jpg" alt="Lower eyelid pulled down showing small hemorrhages on the conjunctiva" width="400" height="571" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig E13</span><span class="fig-title">Conjunctival petechiae</span><span class="fig-src"><b>ID lecture</b> · deck</span></figcaption></figure><figure class="fig-card" id="fig-e-petechiae-palate"><div class="fig-frame"><img class="slide-img" src="assets/endocarditis/e-petechiae-palate.jpg" alt="Open mouth with many red pinpoint petechiae on the soft palate" width="322" height="176" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig E14</span><span class="fig-title">Palatal (buccal) petechiae</span><span class="fig-src"><b>ID lecture</b> · deck</span></figcaption></figure><figure class="fig-card" id="fig-e-petechiae-skin"><div class="fig-frame"><img class="slide-img" src="assets/endocarditis/e-petechiae-skin.jpg" alt="Lower legs covered in purple petechial rash" width="1364" height="806" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig E15</span><span class="fig-title">Petechiae on the legs</span><span class="fig-src"><b>ID lecture</b> · deck</span></figcaption></figure></div>
+    <div class="fig-row"><figure class="fig-card" id="fig-e-splinter"><div class="fig-frame"><img class="slide-img" src="assets/endocarditis/e-splinter.jpg" alt="Fingernail with small dark linear streaks in the nail bed" width="1178" height="1024" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig E16</span><span class="fig-title">Splinter hemorrhages — linear, non-blanching, under the nail</span><span class="fig-src"><b>ID lecture</b> · deck</span></figcaption></figure><figure class="fig-card" id="fig-e-clubbing"><div class="fig-frame"><img class="slide-img" src="assets/endocarditis/e-clubbing.jpg" alt="Fingers with bulbous, rounded fingertips and curved nails" width="1096" height="994" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig E17</span><span class="fig-title">Clubbing of the fingers (uncommon, &lt;10%)</span><span class="fig-src"><b>ID lecture</b> · deck</span></figcaption></figure></div>
+    <div class="fig-row"><figure class="fig-card tall" id="fig-e-osler"><div class="fig-frame"><img class="slide-img" src="assets/endocarditis/e-osler.jpg" alt="Sole and toes with small raised red tender nodules on the toe pads and scattered flat red macules" width="846" height="1390" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig E18</span><span class="fig-title">Osler nodes on the toe pads (tender), with Janeway-type macules on the sole</span><span class="fig-src"><b>ID lecture</b> · deck</span></figcaption></figure><figure class="fig-card tall" id="fig-e-janeway"><div class="fig-frame"><img class="slide-img" src="assets/endocarditis/e-janeway.jpg" alt="Sole of the foot with several flat hemorrhagic plaques" width="400" height="622" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig E19</span><span class="fig-title">Janeway lesions — painless hemorrhagic plaques on the sole</span><span class="fig-src"><b>ID lecture</b> · deck</span></figcaption></figure><figure class="fig-card" id="fig-e-roth"><div class="fig-frame"><img class="slide-img" src="assets/endocarditis/e-roth.jpg" alt="Retinal photograph with two hemorrhages with white centres, arrows" width="1250" height="1024" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig E20</span><span class="fig-title">Roth spots — retinal hemorrhages with pale centres (arrows)</span><span class="fig-src"><b>ID lecture</b> · deck</span></figcaption></figure></div>
+    <div class="callout callout-hook">
+      <div class="callout-title">🧠 Immune complex vs embolus</div>
+      <p><strong>Immune complexes:</strong> Osler nodes, Roth spots, glomerulonephritis, positive rheumatoid factor. <strong>Emboli:</strong> Janeway lesions, splinters, petechiae, organ infarcts. <span class="src-tag">Board add-on</span> "Osler = Ouch".</p>
+    </div>
+
+    <h3>Complications that may be the presenting problem</h3>
+    <ul class="notes-list">
+      <li><strong>Heart:</strong> regurgitation, heart failure, conduction block, valve/ring abscess; pericarditis (spread from mitral valve); myocarditis (contiguous spread).</li>
+      <li><strong>Neuro:</strong> embolic stroke, intracerebral hemorrhage, brain abscess.</li>
+      <li><strong>Septic emboli:</strong> infarcts of spleen, kidney, any organ; septic pulmonary emboli (right-sided).</li>
+      <li><strong>Metastatic infection:</strong> osteomyelitis, septic arthritis.</li>
+      <li><strong>Systemic immune reaction:</strong> immune-complex glomerulonephritis.</li>
+    </ul>
+
+    <div class="callout callout-purple">
+      <div class="callout-title">➡️ Right-sided IE</div>
+      <ul class="notes-list">
+        <li>~10% of IE; <strong>tricuspid 90%</strong>, pulmonic 10%.</li>
+        <li>Causes: <strong>IDU</strong>, intracardiac devices, central lines, <strong>dialysis</strong>, immunosuppression, congenital disease.</li>
+        <li>Organisms: <strong><em>S. aureus</em> 70–80%</strong>; strep/enterococci ~25%; GNR, fungi &lt;2% each.</li>
+        <li>Slower, mimics other disease: high fever, chills, weight loss, headache, abdominal pain; <strong>septic pulmonary emboli</strong> (~75%: dyspnea, cough, hemoptysis, chest pain).</li>
+        <li><strong class="hot">Often no murmur.</strong> IDU patients often co-infected with HCV/HBV (HIV less now).</li>
+        <li>Diagnosis: positive blood cultures + echo showing right-sided vegetations.</li>
+      </ul>
+    </div>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> A febrile man who injects heroin has cough, hemoptysis and multiple peripheral cavitating nodules on chest CT, but no murmur. Diagnosis?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>Right-sided (tricuspid) IE with septic pulmonary emboli</strong>, most likely <em>S. aureus</em>; right-sided IE often has <strong>no audible murmur</strong>.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> Which two peripheral IE signs are caused by immune complexes rather than emboli?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>Osler nodes</strong> (painful finger/toe pads) and <strong>Roth spots</strong> (retina). Janeway lesions are embolic micro-abscesses.</p></div>
+    </div>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="10RaKBTTyeo" data-title="Infective Endocarditis (Duke criteria &amp; pathophysiology)"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/10RaKBTTyeo/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Infective Endocarditis (Duke criteria &amp; pathophysiology)</b><i>Rhesus Medicine · YouTube</i></span></button><button class="vid" type="button" data-yt="j6Ekwcqi3bA" data-title="Rheumatic fever vs infective endocarditis"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/j6Ekwcqi3bA/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Rheumatic fever vs infective endocarditis</b><i>Medicosis Perfectionalis · YouTube</i></span></button></div></div>
+  </div>
+</div>
+
+<!-- ==================== 6. DIAGNOSIS ==================== -->
+<div class="section" id="s6-dx">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Topic 6</div></div>
+    <p class="section-label">Duke 2023 · labs · imaging</p>
+    <h2 class="section-title">Diagnosing IE</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>TTE / TOE = transthoracic / transesophageal echocardiography · CT = computed tomography · FDG-PET/CT = ¹⁸F-fluorodeoxyglucose positron emission tomography/CT · CIED = cardiac implantable electronic device · HOCM = hypertrophic obstructive cardiomyopathy · RF = rheumatoid factor · ESR / CRP = erythrocyte sedimentation rate / C-reactive protein · IgG = immunoglobulin G</div>
+
+    <p><strong>Suspect IE</strong> in any patient with <strong>bacteremia with a typical IE organism</strong> (staph, strep, enterococci) plus cardiac or non-cardiac risk factors (IDU, immunosuppression, recent surgery or dental work). Diagnosis = clinical picture + blood cultures + imaging, organised by the <strong>Duke criteria (2023 version — most sensitive; best for left-sided)</strong>.</p>
+
+    <h3>2023 Duke criteria (from the outline)</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>Tier</th><th>Criterion</th></tr>
+      <tr><td rowspan="3"><strong>MAJOR — microbiologic</strong></td><td><strong>Typical IE organism</strong> in <strong>≥2</strong> separate blood-culture sets</td></tr>
+      <tr><td>Occasional/rare IE organism in <strong>≥3</strong> separate sets</td></tr>
+      <tr><td>Positive <strong>PCR</strong> for <em>Coxiella</em>, <em>Bartonella</em> or <em>T. whipplei</em> · <em>Coxiella</em> phase I IgG &gt;1:800 (or single positive culture) · <em>Bartonella</em> IgG &gt;1:800</td></tr>
+      <tr><td rowspan="2"><strong>MAJOR — imaging</strong></td><td>Echo / cardiac CT: <strong>vegetation</strong>, leaflet perforation or aneurysm, <strong>abscess</strong>, pseudoaneurysm, intracardiac fistula · <strong>new</strong> significant regurgitation (worsening of old isn't enough) · new partial prosthetic dehiscence</td></tr>
+      <tr><td><strong>FDG-PET/CT</strong>: abnormal activity on native/prosthetic valve (≥3 months after implant), aortic graft, device leads</td></tr>
+      <tr><td><strong>MAJOR — surgical</strong></td><td>IE seen at cardiac surgery (without other major / pathologic criteria)</td></tr>
+      <tr><td rowspan="6"><strong>MINOR</strong></td><td><strong>Predisposition:</strong> prior IE, prosthetic valve, valve repair, congenital heart disease, &gt;mild regurgitation or stenosis, endovascular CIED, <strong>HOCM</strong>, <strong>injection drug use</strong></td></tr>
+      <tr><td><strong>Fever</strong> ≥<span class="num">38.0 °C</span> (100.4 °F)</td></tr>
+      <tr><td><strong>Vascular:</strong> arterial emboli, septic pulmonary infarcts, cerebral/splenic abscess, mycotic aneurysm, intracranial hemorrhage, conjunctival hemorrhage, <strong>Janeway lesions</strong>, purulent purpura</td></tr>
+      <tr><td><strong>Immunologic:</strong> positive <strong>RF</strong>, <strong>Osler nodes</strong>, <strong>Roth spots</strong>, immune-complex glomerulonephritis</td></tr>
+      <tr><td><strong>Microbiologic</strong> not meeting major; organism from another sterile site; lone skin-bacterium PCR on valve/wire</td></tr>
+      <tr><td><strong>Imaging:</strong> PET/CT activity &lt;3 months after implant · <strong>Exam</strong> (no echo available): new regurgitant murmur</td></tr>
+    </table></div>
+    <div class="tbl-scroll"><table>
+      <tr><th>Result</th><th>Requires</th></tr>
+      <tr><td><strong>Definite IE</strong></td><td>Pathologic criteria (organism or histology in vegetation, cardiac tissue, explanted valve, graft, CIED or embolus) — <strong>or</strong> clinical: <strong class="hot">2 major · 1 major + 3 minor · 5 minor</strong></td></tr>
+      <tr><td><strong>Possible IE</strong></td><td><strong>1 major + 1 minor</strong>, or <strong>3 minor</strong></td></tr>
+      <tr><td><strong>Rejected IE</strong></td><td>Firm alternative diagnosis · resolution with &lt;4 days of antibiotics · no pathologic IE at surgery/autopsy after ≤4 days of antibiotics · criteria for possible/definite not met</td></tr>
+    </table></div>
+    <div class="callout callout-hook">
+      <div class="callout-title">🧠 Definite = "2 · 1+3 · 5"</div>
+      <p>Two majors, one major plus three minors, or five minors. Possible = "1+1 or 3".</p>
+    </div>
+
+    <h3>Laboratory findings — mostly non-specific</h3>
+    <ul class="notes-list">
+      <li><strong>Blood:</strong> anemia; thrombocytopenia (15–20%); leukopenia — <em>lecture: not usual; outline lists it</em>; ↑ ESR/CRP; hypergammaglobulinemia (~25%); <strong class="hot">positive rheumatoid factor (50–60%)</strong> — antibody against the Fc of IgG, a response to circulating immune complexes.</li>
+      <li><strong>Urine:</strong> proteinuria, hematuria, pyuria, (white-cell) casts, bacteriuria.</li>
+      <li><strong>Blood cultures:</strong> bacteremia is <strong>continuous but low-level</strong> (&lt;<span class="num">100</span>/mL) → draw <strong>3 separate sets</strong>, before antibiotics.</li>
+    </ul>
+
+    <h3>Imaging ladder</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>Test</th><th>Sensitivity</th><th>Best for</th></tr>
+      <tr><td><strong>TTE</strong></td><td>~<span class="num">65%</span></td><td>Cheap first look: valve/paravalvular abnormality, some vegetations, abscess, new regurgitation</td></tr>
+      <tr><td><strong>TOE</strong></td><td>~<span class="num">95%</span></td><td>When TTE is negative; vegetation size/nature → <strong>embolic risk</strong>; perforation</td></tr>
+      <tr><td><strong>Cardiac CT</strong></td><td>—</td><td><strong>Perivalvular abscess</strong></td></tr>
+      <tr><td><strong>FDG-PET/CT</strong></td><td>—</td><td>Inflammation (high glucose uptake) — <strong>prosthetic valves</strong>, devices</td></tr>
+    </table></div>
+    <div class="fig-row"><figure class="fig-card" id="fig-e-tte"><div class="fig-frame"><img class="slide-img" src="assets/endocarditis/e-tte.jpg" alt="Apical four-chamber echocardiogram labelled RV, LV, RA, LA with yellow arrows pointing to a mass in the right atrium" width="1366" height="950" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig E21</span><span class="fig-title">Transthoracic echo (TTE): mass in the right atrium (arrows)</span><span class="fig-src"><b>ID lecture</b> · deck</span></figcaption></figure><figure class="fig-card" id="fig-e-toe"><div class="fig-frame"><img class="slide-img" src="assets/endocarditis/e-toe.jpg" alt="Three-dimensional transesophageal echo view of the mitral valve with anterior and posterior leaflets and a red arrow at a perforation" width="852" height="504" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig E22</span><span class="fig-title">Transesophageal echo (TOE, 3-D): mitral leaflet perforation (red arrow)</span><span class="fig-src"><b>ID lecture</b> · deck</span></figcaption></figure></div>
+    <figure class="fig-card sm" id="fig-e-pet"><div class="fig-frame"><img class="slide-img" src="assets/endocarditis/e-pet.jpg" alt="CT, fused PET-CT and PET images showing abnormal tracer uptake around a prosthetic aortic valve, marked by star and arrows" width="701" height="666" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig E23</span><span class="fig-title">¹⁸F-FDG PET/CT: hot spot around a prosthetic aortic valve = prosthetic valve IE</span><span class="fig-src"><b>ID lecture</b> · deck</span></figcaption></figure>
+    <p>Also recommended: a <strong>full dental evaluation</strong> (caries, periodontal pockets, gingival inflammation) — a clue to anaerobes or viridans strep.</p>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> Fever 38.6 °C, known MVP with regurgitation, and Osler nodes; blood cultures and echo are pending. How many Duke criteria are met, and what's the category so far?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>Three minor</strong> (predisposition, fever, immunologic phenomenon) → <strong>possible IE</strong>. One major (≥2 positive typical cultures or a vegetation on echo) would make it definite (1 major + 3 minor).</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> TTE shows no vegetation in a patient with high suspicion of IE. Next imaging step and why?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>Transesophageal echo</strong> — ~95% sensitive vs ~65% for TTE; also sizes the vegetation to estimate embolic risk.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 7. TREATMENT ==================== -->
+<div class="section" id="s7-tx">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Topic 7</div></div>
+    <p class="section-label">Bactericidal, long, often surgical</p>
+    <h2 class="section-title">Managing IE</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>MSSA / MRSA = methicillin-sensitive / -resistant <em>S. aureus</em> · PCN = penicillin · IV = intravenous · GNR = gram-negative rods</div>
+
+    <div class="callout callout-key">
+      <div class="callout-title">🔑 Principles</div>
+      <ul class="notes-list">
+        <li><strong>Aggressive</strong> — response is slow (biofilm, ongoing septic emboli).</li>
+        <li><strong class="hot">Bactericidal, not bacteriostatic</strong> — you must kill the organisms already there.</li>
+        <li><strong>Cultures before antibiotics.</strong> Stable patient → wait for the 3 blood cultures. Acutely ill → draw 3 sets, then start empiric therapy immediately.</li>
+        <li><strong>Empiric regimen:</strong> cover staph (<strong>MRSA + MSSA</strong>, incl. <em>S. epidermidis</em>), strep (incl. viridans) and enterococci → <strong class="hot">vancomycin + cefepime or ceftriaxone</strong>.</li>
+        <li><strong>Surgery</strong> frequently: valve replacement (~half of patients eventually), drain exudate, remove splenic/renal abscesses.</li>
+      </ul>
+    </div>
+
+    <h3>Targeted therapy — pathogen known (course handout)</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>Organism</th><th>Regimen</th><th>Duration</th></tr>
+      <tr><td><strong><em>S. aureus</em> — methicillin-sensitive</strong></td><td><strong>Nafcillin, oxacillin</strong> or flucloxacillin</td><td>Handout says "3–5 days" — <strong>likely a typo</strong>; standard ~<span class="num">6 weeks</span> <span class="src-tag">Board add-on</span></td></tr>
+      <tr><td><strong><em>S. aureus</em> — methicillin-resistant</strong></td><td><strong>Vancomycin + rifampin</strong></td><td>6 weeks</td></tr>
+      <tr><td><strong><em>S. epidermidis</em></strong> (most MR)</td><td><strong>Vancomycin + rifampin</strong></td><td>&gt;6 weeks</td></tr>
+      <tr><td>Viridans — PCN-sensitive</td><td><strong>PCN G</strong> or <strong>ceftriaxone</strong></td><td>4 weeks</td></tr>
+      <tr><td>Viridans — PCN-resistant</td><td>PCN G + gentamicin, or vancomycin</td><td>4 weeks</td></tr>
+      <tr><td>Enterococci — PCN-sensitive</td><td>PCN G + gentamicin, or ceftriaxone + gentamicin, or vancomycin</td><td>4 weeks</td></tr>
+      <tr><td>Enterococci — PCN-resistant</td><td>Gentamicin + ampicillin-sulbactam, or vancomycin</td><td>6 weeks</td></tr>
+      <tr><td>GNR (non-HACEK) — Enterobacteriaceae</td><td>Gentamicin + cefepime, or meropenem</td><td>6–8 weeks</td></tr>
+      <tr><td>GNR — <em>Pseudomonas</em></td><td>Tobramycin + cefepime, or meropenem</td><td>6–8 weeks</td></tr>
+      <tr><td><strong>HACEK</strong></td><td><strong>Ceftriaxone</strong> or ciprofloxacin</td><td>4 weeks</td></tr>
+      <tr><td><em>Candida</em></td><td>Caspofungin or liposomal amphotericin B (6–8 wk) → fluconazole/voriconazole</td><td>Suppression for life</td></tr>
+      <tr><td><em>Aspergillus</em></td><td>Liposomal amphotericin B + voriconazole (6 wk) → voriconazole</td><td>For life</td></tr>
+      <tr><td><em>Coxiella burnetii</em></td><td>Quinolone + doxycycline</td><td>—</td></tr>
+      <tr><td><em>Bartonella</em></td><td><strong>Doxycycline + rifampin</strong> (corrected in class — not gentamicin)</td><td>—</td></tr>
+    </table></div>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> An acutely ill patient with suspected IE is in the ED. What must happen before the first antibiotic dose, and what is the empiric regimen?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p>Draw <strong>three separate blood-culture sets</strong> (pre-treatment antibiotics are the commonest cause of culture-negative IE), then start <strong>vancomycin + cefepime (or ceftriaxone)</strong> to cover MRSA/MSSA, CoNS, streptococci and enterococci.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> Why are bactericidal rather than bacteriostatic drugs required for IE?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p>The dense, poorly perfused vegetation and biofilm protect organisms from host defences, so the drug itself must <strong>kill</strong> the bacteria; suppression alone lets them regrow.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 8. MYOCARDITIS ==================== -->
+<div class="section" id="s8-myo">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Topic 8</div></div>
+    <p class="section-label">Mostly viral · often missed · any age</p>
+    <h2 class="section-title">Infectious Myocarditis</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>HHV-6 = human herpesvirus 6 · CAR = coxsackie–adenovirus receptor · CMV / EBV = cytomegalovirus / Epstein–Barr virus · RSV = respiratory syncytial virus · EMB = endomyocardial biopsy · BNP = B-type natriuretic peptide · IVIG = intravenous immunoglobulin · ECG = electrocardiogram</div>
+
+    <p>Inflammation of the myocardium — infectious, immune-mediated or toxic — hitting myocytes (necrosis, contractile dysfunction), the <strong>conduction system</strong>, autonomic nerves and interstitium. <strong>Often unsuspected:</strong> ~<span class="num">4%</span> of unrelated autopsies show it, more in young sudden deaths. Unlike IE it affects <strong>all ages</strong>, mostly <strong><span class="num">20–50</span> years</strong>.</p>
+    <div class="fig-row"><figure class="fig-card" id="fig-e-myo-heart"><div class="fig-frame"><img class="slide-img" src="assets/endocarditis/e-myo-heart.jpg" alt="Two heart cutaway illustrations, the one with myocarditis showing reddened thickened ventricular muscle" width="1438" height="884" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig E24</span><span class="fig-title">Healthy heart vs heart with myocarditis (inflamed, thickened myocardium)</span><span class="fig-src"><b>ID lecture</b> · deck</span></figcaption></figure><figure class="fig-card" id="fig-e-myo-dilated"><div class="fig-frame"><img class="slide-img" src="assets/endocarditis/e-myo-dilated.jpg" alt="Normal heart beside a heart with myocarditis showing a dilated inflamed left ventricle" width="1029" height="999" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig E25</span><span class="fig-title">Myocarditis can end as a dilated, poorly contracting ventricle</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure></div>
+
+    <h3>Four mechanisms of damage</h3>
+    <div class="hallmarks-grid">
+      <div class="hallmark-card"><div class="hallmark-num">1</div><h4>Direct cell damage</h4><p>By the agent itself (mostly viruses).</p></div>
+      <div class="hallmark-card"><div class="hallmark-num">2</div><h4>Cytokines / cell-mediated immunity</h4><p>A general immune response (e.g. cytokine storm) injures myocytes.</p></div>
+      <div class="hallmark-card"><div class="hallmark-num">3</div><h4>Antigen-specific cytotoxicity</h4><p>A focused immune attack on one microbial antigen.</p></div>
+      <div class="hallmark-card"><div class="hallmark-num">4</div><h4>Toxin cytotoxicity</h4><p>A microbial toxin — best example <strong>diphtheria</strong>.</p></div>
+    </div>
+
+    <h3>Viral agents — the main cause</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>Virus</th><th>Genome</th><th>Point</th></tr>
+      <tr><td><strong class="hot">Parvovirus B19</strong></td><td>ss DNA</td><td><strong>Most common in current adult data</strong> (slapped cheek in kids)</td></tr>
+      <tr><td><strong class="hot">HHV-6</strong></td><td>ds DNA</td><td>Also most common now (roseola)</td></tr>
+      <tr><td><strong>Coxsackie B</strong> (enterovirus)</td><td>ss RNA</td><td>Classic answer from 1960s–90s (mostly children) — <strong>older board questions still use it</strong></td></tr>
+      <tr><td><strong>Adenovirus</strong></td><td>ds DNA</td><td>With Coxsackie B, shares the <strong>CAR receptor</strong> on myocytes</td></tr>
+      <tr><td>CMV / EBV, influenza A, RSV, HIV, SARS-CoV-2</td><td>—</td><td>Less common</td></tr>
+    </table></div>
+    <p>Caveat: many cases are <strong>idiopathic</strong> and get assumed viral, so the true share is unknown.</p>
+
+    <h3>Non-viral agents</h3>
+    <ul class="notes-list">
+      <li><strong>Spread from IE:</strong> contiguous extension from an infected valve or septic emboli.</li>
+      <li><strong class="hot"><em>Corynebacterium diphtheriae</em> toxin</strong> — historically the leading killer of children &lt;10, and death was usually from <strong>toxin myocarditis</strong>, not the pseudomembrane.</li>
+      <li><strong><em>Clostridium perfringens</em> toxin.</strong></li>
+      <li><strong><em>Borrelia burgdorferi</em> (Lyme):</strong> ~<span class="num">10%</span> of Lyme patients develop <strong>conduction disturbances</strong> (heart block).</li>
+      <li>Any bacteremic pathogen, rarely: <em>Salmonella</em>, <em>Campylobacter</em>, <em>S. pyogenes</em>, <em>S. aureus</em>, <em>N. meningitidis</em>, <em>Listeria</em>, <em>T. pallidum</em>.</li>
+      <li><strong>Fungi</strong> (immunocompromised): <em>Cryptococcus</em>, <em>Aspergillus</em>, <em>Candida</em>, <em>Coccidioides</em>.</li>
+      <li><strong>Parasites:</strong> <em>Toxoplasma</em> (cat owner), <em>Plasmodium</em>, <em>Trypanosoma cruzi</em> (Chagas).</li>
+    </ul>
+    <div class="fig-row"><figure class="fig-card" id="fig-e-lyme-block"><div class="fig-frame"><img class="slide-img" src="assets/endocarditis/e-lyme-block.jpg" alt="12-lead ECG with P waves dissociated from QRS complexes, complete heart block" width="1600" height="845" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig E26</span><span class="fig-title">Lyme carditis: complete heart block (~10% of Lyme patients get conduction disease)</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure><figure class="fig-card" id="fig-e-chagas"><div class="fig-frame"><img class="slide-img" src="assets/endocarditis/e-chagas.jpg" alt="Myocardium with a pseudocyst full of tiny intracellular amastigotes and minimal inflammation" width="1600" height="1050" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig E27</span><span class="fig-title">T. cruzi amastigotes in a myocyte (Chagas)</span><span class="fig-src"><b>Robbins &amp; Cotran Atlas</b></span></figcaption></figure></div>
+    <figure class="fig-card tall" id="fig-e-myo-causes"><div class="fig-frame"><img class="slide-img" src="assets/endocarditis/e-myo-causes.png" alt="Long table of infectious causes (viral, bacterial, spirochetal, mycotic, rickettsial, protozoal) and non-infectious causes (cardiotoxins, hypersensitivity, systemic disorders)" width="699" height="770" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig E28</span><span class="fig-title">The &quot;OSS&quot; list: major causes of myocarditis (infectious and non-infectious)</span><span class="fig-src"><b>ID lecture</b> · deck</span></figcaption></figure>
+
+    <h3>Histology patterns</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>Pattern</th><th>Associated with</th></tr>
+      <tr><td><strong>Lymphocytic</strong></td><td><strong>Pathogens (mostly viral)</strong>, drugs, radiation, immune disorders</td></tr>
+      <tr><td><strong>Eosinophilic</strong></td><td><strong>Parasites</strong>, hypersensitivity</td></tr>
+      <tr><td>Giant-cell</td><td>Autoimmune disorders (non-infectious)</td></tr>
+      <tr><td>Granulomatous</td><td>Sarcoidosis (non-infectious)</td></tr>
+    </table></div>
+    <figure class="fig-card sm" id="fig-e-lymphocytic"><div class="fig-frame"><img class="slide-img" src="assets/endocarditis/e-lymphocytic.jpg" alt="H&amp;E myocardium with dense interstitial lymphocytes between damaged myocytes" width="1327" height="1000" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig E29</span><span class="fig-title">Lymphocytic myocarditis — the pattern of viral / pathogen causes</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure>
+
+    <h3>Presentation</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>Form</th><th>Picture</th></tr>
+      <tr><td><strong>Subacute</strong></td><td>No specific symptoms — only unexplained ↑ troponin or ECG changes</td></tr>
+      <tr><td><strong>Acute</strong></td><td>New, unexplained heart failure / chest pain / arrhythmia / dyspnea / leg swelling in a <strong>young</strong> patient, developing over <strong>≤3 months</strong></td></tr>
+      <tr><td><strong>Chronic</strong></td><td>&gt;3 months; <strong>alternating</strong> cardiomyopathy and stability</td></tr>
+      <tr><td><strong>Fulminant</strong></td><td>Sudden cardiac collapse, cardiogenic shock</td></tr>
+    </table></div>
+    <p>Often asymptomatic. Common features: fever, chest pain, <strong>unexplained sinus tachycardia</strong>, dyspnea, heart failure, arrhythmias/palpitations, syncope, sudden death; also S3/S4 gallop, heart block or new bundle-branch block, new cardiomegaly, hepatomegaly, fatigue, arthralgias. <strong class="hot">Ask about a preceding viral prodrome</strong> (flu-like, URI or GI).</p>
+
+    <h3>Diagnosis</h3>
+    <ul class="notes-list">
+      <li>Suspect with unexplained HF, chest pain or arrhythmia <strong>after a presumed viral illness</strong>, in a febrile systemic setting.</li>
+      <li><strong>Endomyocardial biopsy</strong> = definitive (histology + immunohistochemistry; PCR for viruses) — but invasive; reserved for rapidly progressive HF. PCR can find bystander viruses.</li>
+      <li><strong>ECG:</strong> ST elevation, tachy/bradyarrhythmias. <strong>Echo:</strong> dilation of all 4 chambers, diffuse ventricular hypokinesis.</li>
+      <li><strong>Troponin T</strong> (longer-lasting) and <strong>troponin I</strong> (more cardiac-specific); ↑ CRP/ESR; <strong>BNP</strong> (heart working too hard).</li>
+      <li>Virus from another site or rising titres/IgM — circumstantial only.</li>
+    </ul>
+    <figure class="fig-card" id="fig-e-myo-ecg"><div class="fig-frame"><img class="slide-img" src="assets/endocarditis/e-myo-ecg.jpg" alt="12-lead ECG with widespread ST-segment elevation" width="1383" height="1000" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig E30</span><span class="fig-title">ECG in (peri)myocarditis — diffuse ST elevation</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure>
+
+    <h3>Treatment</h3>
+    <p><strong>Mostly supportive</strong> — treat the heart failure and arrhythmias: <strong>diuretics, RAS blockers, β-blockers</strong>. Sometimes IVIG or interferon for infectious forms. Specific antibacterial/antifungal/antiparasitic drugs when the agent is known. <strong class="hot">Antivirals have no proven efficacy.</strong></p>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> A 28-year-old develops new heart failure two weeks after a febrile illness; EMB shows lymphocytic infiltrates with myocyte necrosis. Which viruses are most often found in adults today, and which older answer shares a receptor with adenovirus?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>Parvovirus B19 and HHV-6</strong> in current data; <strong>Coxsackie B</strong> is the classic older answer — it and adenovirus use the <strong>coxsackie–adenovirus receptor (CAR)</strong>.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> A child with a grey pharyngeal pseudomembrane dies a week later of arrhythmia. Mechanism?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>Diphtheria toxin myocarditis</strong> — historically the main cause of diphtheria deaths, more than airway obstruction.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> A hiker in Connecticut with a recent expanding rash presents with syncope and complete heart block. Diagnosis?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>Lyme carditis</strong> (<em>Borrelia burgdorferi</em>) — ~10% of Lyme patients develop conduction disease.</p></div>
+    </div>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="fiNnL_uMrco" data-title="Myocarditis — causes, symptoms, pathology"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/fiNnL_uMrco/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Myocarditis — causes, symptoms, pathology</b><i>Osmosis · YouTube</i></span></button><button class="vid" type="button" data-yt="sevCIejTzTo" data-title="Acute Myocarditis — causes, diagnosis, treatment"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/sevCIejTzTo/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Acute Myocarditis — causes, diagnosis, treatment</b><i>Medicosis Perfectionalis · YouTube</i></span></button><button class="vid" type="button" data-yt="K3nIAwEfM8E" data-title="Diphtheria — pharyngitis, myocarditis, neuropathy"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/K3nIAwEfM8E/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Diphtheria — pharyngitis, myocarditis, neuropathy</b><i>Medicosis Perfectionalis · YouTube</i></span></button><button class="vid" type="button" data-yt="lamv6dlzwPI" data-title="Parvovirus B19"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/lamv6dlzwPI/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Parvovirus B19</b><i>Osmosis · YouTube</i></span></button></div></div>
+  </div>
+</div>
+
+<!-- ==================== 9. PERICARDITIS ==================== -->
+<div class="section" id="s9-peri">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Topic 9</div><span class="hy-flag">⭐ Distinctive pain pattern</span></div>
+    <p class="section-label">The most common pericardial disorder</p>
+    <h2 class="section-title">Infectious (Acute) Pericarditis</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>CMV / EBV = cytomegalovirus / Epstein–Barr virus · TB = tuberculosis · ECG = electrocardiogram · TTE = transthoracic echo · NSAID = non-steroidal anti-inflammatory drug · ESR / CRP = inflammatory markers · CBC = complete blood count · SLE = systemic lupus erythematosus · RA = rheumatoid arthritis</div>
+
+    <h3>The sac</h3>
+    <p>Double-walled: outer <strong>fibrous</strong> (inelastic) layer + inner <strong>serous</strong> membrane, with ~<span class="num">15–50 mL</span> of fluid between. Jobs: keeps the heart positioned in the mediastinum, <strong>prevents over-filling</strong>, lubricates, and (sometimes) blocks spread of infection from neighbouring organs.</p>
+    <div class="fig-row"><figure class="fig-card" id="fig-e-pericardium"><div class="fig-frame"><img class="slide-img" src="assets/endocarditis/e-pericardium.jpg" alt="Heart diagram with inset showing endocardium, myocardium, visceral pericardium, pericardial cavity with fluid, parietal pericardium and fibrous pericardium" width="537" height="418" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig E31</span><span class="fig-title">The pericardium: fibrous outer layer + serous (parietal and visceral) layers with 15–50 mL fluid between</span><span class="fig-src"><b>ID lecture</b> · deck</span></figcaption></figure><figure class="fig-card" id="fig-e-pericarditis-dx"><div class="fig-frame"><img class="slide-img" src="assets/endocarditis/e-pericarditis-dx.jpg" alt="Normal heart beside a heart with inflamed pericardium, inset showing parietal and visceral layers" width="1600" height="892" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig E32</span><span class="fig-title">Pericarditis: inflamed serous pericardium</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure></div>
+
+    <h3>Causes</h3>
+    <p>Infection, direct injury, radiation, drugs/toxins, malignancy, autoimmune (SLE, RA). In the US <strong>most acute pericarditis is attributed to viruses</strong> (again: no agent found → "viral").</p>
+    <div class="tbl-scroll"><table>
+      <tr><th>Class</th><th>Agents</th></tr>
+      <tr><td><strong>Viruses</strong> (most common)</td><td>Historic (children): <strong>enteroviruses</strong> (Coxsackie, echo), influenza · Adults: <strong>Parvo B19, CMV</strong>, EBV, HIV, SARS-CoV-2</td></tr>
+      <tr><td><strong>Bacteria → "purulent pericarditis"</strong></td><td><strong><em>S. aureus</em></strong>, streptococci (<strong>pneumococcus</strong>, viridans), <em>Haemophilus</em>; <strong class="hot"><em>M. tuberculosis</em> in endemic countries</strong> (needs supporting findings, not just geography)</td></tr>
+      <tr><td><strong>Fungi</strong> (immunocompromised)</td><td><em>Candida</em>, <em>Aspergillus</em>; rarely environmental <em>Blastomyces</em>, <em>Histoplasma</em>, <em>Coccidioides</em></td></tr>
+      <tr><td><strong>Parasites</strong> (rare)</td><td><em>Toxoplasma</em>, <em>Entamoeba</em>, <em>Echinococcus</em> (tapeworm)</td></tr>
+    </table></div>
+    <figure class="fig-card sm" id="fig-e-tb-pericarditis"><div class="fig-frame"><img class="slide-img" src="assets/endocarditis/e-tb-pericarditis.jpg" alt="Histology of the heart surface with granulomatous inflammation and a multinucleated Langhans giant cell, arrow" width="1600" height="1054" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig E33</span><span class="fig-title">Tuberculous pericarditis: granuloma with a Langhans giant cell (arrow)</span><span class="fig-src"><b>Robbins &amp; Cotran Atlas</b></span></figcaption></figure>
+
+    <h3>Clinical picture</h3>
+    <p>Acute onset, ~<strong>3-week</strong> course, <strong>can recur</strong>. Non-specific prodrome: low-grade fever, fatigue, cough, dyspnea (worse lying down), hiccups.</p>
+    <div class="callout callout-key">
+      <div class="callout-title">🔑 The pain is the giveaway</div>
+      <ul class="notes-list">
+        <li><strong>Sharp / stabbing</strong>, anterior chest</li>
+        <li><strong>Worse</strong> with coughing, inspiration, and <strong>lying flat</strong></li>
+        <li><strong class="hot">Better sitting up and leaning forward</strong></li>
+        <li><strong class="hot">Radiates to the left trapezius ridge</strong></li>
+      </ul>
+    </div>
+    <ul class="notes-list">
+      <li><strong>Pericardial friction rub</strong> — scratchy, squeaky; essentially only in acute pericarditis ("that's the rub").</li>
+      <li><strong>ECG:</strong> <strong>ST elevation + PR depression</strong>.</li>
+      <li><strong>Effusion:</strong> not required, but restricts cardiac filling when present.</li>
+    </ul>
+    <div class="fig-row"><figure class="fig-card" id="fig-e-pericarditis-ecg"><div class="fig-frame"><img class="slide-img" src="assets/endocarditis/e-pericarditis-ecg.jpg" alt="12-lead ECG with diffuse concave ST elevation and PR depression" width="1600" height="951" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig E34</span><span class="fig-title">Viral pericarditis ECG — diffuse ST elevation with PR depression</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure><figure class="fig-card sm" id="fig-e-water-bottle"><div class="fig-frame"><img class="slide-img" src="assets/endocarditis/e-water-bottle.jpg" alt="Frontal chest radiograph with a large, symmetric, flask-shaped cardiac silhouette" width="1229" height="1000" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig E35</span><span class="fig-title">Large pericardial effusion — &quot;water-bottle&quot; heart on chest X-ray</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure></div>
+
+    <div class="compare-grid">
+      <div class="compare-card" style="background:var(--green-bg);border-color:#2e7d32"><span class="card-emoji">🎈</span><h4>Myopericarditis</h4><p><strong>Pericarditis predominates</strong>; myocardial involvement present; <strong>normal ventricular function</strong>.</p></div>
+      <div class="compare-card" style="background:var(--red-bg);border-color:var(--accent)"><span class="card-emoji">💪</span><h4>Perimyocarditis</h4><p><strong>Myocarditis predominates</strong> → <strong>reduced ventricular function</strong>, with pericardial features.</p></div>
+    </div>
+
+    <h3>Diagnosis</h3>
+    <p>History (recent viral illness) + exam; ↑ ESR/CRP/CBC; troponin for myocardial damage; chest X-ray, ECG, <strong>TTE</strong> (effusion). <strong class="hot">Diagnose with ≥2 of 4:</strong></p>
+    <ol class="step-list">
+      <li><div><strong>Sharp chest pain improved by sitting up</strong></div></li>
+      <li><div><strong>Pericardial friction rub</strong></div></li>
+      <li><div><strong>ECG changes</strong>ST elevation + PR depression</div></li>
+      <li><div><strong>Pericardial effusion</strong>(not necessary on its own)</div></li>
+    </ol>
+
+    <h3>Treatment</h3>
+    <p><strong>Reduce inflammation: NSAIDs + colchicine</strong> (glucocorticoids if NSAIDs can't be used). Empiric parenteral antimicrobials if bacterial or fungal is suspected. <strong>Antivirals: efficacy not proven.</strong></p>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> A 30-year-old has sharp chest pain radiating to the left trapezius, worse lying flat and better leaning forward, a week after a cold; ECG shows diffuse ST elevation with PR depression. Diagnosis and first-line treatment?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p><strong>Acute (viral) pericarditis</strong> — treat with <strong>NSAIDs + colchicine</strong>.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> How do myopericarditis and perimyocarditis differ?</p>
+      <div class="answer"><div class="label">Answer</div>
+        <p>Myopericarditis: pericarditis dominates, <strong>ventricular function normal</strong>. Perimyocarditis: myocarditis dominates, <strong>ventricular function reduced</strong>.</p></div>
+    </div>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="O4sHhmfRaFg" data-title="Myocarditis &amp; pericarditis (myopericarditis explained)"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/O4sHhmfRaFg/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Myocarditis &amp; pericarditis (myopericarditis explained)</b><i>Rhesus Medicine · YouTube</i></span></button><button class="vid" type="button" data-yt="BXfnlCebHHE" data-title="Understanding Pericarditis"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/BXfnlCebHHE/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Understanding Pericarditis</b><i>Zero to Finals · YouTube</i></span></button><button class="vid" type="button" data-yt="lc6mmjg-P30" data-title="Friction rub — pericarditis, pleurisy"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/lc6mmjg-P30/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Friction rub — pericarditis, pleurisy</b><i>Medicosis Perfectionalis · YouTube</i></span></button><button class="vid" type="button" data-yt="xd-S1dElUp8" data-title="Pericarditis on ECG — practice"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/xd-S1dElUp8/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Pericarditis on ECG — practice</b><i>MedCram · YouTube</i></span></button></div></div>
+  </div>
+</div>
+
+<!-- ==================== GLOSSARY ==================== -->
+<div class="section" id="glossary">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge alt">Reference</div></div>
+    <p class="section-label">Every short form used in these notes</p>
+    <h2 class="section-title">Glossary &amp; Abbreviations</h2>
+    <div class="gloss">
+      <dl>
+        <dt>BNP</dt><dd>B-type natriuretic peptide (heart strain)</dd>
+        <dt>CAR</dt><dd>Coxsackie–adenovirus receptor on myocytes</dd>
+        <dt>CIED</dt><dd>Cardiac implantable electronic device (pacemaker, ICD)</dd>
+        <dt>CoNS</dt><dd>Coagulase-negative staphylococci (<em>S. epidermidis</em>)</dd>
+        <dt>EMB</dt><dd>Endomyocardial biopsy</dd>
+        <dt>ESR · CRP</dt><dd>Erythrocyte sedimentation rate · C-reactive protein</dd>
+      </dl>
+      <dl>
+        <dt>FDG-PET/CT</dt><dd>Fluorodeoxyglucose PET with CT — shows inflamed (glucose-hungry) tissue</dd>
+        <dt>GNR · GPC</dt><dd>Gram-negative rods · gram-positive cocci</dd>
+        <dt>HACEK</dt><dd><em>Haemophilus</em>, <em>Aggregatibacter</em>, <em>Cardiobacterium</em>, <em>Eikenella</em>, <em>Kingella</em></dd>
+        <dt>HHV-6</dt><dd>Human herpesvirus 6 (roseola)</dd>
+        <dt>IDU / PWID</dt><dd>Injection drug use / people who inject drugs</dd>
+      </dl>
+      <dl>
+        <dt>IE</dt><dd>Infective endocarditis</dd>
+        <dt>IVIG</dt><dd>Intravenous immunoglobulin</dd>
+        <dt>MRSA / MSSA</dt><dd>Methicillin-resistant / -sensitive <em>S. aureus</em></dd>
+        <dt>MVP</dt><dd>Mitral valve prolapse</dd>
+        <dt>NBTE</dt><dd>Non-bacterial thrombotic (sterile) endocarditis</dd>
+        <dt>PCR</dt><dd>Polymerase chain reaction</dd>
+      </dl>
+      <dl>
+        <dt>PVE</dt><dd>Prosthetic valve endocarditis</dd>
+        <dt>RF</dt><dd>Rheumatoid factor (positive in 50–60% of IE)</dd>
+        <dt>RHD</dt><dd>Rheumatic heart disease</dd>
+        <dt>TTE · TOE</dt><dd>Transthoracic (~65% sensitive) · transesophageal (~95%) echo</dd>
+        <dt>UTI</dt><dd>Urinary tract infection</dd>
+      </dl>
+    </div>
+  </div>
+</div>
+
+
+<div class="hy-modal" id="hyModal">
+  <div class="hy-modal-card">
+    <div class="hy-modal-header">
+      <h2>🎯 Endocarditis · Myocarditis · Pericarditis — High-Yield One-Pager</h2>
+      <div class="hy-modal-actions">
+        <button class="hy-action-btn" onclick="printHY()">🖨️ Print / Save PDF</button>
+        <button class="hy-action-btn hy-close-btn" onclick="closeHY()">✕ Close</button>
+      </div>
+    </div>
+    <p class="hy-subhead">OMK 2 Cardio · Infectious Disease 2026 · lecture + outline + targeted-treatment handout</p>
+    <div class="hy-cols">
+      <div>
+        <span class="hy-lo-tag">IE — WHO, WHY, HOW</span>
+        <div class="hy-block"><h4>Basics</h4><ul>
+          <li>Non-contagious; valves (native/prosthetic), septal defects, shunts, devices; untreated ≈ fatal</li>
+          <li><strong>Acute</strong>: S. aureus, normal valve, &lt;6 wk, broad Abx · <strong>Subacute</strong>: viridans, damaged valve, weeks–months</li>
+          <li>Now ~75% acute; US highest incidence; hospital mortality 15–20%, 1-y 40%; ~½ need surgery</li>
+        </ul></div>
+        <div class="hy-block"><h4>Risk</h4><ul>
+          <li>&gt;50 y, men; <strong>dental</strong> disease/procedures; structural disease (75%); RHD 75%→9%; MVP ~30%</li>
+          <li>Devices/CIED ~23%; <strong>hemodialysis 300/100k</strong>; diabetes; immunosuppression; prior IE</li>
+          <li><strong>IDU</strong>: 20–30 y, S. aureus, talc → <strong>tricuspid</strong> (60%), saliva → oral flora</li>
+        </ul></div>
+        <div class="hy-block"><h4>Pathogenesis</h4><ul>
+          <li>Injury (turbulence) → platelet–fibrin nidus (sterile) → bacteremia → adhere → colonise → <strong>biofilm</strong> (500× resistant, slow growth) → vegetation (10⁹/g)</li>
+          <li>Vegetation → <strong>seeding, valve destruction, septic emboli</strong></li>
+          <li>Mitral 28–45% &gt; aortic; tricuspid rare except IDU</li>
+        </ul></div>
+      </div>
+      <div>
+        <span class="hy-lo-tag">MICROBES · SIGNS · DUKE</span>
+        <div class="hy-block"><h4>Organisms</h4><ul>
+          <li><strong>S. aureus 31%</strong> (GPC, catalase+, coagulase+) · viridans 17% (sanguinis, bovis, mutans, mitior) · CoNS 11% (<strong>prosthetic</strong>) · enterococci 11% (catheters)</li>
+          <li><strong>S. gallolyticus → colon cancer/IBD</strong></li>
+          <li>HACEK, GNR 2% each · anaerobes (odontogenic) · fungi (Candida, Aspergillus; immunocompromised; &lt;50% survive) · viruses: no</li>
+          <li>Culture-neg: <strong>Abx before cultures</strong>; Coxiella, Bartonella (PCR)</li>
+        </ul></div>
+        <div class="hy-block"><h4>Clinical</h4><ul>
+          <li>Fever 90% · murmur 85% (MR &gt; AR &gt; TR)</li>
+          <li>Splenomegaly, petechiae ~40%; splinters</li>
+          <li>&lt;10%: clubbing; <strong>Osler</strong> (painful, immune complex); <strong>Janeway</strong> (painless, septic emboli); <strong>Roth</strong> (immune complex)</li>
+          <li>Right-sided: S. aureus 70–80%, septic pulmonary emboli, <strong>often no murmur</strong></li>
+        </ul></div>
+        <div class="hy-block"><h4>Diagnosis</h4><ul>
+          <li><strong>Definite</strong>: 2 major · 1 major + 3 minor · 5 minor · <strong>Possible</strong>: 1+1 or 3 minor</li>
+          <li>Major: typical organism ≥2 sets (rare ≥3); Coxiella/Bartonella PCR or IgG &gt;1:800; echo/CT vegetation, abscess, perforation, new regurgitation; PET/CT</li>
+          <li>Minor: predisposition (incl. IDU, HOCM), fever ≥38 °C, vascular, immunologic, micro</li>
+          <li>RF+ 50–60%; low-level bacteremia → 3 sets · <strong>TTE 65% → TOE 95%</strong></li>
+        </ul></div>
+      </div>
+      <div>
+        <span class="hy-lo-tag">TREATMENT · MYO · PERI</span>
+        <div class="hy-block"><h4>IE treatment</h4><ul>
+          <li><strong>Bactericidal</strong>; cultures first; empiric <strong>vancomycin + cefepime/ceftriaxone</strong></li>
+          <li>MSSA: nafcillin/oxacillin · MRSA, S. epidermidis: vanc + rifampin (≥6 wk)</li>
+          <li>Viridans: PCN G or ceftriaxone 4 wk · enterococci: PCN/amp + gent, or vanc · HACEK: ceftriaxone</li>
+          <li>Coxiella: quinolone + doxy · <strong>Bartonella: doxy + rifampin</strong></li>
+          <li>Fungi: ampho/echinocandin → azole for life</li>
+        </ul></div>
+        <div class="hy-block"><h4>Myocarditis</h4><ul>
+          <li>20–50 y; 4% of autopsies; mechanisms: direct, cytokine, antigen-specific, <strong>toxin</strong></li>
+          <li><strong>Parvo B19, HHV-6</strong> now; <strong>Coxsackie B, adeno (CAR)</strong> classic</li>
+          <li>Diphtheria toxin (main diphtheria killer), C. perfringens, <strong>Lyme 10% heart block</strong>, T. cruzi, Toxo</li>
+          <li>Lymphocytic = viral · eosinophilic = parasite</li>
+          <li>Forms: subacute, acute ≤3 mo, chronic &gt;3 mo, fulminant</li>
+          <li>EMB definitive; ECG ST↑; echo 4-chamber dilation; troponin, BNP · Tx supportive (diuretics, RASi, β-blockers); antivirals unproven</li>
+        </ul></div>
+        <div class="hy-block"><h4>Pericarditis</h4><ul>
+          <li>Viral most (enteroviruses, Parvo, CMV); purulent = S. aureus, pneumococcus; <strong>TB</strong> endemic</li>
+          <li>Sharp pain, worse lying/inspiration, <strong>better leaning forward</strong>, <strong>left trapezius</strong>; rub; <strong>ST↑ + PR↓</strong></li>
+          <li>Dx ≥2 of: pain, rub, ECG, effusion · ~3 wk, recurs</li>
+          <li>Myopericarditis (normal EF) vs perimyocarditis (↓ EF)</li>
+          <li><strong>NSAIDs + colchicine</strong> (steroids if no NSAIDs)</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="lightbox" id="lightbox" aria-hidden="true"><img id="lightboxImg" alt="Zoomed figure"><div class="lightbox-cap" id="lightboxCap"></div></div>
+
+<div class="floating-left" id="floatingLeft">
+  <div class="tools-menu">
+    <button class="tool-btn backtop" id="backtopBtn">↑ Top</button>
+    <button class="tool-btn" id="nextQBtn">❓ Next question <span id="qCount"></span></button>
+    <button class="tool-btn" id="recallBtn">🙈 Recall mode <span id="rcCount"></span></button>
+  </div>
+  <button class="tool-btn tools-trigger" id="toolsTrigger" onclick="toggleToolsMenu()">🧰 Study<span class="dot"></span></button>
+</div>
+
+<div class="floating-stack">
+  <div class="theme-panel" id="themePanel">
+    <div class="theme-panel-title">Choose Theme</div>
+    <div class="theme-option active" data-theme="cardio" onclick="setTheme('cardio',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#fff7f7,#b51f3a 55%,#245f89)"></div>Cardio (Default)</div>
+    <div class="theme-option" data-theme="hemo" onclick="setTheme('hemo',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#170a0d,#ff6b6b)"></div>Hemo (Dark)</div>
+    <div class="theme-option" data-theme="paper" onclick="setTheme('paper',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#faf7f2,#1a1209)"></div>Paper</div>
+    <div class="theme-option" data-theme="night" onclick="setTheme('night',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#0f1923,#e8b84b)"></div>Night</div>
+    <div class="theme-option" data-theme="ocean" onclick="setTheme('ocean',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#eef7fb,#0a5286)"></div>Ocean</div>
+    <div class="theme-option" data-theme="forest" onclick="setTheme('forest',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#f2f7f0,#155c39)"></div>Forest</div>
+    <div class="theme-option" data-theme="sepia" onclick="setTheme('sepia',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#f7ecd9,#9c3b17)"></div>Sepia</div>
+    <div class="theme-option" data-theme="slate" onclick="setTheme('slate',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#f4f5f7,#9e2c0f)"></div>Slate</div>
+  </div>
+  <div class="font-btn-row">
+    <span class="font-label">Text</span>
+    <button class="font-btn" onclick="changeFontSize(1)" title="Increase font size">A+</button>
+    <span class="font-sep">|</span>
+    <button class="font-btn" onclick="changeFontSize(-1)" title="Decrease font size">A−</button>
+  </div>
+  <button class="theme-btn" id="themeBtn" onclick="toggleThemePanel()" title="Switch theme"><span>🎨</span><span>Theme</span></button>
+</div>
+
+<footer>
+  <div class="container">
+    <div>Built from <em>Infective Endocarditis / Myocarditis / Pericarditis 2026</em> — Infectious Disease lecture (slide deck, two session transcripts, the 2026 outline and the <em>Infective Endocarditis Targeted Treatment Options</em> handout), UNE College of Osteopathic Medicine. The three Duke-criteria slides are EMF drawings; the table here is rebuilt from the outline. Figures are labeled with their source: lecture slides, AMBOSS, UWorld, the Robbins &amp; Cotran Atlas and <em>Cardiovascular Pathophysiology for Pre-Clinical Students</em>. Items tagged "Board add-on" are not from the lecture. Personal study notes; course material remains the copyright of its authors.</div>
+    <div>Shortcuts: <kbd>J</kbd>/<kbd>K</kbd> section · <kbd>Q</kbd> next question · <kbd>R</kbd> reveal · <kbd>Esc</kbd> close</div>
+  </div>
+</footer>
+
+<script>
+var STORAGE_THEME_KEY='cardio-w13-endo-myo-pericarditis-theme';
+var STORAGE_FONT_KEY='cardio-w13-endo-myo-pericarditis-font';
+var STORAGE_PROGRESS_KEY='cardio-w13-endo-myo-pericarditis-progress';
+var DEFAULT_THEME='cardio';
+var SECTION_IDS=['orientation', 's1-ie', 's2-risk', 's3-patho', 's4-micro', 's5-clinical', 's6-dx', 's7-tx', 's8-myo', 's9-peri', 'glossary'];
+
+var $  = function(s,r){return (r||document).querySelector(s);};
+var $$ = function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));};
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function storageGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+function storageSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+
+/* ============ theme ============ */
+var themePanelOpen=false;
+function toggleThemePanel(){themePanelOpen=!themePanelOpen;$('#themePanel').classList.toggle('open',themePanelOpen);}
+function syncThemeOptions(t){$$('.theme-option').forEach(function(o){o.classList.toggle('active',o.dataset.theme===t);});}
+function setTheme(t,el,skipStorage){
+  if(t===DEFAULT_THEME){document.documentElement.removeAttribute('data-theme');}
+  else{document.documentElement.setAttribute('data-theme',t);}
+  syncThemeOptions(t);
+  if(!skipStorage) storageSet(STORAGE_THEME_KEY,t);
+  setTimeout(function(){themePanelOpen=false;var p=$('#themePanel');if(p)p.classList.remove('open');},260);
+}
+document.addEventListener('click',function(e){
+  var p=$('#themePanel'),b=$('#themeBtn');
+  if(themePanelOpen&&p&&b&&!p.contains(e.target)&&!b.contains(e.target)){themePanelOpen=false;p.classList.remove('open');}
+});
+
+/* ============ font size ============ */
+var currentFontSize=16;
+function applyFontSize(size,skipStorage){
+  currentFontSize=Math.min(24,Math.max(12,Number(size)||16));
+  document.documentElement.style.fontSize=currentFontSize+'px';
+  document.body.style.fontSize=currentFontSize+'px';
+  if(!skipStorage)storageSet(STORAGE_FONT_KEY,currentFontSize);
+}
+function changeFontSize(d){applyFontSize(currentFontSize+d);}
+
+function initVisualState(){
+  var t=storageGet(STORAGE_THEME_KEY)||DEFAULT_THEME; setTheme(t,null,true);
+  var f=parseInt(storageGet(STORAGE_FONT_KEY),10);
+  applyFontSize(f&&f>=12&&f<=24?f:currentFontSize,true);
+}
+
+/* ============ lightbox ============ */
+function openLightbox(img){var lb=$('#lightbox');$('#lightboxImg').src=img.currentSrc||img.src;
+  $('#lightboxImg').alt=img.alt||'';
+  var cap=img.closest('figure')?img.closest('figure').querySelector('figcaption'):null;
+  $('#lightboxCap').innerHTML=cap?cap.innerHTML:'';
+  lb.classList.add('active');lb.setAttribute('aria-hidden','false');}
+function closeLightbox(){var lb=$('#lightbox');lb.classList.remove('active');
+  lb.setAttribute('aria-hidden','true');$('#lightboxImg').src='';}
+function initLightbox(){
+  $$('.slide-img').forEach(function(i){i.addEventListener('click',function(){openLightbox(i);});});
+  $('#lightbox').addEventListener('click',closeLightbox);
+}
+
+/* ============ scrollspy ============ */
+function initScrollspy(){
+  var links=$$('.toc-bar nav a'),map={},sections=[];
+  links.forEach(function(a){var id=a.getAttribute('href').slice(1),s=document.getElementById(id);
+    if(s){map[id]=a;sections.push(s);}});
+  if(!sections.length)return;
+  function update(){
+    var best=null,bestTop=-Infinity;
+    sections.forEach(function(s){var top=s.getBoundingClientRect().top;
+      if(top<=140&&top>bestTop){bestTop=top;best=s;}});
+    if(!best)best=sections[0];
+    links.forEach(function(a){a.classList.remove('active');});
+    if(map[best.id])map[best.id].classList.add('active');
+  }
+  window.addEventListener('scroll',update,{passive:true});update();
+}
+
+/* ============ reading progress ============ */
+function initProgress(){
+  var bar=$('#progressBar'),bt=$('#backtopBtn');
+  window.addEventListener('scroll',function(){
+    var h=document.documentElement,max=h.scrollHeight-h.clientHeight;
+    bar.style.width=(max>0?(h.scrollTop/max)*100:0)+'%';
+    if(bt)bt.classList.toggle('show',h.scrollTop>600);
+  },{passive:true});
+}
+
+/* ============ exam question reveal ============ */
+function initExamQ(){
+  $$('.exam-q').forEach(function(q){
+    var ans=q.querySelector('.answer'); if(!ans) return;
+    var b=document.createElement('button');b.className='reveal-btn';b.textContent='Reveal answer';
+    b.addEventListener('click',function(){q.classList.add('revealed');updateQCount();});
+    ans.parentNode.insertBefore(b,ans);
+  });
+  updateQCount();
+}
+function updateQCount(){
+  var all=$$('.exam-q'),done=all.filter(function(q){return q.classList.contains('revealed');});
+  var el=$('#qCount'); if(el) el.textContent=done.length+'/'+all.length;
+}
+function jumpToNextQ(){
+  var all=$$('.exam-q');if(!all.length)return;
+  var y=window.scrollY,pick=null;
+  var todo=all.filter(function(q){return !q.classList.contains('revealed');});
+  var pool=todo.length?todo:all;
+  for(var i=0;i<pool.length;i++){if(pool[i].getBoundingClientRect().top+y>y+120){pick=pool[i];break;}}
+  if(!pick)pick=pool[0];
+  var sec=pick.closest('.section');
+  if(sec&&sec.classList.contains('collapsed'))toggleSection(sec,false);
+  setTimeout(function(){
+    pick.scrollIntoView({behavior:'smooth',block:'center'});
+    pick.classList.remove('q-flash');void pick.offsetWidth;pick.classList.add('q-flash');
+  },sec&&sec.classList.contains('collapsed')?0:60);
+}
+
+/* ============ per-section progress ============ */
+var progress={};
+function loadProgress(){try{progress=JSON.parse(storageGet(STORAGE_PROGRESS_KEY)||'{}');}catch(e){progress={};}}
+function saveProgress(){storageSet(STORAGE_PROGRESS_KEY,JSON.stringify(progress));}
+function renderProgress(){
+  var reviewed=0;
+  SECTION_IDS.forEach(function(id){
+    var st=progress[id]||{},sec=document.getElementById(id);
+    if(st.reviewed)reviewed++;
+    if(sec){
+      var tools=sec.querySelector('.sec-tools');
+      if(tools){
+        tools.querySelector('.st-rev').classList.toggle('on',!!st.reviewed);
+        $$('.st-conf',tools).forEach(function(b){b.classList.toggle('on',+b.dataset.v===st.conf);});
+      }
+    }
+    var link=$('.toc-bar nav a[href="#'+id+'"]');
+    if(link){link.classList.toggle('done',!!st.reviewed);
+      link.classList.remove('conf-1','conf-2','conf-3');
+      if(st.conf)link.classList.add('conf-'+st.conf);}
+  });
+  var chip=$('#progressChip');
+  if(chip)chip.textContent=reviewed+'/'+SECTION_IDS.length+' reviewed';
+}
+function jumpToNextTodo(){
+  var target=null;
+  for(var i=0;i<SECTION_IDS.length&&!target;i++){var st=progress[SECTION_IDS[i]]||{};if(!st.reviewed)target=SECTION_IDS[i];}
+  for(var c=1;c<=2&&!target;c++){
+    for(var j=0;j<SECTION_IDS.length&&!target;j++){var s2=progress[SECTION_IDS[j]]||{};if(s2.conf===c)target=SECTION_IDS[j];}}
+  if(!target)target=SECTION_IDS[0];
+  var sec=document.getElementById(target); if(!sec)return;
+  if(sec.classList.contains('collapsed'))toggleSection(sec,false);
+  sec.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* ============ section tools + collapse ============ */
+function toggleSection(sec,force){
+  var willCollapse=(typeof force==='boolean')?force:!sec.classList.contains('collapsed');
+  sec.classList.toggle('collapsed',willCollapse);
+  var b=sec.querySelector('.st-collapse'); if(b)b.textContent=willCollapse?'▸ Expand':'▾ Collapse';
+}
+function toggleAllSections(){
+  var anyOpen=SECTION_IDS.some(function(id){var s=document.getElementById(id);return s&&!s.classList.contains('collapsed');});
+  SECTION_IDS.forEach(function(id){var s=document.getElementById(id);if(s)toggleSection(s,anyOpen);});
+  var b=$('#collapseAllBtn'); if(b)b.textContent=anyOpen?'⊞ Expand all':'⊟ Collapse all';
+}
+function initSectionTools(){
+  SECTION_IDS.forEach(function(id){
+    var sec=document.getElementById(id); if(!sec)return;
+    var container=sec.querySelector('.container'); if(!container)return;
+    var anchor=container.querySelector('.section-title'); if(!anchor)return;
+    var tools=document.createElement('div');
+    tools.className='sec-tools';
+    tools.innerHTML='<button class="st-rev">✓ Reviewed</button>'+
+      '<span class="st-lab">confidence</span>'+
+      '<button class="st-conf" data-v="1">\u{1F534} Shaky</button>'+
+      '<button class="st-conf" data-v="2">\u{1F7E1} Okay</button>'+
+      '<button class="st-conf" data-v="3">\u{1F7E2} Solid</button>'+
+      '<button class="st-collapse">▾ Collapse</button>';
+    anchor.parentNode.insertBefore(tools,anchor.nextSibling);
+    var note=document.createElement('div');
+    note.className='recall-note';
+    note.textContent='RECALL MODE — every bolded fact below is hidden. Say the answer out loud, then click the block to check it.';
+    tools.parentNode.insertBefore(note,tools.nextSibling);
+    var outer=document.createElement('div');outer.className='sec-body-outer';
+    var inner=document.createElement('div');inner.className='sec-body-inner';
+    outer.appendChild(inner);
+    while(note.nextSibling) inner.appendChild(note.nextSibling);
+    container.appendChild(outer);
+    tools.querySelector('.st-rev').addEventListener('click',function(){
+      progress[id]=progress[id]||{};progress[id].reviewed=!progress[id].reviewed;saveProgress();renderProgress();});
+    $$('.st-conf',tools).forEach(function(b){
+      b.addEventListener('click',function(){
+        progress[id]=progress[id]||{};
+        progress[id].conf=(progress[id].conf===+b.dataset.v)?0:+b.dataset.v;
+        saveProgress();renderProgress();});
+    });
+    tools.querySelector('.st-collapse').addEventListener('click',function(){toggleSection(sec);});
+  });
+  renderProgress();
+}
+
+/* ============ recall mode ============ */
+var recallMode=false;
+function recallTargets(){
+  return $$('.sec-body-inner :is(p,li,td,h4,dd) strong').filter(function(s){
+    return !s.closest('.exam-q')&&!s.closest('.tq-bar')&&!s.closest('.game')&&!s.closest('.abbr-strip')&&!s.closest('.legend')&&!s.closest('.watch');});
+}
+function updateRecallCount(){
+  var t=recallTargets(),o=t.filter(function(s){return s.classList.contains('rc-open');});
+  var el=$('#rcCount'); if(el) el.textContent=recallMode?(o.length+'/'+t.length):'';
+}
+function toggleRecall(){
+  recallMode=!recallMode;
+  document.body.classList.toggle('recall-mode',recallMode);
+  $('#recallBtn').classList.toggle('on',recallMode);
+  if(!recallMode) recallTargets().forEach(function(s){s.classList.remove('rc-open');});
+  else{
+    var allCollapsed=SECTION_IDS.every(function(id){var s=document.getElementById(id);return !s||s.classList.contains('collapsed');});
+    if(allCollapsed) toggleAllSections();
+  }
+  syncToolsDot();updateRecallCount();
+}
+function initRecall(){
+  document.addEventListener('click',function(e){
+    if(!recallMode)return;
+    var s=e.target.closest?e.target.closest('strong'):null;
+    if(!s||s.classList.contains('rc-open'))return;
+    if(s.closest('.exam-q')||s.closest('.game')||s.closest('.abbr-strip'))return;
+    if(!s.closest('.sec-body-inner'))return;
+    e.stopPropagation();s.classList.add('rc-open');updateRecallCount();
+  },true);
+}
+function syncToolsDot(){var t=$('#toolsTrigger');if(t)t.classList.toggle('busy',recallMode);}
+function toggleToolsMenu(){$('#floatingLeft').classList.toggle('open');}
+
+/* ============ HY one-pager ============ */
+function openHY(){var m=$('#hyModal');if(!m)return;m.classList.add('open');
+  document.body.classList.add('hy-mode');document.body.style.overflow='hidden';}
+function closeHY(){var m=$('#hyModal');if(!m)return;m.classList.remove('open');
+  document.body.classList.remove('hy-mode');document.body.style.overflow='';}
+function printHY(){window.print();}
+
+/* ============ table quiz ============ */
+function initTableQuiz(){
+  $$('table').forEach(function(table){
+    if(table.classList.contains('hy-mini-table'))return;
+    if(table.closest('.game'))return;
+    var headRow=table.rows[0]; if(!headRow)return;
+    var headers=Array.prototype.slice.call(headRow.cells).map(function(c){return c.textContent.trim();});
+    if(headers.length<2)return;
+    var bar=document.createElement('div');bar.className='tq-bar';
+    var toggle=document.createElement('button');toggle.className='tq-toggle';toggle.textContent='\u{1F9E9} Quiz this table';
+    var cols=document.createElement('div');cols.className='tq-cols';cols.style.display='none';
+    var start=document.createElement('button');start.className='tq-start';start.textContent='▶ Start';
+    start.disabled=true;start.style.display='none';
+    var shuf=document.createElement('button');shuf.className='tq-shuffle';shuf.textContent='\u{1F500} Shuffle rows';shuf.style.display='none';
+    var reset=document.createElement('button');reset.className='tq-reset';reset.textContent='↺ Reset';reset.style.display='none';
+    var score=document.createElement('span');score.className='tq-score';
+    bar.appendChild(toggle);bar.appendChild(cols);bar.appendChild(shuf);bar.appendChild(start);bar.appendChild(reset);bar.appendChild(score);
+    var host=table.parentNode.classList.contains('tbl-scroll')?table.parentNode:table;
+    host.parentNode.insertBefore(bar,host);
+
+    var sel=new Set(),running=false,hidden=[],revealed=0,originalOrder=null;
+    headers.forEach(function(h,i){
+      var b=document.createElement('button');b.className='tq-col-btn';b.textContent=h||('col '+(i+1));
+      b.addEventListener('click',function(){
+        if(running)return;
+        if(sel.has(i)){sel.delete(i);b.classList.remove('sel');}else{sel.add(i);b.classList.add('sel');}
+        start.disabled=sel.size===0;
+      });
+      cols.appendChild(b);
+    });
+    function dataRows(){
+      var parent=table.tBodies[0]||table;
+      return Array.prototype.slice.call(parent.rows).filter(function(r){return !r.querySelector('th')||r!==headRow;})
+        .filter(function(r){return r!==headRow;});
+    }
+    toggle.addEventListener('click',function(){
+      var open=cols.style.display==='none';
+      cols.style.display=open?'flex':'none';
+      start.style.display=shuf.style.display=open?'':'none';
+      toggle.classList.toggle('active',open);
+      toggle.textContent=open?'✕ Close quiz':'\u{1F9E9} Quiz this table';
+      if(!open)doReset();
+    });
+    shuf.addEventListener('click',function(){
+      var parent=table.tBodies[0]||table;
+      var rows=dataRows();
+      if(!originalOrder)originalOrder=rows.slice();
+      shuffle(rows).forEach(function(r){parent.appendChild(r);});
+    });
+    function updateScore(){
+      score.textContent=revealed+' / '+hidden.length+' revealed';
+      score.classList.toggle('done',hidden.length>0&&revealed===hidden.length);
+      if(hidden.length>0&&revealed===hidden.length)score.textContent='\u{1F389} '+revealed+' / '+hidden.length;
+    }
+    start.addEventListener('click',function(){
+      if(running||!sel.size)return;
+      running=true;hidden=[];revealed=0;
+      dataRows().forEach(function(r){
+        Array.prototype.slice.call(r.cells).forEach(function(c,i){
+          if(!sel.has(i)||!c.textContent.trim())return;
+          var w=document.createElement('span');w.className='tq-cell-content';w.innerHTML=c.innerHTML;
+          c.innerHTML='';c.appendChild(w);c.classList.add('quiz-hidden-cell');
+          c.dataset.tqOrig=w.innerHTML;
+          hidden.push(c);
+        });
+      });
+      reset.style.display='';start.disabled=true;updateScore();
+    });
+    table.addEventListener('click',function(e){
+      var c=e.target.closest?e.target.closest('td.quiz-hidden-cell'):null;
+      if(!c)return;
+      c.classList.remove('quiz-hidden-cell');c.innerHTML=c.dataset.tqOrig;revealed++;updateScore();
+    });
+    function doReset(){
+      hidden.forEach(function(c){if(c.classList.contains('quiz-hidden-cell')){c.classList.remove('quiz-hidden-cell');c.innerHTML=c.dataset.tqOrig;}});
+      if(originalOrder){var parent=table.tBodies[0]||table;originalOrder.forEach(function(r){parent.appendChild(r);});}
+      hidden=[];revealed=0;running=false;score.textContent='';score.classList.remove('done');
+      start.disabled=sel.size===0;reset.style.display='none';
+    }
+    reset.addEventListener('click',doReset);
+  });
+}
+
+/* ============ keyboard shortcuts ============ */
+function initKeys(){
+  document.addEventListener('keydown',function(e){
+    if(e.metaKey||e.ctrlKey||e.altKey)return;
+    var t=e.target,tag=t&&t.tagName;
+    if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT'||(t&&t.isContentEditable))return;
+    var hy=$('#hyModal');
+    if(e.key==='Escape'){ if(hy&&hy.classList.contains('open'))closeHY(); closeLightbox(); return; }
+    if(hy&&hy.classList.contains('open'))return;
+    var k=e.key.toLowerCase();
+    if(k==='q'){e.preventDefault();jumpToNextQ();return;}
+    if(k==='r'){
+      e.preventDefault();
+      var best=null,bd=Infinity,mid=window.innerHeight/2;
+      $$('.exam-q').forEach(function(q){var d=Math.abs(q.getBoundingClientRect().top+q.offsetHeight/2-mid);
+        if(d<bd){bd=d;best=q;}});
+      if(best){best.classList.add('revealed');updateQCount();}
+      return;
+    }
+    if(k==='j'||k==='k'){
+      e.preventDefault();
+      var y=window.scrollY+window.innerHeight*0.3,cur=0;
+      SECTION_IDS.forEach(function(id,i){var s=document.getElementById(id);if(s&&s.offsetTop<=y)cur=i;});
+      var nx=k==='j'?Math.min(SECTION_IDS.length-1,cur+1):Math.max(0,cur-1);
+      var target=document.getElementById(SECTION_IDS[nx]);
+      if(target)target.scrollIntoView({behavior:'smooth',block:'start'});
+    }
+  });
+}
+
+
+/* ============ lazy figures: fade in when loaded; force-load everything before printing ============ */
+function initLazyFigures(){
+  $$('.fig-frame img').forEach(function(img){
+    var done=function(){img.parentNode.classList.add('loaded');};
+    if(img.complete&&img.naturalWidth)done();
+    else{img.addEventListener('load',done);img.addEventListener('error',done);}
+  });
+  window.addEventListener('beforeprint',function(){$$('img[loading="lazy"]').forEach(function(i){i.loading='eager';});});
+}
+/* ============ video facade: swap the thumbnail for the real player only on click ============ */
+function initVideos(){
+  $$('.vid').forEach(function(b){
+    b.addEventListener('click',function(){
+      if(b.classList.contains('playing'))return;
+      var f=document.createElement('iframe');
+      f.src='https://www.youtube-nocookie.com/embed/'+b.dataset.yt+'?autoplay=1&rel=0';
+      f.title=b.dataset.title||'Video';
+      f.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+      f.allowFullscreen=true;
+      var t=b.querySelector('.vid-thumb');t.replaceWith(f);b.classList.add('playing');
+    });
+  });
+}
+
+/* ============ boot ============ */
+document.addEventListener('DOMContentLoaded',function(){
+  initVisualState();
+  loadProgress();
+  initSectionTools();
+  initExamQ();
+  initTableQuiz();
+  initLightbox();
+  initLazyFigures();
+  initVideos();
+  initScrollspy();
+  initProgress();
+  initRecall();
+  initKeys();
+  var hy=$('#hyModal');
+  if(hy) hy.addEventListener('click',function(e){if(e.target===this)closeHY();});
+  var rb=$('#recallBtn'); if(rb) rb.addEventListener('click',toggleRecall);
+  var nq=$('#nextQBtn'); if(nq) nq.addEventListener('click',jumpToNextQ);
+  var bt=$('#backtopBtn'); if(bt) bt.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});
+  document.addEventListener('click',function(e){
+    var fl=$('#floatingLeft');
+    if(fl&&fl.classList.contains('open')&&!fl.contains(e.target))fl.classList.remove('open');
+  });
+});
+
+
+
+
+</script>
+</body>
+</html>
