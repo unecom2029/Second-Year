@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <script>
 (function(){
   var NOTE_AUTH_KEY='une-study-hub-remembered-auth-v1';
@@ -788,8 +789,18 @@ details.case-box .case-body{padding:0 18px 12px;border-top:1px solid var(--borde
 .vid-meta b{display:block;font-weight:600}
 .vid-meta i{font-style:normal;font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.06em;
   text-transform:uppercase;color:var(--muted)}
-.vid.playing{cursor:default;transform:none;box-shadow:none}
-.vid iframe{width:100%;aspect-ratio:16/9;border:0;display:block}
+.video-modal{position:fixed;inset:0;z-index:1200;display:none;align-items:center;justify-content:center;
+  padding:clamp(14px,3vw,34px);background:rgba(18,17,16,.84);backdrop-filter:blur(6px)}
+.video-modal.open{display:flex}
+.video-dialog{position:relative;width:min(96vw,1120px);background:#080808;border:1px solid rgba(255,255,255,.22);
+  box-shadow:0 20px 60px rgba(0,0,0,.45)}
+.video-frame{width:100%;aspect-ratio:16/9;background:#000}
+.video-frame iframe{width:100%;height:100%;border:0;display:block}
+.video-close{position:absolute;right:10px;top:10px;z-index:2;width:38px;height:38px;border:1px solid rgba(255,255,255,.35);
+  border-radius:999px;background:rgba(0,0,0,.62);color:#fff;font-size:1.45rem;line-height:1;cursor:pointer}
+.video-caption{padding:9px 12px;background:var(--paper);color:var(--ink);font-family:"JetBrains Mono",monospace;
+  font-size:.62rem;letter-spacing:.06em;text-transform:uppercase}
+@media(max-width:650px){.video-modal{padding:10px}.video-close{width:34px;height:34px;font-size:1.25rem}}
 @media print{
   .watch{display:none!important}
   .fig-frame::before{display:none}
@@ -2114,19 +2125,56 @@ function initLazyFigures(){
   });
   window.addEventListener('beforeprint',function(){$$('img[loading="lazy"]').forEach(function(i){i.loading='eager';});});
 }
-/* ============ video facade: swap the thumbnail for the real player only on click ============ */
+/* ============ video facade: open a larger in-page player only on click ============ */
+function getVideoModal(){
+  var m=$('#videoModal');
+  if(m)return m;
+  m=document.createElement('div');
+  m.className='video-modal';
+  m.id='videoModal';
+  m.setAttribute('role','dialog');
+  m.setAttribute('aria-modal','true');
+  m.setAttribute('aria-label','Video player');
+  m.innerHTML='<div class="video-dialog"><button class="video-close" type="button" aria-label="Close video">&times;</button><div class="video-frame"></div><div class="video-caption"></div></div>';
+  document.body.appendChild(m);
+  m.addEventListener('click',function(e){if(e.target===m)closeVideoModal();});
+  m.querySelector('.video-close').addEventListener('click',closeVideoModal);
+  return m;
+}
+function closeVideoModal(){
+  var m=$('#videoModal');
+  if(!m)return;
+  m.querySelector('.video-frame').innerHTML='';
+  m.classList.remove('open');
+  document.body.style.overflow=m.dataset.prevOverflow||'';
+  delete m.dataset.prevOverflow;
+}
+function openVideoModal(b){
+  if(!b.dataset.yt)return;
+  var m=getVideoModal();
+  var f=document.createElement('iframe');
+  var params='autoplay=1&rel=0';
+  if(location.protocol.indexOf('http')===0&&location.origin&&location.origin!=='null'){
+    params+='&origin='+encodeURIComponent(location.origin);
+  }
+  f.src='https://www.youtube.com/embed/'+b.dataset.yt+'?'+params;
+  f.title=b.dataset.title||'Video';
+  f.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+  f.referrerPolicy='strict-origin-when-cross-origin';
+  f.allowFullscreen=true;
+  m.querySelector('.video-frame').innerHTML='';
+  m.querySelector('.video-frame').appendChild(f);
+  m.querySelector('.video-caption').textContent=b.dataset.title||'Video';
+  m.dataset.prevOverflow=document.body.style.overflow||'';
+  document.body.style.overflow='hidden';
+  m.classList.add('open');
+  m.querySelector('.video-close').focus({preventScroll:true});
+}
 function initVideos(){
   $$('.vid').forEach(function(b){
-    b.addEventListener('click',function(){
-      if(b.classList.contains('playing'))return;
-      var f=document.createElement('iframe');
-      f.src='https://www.youtube-nocookie.com/embed/'+b.dataset.yt+'?autoplay=1&rel=0';
-      f.title=b.dataset.title||'Video';
-      f.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
-      f.allowFullscreen=true;
-      var t=b.querySelector('.vid-thumb');t.replaceWith(f);b.classList.add('playing');
-    });
+    b.addEventListener('click',function(){openVideoModal(b);});
   });
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')closeVideoModal();});
 }
 
 /* ============ boot ============ */
