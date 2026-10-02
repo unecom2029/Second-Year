@@ -376,6 +376,20 @@ body.nbme-lock{overflow:hidden}
 .lab-table .lab-group td{padding:8px 9px;background:#edf1f4;font-weight:700}
 .lab-table .continuation{color:transparent}
 
+
+/* Image zoom viewer */
+.image-zoom-modal{position:fixed;inset:0;z-index:1300;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(8,12,20,.78);backdrop-filter:blur(8px)}
+.image-zoom-modal.open{display:flex}
+.image-zoom-shell{display:flex;flex-direction:column;width:min(96vw,1400px);height:min(94vh,980px);border-radius:18px;background:#101822;border:1px solid rgba(255,255,255,.14);box-shadow:0 28px 90px rgba(0,0,0,.45);overflow:hidden}
+.image-zoom-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.12);background:#172434;color:#fff}
+.image-zoom-title{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:var(--font-ui);font-size:13px;font-weight:700;color:rgba(255,255,255,.84)}
+.image-zoom-controls{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+.image-zoom-btn{display:inline-flex;align-items:center;justify-content:center;min-width:38px;height:36px;padding:0 12px;border-radius:8px;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.08);color:#fff;font-family:Arial,Helvetica,sans-serif;font-size:18px;font-weight:700;line-height:1;cursor:pointer}
+.image-zoom-btn:hover{background:rgba(255,255,255,.16)}
+.image-zoom-stage{position:relative;flex:1;overflow:auto;display:grid;place-items:center;padding:18px;background:#0b1118}
+.image-zoom-stage img{display:block;width:auto;height:auto;max-width:none;max-height:none;transform-origin:center center;border-radius:6px;box-shadow:0 12px 40px rgba(0,0,0,.35)}
+.image-zoom-hint{font-size:12px;color:rgba(255,255,255,.62)}
+
 /* finish overlay */
 .fin{position:relative;background:linear-gradient(135deg,var(--navy),#2A3562);border-radius:24px;padding:22px 24px;text-align:center;color:#fff;box-shadow:var(--sh3);margin:0 auto 14px;max-width:min(780px,100%);transition:padding .2s ease,box-shadow .2s ease}
 .fin.min{padding:56px 24px 22px}
@@ -906,6 +920,24 @@ body.nbme-lock{overflow:hidden}
     </footer>
   </div>
 </div>
+</div>
+
+
+<div class="image-zoom-modal" id="imageZoomModal" onclick="if(event.target===this)closeImageZoom()">
+  <div class="image-zoom-shell" role="dialog" aria-modal="true" aria-label="Image zoom">
+    <div class="image-zoom-toolbar">
+      <div class="image-zoom-title" id="imageZoomTitle">Image</div>
+      <div class="image-zoom-controls">
+        <button class="image-zoom-btn" type="button" onclick="adjustImageZoom(-0.25)" aria-label="Zoom out">-</button>
+        <button class="image-zoom-btn" type="button" onclick="resetImageZoom()" aria-label="Reset zoom">100%</button>
+        <button class="image-zoom-btn" type="button" onclick="adjustImageZoom(0.25)" aria-label="Zoom in">+</button>
+        <button class="image-zoom-btn" type="button" onclick="closeImageZoom()" aria-label="Close image zoom">Close</button>
+      </div>
+    </div>
+    <div class="image-zoom-stage" id="imageZoomStage">
+      <img id="imageZoomImg" alt="">
+    </div>
+  </div>
 </div>
 
 <div class="lab-modal" id="labModal" onclick="if(event.target===this)closeLabs()">
@@ -3006,6 +3038,55 @@ function showErr(msg){
   el.textContent='❌ '+msg;
   el.className='err-msg show';
 }
+
+var imageZoomScale=1;
+function getZoomableImage(target){
+  if(!target||target.tagName!=='IMG')return null;
+  if(target.id==='imageZoomImg')return null;
+  if(target.closest('.image-zoom-modal'))return null;
+  if(target.closest('.qfig,.nb-question-stem,.classic-card,.feedback,.explanation,.review-sheet'))return target;
+  if(target.style&&target.style.cursor==='zoom-in')return target;
+  return null;
+}
+function applyImageZoom(){
+  var img=document.getElementById('imageZoomImg');
+  if(img)img.style.transform='scale('+imageZoomScale.toFixed(2)+')';
+}
+function openImageZoom(src,title){
+  var modal=document.getElementById('imageZoomModal');
+  var img=document.getElementById('imageZoomImg');
+  var label=document.getElementById('imageZoomTitle');
+  if(!modal||!img)return;
+  imageZoomScale=1;
+  img.src=src;
+  img.alt=title||'Zoomed image';
+  if(label)label.textContent=title||'Image';
+  applyImageZoom();
+  modal.classList.add('open');
+}
+function closeImageZoom(){
+  var modal=document.getElementById('imageZoomModal');
+  var img=document.getElementById('imageZoomImg');
+  if(modal)modal.classList.remove('open');
+  if(img)img.removeAttribute('src');
+}
+function adjustImageZoom(delta){
+  imageZoomScale=Math.max(0.5,Math.min(4,imageZoomScale+delta));
+  applyImageZoom();
+}
+function resetImageZoom(){
+  imageZoomScale=1;
+  applyImageZoom();
+}
+document.addEventListener('click',function(event){
+  var img=getZoomableImage(event.target);
+  if(!img)return;
+  event.preventDefault();
+  event.stopPropagation();
+  event.stopImmediatePropagation();
+  openImageZoom(img.currentSrc||img.src,img.alt||'Image');
+},true);
+
 function showToast(msg,type){
   var wrap=document.getElementById('toastWrap');
   var toast=document.createElement('div');
@@ -3021,6 +3102,7 @@ document.addEventListener('keydown',function(event){
   if(!questions.length||document.getElementById('viewSetup').classList.contains('active'))return;
   if(event.target&&typeof event.target.matches==='function'&&event.target.matches('textarea,input,select'))return;
   if(event.target.closest('.annotation-menu,.highlight-color-button'))return;
+  if(event.key==='Escape'&&document.getElementById('imageZoomModal').classList.contains('open')){closeImageZoom();return;}
   if(event.key==='Escape'&&document.getElementById('labModal').classList.contains('open')){
     closeLabs();
     return;

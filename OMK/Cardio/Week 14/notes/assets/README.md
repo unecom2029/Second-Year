@@ -163,3 +163,189 @@ Sources: lecture slides, AMBOSS and *Cardiovascular Pathophysiology for Pre-Clin
 | R79 | `r-practice-2.jpg` | Practice ECG (slide 74) — machine read: SVT 171/min, QRS 90 ms, QTc 492, diffuse ST–T changes | EKG II lecture · slide 74 | 1600×848, 543 KB |
 | R80 | `r-practice-1.jpg` | Practice strips (slide 73) — 82-year-old, rhythm strips II, aVF, V2 | EKG II lecture · slide 73 | 1600×791, 563 KB |
 | R81 | `r-practice-3.jpg` | Practice strips (slide 75) — same patient afterwards, slower rhythm | EKG II lecture · slide 75 | 1600×840, 552 KB |
+
+## Pediatric Cardiology — `assets/peds-cardio/` → `Pediatric_Cardiology_Study_Notes.html`
+
+| Fig | File | Label | Source | Size |
+|---|---|---|---|---|
+| P1 | `pc-landmarks.jpg` | Where to listen: aortic valve 2nd–3rd right interspace · pulmonic 2nd–3rd left · tricuspid left lower sternal border · mitral at the apex | Pediatric Cardiology lecture · slide 8 | 480×478, 31 KB |
+| P2 | `pc-a-sites.jpg` | Anatomical valve positions (I–IV) vs where each is best heard (1–4); aortic stenosis radiates to the carotids (1b) | AMBOSS | 1400×990, 93 KB |
+| P3 | `pc-valve-anatomy.jpg` | Valve anatomy seen from above: in systole the aortic and pulmonic valves open while the mitral and tricuspid close; in diastole the reverse | Pediatric Cardiology lecture · slide 9 | 641×478, 61 KB |
+| P4 | `pc-a-phono-systolic.jpg` | Systolic murmur shapes: (A) holosystolic — VSD, mitral or tricuspid regurgitation · (B) crescendo-decrescendo — aortic/pulmonic stenosis · (C) with ejection click · (D) mitral valve prolapse click · (E) pulmonic stenosis with split S2 | AMBOSS | 1400×788, 83 KB |
+| P5 | `pc-functional-sites.jpg` | Where innocent murmurs live: right upper sternal border = venous hum · left upper = pulmonary flow, peripheral pulmonary stenosis · left lower / apex = Still's murmur | Pediatric Cardiology lecture · slide 18 | 709×533, 46 KB |
+| P6 | `pc-chd-incidence.jpg` | Relative incidence of congenital heart lesions: VSD far ahead (~31 %), then PDA, pulmonary stenosis, ASD, coarctation, bicuspid aortic valve, tetralogy, TGA | Pediatric Cardiology lecture · slide 25 | 674×401, 20 KB |
+| P7 | `pc-cyanotic-acyanotic.jpg` | Sort lesions by colour and pulmonary blood flow: cyanotic ↑ (TGA) or ↓ (TOF); acyanotic ↑ (VSD, PDA, ASD) or normal (coarctation) | Pediatric Cardiology lecture · slide 83 | 709×532, 29 KB |
+| P8 | `pc-doppler.jpg` | Colour-flow Doppler echo: the lighter the colour, the faster the flow | Pediatric Cardiology lecture · slide 29 | 392×295, 20 KB |
+| P9 | `pc-vsd-echo.jpg` | Four-chamber echo: a large gap at the top of the ventricular septum (red arrow) = VSD | Pediatric Cardiology lecture · slide 30 | 470×366, 27 KB |
+| P10 | `pc-vsd.jpg` | VSD: blood goes from high-pressure left ventricle to low-pressure right ventricle (left-to-right shunt) | Pediatric Cardiology lecture · slide 31 | 431×340, 24 KB |
+| P11 | `pc-fetal-circ.jpg` | Fetal circulation: placenta → umbilical vein → ductus venosus → IVC → right atrium → foramen ovale (FO) to the left atrium, or RV → pulmonary artery → ductus arteriosus (DA) to the aorta | Pediatric Cardiology lecture · slide 35 | 275×339, 23 KB |
+| P12 | `pc-a-fetal-postnatal.jpg` | Fetal vs postnatal circulation: the foramen ovale closes (→ fossa ovalis) and the ductus arteriosus becomes the ligamentum arteriosum | AMBOSS | 1400×908, 174 KB |
+| P13 | `pc-a-vsd-hemo.jpg` | VSD over time: (1) left-to-right shunt → (2) volume overload + pulmonary hypertension → (3) Eisenmenger shunt reversal | AMBOSS | 1400×834, 92 KB |
+| P14 | `pc-a-holosystolic.jpg` | Holosystolic murmur (VSD): the same loudness from S1 all the way to S2 | AMBOSS | 1400×990, 58 KB |
+| P15 | `pc-pda.jpg` | PDA: the vessel connecting the aorta and pulmonary artery stays open | Pediatric Cardiology lecture · slide 36 | 589×591, 45 KB |
+| P16 | `pc-a-pda-hemo.jpg` | PDA: aorta → pulmonary artery in systole and diastole → pulmonary overload and left-heart volume overload → late Eisenmenger | AMBOSS | 1400×670, 108 KB |
+| P17 | `pc-a-machinery.jpg` | PDA = continuous "machinery" murmur through systole and diastole, peaking at S2 | AMBOSS | 1400×990, 69 KB |
+| P18 | `pc-asd.jpg` | ASD: after birth, flow goes left atrium → right atrium (left-to-right) | Pediatric Cardiology lecture · slide 39 | 647×489, 63 KB |
+| P19 | `pc-a-asd-types.jpg` | ASD types: ostium secundum (~80 %) · ostium primum · upper and lower sinus venosus | AMBOSS | 1335×1000, 91 KB |
+| P20 | `pc-a-fixed-split.jpg` | Fixed split S2 (ASD): A2 and P2 stay apart in both expiration and inspiration | AMBOSS | 1021×1000, 53 KB |
+| P21 | `pc-asd-closure.jpg` | Catheter closure: a device is passed across the ASD and opened on both sides of the septum | Pediatric Cardiology lecture · slide 42 | 300×224, 14 KB |
+| P22 | `pc-amplatzer.jpg` | The Amplatzer septal occluder device | Pediatric Cardiology lecture · slide 43 | 421×210, 19 KB |
+| P23 | `pc-coarct.jpg` | Coarctation: a narrowed aorta near where the ductus inserts | Pediatric Cardiology lecture · slide 46 | 589×592, 41 KB |
+| P24 | `pc-coarct-bp.jpg` | High blood pressure before the narrowing (arms), low beyond it (legs) | Pediatric Cardiology lecture · slide 47 | 400×321, 30 KB |
+| P25 | `pc-coarct-angio.jpg` | Angiogram: a tight narrowing of the descending aorta (arrow) | Pediatric Cardiology lecture · slide 48 | 296×301, 12 KB |
+| P26 | `pc-coarct-mra.jpg` | Magnetic resonance angiogram of coarctation (arrow) | Pediatric Cardiology lecture · slide 49 | 491×587, 43 KB |
+| P27 | `pc-a-coarct-types.jpg` | Non-critical vs critical coarctation: a critical one depends on the ductus — once it closes, the lower body is starved | AMBOSS | 1400×534, 106 KB |
+| P28 | `pc-turner.jpg` | Turner syndrome (45,X): webbed neck, broad chest, low hairline — with coarctation and bicuspid aortic valve | Pediatric Cardiology lecture · slide 52 | 600×618, 49 KB |
+| P29 | `pc-bav.jpg` | Normal three-leaflet aortic valve vs two-leaflet (bicuspid) stenotic valve | Pediatric Cardiology lecture · slide 54 | 589×592, 43 KB |
+| P30 | `pc-bav-or.jpg` | Intraoperative view of a stenotic bicuspid aortic valve | Pediatric Cardiology lecture · slide 56 | 646×433, 55 KB |
+| P31 | `pc-a-as-murmur.jpg` | Aortic stenosis: ejection click, then a crescendo-decrescendo systolic murmur; radiates to the carotids | AMBOSS | 1400×990, 63 KB |
+| P32 | `pc-bav-balloon.jpg` | Balloon valvuloplasty of a stenotic bicuspid aortic valve (catheter up the aorta) | Pediatric Cardiology lecture · slide 59 | 627×495, 45 KB |
+| P33 | `pc-bav-prosthesis.jpg` | Intraoperative view of a bioprosthetic aortic valve replacement | Pediatric Cardiology lecture · slide 60 | 648×485, 60 KB |
+| P34 | `pc-ring-cxr.jpg` | Chest x-ray: a right-sided bulge beside the trachea (arrow) | Pediatric Cardiology lecture · slide 62 | 376×317, 15 KB |
+| P35 | `pc-ring-barium.jpg` | Barium swallow: the esophagus is pushed in from the side (arrows) instead of running straight | Pediatric Cardiology lecture · slide 63 | 288×340, 12 KB |
+| P36 | `pc-ring-ct.jpg` | CT angiogram: vessels encircling the trachea and esophagus (arrows) — the definitive test | Pediatric Cardiology lecture · slide 64 | 631×579, 42 KB |
+| P37 | `pc-ring.jpg` | Double aortic arch: two arches wrap around and squeeze the trachea and esophagus | Pediatric Cardiology lecture · slide 65 | 674×668, 51 KB |
+| P38 | `pc-circumoral.jpg` | Circumoral (around-the-mouth) cyanosis in a newborn | Pediatric Cardiology lecture · slide 68 | 648×431, 34 KB |
+| P39 | `pc-tof.jpg` | Tetralogy of Fallot: (1) pulmonary stenosis (2) right ventricular hypertrophy (3) overriding aorta (4) VSD | Pediatric Cardiology lecture · slide 69 | 600×481, 53 KB |
+| P40 | `pc-tet-spell.jpg` | "Tet spell": bluish skin during crying or feeding | Pediatric Cardiology lecture · slide 71 | 600×480, 33 KB |
+| P41 | `pc-boot.jpg` | "Boot-shaped heart" on chest x-ray — the right ventricle lifts the apex | Pediatric Cardiology lecture · slide 72 | 274×290, 10 KB |
+| P42 | `pc-a-tet-spell.jpg` | Tet spell mechanism: ↓ systemic resistance or ↑ pulmonary resistance → more right-to-left shunt. Knee-to-chest (or squatting) ↑ systemic resistance → less shunt | AMBOSS | 1362×1000, 138 KB |
+| P43 | `pc-bt-shunt.jpg` | Modified Blalock-Taussig shunt: subclavian artery → pulmonary artery, to get more blood to the lungs | Pediatric Cardiology lecture · slide 75 | 590×590, 58 KB |
+| P44 | `pc-hlhs.jpg` | Normal heart vs hypoplastic left heart: tiny left ventricle, closed mitral valve — the body depends on the PDA and ASD | Pediatric Cardiology lecture · slide 79 | 450×338, 36 KB |
+| P45 | `pc-a-hlhs-stages.jpg` | Three-stage repair: Norwood (newborn) → Glenn (~3–6 months) → Fontan (2–3 years) | AMBOSS | 1400×673, 139 KB |
+| P46 | `pc-a-tga.jpg` | Transposition: the aorta arises from the right ventricle — survival needs mixing through a PDA and/or PFO/ASD | AMBOSS | 1006×1000, 82 KB |
+| P47 | `pc-conduction.jpg` | Conduction system: SA node → internodal tracts (plus Bachmann's bundle) → AV node → bundle branches | Pediatric Cardiology lecture · slide 94 | 589×591, 53 KB |
+| P48 | `pc-sinus-arrhythmia.jpg` | Sinus arrhythmia: rate varies with breathing, but every beat has the same P before the QRS — normal | Pediatric Cardiology lecture · slide 96 | 499×322, 49 KB |
+| P49 | `pc-pac.jpg` | Premature atrial contractions (circled): early beat, different P-wave shape | Pediatric Cardiology lecture · slide 97 | 940×691, 90 KB |
+| P50 | `pc-pvc.jpg` | PVCs: (A) every other beat · (B) · (C) two in a row = a couplet | Pediatric Cardiology lecture · slide 98 | 897×718, 150 KB |
+| P51 | `pc-pvc-uni-multi.jpg` | Uniform PVCs (same shape, one focus) vs multiform PVCs (different shapes, more than one focus — more worrying) | Pediatric Cardiology lecture · slide 99 | 480×328, 34 KB |
+| P52 | `pc-pvc-single.jpg` | A PVC: early, wide, bizarre QRS with no P wave before it | Pediatric Cardiology lecture · slide 100 | 638×479, 41 KB |
+| P53 | `pc-a-pvc-triplet.jpg` | Three PVCs in a row (a triplet) = a short run of ventricular tachycardia | AMBOSS | 1400×315, 88 KB |
+| P54 | `pc-holter.jpg` | Holter monitor: continuous recording to catch an arrhythmia the office ECG misses | Pediatric Cardiology lecture · slide 102 | 224×451, 16 KB |
+| P55 | `pc-arrhythmia-symptoms.jpg` | Arrhythmia symptoms: infants — lethargy, poor feeding, irritability, heart failure · children — palpitations, syncope, dizziness, fatigue, shortness of breath, chest discomfort | Pediatric Cardiology lecture · slide 105 | 728×546, 57 KB |
+| P56 | `pc-psvt.jpg` | Paroxysmal SVT in a child: regular, narrow, very fast (~250/min) | Pediatric Cardiology lecture · slide 106 | 599×488, 72 KB |
+| P57 | `pc-delta.jpg` | What is the arrow pointing at? The slurred upstroke into the QRS = delta wave (WPW) | Pediatric Cardiology lecture · slides 109–110 | 647×571, 57 KB |
+| P58 | `pc-wpw.jpg` | Normal pathway vs WPW: an extra (accessory) pathway lets the impulse skip the AV node | Pediatric Cardiology lecture · slide 110 | 647×450, 48 KB |
+| P59 | `pc-lqt.jpg` | Case: QTc 0.44 s (normal) vs 0.63 s (long QT syndrome) | Pediatric Cardiology lecture · slide 113 | 439×196, 13 KB |
+| P60 | `pc-a-lqt.jpg` | 12-lead ECG with a long QT (QTc ≈ 580 ms) | AMBOSS | 1400×697, 113 KB |
+| P61 | `pc-lvh.png` | LV hypertrophy on ECG: large S waves in V1–V2, large R waves in V5–V6 | Pediatric Cardiology lecture · slide 119 | 590×605, 87 KB |
+| P62 | `pc-hcm-echo.jpg` | Case echo: a massively thickened septum and LV wall | Pediatric Cardiology lecture · slide 121 | 700×290, 40 KB |
+| P63 | `pc-scd-sports.jpg` | Sports linked with sudden cardiac death: basketball, then football, then track | Pediatric Cardiology lecture · slide 122 | 411×251, 13 KB |
+| P64 | `pc-scd-causes.jpg` | Causes of sudden cardiac death in young athletes (1,435 cases): HCM 36 %, coronary artery anomalies 17 %, possible HCM 8 %… | Pediatric Cardiology lecture · slide 123 · Maron, Circulation 2007 | 940×691, 85 KB |
+| P65 | `pc-hcm-hearts.jpg` | Normal heart vs HCM vs HCM with outflow obstruction: thick LV wall, small LV cavity, big left atrium | Pediatric Cardiology lecture · slide 125 | 370×314, 29 KB |
+| P66 | `pc-a-hcm.jpg` | HCM without vs with outflow obstruction (HOCM: septal bulge + mitral leaflet pulled forward = SAM) | AMBOSS | 1400×670, 96 KB |
+| P67 | `pc-hcm-scd-risk.jpg` | Sudden-death risk markers in HCM: family history, unexplained syncope, severe LV hypertrophy, non-sustained VT, abnormal exercise BP, outflow obstruction, fibrosis | Pediatric Cardiology lecture · slide 126 | 917×710, 83 KB |
+| P68 | `pc-hcm-path.jpg` | Pathology specimen of HCM: a thick septum narrowing the cavity | Pediatric Cardiology lecture · slide 128 | 504×334, 35 KB |
+| P69 | `pc-icd.jpg` | Implantable cardioverter-defibrillator (ICD) on chest x-ray | Pediatric Cardiology lecture · slide 127 | 203×248, 6 KB |
+| P70 | `pc-kd-face.jpg` | Kawasaki disease at 2 years: red, dry, cracked lips and red eyes | Pediatric Cardiology lecture · slide 130 | 373×338, 24 KB |
+| P71 | `pc-kd-features.jpg` | Kawasaki features + fever: bloodshot eyes, rash, strawberry tongue / cracked lips, neck lymph node, red swollen hands and feet | Pediatric Cardiology lecture · slide 131 | 416×373, 26 KB |
+| P72 | `pc-kd-timeline.jpg` | Timeline: acute (fever, conjunctivitis, lips, node, myocarditis) → subacute weeks 2–4 (desquamation, arthritis, platelets ↑, aneurysms) → convalescent | Pediatric Cardiology lecture · slide 132 | 675×560, 81 KB |
+| P73 | `pc-kd-desquamation.jpg` | Peeling around the fingertips / nail beds (periungual desquamation) — subacute phase | Pediatric Cardiology lecture · slide 133 | 300×253, 13 KB |
+| P74 | `pc-kd-aneurysm.jpg` | Coronary angiogram: a coronary artery aneurysm (arrow) | Pediatric Cardiology lecture · slide 135 | 440×342, 24 KB |
+| P75 | `pc-a-kd.jpg` | Kawasaki disease: fever > 5 days plus conjunctivitis, mucositis, rash, cervical node, hand/foot changes — and coronary aneurysms | AMBOSS | 1190×1000, 108 KB |
+| P76 | `pc-effusion-echo.jpg` | Case echo: black fluid space between pericardium and myocardium = pericardial effusion | Pediatric Cardiology lecture · slide 137 | 398×292, 23 KB |
+| P77 | `pc-effusion.jpg` | Normal heart vs pericardial effusion (fluid builds up inside the sac) | Pediatric Cardiology lecture · slide 138 | 460×301, 24 KB |
+| P78 | `pc-effusion-ct.jpg` | CT: a rim of fluid all around the heart | Pediatric Cardiology lecture · slide 139 | 523×547, 42 KB |
+| P79 | `pc-effusion-cxr.jpg` | Chest x-ray before and after pericardiocentesis — the huge heart shadow shrinks | Pediatric Cardiology lecture · slide 140 | 480×281, 19 KB |
+| P80 | `pc-a-tamponade.jpg` | Tamponade: fluid squeezes the heart → less filling → Beck triad (hypotension, distended neck veins, muffled heart sounds) + pulsus paradoxus | AMBOSS | 1277×1000, 116 KB |
+| P81 | `pc-splinter.jpg` | Splinter hemorrhages under the nails (circled) | Pediatric Cardiology lecture · slide 142 | 285×177, 6 KB |
+| P82 | `pc-roth.jpg` | Roth spots: retinal hemorrhages with pale centres | Pediatric Cardiology lecture · slide 143 | 262×193, 8 KB |
+| P83 | `pc-janeway.jpg` | Janeway lesions: flat, painless red spots (palms/soles) | Pediatric Cardiology lecture · slide 144 | 835×662, 25 KB |
+| P84 | `pc-ie-echo.jpg` | Echo: vegetation on the mitral valve (red arrow) | Pediatric Cardiology lecture · slide 145 | 735×613, 45 KB |
+| P85 | `pc-ie-path.jpg` | Gross specimen: mitral valve vegetation | Pediatric Cardiology lecture · slide 146 | 871×606, 86 KB |
+| P86 | `pc-a-osler.jpg` | Osler nodes: tender, raised nodules on the fingers and palm (immune) | AMBOSS | 1333×1000, 206 KB |
+| P87 | `pc-a-ie.jpg` | Endocarditis at a glance: fever + new murmur, Roth spots, splinter hemorrhages, Osler nodes, Janeway lesions, glomerulonephritis | AMBOSS | 1181×999, 130 KB |
+
+## Pharmacology of Cardiac Rhythm — `assets/antiarrhythmic-pharm/` → `Antiarrhythmic_Pharmacology_Study_Notes.html`
+
+| Fig | File | Label | Source | Size |
+|---|---|---|---|---|
+| A1 | `aa-ap-compare.jpg` | SA-node cell (A) vs ventricular muscle cell (B): no plateau and a drifting phase 4 in the node; a long Ca²⁺ plateau in the myocyte | Scully lecture · slide 7 · Golan | 500×827, 45 KB |
+| A2 | `aa-sa-currents.jpg` | SA-node action potential and its currents: I_f (funny, Na⁺) in phase 4 → I_Ca upstroke in phase 0 → I_K repolarisation in phase 3 | Scully lecture · slide 8 · Golan | 488×1054, 67 KB |
+| A3 | `aa-vm-currents.jpg` | Ventricular action potential and its currents: I_Na upstroke (0) · I_to notch (1) · I_Ca vs I_K plateau (2) · I_K repolarisation (3) | Scully lecture · slide 9 · Golan | 482×1202, 88 KB |
+| A4 | `aa-afterdepolarizations.jpg` | Triggered activity: early afterdepolarisations (during a prolonged phase 2–3 → torsades) and delayed afterdepolarisations (after repolarisation; Ca²⁺ overload) | Scully lecture · slide 12 (hidden) · Golan | 425×673, 41 KB |
+| A5 | `aa-reentry.jpg` | Re-entry: (A) normal conduction around a non-excitable area · (B) unidirectional block + slow retrograde conduction → a circuit | Scully lecture · slide 13 (hidden) · Golan | 492×619, 40 KB |
+| A6 | `aa-bundle-of-kent.jpg` | Accessory pathway (bundle of Kent) bypassing the AV node — the substrate for WPW re-entry | Scully lecture · slide 13 (hidden) | 478×486, 38 KB |
+| A7 | `aa-na-channel-states.jpg` | Na⁺-channel states: resting → open → inactivated. Class I drugs bind the open and inactivated states (use-dependent block) | Scully lecture · slide 14 (hidden) · Golan | 1400×441, 63 KB |
+| A8 | `aa-a-classes.jpg` | All four Vaughan Williams classes on one page: what each does to the ventricular or pacemaker action potential | AMBOSS | 1400×796, 82 KB |
+| A9 | `aa-class1-nodal.jpg` | Na⁺-channel block in nodal tissue: a more positive threshold and a flatter phase 4 → slower firing (A); ACh/adenosine hyperpolarise for the same effect (B) | Scully lecture · slide 17 · Golan | 500×827, 47 KB |
+| A10 | `aa-class1-abc.jpg` | Class IA: moderate Na⁺ block + prolonged repolarisation · IB: mild block + shortened repolarisation · IC: marked block, no change in repolarisation | Scully lecture · slide 18 · Golan | 1025×336, 36 KB |
+| A11 | `aa-butterfly-rash.jpg` | Drug-induced lupus with chronic procainamide: malar "butterfly" rash | Scully lecture · slide 20 | 372×400, 20 KB |
+| A12 | `aa-class1c.jpg` | Class IC: marked slowing of the phase 0 upstroke; repolarisation unchanged | Scully lecture · slides 23–24 · Golan | 280×222, 6 KB |
+| A13 | `aa-class2-nodal.jpg` | β-blockade in nodal tissue: flatter phase 4 and prolonged repolarisation at the AV node | Scully lecture · slide 25 · Golan | 500×386, 26 KB |
+| A14 | `aa-bb-selectivity.jpg` | Non-selective vs β1-selective β-blockers (ᵃ lipophilic → CNS effects; ᵇ partial agonist) | Scully lecture · slide 27 | 613×684, 55 KB |
+| A15 | `aa-class3.jpg` | Class III: block of repolarising K⁺ channels → a longer plateau and phase 3 → longer refractory period (and QT) | Scully lecture · slides 28–30 · Golan | 787×607, 42 KB |
+| A16 | `aa-a-torsades.jpg` | Torsades de pointes (bottom): polymorphic VT twisting around the baseline — the risk of IA and III drugs | AMBOSS | 1400×944, 265 KB |
+| A17 | `aa-a-corneal-deposits.jpg` | Amiodarone corneal microdeposits (arrow) — in > 90 % of long-term users, usually harmless | AMBOSS | 1400×929, 178 KB |
+| A18 | `aa-a-amio-lung.jpg` | Interstitial lung disease on chest x-ray — the amiodarone toxicity that kills | AMBOSS · Amiodarone article | 1205×999, 142 KB |
+| A19 | `aa-ccb-selectivity.jpg` | CCB selectivity: verapamil (heart) → diltiazem (both) → "-dipines" (blood vessels) | Scully lecture · slide 32 · Golan | 952×193, 16 KB |
+| A20 | `aa-ccb-sites.jpg` | Where CCBs act: SA node (↓ automaticity), AV node (↓ conduction), myocytes (↓ demand), coronary and peripheral arterioles (vasodilation); little venodilation | Scully lecture · slide 32 · Golan | 711×811, 60 KB |
+| A21 | `aa-class4-nodal.jpg` | Class IV in nodal tissue: a slower Ca²⁺-driven upstroke → slower AV conduction | Scully lecture · slide 33 · Golan | 500×387, 20 KB |
+| A22 | `aa-svt-strip.jpg` | Narrow-complex regular tachycardia — the rhythm adenosine converts | Scully lecture · slide 35 · acls-algorithms.com | 639×151, 29 KB |
+| A23 | `aa-a-svt.jpg` | Regular narrow-complex tachycardia with no visible P waves (SVT) on a 12-lead | AMBOSS | 1400×671, 126 KB |
+| A24 | `aa-digoxin-moa.jpg` | Digoxin: blocks the Na⁺/K⁺-ATPase (1) → less Ca²⁺ extrusion by the Na⁺/Ca²⁺ exchanger (2) → more SR Ca²⁺ (3) → stronger contraction (4) | Scully lecture · slide 36 · Golan | 513×414, 36 KB |
+| A25 | `aa-reverse-check.jpg` | "Reverse check" / "reverse tick": the scooped, down-sloping ST depression of digoxin effect | Scully lecture · slide 38 | 277×188, 14 KB |
+| A26 | `aa-a-digitalis-effect.jpg` | Digitalis effect: normal complex (top) vs scooped ST segment (bottom) | AMBOSS | 425×999, 78 KB |
+| A27 | `aa-a-afib-digitalis.jpg` | Atrial fibrillation with digitalis effect — scooped ST segments in many leads | AMBOSS | 1400×859, 259 KB |
+| A28 | `aa-starry-night.jpg` | Van Gogh, "The Starry Night" — yellow halos possibly from foxglove (xanthopsia) | Scully lecture · slide 38 | 454×300, 37 KB |
+| A29 | `aa-a-foxglove.jpg` | Foxglove (Digitalis) — the plant source of cardiac glycosides | AMBOSS | 1190×1001, 281 KB |
+| A30 | `aa-atropine-dose.jpg` | Atropine dose–response: low doses can briefly SLOW the heart before the expected tachycardia | Scully lecture · slide 39 | 740×651, 37 KB |
+| A31 | `aa-anticholinergic.jpg` | Anticholinergic toxidrome: blind as a bat, mad as a hatter, dry as a bone, red as a beet, hot as a hare | Scully lecture · slide 40 · Kloss & Bruce | 500×742, 122 KB |
+
+## Pharmacologic Management of Heart Failure — `assets/hf-pharm/` → `Heart_Failure_Pharmacology_Study_Notes.html`
+
+| Fig | File | Label | Source | Size |
+|---|---|---|---|---|
+| F1 | `hf-a-pv-loops.jpg` | PV loops: systolic dysfunction shifts right (big, weak ventricle); diastolic dysfunction lifts the filling curve (stiff ventricle) | AMBOSS | 1400×882, 60 KB |
+| F2 | `hf-c-remodeling.jpg` | Remodelling: volume overload → eccentric hypertrophy; pressure overload → concentric hypertrophy | CV Pathophysiology | 1400×1279, 84 KB |
+| F3 | `hf-neurohumoral.jpg` | The vicious cycle: ↓ cardiac function → baroreflex → sympathetic outflow (α vasoconstriction, β renin) → angiotensin II and aldosterone → ↑ afterload and ↑ preload → ↑ O₂ demand → worse failure | Scully lecture · slide 6 · Golan | 493×631, 37 KB |
+| F4 | `hf-edema.jpg` | Why HF patients swell: the kidney senses low pressure and keeps retaining Na⁺; dilated atria stop responding to natriuretic peptide | Scully lecture · slide 7 · Golan | 490×546, 34 KB |
+| F5 | `hf-a-pathophysiology.jpg` | Compensation that turns harmful: sympathetic drive, RAAS, ADH and BNP around a falling cardiac output | AMBOSS | 1400×930, 124 KB |
+| F6 | `hf-interventions.jpg` | Where the drugs cut the cycle: β-antagonists (renin), ACE inhibitors (AT II), spironolactone and diuretics (aldosterone/Na⁺), vasodilators (afterload), venodilators (preload) | Scully lecture · slide 8 · Golan | 490×627, 44 KB |
+| F7 | `hf-a-drug-moa.jpg` | Every HF drug class placed on the cycle of preload, afterload, heart rate, O₂ demand and remodelling | AMBOSS | 1260×1000, 88 KB |
+| F8 | `hf-starling.jpg` | Frank-Starling curves: A normal → B failure → C congestion; an inotrope lifts to D → E. Afterload reduction F; preload reduction G slides down the same curve | Scully lecture · slide 16 · Golan | 675×277, 23 KB |
+| F9 | `hf-a-starling-pathologies.jpg` | Frank-Starling curves from exercise to severe failure; the pink zone is pulmonary congestion, the blue zone hypotension | AMBOSS | 1276×999, 51 KB |
+| F10 | `hf-a-pulmonary-edema.jpg` | Cardiogenic pulmonary edema on chest x-ray — what furosemide is for | AMBOSS · Acute heart failure article | 1307×1000, 108 KB |
+| F11 | `hf-a-diuretics.jpg` | Diuretic sites: (C) loop diuretics block NKCC2 in the thick ascending limb; (D) thiazides; (E) K⁺-sparing agents in the collecting duct | AMBOSS | 1400×889, 135 KB |
+| F12 | `hf-a-k-sparing.jpg` | Spironolactone/eplerenone block the mineralocorticoid (aldosterone) receptor → less ENaC and Na⁺/K⁺-ATPase → less K⁺ and H⁺ lost | AMBOSS · Diuretics article | 1400×896, 100 KB |
+| F13 | `hf-a-hypokalemia-ecg.jpg` | Hypokalemia on ECG (flat T waves, U waves) — the loop-diuretic electrolyte to watch | AMBOSS | 1400×693, 253 KB |
+| F14 | `hf-a-inotropes.jpg` | Inotropes on one myocyte: β-agonists and PDE3 inhibitors raise cAMP → PKA; digoxin blocks the Na⁺/K⁺-ATPase; β-blockers and CCBs do the opposite | AMBOSS | 1400×864, 86 KB |
+| F15 | `hf-a-sympathomimetics.jpg` | Norepinephrine (α > β: reflex bradycardia) vs epinephrine (β2 > α at low dose) vs isoproterenol (β only): pressure, resistance and heart rate | AMBOSS | 1400×979, 80 KB |
+| F16 | `hf-a-no-cgmp.jpg` | Nitrates → NO → guanylyl cyclase → cGMP → PKG → relaxation; PDE5 breaks cGMP down (why sildenafil + nitrate is dangerous) | AMBOSS · Nitrates article | 1400×990, 112 KB |
+
+## Pharmacologic Management of Ischemic Heart Disease — `assets/ihd-pharm/` → `Ischemic_Heart_Disease_Pharmacology_Study_Notes.html`
+
+| Fig | File | Label | Source | Size |
+|---|---|---|---|---|
+| I1 | `ihd-pain-locations.jpg` | Where angina is felt: substernal, radiating to the neck, jaw, left arm or back | Scully lecture · slide 5 | 400×318, 31 KB |
+| I2 | `ihd-supply-demand.jpg` | Supply vs demand: balanced at rest; with exertion the CAD heart's demand outweighs its fixed supply | Scully lecture · slide 6 | 1156×742, 41 KB |
+| I3 | `ihd-a-coronary-steal.jpg` | Why arteriolar dilators don't help angina: ischemic arterioles are already maximally dilated, so dilating the rest "steals" flow | AMBOSS | 1400×743, 106 KB |
+| I4 | `ihd-angina-types.jpg` | Normal artery · stable angina (fixed plaque) · unstable angina (plaque + clot) · variant angina (spasm) | Scully lecture · slide 7 | 587×604, 41 KB |
+| I5 | `ihd-a-plaques.jpg` | Vulnerable plaque (big lipid pool, thin cap → rupture, thrombus) vs stable plaque (thick fibrous cap, fixed narrowing) | AMBOSS | 1400×480, 78 KB |
+| I6 | `ihd-c-atherosclerosis.jpg` | Atherosclerosis progression from fatty streak to complicated lesion over decades | CV Pathophysiology | 1400×1116, 182 KB |
+| I7 | `ihd-drug-flowchart.jpg` | Pharmacologic management of ischemic heart disease: chronic CAD (left) vs acute coronary syndromes (right) | Scully lecture · slide 9 · Golan | 1240×1006, 100 KB |
+| I8 | `ihd-vasospastic-criteria.jpg` | Vasospastic angina diagnostic criteria (COVADIS): nitrate-responsive rest angina + transient ischemic ECG changes + documented spasm | Scully lecture · slide 13 · Beltrame, Eur Heart J 2017 | 1210×651, 129 KB |
+| I9 | `ihd-a-prinzmetal-pain.jpg` | Vasospastic angina during pain: transient ST elevation | AMBOSS | 1400×931, 198 KB |
+| I10 | `ihd-a-prinzmetal-free.jpg` | Same patient pain-free: the ST changes have gone | AMBOSS | 1400×808, 177 KB |
+| I11 | `ihd-acetylcholine.jpg` | Provocative test: the right coronary artery before (A) and after (B) intracoronary acetylcholine — near-total spasm | Scully lecture · slide 14 · NEJM | 800×401, 60 KB |
+| I12 | `ihd-a-no-cgmp.jpg` | Nitrates → NO → guanylyl cyclase → cGMP → PKG → relaxation; PDE5 inhibitors stop cGMP breakdown → profound hypotension together | AMBOSS · Nitrates article | 1400×990, 112 KB |
+| I13 | `ihd-ccb-sites.jpg` | Where CCBs relieve angina: ↓ afterload (arterioles), coronary vasodilation (↑ supply), and with verapamil/diltiazem ↓ heart rate and contractility | Scully lecture · Rhythm lecture slide 32 · Golan | 711×811, 60 KB |
+| I14 | `ihd-a-myocyte.jpg` | β-blockers and CCBs are negative inotropes: less cAMP/PKA and less Ca²⁺ entry → less work → less O₂ demand | AMBOSS | 1400×864, 86 KB |
+
+## Pharmacologic Management of Dyslipidemia — `assets/lipid-pharm/` → `Dyslipidemia_Pharmacology_Study_Notes.html`
+
+| Fig | File | Label | Source | Size |
+|---|---|---|---|---|
+| L1 | `lp-a-lipoprotein-transport.jpg` | Lipoprotein traffic: chylomicrons from the gut; VLDL → IDL → LDL from the liver; LDL back to the liver by the LDL receptor; HDL reverse transport | AMBOSS · Lipids and their metabolism | 1111×1000, 79 KB |
+| L2 | `lp-a-lipoproteins.jpg` | Lipoprotein classes: chylomicrons and VLDL are triglyceride-rich; LDL is cholesterol-rich (apo B-100); HDL carries apo A-I | AMBOSS · Lipids and their metabolism | 1400×751, 78 KB |
+| L3 | `lp-secondary-causes.jpg` | Secondary causes of hyperlipidemia: treat the cause and the lipids may follow | Scully lecture · slide 4 | 503×658, 52 KB |
+| L4 | `lp-a-xanthelasma.jpg` | Xanthelasma: yellow cholesterol plaques on the eyelids | AMBOSS | 1400×888, 196 KB |
+| L5 | `lp-a-arcus.jpg` | Arcus (corneal ring) — in a young patient, think familial hypercholesterolemia | AMBOSS · Lipid disorders | 1400×914, 139 KB |
+| L6 | `lp-a-lipemic.jpg` | Lipemic (milky) serum in severe hypertriglyceridemia | AMBOSS | 750×1000, 79 KB |
+| L7 | `lp-a-atherosclerosis.jpg` | Why LDL matters: endothelial dysfunction → LDL entry and oxidation → foam cells → fibrous plaque → rupture and thrombosis | AMBOSS | 1400×495, 122 KB |
+| L8 | `lp-a-lipid-agents.jpg` | Where each lipid drug acts: ezetimibe (gut NPC1L1), bile acid sequestrants, statins (HMG-CoA reductase), PCSK9 inhibitors (LDL-receptor recycling), fibrates, niacin | AMBOSS · Statins / Second-line agents | 1400×670, 106 KB |
+| L9 | `lp-a-absorption.jpg` | Dietary lipid absorption: micelles with bile acids deliver cholesterol to the enterocyte (where ezetimibe blocks uptake) | AMBOSS · Lipids and their metabolism | 1323×1000, 100 KB |
+| L10 | `lp-a-diuretics.jpg` | Diuretic sites for the hypertension revisit: (D) thiazides block NCC in the distal tubule and raise Ca²⁺ reabsorption; (E) K⁺-sparing agents | AMBOSS | 1400×889, 135 KB |
+| L11 | `lp-a-k-sparing.jpg` | Spironolactone/eplerenone at the mineralocorticoid receptor; amiloride/triamterene block ENaC directly | AMBOSS · Diuretics article | 1400×896, 100 KB |
+| L12 | `lp-ccb-selectivity.jpg` | CCB selectivity: verapamil (heart) → diltiazem (both) → "-dipines" (blood vessels) | Scully lecture · Rhythm lecture slide 32 · Golan | 952×193, 16 KB |
+| L13 | `lp-a-raas.jpg` | RAAS: angiotensin II → vasoconstriction, aldosterone (↑ Na⁺, ↑ K⁺ loss), ADH and thirst — the targets of ACE inhibitors and ARBs | AMBOSS | 848×1000, 69 KB |
