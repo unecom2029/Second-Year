@@ -7893,45 +7893,6 @@ function triggerWillardEgg(){
   },260);
 }
 
-var HUB_AUTO_RELOAD_MS=5*60*1000;
-var HUB_AUTO_RELOAD_SCROLL_KEY='une-study-hub-auto-reload-scroll-v1';
-var hubAutoReloadTimer=null;
-function saveHubReloadScroll(){
-  try{
-    sessionStorage.setItem(HUB_AUTO_RELOAD_SCROLL_KEY,JSON.stringify({
-      x:window.scrollX||window.pageXOffset||0,
-      y:window.scrollY||window.pageYOffset||0,
-      at:Date.now()
-    }));
-  }catch(err){}
-}
-function restoreHubReloadScroll(){
-  try{
-    var raw=sessionStorage.getItem(HUB_AUTO_RELOAD_SCROLL_KEY);
-    if(!raw)return;
-    sessionStorage.removeItem(HUB_AUTO_RELOAD_SCROLL_KEY);
-    var saved=JSON.parse(raw);
-    if(!saved||Date.now()-Number(saved.at||0)>HUB_AUTO_RELOAD_MS*3)return;
-    var restore=function(){window.scrollTo(Number(saved.x)||0,Number(saved.y)||0);};
-    window.setTimeout(restore,80);
-    window.setTimeout(restore,350);
-  }catch(err){}
-}
-function refreshHubOnInterval(){
-  saveHubReloadScroll();
-  try{
-    window.location.reload();
-  }catch(err){
-    window.location.href=window.location.href;
-  }
-}
-function setupHubAutoReload(){
-  restoreHubReloadScroll();
-  window.addEventListener('beforeunload',saveHubReloadScroll);
-  if(hubAutoReloadTimer)clearInterval(hubAutoReloadTimer);
-  hubAutoReloadTimer=setInterval(refreshHubOnInterval,HUB_AUTO_RELOAD_MS);
-}
-
 
 /* ── Auth clock ── */
 function tickAuthClock(){
@@ -7968,7 +7929,6 @@ syncAdminControls();
 setupEasterEggs();
 setupSecretsModal();
 setupMediaModal();
-setupHubAutoReload();
 document.addEventListener('click',function(ev){
   var dock=document.getElementById('themeDock');
   if(dock&&!dock.contains(ev.target)){
