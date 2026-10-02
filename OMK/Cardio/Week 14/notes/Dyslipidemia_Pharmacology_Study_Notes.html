@@ -1,0 +1,1948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+(function(){
+  var NOTE_AUTH_KEY='une-study-hub-remembered-auth-v1';
+  var NOTE_LOGIN_URL='../../../../index.html?login=notes';
+
+  function readCookie(name){
+    try{
+      var prefix=encodeURIComponent(name)+'=';
+      var parts=String(document.cookie||'').split(';');
+      for(var i=0;i<parts.length;i++){
+        var part=parts[i].trim();
+        if(part.indexOf(prefix)===0)return decodeURIComponent(part.slice(prefix.length));
+      }
+    }catch(err){}
+    return null;
+  }
+  function readAuthPayload(){
+    try{
+      var stored=localStorage.getItem(NOTE_AUTH_KEY);
+      if(stored)return stored;
+    }catch(err){}
+    return readCookie(NOTE_AUTH_KEY);
+  }
+  function hasValidNoteAuth(){
+    var raw=readAuthPayload();
+    if(!raw)return false;
+    try{
+      var parsed=JSON.parse(raw);
+      var email=String(parsed&&parsed.email||'').trim().toLowerCase();
+      var expiresAt=Number(parsed&&parsed.expiresAt);
+      return /@une\.edu$/.test(email)&&expiresAt&&Date.now()<expiresAt;
+    }catch(err){return false}
+  }
+  function syncNoteAuth(){
+    document.documentElement.setAttribute('data-note-auth',hasValidNoteAuth()?'unlocked':'locked');
+  }
+  window.openNoteLogin=function(){
+    var loginWindow=window.open(NOTE_LOGIN_URL,'uneStudyHubLogin');
+    if(!loginWindow)window.location.href=NOTE_LOGIN_URL;
+  };
+  window.refreshNoteAuth=syncNoteAuth;
+  window.addEventListener('message',function(event){
+    if(event&&event.data&&event.data.type==='une-study-hub-auth-complete')syncNoteAuth();
+  });
+  window.addEventListener('storage',function(event){
+    if(!event||event.key===NOTE_AUTH_KEY)syncNoteAuth();
+  });
+  window.addEventListener('focus',syncNoteAuth);
+  window.setInterval(syncNoteAuth,1000);
+  syncNoteAuth();
+})();
+</script>
+<title>Pharmacologic Management of Dyslipidemia — Study Notes</title>
+<link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAf5UlEQVR4nG2b2a9kyXHefxGZ55xa79rdM73N9Aw55FBcRqJMWpspUxJpUbJoG7JhGRBgwf4P/GpAD36w/WA/+sWADYiG/CAJBgTLFCATsiQLlsUhRXCnh7P0TPd0T293qVvbOSczww+ZVfc2xQIKdetW1TmZkZERX3zxpVy6esMARIT86hAEVUUkv26eF99v/pb8I8wMADMjpQRASgkzw8yIMZbPIiklUrLtZ2aGWtz+vbnO5jX/aSTyfRRIZuS7lO+KgQhSPjcRDMHlf5M0z09FcCiIkDA824cBipggujHG+etmws657d8GJAPM8OX/GwOY2fZ9jBEVJRHxAkEMU9jMwDAMQQwQnvotgKpgBmp5YqmMlu3nms0jkidmeczOBBUDzRM3ETxSxgKCXjCAab65GIJuJ3++2oJzbusBIOwMPIPhANWK49MZq7ZHnFJ5T0p5QMkSVm5HUpIZCKglBCNieXUlD4FiCEu2NfzGIGDo5nMV0gWPEVHKrxEBLYYTpNxacCIoCpI912sxgIiACZKHSZn71ghsLi2Cc8q6j3zu4zf5x59+P9XkkJ2D53jnje/yeBH43S/9Fa/fX+C9EKNAMszy9S1pNrAAYqiC4khJiJaIxbXlwr03k88G3bzfjCdP2IprC4AlEEURUNleyxVjigioy9sF8Nmwsp1kMeiFR75h/jHEZByMG37xlX326yV92yFnLTf3Ah97cY8m3uLf/N53SQbOAHyevPWIprzFxFjFSN9HYuizhwnU3uHJK7s1+1MewNYIKpQtIxe+C5T9TdkqiOBV0ezOmDqcKpVmw3kz2brNdsoXbviDj5jg8rTCnT3i7eNI7FtiDIymOzwaVNwcNXzgSsM3311R++zysrV+Xqk+Gh/YG3JjWtEcXGVxcsSjecubj09Yh4CTPDj7AUNcfPygd+aokONXLMbQvPlRUZwKog5UcVrei+Bls/dzGPohE89eYWabyEPoErdfe8R6taJbtoS+ZzQeMhrV7E9r6tAgqsU5N16Un21IvHJY8x8/8ywHkwH1M+9j9fgu9c1X+JOvfZd/9tt/QsDz1PQuBMTz93lsP2yb5lCiOQZsJiyCOkXVbeOaiOBN0nb1jbSJRBdSVMJK+skBzRGT0ZsQDXoiUSJdDLAGiYGucxielOI2jW0GnDD+/s2KZvaAu48EeeM1nHMMTo741M6AT9/c4/dvz9ipHPEHPPLcCFIWja2J876HtPW2ErxFkQupfBPIc8YAn0OqbK751MPM8k1SIiGklFNMsESz46mHNU0vxNjjfYUXpZaEnRoxJhwp53zLeT/GxFCFcLbkq6/NmPWKdXOaZsTg7pxre2P2/UWX/uHbwHg6QOb/5TReIuyFbZeNcHHyzrntbz0GZoJYyR2So6hZAhRLVqxqWDJiihiJZjyAkHDRk1JN7T1elZoO9yARQyK6REwhGyFmfKAkZuvE/ZRY9pCCUIWeYaowTZytctD9wRhw8ZE2+/3C/1R0s4mfBm0u73d3wQsubiN/fkkFI0+05G1BC8pKJMsBMCaIMSEqmEbUyC7mFFGjwli3LevO8LUjxZSNZoal7NS1GGMnOEtApKodlTcqAqGMJ29FwSw9lRLL6CmDfcowJfhvJ7hZfcSRRNCN5xQvSoDPEyzgAtuYfhsYwTCLkHIQiwn6GKBYOKaO8XgPxRG6OSEm/vbHrvPG7BGnsxWq2WskGRTws1dF9jXR1oIGwTeOqjZ26mzMTbB9ajteeK9lzJG/vm2fDozZU/JkXY5FGClRUq3gtxOXVKx8nhKThexUSUiSAWiKRii5O2cNpWvnOOczBk+BcdPjLBFCh3eKpQRmRDMaVSZVS6MRomJ01L6i8krthcW6J25dv0zgh2wFK4vEJtdc+M15HSHbYJ5iotcCt7ffAxUz9EJhsrnAxecG26e0eaYMNUmoGbHrSH2HxchAlS/+5R3uPJpRK1gIECMpRWJMqEUaiahFRqMx+5duokScZnj8k88dMKn9BSP8cDyCGS4ZYuUpGxz79LhTSsQYtvfPz0gIkRACKt4h3j+VG7cW5ry6izFXcTFFQt/n1bEEFlAsY/sUIeXJ9V1H13V0fU8fAn3X03cdFgIVESegtsTFJV4ML4Ct+dnnPDuV0oVNCk05C12oLLdjI51Xf5vvPvVqZfKBGEOZeH7Nzw4/GIxyalCfwYvItuK7WBBlUCEkEw4GRmpX1BZIsUPN8NSoALFjsrPH9ZtDBhoJxWNIiS5FDlSo7TZOE317xmrR4gZjNEXE1/y7L59wHB2T0fi8ZE5GuuDaaRMACzgTLmKFcxffPGIUVA0IxUMyjk6px1+6/Awh9PR9R4iRrl3Tnq1zMCrXcU4RdfQh0EXoJ57Ujml8QEMPoadqsgf62JHWK5Yrw1WQTAoczu7sNeGsRQmbLYwDnBmWlLXW1EOhFssrb1aeaYtLSOfocBOoNf11uLwpmOA8LZ57t6HS4P/lb/4rQgh0bct8ucRi4L/+9n/mq1/5CnVdb6NmLcKtZ/cYDz1921P7hqFA5TxSgVnCYWhaMXtyxO03VgwqoU8wbjJG6GKk2RlSH4K3RCTmhBMNXAdUnJyccHLc0zkhPFXoXOQoinduw4RsjXkxeWwNsn3RrXdsruMXyyVVVVE1NXXfceXGTa4/f4uvvvoqlXOEEJkOa/71b3ycj7+wSz0YsO4SjXNUvkKqBu8aYorE9ZrQzvkXrwi/drxmdnLCO++d8IU/v81iFUjA3sEldkdLWC8ykySCEqgskyu9Wcbtcl4VXnTxzQS2kIBSakvG2ymdw3nEnopp29/b+Yufnc2oqooYA23b0vZrZifHYJCS0XeBy5cH/NhNh/aPaHuoNJFColtFRKATUPXgB1T1gFsD5X0HkbSC+gNDXrsz4Pe+dsKVcU21mlOFJS4ZQSFGI/aJfr7ChsqTRWSxMvraMa5drkN+gJ/YTGbDYxjnnEFKRuUdIQa4EDA3cS0lQ9VhKWGW8L//O18gppITvcNi4M0332Rv2FB7wYYDwPPkwUNGfg2pBzpUDCNmd1JBFZyrUfHMzbBoxPWaUTfnmvb81qfG/MzNA1RrDvwA1+zBwS36dkl48gDaluSVf3vFcdR2fPnuGV/41ntUml01lQpARdDKE1LM+OICE2TbFNieZ4qUt2fUgHMVOYTk+gQDv57PuHP3HkezGYPBgMpXHBzs8+LhPs/2C+rDZzh48UXW3Wton6Ou4aCQmGwCinOoRlQSmKDJkHXHbDnjegx8fueYaf8eVo1JcYStj7F338DXQ7T2aKXgB/zq4RBE+dXrhzzaf4E0HKKW06CvKsyE//vqq1y5+hwHe5dYLs5QZ7T9arNX6PtADJEYAyKeph6SUmR2ekrfdXiveO9JJvh37t5jve4ZjMb4ggfqZkA3GPHtswUfW8wYvfcW/R70zmVsvgVHWkBIXgNnDiceJGXEFWs0CFUy7t9PnI1aTFpUj9gwm+JAPaiWxXQTnKvoxzf4tX/46yzrEZUmqsojYqgo0+mQe4+X/K2f/RyijmAz1uExo8mEejDJzA+wPJ0zdHtc2rvO3Tt3+C9f+E+sVg/4xCdf4caNm/Qh4bs+0AwHjIcjpjsTXrh1C/HKYtniqorbfc9w2aI4cHXm9VJfPO8C5lYB8Zg4cllpRBGcVJj2zHsjdRDJASvF7NqqhnM51arzeO+pnWc1rKGpaOdP6GLLaLoL6ojdmp//uZ/hf/3vr/PHX/oDPvkTP83koOHsZMly3TOYRibTPQbDAeNdZW9wlZ3pIfHOXcY7lzg4vMzN51/i8uVLrNsemUym5rxnb2+PH/3RV3j+1vM8evyEZ5+9xnw2YxUTUx/5lWfvU7slKYZc1VksaSUjEVFX6oFSqpoRFnPc2QO+8Z1TPhEWjAYFihhYytWeOsF5h3MO52q8r6l9xUlzid8ZvEzqOxpn7Fy+zO7N5xlMD5juXqKZPMN//4Mv8ud/9ifs7e8yGDuu3rhJPZzgVYmhZ74445nDW/ytT/0C69WKo6NTnHPUdYOvKkQdfj4/Q5zy3M0bvPPO27z5xhv0645rlw9ZLubsVw4/VBb7zzK9ckC7XmBpQ2af+4A4V/w4gxJCAFnhx3vIMGHrBVoL3nypNAVcVZgbjzjFicfUI17pEf7s1W8hGnnloz/C6tEJq8Waqx95hWYYuf3tbyCp5ad+8hN8+7vf4ex0xUc/csC1GzfxlWd2fMQ3vn6fND1lUgcmzRCJC/rQMx7WOO3pY4v/lb/3ee7du0e3bplOpgy84+beFFstmDyzwwcvH7BqA//zeyf8gxd+nMGkJbQLUrdELBUuMRItsvEJJCEuMX3mOf7ijWP+2zf+iJ/7xJA+BgRXCA0r2ygiTlBfg/Oor4gxMTq4jOysmeyOOUoNX/3uG9zYnaDTS7z7cMb333qbD3zgQ3zwgy/x3Puf58tf/Qp/8epfUH/1K7i6AjM+/PKP8JlP/x0mo2FO/fu7pBQYDmrMjAcPH+BvXL9O2wbu3rvPcLpHU3lORXDjfQ5vvcCTYcNivkAGB9xeTXnftRc5PT0hSs/ZckkXEpoiKUZMHSaGExhr4rlmzB98/Q95uxuw2rvGqH1E6lucGCaKaI2IZffXCqeKiTIeDngiNXfeu8P69depqwFtSLzW3+bOoyNuve8lPvezn+HSpcs8eXJC1Sc+9PIH+fDLLxN7WLcr6qbicO+Q22+/yTt3BOfqQuRAXTliTJycHuO/+KU/ZTQYc+3mizw8OkJcxWg44uxsxmv3TxiPpwjGar3i+evX4GbF0TywWKxY9Ill25G6AJYy1pYc0A4GHldHxgdX2PvQlN9Kl/n1HxmxenQXa5do6rdRXZASAzyD0ZTXY8N/+Oo9mtEuy/ka/IBrVy9zdHzCm3ef8M+v/ziffGOJns54nynrszFfvv+I3334OpOdXdarJV27JITAcrWiGQxp1z0iMB6PGU52mEwnYIZ/6eWP8eC9d4kRrl57jgcP7rFezrly6TJnizmnR0+4dPkZ0MCqbRFXkfqe2f/4Ev1HPoxefYYYEl48LrdaMncoSmcO3wwI6yO+/nDGxz78Eqv9yxyfzFETQupzsaWeqnI03nFjb5cvfu2b/On33+Xq4R6T3T26dcfsdEaP8csvfIjP7l5m/uQh6ewUi8Z0NOGz4yv80ew7/Plrr3Jp/xKWEu1ywezslOdefIkuJE5PjthZtejxDCNSVRV+urfP/Xff5vXXvsVHP/4T7O3u8b1vf4P5fM4LL73Merngu9/6Glefex+4ipginQF7B4ivSAbeZcgqmuGolmYECOvlAlWl73uWfcc6JE7aQNLSEguRqjY8iXGEYRd47+SUg50dvK/oup560GQy9eSYyXSft+6/waIUUaIVVeUZ+Yrd2lM1A2ZHj9g9vISrPZWvuPPWa+ztHzIZTZgv5tR1xjvL+RJ//87b7O4eMD875fbr3+Pyles8/8JL3H/3He6+9TqjyZRLz17l3p23OTl6mXo0JZgin/wxQtvBeslkVDNbtEgUzCLmPX10tCFRNyOcW2fOPpUuL5nPC2bEZGjpGZjLLHTXZ5zedT1OPSH2zOcLFAj9irfeu83RfIkJqFQMmwEHe7vcOTvi7OSY3eGA0+MjUkwZ9/fw5NFDxpMpo+mU5XyBmTEaDfEnjx8xnky5cukqs9kps9kxqo7RcMxsdoqrG5rBkNp7Qrvk7MkjlvNj5ot1JjtCx2qZUxrOkVJELNF7z7INOF8zaAacHD2kC4E2Gn2MhJSIyYgpbZsmdZWpsN6MvlvhZQSSvUdUGdQN+82QpjdqnzCLOK1ofE3VjJg9usvi7JT98Zh112Ex0fcd3ldUlXJ2dsLZ/JQrl6+DwHK5wD98cI/JYpfxZIr3Ff16zf17d9jbO2D/0hUsJcQcV67eIIlydP82y6P76PAQLKJVQ+rXOKf4uqbvA+rdVmOgDupBxbPXb+B9hYaeelBBEmIbcF7wlceVSq9PRtUMERNmp0eMJrukGHPNn4zDuuZwNKKa7KIhIqI0wyHVZIp5z3S6w3w2ZzgZkdRo25YQAvsHB/QnOeY8fnSf3d0DDvYP8XUzIlm2BgJVVdEMc86en80QMbzzrNuOo5M9rr/0Gc4Y8d6joyxYAHB+qyswFO9rXGY5WczPePzoIbUT+vXzmHlCu86Bsg8YRqsljgwqlrNT3r3zOn0fQJR2tSo0vTCua66MptBGGu9Ls1MYDIa0Ksy7vgg1Ctq0xHA4xDlP13fU9QARZX52ymqVt5B//8sfuVBbkxuIkqslcQ7nlKpqQJQrl3dYrVbUwxHDcU+1aZKQ+fzGCT4EvPdUDgZV5MbNWzT7V7F+TdXUhC7iuhUqYJWja1voI0bF2YP3OLv7OgeHV6gmpXVhuWaIKTDAGDVDpqMRaXZMIuDEUxkwnjLe2aftWyrnC0dQxB6l77fpF146vLyhVfCz40elq3MufVHV7Jbe41xNXbWZmDwcMtmbMl6uOfZnbPvQhZrOZKMjWSQlZToekewRZ7NjGicMRyNCWOBL21ydMmgGubEpibpyHFy5it5vIa1BErGww12I1Kp4M7rVIpO3peZwKjxezjmeHbOKPa1sRBOUeTkorXmRTbcrYxB/+83Xzqk0M2IhCmQjQChMzHy54uSVD/NP/u6n6ENPHxPdumO9OAES4oaMBkOW0agrZTIUDneGvPXaN/njP/tLnn3mEv/oEy9yuu5Yx8wyn84jKQQm4yFD37C3M8VNJrzzf/4oI7zKlyaV0IXAzZ0pw5vvp1ssoXLb9rCqcjw/5Xh+gldHXwauhSQ57yNeoNI2+oDP//JnMzuSMikXC1W0ZePK/lt3HTeuXkEkcrA/Zjaf0zljmISEp55McTFRqTAZNVzdqanE+NiHP0CIgcv7e4yHDYe7xsHYMxrW9LVnteqZrRPj8ZgXD0d068gvfc7oui4DFedygBw1POMqqq+/SzSwaBAM1yhh3fHsS8/xm5//KbwpOEqbVLaEDXCuPLnQOZbXv/8d27aTUiyank1vMFd7G8a16ztmj+4RYs/pbEm3XvL4zm2qWrn23AvEowVyeZem8WjbsTiecfMjr9CMJ3Ttmruv/iWL//d9+qMTqmkFLmt03N4eqRpSV0Pqw2d44ec/jSbQMi6pHOnxjPkff4WjP/xTwqIjSV6wajBAxTH97N/kyj/9JdJiDZbpdMwQXyOuygTshZhim96gc54tnyzbzVB4jtx1wQxVoaoqVlXN4uwM6ef4uGCsa+K64+H3v4WsI8OwT5xMGFQTNAUGk10mB1doF2ecfev7LO+9S3IVZ10k9gGc4B6vsZRozHHrp/fwribEPhOiKshszZN//3v0b7xD4yM+JRI5APs20EwHLL/0V9w5XnD4G7+MqduuvARDYsDk3JvPWeOE995tSZ1snGKdVNhUOa/8zRLzs1NmTx5wdO8t+tWc1CdCn/tuvvbImyfUgwG+GjCZ7Ob9pxWop12tSTGibU/deGwwxO9NifefYKdL0mrN8qUnaFUjITdOtKmJb91ndHRK/ezV3GEeNvjdPfrTE8JqjfMDTIX4vUdw5wn+oy/ButuqxP56c1W33u21MKUbAyFgyTBJJbqnQn4mkES7OCWtV6hvoDJi7Eg+4CrBq89uPRigCvPZEbHvKNokOhXW3qPOkL4jPHiCf2+A9JF6b4+oih+Oc1YqwVe8J67XtKsTiC3ONzggxRmVOnw9zBevPOZBCk2+aZuV3XveYxAhE3MCKF6dz/SyKmoCJEwhWcRCTwwBdUJKARVH5RyWepphTdUoadJsL1xpJkRVlNh2rFeLkn/z1kreEWqPGw6RZJgf0N4/opqO0Oeu0d55h25QqDXvEMtESVyumbcLutCipqh4VD1OHbJRqA5q3KRhvNNktYhzqNNtT0FLjzGPRbf9BJ9il7+RNsHhQhuKtAUQ6iqMQuY6I/V9QXQhfy5KrAJ0HcnVpBhJsdDolkgJoldSrfixJynYeI9qd4r2hkwG2GRIs7eDYKWaNFSM2LWk0ZC+cqQ+oMkgdsQ+YSE3dr1PjKoxOhzktKyFri9h3ABxWvoHmr1bBG+hL41QIaas6UUVUizyFEoDgq12J6VNPlWEKk+QhCYPPq8ABeZiEUsBLGBqWKPEGkiGVoKNKhBPapTx9auM9vexGKAIriXF7MOjATKsKfPCQqRftSyWayQlxtWQycEeMhiU+Jdb9ttNYCXQiSHiiiJV8FrV2xY0krUClgwp6pAoUkjLrLkT35wLEIrkZWOMLUWqjoRkHbD3qKsR8STJJa+KI1mPWdHuDWpMIVhE6wZcDZplOLGNTD/+EU6++X3S/YdIynEJM4a7EzhrCW3P5OASzYu3YDLKXLWvShMnZYS6SellgTUrqvFZWmYgEe/rHCElIX5Qyk2HOo/FhKsqVm3P6ekpdVMTUiorYlmxvVWYQDQjGqh4UI+IJ2ZZSY4psWgPiRhxGyfwDlEPeq4+191dmp/7OO3d+7hVgLMl1vakGBmb4qsa3dmh+YW/AUWondc7S3Oz/2ce0gQkbWTqCY+UYsa7Eu3D1tUzLkjEkGsBVzm6LnJ2tmLXNVkMTcqZYpM+zUDPRZZYyvs19blA0azcNpeF15LcRhAG6qjqCgtrLHV5i6kQ2p5kifraJaIofRvAhNp76kFNVVVZAzxuSF1X1GK5n0jKPcWE5n5mClhRx4oKnnI+wFLMLi1CLjMKJkixnEXI//PDAUEcfZLceCQVqVyJDUWqmltnJatYDylgkkhqF4wrSKWIK41NwJVegYrbLoRXxQu8985DkgltuwYRmsGA0XTMweVDxnsTEMH5ukhkImKKeiWliJOS++UcAyiKTymgeCy0OfBtYqerkKrOA0JzkaSlNFZIYiWalsqrSGcz5MzWDwBa4asR6tpcc5QMbECUHCR9ES6kZPi6RrVGJCCaK8bVuuX+3fdoF0vUVYRV7v46lO99+RvcfOkWH/rFT+dGi/M5DZY4oepQM8QyX4nYlrsUdXglpxRij8Q+r5yABI+EBqoafIUZOOdxzmeJyiad5F2fo2oylHz4IV6o1NR51LkMR2Wz+psALSRRYp84OXoAVYWrB2jMrXfvHdiKxaqj9rrtAKsqMUauf/gD1LtT5vPIzjMjYow45y9ohXJZnBNAwpKV8WRBqBdXkWKHOA/iUHW4epBXPXTFpbX074pLhZyaTErxxHkBlaSc5zFIuQgHyCqtkpdFrBycyHJ2Ewihx1cVVVUT+zUW++xNEbpuXQCNAzWSkyLaAj9ooB7gRkOkQPhEvJizsw7WuSKYiMQ+npfDZil/6Fzu67umuEhAfIUTRcTlVY6BynuqqsorIOepbxNsteztXGFLJiPK5ynFbYV+IS/lAOuUycEB6jJI0XJPEQh9mxuyrvQViwxenIPynaryZWPlcl6QXM+UzJRigcIbsVURVakKqGRyIaUIqcNiBzFmyW6KWWeXAqFvqeqG6aVDnPqiw81bIVGKLVMEJaREn7I+2GKfGdpo9Mkym0yOI0kBr4UhlhwQUwBSAWNGmq+wPpI063sTEF1mleJsgRT2ykgZr5QUR9ma+ZFrGYrxCs7Fi2YqO1mf8y+KhW6bNwFckrx62lD73MDUEFHnSH2J9CmXrkkURQkJ+rjRGWeR5eNZx8E4C+RCTJmxkSy8Rh1dHzP1FvvcQ4gdokbs26xETRU4pdgd19T4YZOzhkLs2y0JYjFPVmH7N6IkNoenNkdmSlzOkVezx5Qen25AkuUGg4jgvc9NTOKWZNywR7aBH8ZWVut8ziQIvPn2Y+555eUPjvCiOC8ZnCDMZyuOjla4aoz3A2IImAzxVQZcqZAcrtQqIkLuxQnqPFWVi6MU4xZvIIKqI0nZFkXdguTVVxF8vtAFfo3NqQu3ZYrNZZGxuBr1fnswEShEqG6rz5wdJEPhch3DiCHy8PiUx4+PebLsqQTq2lHVDZWrWJzOGQwG1FWFxZi3TokfMRghxryyGdwiJBTL7j9o8M5nxFpEGzkOlPOBzudRFeNsdIWSj81tCA/bZidJCVLI0xGfI3VKkDRDY9VSUZf8sq0gFZMcjGLBAWZ5LzsSZ8sFq75lvlzx5OiEVdsxHo+5crDPajbj6vVncJWykb1BQiSfNhW/OepWDspt4DeglS+6wuzqDleAWDoHXEVtRsoKl6waNTyh30bkVG6cM9e5qnIDJ4VE5bMB+kKTiWoOlBtzFCOmmPEBqc9QOPaEmJgvFiyXS7r1mti2pNqzWC44W55xrbqGkwydN4e0rIfYrYllG6hBDIGN6tNSwjsHJFLIkDRL+0sJvEnPWz5UEUIeoIC3lC9mm8aBCRu1tZQ0vqkkLUYU6No1XbfGO0Wc36a3fCAxR/QARNtAWpfBTsol6GK1ZtGuaRdLmkHDulvTx56mrvHOkUIoUVxQKtbtmhj7XBqT8CJ4lUx+isNVVV7hVDxZfd7Ctjnz6DhXkEeUgn2kZAHKgelcE5T8SPEC3aSVfO6uakYZXIQWfKavKOp5LU2HKPlwhJnk3O1qRCuMVGB0Qr1A7QgCIeWg2TRZvNTFlHFAKblDiEjsgUgEXK147zLeF6WqKgrny+YILbA94psDZZU9NW54CiAFPCLZYmVf2eb8UPEIJIMNBMwpvhnQDMd063WmrFyFaE8iIaqkmHJkLwexXDXA1/l88TbalP07Ho+2J9BjgsFgiG9GdFHwripqzkToIjG2WDuDVKLPcIT6KeJzBlBXkSvbclbICSauuHxGp1oEWSF1WMhNU69a5+BS3EStRH+hwMfzvaPq8N4zHI9ZL+ZYzNBXmgpXVj5DDiFajtO+arLnVA3npEkOnrJhakrV2QxHRc66AlGc0yy57dawPCHZGgsBrWoiiZhW+Ob5bOSqIoTARjKbCqGLSuYNyeWvqC8yuo5oHf8fOzfcXrE2/NkAAAAASUVORK5CYII=">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Cardio (default) — soft ECG blush page, arterial red accent, clinical-blue accent2 */
+  --ink:#25161a; --paper:#fff7f7; --cream:#f5e2e6;
+  --accent:#b51f3a; --accent2:#245f89; --gold:#b77b22; --muted:#75535c; --border:#dfb9c2;
+  --highlight:#f8e1a9; --highlight2:#d7e9f4; --green-bg:#d9eee2; --red-bg:#f8d5dc;
+  --blue-bg:#d6e9f5; --purple-bg:#eadcf0; --hero-bg:#173e63;
+  --panel-dark-bg:#173e63; --panel-dark-text:#f7fbff;
+  /* Theme-INDEPENDENT chip colors (sit on saturated / fixed-dark backgrounds in every theme) */
+  --chip-red:#b51f3a; --chip-blue:#245f89; --chip-fg:#ffffff; --panel-dark-accent:#ffd27a;
+  --hero-heading:#f7fbff; --hero-sub:#c8dceb;
+  --hero-meta-bg:rgba(255,255,255,0.08); --hero-meta-border:rgba(240,138,155,0.28);
+  --hero-meta-label:#a9c5d8; --hero-meta-value:#fff1f3; --hero-accent:#ff9aae;
+  --floating-ui-bg:#173e63; --floating-ui-fg:#f7fbff; --floating-ui-shadow:0 3px 12px rgba(23,62,99,0.26);
+  --quiz-overlay:rgba(36,95,137,.38); --quiz-overlay-hover:rgba(36,95,137,.62);
+}
+html:not([data-theme]) .hero{background:
+  radial-gradient(circle at 88% 18%,rgba(181,31,58,0.42),transparent 30%),
+  linear-gradient(135deg,#102e4b,#173e63 62%,#6f1d32)}
+html:not([data-theme]) .toc-bar{border-right-color:#2c5f86}
+
+[data-theme="hemo"]{
+  --ink:#f3dfe1; --paper:#170a0d; --cream:#2b1218;
+  --accent:#ff6b6b; --accent2:#8fb8ea; --gold:#e7b95c; --muted:#b4919a; --border:#431d25;
+  --highlight:#402c14; --highlight2:#33161f; --green-bg:#11291e; --red-bg:#45151a;
+  --blue-bg:#12243c; --purple-bg:#261b3a; --hero-bg:#0c0407;
+  --panel-dark-bg:#2e1017; --panel-dark-text:#f9e7e9;
+  --hero-heading:#fbeaea; --hero-sub:#c9a3a8;
+  --hero-meta-bg:rgba(255,255,255,0.06); --hero-meta-border:rgba(255,107,107,0.18);
+  --hero-meta-label:#b4919a; --hero-meta-value:#ffd9d0; --hero-accent:#ff6b6b;
+  --floating-ui-bg:#0c0407; --floating-ui-fg:#fbeaea; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.45);
+  --quiz-overlay:rgba(143,184,234,.40); --quiz-overlay-hover:rgba(143,184,234,.62);
+}
+[data-theme="hemo"] .toc-bar{border-right-color:#431d25}
+
+[data-theme="paper"]{
+  --hero-accent:#f08a6e;
+  --ink:#1a1209; --paper:#faf7f2; --cream:#ece1cd;
+  --accent:#a32c14; --accent2:#2c5f8a; --gold:#c9922a; --muted:#6b5e4e; --border:#d4cabb;
+  --highlight:#fbe4a0; --highlight2:#cfe4f7; --green-bg:#d7f0da; --red-bg:#f8d6d0;
+  --blue-bg:#d2e7f9; --purple-bg:#e6dbfa; --hero-bg:#1a1209;
+  --panel-dark-bg:#1a1209; --panel-dark-text:#faf7f2;
+  --hero-heading:#f5ede0; --hero-sub:#c9bcad;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#8a7a6a; --hero-meta-value:#f0e0c8;
+  --floating-ui-bg:#3a3030; --floating-ui-fg:#f5ede0; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(44,95,138,.50); --quiz-overlay-hover:rgba(44,95,138,.78);
+}
+[data-theme="night"]{
+  --hero-accent:#e8b84b;
+  --ink:#e0e8f0; --paper:#0f1923; --cream:#1b2942;
+  --accent:#e8b84b; --accent2:#4aa8d8; --gold:#e8b84b; --muted:#94abc0; --border:#1e3048;
+  --highlight:#3a3016; --highlight2:#12283a; --green-bg:#10281c; --red-bg:#2e1616;
+  --blue-bg:#10233a; --purple-bg:#201a38; --hero-bg:#070e15;
+  --panel-dark-bg:#101a26; --panel-dark-text:#eef5fb;
+  --hero-heading:#f4f9ff; --hero-sub:#b8cad8;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#8fa4b8; --hero-meta-value:#f4f9ff;
+  --floating-ui-bg:#070e15; --floating-ui-fg:#f4f9ff; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(74,168,216,.42); --quiz-overlay-hover:rgba(74,168,216,.62);
+}
+[data-theme="ocean"]{
+  --hero-accent:#ff9aa5;
+  --ink:#0b2436; --paper:#eef7fb; --cream:#cdeaf5;
+  --accent:#a32536; --accent2:#0a5286; --gold:#d9a441; --muted:#4f7185; --border:#a8d4e8;
+  --highlight:#ffe6ad; --highlight2:#bfe3f2; --green-bg:#c9f0dc; --red-bg:#fad9d5;
+  --blue-bg:#c3e4f6; --purple-bg:#e1d7f6; --hero-bg:#0a3a5c;
+  --panel-dark-bg:#0b2436; --panel-dark-text:#eef7fb;
+  --hero-heading:#eaf6fd; --hero-sub:#a9c9dc;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#7ba0b8; --hero-meta-value:#d9edfa;
+  --floating-ui-bg:#0a3a5c; --floating-ui-fg:#eaf6fd; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(15,111,176,.48); --quiz-overlay-hover:rgba(15,111,176,.74);
+}
+[data-theme="forest"]{
+  --hero-accent:#f0a07c;
+  --ink:#16241a; --paper:#f2f7f0; --cream:#d7ead2;
+  --accent:#8f3418; --accent2:#155c39; --gold:#b8860b; --muted:#52684f; --border:#b7d4ae;
+  --highlight:#f3e6a0; --highlight2:#cbe4c4; --green-bg:#c7ecc0; --red-bg:#f7ddd0;
+  --blue-bg:#cbe6df; --purple-bg:#e1dbee; --hero-bg:#12301c;
+  --panel-dark-bg:#16241a; --panel-dark-text:#f2f7f0;
+  --hero-heading:#eef7ea; --hero-sub:#b6cfb0;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#87a382; --hero-meta-value:#e2f2da;
+  --floating-ui-bg:#12301c; --floating-ui-fg:#eef7ea; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(31,122,77,.48); --quiz-overlay-hover:rgba(31,122,77,.74);
+}
+[data-theme="sepia"]{
+  --hero-accent:#f0a57e;
+  --ink:#3a2414; --paper:#f7ecd9; --cream:#ecd7ae;
+  --accent:#9c3b17; --accent2:#2f5f6b; --gold:#8b5a17; --muted:#7a614a; --border:#d9bd8c;
+  --highlight:#f0d38a; --highlight2:#d7c39a; --green-bg:#dbe3bc; --red-bg:#f0d0c0;
+  --blue-bg:#cfdedd; --purple-bg:#e3d3e0; --hero-bg:#3f2814;
+  --panel-dark-bg:#3a2414; --panel-dark-text:#f7ecd9;
+  --hero-heading:#f7ecd9; --hero-sub:#cbb190;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#a08a68; --hero-meta-value:#f2ddb4;
+  --floating-ui-bg:#3f2814; --floating-ui-fg:#f7ecd9; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(47,95,107,.50); --quiz-overlay-hover:rgba(47,95,107,.78);
+}
+[data-theme="slate"]{
+  --hero-accent:#ff9a78;
+  --ink:#1c2229; --paper:#f4f5f7; --cream:#dde3ea;
+  --accent:#9e2c0f; --accent2:#2b5268; --gold:#a8862a; --muted:#5c6a76; --border:#c8d0d8;
+  --highlight:#f2e3ac; --highlight2:#d5e2ec; --green-bg:#d6ead9; --red-bg:#f4d8d0;
+  --blue-bg:#d3e2ef; --purple-bg:#dfd9ec; --hero-bg:#1c2530;
+  --panel-dark-bg:#1c2530; --panel-dark-text:#f4f5f7;
+  --hero-heading:#eef1f5; --hero-sub:#b3bfca;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#8595a3; --hero-meta-value:#e4ebf2;
+  --floating-ui-bg:#1c2530; --floating-ui-fg:#eef1f5; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(51,96,122,.50); --quiz-overlay-hover:rgba(51,96,122,.78);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;padding-left:var(--toc-w);background:var(--paper);color:var(--ink);
+  font-family:'Source Serif 4',Georgia,serif;font-size:16px;line-height:1.65;overflow-wrap:break-word;
+  transition:background .25s,color .25s}
+:root{--toc-w:258px}
+h1,h2,h3,h4{font-family:'Playfair Display',Georgia,serif;line-height:1.18}
+a{color:var(--accent2)}
+strong{color:var(--accent2)}
+.container{max-width:min(1220px,94%);margin:0 auto}
+img{max-width:100%}
+
+/* ---------------- reading progress ---------------- */
+.progress-bar{position:fixed;top:0;left:0;height:3px;width:0;z-index:200;
+  background:linear-gradient(90deg,var(--accent2),var(--accent));transition:width .1s linear}
+
+/* ---------------- TOC sidebar ---------------- */
+.toc-bar{position:fixed;top:0;left:0;bottom:0;z-index:90;width:var(--toc-w);
+  background:var(--hero-bg);border-right:1px solid rgba(255,255,255,.10);overflow-y:auto;overflow-x:hidden}
+.toc-bar::-webkit-scrollbar{width:6px}
+.toc-bar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14);border-radius:3px}
+.toc-bar::-webkit-scrollbar-track{background:transparent}
+.toc-head{padding:24px 20px 16px;border-bottom:1px solid rgba(255,255,255,.10)}
+.toc-eyebrow{display:block;font-family:'JetBrains Mono',monospace;font-size:.5rem;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--hero-meta-label);margin-bottom:7px}
+.toc-name{display:block;font-family:'Playfair Display',serif;font-weight:700;font-size:1.2rem;
+  color:var(--hero-heading);line-height:1.15}
+.toc-name em{font-style:normal;color:var(--hero-accent)}
+.toc-group{font-family:'JetBrains Mono',monospace;font-size:.49rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--hero-meta-label);opacity:.75;margin:0;padding:18px 20px 7px}
+.toc-bar nav{display:flex;flex-direction:column;padding:0 0 26px}
+.toc-bar a{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:'Source Serif 4',Georgia,serif;
+  font-size:.85rem;line-height:1.3;color:var(--hero-sub);padding:8px 16px 8px 17px;
+  border-left:3px solid transparent;transition:color .15s,border-color .15s,background .15s}
+.toc-num{flex:none;width:21px;height:21px;border-radius:50%;border:1px solid rgba(255,255,255,.18);
+  display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;
+  font-size:.56rem;font-weight:700;color:var(--hero-meta-label);transition:all .15s}
+.toc-num.dot{border:none;position:relative}
+.toc-num.dot::before{content:'';width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.28);transition:background .15s}
+.toc-bar a:hover{color:var(--hero-heading);background:rgba(255,255,255,.05)}
+.toc-bar a:hover .toc-num{border-color:rgba(255,255,255,.4);color:var(--hero-heading)}
+.toc-bar a:hover .toc-num.dot::before{background:var(--accent)}
+.toc-bar a.active{color:var(--hero-heading);border-left-color:var(--accent);background:rgba(255,255,255,.06);font-weight:600}
+.toc-bar a.active .toc-num{background:var(--chip-red);border-color:var(--chip-red);color:var(--chip-fg)}
+.toc-bar a.active .toc-num.dot{background:none;border-color:transparent}
+.toc-bar a.active .toc-num.dot::before{background:var(--accent);width:7px;height:7px}
+.toc-check{margin-left:auto;font-size:.72rem;display:none;line-height:1}
+.toc-bar a.done .toc-check{display:inline}
+.toc-bar a.conf-1 .toc-check{color:#e0564a}
+.toc-bar a.conf-2 .toc-check{color:#d6a12a}
+.toc-bar a.conf-3 .toc-check{color:#3d9c5c}
+.toc-tools{display:flex;flex-direction:column;gap:6px;padding:14px 14px 0;margin-top:8px;
+  border-top:1px solid rgba(255,255,255,.10)}
+.toc-chip{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);color:var(--hero-sub);
+  font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.05em;padding:7px 9px;
+  border-radius:8px;cursor:pointer;text-align:left;transition:background .15s,color .15s}
+.toc-chip:hover{background:rgba(255,255,255,.14);color:var(--hero-heading)}
+.toc-hy-btn{display:flex;align-items:center;justify-content:center;gap:7px;width:calc(100% - 28px);
+  margin:15px 14px 2px;background:var(--gold);color:#2a1a00;border:none;padding:11px 10px;border-radius:24px;
+  cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.04em;
+  line-height:1.25;text-align:center;transition:transform .15s,box-shadow .15s}
+.toc-hy-btn:hover{transform:translateY(-1px);box-shadow:0 4px 13px rgba(0,0,0,.32)}
+
+/* ---------------- hero ---------------- */
+.hero{background:var(--hero-bg);padding:52px 0 64px;width:100%;position:relative;overflow:hidden}
+.hero-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--hero-meta-label);margin-bottom:16px}
+.hero h1{margin:0 0 12px;font-size:clamp(2rem,4.4vw,3.3rem);font-weight:900;color:var(--hero-heading);letter-spacing:-.01em}
+.hero h1 span{color:var(--hero-accent)}
+.hero-sub{margin:0 0 20px;max-width:66ch;color:var(--hero-sub);font-size:1.03rem}
+.hero-meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.hero-meta-item{background:var(--hero-meta-bg);border:1px solid var(--hero-meta-border);border-radius:9px;
+  padding:9px 15px;min-width:118px}
+.hero-meta-item .label{display:block;font-family:'JetBrains Mono',monospace;font-size:.5rem;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--hero-meta-label);margin-bottom:4px}
+.hero-meta-item .value{display:block;font-family:'Playfair Display',serif;font-weight:700;font-size:1.02rem;color:var(--hero-meta-value)}
+.hy-btn{display:none;align-items:center;gap:8px;background:var(--gold);color:#2a1a00;border:none;padding:12px 22px;
+  border-radius:30px;font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700;letter-spacing:.04em;
+  cursor:pointer;margin-top:4px;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+
+/* ---------------- sections ---------------- */
+.section{padding:46px 0 8px;border-bottom:1px solid var(--border);scroll-margin-top:20px}
+.section:last-of-type{border-bottom:none}
+.badge-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.lo-badge{display:inline-block;background:var(--chip-red);color:var(--chip-fg);font-family:'JetBrains Mono',monospace;
+  font-size:.6rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;padding:6px 13px;border-radius:20px}
+.lo-badge.alt{background:var(--chip-blue)}
+.section-label{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 6px}
+.section-title{margin:0 0 6px;font-size:clamp(1.55rem,3vw,2.3rem);font-weight:700;
+  border-bottom:3px solid var(--accent);display:inline-block;padding-bottom:6px}
+.section h3{margin:30px 0 8px;font-size:1.24rem;border-left:4px solid var(--accent2);padding-left:11px}
+.section h4{margin:18px 0 6px;font-size:1.03rem}
+.lede{font-size:1.05rem;color:var(--muted);max-width:74ch}
+
+/* section tools (injected) */
+.sec-tools{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:14px 0 4px;padding:8px 12px;
+  background:var(--cream);border:1px solid var(--border);border-radius:9px;
+  font-family:'JetBrains Mono',monospace;font-size:.6rem}
+.sec-tools .st-lab{color:var(--muted);text-transform:uppercase;letter-spacing:.11em}
+.sec-tools button{font-family:'JetBrains Mono',monospace;font-size:.6rem;border:1px solid var(--border);
+  background:var(--paper);color:var(--ink);border-radius:20px;padding:4px 11px;cursor:pointer;transition:all .15s}
+.sec-tools button:hover{border-color:var(--accent2)}
+.sec-tools button.on{background:var(--accent2);color:#fff;border-color:var(--accent2)}
+.sec-tools .st-collapse{margin-left:auto}
+.sec-body-outer{display:grid;grid-template-rows:1fr;transition:grid-template-rows .35s ease}
+.sec-body-inner{overflow:hidden;min-height:0}
+.section.collapsed .sec-body-outer{grid-template-rows:0fr}
+.recall-note{display:none;margin:12px 0;padding:9px 13px;border:1px dashed var(--accent2);border-radius:8px;
+  background:var(--blue-bg);font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--ink)}
+body.recall-mode .recall-note{display:block}
+
+/* ---------------- callouts ---------------- */
+.callout{border-left:5px solid var(--accent2);border-radius:0 9px 9px 0;padding:14px 18px;margin:18px 0;background:var(--blue-bg)}
+.callout p:last-child,.callout ul:last-child{margin-bottom:0}
+.callout p:first-of-type{margin-top:0}
+.callout-title{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;margin-bottom:7px;color:var(--ink)}
+.callout-key{border-left-color:var(--gold);background:var(--highlight)}
+.callout-concept{border-left-color:var(--accent2);background:var(--blue-bg)}
+.callout-clinical{border-left-color:#3d9c5c;background:var(--green-bg)}
+.callout-warning{border-left-color:var(--accent);background:var(--red-bg)}
+.callout-purple{border-left-color:#7a5aa8;background:var(--purple-bg)}
+.callout-hook{border-left-color:var(--gold);background:var(--highlight);border-left-style:dashed;border-left-width:5px}
+
+/* ---------------- lists ---------------- */
+.notes-list{list-style:none;padding-left:0;margin:12px 0}
+.notes-list li{position:relative;padding-left:20px;margin-bottom:7px}
+.notes-list li::before{content:'\203A';position:absolute;left:4px;color:var(--accent);font-weight:700}
+.step-list{list-style:none;counter-reset:st;padding-left:0;margin:16px 0}
+.step-list li{counter-increment:st;position:relative;padding-left:44px;margin-bottom:14px;min-height:30px}
+.step-list li::before{content:counter(st);position:absolute;left:0;top:0;width:30px;height:30px;border-radius:50%;
+  background:var(--chip-red);color:var(--chip-fg);display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:700}
+.step-list li>div>strong:first-child{display:block;margin-bottom:2px;color:var(--accent)}
+
+/* ---------------- tables ---------------- */
+table{width:100%;border-collapse:collapse;margin:6px 0 20px;font-size:.92rem}
+th,td{border:1px solid var(--border);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:var(--panel-dark-bg);color:var(--panel-dark-text);font-family:'JetBrains Mono',monospace;
+  font-size:.63rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700}
+tr:nth-child(even) td{background:var(--cream)}
+tr:hover td{background:var(--highlight2)}
+.tbl-scroll{overflow-x:auto;margin-bottom:20px}
+.tbl-scroll table{margin-bottom:0}
+
+/* ---------------- exam Q ---------------- */
+.exam-q{background:var(--panel-dark-bg);color:var(--panel-dark-text);border-radius:11px;padding:20px 22px 18px;margin:22px 0;position:relative}
+.exam-q::before{content:'Exam Q';position:absolute;top:-10px;left:20px;background:var(--chip-red);color:var(--chip-fg);
+  font-family:'JetBrains Mono',monospace;font-size:.56rem;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;padding:4px 11px;border-radius:12px}
+.exam-q p{margin:6px 0}
+.exam-q strong{color:var(--panel-dark-accent)}
+.exam-q .answer{margin-top:12px;padding-top:12px;border-top:1px dashed rgba(255,255,255,.28);display:none}
+.exam-q.revealed .answer{display:block;animation:fadeIn .32s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.exam-q .answer .label{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--panel-dark-accent);margin-bottom:5px}
+.exam-q .reveal-btn{margin-top:11px;background:transparent;border:1px solid rgba(255,255,255,.4);
+  color:var(--panel-dark-text);font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.09em;
+  text-transform:uppercase;padding:6px 15px;border-radius:20px;cursor:pointer}
+.exam-q .reveal-btn:hover{background:rgba(255,255,255,.14)}
+.exam-q.revealed .reveal-btn{display:none}
+.exam-q.q-flash{outline:3px solid var(--gold);animation:qPulse 1.2s ease 1}
+@keyframes qPulse{0%{box-shadow:0 0 0 0 rgba(201,146,42,.55)}70%{box-shadow:0 0 0 14px rgba(201,146,42,0)}100%{box-shadow:none}}
+
+/* ---------------- cards & grids ---------------- */
+.compare-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:14px;margin:18px 0}
+.compare-card{border:1px solid var(--border);border-radius:11px;padding:16px 18px;background:var(--cream)}
+.compare-card h4{margin:6px 0 6px;font-size:1.08rem}
+.compare-card .card-emoji{font-size:1.5rem;line-height:1}
+.compare-card p{margin:0 0 8px}
+.fact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,235px),1fr));gap:13px;margin:18px 0}
+.fact-card{border:1px solid var(--border);border-top:4px solid var(--accent2);border-radius:10px;
+  padding:14px 16px;background:var(--cream)}
+.fact-card h4{margin:0 0 3px;font-size:1rem}
+.fact-card .generic{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.fact-card p{margin:0;font-size:.87rem}
+.hallmarks-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,215px),1fr));gap:13px;margin:18px 0}
+.hallmark-card{border:1px solid var(--border);border-top:4px solid var(--accent);border-radius:10px;
+  padding:14px 16px;background:var(--cream);position:relative}
+.hallmark-card:nth-child(3n+2){border-top-color:var(--accent2)}
+.hallmark-card:nth-child(3n+3){border-top-color:var(--gold)}
+.hallmark-card h4{margin:6px 0 4px;font-size:.99rem}
+.hallmark-card p{margin:0;font-size:.86rem}
+.hallmark-num{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;color:var(--muted)}
+
+/* inline chips */
+.lab-code{font-family:'JetBrains Mono',monospace;background:var(--cream);border:1px solid var(--border);
+  padding:1px 6px;border-radius:4px;font-size:.82rem;white-space:nowrap}
+.gene-tag{font-family:'JetBrains Mono',monospace;color:var(--accent2);font-size:.88rem;font-weight:600}
+.hy-flag{display:inline-flex;align-items:center;gap:3px;background:var(--highlight);color:var(--gold);
+  border:1px solid var(--gold);font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.6rem;
+  padding:1px 8px;border-radius:20px;letter-spacing:.04em;vertical-align:middle}
+.up{color:#c0392b;font-weight:700}
+.dn{color:#2c7fb8;font-weight:700}
+
+/* ---------------- images ---------------- */
+.slide-img{width:100%;display:block;border:1px solid var(--border);border-radius:10px;margin:18px 0 5px;
+  cursor:zoom-in;background:#fff}
+.slide-caption{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 20px;text-align:center}
+/* small source images: cap the width so they are not upscaled into blur */
+.slide-img.sm{width:auto;max-width:min(100%,540px);margin-left:auto;margin-right:auto}
+/* portrait images: cap the height instead of the width */
+.slide-img.tall{width:auto;max-width:100%;max-height:560px;margin-left:auto;margin-right:auto}
+.img-pair .slide-img.tall{max-height:420px}
+.img-pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px 20px;margin:18px 0;
+  align-items:start}
+.img-pair .slide-img{margin:0}
+.img-pair .slide-img.sm{width:100%;max-width:100%}
+.img-pair .slide-caption{margin:6px 0 0}
+.img-pair>div{display:flex;flex-direction:column}
+.fig{margin:18px 0}
+.fig svg{width:100%;height:auto;display:block;border:1px solid var(--border);border-radius:10px;background:var(--cream)}
+
+/* ---------------- table quiz ---------------- */
+.tq-bar{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:6px;padding:8px 12px;
+  background:var(--cream);border:1px solid var(--border);border-radius:8px}
+.tq-toggle{font-family:'JetBrains Mono',monospace;font-size:.63rem;letter-spacing:.09em;text-transform:uppercase;
+  background:var(--accent2);color:#fff;border:none;border-radius:20px;padding:5px 12px;cursor:pointer}
+.tq-toggle.active{background:var(--chip-red);color:var(--chip-fg)}
+.tq-cols{display:flex;flex-wrap:wrap;gap:5px;flex:1}
+.tq-col-btn{font-size:.7rem;padding:3px 9px;border:1px solid var(--border);border-radius:12px;background:var(--paper);
+  cursor:pointer;font-family:'JetBrains Mono',monospace;color:var(--ink);transition:all .15s}
+.tq-col-btn.sel{background:var(--chip-blue);color:var(--chip-fg);border-color:var(--chip-blue)}
+.tq-start,.tq-shuffle,.tq-reset{font-family:'JetBrains Mono',monospace;font-size:.63rem;color:#fff;border:none;
+  border-radius:20px;padding:5px 12px;cursor:pointer}
+.tq-start{background:#2e7d32}.tq-start:disabled{opacity:.35;cursor:not-allowed}
+.tq-shuffle{background:var(--accent2)}
+.tq-reset{background:var(--accent)}
+.tq-score{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted)}
+.tq-score.done{color:#2e7d32;font-weight:700}
+.quiz-hidden-cell{position:relative!important;cursor:pointer!important}
+.quiz-hidden-cell .tq-cell-content{filter:blur(5px)!important;user-select:none!important;pointer-events:none!important;opacity:.4!important}
+.quiz-hidden-cell::after{content:'tap to reveal'!important;position:absolute!important;inset:0!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;background:var(--quiz-overlay)!important;
+  color:#fff!important;font-family:'JetBrains Mono',monospace!important;font-size:.58rem!important;font-weight:700!important;
+  letter-spacing:.12em!important;text-transform:uppercase!important;border-radius:4px!important}
+.quiz-hidden-cell:hover::after{background:var(--quiz-overlay-hover)!important}
+
+/* ---------------- recall mode ---------------- */
+body.recall-mode .sec-body-inner :is(p,li,td,h4,dd) strong:not(.rc-open){color:transparent;background:var(--highlight2);
+  border-radius:4px;cursor:pointer;box-shadow:inset 0 0 0 1px var(--border);padding:0 2px}
+body.recall-mode .exam-q strong,body.recall-mode .tq-bar strong{color:var(--panel-dark-accent)!important;background:none!important;box-shadow:none!important}
+body.recall-mode .game strong{color:inherit!important;background:none!important;box-shadow:none!important;cursor:auto}
+strong.rc-open{animation:rcReveal .35s ease}
+@keyframes rcReveal{from{background:var(--gold)}to{background:transparent}}
+
+/* ---------------- games ---------------- */
+.game{background:var(--cream);border:1px solid var(--border);border-top:4px solid var(--accent);border-radius:12px;
+  padding:18px 20px;margin:22px 0}
+.g-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:4px}
+.g-head h3{margin:0;font-size:1.16rem;border:none;padding:0}
+.g-emoji{margin-right:.45em}
+.g-score{margin-left:auto;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.72rem;color:var(--muted)}
+.g-intro{font-size:.87rem;color:var(--muted);margin:0 0 10px}
+.g-stage{background:var(--paper);border:1px solid var(--border);border-radius:14px;padding:20px 18px 16px;margin:10px 0 0}
+.g-vign{text-align:left;font-size:.97rem;line-height:1.55;min-height:2.4em}
+.g-vign .lead{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--muted);display:block;margin-bottom:6px}
+.g-opts{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));margin-top:14px}
+.g-opt{border:1px solid var(--border);background:var(--cream);border-radius:11px;padding:9px 14px;font-weight:700;
+  cursor:pointer;font-size:.88rem;font-family:'Source Serif 4',Georgia,serif;color:var(--ink);text-align:center;
+  transition:transform .12s ease,border-color .12s,background .12s}
+.g-opt:hover{transform:translateY(-2px);border-color:var(--accent)}
+.g-opt.correct{background:var(--green-bg);border-color:#2e7d32;color:#1f5c24}
+.g-opt.wrong{background:var(--red-bg);border-color:var(--accent);color:var(--accent)}
+.g-fb{min-height:2.4em;margin-top:12px;font-size:.9rem;line-height:1.55}
+.g-fb .ok{color:#2e7d32;font-weight:700}
+.g-fb .no{color:var(--accent);font-weight:700}
+.g-btn{margin-top:14px;background:var(--accent);color:#fff;border:none;border-radius:22px;padding:8px 20px;
+  font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.06em;cursor:pointer}
+.g-btn:hover{filter:brightness(1.1)}
+.g-bank{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-top:12px}
+.g-bank .g-opt{padding:7px 13px;font-size:.83rem}
+.g-opt.picked{opacity:.5;pointer-events:none}
+.g-slots{display:grid;gap:9px;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));margin-top:12px}
+.g-slot{border:1px dashed var(--border);border-radius:10px;padding:10px 12px;background:var(--cream);min-height:62px}
+.g-slot h5{margin:0 0 6px;font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted)}
+.g-slot.sel{border-style:solid;border-color:var(--accent2);box-shadow:0 0 0 2px var(--blue-bg)}
+.g-slot ul{margin:0;padding-left:16px;font-size:.82rem}
+.g-timer{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--accent);font-weight:700}
+
+/* ---------------- floating UI ---------------- */
+.floating-stack{position:fixed;bottom:18px;right:18px;z-index:100;display:flex;flex-direction:column;align-items:flex-end;gap:9px}
+.font-btn-row{display:flex;align-items:center;background:var(--floating-ui-bg);color:var(--floating-ui-fg);
+  padding:7px 10px;border-radius:30px;box-shadow:var(--floating-ui-shadow);font-family:'JetBrains Mono',monospace;
+  font-size:.62rem;letter-spacing:.1em;gap:2px}
+.font-btn{background:none;border:none;cursor:pointer;color:var(--floating-ui-fg);font-family:'JetBrains Mono',monospace;
+  font-weight:700;font-size:1rem;padding:2px 8px;border-radius:6px;line-height:1}
+.font-btn:hover{background:rgba(255,255,255,.18)}
+.font-sep{color:rgba(255,255,255,.22);padding:0 3px}
+.font-label{font-size:.56rem;opacity:.7;padding:0 5px;text-transform:uppercase;letter-spacing:.1em}
+.theme-btn{display:flex;align-items:center;gap:7px;background:var(--floating-ui-bg);color:var(--floating-ui-fg);
+  border:none;padding:10px 17px;border-radius:30px;box-shadow:var(--floating-ui-shadow);cursor:pointer;
+  font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.09em;text-transform:uppercase}
+.theme-panel{position:absolute;bottom:100%;right:0;margin-bottom:10px;background:var(--floating-ui-bg);
+  color:var(--floating-ui-fg);border-radius:12px;padding:12px 10px;box-shadow:var(--floating-ui-shadow);
+  min-width:196px;display:none}
+.theme-panel.open{display:block}
+.theme-panel-title{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.16em;text-transform:uppercase;
+  opacity:.65;padding:0 8px 8px}
+.theme-option{display:flex;align-items:center;gap:9px;padding:7px 9px;border-radius:8px;cursor:pointer;
+  font-family:'JetBrains Mono',monospace;font-size:.66rem}
+.theme-option:hover{background:rgba(255,255,255,.12)}
+.theme-option.active{background:rgba(255,255,255,.18)}
+.theme-swatch{width:17px;height:17px;border-radius:50%;border:1px solid rgba(255,255,255,.35);flex:none}
+
+.floating-left{position:fixed;bottom:18px;left:calc(var(--toc-w) + 18px);z-index:100;
+  display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+.tools-menu{display:flex;flex-direction:column;gap:7px;opacity:0;pointer-events:none;transform:translateY(10px);
+  transition:opacity .22s,transform .22s}
+.floating-left:hover .tools-menu,.floating-left:focus-within .tools-menu,.floating-left.open .tools-menu{
+  opacity:1;pointer-events:auto;transform:none}
+.tool-btn{background:var(--floating-ui-bg);color:var(--floating-ui-fg);border:none;padding:9px 15px;border-radius:22px;
+  box-shadow:var(--floating-ui-shadow);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:.63rem;
+  letter-spacing:.05em;text-align:left;white-space:nowrap}
+.tool-btn:hover{filter:brightness(1.2)}
+.tool-btn.on{background:var(--accent);color:#fff}
+.tools-trigger{position:relative}
+.tools-trigger .dot{display:none;position:absolute;top:6px;right:8px;width:7px;height:7px;border-radius:50%;background:var(--gold)}
+.tools-trigger.busy .dot{display:block}
+.backtop{display:none}
+.backtop.show{display:block}
+
+/* ---------------- lightbox ---------------- */
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:400;display:none;align-items:center;
+  justify-content:center;cursor:zoom-out;padding:22px}
+.lightbox.active{display:flex}
+.lightbox img{max-width:92vw;max-height:88vh;border-radius:6px}
+
+/* ---------------- HY one-pager ---------------- */
+.hy-modal{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:300;display:none;align-items:flex-start;
+  justify-content:center;overflow-y:auto;padding:30px 16px}
+.hy-modal.open{display:flex}
+.hy-modal-card{background:var(--paper);color:var(--ink);max-width:1060px;width:100%;border-radius:14px;
+  padding:26px 30px 34px;box-shadow:0 20px 60px rgba(0,0,0,.45)}
+.hy-modal-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;
+  border-bottom:3px solid var(--accent);padding-bottom:10px;flex-wrap:wrap}
+.hy-modal-header h2{margin:0;font-size:1.35rem}
+.hy-modal-actions{display:flex;gap:8px;flex:none}
+.hy-action-btn{font-family:'JetBrains Mono',monospace;font-size:.64rem;letter-spacing:.05em;text-transform:uppercase;
+  border:1px solid var(--border);background:var(--cream);color:var(--ink);padding:7px 13px;border-radius:20px;cursor:pointer}
+.hy-close-btn{background:var(--chip-red);color:var(--chip-fg);border:none}
+.hy-subhead{font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--muted);margin:0 0 13px}
+.hy-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;min-width:0}
+@media (max-width:760px){.hy-cols{grid-template-columns:1fr}}
+.hy-cols>div{min-width:0}
+.hy-block{border:1px solid var(--border);border-radius:8px;padding:9px 11px;background:var(--cream);margin-bottom:9px;min-width:0}
+.hy-block h4{margin:0 0 5px;font-size:.76rem;color:var(--accent);border-bottom:1px solid var(--border);padding-bottom:4px}
+.hy-block p,.hy-block li{font-size:.67rem;line-height:1.4;margin:0 0 3px}
+.hy-block ul{margin:0;padding-left:15px}
+.hy-lo-tag{display:block;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;color:var(--chip-fg);
+  background:var(--chip-blue);padding:3px 9px;border-radius:10px;margin-bottom:7px;letter-spacing:.05em;text-align:center}
+.hy-mini-table{width:100%;border-collapse:collapse;font-size:.63rem;margin-top:4px}
+.hy-mini-table th,.hy-mini-table td{border:1px solid var(--border);padding:3px 5px;text-align:left;line-height:1.3}
+.hy-mini-table th{background:var(--panel-dark-bg);color:var(--panel-dark-text);font-size:.56rem;text-transform:uppercase}
+.hy-mini-table tr:nth-child(even) td{background:transparent}
+
+/* ---------------- glossary ---------------- */
+.gloss{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:10px;margin:16px 0}
+.gloss dl{margin:0;border:1px solid var(--border);border-radius:9px;padding:12px 14px;background:var(--cream)}
+.gloss dt{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;color:var(--accent);margin-top:8px}
+.gloss dt:first-child{margin-top:0}
+.gloss dd{margin:2px 0 0;font-size:.86rem}
+.abbr-strip{background:var(--cream);border:1px solid var(--border);border-left:4px solid var(--gold);
+  border-radius:0 9px 9px 0;padding:11px 15px;margin:14px 0;font-size:.85rem}
+.abbr-strip .t{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--muted);display:block;margin-bottom:5px}
+
+footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top:40px;font-size:.83rem}
+footer .container{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center}
+footer kbd{font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.2);
+  border-radius:4px;padding:1px 6px;font-size:.72rem}
+
+/* ---------------- responsive ---------------- */
+@media (max-width:1000px){
+  body{padding-left:0}
+  .toc-bar{position:sticky;top:0;bottom:auto;width:100%;height:auto;border-right:none;
+    border-bottom:1px solid rgba(255,255,255,.12);overflow-x:auto;overflow-y:hidden}
+  .toc-head,.toc-group,.toc-hy-btn,.toc-tools{display:none}
+  .toc-bar nav{flex-direction:row;padding:0 8px;white-space:nowrap}
+  .toc-bar a{padding:11px 13px;border-left:none;border-bottom:2px solid transparent;gap:8px}
+  .toc-bar a:hover,.toc-bar a.active{border-left-color:transparent;border-bottom-color:var(--accent);background:none}
+  .toc-num{width:18px;height:18px;font-size:.53rem}
+  .toc-check{display:none!important}
+  .hero .hy-btn{display:inline-flex}
+  .floating-left{left:14px;bottom:14px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
+
+/* ---------------- print ---------------- */
+@media print{
+  body{padding-left:0!important;background:#fff;color:#000}
+  .container{max-width:100%!important}
+  .toc-bar,.floating-stack,.floating-left,.progress-bar,.sec-tools,.recall-note,.tq-bar,
+  .toc-hy-btn,.hy-btn,.lightbox,.game,.exam-q .reveal-btn{display:none!important}
+  .section{page-break-inside:auto;border-bottom:1px solid #ccc}
+  .section.collapsed .sec-body-outer{grid-template-rows:1fr!important}
+  .exam-q .answer{display:block!important}
+  .hero{background:#fff!important;color:#000;padding:16px 0}
+  .hero h1,.hero-sub,.hero-tag,.hero-meta-item .value,.hero-meta-item .label{color:#000!important}
+  .slide-img{page-break-inside:avoid}
+  body.hy-mode .hero,body.hy-mode .section,body.hy-mode footer{display:none!important}
+  body.hy-mode .hy-modal{position:static!important;inset:auto!important;background:none!important;padding:0!important;
+    display:block!important;overflow:visible!important}
+  body.hy-mode .hy-modal-card{position:static!important;max-width:100%!important;width:100%!important;
+    box-shadow:none!important;padding:4px!important}
+  .hy-modal-actions{display:none!important}
+  .hy-cols{grid-template-columns:repeat(3,1fr);gap:6px}
+  .hy-modal-header h2{font-size:1.02rem}
+  .hy-subhead{font-size:.56rem;margin-bottom:7px}
+  .hy-block{padding:4px 6px;margin-bottom:4px;break-inside:avoid}
+  .hy-block h4{font-size:.60rem;margin-bottom:2px;padding-bottom:1.5px}
+  .hy-block p,.hy-block li{font-size:.50rem;line-height:1.2;margin-bottom:1.5px}
+  .hy-mini-table{font-size:.465rem}
+  .hy-mini-table th,.hy-mini-table td{padding:1px 2.5px;line-height:1.18}
+  .hy-lo-tag{font-size:.53rem;padding:2px 7px;margin-bottom:4px}
+  @page{margin:8mm}
+}
+
+
+#noteAuthGate{display:none}
+html[data-note-auth="locked"] body{
+  min-height:100vh;
+  overflow:hidden;
+  background:#f4f5f7;
+  color:#1f2937;
+}
+html[data-note-auth="locked"] body>*:not(#noteAuthGate){display:none!important}
+html[data-note-auth="locked"] #noteAuthGate{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  background:linear-gradient(135deg,#f4f5f7,#ffffff 52%,#eef2f7);
+}
+.note-auth-card{
+  width:min(460px,100%);
+  padding:30px;
+  border:1px solid rgba(31,41,55,.14);
+  border-radius:14px;
+  background:rgba(255,255,255,.92);
+  box-shadow:0 22px 70px rgba(31,41,55,.16);
+  text-align:center;
+}
+.note-auth-kicker{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.68rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:#cf4520;
+  font-weight:700;
+  margin-bottom:12px;
+}
+.note-auth-card h1{
+  margin:0 0 12px;
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2rem,6vw,3rem);
+  line-height:.98;
+  color:#263241;
+}
+.note-auth-card p{
+  margin:0 0 22px;
+  font-size:1rem;
+  line-height:1.55;
+  color:#556070;
+}
+.note-auth-btn{
+  border:0;
+  border-radius:999px;
+  padding:12px 20px;
+  font:700 .9rem 'JetBrains Mono',monospace;
+  letter-spacing:.04em;
+  color:#fff;
+  background:#263241;
+  cursor:pointer;
+  box-shadow:0 12px 28px rgba(38,50,65,.22);
+}
+.note-auth-btn:hover{background:#cf4520}
+
+/* ---------------- pharmacology components ---------------- */
+.drug-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:13px;margin:18px 0}
+.drug-card{border:1px solid var(--border);border-top:4px solid var(--accent2);border-radius:10px;
+  padding:14px 16px;background:var(--cream)}
+.drug-card h4{margin:0 0 3px;font-size:1rem}
+.drug-card .generic{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.drug-card p{margin:0;font-size:.86rem}
+.drug-card p+p{margin-top:5px}
+.drug-card.span2{grid-column:span 2}
+@media (max-width:760px){.drug-card.span2{grid-column:auto}}
+
+.box-warning{border:2px solid var(--accent);border-left-width:9px;border-radius:9px;background:var(--red-bg);
+  padding:15px 18px 13px;margin:20px 0}
+.bw-label{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;background:var(--chip-red);color:var(--chip-fg);
+  padding:4px 11px;border-radius:5px;margin-bottom:9px}
+.box-warning p{margin:0;font-size:.93rem}
+.box-warning p+p{margin-top:7px}
+
+.rems-badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.55rem;font-weight:700;
+  letter-spacing:.1em;background:var(--purple-bg);color:var(--accent2);border:1px solid var(--border);
+  padding:2px 6px;border-radius:4px;vertical-align:middle;margin-left:3px}
+
+.moa-chain{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:14px 0;padding:13px 15px;
+  background:var(--cream);border:1px solid var(--border);border-radius:10px}
+.moa-chain span{font-family:'JetBrains Mono',monospace;font-size:.7rem;line-height:1.35;
+  background:var(--paper);border:1px solid var(--border);border-radius:6px;padding:5px 9px}
+.moa-chain span.hit{background:var(--highlight);border-color:var(--gold);font-weight:700}
+.moa-chain i{font-style:normal;color:var(--accent);font-weight:700}
+
+.suffix-key{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:10px;margin:16px 0}
+.suffix-key div{border:1px solid var(--border);border-left:4px solid var(--gold);border-radius:8px;
+  padding:9px 12px;background:var(--cream)}
+.suffix-key code{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--accent);font-size:.9rem}
+.suffix-key p{margin:3px 0 0;font-size:.82rem;color:var(--muted)}
+
+.timing-bar{display:flex;align-items:center;gap:10px;margin:7px 0;font-size:.86rem}
+.timing-bar .tl{flex:none;width:min(38%,215px);font-weight:600}
+.timing-bar .tt{flex:1;height:15px;background:var(--cream);border:1px solid var(--border);
+  border-radius:8px;position:relative;overflow:hidden}
+.timing-bar .tf{position:absolute;top:0;bottom:0;background:var(--accent);opacity:.78;border-radius:8px}
+.timing-bar .tv{flex:none;font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--muted);
+  width:min(30%,140px);text-align:right}
+
+
+/* ---------------- Cardio additions ---------------- */
+.hero .container{position:relative;z-index:1}
+.hero-ecg{position:absolute;left:0;right:0;bottom:6px;width:100%;height:58px;z-index:0;pointer-events:none;opacity:.55}
+.hero-ecg path{fill:none;stroke:var(--hero-accent);stroke-width:2;stroke-linejoin:round;stroke-linecap:round;
+  stroke-dasharray:1400;stroke-dashoffset:1400;animation:ecgDraw 4.5s ease-out .3s forwards}
+@keyframes ecgDraw{to{stroke-dashoffset:0}}
+strong.hot{color:var(--accent)}
+.num{background:var(--highlight);color:var(--ink);font-weight:700;padding:0 4px;border-radius:4px;white-space:nowrap}
+.src-tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.55rem;font-weight:700;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--ink);border:1px dashed var(--muted);border-radius:4px;padding:0 5px;
+  vertical-align:middle;white-space:nowrap}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;margin:16px 0 6px;padding:11px 15px;
+  background:var(--cream);border:1px solid var(--border);border-radius:10px;font-size:.86rem}
+.legend-t{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.order-list{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 16px}
+.order-list span{background:var(--cream);border:1px solid var(--border);border-left:4px solid var(--accent);
+  border-radius:8px;padding:6px 12px;font-size:.9rem}
+.tbl-note{font-size:.88rem;color:var(--muted);margin-top:-8px}
+table.dense{font-size:.8rem}
+table.dense td,table.dense th{padding:5px 7px}
+.timeline-table tr.phase td{background:var(--panel-dark-bg)!important;color:var(--panel-dark-text);font-family:'JetBrains Mono',monospace;
+  font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;padding:4px 11px}
+
+/* ---- labeled, lazy-loaded figures (images live in ./assets/, not base64) ---- */
+.fig-card{margin:20px auto;max-width:960px;border:1px solid var(--border);border-radius:12px;background:var(--cream);overflow:hidden;
+  break-inside:avoid;page-break-inside:avoid}
+.fig-frame{position:relative;background:#fff;display:flex;justify-content:center;align-items:center}
+.fig-frame::before{content:'';position:absolute;inset:0;
+  background:linear-gradient(100deg,rgba(0,0,0,0) 30%,rgba(181,31,58,.07) 50%,rgba(0,0,0,0) 70%) #fdf1f3;
+  background-size:220% 100%;animation:figShimmer 1.3s linear infinite;transition:opacity .3s}
+.fig-frame.loaded::before{opacity:0;animation:none}
+@keyframes figShimmer{from{background-position:120% 0}to{background-position:-120% 0}}
+.fig-card .slide-img{position:relative;margin:0;border:none;border-radius:0;width:100%;height:auto;opacity:0;transition:opacity .35s}
+.fig-frame.loaded .slide-img{opacity:1}
+.fig-card.tall .slide-img{width:auto;max-width:100%;max-height:560px}
+.fig-card.sm .slide-img{width:auto;max-width:min(100%,560px)}
+.fig-row .fig-card.tall .slide-img{max-height:440px}
+.fig-card figcaption{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;padding:9px 13px 10px;
+  border-top:1px solid var(--border);font-size:.86rem;line-height:1.4}
+.fig-num{font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  background:var(--chip-blue);color:var(--chip-fg);padding:2px 8px;border-radius:10px;flex:none}
+.fig-title{flex:1 1 220px;color:var(--ink)}
+.fig-src{font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);flex:none}
+.fig-src b{color:var(--accent);font-weight:700}
+.fig-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px;margin:20px 0;align-items:start}
+.fig-row .fig-card{margin:0;max-width:none}
+.lightbox{flex-direction:column;gap:12px}
+.lightbox-cap{max-width:min(92vw,900px);color:#f3f3f3;font-size:.9rem;text-align:center;line-height:1.45}
+.lightbox-cap .fig-num{margin-right:6px}
+
+details.case-box{background:var(--cream);border:1px solid var(--border);border-left:5px solid var(--accent2);
+  border-radius:0 12px 12px 0;margin:16px 0;overflow:hidden}
+details.case-box summary{cursor:pointer;padding:13px 18px;font-family:'Playfair Display',serif;font-weight:700;font-size:1.05rem;
+  list-style:none;display:flex;gap:10px;align-items:center}
+details.case-box summary::-webkit-details-marker{display:none}
+details.case-box summary::before{content:'▸';color:var(--accent);transition:transform .2s}
+details.case-box[open] summary::before{transform:rotate(90deg)}
+details.case-box .case-body{padding:0 18px 12px;border-top:1px solid var(--border)}
+@media print{details.case-box .case-body{display:block}}
+
+/* ---- click-to-play video facade: no YouTube iframe loads until you ask for it ---- */
+.watch{margin:26px 0 8px;padding:14px 16px 16px;border:1px solid var(--border);border-left:5px solid var(--accent);
+  border-radius:0 12px 12px 0;background:var(--cream)}
+.watch-title{font-family:'JetBrains Mono',monospace;font-size:.64rem;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink);margin-bottom:10px}
+.watch-title span{color:var(--muted);font-weight:400;letter-spacing:.04em;text-transform:none}
+.vid-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr));gap:12px}
+.vid{display:flex;flex-direction:column;text-align:left;padding:0;border:1px solid var(--border);border-radius:10px;
+  overflow:hidden;background:var(--paper);color:var(--ink);cursor:pointer;font:inherit;transition:transform .15s,box-shadow .15s}
+.vid:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.14)}
+.vid-thumb{position:relative;aspect-ratio:16/9;background:#1c1c1c;overflow:hidden}
+.vid-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.vid-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:50px;height:36px;border-radius:10px;
+  background:rgba(181,31,58,.92);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1rem;
+  box-shadow:0 3px 10px rgba(0,0,0,.35)}
+.vid-meta{padding:8px 10px 10px;font-size:.8rem;line-height:1.35}
+.vid-meta b{display:block;font-weight:600}
+.vid-meta i{font-style:normal;font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted)}
+.vid.playing{cursor:default;transform:none;box-shadow:none}
+.vid iframe{width:100%;aspect-ratio:16/9;border:0;display:block}
+@media print{
+  .watch{display:none!important}
+  .fig-frame::before{display:none}
+  .fig-card .slide-img{opacity:1!important}
+  .fig-card{background:#fff}
+}
+@media (prefers-reduced-motion:reduce){.hero-ecg path{stroke-dashoffset:0}}
+</style>
+
+</head>
+<body>
+<div id="noteAuthGate" role="dialog" aria-modal="true" aria-labelledby="noteAuthTitle">
+  <div class="note-auth-card">
+    <div class="note-auth-kicker">2nd Year Study Hub</div>
+    <h1 id="noteAuthTitle">Please log in to continue with this note.</h1>
+    <p>Open the Study Hub login, enter your approved UNE email, and this note will unlock automatically.</p>
+    <button class="note-auth-btn" type="button" onclick="openNoteLogin()">Log in to continue</button>
+  </div>
+</div>
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="toc-bar">
+  <div class="toc-head">
+    <span class="toc-eyebrow">OMK 2 · Cardio · Pharmacology</span>
+    <span class="toc-name">Dyslipidemia <em>Drugs</em></span>
+  </div>
+  <button class="toc-hy-btn" onclick="openHY()">🎯 High-Yield One-Pager</button>
+  <nav>
+    <p class="toc-group">Start</p>
+    <a href="#orientation"><span class="toc-num dot"></span><span>Orientation — Match the Drug to the Lipid</span><span class="toc-check">✓</span></a>
+    <p class="toc-group">Dyslipidemia</p>
+    <a href="#s1-types"><span class="toc-num">1</span><span>Types, Secondary Causes &amp; When to Treat</span><span class="toc-check">✓</span></a>
+    <a href="#s2-statins"><span class="toc-num">2</span><span>Case 1 — Statins</span><span class="toc-check">✓</span></a>
+    <a href="#s3-adjuncts"><span class="toc-num">3</span><span>Not at Goal: Ezetimibe &amp; Bile Acid Sequestrants</span><span class="toc-check">✓</span></a>
+    <a href="#s4-triglycerides"><span class="toc-num">4</span><span>Case 2 — Triglycerides: Fish Oil, Fibrates, Niacin</span><span class="toc-check">✓</span></a>
+    <a href="#s5-pcsk9"><span class="toc-num">5</span><span>Case 3 — PCSK9 Inhibitors</span><span class="toc-check">✓</span></a>
+    <p class="toc-group">Bonus revisit</p>
+    <a href="#s6-htn"><span class="toc-num">6</span><span>The Last Hypertension Case</span><span class="toc-check">✓</span></a>
+    <p class="toc-group">Reference</p>
+    <a href="#practice"><span class="toc-num dot"></span><span>Drill</span><span class="toc-check">✓</span></a>
+    <a href="#glossary"><span class="toc-num dot"></span><span>Glossary &amp; Abbreviations</span><span class="toc-check">✓</span></a>
+  </nav>
+  <div class="toc-tools">
+    <button class="toc-chip" id="progressChip" onclick="jumpToNextTodo()">0/0 reviewed</button>
+    <button class="toc-chip" id="collapseAllBtn" onclick="toggleAllSections()">⊟ Collapse all</button>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="container">
+    <div class="hero-tag">Pharmacologic Management of Dyslipidemia · Kyle R. Scully, PhD · UNE COM · OMK 2 · 2026</div>
+    <h1>Lipid-Lowering <span>Drugs</span></h1>
+    <p class="hero-sub">A case-based refresher on the OMK 1 dyslipidemia content: statins (potency and CYP metabolism), the adjuncts when LDL isn't at goal, fish oil and fibrates for triglycerides, the PCSK9 inhibitors, and a closing revisit of the last hypertension case (thiazides, K⁺-sparing diuretics, CCBs, RAAS drugs).</p>
+    <button class="hy-btn" onclick="openHY()">🎯 High-Yield One-Pager</button>
+    <div class="hero-meta"><div class="hero-meta-item"><span class="label">Lecturer</span><span class="value">Kyle R. Scully, PhD</span></div><div class="hero-meta-item"><span class="label">Sources</span><span class="value">11 slides + recorded lecture</span></div><div class="hero-meta-item"><span class="label">Format</span><span class="value">OMK 1 refresher, case-based</span></div><div class="hero-meta-item"><span class="label">Topics</span><span class="value">6</span></div><div class="hero-meta-item"><span class="label">Labeled figures</span><span class="value">13</span></div><div class="hero-meta-item"><span class="label">Exam questions</span><span class="value">16</span></div><div class="hero-meta-item"><span class="label">Videos</span><span class="value">6</span></div></div>
+  </div>
+  <svg class="hero-ecg" viewBox="0 0 1200 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 40 H140 l10 -6 l10 6 H200 l6 6 l10 -40 l10 50 l8 -16 H330 l14 -8 l14 8 H480 l10 -6 l10 6 H540 l6 6 l10 -40 l10 50 l8 -16 H670 l14 -8 l14 8 H820 l10 -6 l10 6 H880 l6 6 l10 -40 l10 50 l8 -16 H1010 l14 -8 l14 8 H1200"/></svg>
+</div>
+
+<style>
+.tool{background:var(--cream);border:1px solid var(--border);border-top:4px solid var(--accent2);border-radius:12px;padding:16px 18px;margin:22px 0}
+.tool h4{margin:0 0 4px;font-size:1.08rem}
+.tool .t-intro{font-size:.86rem;color:var(--ink);margin:0 0 12px}
+.tool .t-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0}
+.tool .t-lab{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);min-width:96px}
+.tool button.tb{border:1px solid var(--border);background:var(--paper);color:var(--ink);border-radius:20px;padding:6px 14px;cursor:pointer;
+  font-family:'Source Serif 4',Georgia,serif;font-size:.9rem;transition:all .15s}
+.tool button.tb:hover{border-color:var(--accent2)}
+.tool button.tb.on{background:var(--chip-blue);color:var(--chip-fg);border-color:var(--chip-blue)}
+.tool .t-out{margin-top:12px;padding:12px 14px;border-radius:10px;background:var(--paper);border:1px dashed var(--border);min-height:2.2em;font-size:.95rem;line-height:1.55}
+.tool .t-out b{color:var(--accent)}
+.tool label.ck{display:flex;gap:8px;align-items:flex-start;padding:7px 10px;border:1px solid var(--border);border-radius:9px;background:var(--paper);cursor:pointer;font-size:.9rem}
+.tool label.ck input{margin-top:3px;accent-color:var(--accent2)}
+.tool .ck-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:6px}
+.drill .d-q{font-size:.97rem;line-height:1.55;margin:4px 0 10px}
+.drill .d-opts{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr))}
+.drill .d-opts button.tb{border-radius:12px;text-align:left}
+.drill .d-opts button.tb.right{background:var(--green-bg);border-color:#2e7d32;color:var(--ink)}
+.drill .d-opts button.tb.wrong{background:var(--red-bg);border-color:var(--accent);color:var(--accent)}
+.drill .d-nav{display:flex;gap:10px;align-items:center;margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted)}
+.checklist{list-style:none;padding:0;margin:10px 0;counter-reset:ck}
+.checklist li{counter-increment:ck;display:flex;gap:10px;align-items:flex-start;padding:9px 12px;margin:6px 0;border:1px solid var(--border);border-radius:10px;background:var(--cream)}
+.checklist li::before{content:counter(ck);flex:none;width:26px;height:26px;border-radius:50%;background:var(--chip-red);color:var(--chip-fg);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.75rem;font-weight:700}
+.checklist li b{display:block}
+.step-q{border:1px solid var(--border);border-radius:10px;background:var(--paper);padding:10px 12px;margin:8px 0}
+.step-q.done{opacity:.6}
+.step-q p{margin:0 0 8px}
+details.case-box.ecg summary{font-size:1rem}
+.fig-card figcaption .fig-src{flex:0 1 auto;min-width:0;overflow-wrap:break-word}
+</style>
+
+<!-- ==================== ORIENTATION ==================== -->
+<div class="section" id="orientation">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge alt">Orientation</div></div>
+    <p class="section-label">"There's no cookie-cutter answer to treating a patient"</p>
+    <h2 class="section-title">Match the Drug to the Lipid</h2>
+
+    <p class="lede">A recorded <strong>refresher</strong> of the OMK 1 dyslipidemia content, because dyslipidemia is a common comorbidity in cardiovascular disease. It points out where <strong>board answers and clinical practice differ</strong>, revisits the mechanisms, and ends with the last <strong>hypertension case</strong>. As always, <strong>names, indications, mechanisms, adverse effects and contraindications</strong> are front and centre in assessment.</p>
+
+    <div class="legend">
+      <span class="legend-t">How to read the colours</span>
+      <span><strong class="hot">Red bold</strong> = lecturer emphasis</span>
+      <span><strong>Blue bold</strong> = key fact</span>
+      <span><span class="num">Yellow</span> = number to memorise</span>
+      <span><span class="src-tag">Board add-on</span> = AMBOSS / board sources, not said in lecture</span>
+    </div>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>LDL / HDL = low- / high-density lipoprotein · TG = triglycerides · HMG-CoA = 3-hydroxy-3-methylglutaryl coenzyme A · NPC1L1 = Niemann-Pick C1-Like 1 cholesterol transporter · PPAR-α = peroxisome proliferator-activated receptor alpha · PCSK9 = proprotein convertase subtilisin/kexin type 9 · EPA / DHA = eicosapentaenoic / docosahexaenoic acid (omega-3 fatty acids) · HTN = hypertension</div>
+
+    <h3>The learning objectives</h3>
+    <ol class="checklist">
+      <li><div><b>For drugs that treat hypertension and dyslipidemia: name, indication, mechanism, adverse effects, contraindications and drug interactions</b></div></li>
+      <li><div><b>Apply them to a clinical scenario</b>Three dyslipidemia cases plus the last hypertension case.</div></li>
+    </ol>
+
+    <h3>Which lipid → which drug (slide 6)</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>Problem</th><th>First choice</th><th>Notes</th></tr>
+      <tr><td><strong>Hypercholesterolemia</strong> (↑ LDL)</td><td><strong>Inhibitors of cholesterol synthesis (statins)</strong></td><td>Primary indication; also prescribed broadly in practice (they ↓ TG and ↑ HDL a little)</td></tr>
+      <tr><td><strong>Hypertriglyceridemia</strong></td><td>Diet (Mediterranean, cold-water fish) · <strong>omega-3 fatty acids</strong> (supplement or prescription) · <strong>fibrates</strong></td><td>—</td></tr>
+      <tr><td><strong>Low HDL</strong></td><td><strong>Niacin</strong> (very effective at raising HDL) · fibrates (small ↑)</td><td>Treating isolated low HDL is <strong>conflicting in the literature</strong>; the HDL : total-cholesterol ratio is gaining importance</td></tr>
+    </table></div>
+
+    <div class="tool" id="lipTool">
+      <h4>🧪 Lipid problem → next drug</h4>
+      <p class="t-intro">Pick the situation, then tick anything that changes the choice.</p>
+      <div class="t-row"><span class="t-lab">Situation</span><button class="tb" data-s="ldl" type="button">↑ LDL, first treatment</button><button class="tb" data-s="ldl2" type="button">LDL above goal on a statin</button><button class="tb" data-s="ldl3" type="button">Above goal on max statin + ezetimibe</button><button class="tb" data-s="tg" type="button">↑ TG / ↓ HDL on a statin</button><button class="tb" data-s="hdl" type="button">Isolated low HDL</button></div>
+      <div class="ck-grid">
+        <label class="ck"><input type="checkbox" id="lfWarf"> Takes warfarin</label>
+        <label class="ck"><input type="checkbox" id="lfCyp"> Takes a CYP3A4 inhibitor (e.g. clarithromycin)</label>
+        <label class="ck"><input type="checkbox" id="lfPreg"> Pregnant</label>
+        <label class="ck"><input type="checkbox" id="lfMi"> Recent MI (secondary prevention)</label>
+      </div>
+      <div class="t-out" id="lipOut">Pick a situation.</div>
+    </div>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="fuzUG03ApKY" data-title="Lipid-Lowering Agents — Statins, Niacin, Fibrates, Cholestyramine (Picmonic)"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/fuzUG03ApKY/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Lipid-Lowering Agents — Statins, Niacin, Fibrates, Cholestyramine (Picmonic)</b><i>Medicosis Perfectionalis · YouTube</i></span></button></div></div>
+  </div>
+</div>
+
+<!-- ==================== 1. TYPES + SECONDARY ==================== -->
+<div class="section" id="s1-types">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">LO 1 · Topic 1</div><span class="hy-flag">⭐ Treat the secondary cause and the lipids may follow</span></div>
+    <p class="section-label">Slides 3–5 · primary dyslipidemias · secondary hyperlipidemia · cardiovascular risk · diet</p>
+    <h2 class="section-title">Types, Secondary Causes &amp; When to Treat</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>LDL / HDL / VLDL / IDL = low / high / very-low / intermediate-density lipoprotein · apo = apolipoprotein · LPL = lipoprotein lipase · LCAT = lecithin–cholesterol acyltransferase · ABCA1 = ATP-binding cassette transporter A1 · LIPA = lysosomal acid lipase gene · TG = triglycerides</div>
+
+    <h3>The primary dyslipidemias (slide 3) — "not something I want you to memorise"</h3>
+    <div class="fact-grid">
+      <div class="fact-card"><h4>Hypercholesterolemia</h4><div class="generic">↑ LDL</div><p>Familial (LDL-receptor defects) · familial defective apoB-100 (↓ LDL binding to its receptor) · polygenic (no defined cause).</p></div>
+      <div class="fact-card"><h4>Hypertriglyceridemia</h4><div class="generic">↑ TG</div><p>Familial (unknown defect) · familial LPL deficiency · apoC-II deficiency (rare; treated like LPL deficiency).</p></div>
+      <div class="fact-card"><h4>Mixed hyperlipidemia</h4><div class="generic">↑ both</div><p>Familial combined and dysbetalipoproteinemia (unknown defects) · lysosomal acid lipase deficiency (rare; LIPA mutations).</p></div>
+      <div class="fact-card"><h4>HDL disorders</h4><div class="generic">Rare</div><p>Defects in apoA-I, ABCA1, LCAT.</p></div>
+    </div>
+    <div class="callout callout-concept">
+      <div class="callout-title">🧠 The point of the slide</div>
+      <p>Much of the stigma around dyslipidemia is about diet and lifestyle, but lipid metabolism has <strong>many genetic determinants that lifestyle can't fix</strong>. There's no cookie-cutter treatment.</p>
+    </div>
+    <div class="fig-row"><figure class="fig-card" id="fig-lp-a-lipoprotein-transport"><div class="fig-frame"><img class="slide-img" src="assets/lipid-pharm/lp-a-lipoprotein-transport.jpg" alt="Liver, gut and peripheral tissue with chylomicron, VLDL, IDL, LDL and HDL pathways" width="1111" height="1000" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig L1</span><span class="fig-title">Lipoprotein traffic: chylomicrons from the gut; VLDL → IDL → LDL from the liver; LDL back to the liver by the LDL receptor; HDL reverse transport</span><span class="fig-src"><b>AMBOSS</b> · Lipids and their metabolism</span></figcaption></figure><figure class="fig-card" id="fig-lp-a-lipoproteins"><div class="fig-frame"><img class="slide-img" src="assets/lipid-pharm/lp-a-lipoproteins.jpg" alt="Lipoprotein particle drawing with pie charts of composition for each class" width="1400" height="751" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig L2</span><span class="fig-title">Lipoprotein classes: chylomicrons and VLDL are triglyceride-rich; LDL is cholesterol-rich (apo B-100); HDL carries apo A-I</span><span class="fig-src"><b>AMBOSS</b> · Lipids and their metabolism</span></figcaption></figure></div>
+
+    <h3>Secondary hyperlipidemia (slide 4)</h3>
+    <p>Many dyslipidemias are <strong>secondary</strong> and resolve when the underlying condition is treated. A full work-up may avoid drugs aimed at lipid metabolism altogether.</p>
+    <div class="tbl-scroll"><table>
+      <tr><th>Raises triglycerides</th><th>Raises cholesterol</th></tr>
+      <tr><td>Diabetes mellitus</td><td><strong>Hypothyroidism</strong></td></tr>
+      <tr><td>Chronic renal failure</td><td><strong>Nephrotic syndrome</strong></td></tr>
+      <tr><td>Hypothyroidism</td><td>Anorexia nervosa</td></tr>
+      <tr><td>Glycogen storage disease</td><td>Acute intermittent porphyria</td></tr>
+      <tr><td>Stress, sepsis</td><td>Cholestasis, obstructive liver disease</td></tr>
+      <tr><td><strong>Alcohol excess</strong></td><td>Corticosteroid treatment</td></tr>
+      <tr><td>Lipodystrophy, pregnancy, oral estrogen</td><td>Protease inhibitor therapy</td></tr>
+      <tr><td>Antihypertensives: <strong>β-blockers, diuretics</strong></td><td>—</td></tr>
+      <tr><td>Glucocorticoids, protease inhibitors, acute hepatitis, SLE</td><td>—</td></tr>
+    </table></div>
+    <figure class="fig-card sm" id="fig-lp-secondary-causes"><div class="fig-frame"><img class="slide-img" src="assets/lipid-pharm/lp-secondary-causes.jpg" alt="Two-column table of secondary causes of hypertriglyceridemia and hypercholesterolemia" width="503" height="658" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig L3</span><span class="fig-title">Secondary causes of hyperlipidemia: treat the cause and the lipids may follow</span><span class="fig-src"><b>Scully lecture</b> · slide 4</span></figcaption></figure>
+
+    <h3>Deciding to treat (slide 5)</h3>
+    <ul class="notes-list">
+      <li>The decision depends largely on the patient's <strong>calculated cardiovascular risk score</strong> (see the hypertension lecture; the inputs are evolving). It matters most when lipid values sit near the decision thresholds.</li>
+      <li><strong>Diet can lower total cholesterol by ~<span class="num">25%</span></strong>, depending on adherence and the metabolic basis of the dyslipidemia. Lifestyle (exercise, weight loss) won't suffice for everyone, so <strong>drugs are widely used</strong>.</li>
+      <li>The classes: <strong>cholesterol-synthesis inhibitors, fibrates, niacin, bile acid sequestrants, cholesterol-absorption inhibitors, PCSK9 inhibitors</strong>.</li>
+    </ul>
+    <div class="fig-row"><figure class="fig-card sm" id="fig-lp-a-xanthelasma"><div class="fig-frame"><img class="slide-img" src="assets/lipid-pharm/lp-a-xanthelasma.jpg" alt="Closed eyes with yellow plaques at the inner eyelids" width="1400" height="888" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig L4</span><span class="fig-title">Xanthelasma: yellow cholesterol plaques on the eyelids</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure><figure class="fig-card sm" id="fig-lp-a-arcus"><div class="fig-frame"><img class="slide-img" src="assets/lipid-pharm/lp-a-arcus.jpg" alt="Eye with a pale ring at the edge of the cornea" width="1400" height="914" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig L5</span><span class="fig-title">Arcus (corneal ring) — in a young patient, think familial hypercholesterolemia</span><span class="fig-src"><b>AMBOSS</b> · Lipid disorders</span></figcaption></figure><figure class="fig-card sm" id="fig-lp-a-lipemic"><div class="fig-frame"><img class="slide-img" src="assets/lipid-pharm/lp-a-lipemic.jpg" alt="Three blood tubes, two with milky serum" width="750" height="1000" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig L6</span><span class="fig-title">Lipemic (milky) serum in severe hypertriglyceridemia</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure></div>
+    <figure class="fig-card" id="fig-lp-a-atherosclerosis"><div class="fig-frame"><img class="slide-img" src="assets/lipid-pharm/lp-a-atherosclerosis.jpg" alt="Artery cut-away showing stages of atherosclerosis from normal endothelium to thrombus" width="1400" height="495" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig L7</span><span class="fig-title">Why LDL matters: endothelial dysfunction → LDL entry and oxidation → foam cells → fibrous plaque → rupture and thrombosis</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> A patient with new hypercholesterolemia also has fatigue, cold intolerance and weight gain. What should you check before starting a statin?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Thyroid function</strong>. Hypothyroidism is a secondary cause of hypercholesterolemia; treating it may correct the lipids.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> Which two antihypertensive classes appear on the slide as causes of secondary hypertriglyceridemia?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>β-blockers and diuretics.</strong></p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 2. STATINS ==================== -->
+<div class="section" id="s2-statins">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">LO 1 · Topic 2 · Case 1</div><span class="hy-flag">⭐ High-intensity: atorvastatin and rosuvastatin</span></div>
+    <p class="section-label">Slide 8 · GM returns · HMG-CoA reductase → LDL receptor · CYP metabolism · potency · myopathy</p>
+    <h2 class="section-title">Case 1 — Statins</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>HMG-CoA = 3-hydroxy-3-methylglutaryl coenzyme A · LDL-R = LDL receptor · SREBP = sterol regulatory element-binding protein · CYP3A4 / CYP2C9 = cytochrome P450 liver enzymes · DDI = drug–drug interaction · MI = myocardial infarction · CK = creatine kinase · T2DM = type 2 diabetes</div>
+
+    <details class="case-box" open><summary>GM returns one year later for a wellness check</summary><div class="case-body">
+      <p>Treated for <strong>hypertension (losartan)</strong> and <strong>type 2 diabetes (metformin)</strong>, both well controlled. Exam unremarkable, but <strong>total cholesterol and LDL are elevated despite a year of diet and exercise</strong>. What drug is most likely prescribed?</p>
+    </div></details>
+    <div class="callout callout-clinical">
+      <div class="callout-title">🩺 Answer: a statin</div>
+      <p>Elevated LDL → the <strong>cholesterol-synthesis inhibitors</strong> are a great first-line choice.</p>
+    </div>
+    <div class="moa-chain"><span>Statin inhibits <b>HMG-CoA reductase</b> (rate-limiting step)</span><i>→</i><span>↓ hepatocyte cholesterol</span><i>→</i><span>signalling cascade (SREBP)</span><i>→</i><span class="hit">↑ LDL-receptor expression on hepatocytes</span><i>→</i><span>LDL pulled out of the serum to replace intracellular stores</span></div>
+    <figure class="fig-card" id="fig-lp-a-lipid-agents"><div class="fig-frame"><img class="slide-img" src="assets/lipid-pharm/lp-a-lipid-agents.jpg" alt="Overview of gut, blood and liver with the sites of lipid-lowering drugs" width="1400" height="670" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig L8</span><span class="fig-title">Where each lipid drug acts: ezetimibe (gut NPC1L1), bile acid sequestrants, statins (HMG-CoA reductase), PCSK9 inhibitors (LDL-receptor recycling), fibrates, niacin</span><span class="fig-src"><b>AMBOSS</b> · Statins / Second-line agents</span></figcaption></figure>
+    <p><strong>Indications:</strong> hypercholesterolemia and mixed hyperlipidemias. In practice they are used more broadly.</p>
+
+    <h3>Not all statins are the same: metabolism and potency</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>Statin</th><th>Metabolism (lecture)</th><th>Intensity</th></tr>
+      <tr><td><strong>Lovastatin</strong></td><td><strong>CYP3A4</strong></td><td>Low–moderate</td></tr>
+      <tr><td><strong>Simvastatin</strong></td><td><strong>CYP3A4</strong></td><td>Moderate</td></tr>
+      <tr><td><strong>Atorvastatin</strong></td><td><strong>CYP3A4</strong></td><td><strong class="hot">High</strong></td></tr>
+      <tr><td><strong>Fluvastatin</strong></td><td>Other CYP (2C9)</td><td>Low</td></tr>
+      <tr><td><strong>Pitavastatin</strong></td><td>Other CYP (2C9, limited)</td><td>Moderate</td></tr>
+      <tr><td><strong>Pravastatin</strong></td><td><strong>Non-CYP</strong> → fewer DDIs</td><td>Low–moderate</td></tr>
+      <tr><td><strong>Rosuvastatin</strong></td><td><strong>Non-CYP</strong> (minimal) → fewer DDIs</td><td><strong class="hot">High</strong></td></tr>
+    </table></div>
+    <div class="callout callout-key">
+      <div class="callout-title">🔑 The two high-intensity statins</div>
+      <p><strong>Atorvastatin and rosuvastatin.</strong> These are given <strong>after an MI for secondary prevention</strong> and to patients at high cardiovascular risk and/or with hypertension. <strong>Pravastatin and rosuvastatin</strong> are the "special" non-CYP statins with fewer drug–drug interactions.</p>
+    </div>
+    <p style="font-size:.88rem;color:var(--muted)"><span class="src-tag">Board add-on</span> Intensities are dose-dependent; the table gives each drug's usual ceiling. Potency order: "<strong>F</strong>lo <strong>L</strong>oves <strong>P</strong>rague <strong>S</strong>ince <strong>A</strong> Tour of <strong>R</strong>ussia" (fluva &lt; lova &lt; prava &lt; simva &lt; atorva &lt; rosuva).</p>
+
+    <h3>Adverse effects</h3>
+    <ul class="notes-list">
+      <li>Statins are taken by so many people that adverse effects show up in the literature and in clinic, but they are <strong>generally well tolerated</strong>.</li>
+      <li>The classic worry: <strong>myopathy/myositis → rhabdomyolysis</strong>. It does happen, but <strong>less often than first thought</strong>. Recommendations have shifted toward <strong>not front-loading counselling</strong> about it, because of the <strong>nocebo</strong> (placebo-type) effect.</li>
+      <li><strong class="hot">Severe muscle pain with tea-coloured urine</strong> (or other signs of rhabdomyolysis) → <strong>work it up</strong>.</li>
+    </ul>
+    <p style="font-size:.88rem;color:var(--muted)"><span class="src-tag">Board add-on</span> ↑ LFTs (hepatotoxicity) · myopathy risk ↑ with <strong>CYP3A4 inhibitors</strong> (macrolides, azole antifungals, protease inhibitors, grapefruit juice), <strong>fibrates</strong> (esp. gemfibrozil) and niacin · contraindicated in <strong>pregnancy</strong> and active liver disease · mechanism of myalgia: ↓ coenzyme Q10.</p>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> How does inhibiting cholesterol synthesis lower <em>serum</em> LDL?</p>
+      <div class="answer"><div class="label">Answer</div><p>↓ hepatocyte cholesterol → <strong>↑ LDL-receptor expression</strong> on hepatocytes → the liver clears more LDL from the blood.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> A patient on clarithromycin needs a statin. Which two statins avoid a CYP-mediated interaction?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Pravastatin and rosuvastatin</strong> (non-CYP metabolism). Lovastatin, simvastatin and atorvastatin are CYP3A4 substrates.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> Which statins are "high intensity", and who gets them?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Atorvastatin and rosuvastatin</strong>: after MI (secondary prevention) and in high-risk cardiovascular patients.</p></div>
+    </div>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="y5yXq_DMu2Y" data-title="Statins, With a Mnemonic"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/y5yXq_DMu2Y/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Statins, With a Mnemonic</b><i>Medicosis Perfectionalis · YouTube</i></span></button><button class="vid" type="button" data-yt="l2r0bF7LN0U" data-title="Statin Side Effects and Why They Occur"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/l2r0bF7LN0U/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Statin Side Effects and Why They Occur</b><i>JJ Medicine · YouTube</i></span></button></div></div>
+  </div>
+</div>
+<!-- ==================== 3. ADJUNCTS ==================== -->
+<div class="section" id="s3-adjuncts">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">LO 1 · Topic 3 · Case 1 cont.</div><span class="hy-flag">⭐ Ezetimibe fails alone: the body makes more cholesterol</span></div>
+    <p class="section-label">Slide 9 · "What if the statin didn't get LDL to goal?" · ezetimibe · bile acid sequestrants</p>
+    <h2 class="section-title">Not at Goal: Ezetimibe &amp; Bile Acid Sequestrants</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>NPC1L1 = Niemann-Pick C1-Like 1 (intestinal brush-border cholesterol transporter) · LDL = low-density lipoprotein · TG = triglycerides · GI = gastrointestinal · Vit K = vitamin K (a fat-soluble vitamin)</div>
+
+    <p>When a statin doesn't reach the LDL goal, <strong>add an adjunct</strong>. Statins are commonly combined with <strong>cholesterol-absorption inhibitors</strong> or <strong>bile acid sequestrants</strong> to lower LDL further than a statin alone. <strong>Ezetimibe tends to be the adjunct</strong> because it has fewer adverse effects.</p>
+    <figure class="fig-card sm" id="fig-lp-a-absorption"><div class="fig-frame"><img class="slide-img" src="assets/lipid-pharm/lp-a-absorption.jpg" alt="Diagram of dietary lipid digestion, micelles and chylomicron formation" width="1323" height="1000" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig L9</span><span class="fig-title">Dietary lipid absorption: micelles with bile acids deliver cholesterol to the enterocyte (where ezetimibe blocks uptake)</span><span class="fig-src"><b>AMBOSS</b> · Lipids and their metabolism</span></figcaption></figure>
+    <div class="drug-grid">
+      <div class="drug-card span2">
+        <h4>Ezetimibe — cholesterol-absorption inhibitor</h4>
+        <div class="generic">Oral · the usual statin add-on</div>
+        <p><strong>MOA:</strong> selectively inhibits the <strong>NPC1L1</strong> brush-border transporter that takes up dietary cholesterol → cholesterol absorption ↓ by up to <span class="num">50%</span>, <strong>without</strong> reducing absorption of triglycerides or the fat-soluble vitamins.</p>
+        <p><strong>Why it fails as monotherapy:</strong> less absorbed cholesterol → ↓ intracellular cholesterol → the body <strong>up-regulates its own synthesis</strong>, and LDL drifts back to baseline. A statin blocks that compensation.</p>
+        <p><strong>Safety:</strong> a very good safety profile with "few if any" adverse effects. You can add it without worrying about the patient coming back with an AE.</p>
+        <p><span class="src-tag">Board add-on</span> Rare ↑ liver enzymes, diarrhea. Avoid with a statin in active liver disease.</p>
+      </div>
+      <div class="drug-card">
+        <h4>Bile acid sequestrants</h4>
+        <div class="generic">Oral resins · add-on to statins</div>
+        <p>Work in combination with statins to ↓ cholesterol, but <strong>GI effects (bloating, dyspepsia) limit adherence</strong>.</p>
+        <p>Can cause <strong>vitamin K deficiency</strong> (fat-soluble vitamin malabsorption).</p>
+        <p>"You will see these drugs used for <strong>other indications</strong> more regularly than for dyslipidemia."</p>
+      </div>
+      <div class="drug-card">
+        <h4>Bile acid sequestrants — the details</h4>
+        <div class="generic"><span class="src-tag">Board add-on</span></div>
+        <p><strong>Cholestyramine, colestipol, colesevelam.</strong> They bind bile acids in the gut → the liver converts more cholesterol to bile acids → ↑ LDL receptors.</p>
+        <p>Can <strong>↑ triglycerides</strong> (avoid if TG &gt; 300–500) · bind other drugs (warfarin, digoxin), so space the doses · other uses: pruritus of cholestasis, bile-acid diarrhea.</p>
+      </div>
+    </div>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> Why does ezetimibe lower LDL well with a statin but poorly on its own?</p>
+      <div class="answer"><div class="label">Answer</div><p>Blocking absorption ↓ intracellular cholesterol, so the liver <strong>up-regulates cholesterol synthesis</strong> and returns to baseline. The statin blocks that synthesis.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> A patient on cholestyramine develops easy bruising and a prolonged INR. Why?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Vitamin K deficiency</strong>: bile acid sequestrants impair absorption of fat-soluble vitamins.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 4. TRIGLYCERIDES ==================== -->
+<div class="section" id="s4-triglycerides">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">LO 1 · Topic 4 · Case 2</div><span class="hy-flag">⭐ Statin + gemfibrozil → myopathy</span></div>
+    <p class="section-label">Slide 10 · post-STEMI patient with high TG and low HDL · omega-3 fatty acids · fibrates · niacin</p>
+    <h2 class="section-title">Case 2 — Triglycerides: Fish Oil, Fibrates, Niacin</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>STEMI = ST-elevation myocardial infarction · TG = triglycerides · HDL / LDL = high / low-density lipoprotein · EPA / DHA = omega-3 fatty acids · PPAR-α = peroxisome proliferator-activated receptor alpha · LPL = lipoprotein lipase · GI = gastrointestinal · CYP = cytochrome P450</div>
+
+    <details class="case-box" open><summary>61-year-old man, one year after a STEMI, doing well on diet and exercise</summary><div class="case-body">
+      <p>On <strong>metoprolol, clopidogrel, simvastatin and fish-oil supplements</strong>; vitals normal.</p>
+      <div class="tbl-scroll"><table>
+        <tr><th>Cholesterol</th><th>HDL</th><th>LDL</th><th>Triglycerides</th></tr>
+        <tr><td>198 mg/dL</td><td><strong>32</strong> mg/dL (low)</td><td>106 mg/dL</td><td><strong>354</strong> mg/dL (high)</td></tr>
+      </table></div>
+      <p>What medication class could address these findings?</p>
+    </div></details>
+    <div class="callout callout-clinical">
+      <div class="callout-title">🩺 Answer: a fibrate</div>
+      <p>The leftover problems are <strong>high triglycerides and low HDL</strong> despite a statin and fish oil. A <strong>fibrate</strong> (PPAR-α activator) ↓ TG and ↑ HDL.</p>
+      <p style="font-size:.88rem;margin-top:6px"><span class="src-tag">Board add-on</span> By the lecture's own rule (high-intensity statin after MI), moving him from simvastatin to <strong>atorvastatin or rosuvastatin</strong> is also reasonable: LDL 106 is above usual secondary-prevention goals (&lt; 70 mg/dL).</p>
+    </div>
+    <h3>Review of his current drugs</h3>
+    <ul class="notes-list">
+      <li><strong>Simvastatin</strong>: HMG-CoA reductase inhibitor (CYP3A4).</li>
+      <li><strong>Fish oil (EPA, DHA)</strong>, the dietary cold-water-fish intervention in pill form: omega-3s <strong>alter transcription factors</strong> → ↓ hepatic <strong>TG biosynthesis</strong> and ↑ hepatic <strong>fatty-acid oxidation</strong>. Prescription forms now exist.</li>
+    </ul>
+    <div class="drug-grid">
+      <div class="drug-card span2">
+        <h4>Fibrates — gemfibrozil, fenofibrate</h4>
+        <div class="generic">Oral · PPAR-α agonists</div>
+        <p><strong>MOA:</strong> activate <strong>PPAR-α</strong> → several changes in lipid metabolism → <strong>↑ plasma HDL, ↓ plasma TG</strong>.</p>
+        <p><strong>Indications:</strong> <strong>hypertriglyceridemia</strong> and <strong>dysbetalipoproteinemia</strong>.</p>
+        <p><strong>AEs:</strong> <strong>myopathy</strong>, GI discomfort.</p>
+        <p><strong>Interactions:</strong> <strong class="hot">displace warfarin from plasma-protein binding sites</strong> → ↑ free warfarin → <strong>bigger bleeding risk</strong> than expected. <strong class="hot">With statins: more myopathy/myositis and rhabdomyolysis</strong>, worse with <strong>gemfibrozil</strong> than fenofibrate. Watch for muscle pain on the combination.</p>
+        <p><span class="src-tag">Board add-on</span> PPAR-α ↑ lipoprotein lipase activity. Fibrates also cause <strong>cholesterol gallstones</strong> (they inhibit 7α-hydroxylase) and are avoided in renal or hepatic failure. <strong>Fenofibrate</strong> is the one to pair with a statin.</p>
+      </div>
+      <div class="drug-card">
+        <h4>Niacin</h4>
+        <div class="generic">On the slide's list · best HDL raiser</div>
+        <p>Lecture: "a very effective drug at raising HDL", though whether to treat isolated low HDL is contested.</p>
+        <p><span class="src-tag">Board add-on</span> Inhibits lipolysis in adipose tissue (hormone-sensitive lipase) and ↓ hepatic VLDL → ↓ TG and LDL, ↑↑ HDL. AEs: <strong>flushing and pruritus</strong> (prostaglandin-mediated; pre-treat with aspirin), <strong>hyperglycemia</strong>, <strong>hyperuricemia/gout</strong>, hepatotoxicity.</p>
+      </div>
+    </div>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> A patient on warfarin is started on gemfibrozil and develops bleeding gums with a high INR. Mechanism?</p>
+      <div class="answer"><div class="label">Answer</div><p>Fibrates <strong>displace warfarin from plasma-protein binding sites</strong> → more free (active) warfarin → bleeding.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> Which fibrate carries the higher risk of rhabdomyolysis when combined with a statin?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Gemfibrozil</strong> (more than fenofibrate).</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> What is the mechanism of fish-oil omega-3 fatty acids in hypertriglyceridemia?</p>
+      <div class="answer"><div class="label">Answer</div><p>EPA/DHA <strong>alter transcription factors</strong> → ↓ hepatic TG biosynthesis and ↑ fatty-acid oxidation.</p></div>
+    </div>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="6tykXkGPd_M" data-title="Niacin with a Mnemonic — Cardiac Pharmacology"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/6tykXkGPd_M/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Niacin with a Mnemonic — Cardiac Pharmacology</b><i>Medicosis Perfectionalis · YouTube</i></span></button></div></div>
+  </div>
+</div>
+
+<!-- ==================== 5. PCSK9 ==================== -->
+<div class="section" id="s5-pcsk9">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">LO 1 · Topic 5 · Case 3</div><span class="hy-flag">⭐ After maximal statin + ezetimibe → PCSK9 inhibitor</span></div>
+    <p class="section-label">Slide 11 · the genetic discovery · monoclonal antibodies · inclisiran (siRNA) · the new oral agent</p>
+    <h2 class="section-title">Case 3 — PCSK9 Inhibitors</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>PCSK9 = proprotein convertase subtilisin/kexin type 9 · LDL-R = LDL receptor · mAb = monoclonal antibody · siRNA = small interfering RNA · CVD = cardiovascular disease · GI = gastrointestinal</div>
+
+    <details class="case-box" open><summary>LDL goal still not met on maximal atorvastatin + ezetimibe</summary><div class="case-body">
+      <p>Lifestyle changes and first-line drugs have been tried; the fasting panel still misses the LDL goal. Next step? → a <strong>PCSK9 inhibitor</strong>.</p>
+    </div></details>
+    <div class="moa-chain"><span>Normally: <b>PCSK9</b> binds the LDL receptor</span><i>→</i><span>the receptor is <b>degraded</b> instead of recycled</span><i>→</i><span>fewer receptors → more serum LDL</span></div>
+    <div class="moa-chain"><span><b>PCSK9 inhibitor</b></span><i>→</i><span>LDL receptor persists on the hepatocyte membrane</span><i>→</i><span class="hit">more LDL cleared from the serum</span></div>
+    <div class="callout callout-concept">
+      <div class="callout-title">🧬 How the target was found</div>
+      <p>People with <strong>loss-of-function PCSK9 mutations</strong> degrade fewer LDL receptors and have a <strong>lower incidence of cardiovascular disease</strong>. That genetic observation led to the drugs.</p>
+    </div>
+    <div class="drug-grid">
+      <div class="drug-card">
+        <h4>Monoclonal antibodies</h4>
+        <div class="generic">Injected</div>
+        <p><strong>Bind free PCSK9</strong> so it can't interact with the LDL receptor.</p>
+        <p><strong>AE:</strong> mainly <strong>injection-site reactions</strong>.</p>
+        <p><span class="src-tag">Board add-on</span> <strong>Alirocumab, evolocumab</strong> (also myalgia, nasopharyngitis).</p>
+      </div>
+      <div class="drug-card">
+        <h4>Inclisiran</h4>
+        <div class="generic">siRNA · injected</div>
+        <p>A small interfering RNA that <strong>decreases production</strong> of PCSK9.</p>
+        <p><span class="src-tag">Board add-on</span> Dosed only twice a year after loading.</p>
+      </div>
+      <div class="drug-card">
+        <h4>Oral PCSK9 inhibitor</h4>
+        <div class="generic">New "just this year"</div>
+        <p>The lecture names a newly available <strong>oral</strong> PCSK9 inhibitor (transcribed "elicitide", most likely <strong>enlicitide</strong>).</p>
+        <p><strong>AE:</strong> <strong>GI upset</strong>.</p>
+      </div>
+    </div>
+    <ul class="notes-list">
+      <li>All are <strong>very, very effective</strong> at lowering LDL.</li>
+      <li>Costs are falling, breaking down earlier barriers. Patients still normally have to <strong>fail first-line therapy</strong> first.</li>
+    </ul>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> What does PCSK9 normally do, and how does inhibiting it lower LDL?</p>
+      <div class="answer"><div class="label">Answer</div><p>PCSK9 <strong>binds the LDL receptor and targets it for degradation</strong>. Inhibiting it lets receptors <strong>persist and recycle</strong> on hepatocytes, so more LDL is cleared.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> How does inclisiran differ in mechanism from the PCSK9 monoclonal antibodies?</p>
+      <div class="answer"><div class="label">Answer</div><p>Inclisiran is an <strong>siRNA that reduces PCSK9 production</strong>. The antibodies <strong>bind circulating PCSK9</strong>.</p></div>
+    </div>
+  </div>
+</div>
+<!-- ==================== 6. HTN REVISIT ==================== -->
+<div class="section" id="s6-htn">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">LO 1 · Topic 6</div><span class="hy-flag">⭐ HTN + AF → diltiazem</span></div>
+    <p class="section-label">Recording only · the last case from the hypertension lecture · thiazides · K⁺-sparing diuretics · CCBs · RAAS drugs</p>
+    <h2 class="section-title">The Last Hypertension Case</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>HTN = hypertension · AF = atrial fibrillation · DCT = distal convoluted tubule · TAL = thick ascending limb · NCC = Na⁺–Cl⁻ cotransporter · ENaC = epithelial Na⁺ channel · ROMK = renal outer medullary K⁺ channel · MR = mineralocorticoid (aldosterone) receptor · CCB = calcium channel blocker · DHP = dihydropyridine ("-dipine") · ACEi = ACE inhibitor · ARB = angiotensin receptor blocker · AT1 = angiotensin II type-1 receptor</div>
+
+    <p>With the time left, Dr. Scully revisited the last case of the <a href="../../Week 13/Notes/Hypertension_Pharmacology_Study_Notes.html">hypertension lecture</a> to round out the three first-line classes. That page has the full detail; this section is the recap he gave.</p>
+    <details class="case-box" open><summary>56-year-old at a wellness visit — 5 years of hypertension, off treatment for 2</summary><div class="case-body">
+      <ul class="notes-list">
+        <li>Stopped the antihypertensive 2 years ago "because they felt fine".</li>
+        <li>No diabetes, kidney disease, CAD or heart failure. Non-smoker; <strong>2–3 alcoholic drinks a day</strong>.</li>
+        <li>BP elevated again at 2 more visits over 2 weeks (the vitals were on the full slide). Exam unremarkable: no carotid bruits, edema or heart-failure signs.</li>
+      </ul>
+    </div></details>
+    <div class="callout callout-clinical">
+      <div class="callout-title">🩺 The answer: combination therapy</div>
+      <p>Their BP and history point to <strong>combination therapy</strong> as the most effective start, drawn from the <strong>three first-line classes</strong>: a <strong>thiazide</strong>, a <strong>CCB</strong>, and a <strong>RAAS drug</strong> (ACEi or ARB). A RAAS drug plus one of the other two is one of the most common combinations.</p>
+    </div>
+    <div class="fact-grid">
+      <div class="fact-card"><h4>History of kidney stones?</h4><div class="generic">One drug for both</div><p>A <strong>thiazide</strong>: it ↓ urinary Ca²⁺ excretion.</p></div>
+      <div class="fact-card"><h4>Prescribe a diuretic?</h4><div class="generic">Monitor for</div><p><strong>Hypokalemia</strong> (most common and most problematic); also hyponatremia.</p></div>
+      <div class="fact-card"><h4>Peripheral edema?</h4><div class="generic">Most likely class</div><p>The <strong>dihydropyridine CCBs</strong>.</p></div>
+      <div class="fact-card"><h4>Also has AF?</h4><div class="generic">One drug for both</div><p><strong>Diltiazem</strong>: a CCB that lowers BP and slows AV-node conduction (rate control).</p></div>
+    </div>
+
+    <h3>Thiazides — hydrochlorothiazide; thiazide-like chlorthalidone, indapamide</h3>
+    <figure class="fig-card" id="fig-lp-a-diuretics"><div class="fig-frame"><img class="slide-img" src="assets/lipid-pharm/lp-a-diuretics.jpg" alt="Nephron with five panels showing the transporter targets of each diuretic class" width="1400" height="889" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig L10</span><span class="fig-title">Diuretic sites for the hypertension revisit: (D) thiazides block NCC in the distal tubule and raise Ca²⁺ reabsorption; (E) K⁺-sparing agents</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure>
+    <ul class="notes-list">
+      <li><strong>MOA:</strong> inhibit <strong>NCC</strong> on the luminal membrane of the <strong>DCT</strong>.</li>
+      <li><strong>Indications:</strong> hypertension · adjunct for edema · they <strong>↓ Ca²⁺ excretion</strong>, which helps <strong>kidney stones and osteoporosis</strong>.</li>
+      <li><strong>Why Ca²⁺ reabsorption rises:</strong> look at the basolateral membrane. With less Na⁺ entering through NCC, the Na⁺/K⁺-ATPase keeps intracellular Na⁺ low. The steeper Na⁺ gradient drives the basolateral <strong>Na⁺/Ca²⁺ exchanger</strong> to push Ca²⁺ out of the cell, which <strong>pulls Ca²⁺ in from the lumen</strong>.</li>
+      <li><strong>Hypokalemia, and why a Na⁺-Cl⁻ blocker wastes K⁺:</strong> the Na⁺ left in the tubular fluid travels on to the collecting duct. There <strong>ENaC</strong> reabsorbs Na⁺ alone, which is not electroneutral, so <strong>K⁺ is secreted through ROMK</strong>.</li>
+    </ul>
+    <div class="callout callout-warning">
+      <div class="callout-title">⚠️ Recording slip: how much Na⁺ the DCT reabsorbs</div>
+      <p>The recording says the DCT handles "about 25 to 30%" of the filtered Na⁺ load. That figure belongs to the <strong>thick ascending limb</strong> (the loop-diuretic site, as the HF lecture says). The <strong>DCT reabsorbs about 5–10%</strong>, which is why thiazides are milder diuretics. <span class="src-tag">Board add-on</span></p>
+    </div>
+    <p style="font-size:.88rem;color:var(--muted)"><span class="src-tag">Board add-on</span> Thiazide AEs, "hyper-GLUC": hyper<strong>G</strong>lycemia, hyper<strong>L</strong>ipidemia, hyper<strong>U</strong>ricemia, hyper<strong>C</strong>alcemia, plus hypokalemic metabolic alkalosis and hyponatremia. They are sulfonamides too.</p>
+
+    <h3>Potassium-sparing diuretics — the fix for thiazide hypokalemia</h3>
+    <figure class="fig-card sm" id="fig-lp-a-k-sparing"><div class="fig-frame"><img class="slide-img" src="assets/lipid-pharm/lp-a-k-sparing.jpg" alt="Principal cell with aldosterone receptor, ENaC, ROMK and the sites of spironolactone" width="1400" height="896" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig L11</span><span class="fig-title">Spironolactone/eplerenone at the mineralocorticoid receptor; amiloride/triamterene block ENaC directly</span><span class="fig-src"><b>AMBOSS</b> · Diuretics article</span></figcaption></figure>
+    <div class="drug-grid">
+      <div class="drug-card">
+        <h4>MR antagonists — spironolactone, eplerenone</h4>
+        <div class="generic">Block aldosterone at its receptor → less ENaC made</div>
+        <p>The mineralocorticoid receptor <strong>is the aldosterone receptor</strong>. Monotherapy for hypertension in <strong>primary hyperaldosteronism</strong>.</p>
+        <p><strong>AEs:</strong> <strong>hyperkalemia</strong>, <strong>hyperchloremic metabolic acidosis</strong>. Spironolactone is non-selective (<strong>androgen receptors</strong>) → <strong>gynecomastia, impotence, abnormal menstruation</strong>.</p>
+      </div>
+      <div class="drug-card">
+        <h4>ENaC blockers — amiloride, triamterene</h4>
+        <div class="generic">Competitively block ENaC on principal cells</div>
+        <p>Stop reabsorption of the extra Na⁺ through ENaC, so there's no driving force pushing K⁺ out through ROMK.</p>
+      </div>
+    </div>
+
+    <h3>Calcium channel blockers</h3>
+    <figure class="fig-card sm" id="fig-lp-ccb-selectivity"><div class="fig-frame"><img class="slide-img" src="assets/lipid-pharm/lp-ccb-selectivity.jpg" alt="Arrow from heart to blood vessel with verapamil, diltiazem and dipines placed along it" width="952" height="193" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig L12</span><span class="fig-title">CCB selectivity: verapamil (heart) → diltiazem (both) → &quot;-dipines&quot; (blood vessels)</span><span class="fig-src"><b>Scully lecture</b> · Rhythm lecture slide 32 · Golan</span></figcaption></figure>
+    <ul class="notes-list">
+      <li><strong>Dihydropyridines ("-dipine")</strong> act selectively on blood vessels (arterial vasodilators). <strong>Non-dihydropyridines</strong> act on the heart's nodal tissue. <strong>Diltiazem</strong> acts on both, "bridging the gap" to verapamil.</li>
+      <li><strong>Nifedipine, amlodipine and diltiazem</strong> are used for hypertension and angina. Diltiazem also ↓ nodal conduction velocity.</li>
+      <li><strong>Reflex tachycardia</strong>: most obvious with the dihydropyridines, highest with <strong>nifedipine</strong>.</li>
+      <li><strong>Peripheral edema</strong> (dihydropyridines): arteriolar dilation ↑ transcapillary <strong>hydrostatic pressure</strong>, so fluid moves out into tissue.</li>
+      <li><strong>Flushing and headache</strong>: effects of vasodilators in general, not just CCBs.</li>
+    </ul>
+
+    <h3>Drugs that target the RAAS</h3>
+    <figure class="fig-card sm" id="fig-lp-a-raas"><div class="fig-frame"><img class="slide-img" src="assets/lipid-pharm/lp-a-raas.jpg" alt="Flowchart of renin, angiotensin I and II, aldosterone and their effects" width="848" height="1000" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig L13</span><span class="fig-title">RAAS: angiotensin II → vasoconstriction, aldosterone (↑ Na⁺, ↑ K⁺ loss), ADH and thirst — the targets of ACE inhibitors and ARBs</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure>
+    <ul class="notes-list">
+      <li><strong>ACE inhibitors ("-pril")</strong>: ↓ conversion of angiotensin I → II → less <strong>AT1</strong> activation → ↓ aldosterone and ↓ vasoconstriction → BP falls. <strong>Bradykinin accumulates</strong>: it is a vasodilator (lowers BP) but causes <strong>dry cough</strong> and <strong>angioedema</strong>.</li>
+      <li><strong>ARBs ("-sartan")</strong>: AT1 antagonists that act further down the cascade and <strong>don't stop bradykinin breakdown</strong>, so they avoid the cough and the angioedema risk.</li>
+      <li><strong class="hot">ACEi, ARBs and aliskiren are contraindicated in pregnancy (teratogenic).</strong></li>
+      <li><strong>Never co-administer two RAAS drugs</strong>: ↑ renal impairment, <strong>hyperkalemia</strong> and hypotension.</li>
+    </ul>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> A hypertensive patient with recurrent calcium kidney stones needs a diuretic. Which class helps both, and why?</p>
+      <div class="answer"><div class="label">Answer</div><p>A <strong>thiazide</strong>. Blocking NCC lowers intracellular Na⁺, steepening the gradient that drives the basolateral Na⁺/Ca²⁺ exchanger, so <strong>more Ca²⁺ is reabsorbed</strong> and less reaches the urine.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> Hydrochlorothiazide blocks a Na⁺–Cl⁻ cotransporter. Why does it cause hypokalemia?</p>
+      <div class="answer"><div class="label">Answer</div><p>The extra Na⁺ reaches the collecting duct, where <strong>ENaC</strong> reabsorbs it electrogenically. To balance the charge, <strong>K⁺ is secreted through ROMK</strong>.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> Which single drug treats both hypertension and atrial fibrillation with a fast ventricular rate?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Diltiazem</strong> (non-dihydropyridine CCB): vasodilation plus slower AV-node conduction.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> A patient on amlodipine develops ankle swelling. Mechanism?</p>
+      <div class="answer"><div class="label">Answer</div><p>Arteriolar (precapillary) dilation ↑ <strong>transcapillary hydrostatic pressure</strong> → fluid leaks into tissue (not volume overload).</p></div>
+    </div>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="obw6oYOlPUk" data-title="How do Thiazide Diuretics Work?"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/obw6oYOlPUk/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>How do Thiazide Diuretics Work?</b><i>Zero to Finals · YouTube</i></span></button><button class="vid" type="button" data-yt="7reyEtSDMTQ" data-title="Potassium-Sparing Diuretics — Spironolactone"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/7reyEtSDMTQ/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Potassium-Sparing Diuretics — Spironolactone</b><i>Medicosis Perfectionalis · YouTube</i></span></button></div></div>
+  </div>
+</div>
+
+<!-- ==================== PRACTICE ==================== -->
+<div class="section" id="practice">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge alt">Practice</div></div>
+    <p class="section-label">Mechanism, adverse effect and interaction questions in lecture style</p>
+    <h2 class="section-title">Drill</h2>
+    <div class="abbr-strip"><span class="t">Abbreviations</span>LDL / HDL = low- / high-density lipoprotein · TG = triglycerides · CYP3A4 = liver enzyme · NCC = Na⁺–Cl⁻ cotransporter · PCSK9 = proprotein convertase subtilisin/kexin type 9 · AF = atrial fibrillation</div>
+    <div class="tool drill" id="lpDrill">
+      <h4>🎯 Which drug?</h4>
+      <p class="t-intro">Shuffled; instant feedback.</p>
+      <div class="d-q" id="lpQ"></div>
+      <div class="d-opts" id="lpOpts"></div>
+      <div class="t-out" id="lpOut"></div>
+      <div class="d-nav"><button class="tb" id="lpNext" type="button">Next →</button><span id="lpScore">0 / 0 correct</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== GLOSSARY ==================== -->
+<div class="section" id="glossary">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge alt">Reference</div></div>
+    <p class="section-label">Every short form used in these notes</p>
+    <h2 class="section-title">Glossary &amp; Abbreviations</h2>
+    <div class="gloss">
+      <dl>
+        <dt>ACEi · ARB</dt><dd>ACE inhibitor ("-pril") · angiotensin receptor blocker ("-sartan")</dd>
+        <dt>apo</dt><dd>Apolipoprotein (B-100 on LDL; A-I on HDL; C-II activates LPL)</dd>
+        <dt>AT1</dt><dd>Angiotensin II type-1 receptor</dd>
+        <dt>CCB · DHP</dt><dd>Calcium channel blocker · dihydropyridine ("-dipine")</dd>
+        <dt>CYP3A4 · CYP2C9</dt><dd>Cytochrome P450 liver enzymes that metabolise most statins</dd>
+        <dt>DCT · TAL</dt><dd>Distal convoluted tubule · thick ascending limb</dd>
+      </dl>
+      <dl>
+        <dt>EPA · DHA</dt><dd>Eicosapentaenoic · docosahexaenoic acid (omega-3 fatty acids in fish oil)</dd>
+        <dt>ENaC · ROMK</dt><dd>Epithelial Na⁺ channel · renal outer medullary K⁺ channel</dd>
+        <dt>HMG-CoA</dt><dd>3-hydroxy-3-methylglutaryl coenzyme A (its reductase is the statin target)</dd>
+        <dt>LDL · HDL · VLDL · TG</dt><dd>Low · high · very-low-density lipoprotein · triglycerides</dd>
+        <dt>LPL</dt><dd>Lipoprotein lipase</dd>
+        <dt>MR</dt><dd>Mineralocorticoid (aldosterone) receptor</dd>
+      </dl>
+      <dl>
+        <dt>NCC</dt><dd>Na⁺–Cl⁻ cotransporter (thiazide target)</dd>
+        <dt>NPC1L1</dt><dd>Niemann-Pick C1-Like 1 (ezetimibe target)</dd>
+        <dt>PCSK9</dt><dd>Proprotein convertase subtilisin/kexin type 9 (degrades LDL receptors)</dd>
+        <dt>PPAR-α</dt><dd>Peroxisome proliferator-activated receptor alpha (fibrate target)</dd>
+        <dt>siRNA</dt><dd>Small interfering RNA (inclisiran)</dd>
+        <dt>SREBP</dt><dd>Sterol regulatory element-binding protein (switches on LDL-receptor genes)</dd>
+      </dl>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  function $(id){return document.getElementById(id);}
+  /* ---- lipid problem tool ---- */
+  var sit=null;
+  var S={
+    ldl:'<b>Statin</b> — HMG-CoA reductase inhibitor → ↑ hepatic LDL receptors. First-line for ↑ LDL.',
+    ldl2:'Add an adjunct: <b>ezetimibe</b> (NPC1L1; few if any adverse effects; works because the statin blocks compensatory synthesis) or a <b>bile acid sequestrant</b> (GI effects, vitamin K deficiency). Also confirm the statin is at a high-intensity dose.',
+    ldl3:'<b>PCSK9 inhibitor</b> — monoclonal antibody (injection-site reactions), <b>inclisiran</b> (siRNA) or the new oral agent (GI upset). Normally only after first-line failure.',
+    tg:'<b>Fibrate</b> (PPAR-α → ↓ TG, ↑ HDL) and/or <b>omega-3 fatty acids</b> (↓ hepatic TG synthesis). With a statin, prefer <b>fenofibrate</b>; gemfibrozil carries more myopathy risk.',
+    hdl:'Treating isolated low HDL is <b>conflicting in the literature</b>. <b>Niacin</b> raises HDL best; fibrates raise it a little. Look at the HDL : total-cholesterol ratio and overall risk.'};
+  function lip(){
+    var o=$('lipOut'); if(!sit){o.innerHTML='Pick a situation.';return;}
+    var w=[], h=S[sit];
+    if($('lfMi').checked && (sit==='ldl'||sit==='ldl2')) w.push('<b>After MI</b>: use a <b>high-intensity statin</b> (atorvastatin or rosuvastatin).');
+    if($('lfCyp').checked && (sit==='ldl'||sit==='ldl2'||sit==='tg')) w.push('<b>CYP3A4 inhibitor</b>: lovastatin, simvastatin and atorvastatin levels rise (myopathy). Prefer <b>pravastatin or rosuvastatin</b>.');
+    if($('lfWarf').checked && sit==='tg') w.push('<b>Warfarin</b>: fibrates displace it from plasma proteins → bleeding. Monitor INR.');
+    if($('lfWarf').checked && sit==='ldl2') w.push('<b>Warfarin</b>: bile acid sequestrants bind it and cause vitamin K deficiency. Ezetimibe is the cleaner add-on.');
+    if($('lfPreg').checked) w.push('<b>Pregnancy</b>: statins are contraindicated <span class="src-tag">Board add-on</span>. Seek specialist advice before any lipid drug.');
+    o.innerHTML=h+(w.length?'<br><br>⚠️ '+w.join('<br>⚠️ '):'');
+  }
+  document.querySelectorAll('#lipTool [data-s]').forEach(function(b){b.addEventListener('click',function(){
+    sit=b.dataset.s; document.querySelectorAll('#lipTool [data-s]').forEach(function(x){x.classList.toggle('on',x===b);}); lip();});});
+  ['lfWarf','lfCyp','lfPreg','lfMi'].forEach(function(id){$(id).addEventListener('change',lip);});
+
+  /* ---- drill ---- */
+  var QS=[
+    ['First-line drug class for elevated LDL despite diet and exercise.',['Statin','Fibrate','Niacin','Fish oil'],0,'Cholesterol-synthesis inhibitors (<b>statins</b>) → ↑ LDL receptors.'],
+    ['High-intensity statin that avoids CYP3A4 metabolism.',['Rosuvastatin','Atorvastatin','Simvastatin','Lovastatin'],0,'<b>Rosuvastatin</b>: high intensity, non-CYP (pravastatin is the other non-CYP statin).'],
+    ['Blocks the NPC1L1 brush-border transporter; poor as monotherapy.',['Ezetimibe','Cholestyramine','Fenofibrate','Evolocumab'],0,'<b>Ezetimibe</b>: compensatory synthesis undoes it without a statin.'],
+    ['Lipid drug whose GI effects limit adherence and which can cause vitamin K deficiency.',['Cholestyramine','Ezetimibe','Rosuvastatin','Niacin'],0,'Bile acid sequestrant (<b>cholestyramine</b>).'],
+    ['PPAR-α agonist that displaces warfarin and causes the most myopathy with statins.',['Gemfibrozil','Fenofibrate','Ezetimibe','Niacin'],0,'<b>Gemfibrozil</b> (more than fenofibrate).'],
+    ['Raises HDL more than any other lipid drug.',['Niacin','Ezetimibe','Pravastatin','Colestipol'],0,'<b>Niacin</b>.'],
+    ['siRNA that reduces PCSK9 production.',['Inclisiran','Alirocumab','Evolocumab','Ezetimibe'],0,'<b>Inclisiran</b>; the antibodies bind PCSK9 instead.'],
+    ['LDL still above goal on maximal atorvastatin plus ezetimibe: next class.',['PCSK9 inhibitor','Bile acid sequestrant','Fibrate','Omega-3 fatty acid'],0,'<b>PCSK9 inhibitors</b> keep LDL receptors on the hepatocyte.'],
+    ['Hypertension plus calcium kidney stones: which diuretic helps both?',['Hydrochlorothiazide','Furosemide','Spironolactone','Acetazolamide'],0,'Thiazides (<b>HCTZ</b>) ↓ urinary Ca²⁺.'],
+    ['Monotherapy for hypertension caused by primary hyperaldosteronism.',['Spironolactone','Amiloride','Hydrochlorothiazide','Amlodipine'],0,'MR (aldosterone-receptor) antagonist → <b>spironolactone</b> (or eplerenone).'],
+    ['Hypertension plus atrial fibrillation: one drug for both.',['Diltiazem','Amlodipine','Nifedipine','Losartan'],0,'<b>Diltiazem</b>: vasodilation + AV-node slowing.'],
+    ['Antihypertensive class most likely to cause peripheral edema.',['Dihydropyridine CCBs','Thiazide diuretics','ACE inhibitors','β-blockers'],0,'<b>Dihydropyridine CCBs</b>: arteriolar dilation ↑ capillary hydrostatic pressure.']];
+  for(var i=QS.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=QS[i];QS[i]=QS[j];QS[j]=t;}
+  var qi=0,right=0,done=0;
+  function show(){ var q=QS[qi%QS.length]; $('lpQ').innerHTML='<b>'+((qi%QS.length)+1)+'.</b> '+q[0]; $('lpOut').innerHTML=''; var o=$('lpOpts'); o.innerHTML=''; delete o.dataset.answered;
+    var order=q[1].map(function(_,k){return k;}); for(var a=order.length-1;a>0;a--){var b=Math.floor(Math.random()*(a+1)),t=order[a];order[a]=order[b];order[b]=t;}
+    order.forEach(function(k){ var btn=document.createElement('button'); btn.className='tb'; btn.type='button'; btn.textContent=q[1][k]; btn.dataset.k=k;
+      btn.addEventListener('click',function(){ if(o.dataset.answered)return; o.dataset.answered='1'; done++;
+        if(k===q[2]){right++;btn.classList.add('right');$('lpOut').innerHTML='✅ '+q[3];}
+        else{btn.classList.add('wrong'); o.querySelector('[data-k="'+q[2]+'"]').classList.add('right'); $('lpOut').innerHTML='❌ '+q[3];}
+        $('lpScore').textContent=right+' / '+done+' correct'; });
+      o.appendChild(btn); }); }
+  $('lpNext').addEventListener('click',function(){qi++;show();}); show();
+})();
+</script>
+
+
+<div class="hy-modal" id="hyModal">
+  <div class="hy-modal-card">
+    <div class="hy-modal-header">
+      <h2>🎯 Dyslipidemia Pharmacology — High-Yield One-Pager</h2>
+      <div class="hy-modal-actions">
+        <button class="hy-action-btn" onclick="printHY()">🖨️ Print / Save PDF</button>
+        <button class="hy-action-btn hy-close-btn" onclick="closeHY()">✕ Close</button>
+      </div>
+    </div>
+    <p class="hy-subhead">Kyle R. Scully, PhD · OMK 2 Cardio · LO 1 drugs for dyslipidemia and hypertension → LO 2 three lipid cases + the last HTN case</p>
+    <div class="hy-cols">
+      <div>
+        <span class="hy-lo-tag">DYSLIPIDEMIA &amp; STATINS</span>
+        <div class="hy-block"><h4>Which lipid → which drug</h4><ul>
+          <li>↑ LDL → <strong>statin</strong> · ↑ TG → diet, <strong>omega-3</strong>, <strong>fibrate</strong> · ↓ HDL → <strong>niacin</strong> (treating it alone is contested)</li>
+          <li>Many primary dyslipidemias are genetic → no cookie-cutter treatment</li>
+          <li><strong>Secondary causes</strong>: TG ← diabetes, CKD, alcohol, estrogen, β-blockers, diuretics, steroids · cholesterol ← <strong>hypothyroidism, nephrotic syndrome</strong>, cholestasis</li>
+          <li>Treat by calculated CV risk; diet ↓ total cholesterol ~25%</li>
+        </ul></div>
+        <div class="hy-block"><h4>Statins (Case 1, GM)</h4><ul>
+          <li>HMG-CoA reductase → ↓ cell cholesterol → SREBP → <strong>↑ LDL receptors</strong></li>
+          <li><strong>CYP3A4:</strong> lova, simva, atorva · other CYP: fluva, pitava · <strong>non-CYP: prava, rosuva</strong></li>
+          <li><strong>High intensity: atorvastatin, rosuvastatin</strong> (post-MI, high risk)</li>
+          <li>Myopathy → rhabdomyolysis (rarer than thought; nocebo) → work up severe pain + <strong>tea-coloured urine</strong></li>
+        </ul></div>
+        <div class="hy-block"><h4>Not at goal (Case 1 cont.)</h4><ul>
+          <li><strong>Ezetimibe</strong>: NPC1L1, ↓ absorption up to 50%; not TG or fat-soluble vitamins; weak alone (compensatory synthesis); very safe</li>
+          <li><strong>Bile acid sequestrants</strong>: bloating, dyspepsia, <strong>vitamin K deficiency</strong>; used more for other indications</li>
+        </ul></div>
+      </div>
+      <div>
+        <span class="hy-lo-tag">TRIGLYCERIDES &amp; PCSK9</span>
+        <div class="hy-block"><h4>Case 2 — post-STEMI, TG 354, HDL 32</h4><ul>
+          <li>On simvastatin + fish oil → add a <strong>fibrate</strong></li>
+          <li><strong>Fish oil (EPA/DHA)</strong>: alter transcription factors → ↓ hepatic TG synthesis, ↑ FA oxidation</li>
+          <li><strong>Fibrates (gemfibrozil, fenofibrate)</strong>: PPAR-α → ↑ HDL, ↓ TG; hypertriglyceridemia, dysbetalipoproteinemia</li>
+          <li>Myopathy, GI · <strong>displace warfarin → bleeding</strong> · <strong>with statins → rhabdomyolysis, gemfibrozil &gt; fenofibrate</strong></li>
+          <li>Niacin: best HDL raiser</li>
+        </ul></div>
+        <div class="hy-block"><h4>Case 3 — max statin + ezetimibe, still above goal</h4><ul>
+          <li><strong>PCSK9</strong> degrades LDL receptors; loss-of-function mutations → less CVD</li>
+          <li>Monoclonal antibodies bind PCSK9 (<strong>injection-site reactions</strong>) · <strong>inclisiran</strong> = siRNA ↓ production · new <strong>oral</strong> agent (GI upset)</li>
+          <li>Very effective; costs falling; normally after first-line failure</li>
+        </ul></div>
+      </div>
+      <div>
+        <span class="hy-lo-tag">THE LAST HTN CASE</span>
+        <div class="hy-block"><h4>56-year-old, untreated 2 years</h4><ul>
+          <li>→ <strong>combination therapy</strong> from thiazide / CCB / ACEi-ARB</li>
+          <li>Kidney stones → <strong>thiazide</strong> · monitor <strong>hypokalemia</strong> · edema → <strong>DHP CCB</strong> · + AF → <strong>diltiazem</strong></li>
+        </ul></div>
+        <div class="hy-block"><h4>Thiazides</h4><ul>
+          <li>Block <strong>NCC</strong> (DCT; ~5–10% of Na⁺ — recording said 25–30%) · HCTZ; chlorthalidone, indapamide</li>
+          <li>↓ Ca²⁺ excretion (basolateral Na⁺ gradient → NCX) → stones, osteoporosis</li>
+          <li>Hypokalemia via ENaC → ROMK; hyponatremia</li>
+        </ul></div>
+        <div class="hy-block"><h4>K⁺-sparing</h4><ul>
+          <li><strong>Spironolactone, eplerenone</strong> (MR = aldosterone receptor): primary hyperaldosteronism; hyperkalemia, hyperchloremic acidosis; spironolactone → gynecomastia</li>
+          <li><strong>Amiloride, triamterene</strong>: block ENaC</li>
+        </ul></div>
+        <div class="hy-block"><h4>CCBs · RAAS</h4><ul>
+          <li>DHP = vessels; non-DHP = node; diltiazem both · reflex tachycardia (nifedipine most), <strong>peripheral edema</strong>, flushing, headache</li>
+          <li>ACEi: ↓ AT II, <strong>bradykinin → cough, angioedema</strong> · ARB: AT1 block, no bradykinin</li>
+          <li><strong>ACEi, ARB, aliskiren teratogenic</strong>; never two RAAS drugs (↑ K⁺, renal impairment, hypotension)</li>
+        </ul></div>
+      </div>
+    </div>
+    <div class="hy-block" style="margin-top:4px;">
+      <h4>Master table — lipid drugs</h4>
+      <table class="hy-mini-table">
+        <tr><th>Drug</th><th>Mechanism</th><th>Main effect</th><th>Adverse effects</th><th>Interactions</th></tr>
+        <tr><td>Statins</td><td>HMG-CoA reductase → ↑ LDL-R</td><td>↓↓ LDL</td><td>Myopathy, rhabdomyolysis</td><td>CYP3A4 (lova, simva, atorva); fibrates</td></tr>
+        <tr><td>Ezetimibe</td><td>NPC1L1 (gut)</td><td>↓ LDL (with statin)</td><td>Few if any</td><td>—</td></tr>
+        <tr><td>Bile acid sequestrants</td><td>Bind bile acids</td><td>↓ LDL</td><td>Bloating, dyspepsia, vitamin K ↓</td><td>Bind other drugs</td></tr>
+        <tr><td>Omega-3 (EPA/DHA)</td><td>Transcription factors</td><td>↓ TG</td><td>Fishy taste <span class="src-tag">Board add-on</span></td><td>—</td></tr>
+        <tr><td>Gemfibrozil · fenofibrate</td><td>PPAR-α</td><td>↓ TG, ↑ HDL</td><td>Myopathy, GI</td><td>Warfarin displacement; statins</td></tr>
+        <tr><td>Niacin</td><td>↓ lipolysis (board)</td><td>↑↑ HDL</td><td>Flushing, ↑ glucose, ↑ urate (board)</td><td>—</td></tr>
+        <tr><td>PCSK9 mAb · inclisiran · oral</td><td>Block / ↓ PCSK9</td><td>↓↓↓ LDL</td><td>Injection site · GI upset</td><td>After first-line failure</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+<div class="lightbox" id="lightbox" aria-hidden="true"><img id="lightboxImg" alt="Zoomed figure"><div class="lightbox-cap" id="lightboxCap"></div></div>
+
+<div class="floating-left" id="floatingLeft">
+  <div class="tools-menu">
+    <button class="tool-btn backtop" id="backtopBtn">↑ Top</button>
+    <button class="tool-btn" id="nextQBtn">❓ Next question <span id="qCount"></span></button>
+    <button class="tool-btn" id="recallBtn">🙈 Recall mode <span id="rcCount"></span></button>
+  </div>
+  <button class="tool-btn tools-trigger" id="toolsTrigger" onclick="toggleToolsMenu()">🧰 Study<span class="dot"></span></button>
+</div>
+
+<div class="floating-stack">
+  <div class="theme-panel" id="themePanel">
+    <div class="theme-panel-title">Choose Theme</div>
+    <div class="theme-option active" data-theme="cardio" onclick="setTheme('cardio',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#fff7f7,#b51f3a 55%,#245f89)"></div>Cardio (Default)</div>
+    <div class="theme-option" data-theme="hemo" onclick="setTheme('hemo',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#170a0d,#ff6b6b)"></div>Hemo (Dark)</div>
+    <div class="theme-option" data-theme="paper" onclick="setTheme('paper',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#faf7f2,#1a1209)"></div>Paper</div>
+    <div class="theme-option" data-theme="night" onclick="setTheme('night',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#0f1923,#e8b84b)"></div>Night</div>
+    <div class="theme-option" data-theme="ocean" onclick="setTheme('ocean',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#eef7fb,#0a5286)"></div>Ocean</div>
+    <div class="theme-option" data-theme="forest" onclick="setTheme('forest',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#f2f7f0,#155c39)"></div>Forest</div>
+    <div class="theme-option" data-theme="sepia" onclick="setTheme('sepia',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#f7ecd9,#9c3b17)"></div>Sepia</div>
+    <div class="theme-option" data-theme="slate" onclick="setTheme('slate',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#f4f5f7,#9e2c0f)"></div>Slate</div>
+  </div>
+  <div class="font-btn-row">
+    <span class="font-label">Text</span>
+    <button class="font-btn" onclick="changeFontSize(1)" title="Increase font size">A+</button>
+    <span class="font-sep">|</span>
+    <button class="font-btn" onclick="changeFontSize(-1)" title="Decrease font size">A−</button>
+  </div>
+  <button class="theme-btn" id="themeBtn" onclick="toggleThemePanel()" title="Switch theme"><span>🎨</span><span>Theme</span></button>
+</div>
+
+<footer>
+  <div class="container">
+    <div>Built from <em>Pharmacologic Management of Dyslipidemia</em> (Kyle R. Scully, PhD, UNE COM; 11-slide student deck plus the recorded lecture, which carries the case answers and the hypertension revisit). Figures are labeled with their source: lecture slides, AMBOSS. No UWorld images. Items tagged "Board add-on" come from AMBOSS / board sources, not the lecture. Personal study notes; course material remains the copyright of its authors.</div>
+    <div>Shortcuts: <kbd>J</kbd>/<kbd>K</kbd> section · <kbd>Q</kbd> next question · <kbd>R</kbd> reveal · <kbd>Esc</kbd> close</div>
+  </div>
+</footer>
+
+<script>
+var STORAGE_THEME_KEY='cardio-w14-lipid-pharm-theme';
+var STORAGE_FONT_KEY='cardio-w14-lipid-pharm-font';
+var STORAGE_PROGRESS_KEY='cardio-w14-lipid-pharm-progress';
+var DEFAULT_THEME='cardio';
+var SECTION_IDS=['orientation', 's1-types', 's2-statins', 's3-adjuncts', 's4-triglycerides', 's5-pcsk9', 's6-htn', 'practice', 'glossary'];
+
+var $  = function(s,r){return (r||document).querySelector(s);};
+var $$ = function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));};
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function storageGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+function storageSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+
+/* ============ theme ============ */
+var themePanelOpen=false;
+function toggleThemePanel(){themePanelOpen=!themePanelOpen;$('#themePanel').classList.toggle('open',themePanelOpen);}
+function syncThemeOptions(t){$$('.theme-option').forEach(function(o){o.classList.toggle('active',o.dataset.theme===t);});}
+function setTheme(t,el,skipStorage){
+  if(t===DEFAULT_THEME){document.documentElement.removeAttribute('data-theme');}
+  else{document.documentElement.setAttribute('data-theme',t);}
+  syncThemeOptions(t);
+  if(!skipStorage) storageSet(STORAGE_THEME_KEY,t);
+  setTimeout(function(){themePanelOpen=false;var p=$('#themePanel');if(p)p.classList.remove('open');},260);
+}
+document.addEventListener('click',function(e){
+  var p=$('#themePanel'),b=$('#themeBtn');
+  if(themePanelOpen&&p&&b&&!p.contains(e.target)&&!b.contains(e.target)){themePanelOpen=false;p.classList.remove('open');}
+});
+
+/* ============ font size ============ */
+var currentFontSize=16;
+function applyFontSize(size,skipStorage){
+  currentFontSize=Math.min(24,Math.max(12,Number(size)||16));
+  document.documentElement.style.fontSize=currentFontSize+'px';
+  document.body.style.fontSize=currentFontSize+'px';
+  if(!skipStorage)storageSet(STORAGE_FONT_KEY,currentFontSize);
+}
+function changeFontSize(d){applyFontSize(currentFontSize+d);}
+
+function initVisualState(){
+  var t=storageGet(STORAGE_THEME_KEY)||DEFAULT_THEME; setTheme(t,null,true);
+  var f=parseInt(storageGet(STORAGE_FONT_KEY),10);
+  applyFontSize(f&&f>=12&&f<=24?f:currentFontSize,true);
+}
+
+/* ============ lightbox ============ */
+function openLightbox(img){var lb=$('#lightbox');$('#lightboxImg').src=img.currentSrc||img.src;
+  $('#lightboxImg').alt=img.alt||'';
+  var cap=img.closest('figure')?img.closest('figure').querySelector('figcaption'):null;
+  $('#lightboxCap').innerHTML=cap?cap.innerHTML:'';
+  lb.classList.add('active');lb.setAttribute('aria-hidden','false');}
+function closeLightbox(){var lb=$('#lightbox');lb.classList.remove('active');
+  lb.setAttribute('aria-hidden','true');$('#lightboxImg').src='';}
+function initLightbox(){
+  $$('.slide-img').forEach(function(i){i.addEventListener('click',function(){openLightbox(i);});});
+  $('#lightbox').addEventListener('click',closeLightbox);
+}
+
+/* ============ scrollspy ============ */
+function initScrollspy(){
+  var links=$$('.toc-bar nav a'),map={},sections=[];
+  links.forEach(function(a){var id=a.getAttribute('href').slice(1),s=document.getElementById(id);
+    if(s){map[id]=a;sections.push(s);}});
+  if(!sections.length)return;
+  function update(){
+    var best=null,bestTop=-Infinity;
+    sections.forEach(function(s){var top=s.getBoundingClientRect().top;
+      if(top<=140&&top>bestTop){bestTop=top;best=s;}});
+    if(!best)best=sections[0];
+    links.forEach(function(a){a.classList.remove('active');});
+    if(map[best.id])map[best.id].classList.add('active');
+  }
+  window.addEventListener('scroll',update,{passive:true});update();
+}
+
+/* ============ reading progress ============ */
+function initProgress(){
+  var bar=$('#progressBar'),bt=$('#backtopBtn');
+  window.addEventListener('scroll',function(){
+    var h=document.documentElement,max=h.scrollHeight-h.clientHeight;
+    bar.style.width=(max>0?(h.scrollTop/max)*100:0)+'%';
+    if(bt)bt.classList.toggle('show',h.scrollTop>600);
+  },{passive:true});
+}
+
+/* ============ exam question reveal ============ */
+function initExamQ(){
+  $$('.exam-q').forEach(function(q){
+    var ans=q.querySelector('.answer'); if(!ans) return;
+    var b=document.createElement('button');b.className='reveal-btn';b.textContent='Reveal answer';
+    b.addEventListener('click',function(){q.classList.add('revealed');updateQCount();});
+    ans.parentNode.insertBefore(b,ans);
+  });
+  updateQCount();
+}
+function updateQCount(){
+  var all=$$('.exam-q'),done=all.filter(function(q){return q.classList.contains('revealed');});
+  var el=$('#qCount'); if(el) el.textContent=done.length+'/'+all.length;
+}
+function jumpToNextQ(){
+  var all=$$('.exam-q');if(!all.length)return;
+  var y=window.scrollY,pick=null;
+  var todo=all.filter(function(q){return !q.classList.contains('revealed');});
+  var pool=todo.length?todo:all;
+  for(var i=0;i<pool.length;i++){if(pool[i].getBoundingClientRect().top+y>y+120){pick=pool[i];break;}}
+  if(!pick)pick=pool[0];
+  var sec=pick.closest('.section');
+  if(sec&&sec.classList.contains('collapsed'))toggleSection(sec,false);
+  setTimeout(function(){
+    pick.scrollIntoView({behavior:'smooth',block:'center'});
+    pick.classList.remove('q-flash');void pick.offsetWidth;pick.classList.add('q-flash');
+  },sec&&sec.classList.contains('collapsed')?0:60);
+}
+
+/* ============ per-section progress ============ */
+var progress={};
+function loadProgress(){try{progress=JSON.parse(storageGet(STORAGE_PROGRESS_KEY)||'{}');}catch(e){progress={};}}
+function saveProgress(){storageSet(STORAGE_PROGRESS_KEY,JSON.stringify(progress));}
+function renderProgress(){
+  var reviewed=0;
+  SECTION_IDS.forEach(function(id){
+    var st=progress[id]||{},sec=document.getElementById(id);
+    if(st.reviewed)reviewed++;
+    if(sec){
+      var tools=sec.querySelector('.sec-tools');
+      if(tools){
+        tools.querySelector('.st-rev').classList.toggle('on',!!st.reviewed);
+        $$('.st-conf',tools).forEach(function(b){b.classList.toggle('on',+b.dataset.v===st.conf);});
+      }
+    }
+    var link=$('.toc-bar nav a[href="#'+id+'"]');
+    if(link){link.classList.toggle('done',!!st.reviewed);
+      link.classList.remove('conf-1','conf-2','conf-3');
+      if(st.conf)link.classList.add('conf-'+st.conf);}
+  });
+  var chip=$('#progressChip');
+  if(chip)chip.textContent=reviewed+'/'+SECTION_IDS.length+' reviewed';
+}
+function jumpToNextTodo(){
+  var target=null;
+  for(var i=0;i<SECTION_IDS.length&&!target;i++){var st=progress[SECTION_IDS[i]]||{};if(!st.reviewed)target=SECTION_IDS[i];}
+  for(var c=1;c<=2&&!target;c++){
+    for(var j=0;j<SECTION_IDS.length&&!target;j++){var s2=progress[SECTION_IDS[j]]||{};if(s2.conf===c)target=SECTION_IDS[j];}}
+  if(!target)target=SECTION_IDS[0];
+  var sec=document.getElementById(target); if(!sec)return;
+  if(sec.classList.contains('collapsed'))toggleSection(sec,false);
+  sec.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* ============ section tools + collapse ============ */
+function toggleSection(sec,force){
+  var willCollapse=(typeof force==='boolean')?force:!sec.classList.contains('collapsed');
+  sec.classList.toggle('collapsed',willCollapse);
+  var b=sec.querySelector('.st-collapse'); if(b)b.textContent=willCollapse?'▸ Expand':'▾ Collapse';
+}
+function toggleAllSections(){
+  var anyOpen=SECTION_IDS.some(function(id){var s=document.getElementById(id);return s&&!s.classList.contains('collapsed');});
+  SECTION_IDS.forEach(function(id){var s=document.getElementById(id);if(s)toggleSection(s,anyOpen);});
+  var b=$('#collapseAllBtn'); if(b)b.textContent=anyOpen?'⊞ Expand all':'⊟ Collapse all';
+}
+function initSectionTools(){
+  SECTION_IDS.forEach(function(id){
+    var sec=document.getElementById(id); if(!sec)return;
+    var container=sec.querySelector('.container'); if(!container)return;
+    var anchor=container.querySelector('.section-title'); if(!anchor)return;
+    var tools=document.createElement('div');
+    tools.className='sec-tools';
+    tools.innerHTML='<button class="st-rev">✓ Reviewed</button>'+
+      '<span class="st-lab">confidence</span>'+
+      '<button class="st-conf" data-v="1">\u{1F534} Shaky</button>'+
+      '<button class="st-conf" data-v="2">\u{1F7E1} Okay</button>'+
+      '<button class="st-conf" data-v="3">\u{1F7E2} Solid</button>'+
+      '<button class="st-collapse">▾ Collapse</button>';
+    anchor.parentNode.insertBefore(tools,anchor.nextSibling);
+    var note=document.createElement('div');
+    note.className='recall-note';
+    note.textContent='RECALL MODE — every bolded fact below is hidden. Say the answer out loud, then click the block to check it.';
+    tools.parentNode.insertBefore(note,tools.nextSibling);
+    var outer=document.createElement('div');outer.className='sec-body-outer';
+    var inner=document.createElement('div');inner.className='sec-body-inner';
+    outer.appendChild(inner);
+    while(note.nextSibling) inner.appendChild(note.nextSibling);
+    container.appendChild(outer);
+    tools.querySelector('.st-rev').addEventListener('click',function(){
+      progress[id]=progress[id]||{};progress[id].reviewed=!progress[id].reviewed;saveProgress();renderProgress();});
+    $$('.st-conf',tools).forEach(function(b){
+      b.addEventListener('click',function(){
+        progress[id]=progress[id]||{};
+        progress[id].conf=(progress[id].conf===+b.dataset.v)?0:+b.dataset.v;
+        saveProgress();renderProgress();});
+    });
+    tools.querySelector('.st-collapse').addEventListener('click',function(){toggleSection(sec);});
+  });
+  renderProgress();
+}
+
+/* ============ recall mode ============ */
+var recallMode=false;
+function recallTargets(){
+  return $$('.sec-body-inner :is(p,li,td,h4,dd) strong').filter(function(s){
+    return !s.closest('.exam-q')&&!s.closest('.tq-bar')&&!s.closest('.game')&&!s.closest('.abbr-strip')&&!s.closest('.legend')&&!s.closest('.watch');});
+}
+function updateRecallCount(){
+  var t=recallTargets(),o=t.filter(function(s){return s.classList.contains('rc-open');});
+  var el=$('#rcCount'); if(el) el.textContent=recallMode?(o.length+'/'+t.length):'';
+}
+function toggleRecall(){
+  recallMode=!recallMode;
+  document.body.classList.toggle('recall-mode',recallMode);
+  $('#recallBtn').classList.toggle('on',recallMode);
+  if(!recallMode) recallTargets().forEach(function(s){s.classList.remove('rc-open');});
+  else{
+    var allCollapsed=SECTION_IDS.every(function(id){var s=document.getElementById(id);return !s||s.classList.contains('collapsed');});
+    if(allCollapsed) toggleAllSections();
+  }
+  syncToolsDot();updateRecallCount();
+}
+function initRecall(){
+  document.addEventListener('click',function(e){
+    if(!recallMode)return;
+    var s=e.target.closest?e.target.closest('strong'):null;
+    if(!s||s.classList.contains('rc-open'))return;
+    if(s.closest('.exam-q')||s.closest('.game')||s.closest('.abbr-strip'))return;
+    if(!s.closest('.sec-body-inner'))return;
+    e.stopPropagation();s.classList.add('rc-open');updateRecallCount();
+  },true);
+}
+function syncToolsDot(){var t=$('#toolsTrigger');if(t)t.classList.toggle('busy',recallMode);}
+function toggleToolsMenu(){$('#floatingLeft').classList.toggle('open');}
+
+/* ============ HY one-pager ============ */
+function openHY(){var m=$('#hyModal');if(!m)return;m.classList.add('open');
+  document.body.classList.add('hy-mode');document.body.style.overflow='hidden';}
+function closeHY(){var m=$('#hyModal');if(!m)return;m.classList.remove('open');
+  document.body.classList.remove('hy-mode');document.body.style.overflow='';}
+function printHY(){window.print();}
+
+/* ============ table quiz ============ */
+function initTableQuiz(){
+  $$('table').forEach(function(table){
+    if(table.classList.contains('hy-mini-table'))return;
+    if(table.closest('.game'))return;
+    var headRow=table.rows[0]; if(!headRow)return;
+    var headers=Array.prototype.slice.call(headRow.cells).map(function(c){return c.textContent.trim();});
+    if(headers.length<2)return;
+    var bar=document.createElement('div');bar.className='tq-bar';
+    var toggle=document.createElement('button');toggle.className='tq-toggle';toggle.textContent='\u{1F9E9} Quiz this table';
+    var cols=document.createElement('div');cols.className='tq-cols';cols.style.display='none';
+    var start=document.createElement('button');start.className='tq-start';start.textContent='▶ Start';
+    start.disabled=true;start.style.display='none';
+    var shuf=document.createElement('button');shuf.className='tq-shuffle';shuf.textContent='\u{1F500} Shuffle rows';shuf.style.display='none';
+    var reset=document.createElement('button');reset.className='tq-reset';reset.textContent='↺ Reset';reset.style.display='none';
+    var score=document.createElement('span');score.className='tq-score';
+    bar.appendChild(toggle);bar.appendChild(cols);bar.appendChild(shuf);bar.appendChild(start);bar.appendChild(reset);bar.appendChild(score);
+    var host=table.parentNode.classList.contains('tbl-scroll')?table.parentNode:table;
+    host.parentNode.insertBefore(bar,host);
+
+    var sel=new Set(),running=false,hidden=[],revealed=0,originalOrder=null;
+    headers.forEach(function(h,i){
+      var b=document.createElement('button');b.className='tq-col-btn';b.textContent=h||('col '+(i+1));
+      b.addEventListener('click',function(){
+        if(running)return;
+        if(sel.has(i)){sel.delete(i);b.classList.remove('sel');}else{sel.add(i);b.classList.add('sel');}
+        start.disabled=sel.size===0;
+      });
+      cols.appendChild(b);
+    });
+    function dataRows(){
+      var parent=table.tBodies[0]||table;
+      return Array.prototype.slice.call(parent.rows).filter(function(r){return !r.querySelector('th')||r!==headRow;})
+        .filter(function(r){return r!==headRow;});
+    }
+    toggle.addEventListener('click',function(){
+      var open=cols.style.display==='none';
+      cols.style.display=open?'flex':'none';
+      start.style.display=shuf.style.display=open?'':'none';
+      toggle.classList.toggle('active',open);
+      toggle.textContent=open?'✕ Close quiz':'\u{1F9E9} Quiz this table';
+      if(!open)doReset();
+    });
+    shuf.addEventListener('click',function(){
+      var parent=table.tBodies[0]||table;
+      var rows=dataRows();
+      if(!originalOrder)originalOrder=rows.slice();
+      shuffle(rows).forEach(function(r){parent.appendChild(r);});
+    });
+    function updateScore(){
+      score.textContent=revealed+' / '+hidden.length+' revealed';
+      score.classList.toggle('done',hidden.length>0&&revealed===hidden.length);
+      if(hidden.length>0&&revealed===hidden.length)score.textContent='\u{1F389} '+revealed+' / '+hidden.length;
+    }
+    start.addEventListener('click',function(){
+      if(running||!sel.size)return;
+      running=true;hidden=[];revealed=0;
+      dataRows().forEach(function(r){
+        Array.prototype.slice.call(r.cells).forEach(function(c,i){
+          if(!sel.has(i)||!c.textContent.trim())return;
+          var w=document.createElement('span');w.className='tq-cell-content';w.innerHTML=c.innerHTML;
+          c.innerHTML='';c.appendChild(w);c.classList.add('quiz-hidden-cell');
+          c.dataset.tqOrig=w.innerHTML;
+          hidden.push(c);
+        });
+      });
+      reset.style.display='';start.disabled=true;updateScore();
+    });
+    table.addEventListener('click',function(e){
+      var c=e.target.closest?e.target.closest('td.quiz-hidden-cell'):null;
+      if(!c)return;
+      c.classList.remove('quiz-hidden-cell');c.innerHTML=c.dataset.tqOrig;revealed++;updateScore();
+    });
+    function doReset(){
+      hidden.forEach(function(c){if(c.classList.contains('quiz-hidden-cell')){c.classList.remove('quiz-hidden-cell');c.innerHTML=c.dataset.tqOrig;}});
+      if(originalOrder){var parent=table.tBodies[0]||table;originalOrder.forEach(function(r){parent.appendChild(r);});}
+      hidden=[];revealed=0;running=false;score.textContent='';score.classList.remove('done');
+      start.disabled=sel.size===0;reset.style.display='none';
+    }
+    reset.addEventListener('click',doReset);
+  });
+}
+
+/* ============ keyboard shortcuts ============ */
+function initKeys(){
+  document.addEventListener('keydown',function(e){
+    if(e.metaKey||e.ctrlKey||e.altKey)return;
+    var t=e.target,tag=t&&t.tagName;
+    if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT'||(t&&t.isContentEditable))return;
+    var hy=$('#hyModal');
+    if(e.key==='Escape'){ if(hy&&hy.classList.contains('open'))closeHY(); closeLightbox(); return; }
+    if(hy&&hy.classList.contains('open'))return;
+    var k=e.key.toLowerCase();
+    if(k==='q'){e.preventDefault();jumpToNextQ();return;}
+    if(k==='r'){
+      e.preventDefault();
+      var best=null,bd=Infinity,mid=window.innerHeight/2;
+      $$('.exam-q').forEach(function(q){var d=Math.abs(q.getBoundingClientRect().top+q.offsetHeight/2-mid);
+        if(d<bd){bd=d;best=q;}});
+      if(best){best.classList.add('revealed');updateQCount();}
+      return;
+    }
+    if(k==='j'||k==='k'){
+      e.preventDefault();
+      var y=window.scrollY+window.innerHeight*0.3,cur=0;
+      SECTION_IDS.forEach(function(id,i){var s=document.getElementById(id);if(s&&s.offsetTop<=y)cur=i;});
+      var nx=k==='j'?Math.min(SECTION_IDS.length-1,cur+1):Math.max(0,cur-1);
+      var target=document.getElementById(SECTION_IDS[nx]);
+      if(target)target.scrollIntoView({behavior:'smooth',block:'start'});
+    }
+  });
+}
+
+
+/* ============ lazy figures: fade in when loaded; force-load everything before printing ============ */
+function initLazyFigures(){
+  $$('.fig-frame img').forEach(function(img){
+    var done=function(){img.parentNode.classList.add('loaded');};
+    if(img.complete&&img.naturalWidth)done();
+    else{img.addEventListener('load',done);img.addEventListener('error',done);}
+  });
+  window.addEventListener('beforeprint',function(){$$('img[loading="lazy"]').forEach(function(i){i.loading='eager';});});
+}
+/* ============ video facade: swap the thumbnail for the real player only on click ============ */
+function initVideos(){
+  $$('.vid').forEach(function(b){
+    b.addEventListener('click',function(){
+      if(b.classList.contains('playing'))return;
+      var f=document.createElement('iframe');
+      f.src='https://www.youtube-nocookie.com/embed/'+b.dataset.yt+'?autoplay=1&rel=0';
+      f.title=b.dataset.title||'Video';
+      f.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+      f.allowFullscreen=true;
+      var t=b.querySelector('.vid-thumb');t.replaceWith(f);b.classList.add('playing');
+    });
+  });
+}
+
+/* ============ boot ============ */
+document.addEventListener('DOMContentLoaded',function(){
+  initVisualState();
+  loadProgress();
+  initSectionTools();
+  initExamQ();
+  initTableQuiz();
+  initLightbox();
+  initLazyFigures();
+  initVideos();
+  initScrollspy();
+  initProgress();
+  initRecall();
+  initKeys();
+  var hy=$('#hyModal');
+  if(hy) hy.addEventListener('click',function(e){if(e.target===this)closeHY();});
+  var rb=$('#recallBtn'); if(rb) rb.addEventListener('click',toggleRecall);
+  var nq=$('#nextQBtn'); if(nq) nq.addEventListener('click',jumpToNextQ);
+  var bt=$('#backtopBtn'); if(bt) bt.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});
+  document.addEventListener('click',function(e){
+    var fl=$('#floatingLeft');
+    if(fl&&fl.classList.contains('open')&&!fl.contains(e.target))fl.classList.remove('open');
+  });
+});
+
+
+
+
+</script>
+</body>
+</html>

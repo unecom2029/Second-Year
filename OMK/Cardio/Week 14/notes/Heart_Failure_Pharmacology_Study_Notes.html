@@ -1,0 +1,2057 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+(function(){
+  var NOTE_AUTH_KEY='une-study-hub-remembered-auth-v1';
+  var NOTE_LOGIN_URL='../../../../index.html?login=notes';
+
+  function readCookie(name){
+    try{
+      var prefix=encodeURIComponent(name)+'=';
+      var parts=String(document.cookie||'').split(';');
+      for(var i=0;i<parts.length;i++){
+        var part=parts[i].trim();
+        if(part.indexOf(prefix)===0)return decodeURIComponent(part.slice(prefix.length));
+      }
+    }catch(err){}
+    return null;
+  }
+  function readAuthPayload(){
+    try{
+      var stored=localStorage.getItem(NOTE_AUTH_KEY);
+      if(stored)return stored;
+    }catch(err){}
+    return readCookie(NOTE_AUTH_KEY);
+  }
+  function hasValidNoteAuth(){
+    var raw=readAuthPayload();
+    if(!raw)return false;
+    try{
+      var parsed=JSON.parse(raw);
+      var email=String(parsed&&parsed.email||'').trim().toLowerCase();
+      var expiresAt=Number(parsed&&parsed.expiresAt);
+      return /@une\.edu$/.test(email)&&expiresAt&&Date.now()<expiresAt;
+    }catch(err){return false}
+  }
+  function syncNoteAuth(){
+    document.documentElement.setAttribute('data-note-auth',hasValidNoteAuth()?'unlocked':'locked');
+  }
+  window.openNoteLogin=function(){
+    var loginWindow=window.open(NOTE_LOGIN_URL,'uneStudyHubLogin');
+    if(!loginWindow)window.location.href=NOTE_LOGIN_URL;
+  };
+  window.refreshNoteAuth=syncNoteAuth;
+  window.addEventListener('message',function(event){
+    if(event&&event.data&&event.data.type==='une-study-hub-auth-complete')syncNoteAuth();
+  });
+  window.addEventListener('storage',function(event){
+    if(!event||event.key===NOTE_AUTH_KEY)syncNoteAuth();
+  });
+  window.addEventListener('focus',syncNoteAuth);
+  window.setInterval(syncNoteAuth,1000);
+  syncNoteAuth();
+})();
+</script>
+<title>Pharmacologic Management of Heart Failure — Study Notes</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%20100%20100%27%3E%3Ctext%20y%3D%27.9em%27%20font-size%3D%2788%27%3E%F0%9F%AB%80%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Cardio (default) — soft ECG blush page, arterial red accent, clinical-blue accent2 */
+  --ink:#25161a; --paper:#fff7f7; --cream:#f5e2e6;
+  --accent:#b51f3a; --accent2:#245f89; --gold:#b77b22; --muted:#75535c; --border:#dfb9c2;
+  --highlight:#f8e1a9; --highlight2:#d7e9f4; --green-bg:#d9eee2; --red-bg:#f8d5dc;
+  --blue-bg:#d6e9f5; --purple-bg:#eadcf0; --hero-bg:#173e63;
+  --panel-dark-bg:#173e63; --panel-dark-text:#f7fbff;
+  /* Theme-INDEPENDENT chip colors (sit on saturated / fixed-dark backgrounds in every theme) */
+  --chip-red:#b51f3a; --chip-blue:#245f89; --chip-fg:#ffffff; --panel-dark-accent:#ffd27a;
+  --hero-heading:#f7fbff; --hero-sub:#c8dceb;
+  --hero-meta-bg:rgba(255,255,255,0.08); --hero-meta-border:rgba(240,138,155,0.28);
+  --hero-meta-label:#a9c5d8; --hero-meta-value:#fff1f3; --hero-accent:#ff9aae;
+  --floating-ui-bg:#173e63; --floating-ui-fg:#f7fbff; --floating-ui-shadow:0 3px 12px rgba(23,62,99,0.26);
+  --quiz-overlay:rgba(36,95,137,.38); --quiz-overlay-hover:rgba(36,95,137,.62);
+}
+html:not([data-theme]) .hero{background:
+  radial-gradient(circle at 88% 18%,rgba(181,31,58,0.42),transparent 30%),
+  linear-gradient(135deg,#102e4b,#173e63 62%,#6f1d32)}
+html:not([data-theme]) .toc-bar{border-right-color:#2c5f86}
+
+[data-theme="hemo"]{
+  --ink:#f3dfe1; --paper:#170a0d; --cream:#2b1218;
+  --accent:#ff6b6b; --accent2:#8fb8ea; --gold:#e7b95c; --muted:#b4919a; --border:#431d25;
+  --highlight:#402c14; --highlight2:#33161f; --green-bg:#11291e; --red-bg:#45151a;
+  --blue-bg:#12243c; --purple-bg:#261b3a; --hero-bg:#0c0407;
+  --panel-dark-bg:#2e1017; --panel-dark-text:#f9e7e9;
+  --hero-heading:#fbeaea; --hero-sub:#c9a3a8;
+  --hero-meta-bg:rgba(255,255,255,0.06); --hero-meta-border:rgba(255,107,107,0.18);
+  --hero-meta-label:#b4919a; --hero-meta-value:#ffd9d0; --hero-accent:#ff6b6b;
+  --floating-ui-bg:#0c0407; --floating-ui-fg:#fbeaea; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.45);
+  --quiz-overlay:rgba(143,184,234,.40); --quiz-overlay-hover:rgba(143,184,234,.62);
+}
+[data-theme="hemo"] .toc-bar{border-right-color:#431d25}
+
+[data-theme="paper"]{
+  --hero-accent:#f08a6e;
+  --ink:#1a1209; --paper:#faf7f2; --cream:#ece1cd;
+  --accent:#a32c14; --accent2:#2c5f8a; --gold:#c9922a; --muted:#6b5e4e; --border:#d4cabb;
+  --highlight:#fbe4a0; --highlight2:#cfe4f7; --green-bg:#d7f0da; --red-bg:#f8d6d0;
+  --blue-bg:#d2e7f9; --purple-bg:#e6dbfa; --hero-bg:#1a1209;
+  --panel-dark-bg:#1a1209; --panel-dark-text:#faf7f2;
+  --hero-heading:#f5ede0; --hero-sub:#c9bcad;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#8a7a6a; --hero-meta-value:#f0e0c8;
+  --floating-ui-bg:#3a3030; --floating-ui-fg:#f5ede0; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(44,95,138,.50); --quiz-overlay-hover:rgba(44,95,138,.78);
+}
+[data-theme="night"]{
+  --hero-accent:#e8b84b;
+  --ink:#e0e8f0; --paper:#0f1923; --cream:#1b2942;
+  --accent:#e8b84b; --accent2:#4aa8d8; --gold:#e8b84b; --muted:#94abc0; --border:#1e3048;
+  --highlight:#3a3016; --highlight2:#12283a; --green-bg:#10281c; --red-bg:#2e1616;
+  --blue-bg:#10233a; --purple-bg:#201a38; --hero-bg:#070e15;
+  --panel-dark-bg:#101a26; --panel-dark-text:#eef5fb;
+  --hero-heading:#f4f9ff; --hero-sub:#b8cad8;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#8fa4b8; --hero-meta-value:#f4f9ff;
+  --floating-ui-bg:#070e15; --floating-ui-fg:#f4f9ff; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(74,168,216,.42); --quiz-overlay-hover:rgba(74,168,216,.62);
+}
+[data-theme="ocean"]{
+  --hero-accent:#ff9aa5;
+  --ink:#0b2436; --paper:#eef7fb; --cream:#cdeaf5;
+  --accent:#a32536; --accent2:#0a5286; --gold:#d9a441; --muted:#4f7185; --border:#a8d4e8;
+  --highlight:#ffe6ad; --highlight2:#bfe3f2; --green-bg:#c9f0dc; --red-bg:#fad9d5;
+  --blue-bg:#c3e4f6; --purple-bg:#e1d7f6; --hero-bg:#0a3a5c;
+  --panel-dark-bg:#0b2436; --panel-dark-text:#eef7fb;
+  --hero-heading:#eaf6fd; --hero-sub:#a9c9dc;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#7ba0b8; --hero-meta-value:#d9edfa;
+  --floating-ui-bg:#0a3a5c; --floating-ui-fg:#eaf6fd; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(15,111,176,.48); --quiz-overlay-hover:rgba(15,111,176,.74);
+}
+[data-theme="forest"]{
+  --hero-accent:#f0a07c;
+  --ink:#16241a; --paper:#f2f7f0; --cream:#d7ead2;
+  --accent:#8f3418; --accent2:#155c39; --gold:#b8860b; --muted:#52684f; --border:#b7d4ae;
+  --highlight:#f3e6a0; --highlight2:#cbe4c4; --green-bg:#c7ecc0; --red-bg:#f7ddd0;
+  --blue-bg:#cbe6df; --purple-bg:#e1dbee; --hero-bg:#12301c;
+  --panel-dark-bg:#16241a; --panel-dark-text:#f2f7f0;
+  --hero-heading:#eef7ea; --hero-sub:#b6cfb0;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#87a382; --hero-meta-value:#e2f2da;
+  --floating-ui-bg:#12301c; --floating-ui-fg:#eef7ea; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(31,122,77,.48); --quiz-overlay-hover:rgba(31,122,77,.74);
+}
+[data-theme="sepia"]{
+  --hero-accent:#f0a57e;
+  --ink:#3a2414; --paper:#f7ecd9; --cream:#ecd7ae;
+  --accent:#9c3b17; --accent2:#2f5f6b; --gold:#8b5a17; --muted:#7a614a; --border:#d9bd8c;
+  --highlight:#f0d38a; --highlight2:#d7c39a; --green-bg:#dbe3bc; --red-bg:#f0d0c0;
+  --blue-bg:#cfdedd; --purple-bg:#e3d3e0; --hero-bg:#3f2814;
+  --panel-dark-bg:#3a2414; --panel-dark-text:#f7ecd9;
+  --hero-heading:#f7ecd9; --hero-sub:#cbb190;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#a08a68; --hero-meta-value:#f2ddb4;
+  --floating-ui-bg:#3f2814; --floating-ui-fg:#f7ecd9; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(47,95,107,.50); --quiz-overlay-hover:rgba(47,95,107,.78);
+}
+[data-theme="slate"]{
+  --hero-accent:#ff9a78;
+  --ink:#1c2229; --paper:#f4f5f7; --cream:#dde3ea;
+  --accent:#9e2c0f; --accent2:#2b5268; --gold:#a8862a; --muted:#5c6a76; --border:#c8d0d8;
+  --highlight:#f2e3ac; --highlight2:#d5e2ec; --green-bg:#d6ead9; --red-bg:#f4d8d0;
+  --blue-bg:#d3e2ef; --purple-bg:#dfd9ec; --hero-bg:#1c2530;
+  --panel-dark-bg:#1c2530; --panel-dark-text:#f4f5f7;
+  --hero-heading:#eef1f5; --hero-sub:#b3bfca;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#8595a3; --hero-meta-value:#e4ebf2;
+  --floating-ui-bg:#1c2530; --floating-ui-fg:#eef1f5; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(51,96,122,.50); --quiz-overlay-hover:rgba(51,96,122,.78);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;padding-left:var(--toc-w);background:var(--paper);color:var(--ink);
+  font-family:'Source Serif 4',Georgia,serif;font-size:16px;line-height:1.65;overflow-wrap:break-word;
+  transition:background .25s,color .25s}
+:root{--toc-w:258px}
+h1,h2,h3,h4{font-family:'Playfair Display',Georgia,serif;line-height:1.18}
+a{color:var(--accent2)}
+strong{color:var(--accent2)}
+.container{max-width:min(1220px,94%);margin:0 auto}
+img{max-width:100%}
+
+/* ---------------- reading progress ---------------- */
+.progress-bar{position:fixed;top:0;left:0;height:3px;width:0;z-index:200;
+  background:linear-gradient(90deg,var(--accent2),var(--accent));transition:width .1s linear}
+
+/* ---------------- TOC sidebar ---------------- */
+.toc-bar{position:fixed;top:0;left:0;bottom:0;z-index:90;width:var(--toc-w);
+  background:var(--hero-bg);border-right:1px solid rgba(255,255,255,.10);overflow-y:auto;overflow-x:hidden}
+.toc-bar::-webkit-scrollbar{width:6px}
+.toc-bar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14);border-radius:3px}
+.toc-bar::-webkit-scrollbar-track{background:transparent}
+.toc-head{padding:24px 20px 16px;border-bottom:1px solid rgba(255,255,255,.10)}
+.toc-eyebrow{display:block;font-family:'JetBrains Mono',monospace;font-size:.5rem;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--hero-meta-label);margin-bottom:7px}
+.toc-name{display:block;font-family:'Playfair Display',serif;font-weight:700;font-size:1.2rem;
+  color:var(--hero-heading);line-height:1.15}
+.toc-name em{font-style:normal;color:var(--hero-accent)}
+.toc-group{font-family:'JetBrains Mono',monospace;font-size:.49rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--hero-meta-label);opacity:.75;margin:0;padding:18px 20px 7px}
+.toc-bar nav{display:flex;flex-direction:column;padding:0 0 26px}
+.toc-bar a{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:'Source Serif 4',Georgia,serif;
+  font-size:.85rem;line-height:1.3;color:var(--hero-sub);padding:8px 16px 8px 17px;
+  border-left:3px solid transparent;transition:color .15s,border-color .15s,background .15s}
+.toc-num{flex:none;width:21px;height:21px;border-radius:50%;border:1px solid rgba(255,255,255,.18);
+  display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;
+  font-size:.56rem;font-weight:700;color:var(--hero-meta-label);transition:all .15s}
+.toc-num.dot{border:none;position:relative}
+.toc-num.dot::before{content:'';width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.28);transition:background .15s}
+.toc-bar a:hover{color:var(--hero-heading);background:rgba(255,255,255,.05)}
+.toc-bar a:hover .toc-num{border-color:rgba(255,255,255,.4);color:var(--hero-heading)}
+.toc-bar a:hover .toc-num.dot::before{background:var(--accent)}
+.toc-bar a.active{color:var(--hero-heading);border-left-color:var(--accent);background:rgba(255,255,255,.06);font-weight:600}
+.toc-bar a.active .toc-num{background:var(--chip-red);border-color:var(--chip-red);color:var(--chip-fg)}
+.toc-bar a.active .toc-num.dot{background:none;border-color:transparent}
+.toc-bar a.active .toc-num.dot::before{background:var(--accent);width:7px;height:7px}
+.toc-check{margin-left:auto;font-size:.72rem;display:none;line-height:1}
+.toc-bar a.done .toc-check{display:inline}
+.toc-bar a.conf-1 .toc-check{color:#e0564a}
+.toc-bar a.conf-2 .toc-check{color:#d6a12a}
+.toc-bar a.conf-3 .toc-check{color:#3d9c5c}
+.toc-tools{display:flex;flex-direction:column;gap:6px;padding:14px 14px 0;margin-top:8px;
+  border-top:1px solid rgba(255,255,255,.10)}
+.toc-chip{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);color:var(--hero-sub);
+  font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.05em;padding:7px 9px;
+  border-radius:8px;cursor:pointer;text-align:left;transition:background .15s,color .15s}
+.toc-chip:hover{background:rgba(255,255,255,.14);color:var(--hero-heading)}
+.toc-hy-btn{display:flex;align-items:center;justify-content:center;gap:7px;width:calc(100% - 28px);
+  margin:15px 14px 2px;background:var(--gold);color:#2a1a00;border:none;padding:11px 10px;border-radius:24px;
+  cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.04em;
+  line-height:1.25;text-align:center;transition:transform .15s,box-shadow .15s}
+.toc-hy-btn:hover{transform:translateY(-1px);box-shadow:0 4px 13px rgba(0,0,0,.32)}
+
+/* ---------------- hero ---------------- */
+.hero{background:var(--hero-bg);padding:52px 0 64px;width:100%;position:relative;overflow:hidden}
+.hero-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--hero-meta-label);margin-bottom:16px}
+.hero h1{margin:0 0 12px;font-size:clamp(2rem,4.4vw,3.3rem);font-weight:900;color:var(--hero-heading);letter-spacing:-.01em}
+.hero h1 span{color:var(--hero-accent)}
+.hero-sub{margin:0 0 20px;max-width:66ch;color:var(--hero-sub);font-size:1.03rem}
+.hero-meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.hero-meta-item{background:var(--hero-meta-bg);border:1px solid var(--hero-meta-border);border-radius:9px;
+  padding:9px 15px;min-width:118px}
+.hero-meta-item .label{display:block;font-family:'JetBrains Mono',monospace;font-size:.5rem;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--hero-meta-label);margin-bottom:4px}
+.hero-meta-item .value{display:block;font-family:'Playfair Display',serif;font-weight:700;font-size:1.02rem;color:var(--hero-meta-value)}
+.hy-btn{display:none;align-items:center;gap:8px;background:var(--gold);color:#2a1a00;border:none;padding:12px 22px;
+  border-radius:30px;font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700;letter-spacing:.04em;
+  cursor:pointer;margin-top:4px;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+
+/* ---------------- sections ---------------- */
+.section{padding:46px 0 8px;border-bottom:1px solid var(--border);scroll-margin-top:20px}
+.section:last-of-type{border-bottom:none}
+.badge-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.lo-badge{display:inline-block;background:var(--chip-red);color:var(--chip-fg);font-family:'JetBrains Mono',monospace;
+  font-size:.6rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;padding:6px 13px;border-radius:20px}
+.lo-badge.alt{background:var(--chip-blue)}
+.section-label{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 6px}
+.section-title{margin:0 0 6px;font-size:clamp(1.55rem,3vw,2.3rem);font-weight:700;
+  border-bottom:3px solid var(--accent);display:inline-block;padding-bottom:6px}
+.section h3{margin:30px 0 8px;font-size:1.24rem;border-left:4px solid var(--accent2);padding-left:11px}
+.section h4{margin:18px 0 6px;font-size:1.03rem}
+.lede{font-size:1.05rem;color:var(--muted);max-width:74ch}
+
+/* section tools (injected) */
+.sec-tools{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:14px 0 4px;padding:8px 12px;
+  background:var(--cream);border:1px solid var(--border);border-radius:9px;
+  font-family:'JetBrains Mono',monospace;font-size:.6rem}
+.sec-tools .st-lab{color:var(--muted);text-transform:uppercase;letter-spacing:.11em}
+.sec-tools button{font-family:'JetBrains Mono',monospace;font-size:.6rem;border:1px solid var(--border);
+  background:var(--paper);color:var(--ink);border-radius:20px;padding:4px 11px;cursor:pointer;transition:all .15s}
+.sec-tools button:hover{border-color:var(--accent2)}
+.sec-tools button.on{background:var(--accent2);color:#fff;border-color:var(--accent2)}
+.sec-tools .st-collapse{margin-left:auto}
+.sec-body-outer{display:grid;grid-template-rows:1fr;transition:grid-template-rows .35s ease}
+.sec-body-inner{overflow:hidden;min-height:0}
+.section.collapsed .sec-body-outer{grid-template-rows:0fr}
+.recall-note{display:none;margin:12px 0;padding:9px 13px;border:1px dashed var(--accent2);border-radius:8px;
+  background:var(--blue-bg);font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--ink)}
+body.recall-mode .recall-note{display:block}
+
+/* ---------------- callouts ---------------- */
+.callout{border-left:5px solid var(--accent2);border-radius:0 9px 9px 0;padding:14px 18px;margin:18px 0;background:var(--blue-bg)}
+.callout p:last-child,.callout ul:last-child{margin-bottom:0}
+.callout p:first-of-type{margin-top:0}
+.callout-title{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;margin-bottom:7px;color:var(--ink)}
+.callout-key{border-left-color:var(--gold);background:var(--highlight)}
+.callout-concept{border-left-color:var(--accent2);background:var(--blue-bg)}
+.callout-clinical{border-left-color:#3d9c5c;background:var(--green-bg)}
+.callout-warning{border-left-color:var(--accent);background:var(--red-bg)}
+.callout-purple{border-left-color:#7a5aa8;background:var(--purple-bg)}
+.callout-hook{border-left-color:var(--gold);background:var(--highlight);border-left-style:dashed;border-left-width:5px}
+
+/* ---------------- lists ---------------- */
+.notes-list{list-style:none;padding-left:0;margin:12px 0}
+.notes-list li{position:relative;padding-left:20px;margin-bottom:7px}
+.notes-list li::before{content:'\203A';position:absolute;left:4px;color:var(--accent);font-weight:700}
+.step-list{list-style:none;counter-reset:st;padding-left:0;margin:16px 0}
+.step-list li{counter-increment:st;position:relative;padding-left:44px;margin-bottom:14px;min-height:30px}
+.step-list li::before{content:counter(st);position:absolute;left:0;top:0;width:30px;height:30px;border-radius:50%;
+  background:var(--chip-red);color:var(--chip-fg);display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:700}
+.step-list li>div>strong:first-child{display:block;margin-bottom:2px;color:var(--accent)}
+
+/* ---------------- tables ---------------- */
+table{width:100%;border-collapse:collapse;margin:6px 0 20px;font-size:.92rem}
+th,td{border:1px solid var(--border);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:var(--panel-dark-bg);color:var(--panel-dark-text);font-family:'JetBrains Mono',monospace;
+  font-size:.63rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700}
+tr:nth-child(even) td{background:var(--cream)}
+tr:hover td{background:var(--highlight2)}
+.tbl-scroll{overflow-x:auto;margin-bottom:20px}
+.tbl-scroll table{margin-bottom:0}
+
+/* ---------------- exam Q ---------------- */
+.exam-q{background:var(--panel-dark-bg);color:var(--panel-dark-text);border-radius:11px;padding:20px 22px 18px;margin:22px 0;position:relative}
+.exam-q::before{content:'Exam Q';position:absolute;top:-10px;left:20px;background:var(--chip-red);color:var(--chip-fg);
+  font-family:'JetBrains Mono',monospace;font-size:.56rem;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;padding:4px 11px;border-radius:12px}
+.exam-q p{margin:6px 0}
+.exam-q strong{color:var(--panel-dark-accent)}
+.exam-q .answer{margin-top:12px;padding-top:12px;border-top:1px dashed rgba(255,255,255,.28);display:none}
+.exam-q.revealed .answer{display:block;animation:fadeIn .32s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.exam-q .answer .label{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--panel-dark-accent);margin-bottom:5px}
+.exam-q .reveal-btn{margin-top:11px;background:transparent;border:1px solid rgba(255,255,255,.4);
+  color:var(--panel-dark-text);font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.09em;
+  text-transform:uppercase;padding:6px 15px;border-radius:20px;cursor:pointer}
+.exam-q .reveal-btn:hover{background:rgba(255,255,255,.14)}
+.exam-q.revealed .reveal-btn{display:none}
+.exam-q.q-flash{outline:3px solid var(--gold);animation:qPulse 1.2s ease 1}
+@keyframes qPulse{0%{box-shadow:0 0 0 0 rgba(201,146,42,.55)}70%{box-shadow:0 0 0 14px rgba(201,146,42,0)}100%{box-shadow:none}}
+
+/* ---------------- cards & grids ---------------- */
+.compare-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:14px;margin:18px 0}
+.compare-card{border:1px solid var(--border);border-radius:11px;padding:16px 18px;background:var(--cream)}
+.compare-card h4{margin:6px 0 6px;font-size:1.08rem}
+.compare-card .card-emoji{font-size:1.5rem;line-height:1}
+.compare-card p{margin:0 0 8px}
+.fact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,235px),1fr));gap:13px;margin:18px 0}
+.fact-card{border:1px solid var(--border);border-top:4px solid var(--accent2);border-radius:10px;
+  padding:14px 16px;background:var(--cream)}
+.fact-card h4{margin:0 0 3px;font-size:1rem}
+.fact-card .generic{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.fact-card p{margin:0;font-size:.87rem}
+.hallmarks-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,215px),1fr));gap:13px;margin:18px 0}
+.hallmark-card{border:1px solid var(--border);border-top:4px solid var(--accent);border-radius:10px;
+  padding:14px 16px;background:var(--cream);position:relative}
+.hallmark-card:nth-child(3n+2){border-top-color:var(--accent2)}
+.hallmark-card:nth-child(3n+3){border-top-color:var(--gold)}
+.hallmark-card h4{margin:6px 0 4px;font-size:.99rem}
+.hallmark-card p{margin:0;font-size:.86rem}
+.hallmark-num{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;color:var(--muted)}
+
+/* inline chips */
+.lab-code{font-family:'JetBrains Mono',monospace;background:var(--cream);border:1px solid var(--border);
+  padding:1px 6px;border-radius:4px;font-size:.82rem;white-space:nowrap}
+.gene-tag{font-family:'JetBrains Mono',monospace;color:var(--accent2);font-size:.88rem;font-weight:600}
+.hy-flag{display:inline-flex;align-items:center;gap:3px;background:var(--highlight);color:var(--gold);
+  border:1px solid var(--gold);font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.6rem;
+  padding:1px 8px;border-radius:20px;letter-spacing:.04em;vertical-align:middle}
+.up{color:#c0392b;font-weight:700}
+.dn{color:#2c7fb8;font-weight:700}
+
+/* ---------------- images ---------------- */
+.slide-img{width:100%;display:block;border:1px solid var(--border);border-radius:10px;margin:18px 0 5px;
+  cursor:zoom-in;background:#fff}
+.slide-caption{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 20px;text-align:center}
+/* small source images: cap the width so they are not upscaled into blur */
+.slide-img.sm{width:auto;max-width:min(100%,540px);margin-left:auto;margin-right:auto}
+/* portrait images: cap the height instead of the width */
+.slide-img.tall{width:auto;max-width:100%;max-height:560px;margin-left:auto;margin-right:auto}
+.img-pair .slide-img.tall{max-height:420px}
+.img-pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px 20px;margin:18px 0;
+  align-items:start}
+.img-pair .slide-img{margin:0}
+.img-pair .slide-img.sm{width:100%;max-width:100%}
+.img-pair .slide-caption{margin:6px 0 0}
+.img-pair>div{display:flex;flex-direction:column}
+.fig{margin:18px 0}
+.fig svg{width:100%;height:auto;display:block;border:1px solid var(--border);border-radius:10px;background:var(--cream)}
+
+/* ---------------- table quiz ---------------- */
+.tq-bar{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:6px;padding:8px 12px;
+  background:var(--cream);border:1px solid var(--border);border-radius:8px}
+.tq-toggle{font-family:'JetBrains Mono',monospace;font-size:.63rem;letter-spacing:.09em;text-transform:uppercase;
+  background:var(--accent2);color:#fff;border:none;border-radius:20px;padding:5px 12px;cursor:pointer}
+.tq-toggle.active{background:var(--chip-red);color:var(--chip-fg)}
+.tq-cols{display:flex;flex-wrap:wrap;gap:5px;flex:1}
+.tq-col-btn{font-size:.7rem;padding:3px 9px;border:1px solid var(--border);border-radius:12px;background:var(--paper);
+  cursor:pointer;font-family:'JetBrains Mono',monospace;color:var(--ink);transition:all .15s}
+.tq-col-btn.sel{background:var(--chip-blue);color:var(--chip-fg);border-color:var(--chip-blue)}
+.tq-start,.tq-shuffle,.tq-reset{font-family:'JetBrains Mono',monospace;font-size:.63rem;color:#fff;border:none;
+  border-radius:20px;padding:5px 12px;cursor:pointer}
+.tq-start{background:#2e7d32}.tq-start:disabled{opacity:.35;cursor:not-allowed}
+.tq-shuffle{background:var(--accent2)}
+.tq-reset{background:var(--accent)}
+.tq-score{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted)}
+.tq-score.done{color:#2e7d32;font-weight:700}
+.quiz-hidden-cell{position:relative!important;cursor:pointer!important}
+.quiz-hidden-cell .tq-cell-content{filter:blur(5px)!important;user-select:none!important;pointer-events:none!important;opacity:.4!important}
+.quiz-hidden-cell::after{content:'tap to reveal'!important;position:absolute!important;inset:0!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;background:var(--quiz-overlay)!important;
+  color:#fff!important;font-family:'JetBrains Mono',monospace!important;font-size:.58rem!important;font-weight:700!important;
+  letter-spacing:.12em!important;text-transform:uppercase!important;border-radius:4px!important}
+.quiz-hidden-cell:hover::after{background:var(--quiz-overlay-hover)!important}
+
+/* ---------------- recall mode ---------------- */
+body.recall-mode .sec-body-inner :is(p,li,td,h4,dd) strong:not(.rc-open){color:transparent;background:var(--highlight2);
+  border-radius:4px;cursor:pointer;box-shadow:inset 0 0 0 1px var(--border);padding:0 2px}
+body.recall-mode .exam-q strong,body.recall-mode .tq-bar strong{color:var(--panel-dark-accent)!important;background:none!important;box-shadow:none!important}
+body.recall-mode .game strong{color:inherit!important;background:none!important;box-shadow:none!important;cursor:auto}
+strong.rc-open{animation:rcReveal .35s ease}
+@keyframes rcReveal{from{background:var(--gold)}to{background:transparent}}
+
+/* ---------------- games ---------------- */
+.game{background:var(--cream);border:1px solid var(--border);border-top:4px solid var(--accent);border-radius:12px;
+  padding:18px 20px;margin:22px 0}
+.g-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:4px}
+.g-head h3{margin:0;font-size:1.16rem;border:none;padding:0}
+.g-emoji{margin-right:.45em}
+.g-score{margin-left:auto;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.72rem;color:var(--muted)}
+.g-intro{font-size:.87rem;color:var(--muted);margin:0 0 10px}
+.g-stage{background:var(--paper);border:1px solid var(--border);border-radius:14px;padding:20px 18px 16px;margin:10px 0 0}
+.g-vign{text-align:left;font-size:.97rem;line-height:1.55;min-height:2.4em}
+.g-vign .lead{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--muted);display:block;margin-bottom:6px}
+.g-opts{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));margin-top:14px}
+.g-opt{border:1px solid var(--border);background:var(--cream);border-radius:11px;padding:9px 14px;font-weight:700;
+  cursor:pointer;font-size:.88rem;font-family:'Source Serif 4',Georgia,serif;color:var(--ink);text-align:center;
+  transition:transform .12s ease,border-color .12s,background .12s}
+.g-opt:hover{transform:translateY(-2px);border-color:var(--accent)}
+.g-opt.correct{background:var(--green-bg);border-color:#2e7d32;color:#1f5c24}
+.g-opt.wrong{background:var(--red-bg);border-color:var(--accent);color:var(--accent)}
+.g-fb{min-height:2.4em;margin-top:12px;font-size:.9rem;line-height:1.55}
+.g-fb .ok{color:#2e7d32;font-weight:700}
+.g-fb .no{color:var(--accent);font-weight:700}
+.g-btn{margin-top:14px;background:var(--accent);color:#fff;border:none;border-radius:22px;padding:8px 20px;
+  font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.06em;cursor:pointer}
+.g-btn:hover{filter:brightness(1.1)}
+.g-bank{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-top:12px}
+.g-bank .g-opt{padding:7px 13px;font-size:.83rem}
+.g-opt.picked{opacity:.5;pointer-events:none}
+.g-slots{display:grid;gap:9px;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));margin-top:12px}
+.g-slot{border:1px dashed var(--border);border-radius:10px;padding:10px 12px;background:var(--cream);min-height:62px}
+.g-slot h5{margin:0 0 6px;font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted)}
+.g-slot.sel{border-style:solid;border-color:var(--accent2);box-shadow:0 0 0 2px var(--blue-bg)}
+.g-slot ul{margin:0;padding-left:16px;font-size:.82rem}
+.g-timer{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--accent);font-weight:700}
+
+/* ---------------- floating UI ---------------- */
+.floating-stack{position:fixed;bottom:18px;right:18px;z-index:100;display:flex;flex-direction:column;align-items:flex-end;gap:9px}
+.font-btn-row{display:flex;align-items:center;background:var(--floating-ui-bg);color:var(--floating-ui-fg);
+  padding:7px 10px;border-radius:30px;box-shadow:var(--floating-ui-shadow);font-family:'JetBrains Mono',monospace;
+  font-size:.62rem;letter-spacing:.1em;gap:2px}
+.font-btn{background:none;border:none;cursor:pointer;color:var(--floating-ui-fg);font-family:'JetBrains Mono',monospace;
+  font-weight:700;font-size:1rem;padding:2px 8px;border-radius:6px;line-height:1}
+.font-btn:hover{background:rgba(255,255,255,.18)}
+.font-sep{color:rgba(255,255,255,.22);padding:0 3px}
+.font-label{font-size:.56rem;opacity:.7;padding:0 5px;text-transform:uppercase;letter-spacing:.1em}
+.theme-btn{display:flex;align-items:center;gap:7px;background:var(--floating-ui-bg);color:var(--floating-ui-fg);
+  border:none;padding:10px 17px;border-radius:30px;box-shadow:var(--floating-ui-shadow);cursor:pointer;
+  font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.09em;text-transform:uppercase}
+.theme-panel{position:absolute;bottom:100%;right:0;margin-bottom:10px;background:var(--floating-ui-bg);
+  color:var(--floating-ui-fg);border-radius:12px;padding:12px 10px;box-shadow:var(--floating-ui-shadow);
+  min-width:196px;display:none}
+.theme-panel.open{display:block}
+.theme-panel-title{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.16em;text-transform:uppercase;
+  opacity:.65;padding:0 8px 8px}
+.theme-option{display:flex;align-items:center;gap:9px;padding:7px 9px;border-radius:8px;cursor:pointer;
+  font-family:'JetBrains Mono',monospace;font-size:.66rem}
+.theme-option:hover{background:rgba(255,255,255,.12)}
+.theme-option.active{background:rgba(255,255,255,.18)}
+.theme-swatch{width:17px;height:17px;border-radius:50%;border:1px solid rgba(255,255,255,.35);flex:none}
+
+.floating-left{position:fixed;bottom:18px;left:calc(var(--toc-w) + 18px);z-index:100;
+  display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+.tools-menu{display:flex;flex-direction:column;gap:7px;opacity:0;pointer-events:none;transform:translateY(10px);
+  transition:opacity .22s,transform .22s}
+.floating-left:hover .tools-menu,.floating-left:focus-within .tools-menu,.floating-left.open .tools-menu{
+  opacity:1;pointer-events:auto;transform:none}
+.tool-btn{background:var(--floating-ui-bg);color:var(--floating-ui-fg);border:none;padding:9px 15px;border-radius:22px;
+  box-shadow:var(--floating-ui-shadow);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:.63rem;
+  letter-spacing:.05em;text-align:left;white-space:nowrap}
+.tool-btn:hover{filter:brightness(1.2)}
+.tool-btn.on{background:var(--accent);color:#fff}
+.tools-trigger{position:relative}
+.tools-trigger .dot{display:none;position:absolute;top:6px;right:8px;width:7px;height:7px;border-radius:50%;background:var(--gold)}
+.tools-trigger.busy .dot{display:block}
+.backtop{display:none}
+.backtop.show{display:block}
+
+/* ---------------- lightbox ---------------- */
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:400;display:none;align-items:center;
+  justify-content:center;cursor:zoom-out;padding:22px}
+.lightbox.active{display:flex}
+.lightbox img{max-width:92vw;max-height:88vh;border-radius:6px}
+
+/* ---------------- HY one-pager ---------------- */
+.hy-modal{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:300;display:none;align-items:flex-start;
+  justify-content:center;overflow-y:auto;padding:30px 16px}
+.hy-modal.open{display:flex}
+.hy-modal-card{background:var(--paper);color:var(--ink);max-width:1060px;width:100%;border-radius:14px;
+  padding:26px 30px 34px;box-shadow:0 20px 60px rgba(0,0,0,.45)}
+.hy-modal-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;
+  border-bottom:3px solid var(--accent);padding-bottom:10px;flex-wrap:wrap}
+.hy-modal-header h2{margin:0;font-size:1.35rem}
+.hy-modal-actions{display:flex;gap:8px;flex:none}
+.hy-action-btn{font-family:'JetBrains Mono',monospace;font-size:.64rem;letter-spacing:.05em;text-transform:uppercase;
+  border:1px solid var(--border);background:var(--cream);color:var(--ink);padding:7px 13px;border-radius:20px;cursor:pointer}
+.hy-close-btn{background:var(--chip-red);color:var(--chip-fg);border:none}
+.hy-subhead{font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--muted);margin:0 0 13px}
+.hy-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;min-width:0}
+@media (max-width:760px){.hy-cols{grid-template-columns:1fr}}
+.hy-cols>div{min-width:0}
+.hy-block{border:1px solid var(--border);border-radius:8px;padding:9px 11px;background:var(--cream);margin-bottom:9px;min-width:0}
+.hy-block h4{margin:0 0 5px;font-size:.76rem;color:var(--accent);border-bottom:1px solid var(--border);padding-bottom:4px}
+.hy-block p,.hy-block li{font-size:.67rem;line-height:1.4;margin:0 0 3px}
+.hy-block ul{margin:0;padding-left:15px}
+.hy-lo-tag{display:block;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;color:var(--chip-fg);
+  background:var(--chip-blue);padding:3px 9px;border-radius:10px;margin-bottom:7px;letter-spacing:.05em;text-align:center}
+.hy-mini-table{width:100%;border-collapse:collapse;font-size:.63rem;margin-top:4px}
+.hy-mini-table th,.hy-mini-table td{border:1px solid var(--border);padding:3px 5px;text-align:left;line-height:1.3}
+.hy-mini-table th{background:var(--panel-dark-bg);color:var(--panel-dark-text);font-size:.56rem;text-transform:uppercase}
+.hy-mini-table tr:nth-child(even) td{background:transparent}
+
+/* ---------------- glossary ---------------- */
+.gloss{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:10px;margin:16px 0}
+.gloss dl{margin:0;border:1px solid var(--border);border-radius:9px;padding:12px 14px;background:var(--cream)}
+.gloss dt{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;color:var(--accent);margin-top:8px}
+.gloss dt:first-child{margin-top:0}
+.gloss dd{margin:2px 0 0;font-size:.86rem}
+.abbr-strip{background:var(--cream);border:1px solid var(--border);border-left:4px solid var(--gold);
+  border-radius:0 9px 9px 0;padding:11px 15px;margin:14px 0;font-size:.85rem}
+.abbr-strip .t{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--muted);display:block;margin-bottom:5px}
+
+footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top:40px;font-size:.83rem}
+footer .container{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center}
+footer kbd{font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.2);
+  border-radius:4px;padding:1px 6px;font-size:.72rem}
+
+/* ---------------- responsive ---------------- */
+@media (max-width:1000px){
+  body{padding-left:0}
+  .toc-bar{position:sticky;top:0;bottom:auto;width:100%;height:auto;border-right:none;
+    border-bottom:1px solid rgba(255,255,255,.12);overflow-x:auto;overflow-y:hidden}
+  .toc-head,.toc-group,.toc-hy-btn,.toc-tools{display:none}
+  .toc-bar nav{flex-direction:row;padding:0 8px;white-space:nowrap}
+  .toc-bar a{padding:11px 13px;border-left:none;border-bottom:2px solid transparent;gap:8px}
+  .toc-bar a:hover,.toc-bar a.active{border-left-color:transparent;border-bottom-color:var(--accent);background:none}
+  .toc-num{width:18px;height:18px;font-size:.53rem}
+  .toc-check{display:none!important}
+  .hero .hy-btn{display:inline-flex}
+  .floating-left{left:14px;bottom:14px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
+
+/* ---------------- print ---------------- */
+@media print{
+  body{padding-left:0!important;background:#fff;color:#000}
+  .container{max-width:100%!important}
+  .toc-bar,.floating-stack,.floating-left,.progress-bar,.sec-tools,.recall-note,.tq-bar,
+  .toc-hy-btn,.hy-btn,.lightbox,.game,.exam-q .reveal-btn{display:none!important}
+  .section{page-break-inside:auto;border-bottom:1px solid #ccc}
+  .section.collapsed .sec-body-outer{grid-template-rows:1fr!important}
+  .exam-q .answer{display:block!important}
+  .hero{background:#fff!important;color:#000;padding:16px 0}
+  .hero h1,.hero-sub,.hero-tag,.hero-meta-item .value,.hero-meta-item .label{color:#000!important}
+  .slide-img{page-break-inside:avoid}
+  body.hy-mode .hero,body.hy-mode .section,body.hy-mode footer{display:none!important}
+  body.hy-mode .hy-modal{position:static!important;inset:auto!important;background:none!important;padding:0!important;
+    display:block!important;overflow:visible!important}
+  body.hy-mode .hy-modal-card{position:static!important;max-width:100%!important;width:100%!important;
+    box-shadow:none!important;padding:4px!important}
+  .hy-modal-actions{display:none!important}
+  .hy-cols{grid-template-columns:repeat(3,1fr);gap:6px}
+  .hy-modal-header h2{font-size:1.02rem}
+  .hy-subhead{font-size:.56rem;margin-bottom:7px}
+  .hy-block{padding:4px 6px;margin-bottom:4px;break-inside:avoid}
+  .hy-block h4{font-size:.60rem;margin-bottom:2px;padding-bottom:1.5px}
+  .hy-block p,.hy-block li{font-size:.50rem;line-height:1.2;margin-bottom:1.5px}
+  .hy-mini-table{font-size:.465rem}
+  .hy-mini-table th,.hy-mini-table td{padding:1px 2.5px;line-height:1.18}
+  .hy-lo-tag{font-size:.53rem;padding:2px 7px;margin-bottom:4px}
+  @page{margin:8mm}
+}
+
+
+#noteAuthGate{display:none}
+html[data-note-auth="locked"] body{
+  min-height:100vh;
+  overflow:hidden;
+  background:#f4f5f7;
+  color:#1f2937;
+}
+html[data-note-auth="locked"] body>*:not(#noteAuthGate){display:none!important}
+html[data-note-auth="locked"] #noteAuthGate{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  background:linear-gradient(135deg,#f4f5f7,#ffffff 52%,#eef2f7);
+}
+.note-auth-card{
+  width:min(460px,100%);
+  padding:30px;
+  border:1px solid rgba(31,41,55,.14);
+  border-radius:14px;
+  background:rgba(255,255,255,.92);
+  box-shadow:0 22px 70px rgba(31,41,55,.16);
+  text-align:center;
+}
+.note-auth-kicker{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.68rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:#cf4520;
+  font-weight:700;
+  margin-bottom:12px;
+}
+.note-auth-card h1{
+  margin:0 0 12px;
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2rem,6vw,3rem);
+  line-height:.98;
+  color:#263241;
+}
+.note-auth-card p{
+  margin:0 0 22px;
+  font-size:1rem;
+  line-height:1.55;
+  color:#556070;
+}
+.note-auth-btn{
+  border:0;
+  border-radius:999px;
+  padding:12px 20px;
+  font:700 .9rem 'JetBrains Mono',monospace;
+  letter-spacing:.04em;
+  color:#fff;
+  background:#263241;
+  cursor:pointer;
+  box-shadow:0 12px 28px rgba(38,50,65,.22);
+}
+.note-auth-btn:hover{background:#cf4520}
+
+/* ---------------- pharmacology components ---------------- */
+.drug-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:13px;margin:18px 0}
+.drug-card{border:1px solid var(--border);border-top:4px solid var(--accent2);border-radius:10px;
+  padding:14px 16px;background:var(--cream)}
+.drug-card h4{margin:0 0 3px;font-size:1rem}
+.drug-card .generic{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.drug-card p{margin:0;font-size:.86rem}
+.drug-card p+p{margin-top:5px}
+.drug-card.span2{grid-column:span 2}
+@media (max-width:760px){.drug-card.span2{grid-column:auto}}
+
+.box-warning{border:2px solid var(--accent);border-left-width:9px;border-radius:9px;background:var(--red-bg);
+  padding:15px 18px 13px;margin:20px 0}
+.bw-label{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;background:var(--chip-red);color:var(--chip-fg);
+  padding:4px 11px;border-radius:5px;margin-bottom:9px}
+.box-warning p{margin:0;font-size:.93rem}
+.box-warning p+p{margin-top:7px}
+
+.rems-badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.55rem;font-weight:700;
+  letter-spacing:.1em;background:var(--purple-bg);color:var(--accent2);border:1px solid var(--border);
+  padding:2px 6px;border-radius:4px;vertical-align:middle;margin-left:3px}
+
+.moa-chain{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:14px 0;padding:13px 15px;
+  background:var(--cream);border:1px solid var(--border);border-radius:10px}
+.moa-chain span{font-family:'JetBrains Mono',monospace;font-size:.7rem;line-height:1.35;
+  background:var(--paper);border:1px solid var(--border);border-radius:6px;padding:5px 9px}
+.moa-chain span.hit{background:var(--highlight);border-color:var(--gold);font-weight:700}
+.moa-chain i{font-style:normal;color:var(--accent);font-weight:700}
+
+.suffix-key{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:10px;margin:16px 0}
+.suffix-key div{border:1px solid var(--border);border-left:4px solid var(--gold);border-radius:8px;
+  padding:9px 12px;background:var(--cream)}
+.suffix-key code{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--accent);font-size:.9rem}
+.suffix-key p{margin:3px 0 0;font-size:.82rem;color:var(--muted)}
+
+.timing-bar{display:flex;align-items:center;gap:10px;margin:7px 0;font-size:.86rem}
+.timing-bar .tl{flex:none;width:min(38%,215px);font-weight:600}
+.timing-bar .tt{flex:1;height:15px;background:var(--cream);border:1px solid var(--border);
+  border-radius:8px;position:relative;overflow:hidden}
+.timing-bar .tf{position:absolute;top:0;bottom:0;background:var(--accent);opacity:.78;border-radius:8px}
+.timing-bar .tv{flex:none;font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--muted);
+  width:min(30%,140px);text-align:right}
+
+
+/* ---------------- Cardio additions ---------------- */
+.hero .container{position:relative;z-index:1}
+.hero-ecg{position:absolute;left:0;right:0;bottom:6px;width:100%;height:58px;z-index:0;pointer-events:none;opacity:.55}
+.hero-ecg path{fill:none;stroke:var(--hero-accent);stroke-width:2;stroke-linejoin:round;stroke-linecap:round;
+  stroke-dasharray:1400;stroke-dashoffset:1400;animation:ecgDraw 4.5s ease-out .3s forwards}
+@keyframes ecgDraw{to{stroke-dashoffset:0}}
+strong.hot{color:var(--accent)}
+.num{background:var(--highlight);color:var(--ink);font-weight:700;padding:0 4px;border-radius:4px;white-space:nowrap}
+.src-tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.55rem;font-weight:700;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--ink);border:1px dashed var(--muted);border-radius:4px;padding:0 5px;
+  vertical-align:middle;white-space:nowrap}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;margin:16px 0 6px;padding:11px 15px;
+  background:var(--cream);border:1px solid var(--border);border-radius:10px;font-size:.86rem}
+.legend-t{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.order-list{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 16px}
+.order-list span{background:var(--cream);border:1px solid var(--border);border-left:4px solid var(--accent);
+  border-radius:8px;padding:6px 12px;font-size:.9rem}
+.tbl-note{font-size:.88rem;color:var(--muted);margin-top:-8px}
+table.dense{font-size:.8rem}
+table.dense td,table.dense th{padding:5px 7px}
+.timeline-table tr.phase td{background:var(--panel-dark-bg)!important;color:var(--panel-dark-text);font-family:'JetBrains Mono',monospace;
+  font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;padding:4px 11px}
+
+/* ---- labeled, lazy-loaded figures (images live in ./assets/, not base64) ---- */
+.fig-card{margin:20px auto;max-width:960px;border:1px solid var(--border);border-radius:12px;background:var(--cream);overflow:hidden;
+  break-inside:avoid;page-break-inside:avoid}
+.fig-frame{position:relative;background:#fff;display:flex;justify-content:center;align-items:center}
+.fig-frame::before{content:'';position:absolute;inset:0;
+  background:linear-gradient(100deg,rgba(0,0,0,0) 30%,rgba(181,31,58,.07) 50%,rgba(0,0,0,0) 70%) #fdf1f3;
+  background-size:220% 100%;animation:figShimmer 1.3s linear infinite;transition:opacity .3s}
+.fig-frame.loaded::before{opacity:0;animation:none}
+@keyframes figShimmer{from{background-position:120% 0}to{background-position:-120% 0}}
+.fig-card .slide-img{position:relative;margin:0;border:none;border-radius:0;width:100%;height:auto;opacity:0;transition:opacity .35s}
+.fig-frame.loaded .slide-img{opacity:1}
+.fig-card.tall .slide-img{width:auto;max-width:100%;max-height:560px}
+.fig-card.sm .slide-img{width:auto;max-width:min(100%,560px)}
+.fig-row .fig-card.tall .slide-img{max-height:440px}
+.fig-card figcaption{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;padding:9px 13px 10px;
+  border-top:1px solid var(--border);font-size:.86rem;line-height:1.4}
+.fig-num{font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  background:var(--chip-blue);color:var(--chip-fg);padding:2px 8px;border-radius:10px;flex:none}
+.fig-title{flex:1 1 220px;color:var(--ink)}
+.fig-src{font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);flex:none}
+.fig-src b{color:var(--accent);font-weight:700}
+.fig-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px;margin:20px 0;align-items:start}
+.fig-row .fig-card{margin:0;max-width:none}
+.lightbox{flex-direction:column;gap:12px}
+.lightbox-cap{max-width:min(92vw,900px);color:#f3f3f3;font-size:.9rem;text-align:center;line-height:1.45}
+.lightbox-cap .fig-num{margin-right:6px}
+
+details.case-box{background:var(--cream);border:1px solid var(--border);border-left:5px solid var(--accent2);
+  border-radius:0 12px 12px 0;margin:16px 0;overflow:hidden}
+details.case-box summary{cursor:pointer;padding:13px 18px;font-family:'Playfair Display',serif;font-weight:700;font-size:1.05rem;
+  list-style:none;display:flex;gap:10px;align-items:center}
+details.case-box summary::-webkit-details-marker{display:none}
+details.case-box summary::before{content:'▸';color:var(--accent);transition:transform .2s}
+details.case-box[open] summary::before{transform:rotate(90deg)}
+details.case-box .case-body{padding:0 18px 12px;border-top:1px solid var(--border)}
+@media print{details.case-box .case-body{display:block}}
+
+/* ---- click-to-play video facade: no YouTube iframe loads until you ask for it ---- */
+.watch{margin:26px 0 8px;padding:14px 16px 16px;border:1px solid var(--border);border-left:5px solid var(--accent);
+  border-radius:0 12px 12px 0;background:var(--cream)}
+.watch-title{font-family:'JetBrains Mono',monospace;font-size:.64rem;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink);margin-bottom:10px}
+.watch-title span{color:var(--muted);font-weight:400;letter-spacing:.04em;text-transform:none}
+.vid-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr));gap:12px}
+.vid{display:flex;flex-direction:column;text-align:left;padding:0;border:1px solid var(--border);border-radius:10px;
+  overflow:hidden;background:var(--paper);color:var(--ink);cursor:pointer;font:inherit;transition:transform .15s,box-shadow .15s}
+.vid:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.14)}
+.vid-thumb{position:relative;aspect-ratio:16/9;background:#1c1c1c;overflow:hidden}
+.vid-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.vid-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:50px;height:36px;border-radius:10px;
+  background:rgba(181,31,58,.92);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1rem;
+  box-shadow:0 3px 10px rgba(0,0,0,.35)}
+.vid-meta{padding:8px 10px 10px;font-size:.8rem;line-height:1.35}
+.vid-meta b{display:block;font-weight:600}
+.vid-meta i{font-style:normal;font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted)}
+.vid.playing{cursor:default;transform:none;box-shadow:none}
+.vid iframe{width:100%;aspect-ratio:16/9;border:0;display:block}
+@media print{
+  .watch{display:none!important}
+  .fig-frame::before{display:none}
+  .fig-card .slide-img{opacity:1!important}
+  .fig-card{background:#fff}
+}
+@media (prefers-reduced-motion:reduce){.hero-ecg path{stroke-dashoffset:0}}
+</style>
+
+</head>
+<body>
+<div id="noteAuthGate" role="dialog" aria-modal="true" aria-labelledby="noteAuthTitle">
+  <div class="note-auth-card">
+    <div class="note-auth-kicker">2nd Year Study Hub</div>
+    <h1 id="noteAuthTitle">Please log in to continue with this note.</h1>
+    <p>Open the Study Hub login, enter your approved UNE email, and this note will unlock automatically.</p>
+    <button class="note-auth-btn" type="button" onclick="openNoteLogin()">Log in to continue</button>
+  </div>
+</div>
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="toc-bar">
+  <div class="toc-head">
+    <span class="toc-eyebrow">OMK 2 · Cardio · Pharmacology</span>
+    <span class="toc-name">Heart <em>Failure</em> Drugs</span>
+  </div>
+  <button class="toc-hy-btn" onclick="openHY()">🎯 High-Yield One-Pager</button>
+  <nav>
+    <p class="toc-group">Start</p>
+    <a href="#orientation"><span class="toc-num dot"></span><span>Orientation — Treat to Live vs Treat to Feel</span><span class="toc-check">✓</span></a>
+    <p class="toc-group">Physiology &amp; strategy</p>
+    <a href="#s1-patho"><span class="toc-num">1</span><span>Why the Failing Heart Gets Worse</span><span class="toc-check">✓</span></a>
+    <a href="#s2-approach"><span class="toc-num">2</span><span>The Pharmacologic Approach</span><span class="toc-check">✓</span></a>
+    <a href="#s3-sequence"><span class="toc-num">3</span><span>Sequence of Therapy &amp; Decompensation</span><span class="toc-check">✓</span></a>
+    <a href="#s4-pillars"><span class="toc-num">4</span><span>The Four Pillars: ARNI, β-Blocker, MRA, SGLT2i</span><span class="toc-check">✓</span></a>
+    <a href="#s5-starling"><span class="toc-num">5</span><span>Frank-Starling: Reading the Drug Effects</span><span class="toc-check">✓</span></a>
+    <p class="toc-group">The cases</p>
+    <a href="#s6-diuretics"><span class="toc-num">6</span><span>Case 1 — Congestion: Loop Diuretics</span><span class="toc-check">✓</span></a>
+    <a href="#s7-inotropes"><span class="toc-num">7</span><span>Case 2 — Hypotension: Inotropes</span><span class="toc-check">✓</span></a>
+    <a href="#s8-vasodilators"><span class="toc-num">8</span><span>Case 3 — cGMP &amp; Cyanide: Nitroprusside</span><span class="toc-check">✓</span></a>
+    <a href="#s9-cases"><span class="toc-num">9</span><span>Cases 4 &amp; 5 — Building the Regimen</span><span class="toc-check">✓</span></a>
+    <p class="toc-group">Reference</p>
+    <a href="#practice"><span class="toc-num dot"></span><span>Drill</span><span class="toc-check">✓</span></a>
+    <a href="#glossary"><span class="toc-num dot"></span><span>Glossary &amp; Abbreviations</span><span class="toc-check">✓</span></a>
+  </nav>
+  <div class="toc-tools">
+    <button class="toc-chip" id="progressChip" onclick="jumpToNextTodo()">0/0 reviewed</button>
+    <button class="toc-chip" id="collapseAllBtn" onclick="toggleAllSections()">⊟ Collapse all</button>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="container">
+    <div class="hero-tag">Pharmacologic Management of Heart Failure · Kyle R. Scully, PhD · UNE COM · OMK 2 · 2026</div>
+    <h1>Heart Failure <span>Pharmacology</span></h1>
+    <p class="hero-sub">HFrEF from the drug's point of view: why compensation makes failure worse, which drugs cut the cycle, the four pillars that prolong life versus the drugs that only relieve symptoms, how each one moves the patient on the Frank-Starling curve, and five cases (loop diuretics, dobutamine, nitroprusside, the maintenance regimen).</p>
+    <button class="hy-btn" onclick="openHY()">🎯 High-Yield One-Pager</button>
+    <div class="hero-meta"><div class="hero-meta-item"><span class="label">Lecturer</span><span class="value">Kyle R. Scully, PhD</span></div><div class="hero-meta-item"><span class="label">Sources</span><span class="value">22 slides + transcript</span></div><div class="hero-meta-item"><span class="label">Focus</span><span class="value">HFrEF (+ SGLT2i in HFpEF)</span></div><div class="hero-meta-item"><span class="label">Topics</span><span class="value">9</span></div><div class="hero-meta-item"><span class="label">Labeled figures</span><span class="value">16</span></div><div class="hero-meta-item"><span class="label">Exam questions</span><span class="value">20</span></div><div class="hero-meta-item"><span class="label">Videos</span><span class="value">7</span></div></div>
+  </div>
+  <svg class="hero-ecg" viewBox="0 0 1200 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 40 H140 l10 -6 l10 6 H200 l6 6 l10 -40 l10 50 l8 -16 H330 l14 -8 l14 8 H480 l10 -6 l10 6 H540 l6 6 l10 -40 l10 50 l8 -16 H670 l14 -8 l14 8 H820 l10 -6 l10 6 H880 l6 6 l10 -40 l10 50 l8 -16 H1010 l14 -8 l14 8 H1200"/></svg>
+</div>
+
+<style>
+.tool{background:var(--cream);border:1px solid var(--border);border-top:4px solid var(--accent2);border-radius:12px;padding:16px 18px;margin:22px 0}
+.tool h4{margin:0 0 4px;font-size:1.08rem}
+.tool .t-intro{font-size:.86rem;color:var(--ink);margin:0 0 12px}
+.tool .t-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0}
+.tool .t-lab{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);min-width:96px}
+.tool button.tb{border:1px solid var(--border);background:var(--paper);color:var(--ink);border-radius:20px;padding:6px 14px;cursor:pointer;
+  font-family:'Source Serif 4',Georgia,serif;font-size:.9rem;transition:all .15s}
+.tool button.tb:hover{border-color:var(--accent2)}
+.tool button.tb.on{background:var(--chip-blue);color:var(--chip-fg);border-color:var(--chip-blue)}
+.tool .t-out{margin-top:12px;padding:12px 14px;border-radius:10px;background:var(--paper);border:1px dashed var(--border);min-height:2.2em;font-size:.95rem;line-height:1.55}
+.tool .t-out b{color:var(--accent)}
+.tool label.ck{display:flex;gap:8px;align-items:flex-start;padding:7px 10px;border:1px solid var(--border);border-radius:9px;background:var(--paper);cursor:pointer;font-size:.9rem}
+.tool label.ck input{margin-top:3px;accent-color:var(--accent2)}
+.tool .ck-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:6px}
+.drill .d-q{font-size:.97rem;line-height:1.55;margin:4px 0 10px}
+.drill .d-opts{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr))}
+.drill .d-opts button.tb{border-radius:12px;text-align:left}
+.drill .d-opts button.tb.right{background:var(--green-bg);border-color:#2e7d32;color:var(--ink)}
+.drill .d-opts button.tb.wrong{background:var(--red-bg);border-color:var(--accent);color:var(--accent)}
+.drill .d-nav{display:flex;gap:10px;align-items:center;margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted)}
+.checklist{list-style:none;padding:0;margin:10px 0;counter-reset:ck}
+.checklist li{counter-increment:ck;display:flex;gap:10px;align-items:flex-start;padding:9px 12px;margin:6px 0;border:1px solid var(--border);border-radius:10px;background:var(--cream)}
+.checklist li::before{content:counter(ck);flex:none;width:26px;height:26px;border-radius:50%;background:var(--chip-red);color:var(--chip-fg);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.75rem;font-weight:700}
+.checklist li b{display:block}
+.step-q{border:1px solid var(--border);border-radius:10px;background:var(--paper);padding:10px 12px;margin:8px 0}
+.step-q.done{opacity:.6}
+.step-q p{margin:0 0 8px}
+details.case-box.ecg summary{font-size:1rem}
+.fig-card figcaption .fig-src{flex:0 1 auto;min-width:0;overflow-wrap:break-word}
+</style>
+
+<!-- ==================== ORIENTATION ==================== -->
+<div class="section" id="orientation">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge alt">Orientation</div></div>
+    <p class="section-label">"Some of our treatments are just symptomatic relief, while others have proven mortality benefits"</p>
+    <h2 class="section-title">Treat to Live vs Treat to Feel</h2>
+
+    <p class="lede">The lecture focuses on <strong>heart failure with reduced ejection fraction (HFrEF)</strong>, plus the one drug class that works in both HFrEF and HFpEF: the <strong>SGLT2 inhibitors</strong>. The impaired cardiac function is <strong>irreversible</strong>, so every drug either <strong>prolongs life</strong> (slows the disease) or <strong>relieves symptoms</strong> (edema, congestion, low output). Know which is which.</p>
+
+    <div class="legend">
+      <span class="legend-t">How to read the colours</span>
+      <span><strong class="hot">Red bold</strong> = lecturer emphasis / "board favourite"</span>
+      <span><strong>Blue bold</strong> = key fact</span>
+      <span><span class="num">Yellow</span> = number to memorise</span>
+      <span><span class="src-tag">Board add-on</span> = AMBOSS / board sources, not said in lecture</span>
+    </div>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>HF = heart failure · HFrEF / HFpEF = HF with reduced / preserved ejection fraction · EF = ejection fraction · CO = cardiac output · ARNI = angiotensin receptor–neprilysin inhibitor · ACEi = ACE inhibitor · ARB = angiotensin II receptor blocker · MRA = mineralocorticoid receptor antagonist · SGLT2i = sodium–glucose cotransporter-2 inhibitor · BB = β-blocker</div>
+
+    <h3>The learning objectives</h3>
+    <ol class="checklist">
+      <li><div><b>For every HFrEF drug: name, mechanism, indications, adverse effects, contraindications and drug interactions</b></div></li>
+      <li><div><b>Apply them to a clinical scenario</b>Five cases (Topics 6–9). Integrate OMK 1 content and the key drug list.</div></li>
+    </ol>
+
+    <h3>What "reduced" means</h3>
+    <div class="fact-grid">
+      <div class="fact-card"><h4>HFrEF</h4><div class="generic">EF &lt; 40%</div><p>The focus of this lecture.</p></div>
+      <div class="fact-card"><h4>HFpEF</h4><div class="generic">EF ≥ 50%</div><p>SGLT2 inhibitors are indicated here too.</p></div>
+      <div class="fact-card"><h4>In between</h4><div class="generic">41–49%</div><p>"No one really knows what to do with" it; treat the presentation. <span class="src-tag">Board add-on</span> Called HF with mildly reduced EF.</p></div>
+    </div>
+
+    <div class="compare-grid">
+      <div class="compare-card" style="background:var(--green-bg);border-color:#2e7d32"><span class="card-emoji">⏳</span><h4>Reduce mortality — the four pillars</h4><p><strong>ARNI / ACEi / ARB</strong> · <strong>β-blocker</strong> · <strong>MRA (spironolactone)</strong> · <strong>SGLT2 inhibitor</strong>.</p></div>
+      <div class="compare-card" style="background:var(--highlight);border-color:var(--gold)"><span class="card-emoji">🩹</span><h4>Symptomatic relief only</h4><p>Diuretics · cardiac glycosides (digoxin) · veno/vasodilators · aquaretics · sympathomimetic amines · phosphodiesterase inhibitors. They clear edema and congestion and improve quality of life, <strong>but don't prolong life</strong>.</p></div>
+    </div>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="U8cfl9nSsF8" data-title="Heart Failure Explained — HFrEF vs HFpEF"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/U8cfl9nSsF8/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Heart Failure Explained — HFrEF vs HFpEF</b><i>Rhesus Medicine · YouTube</i></span></button></div></div>
+  </div>
+</div>
+
+<!-- ==================== 1. PATHOPHYSIOLOGY ==================== -->
+<div class="section" id="s1-patho">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">LO 1 · Topic 1</div><span class="hy-flag">⭐ "Some of our compensations end up making this condition worse"</span></div>
+    <p class="section-label">Slides 5–7 · preload, afterload, contractility, rate, remodelling · the neurohumoral cycle · edema</p>
+    <h2 class="section-title">Why the Failing Heart Gets Worse</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>CO = cardiac output · SV = stroke volume · O₂ = oxygen · PV loop = pressure–volume loop · EDPVR = end-diastolic pressure–volume relationship · AT II = angiotensin II · ANP / BNP = atrial / B-type natriuretic peptide · RAAS = renin–angiotensin–aldosterone system</div>
+
+    <h3>The determinants of cardiac function (slide 5)</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>Determinant</th><th>What it is</th><th>Why it worsens HF</th></tr>
+      <tr><td><strong>Preload</strong></td><td>Ventricular filling</td><td>↑ preload → <strong>↑ myocardial O₂ demand</strong> → worse failure. Supply can't always rise to match, and less so as the disease advances.</td></tr>
+      <tr><td><strong>Afterload</strong></td><td>Impedance to LV ejection (the pressure the ventricle must beat to open the aortic valve)</td><td>↑ afterload <strong>requires ↑ contractility</strong> to keep CO → ↑ O₂ demand. As the muscle weakens, <strong>SV and CO fall</strong>.</td></tr>
+      <tr><td><strong>Contractility</strong></td><td>Force of contraction</td><td>↑ SV to overcome impedance, but <strong>directly ↑ O₂ demand</strong>. It is one of the first things to fail.</td></tr>
+      <tr><td><strong>Heart rate</strong></td><td>—</td><td>Extreme rates impair CO.</td></tr>
+      <tr><td><strong>Remodelling</strong></td><td>Wall stress → hypertrophy</td><td>↓ LV <strong>compliance</strong> → worse performance.</td></tr>
+    </table></div>
+    <div class="callout callout-concept">
+      <div class="callout-title">🧠 Compliance on a PV loop</div>
+      <p>A stiff, hypertrophied ventricle shows the <strong>bottom (filling) limb of the PV loop kicking up</strong>: pressure rises more for each mL of filling. "Here's 4 PV loops — pick the one that demonstrates cardiac remodelling and hypertrophy" is the kind of physiology question this pharmacology rests on.</p>
+    </div>
+    <div class="fig-row"><figure class="fig-card" id="fig-hf-a-pv-loops"><div class="fig-frame"><img class="slide-img" src="assets/hf-pharm/hf-a-pv-loops.jpg" alt="Three pressure-volume loops: normal, diastolic dysfunction and systolic dysfunction" width="1400" height="882" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig F1</span><span class="fig-title">PV loops: systolic dysfunction shifts right (big, weak ventricle); diastolic dysfunction lifts the filling curve (stiff ventricle)</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure><figure class="fig-card" id="fig-hf-c-remodeling"><div class="fig-frame"><img class="slide-img" src="assets/hf-pharm/hf-c-remodeling.jpg" alt="Hearts and myocyte drawings showing eccentric and concentric hypertrophy" width="1400" height="1279" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig F2</span><span class="fig-title">Remodelling: volume overload → eccentric hypertrophy; pressure overload → concentric hypertrophy</span><span class="fig-src"><b>CV Pathophysiology</b></span></figcaption></figure></div>
+
+    <h3>The neurohumoral cycle (slide 6)</h3>
+    <div class="fig-row"><figure class="fig-card tall" id="fig-hf-neurohumoral"><div class="fig-frame"><img class="slide-img" src="assets/hf-pharm/hf-neurohumoral.jpg" alt="Flowchart from compromised cardiac function through sympathetic, renin, angiotensin and aldosterone to worsening heart failure" width="493" height="631" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig F3</span><span class="fig-title">The vicious cycle: ↓ cardiac function → baroreflex → sympathetic outflow (α vasoconstriction, β renin) → angiotensin II and aldosterone → ↑ afterload and ↑ preload → ↑ O₂ demand → worse failure</span><span class="fig-src"><b>Scully lecture</b> · slide 6 · Golan</span></figcaption></figure><figure class="fig-card tall" id="fig-hf-edema"><div class="fig-frame"><img class="slide-img" src="assets/hf-pharm/hf-edema.jpg" alt="Flowchart of sodium retention, elevated atrial pressure, transudation and attenuated natriuretic response" width="490" height="546" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig F4</span><span class="fig-title">Why HF patients swell: the kidney senses low pressure and keeps retaining Na⁺; dilated atria stop responding to natriuretic peptide</span><span class="fig-src"><b>Scully lecture</b> · slide 7 · Golan</span></figcaption></figure></div>
+    <ol class="step-list">
+      <li><div><strong>Compromised cardiac function → ↓ arterial pressure</strong>The baroreceptor reflex fires.</div></li>
+      <li><div><strong>↑ Sympathetic outflow</strong>Acutely, α-mediated <strong>vasoconstriction</strong> and tachycardia.</div></li>
+      <li><div><strong>β1 → ↑ renin → ↑ angiotensin II</strong>AT II vasoconstricts → <strong>↑ afterload</strong>.</div></li>
+      <li><div><strong>AT II → ↑ aldosterone → Na⁺ retention → volume expansion</strong>→ <strong>↑ preload</strong>.</div></li>
+      <li><div><strong>↑ afterload + ↑ preload → ↑ O₂ demand → worsening failure</strong>A spiral: the compensation progresses the disease.</div></li>
+    </ol>
+    <h3>Why the patient swells (slide 7)</h3>
+    <ul class="notes-list">
+      <li>Atrial stretch should release <strong>ANP</strong> ("try to make you pee") to cut preload. But <strong>chronically dilated atria resist natriuretic peptide</strong>, so the response fails.</li>
+      <li>The kidney still senses low pressure and <strong>keeps reabsorbing Na⁺ and water</strong>. Hydrostatic pressure rises, fluid <strong>transudates</strong> into tissue (pulmonary and peripheral edema), pressure drops again, and the kidney reabsorbs more.</li>
+    </ul>
+    <figure class="fig-card" id="fig-hf-a-pathophysiology"><div class="fig-frame"><img class="slide-img" src="assets/hf-pharm/hf-a-pathophysiology.jpg" alt="Flow diagram of heart failure compensatory mechanisms" width="1400" height="930" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig F5</span><span class="fig-title">Compensation that turns harmful: sympathetic drive, RAAS, ADH and BNP around a falling cardiac output</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> Trace how β1 stimulation in a failing heart ends up increasing both afterload and preload.</p>
+      <div class="answer"><div class="label">Answer</div><p>β1 on juxtaglomerular cells → <strong>↑ renin → ↑ AT II</strong> → vasoconstriction (<strong>↑ afterload</strong>) and <strong>↑ aldosterone</strong> → Na⁺/water retention (<strong>↑ preload</strong>). Both raise O₂ demand and worsen the failure.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> Why doesn't the natriuretic-peptide system rescue a patient with chronic HF?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Chronically dilated chambers become resistant to natriuretic peptide</strong>, so the kidney keeps reabsorbing Na⁺ despite volume overload.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 2. APPROACH ==================== -->
+<div class="section" id="s2-approach">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">LO 1 · Topic 2</div><span class="hy-flag">⭐ "We have to do just about all of those things"</span></div>
+    <p class="section-label">Slides 8–11 · where the drugs cut the cycle · preload vs afterload vs inotropes · outcomes · combinations</p>
+    <h2 class="section-title">The Pharmacologic Approach</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>ACE = angiotensin-converting enzyme · AT II = angiotensin II · PDE = phosphodiesterase · ARNI = angiotensin receptor–neprilysin inhibitor · MRA = mineralocorticoid receptor antagonist · SGLT2 = sodium–glucose cotransporter-2 · BNP = B-type natriuretic peptide</div>
+
+    <div class="fig-row"><figure class="fig-card tall" id="fig-hf-interventions"><div class="fig-frame"><img class="slide-img" src="assets/hf-pharm/hf-interventions.jpg" alt="The neurohumoral flowchart with drug classes inserted at their sites of action" width="490" height="627" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig F6</span><span class="fig-title">Where the drugs cut the cycle: β-antagonists (renin), ACE inhibitors (AT II), spironolactone and diuretics (aldosterone/Na⁺), vasodilators (afterload), venodilators (preload)</span><span class="fig-src"><b>Scully lecture</b> · slide 8 · Golan</span></figcaption></figure><figure class="fig-card" id="fig-hf-a-drug-moa"><div class="fig-frame"><img class="slide-img" src="assets/hf-pharm/hf-a-drug-moa.jpg" alt="Circular diagram of heart failure physiology with drug classes in blue boxes" width="1260" height="1000" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig F7</span><span class="fig-title">Every HF drug class placed on the cycle of preload, afterload, heart rate, O₂ demand and remodelling</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure></div>
+    <p>Slide notes: the drugs <strong>modulate the neurohumoral systems</strong> switched on by the failing heart. RAAS can be blocked at three points: <strong>β-blockers</strong> (↓ renin release), <strong>ACE inhibitors</strong> (↓ AT II) and <strong>spironolactone</strong> (blocks aldosterone at its receptor). <strong>Diuretics</strong> counter Na⁺ retention. <strong>Venodilators</strong> increase venous capacitance (↓ preload). <strong>Arterial vasodilators</strong> relieve α- and AT II-driven vasoconstriction (↓ afterload). Glycosides, β-agonists and PDE inhibitors ↑ contractility.</p>
+
+    <div class="tbl-scroll"><table>
+      <tr><th>Strategy</th><th>Drug classes (slide 9)</th><th>Outcome (slide 10)</th></tr>
+      <tr><td rowspan="4"><strong>Preload reduction</strong></td><td>Diuretics (furosemide)</td><td>Symptoms</td></tr>
+      <tr><td>Aquaretics <span class="src-tag">Board add-on</span> (vasopressin V2 antagonists, e.g. tolvaptan)</td><td>Symptoms</td></tr>
+      <tr><td><strong>Aldosterone receptor antagonists</strong> (spironolactone)</td><td><strong>Mortality ↓</strong></td></tr>
+      <tr><td>Venodilators (nitrates)</td><td>Symptoms</td></tr>
+      <tr><td rowspan="3"><strong>Afterload reduction</strong></td><td><strong>ACE inhibitors</strong> (and ARNI / ARB)</td><td><strong>Mortality ↓</strong></td></tr>
+      <tr><td><strong>β-blockers</strong></td><td><strong>Mortality ↓</strong></td></tr>
+      <tr><td>Vasodilators (hydralazine, nitroprusside)</td><td>Symptoms</td></tr>
+      <tr><td rowspan="3"><strong>Inotropic agents</strong> (decompensated patient)</td><td>Cardiac glycosides (digoxin)</td><td>Symptoms</td></tr>
+      <tr><td>Sympathomimetic amines (dobutamine)</td><td>Symptoms</td></tr>
+      <tr><td>Phosphodiesterase inhibitors (milrinone)</td><td>Symptoms</td></tr>
+      <tr><td><strong>Other</strong></td><td><strong>SGLT2 inhibitor</strong> (dapagliflozin)</td><td><strong>Mortality ↓</strong> (HFrEF and HFpEF)</td></tr>
+    </table></div>
+    <div class="callout callout-warning">
+      <div class="callout-title">⚠️ Combination therapy (slide 11)</div>
+      <p>Drugs from several classes are needed. Optimise them to avoid <strong>additive</strong> harm: they all lower blood pressure (<strong>hypotension</strong>) and many shift electrolytes. Watch for <strong>hypotension, arrhythmia, electrolyte imbalance and renal insufficiency</strong>.</p>
+    </div>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> Which HFrEF drug classes reduce mortality, and which give symptomatic relief only?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Mortality:</strong> ARNI/ACEi/ARB, β-blockers, MRA (spironolactone), SGLT2 inhibitors. <strong>Symptoms only:</strong> diuretics, digoxin, veno/vasodilators, aquaretics, sympathomimetic amines, PDE inhibitors.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> Name the three points at which drugs block the RAAS in heart failure.</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Renin release</strong> (β-blockers), <strong>AT II formation</strong> (ACE inhibitors; ARBs block its receptor) and the <strong>aldosterone receptor</strong> (spironolactone).</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 3. SEQUENCE ==================== -->
+<div class="section" id="s3-sequence">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">LO 2 · Topic 3</div><span class="hy-flag">⭐ Vasopressors buy perfusion at the cost of afterload</span></div>
+    <p class="section-label">Slides 12–13 · initial vs secondary therapy · managing acute decompensation · hypotension</p>
+    <h2 class="section-title">Sequence of Therapy &amp; Decompensation</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>ARNI = sacubitril/valsartan · ACEi / ARB = ACE inhibitor / angiotensin receptor blocker · SGLT2i = SGLT2 inhibitor · IV = intravenous · SBP = systolic blood pressure · LV = left ventricle</div>
+
+    <div class="compare-grid">
+      <div class="compare-card" style="background:var(--green-bg);border-color:#2e7d32"><span class="card-emoji">1️⃣</span><h4>Initial</h4><ul class="notes-list"><li><strong>ARNI, ACEi or ARB</strong> (alternative: hydralazine + long-acting nitrate)</li><li><strong>β-blocker</strong></li><li><strong>Spironolactone</strong></li><li><strong>SGLT2 inhibitor</strong></li><li><strong>Furosemide</strong> as needed for symptoms</li></ul></div>
+      <div class="compare-card" style="background:var(--highlight);border-color:var(--gold)"><span class="card-emoji">2️⃣</span><h4>Secondary</h4><ul class="notes-list"><li><strong>Digoxin</strong></li><li><strong>Hydralazine + long-acting organic nitrate</strong></li></ul></div>
+    </div>
+
+    <h3>The usual first presentation: decompensation</h3>
+    <p>The patient arrives short of breath, with pulmonary congestion and pitting edema. <strong>Assess the airway, assess volume status, and decide whether furosemide is indicated.</strong> Once HFrEF is confirmed, start the four pillars, then ask whether they need inotropic support.</p>
+    <ol class="checklist">
+      <li><div><b>Airway assessment and continuous pulse oximetry</b></div></li>
+      <li><div><b>Supplemental oxygen and ventilatory support</b></div></li>
+      <li><div><b>Vital signs</b>Watch for hypotension or hypertension.</div></li>
+      <li><div><b>Continuous cardiac monitoring and IV access</b></div></li>
+      <li><div><b>Seated posture</b></div></li>
+      <li><div><b>Prompt diuretic therapy</b></div></li>
+      <li><div><b>Early vasodilator therapy</b></div></li>
+      <li><div><b>Urine output monitoring</b></div></li>
+    </ol>
+    <h3>Hypotension in a decompensated patient (slide 13)</h3>
+    <ol class="step-list">
+      <li><div><strong>Assess volume status</strong>Diurese, or resuscitate with fluid.</div></li>
+      <li><div><strong>Inotropes</strong>Sympathetic amines (dobutamine), milrinone, digoxin. Slide notes: if SBP &lt; 85 mmHg or there are shock signs (cool extremities, narrow pulse pressure, low urine output, confusion) <em>with adequate preload</em>, add an inotrope.</div></li>
+      <li><div><strong>Vasopressors</strong>Norepinephrine, phenylephrine, high-dose dopamine. A <strong>temporising</strong> measure to perfuse vital organs in persistent shock.</div></li>
+    </ol>
+    <div class="callout callout-warning">
+      <div class="callout-title">⚠️ The vasopressor trade-off</div>
+      <p>A vasopressor raises blood pressure and organ perfusion, but "at the cost of" <strong>↑ afterload</strong>, a higher impedance the weak ventricle must overcome, which can <strong>lower CO</strong>. "Very situation specific."</p>
+    </div>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> A decompensated HFrEF patient has SBP 80 mmHg, cool extremities and confusion despite adequate filling. Inotrope or vasopressor first, and why?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Inotrope first</strong> (e.g. dobutamine) to raise contractility and CO. Add a <strong>vasopressor</strong> only for persistent shock, accepting the ↑ afterload.</p></div>
+    </div>
+  </div>
+</div>
+<!-- ==================== 4. PILLARS ==================== -->
+<div class="section" id="s4-pillars">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">LO 2 · Topic 4</div><span class="hy-flag">⭐ SGLT2i warning: gangrene of the perineum</span></div>
+    <p class="section-label">Slides 14–15 + case answers · sacubitril/valsartan · ACEi/ARB · β-blockers · spironolactone · dapagliflozin, empagliflozin</p>
+    <h2 class="section-title">The Four Pillars: ARNI, β-Blocker, MRA, SGLT2i</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>ARNI = angiotensin receptor–neprilysin inhibitor · ACEi = ACE inhibitor · ARB = angiotensin II receptor blocker · AT1 = angiotensin II type-1 receptor · MRA = mineralocorticoid (aldosterone) receptor antagonist · ENaC = epithelial Na⁺ channel · SGLT2 = sodium–glucose cotransporter-2 · DM-II = type 2 diabetes · CHF = congestive heart failure · K⁺ = potassium</div>
+
+    <div class="suffix-key">
+      <div><code>sacubitril</code><p>Neprilysin inhibitor (paired with valsartan = ARNI)</p></div>
+      <div><code>-pril / -sartan</code><p>ACE inhibitor / ARB</p></div>
+      <div><code>-olol / -ilol</code><p>β-blocker (carvedilol: + α1)</p></div>
+      <div><code>-gliflozin</code><p>SGLT2 inhibitor</p></div>
+      <div><code>spironolactone</code><p>MRA (eplerenone is the selective one)</p></div>
+    </div>
+
+    <div class="drug-grid">
+      <div class="drug-card span2">
+        <h4>ARNI — sacubitril/valsartan</h4>
+        <div class="generic">Oral · first-line RAAS drug in HFrEF</div>
+        <p><strong>MOA:</strong> <strong>sacubitril inhibits neprilysin</strong>, a neutral endopeptidase → <strong>natriuretic peptides, bradykinin and substance P accumulate</strong>. Natriuretic peptides promote diuresis; bradykinin is a potent vasodilator (and causes cough). <strong>Valsartan</strong> blocks AT1.</p>
+        <p><strong>Indication:</strong> HFrEF — <strong>reduces cardiovascular death and hospitalisation</strong> in chronic HF.</p>
+        <p><strong>AEs:</strong> <strong>hypotension</strong>, orthostatic hypotension, <strong>hyperkalemia</strong>.</p>
+        <p><strong>Boxed warning:</strong> fetal toxicity (below).</p>
+        <p><span class="src-tag">Board add-on</span> Stop an ACE inhibitor <strong>36 h</strong> before starting an ARNI (combined bradykinin → angioedema). Never combine ARNI with an ACEi.</p>
+      </div>
+      <div class="drug-card">
+        <h4>ACE inhibitor (enalapril) or ARB</h4>
+        <div class="generic">Alternatives to ARNI</div>
+        <p><strong>MOA:</strong> ↓ AT II → ↓ vasoconstriction (<strong>afterload</strong>) and ↓ aldosterone (a small diuretic effect, so a little preload too).</p>
+        <p><strong>AEs:</strong> <strong>hyperkalemia</strong>, cough and angioedema (ACEi, bradykinin), hypotension. <strong>Teratogenic.</strong> Never two RAAS drugs together.</p>
+        <p>Full detail: <a href="../../Week 13/Notes/Hypertension_Pharmacology_Study_Notes.html#s4-raas">Hypertension notes</a>.</p>
+      </div>
+      <div class="drug-card">
+        <h4>β-blocker (carvedilol)</h4>
+        <div class="generic">Mortality ↓</div>
+        <p>↓ heart rate and contractility → <strong>↓ O₂ demand</strong>; blunts the chronic sympathetic drive. <strong>Carvedilol</strong> (3rd generation) also blocks <strong>α1 → ↓ afterload</strong>.</p>
+        <p><span class="src-tag">Board add-on</span> The evidence-based three are <strong>carvedilol, metoprolol succinate and bisoprolol</strong>. Start low, titrate slowly, and don't start during acute decompensation.</p>
+      </div>
+      <div class="drug-card">
+        <h4>MRA — spironolactone</h4>
+        <div class="generic">Mortality ↓ · K⁺-sparing</div>
+        <p>Blocks the <strong>mineralocorticoid (aldosterone) receptor</strong> → less ENaC synthesis → less Na⁺ reabsorption and K⁺ wasting.</p>
+        <p><strong>AEs:</strong> <strong>hyperkalemia</strong>; <strong>not selective</strong>, so it also blocks <strong>androgen receptors</strong> → <strong>gynecomastia, impotence, abnormal menses</strong>.</p>
+        <p><span class="src-tag">Board add-on</span> <strong>Eplerenone</strong> is the selective MRA without the antiandrogen effects. Avoid if K⁺ &gt; 5.0 or eGFR &lt; 30.</p>
+      </div>
+      <div class="drug-card span2">
+        <h4>SGLT2 inhibitors — dapagliflozin, empagliflozin ("-gliflozin")</h4>
+        <div class="generic">Oral · the one class for both HFrEF and HFpEF</div>
+        <p><strong>MOA:</strong> selective inhibition of the <strong>sodium–glucose cotransporter-2</strong> (proximal tubule). That explains the glucose lowering, but the cardio-renal benefit also seems to involve <strong>anti-inflammatory, renoprotective, cardioprotective and anti-remodelling</strong> effects that "we don't truly understand". This is an active research area.</p>
+        <p><strong>Indications:</strong> glycemic control in DM-II · <strong>HFrEF</strong>: ↓ hospitalisation and mortality <strong>with or without diabetes</strong> · <strong>HFpEF</strong>.</p>
+        <p><strong>AEs:</strong> renal impairment · <strong>infection</strong> · back pain · difficulty urinating.</p>
+        <p><strong class="hot">The one to counsel on: gangrene of the perineum</strong> (said fast in TV adverts). "If you have any swelling or redness around the perineum, you need to come see me right away."</p>
+        <p><span class="src-tag">Board add-on</span> That is <strong>Fournier gangrene</strong> (necrotising fasciitis). Also genital mycotic infections, UTIs, volume depletion and <strong>euglycemic DKA</strong>.</p>
+      </div>
+    </div>
+    <div class="box-warning">
+      <span class="bw-label">☐ US Boxed Warning — sacubitril/valsartan</span>
+      <p><strong>Fetal toxicity.</strong> Discontinue as soon as pregnancy is detected. The warning comes from the valsartan, but the ARNI carries it: <strong>anything targeting the RAAS is contraindicated in pregnancy</strong>.</p>
+    </div>
+    <div class="callout callout-purple">
+      <div class="callout-title">⚖️ Race and the RAAS drugs (end of lecture)</div>
+      <p>HF was one of the first conditions where avoiding RAAS drugs in Black patients was <strong>debunked</strong>. You may still see the old recommendation in some materials. It has been disproven repeatedly and removed from the risk calculators, and studies show <strong>race-agnostic prescribing closes racial disparities</strong> in cardiovascular outcomes.</p>
+    </div>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> Sacubitril inhibits which enzyme, and which three substances accumulate?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Neprilysin</strong> (a neutral endopeptidase) → <strong>natriuretic peptides, bradykinin and substance P</strong> accumulate (natriuresis + vasodilation).</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> A man on spironolactone for HFrEF develops tender breast enlargement. Why, and what is the alternative?</p>
+      <div class="answer"><div class="label">Answer</div><p>Spironolactone also <strong>blocks androgen receptors</strong> → gynecomastia. Switch to <strong>eplerenone</strong> (selective MRA) <span class="src-tag">Board add-on</span>.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> A diabetic HFrEF patient on empagliflozin reports perineal pain, redness and swelling. Concern?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Necrotising infection of the perineum (Fournier gangrene)</strong>, a counselled SGLT2-inhibitor risk. See them immediately.</p></div>
+    </div>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="wFDtDM4x7jI" data-title="How does Dapagliflozin work? Understanding SGLT2 inhibitors"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/wFDtDM4x7jI/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>How does Dapagliflozin work? Understanding SGLT2 inhibitors</b><i>Zero to Finals · YouTube</i></span></button><button class="vid" type="button" data-yt="7reyEtSDMTQ" data-title="Potassium-Sparing Diuretics — Spironolactone"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/7reyEtSDMTQ/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Potassium-Sparing Diuretics — Spironolactone</b><i>Medicosis Perfectionalis · YouTube</i></span></button></div></div>
+  </div>
+</div>
+
+<!-- ==================== 5. FRANK-STARLING ==================== -->
+<div class="section" id="s5-starling">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">LO 2 · Topic 5</div><span class="hy-flag">⭐ "These things don't get tested in a vacuum"</span></div>
+    <p class="section-label">Slide 16 · points A–G · preload reduction slides down; afterload reduction and inotropes move up</p>
+    <h2 class="section-title">Frank-Starling: Reading the Drug Effects</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>CO = cardiac output · EDP = end-diastolic pressure (≈ preload) · SV = stroke volume · ACEi = ACE inhibitor · AT II = angiotensin II · ENaC = epithelial Na⁺ channel · PV loop = pressure–volume loop</div>
+
+    <figure class="fig-card" id="fig-hf-starling"><div class="fig-frame"><img class="slide-img" src="assets/hf-pharm/hf-starling.jpg" alt="Two panels of cardiac output versus end-diastolic pressure curves with labelled points A to G" width="675" height="277" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig F8</span><span class="fig-title">Frank-Starling curves: A normal → B failure → C congestion; an inotrope lifts to D → E. Afterload reduction F; preload reduction G slides down the same curve</span><span class="fig-src"><b>Scully lecture</b> · slide 16 · Golan</span></figcaption></figure>
+    <div class="tbl-scroll"><table>
+      <tr><th>Move</th><th>What happened</th><th>Patient feels</th></tr>
+      <tr><td><strong>A → B</strong></td><td><strong>Contractile (inotropic) failure</strong>: the patient drops onto a flatter curve</td><td>Low-output symptoms</td></tr>
+      <tr><td><strong>B → C</strong></td><td>Untreated: the heart can't eject what returns, so preload rises over time (a modest CO gain)</td><td><strong>High-EDP symptoms</strong>: edema, dyspnea, congestion</td></tr>
+      <tr><td><strong>C → D</strong></td><td><strong>Positive inotrope</strong> (β1 agonist or digoxin) lifts the patient onto a higher curve; more CO at the same preload</td><td>Better output</td></tr>
+      <tr><td><strong>D → E</strong></td><td>Sustained better ejection <strong>lowers preload over time</strong></td><td>Congestion relieved</td></tr>
+      <tr><td><strong>C → F</strong></td><td><strong>Afterload reduction</strong> (ACE inhibitor): a new, higher curve + a small preload drop (↓ aldosterone → less ENaC → a little diuresis)</td><td>More output, less congestion</td></tr>
+      <tr><td><strong>C → G</strong></td><td><strong>Preload reduction</strong> (furosemide): <strong>slides down the SAME curve</strong>; no ↑ CO</td><td>Congestion relieved, but no further from the low-output line</td></tr>
+    </table></div>
+    <div class="callout callout-key">
+      <div class="callout-title">🔑 The exam skill</div>
+      <p><strong class="hot">"You're going to have to pick PV loops. What happens a beat later if you change this? What shift happens if you give this drug?"</strong> Know what each drug does to <strong>preload, afterload or contractility</strong>, then pick the matching shift.</p>
+    </div>
+    <figure class="fig-card sm" id="fig-hf-a-starling-pathologies"><div class="fig-frame"><img class="slide-img" src="assets/hf-pharm/hf-a-starling-pathologies.jpg" alt="Cardiac output versus end-diastolic volume curves for exercise, normal, mild and severe heart failure" width="1276" height="999" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig F9</span><span class="fig-title">Frank-Starling curves from exercise to severe failure; the pink zone is pulmonary congestion, the blue zone hypotension</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure>
+
+    <div class="tool" id="fsTool">
+      <h4>📈 Where does this drug move the patient?</h4>
+      <p class="t-intro">Start at point C (untreated, congested). Pick a drug.</p>
+      <div class="t-row"><span class="t-lab">Drug</span><button class="tb" data-d="furo" type="button">Furosemide</button><button class="tb" data-d="ace" type="button">Enalapril</button><button class="tb" data-d="dobu" type="button">Dobutamine</button><button class="tb" data-d="dig" type="button">Digoxin</button><button class="tb" data-d="ntg" type="button">Nitroglycerin</button><button class="tb" data-d="snp" type="button">Nitroprusside</button><button class="tb" data-d="ne" type="button">Norepinephrine</button></div>
+      <div class="t-out" id="fsOut">Pick a drug.</div>
+    </div>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> Furosemide relieves a congested patient's dyspnea but the fatigue and cool extremities remain. Explain using the Frank-Starling curve.</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Preload reduction slides the patient down the same curve</strong>: congestion (high EDP) improves but <strong>cardiac output doesn't rise</strong>. Low-output symptoms need afterload reduction or an inotrope to move onto a higher curve.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> Why does an ACE inhibitor move the patient to a new curve and also reduce preload slightly?</p>
+      <div class="answer"><div class="label">Answer</div><p>↓ AT II → <strong>vasodilation (↓ afterload)</strong> → more CO at each preload (new curve). ↓ <strong>aldosterone</strong> → less ENaC → a small diuretic effect (↓ preload).</p></div>
+    </div>
+  </div>
+</div>
+<!-- ==================== 6. CASE 1: LOOP DIURETICS ==================== -->
+<div class="section" id="s6-diuretics">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">LO 2 · Topic 6 · Case 1</div><span class="hy-flag">⭐ Sulfa allergy + loop needed → ethacrynic acid</span></div>
+    <p class="section-label">Slide 18 · signs of high preload · furosemide · NKCC2 · the electrolyte losses · ototoxicity</p>
+    <h2 class="section-title">Case 1 — Congestion: Loop Diuretics</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>JVD = jugular venous distension · SpO₂ = oxygen saturation · TAL = thick ascending limb of the loop of Henle · NKCC2 = Na⁺–K⁺–2Cl⁻ cotransporter · ROMK = renal outer medullary K⁺ channel · DCT = distal convoluted tubule · NCC = Na⁺–Cl⁻ cotransporter · ENaC = epithelial Na⁺ channel · MI = myocardial infarction</div>
+
+    <details class="case-box" open><summary>60-year-old woman, short of breath, upright and anxious</summary><div class="case-body">
+      <ul class="notes-list">
+        <li>BP <strong>148/108</strong> · HR <strong>132</strong> · RR 18 shallow, <strong>wet rales</strong> · SpO₂ <strong>88%</strong> on room air.</li>
+        <li><strong>Two previous MIs.</strong> <strong>Pitting edema</strong> of the legs and <strong>JVD</strong>.</li>
+        <li>Questions: the mechanism of the drug most likely given, and the electrolyte problems to expect.</li>
+      </ul>
+    </div></details>
+    <div class="callout callout-clinical">
+      <div class="callout-title">🩺 Reading the case</div>
+      <p>Wet rales (pulmonary congestion), poor gas exchange (88%), pitting edema and JVD all point to <strong>increased preload backing up</strong>. Reduce preload with a <strong>diuretic</strong>: <strong>furosemide, a loop diuretic</strong>.</p>
+    </div>
+    <div class="fig-row"><figure class="fig-card sm" id="fig-hf-a-pulmonary-edema"><div class="fig-frame"><img class="slide-img" src="assets/hf-pharm/hf-a-pulmonary-edema.jpg" alt="Chest x-ray with bilateral perihilar haziness" width="1307" height="1000" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig F10</span><span class="fig-title">Cardiogenic pulmonary edema on chest x-ray — what furosemide is for</span><span class="fig-src"><b>AMBOSS</b> · Acute heart failure article</span></figcaption></figure><figure class="fig-card" id="fig-hf-a-diuretics"><div class="fig-frame"><img class="slide-img" src="assets/hf-pharm/hf-a-diuretics.jpg" alt="Nephron with five panels showing the transporter targets of each diuretic class" width="1400" height="889" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig F11</span><span class="fig-title">Diuretic sites: (C) loop diuretics block NKCC2 in the thick ascending limb; (D) thiazides; (E) K⁺-sparing agents in the collecting duct</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure></div>
+
+    <h3>Furosemide — why loops are so potent</h3>
+    <div class="drug-grid">
+      <div class="drug-card span2">
+        <h4>Furosemide (loop diuretic)</h4>
+        <div class="generic">IV / oral · symptomatic relief of congestion</div>
+        <p><strong>MOA:</strong> inhibits <strong>NKCC2</strong> on the luminal membrane of the <strong>thick ascending limb</strong>. The TAL reabsorbs about <span class="num">25–30%</span> of the filtered Na⁺ load (he said "about 30%"), so blocking it gives a <strong>robust diuresis</strong>.</p>
+        <p><strong>Why not for hypertension?</strong> Not mainly the electrolytes (every diuretic shifts those). It is <strong>tolerance</strong>: Na⁺ that escapes the TAL is reabsorbed downstream, and those segments <strong>increase their capacity</strong>, so the diuresis fades. Good for an initial robust diuresis in fluid overload; not used alone for long-term BP control.</p>
+        <p><strong>AEs:</strong> <strong>hypokalemia</strong>, hyponatremia, <strong>hypocalcemia</strong>, <strong>hypomagnesemia</strong>, <strong>hypokalemic metabolic alkalosis</strong>, <strong class="hot">dose-dependent ototoxicity</strong> (a board favourite).</p>
+        <p><strong>Sulfa allergy:</strong> <strong class="hot">boards still want ethacrynic acid</strong> (a non-sulfonamide loop diuretic), although cross-reactivity data suggest it may not matter in practice.</p>
+      </div>
+    </div>
+    <h3>Where each electrolyte goes</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>Loss</th><th>Mechanism</th></tr>
+      <tr><td><strong>Na⁺ (hyponatremia)</strong></td><td>Water follows the Na⁺ out.</td></tr>
+      <tr><td><strong>Ca²⁺ and Mg²⁺</strong></td><td>In the TAL some K⁺ recycles back into the lumen through ROMK, making a <strong>~10 mV lumen-positive potential</strong> that drives Ca²⁺ and Mg²⁺ <strong>paracellularly</strong> (electroneutrality, not a transporter). Block NKCC2 → no recycling → no potential → Ca²⁺ and Mg²⁺ lost.</td></tr>
+      <tr><td><strong>K⁺ (hypokalemia)</strong></td><td>Two sources. (1) Less K⁺ reabsorbed in the TAL. (2) The extra Na⁺ reaches the <strong>collecting duct</strong>, where <strong>ENaC</strong> reabsorbs Na⁺ alone. That positive charge has to be balanced, so <strong>K⁺ is secreted through ROMK</strong>. The same mechanism makes thiazides K⁺-wasting. NCC in the DCT is electroneutral, so it adds no K⁺ loss.</td></tr>
+      <tr><td><strong>H⁺ (metabolic alkalosis)</strong></td><td>Low K⁺ → the intercalated cells swap K⁺ for H⁺ ("positive for positive") → H⁺ lost in urine. Dr. Johnson covered this in OMK 1 Block 4.</td></tr>
+    </table></div>
+    <div class="callout callout-warning">
+      <div class="callout-title">⚠️ Recording slip: α-, not β-intercalated cells</div>
+      <p>The recording says the K⁺-for-H⁺ swap happens in "beta intercalated cells". It is the <strong>α-intercalated cells</strong> that secrete H⁺ (H⁺-ATPase and H⁺/K⁺-ATPase). β-intercalated cells secrete HCO₃⁻. <span class="src-tag">Board add-on</span> Volume contraction (↑ AT II and aldosterone) adds a "contraction alkalosis".</p>
+    </div>
+    <div class="fig-row"><figure class="fig-card" id="fig-hf-a-k-sparing"><div class="fig-frame"><img class="slide-img" src="assets/hf-pharm/hf-a-k-sparing.jpg" alt="Principal cell with aldosterone receptor, ENaC, ROMK and the sites of spironolactone" width="1400" height="896" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig F12</span><span class="fig-title">Spironolactone/eplerenone block the mineralocorticoid (aldosterone) receptor → less ENaC and Na⁺/K⁺-ATPase → less K⁺ and H⁺ lost</span><span class="fig-src"><b>AMBOSS</b> · Diuretics article</span></figcaption></figure><figure class="fig-card" id="fig-hf-a-hypokalemia-ecg"><div class="fig-frame"><img class="slide-img" src="assets/hf-pharm/hf-a-hypokalemia-ecg.jpg" alt="12-lead ECG with flattened T waves and prominent U waves" width="1400" height="693" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig F13</span><span class="fig-title">Hypokalemia on ECG (flat T waves, U waves) — the loop-diuretic electrolyte to watch</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure></div>
+    <p style="font-size:.88rem;color:var(--muted)"><span class="src-tag">Board add-on</span> Other loops: <strong>bumetanide, torsemide</strong>. Also hyperuricemia (gout). "Loops lose calcium" (thiazides keep it). Digoxin patients on a loop diuretic → hypokalemia → digoxin toxicity.</p>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> Why does furosemide cause hypocalcemia and hypomagnesemia when NKCC2 transports neither ion?</p>
+      <div class="answer"><div class="label">Answer</div><p>Ca²⁺ and Mg²⁺ are reabsorbed <strong>paracellularly</strong>, driven by the <strong>lumen-positive potential</strong> from K⁺ recycling via ROMK. Blocking NKCC2 removes that potential.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> A congested patient needs a loop diuretic but reports an anaphylactic sulfonamide allergy. What is the board answer?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Ethacrynic acid</strong>, the non-sulfonamide loop diuretic (even though true cross-reactivity is questioned in practice).</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> Why isn't furosemide used as monotherapy for chronic hypertension?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Tolerance</strong>: downstream nephron segments raise their Na⁺ reabsorption capacity, so the diuretic effect fades over time.</p></div>
+    </div>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="5k5btYZTKhQ" data-title="How Does Furosemide Work? Understanding Loop Diuretics"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/5k5btYZTKhQ/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>How Does Furosemide Work? Understanding Loop Diuretics</b><i>Zero to Finals · YouTube</i></span></button><button class="vid" type="button" data-yt="rSnK1pZuMKY" data-title="Loop Diuretics — Pharmacology"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/rSnK1pZuMKY/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Loop Diuretics — Pharmacology</b><i>Medicosis Perfectionalis · YouTube</i></span></button></div></div>
+  </div>
+</div>
+
+<!-- ==================== 7. CASE 2: INOTROPES ==================== -->
+<div class="section" id="s7-inotropes">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">LO 2 · Topic 7 · Case 2</div><span class="hy-flag">⭐ Dobutamine = clinically a pure β1 agonist</span></div>
+    <p class="section-label">Slide 19 · dobutamine · β1 → cAMP → PKA → Ca²⁺ · epinephrine, norepinephrine, dopamine, PDE inhibitors</p>
+    <h2 class="section-title">Case 2 — Hypotension: Inotropes</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>β1 / β2 = beta adrenergic receptors · α1 = alpha-1 receptor · G<sub>s</sub> = stimulatory G-protein · AC = adenylyl cyclase · cAMP = cyclic AMP · PKA = protein kinase A · SERCA = SR Ca²⁺ pump · PDE3 = phosphodiesterase-3 · NE / Epi = norepinephrine / epinephrine · ICU = intensive care unit</div>
+
+    <details class="case-box" open><summary>OL, 64-year-old woman with 3 months of HF: pulmonary edema and hypotension</summary><div class="case-body">
+      <p>Decompensating; needs <strong>immediate inotropic therapy</strong> → <strong>dobutamine</strong>, then ICU. Questions: dobutamine's mechanism, the alternatives, and how their receptor selectivity differs. (OL is just the patient's initials.)</p>
+    </div></details>
+
+    <div class="drug-grid">
+      <div class="drug-card span2">
+        <h4>Dobutamine</h4>
+        <div class="generic">IV infusion · top of most HFrEF inotrope algorithms</div>
+        <p><strong>MOA:</strong> <strong>β1 agonist</strong>, "considered a pure β1 agonist" clinically. It is a <strong>racemic mixture</strong>: one enantiomer is an α agonist and the other an α antagonist, so the α effects <strong>wash out</strong>.</p>
+        <p><strong>Effect:</strong> ↑ contractility (inotropy) to support forward flow in a decompensated patient. Symptomatic, not a mortality drug.</p>
+      </div>
+    </div>
+    <div class="moa-chain"><span><b>β1</b></span><i>→</i><span>G<sub>s</sub> → adenylyl cyclase → <b>cAMP</b></span><i>→</i><span class="hit">PKA phosphorylates: L-type Ca²⁺ channels (bigger influx) · phospholamban (↑ SERCA, more SR Ca²⁺) · phospholemman / exchanger</span><i>→</i><span>more Ca²⁺ per beat → bigger Ca²⁺-induced Ca²⁺ release</span><i>→</i><span>↑ contractile force</span></div>
+    <figure class="fig-card" id="fig-hf-a-inotropes"><div class="fig-frame"><img class="slide-img" src="assets/hf-pharm/hf-a-inotropes.jpg" alt="Cardiomyocyte diagram with beta receptor, cAMP, PKA, L-type calcium channel, sodium potassium pump and SERCA" width="1400" height="864" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig F14</span><span class="fig-title">Inotropes on one myocyte: β-agonists and PDE3 inhibitors raise cAMP → PKA; digoxin blocks the Na⁺/K⁺-ATPase; β-blockers and CCBs do the opposite</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure>
+    <h3>The alternatives — and why selectivity matters</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>Drug</th><th>Receptors</th><th>What that does in HF</th></tr>
+      <tr><td><strong>Dobutamine</strong></td><td>β1 (α effects cancel)</td><td>Clean inotropy</td></tr>
+      <tr><td><strong>Norepinephrine</strong></td><td>α1 + β1, <strong>no β2</strong></td><td>Contractility ↑, but α1 ↑ <strong>afterload</strong> → the baroreflex fires parasympathetic outflow → <strong>reflex bradycardia</strong></td></tr>
+      <tr><td><strong>Epinephrine</strong></td><td>β1, β2, α (dose-dependent)</td><td>Inotropy plus other systemic effects that limit its use in some settings</td></tr>
+      <tr><td><strong>Dopamine</strong></td><td>D1 → β1 → α1 as the dose rises</td><td>Could help ↓ renal perfusion by dilating renal beds, but <strong>watch the dose</strong>: too high and α vasoconstriction appears</td></tr>
+      <tr><td><strong>Inamrinone, milrinone</strong></td><td>PDE3 inhibitors</td><td>Stop cAMP breakdown, giving the same PKA effect without the receptor</td></tr>
+      <tr><td><strong>Digoxin</strong></td><td>Na⁺/K⁺-ATPase</td><td>↑ SR Ca²⁺ (see <a href="Antiarrhythmic_Pharmacology_Study_Notes.html#s9-digoxin">antiarrhythmic notes</a>)</td></tr>
+    </table></div>
+    <figure class="fig-card" id="fig-hf-a-sympathomimetics"><div class="fig-frame"><img class="slide-img" src="assets/hf-pharm/hf-a-sympathomimetics.jpg" alt="Graphs of blood pressure, peripheral resistance and heart rate for three catecholamines" width="1400" height="979" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig F15</span><span class="fig-title">Norepinephrine (α &gt; β: reflex bradycardia) vs epinephrine (β2 &gt; α at low dose) vs isoproterenol (β only): pressure, resistance and heart rate</span><span class="fig-src"><b>AMBOSS</b></span></figcaption></figure>
+    <p style="font-size:.88rem;color:var(--muted)"><span class="src-tag">Board add-on</span> Dopamine by dose: low → D1 (renal and mesenteric vasodilation), medium → β1 (inotropy), high → α1 (vasoconstriction). Milrinone is an <strong>"inodilator"</strong>: PDE3 inhibition also relaxes vascular smooth muscle, so watch for hypotension and arrhythmias.</p>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> Dobutamine binds α receptors, yet clinically it acts as a pure β1 agonist. Why?</p>
+      <div class="answer"><div class="label">Answer</div><p>It is a <strong>racemic mixture</strong>: one enantiomer is an α agonist and the other an α antagonist, so the α effects <strong>cancel</strong>.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> Why does norepinephrine raise contractility but often slow the heart rate?</p>
+      <div class="answer"><div class="label">Answer</div><p>Its <strong>α1</strong> vasoconstriction (with no β2 dilation) ↑ afterload and BP → the <strong>baroreceptor reflex</strong> ↑ vagal outflow → <strong>reflex bradycardia</strong>, despite the β1 effect.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> How does milrinone raise contractility without a receptor?</p>
+      <div class="answer"><div class="label">Answer</div><p>It <strong>inhibits PDE3</strong>, so <strong>cAMP persists</strong> → PKA phosphorylates the Ca²⁺-handling proteins, the same endpoint as β1 activation.</p></div>
+    </div>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— optional reinforcement; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="AF2Q60OiZK0" data-title="Dopamine &amp;amp; Dobutamine — with a Mnemonic"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/AF2Q60OiZK0/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Dopamine &amp;amp; Dobutamine — with a Mnemonic</b><i>Medicosis Perfectionalis · YouTube</i></span></button><button class="vid" type="button" data-yt="zf28Rjbu3VM" data-title="Vasopressors Explained Clearly"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/zf28Rjbu3VM/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Vasopressors Explained Clearly</b><i>MedCram · YouTube</i></span></button></div></div>
+  </div>
+</div>
+
+<!-- ==================== 8. CASE 3: NITROPRUSSIDE ==================== -->
+<div class="section" id="s8-vasodilators">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">LO 2 · Topic 8 · Case 3</div><span class="hy-flag">⭐ cGMP + cyanide = nitroprusside</span></div>
+    <p class="section-label">Slide 20 · organic nitrates vs sodium nitroprusside · PDE5 interaction · hydralazine</p>
+    <h2 class="section-title">Case 3 — cGMP &amp; Cyanide: Nitroprusside</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>cGMP = cyclic guanosine monophosphate · NO = nitric oxide · sGC = soluble guanylyl cyclase · ALDH = aldehyde dehydrogenase · PDE5 = phosphodiesterase-5 · ICU = intensive care unit · HFrEF = heart failure with reduced ejection fraction · NYHA = New York Heart Association class</div>
+
+    <details class="case-box" open><summary>OL in the ICU: continuous infusion → metabolic acidosis → fatal arrhythmia</summary><div class="case-body">
+      <p>Several days on a continuous IV infusion that <strong>increases cGMP</strong>. She develops <strong>acute metabolic acidosis</strong> and dies of an arrhythmia. Toxicology: <strong>cyanide poisoning</strong>. Which drug, and how does its class treat CHF?</p>
+    </div></details>
+    <div class="compare-grid">
+      <div class="compare-card" style="background:var(--blue-bg);border-color:var(--accent2)"><span class="card-emoji">🩸</span><h4>Organic nitrates (nitroglycerin, isosorbide)</h4><p>Must be <strong>activated by an enzyme</strong> (aldehyde dehydrogenase) in neighbouring endothelium to free NO. That machinery is on the <strong>venous (capacitance) side</strong> → mainly <strong>venodilators → ↓ preload</strong>.</p></div>
+      <div class="compare-card" style="background:var(--red-bg);border-color:var(--accent)"><span class="card-emoji">☠️</span><h4>Sodium nitroprusside</h4><p><strong>Breaks down spontaneously</strong> → NO with no enzyme needed → dilates <strong>arterioles and veins</strong> → <strong>↓ afterload and ↓ preload</strong>. A "universal dilator". <strong>Cyanide sits at the core of its structure</strong>, so prolonged infusion → cyanide toxicity → metabolic acidosis.</p></div>
+    </div>
+    <div class="moa-chain"><span>NO (from the nitrate or nitroprusside)</span><i>→</i><span>soluble guanylyl cyclase</span><i>→</i><span class="hit">↑ cGMP → protein kinase G</span><i>→</i><span>smooth muscle relaxation</span><i>→</i><span>vasodilation</span></div>
+    <figure class="fig-card" id="fig-hf-a-no-cgmp"><div class="fig-frame"><img class="slide-img" src="assets/hf-pharm/hf-a-no-cgmp.jpg" alt="Endothelium and smooth muscle cell showing nitric oxide, guanylyl cyclase, cGMP, PDE5 and myosin light chain phosphatase" width="1400" height="990" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig F16</span><span class="fig-title">Nitrates → NO → guanylyl cyclase → cGMP → PKG → relaxation; PDE5 breaks cGMP down (why sildenafil + nitrate is dangerous)</span><span class="fig-src"><b>AMBOSS</b> · Nitrates article</span></figcaption></figure>
+    <div class="callout callout-key">
+      <div class="callout-title">🔑 What gives it away</div>
+      <p>"↑ cGMP" alone says <strong>nitrate class</strong>, a preload reducer. The <strong>cyanide</strong> and the <strong>spontaneous breakdown</strong> say <strong>nitroprusside</strong>, which therefore reduces <strong>afterload</strong> as well.</p>
+    </div>
+    <div class="callout callout-warning">
+      <div class="callout-title">⚠️ The interaction to always ask about</div>
+      <p><strong>PDE5 inhibitors</strong> (sildenafil, tadalafil) + any nitrate → nitrates make cGMP and PDE5 inhibitors stop its breakdown → <strong>profound, refractory hypotension</strong>.</p>
+    </div>
+    <h3>Hydralazine + long-acting nitrate (slide 12)</h3>
+    <p>An <strong>alternative</strong> to the RAAS drugs in initial therapy and a <strong>secondary</strong> option. Hydralazine is an arteriolar dilator (↓ afterload); the nitrate ↓ preload.</p>
+    <p style="font-size:.88rem;color:var(--muted)"><span class="src-tag">Board add-on</span> Hydralazine + isosorbide dinitrate reduced mortality in the A-HeFT trial (self-identified Black patients, NYHA III–IV HFrEF), so guidelines list it as an add-on there. Hydralazine AEs: reflex tachycardia, drug-induced lupus. Cyanide toxicity antidotes: hydroxocobalamin, sodium thiosulfate.</p>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> Why does nitroprusside dilate arterioles while nitroglycerin mainly dilates veins?</p>
+      <div class="answer"><div class="label">Answer</div><p>Nitroglycerin needs <strong>enzymatic bioactivation</strong> in endothelium found mainly on the venous side. Nitroprusside <strong>releases NO spontaneously</strong>, so it acts on arterioles and veins alike.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> A patient on a prolonged nitroprusside infusion develops a rising lactate and anion-gap metabolic acidosis. What toxicity?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Cyanide toxicity</strong>: nitroprusside has cyanide at its core.</p></div>
+    </div>
+  </div>
+</div>
+<!-- ==================== 9. CASES 4 + 5 ==================== -->
+<div class="section" id="s9-cases">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">LO 2 · Topic 9 · Cases 4 &amp; 5</div><span class="hy-flag">⭐ Enalapril → hyperkalemia</span></div>
+    <p class="section-label">Slides 21–22 · the maintenance regimen · electrolytes · why carvedilol · MRA adverse effects</p>
+    <h2 class="section-title">Cases 4 &amp; 5 — Building the Regimen</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>ICU = intensive care unit · AT II = angiotensin II · ENaC = epithelial Na⁺ channel · ROMK = renal outer medullary K⁺ channel · α1 = alpha-1 receptor · MRA = mineralocorticoid receptor antagonist · HFrEF = HF with reduced EF · EF = ejection fraction · CO = cardiac output · ARNI = angiotensin receptor–neprilysin inhibitor · SGLT2i = SGLT2 inhibitor</div>
+
+    <details class="case-box" open><summary>Case 4 — 68-year-old woman, acute decompensated HF, 11 years of untreated hypertension</summary><div class="case-body">
+      <p>Stabilised with a loop diuretic, then started on <strong>furosemide, enalapril, carvedilol and a mineralocorticoid-receptor antagonist</strong>.</p>
+    </div></details>
+    <div class="fact-grid">
+      <div class="fact-card"><h4>Enalapril → which electrolyte?</h4><div class="generic">"-pril" = ACE inhibitor</div><p>↓ AT II → <strong>↓ aldosterone</strong> → less <strong>ENaC</strong> synthesis → less Na⁺ entry to drive K⁺ out through ROMK → <strong class="hot">hyperkalemia</strong>.</p></div>
+      <div class="fact-card"><h4>Why carvedilol?</h4><div class="generic">3rd-generation β-blocker</div><p>β-blockade ↓ <strong>O₂ demand</strong> (rate, contractility) and the elevated sympathetic drive. <strong>α1 blockade ↓ afterload</strong> → more CO from the contractility the patient has: a <strong>hemodynamic benefit</strong>.</p></div>
+      <div class="fact-card"><h4>MRA adverse effects</h4><div class="generic">Spironolactone</div><p>The mineralocorticoid receptor = the <strong>aldosterone receptor</strong>, so this adds to the anti-aldosterone effect. It isn't selective, so <strong>androgen-receptor blockade</strong> → <strong>gynecomastia, impotence, abnormal menses</strong>. Plus <strong>hyperkalemia</strong>, additive with enalapril.</p></div>
+    </div>
+    <div class="callout callout-warning">
+      <div class="callout-title">⚠️ Put the regimen together</div>
+      <p>Enalapril + spironolactone both raise K⁺; furosemide lowers it. The net K⁺ is unpredictable, so <strong>monitor potassium and renal function</strong>. All four lower BP: watch for hypotension.</p>
+    </div>
+
+    <details class="case-box" open><summary>Case 5 — 68-year-old Black woman, HFrEF for 6 months: edema, rales, acutely depressed EF</summary><div class="case-body">
+      <p>Central and peripheral edema; wet rales; echo shows an acutely depressed EF. Questions: the drug given immediately to raise CO, the drugs for the pulmonary findings, and the drugs likely on her medication list (and why).</p>
+    </div></details>
+    <div class="callout callout-purple">
+      <div class="callout-title">📝 Worked answer — this case wasn't reached in the recording</div>
+      <p>Built from the lecture's own algorithms (slides 12–13 and Topics 3–8):</p>
+      <ul class="notes-list">
+        <li><strong>↑ cardiac output now:</strong> an IV <strong>inotrope</strong>, e.g. <strong>dobutamine</strong> (β1 → cAMP → PKA → more Ca²⁺ per beat).</li>
+        <li><strong>Pulmonary findings (rales, edema):</strong> an IV <strong>loop diuretic, furosemide</strong> (preload reduction), plus early vasodilator therapy (a nitrate) per the decompensation checklist.</li>
+        <li><strong>Her home list (the four pillars, for mortality):</strong> an <strong>ARNI</strong> (sacubitril/valsartan) or ACEi/ARB · an evidence-based <strong>β-blocker</strong> (carvedilol) · <strong>spironolactone</strong> · an <strong>SGLT2 inhibitor</strong> (dapagliflozin) · furosemide as needed.</li>
+        <li><strong>Race:</strong> per the lecture, her race does <strong>not</strong> argue against RAAS drugs. <span class="src-tag">Board add-on</span> Boards and guidelines still list <strong>hydralazine + isosorbide dinitrate</strong> as an <strong>add-on</strong> for self-identified Black patients with NYHA III–IV symptoms on full therapy (A-HeFT), not as a replacement.</li>
+      </ul>
+    </div>
+
+    <h3>The whole lecture in one table</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>Drug</th><th>Acts on</th><th>Mortality ↓?</th><th>Signature adverse effect</th></tr>
+      <tr><td><strong>Sacubitril/valsartan</strong></td><td>Afterload, preload (natriuretic peptides)</td><td>✅</td><td>Hypotension, hyperkalemia; fetal toxicity</td></tr>
+      <tr><td><strong>Enalapril</strong> (ACEi) / ARB</td><td>Afterload (+ a little preload)</td><td>✅</td><td>Hyperkalemia, cough, angioedema; teratogenic</td></tr>
+      <tr><td><strong>Carvedilol</strong></td><td>Demand (rate, contractility) + afterload (α1)</td><td>✅</td><td>Bradycardia, hypotension</td></tr>
+      <tr><td><strong>Spironolactone</strong></td><td>Preload (anti-aldosterone)</td><td>✅</td><td>Hyperkalemia, gynecomastia</td></tr>
+      <tr><td><strong>Dapagliflozin, empagliflozin</strong></td><td>SGLT2 (+ poorly understood cardio-renal effects)</td><td>✅ (HFrEF and HFpEF)</td><td>Infection, perineal gangrene</td></tr>
+      <tr><td><strong>Furosemide</strong></td><td>Preload</td><td>—</td><td>Hypo-K/Na/Ca/Mg, alkalosis, ototoxicity</td></tr>
+      <tr><td><strong>Dobutamine</strong></td><td>Contractility (β1)</td><td>—</td><td>Tachyarrhythmia <span class="src-tag">Board add-on</span></td></tr>
+      <tr><td><strong>Milrinone</strong></td><td>Contractility (PDE3)</td><td>—</td><td>Hypotension, arrhythmia <span class="src-tag">Board add-on</span></td></tr>
+      <tr><td><strong>Digoxin</strong></td><td>Contractility (Na⁺/K⁺-ATPase)</td><td>—</td><td>Toxicity with low K⁺</td></tr>
+      <tr><td><strong>Nitroglycerin</strong></td><td>Preload (venous)</td><td>—</td><td>Headache, hypotension; PDE5 interaction</td></tr>
+      <tr><td><strong>Nitroprusside</strong></td><td>Preload + afterload</td><td>—</td><td>Cyanide toxicity</td></tr>
+      <tr><td><strong>Hydralazine + nitrate</strong></td><td>Afterload + preload</td><td>Lecture: symptoms · <span class="src-tag">Board add-on</span> ✅ A-HeFT</td><td>Reflex tachycardia, lupus</td></tr>
+    </table></div>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> A patient on enalapril and spironolactone develops peaked T waves. Mechanism?</p>
+      <div class="answer"><div class="label">Answer</div><p>Both reduce aldosterone action (↓ production; receptor blockade) → <strong>less ENaC-driven K⁺ secretion</strong> → <strong>hyperkalemia</strong>.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> Why is carvedilol preferred over atenolol in this HFrEF regimen?</p>
+      <div class="answer"><div class="label">Answer</div><p>Carvedilol adds <strong>α1 blockade → ↓ afterload</strong> to the β-blocker's ↓ O₂ demand, and it is one of the mortality-proven HF β-blockers.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PRACTICE ==================== -->
+<div class="section" id="practice">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge alt">Practice</div></div>
+    <p class="section-label">Mechanism, mortality and adverse-effect questions in lecture style</p>
+    <h2 class="section-title">Drill</h2>
+    <div class="abbr-strip"><span class="t">Abbreviations</span>HFrEF / HFpEF = HF with reduced / preserved EF · ACEi = ACE inhibitor · cGMP = cyclic GMP · JVD = jugular venous distension · K⁺ = potassium</div>
+    <div class="tool drill" id="hfDrill">
+      <h4>🎯 Which drug?</h4>
+      <p class="t-intro">Shuffled; instant feedback.</p>
+      <div class="d-q" id="hfQ"></div>
+      <div class="d-opts" id="hfOpts"></div>
+      <div class="t-out" id="hfOut"></div>
+      <div class="d-nav"><button class="tb" id="hfNext" type="button">Next →</button><span id="hfScore">0 / 0 correct</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== GLOSSARY ==================== -->
+<div class="section" id="glossary">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge alt">Reference</div></div>
+    <p class="section-label">Every short form used in these notes</p>
+    <h2 class="section-title">Glossary &amp; Abbreviations</h2>
+    <div class="gloss">
+      <dl>
+        <dt>ACEi · ARB</dt><dd>ACE inhibitor · angiotensin II (AT1) receptor blocker</dd>
+        <dt>ANP · BNP</dt><dd>Atrial · B-type natriuretic peptide</dd>
+        <dt>ARNI</dt><dd>Angiotensin receptor–neprilysin inhibitor (sacubitril/valsartan)</dd>
+        <dt>AT II · RAAS</dt><dd>Angiotensin II · renin–angiotensin–aldosterone system</dd>
+        <dt>cAMP · PKA</dt><dd>Cyclic AMP · protein kinase A</dd>
+        <dt>cGMP · sGC · PKG</dt><dd>Cyclic GMP · soluble guanylyl cyclase · protein kinase G</dd>
+        <dt>CO · SV</dt><dd>Cardiac output · stroke volume</dd>
+      </dl>
+      <dl>
+        <dt>EDP · EDPVR</dt><dd>End-diastolic pressure · the filling (compliance) curve of the PV loop</dd>
+        <dt>EF</dt><dd>Ejection fraction (HFrEF &lt; 40%, HFpEF ≥ 50%)</dd>
+        <dt>ENaC · ROMK</dt><dd>Epithelial Na⁺ channel · renal outer medullary K⁺ channel</dd>
+        <dt>JVD</dt><dd>Jugular venous distension</dd>
+        <dt>MRA</dt><dd>Mineralocorticoid (aldosterone) receptor antagonist</dd>
+        <dt>NKCC2</dt><dd>Na⁺–K⁺–2Cl⁻ cotransporter of the thick ascending limb</dd>
+      </dl>
+      <dl>
+        <dt>NO</dt><dd>Nitric oxide</dd>
+        <dt>NYHA</dt><dd>New York Heart Association functional class</dd>
+        <dt>PDE3 · PDE5</dt><dd>Phosphodiesterase-3 (heart; milrinone) · -5 (sildenafil)</dd>
+        <dt>PV loop</dt><dd>Pressure–volume loop</dd>
+        <dt>SGLT2i</dt><dd>Sodium–glucose cotransporter-2 inhibitor ("-gliflozin")</dd>
+        <dt>TAL</dt><dd>Thick ascending limb of the loop of Henle</dd>
+      </dl>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  function $(id){return document.getElementById(id);}
+  /* ---- Frank-Starling tool ---- */
+  var D={
+    furo:'<b>Furosemide → C to G.</b> Preload reduction: <b>slides down the same curve</b>. Congestion (high EDP) relieved; cardiac output unchanged. Symptomatic only.',
+    ace:'<b>Enalapril → C to F.</b> Afterload reduction moves the patient to a <b>higher curve</b> (more CO at any preload), plus a small preload drop from ↓ aldosterone. Mortality benefit.',
+    dobu:'<b>Dobutamine → C to D (then E).</b> A positive inotrope (β1 → cAMP → PKA) <b>lifts the curve</b>; better ejection lowers preload over time (D → E). Symptomatic support.',
+    dig:'<b>Digoxin → C to D (then E).</b> Positive inotrope via Na⁺/K⁺-ATPase block → ↑ SR Ca²⁺. Same move as dobutamine; secondary, symptomatic.',
+    ntg:'<b>Nitroglycerin → toward G.</b> Mostly venodilation → <b>↓ preload</b> on the same curve (needs enzymatic activation in venous endothelium).',
+    snp:'<b>Nitroprusside → up and left (F and G combined).</b> Arterial + venous dilation: ↓ afterload (higher curve) and ↓ preload. Watch for <b>cyanide</b>.',
+    ne:'<b>Norepinephrine → may fall to a lower curve.</b> α1 vasoconstriction ↑ <b>afterload</b>: it perfuses organs in shock but makes the weak ventricle work against more impedance. A temporising vasopressor.'};
+  document.querySelectorAll('#fsTool [data-d]').forEach(function(b){b.addEventListener('click',function(){
+    document.querySelectorAll('#fsTool [data-d]').forEach(function(x){x.classList.toggle('on',x===b);});
+    $('fsOut').innerHTML=D[b.dataset.d];});});
+
+  /* ---- drill ---- */
+  var QS=[
+    ['Neprilysin inhibitor whose combination product carries a boxed fetal-toxicity warning.',['Sacubitril','Spironolactone','Milrinone','Hydralazine'],0,'<b>Sacubitril</b> (+ valsartan = ARNI).'],
+    ['SGLT2 inhibitor that lowers HF mortality with or without diabetes; counsel about perineal swelling.',['Dapagliflozin','Metformin','Spironolactone','Furosemide'],0,'<b>Dapagliflozin</b> ("-gliflozin"); Fournier gangrene risk.'],
+    ['Rales, JVD, pitting edema and SpO₂ 88%: the first drug to reduce preload.',['Furosemide','Dobutamine','Carvedilol','Digoxin'],0,'Congestion = ↑ preload → loop diuretic <b>furosemide</b>.'],
+    ['Loop diuretic for a patient with a severe sulfonamide allergy (board answer).',['Ethacrynic acid','Furosemide','Bumetanide','Torsemide'],0,'<b>Ethacrynic acid</b> is the non-sulfonamide loop.'],
+    ['Racemic catecholamine that acts clinically as a pure β1 agonist in decompensated HFrEF.',['Dobutamine','Norepinephrine','Phenylephrine','Isoproterenol'],0,'<b>Dobutamine</b>: the α effects of the two enantiomers cancel.'],
+    ['Raises contractility by blocking cAMP breakdown in the heart.',['Milrinone','Digoxin','Dobutamine','Sildenafil'],0,'PDE3 inhibitor → <b>milrinone</b> (or inamrinone).'],
+    ['ICU infusion that raised cGMP; the patient died with metabolic acidosis from cyanide.',['Nitroprusside','Nitroglycerin','Hydralazine','Milrinone'],0,'<b>Sodium nitroprusside</b> breaks down spontaneously, releasing NO and cyanide.'],
+    ['β-blocker in the HF regimen chosen because it also lowers afterload.',['Carvedilol','Atenolol','Esmolol','Propranolol'],0,'<b>Carvedilol</b> blocks α1 as well as β.'],
+    ['In Case 4, which drug raises K⁺ by lowering aldosterone production?',['Enalapril','Furosemide','Hydralazine','Nitroglycerin'],0,'<b>Enalapril</b> (ACEi): ↓ AT II → ↓ aldosterone → less ENaC-driven K⁺ secretion.'],
+    ['Aldosterone-receptor blocker that causes gynecomastia.',['Spironolactone','Eplerenone','Amiloride','Triamterene'],0,'<b>Spironolactone</b> also blocks androgen receptors.'],
+    ['Preload reducer that slides the patient down the same Frank-Starling curve.',['Furosemide','Enalapril','Dobutamine','Digoxin'],0,'Diuretics relieve congestion without ↑ CO → <b>furosemide</b>.'],
+    ['Vasopressor that perfuses organs in persistent shock but raises afterload and causes reflex bradycardia.',['Norepinephrine','Dobutamine','Milrinone','Nitroglycerin'],0,'<b>Norepinephrine</b>: α1 + β1, no β2.'],
+    ['Drug that must never be given with sildenafil.',['Nitroglycerin','Dobutamine','Furosemide','Carvedilol'],0,'Nitrate + PDE5 inhibitor → profound <b>hypotension</b>.']];
+  for(var i=QS.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=QS[i];QS[i]=QS[j];QS[j]=t;}
+  var qi=0,right=0,done=0;
+  function show(){ var q=QS[qi%QS.length]; $('hfQ').innerHTML='<b>'+((qi%QS.length)+1)+'.</b> '+q[0]; $('hfOut').innerHTML=''; var o=$('hfOpts'); o.innerHTML=''; delete o.dataset.answered;
+    var order=q[1].map(function(_,k){return k;}); for(var a=order.length-1;a>0;a--){var b=Math.floor(Math.random()*(a+1)),t=order[a];order[a]=order[b];order[b]=t;}
+    order.forEach(function(k){ var btn=document.createElement('button'); btn.className='tb'; btn.type='button'; btn.textContent=q[1][k]; btn.dataset.k=k;
+      btn.addEventListener('click',function(){ if(o.dataset.answered)return; o.dataset.answered='1'; done++;
+        if(k===q[2]){right++;btn.classList.add('right');$('hfOut').innerHTML='✅ '+q[3];}
+        else{btn.classList.add('wrong'); o.querySelector('[data-k="'+q[2]+'"]').classList.add('right'); $('hfOut').innerHTML='❌ '+q[3];}
+        $('hfScore').textContent=right+' / '+done+' correct'; });
+      o.appendChild(btn); }); }
+  $('hfNext').addEventListener('click',function(){qi++;show();}); show();
+})();
+</script>
+
+
+<div class="hy-modal" id="hyModal">
+  <div class="hy-modal-card">
+    <div class="hy-modal-header">
+      <h2>🎯 Heart Failure Pharmacology — High-Yield One-Pager</h2>
+      <div class="hy-modal-actions">
+        <button class="hy-action-btn" onclick="printHY()">🖨️ Print / Save PDF</button>
+        <button class="hy-action-btn hy-close-btn" onclick="closeHY()">✕ Close</button>
+      </div>
+    </div>
+    <p class="hy-subhead">Kyle R. Scully, PhD · OMK 2 Cardio · LO 1 drugs in HFrEF (mechanism, indication, AEs, interactions) → LO 2 apply to cases</p>
+    <div class="hy-cols">
+      <div>
+        <span class="hy-lo-tag">PHYSIOLOGY &amp; STRATEGY</span>
+        <div class="hy-block"><h4>The vicious cycle</h4><ul>
+          <li>↓ function → baroreflex → sympathetic: α vasoconstriction, β1 → renin → AT II (↑ afterload) → aldosterone (Na⁺ → ↑ preload) → ↑ O₂ demand → worse HF</li>
+          <li>Dilated atria resist natriuretic peptide → kidney keeps retaining Na⁺ → edema</li>
+          <li>Remodelling → ↓ compliance (PV-loop filling limb rises)</li>
+          <li>EF &lt; 40% reduced · ≥ 50% preserved · in between unclear</li>
+        </ul></div>
+        <div class="hy-block"><h4>Mortality vs symptoms</h4><ul>
+          <li><strong>Pillars (↓ mortality):</strong> ARNI/ACEi/ARB · β-blocker · spironolactone · SGLT2i (also HFpEF)</li>
+          <li><strong>Symptoms only:</strong> diuretics, digoxin, veno/vasodilators, aquaretics, sympathomimetic amines, PDE inhibitors</li>
+          <li>Combining → additive hypotension, arrhythmia, electrolytes, renal insufficiency</li>
+        </ul></div>
+        <div class="hy-block"><h4>Sequence (slides 12–13)</h4><ul>
+          <li><strong>Initial:</strong> ARNI/ACEi/ARB (or hydralazine + nitrate), β-blocker, spironolactone, SGLT2i, furosemide as needed</li>
+          <li><strong>Secondary:</strong> digoxin; hydralazine + long-acting nitrate</li>
+          <li>Decompensation: airway, O₂, monitor, IV, sit up, <strong>prompt diuretic, early vasodilator</strong>, urine output</li>
+          <li>Hypotension: volume → <strong>inotrope</strong> (SBP &lt; 85 / shock with adequate preload) → vasopressor (↑ afterload cost)</li>
+        </ul></div>
+        <div class="hy-block"><h4>Frank-Starling</h4><ul>
+          <li>A→B failure · B→C congestion · inotrope C→D→E · <strong>ACEi C→F (new curve)</strong> · <strong>diuretic C→G (same curve)</strong></li>
+        </ul></div>
+      </div>
+      <div>
+        <span class="hy-lo-tag">THE PILLARS</span>
+        <div class="hy-block"><h4>ARNI — sacubitril/valsartan</h4><ul>
+          <li>Neprilysin inhibition → ↑ natriuretic peptides, bradykinin, substance P + AT1 block</li>
+          <li>↓ CV death and hospitalisation in HFrEF</li>
+          <li>Hypotension, orthostasis, <strong>hyperkalemia</strong>; <strong>boxed: fetal toxicity</strong></li>
+        </ul></div>
+        <div class="hy-block"><h4>ACEi (enalapril) / ARB</h4><ul>
+          <li>↓ AT II → ↓ afterload + small diuresis (↓ aldosterone)</li>
+          <li><strong>Hyperkalemia</strong>; ACEi cough/angioedema; teratogenic; never two RAAS drugs</li>
+        </ul></div>
+        <div class="hy-block"><h4>β-blocker (carvedilol)</h4><ul>
+          <li>↓ O₂ demand, blunts sympathetic drive; <strong>α1 block → ↓ afterload</strong></li>
+        </ul></div>
+        <div class="hy-block"><h4>MRA (spironolactone)</h4><ul>
+          <li>Aldosterone receptor → ↓ ENaC; <strong>hyperkalemia</strong>; androgen block → <strong>gynecomastia</strong>, impotence, abnormal menses</li>
+        </ul></div>
+        <div class="hy-block"><h4>SGLT2i (dapagliflozin, empagliflozin)</h4><ul>
+          <li>SGLT2 block + poorly understood cardio-renal effects; T2DM, <strong>HFrEF with or without DM, HFpEF</strong></li>
+          <li>Renal impairment, infection, back pain, dysuria; <strong>perineal gangrene</strong> (counsel)</li>
+        </ul></div>
+        <div class="hy-block"><h4>Race</h4><ul>
+          <li>Avoiding RAAS drugs in Black patients = debunked; race-agnostic prescribing closes disparities</li>
+        </ul></div>
+      </div>
+      <div>
+        <span class="hy-lo-tag">THE CASES</span>
+        <div class="hy-block"><h4>1 · Congestion → furosemide</h4><ul>
+          <li>Rales, JVD, pitting edema, SpO₂ 88% = ↑ preload</li>
+          <li>NKCC2 in the TAL (~25–30% of Na⁺) → robust; tolerance → not for HTN</li>
+          <li>↓ K⁺, Na⁺, <strong>Ca²⁺, Mg²⁺</strong> (lost lumen-positive potential), <strong>hypokalemic alkalosis</strong>; K⁺ also lost via ENaC/ROMK</li>
+          <li><strong>Ototoxicity</strong> · sulfa allergy → <strong>ethacrynic acid</strong></li>
+        </ul></div>
+        <div class="hy-block"><h4>2 · Hypotension → dobutamine</h4><ul>
+          <li>Racemic → clinically <strong>pure β1</strong> → cAMP → PKA → Ca²⁺ channels, phospholamban/SERCA → more Ca²⁺ per beat</li>
+          <li>NE: α1 + β1, no β2 → ↑ afterload, <strong>reflex bradycardia</strong> · dopamine dose-dependent (renal → α) · milrinone/inamrinone = PDE3</li>
+        </ul></div>
+        <div class="hy-block"><h4>3 · cGMP + cyanide → nitroprusside</h4><ul>
+          <li>Spontaneous NO → arteries + veins (↓ afterload + preload); <strong>cyanide</strong> → metabolic acidosis</li>
+          <li>Organic nitrates need enzymatic activation (venous) → preload only</li>
+          <li><strong>PDE5 inhibitor + nitrate → refractory hypotension</strong></li>
+        </ul></div>
+        <div class="hy-block"><h4>4–5 · The regimen</h4><ul>
+          <li>Enalapril → <strong>hyperkalemia</strong> (↓ aldosterone → ↓ ENaC) · carvedilol = ↓ demand + ↓ afterload · spironolactone → gynecomastia</li>
+          <li>Case 5: dobutamine now; furosemide (+ nitrate) for the lungs; four pillars at home</li>
+        </ul></div>
+      </div>
+    </div>
+    <div class="hy-block" style="margin-top:4px;">
+      <h4>Master table — HF drugs</h4>
+      <table class="hy-mini-table">
+        <tr><th>Drug</th><th>Mechanism</th><th>Acts on</th><th>Mortality ↓</th><th>Watch for</th></tr>
+        <tr><td>Sacubitril/valsartan</td><td>Neprilysin + AT1 block</td><td>Afterload, preload</td><td>Yes</td><td>Hypotension, ↑ K⁺, fetal toxicity</td></tr>
+        <tr><td>Enalapril / ARB</td><td>↓ AT II / AT1 block</td><td>Afterload</td><td>Yes</td><td>↑ K⁺, cough, angioedema</td></tr>
+        <tr><td>Carvedilol</td><td>β + α1 block</td><td>Demand, afterload</td><td>Yes</td><td>Bradycardia, hypotension</td></tr>
+        <tr><td>Spironolactone</td><td>Aldosterone receptor</td><td>Preload</td><td>Yes</td><td>↑ K⁺, gynecomastia</td></tr>
+        <tr><td>Dapagliflozin</td><td>SGLT2</td><td>Cardio-renal</td><td>Yes (HFrEF + HFpEF)</td><td>Infection, perineal gangrene</td></tr>
+        <tr><td>Furosemide</td><td>NKCC2</td><td>Preload</td><td>No</td><td>↓ K⁺ Ca²⁺ Mg²⁺, ototoxicity</td></tr>
+        <tr><td>Dobutamine · milrinone</td><td>β1 · PDE3</td><td>Contractility</td><td>No</td><td>Arrhythmia, hypotension</td></tr>
+        <tr><td>Digoxin</td><td>Na⁺/K⁺-ATPase</td><td>Contractility</td><td>No</td><td>Toxicity with low K⁺</td></tr>
+        <tr><td>Nitroglycerin · nitroprusside</td><td>NO → cGMP</td><td>Preload · both</td><td>No</td><td>PDE5 hypotension · cyanide</td></tr>
+        <tr><td>Hydralazine + ISDN</td><td>Arteriolar + venous dilation</td><td>Afterload + preload</td><td>Board: yes (A-HeFT)</td><td>Reflex tachycardia, lupus</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+<div class="lightbox" id="lightbox" aria-hidden="true"><img id="lightboxImg" alt="Zoomed figure"><div class="lightbox-cap" id="lightboxCap"></div></div>
+
+<div class="floating-left" id="floatingLeft">
+  <div class="tools-menu">
+    <button class="tool-btn backtop" id="backtopBtn">↑ Top</button>
+    <button class="tool-btn" id="nextQBtn">❓ Next question <span id="qCount"></span></button>
+    <button class="tool-btn" id="recallBtn">🙈 Recall mode <span id="rcCount"></span></button>
+  </div>
+  <button class="tool-btn tools-trigger" id="toolsTrigger" onclick="toggleToolsMenu()">🧰 Study<span class="dot"></span></button>
+</div>
+
+<div class="floating-stack">
+  <div class="theme-panel" id="themePanel">
+    <div class="theme-panel-title">Choose Theme</div>
+    <div class="theme-option active" data-theme="cardio" onclick="setTheme('cardio',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#fff7f7,#b51f3a 55%,#245f89)"></div>Cardio (Default)</div>
+    <div class="theme-option" data-theme="hemo" onclick="setTheme('hemo',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#170a0d,#ff6b6b)"></div>Hemo (Dark)</div>
+    <div class="theme-option" data-theme="paper" onclick="setTheme('paper',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#faf7f2,#1a1209)"></div>Paper</div>
+    <div class="theme-option" data-theme="night" onclick="setTheme('night',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#0f1923,#e8b84b)"></div>Night</div>
+    <div class="theme-option" data-theme="ocean" onclick="setTheme('ocean',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#eef7fb,#0a5286)"></div>Ocean</div>
+    <div class="theme-option" data-theme="forest" onclick="setTheme('forest',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#f2f7f0,#155c39)"></div>Forest</div>
+    <div class="theme-option" data-theme="sepia" onclick="setTheme('sepia',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#f7ecd9,#9c3b17)"></div>Sepia</div>
+    <div class="theme-option" data-theme="slate" onclick="setTheme('slate',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#f4f5f7,#9e2c0f)"></div>Slate</div>
+  </div>
+  <div class="font-btn-row">
+    <span class="font-label">Text</span>
+    <button class="font-btn" onclick="changeFontSize(1)" title="Increase font size">A+</button>
+    <span class="font-sep">|</span>
+    <button class="font-btn" onclick="changeFontSize(-1)" title="Decrease font size">A−</button>
+  </div>
+  <button class="theme-btn" id="themeBtn" onclick="toggleThemePanel()" title="Switch theme"><span>🎨</span><span>Theme</span></button>
+</div>
+
+<footer>
+  <div class="container">
+    <div>Built from <em>Pharmacologic Management of Heart Failure</em> (Kyle R. Scully, PhD, UNE COM; 22-slide student deck plus the lecture transcript, which carries the case answers). Figures are labeled with their source: lecture slides (Golan, <em>Principles of Pharmacology</em>), AMBOSS and <em>Cardiovascular Pathophysiology for Pre-Clinical Students</em>. No UWorld images. Items tagged "Board add-on" come from AMBOSS / board sources, not the lecture. Personal study notes; course material remains the copyright of its authors.</div>
+    <div>Shortcuts: <kbd>J</kbd>/<kbd>K</kbd> section · <kbd>Q</kbd> next question · <kbd>R</kbd> reveal · <kbd>Esc</kbd> close</div>
+  </div>
+</footer>
+
+<script>
+var STORAGE_THEME_KEY='cardio-w14-hf-pharm-theme';
+var STORAGE_FONT_KEY='cardio-w14-hf-pharm-font';
+var STORAGE_PROGRESS_KEY='cardio-w14-hf-pharm-progress';
+var DEFAULT_THEME='cardio';
+var SECTION_IDS=['orientation', 's1-patho', 's2-approach', 's3-sequence', 's4-pillars', 's5-starling', 's6-diuretics', 's7-inotropes', 's8-vasodilators', 's9-cases', 'practice', 'glossary'];
+
+var $  = function(s,r){return (r||document).querySelector(s);};
+var $$ = function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));};
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function storageGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+function storageSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+
+/* ============ theme ============ */
+var themePanelOpen=false;
+function toggleThemePanel(){themePanelOpen=!themePanelOpen;$('#themePanel').classList.toggle('open',themePanelOpen);}
+function syncThemeOptions(t){$$('.theme-option').forEach(function(o){o.classList.toggle('active',o.dataset.theme===t);});}
+function setTheme(t,el,skipStorage){
+  if(t===DEFAULT_THEME){document.documentElement.removeAttribute('data-theme');}
+  else{document.documentElement.setAttribute('data-theme',t);}
+  syncThemeOptions(t);
+  if(!skipStorage) storageSet(STORAGE_THEME_KEY,t);
+  setTimeout(function(){themePanelOpen=false;var p=$('#themePanel');if(p)p.classList.remove('open');},260);
+}
+document.addEventListener('click',function(e){
+  var p=$('#themePanel'),b=$('#themeBtn');
+  if(themePanelOpen&&p&&b&&!p.contains(e.target)&&!b.contains(e.target)){themePanelOpen=false;p.classList.remove('open');}
+});
+
+/* ============ font size ============ */
+var currentFontSize=16;
+function applyFontSize(size,skipStorage){
+  currentFontSize=Math.min(24,Math.max(12,Number(size)||16));
+  document.documentElement.style.fontSize=currentFontSize+'px';
+  document.body.style.fontSize=currentFontSize+'px';
+  if(!skipStorage)storageSet(STORAGE_FONT_KEY,currentFontSize);
+}
+function changeFontSize(d){applyFontSize(currentFontSize+d);}
+
+function initVisualState(){
+  var t=storageGet(STORAGE_THEME_KEY)||DEFAULT_THEME; setTheme(t,null,true);
+  var f=parseInt(storageGet(STORAGE_FONT_KEY),10);
+  applyFontSize(f&&f>=12&&f<=24?f:currentFontSize,true);
+}
+
+/* ============ lightbox ============ */
+function openLightbox(img){var lb=$('#lightbox');$('#lightboxImg').src=img.currentSrc||img.src;
+  $('#lightboxImg').alt=img.alt||'';
+  var cap=img.closest('figure')?img.closest('figure').querySelector('figcaption'):null;
+  $('#lightboxCap').innerHTML=cap?cap.innerHTML:'';
+  lb.classList.add('active');lb.setAttribute('aria-hidden','false');}
+function closeLightbox(){var lb=$('#lightbox');lb.classList.remove('active');
+  lb.setAttribute('aria-hidden','true');$('#lightboxImg').src='';}
+function initLightbox(){
+  $$('.slide-img').forEach(function(i){i.addEventListener('click',function(){openLightbox(i);});});
+  $('#lightbox').addEventListener('click',closeLightbox);
+}
+
+/* ============ scrollspy ============ */
+function initScrollspy(){
+  var links=$$('.toc-bar nav a'),map={},sections=[];
+  links.forEach(function(a){var id=a.getAttribute('href').slice(1),s=document.getElementById(id);
+    if(s){map[id]=a;sections.push(s);}});
+  if(!sections.length)return;
+  function update(){
+    var best=null,bestTop=-Infinity;
+    sections.forEach(function(s){var top=s.getBoundingClientRect().top;
+      if(top<=140&&top>bestTop){bestTop=top;best=s;}});
+    if(!best)best=sections[0];
+    links.forEach(function(a){a.classList.remove('active');});
+    if(map[best.id])map[best.id].classList.add('active');
+  }
+  window.addEventListener('scroll',update,{passive:true});update();
+}
+
+/* ============ reading progress ============ */
+function initProgress(){
+  var bar=$('#progressBar'),bt=$('#backtopBtn');
+  window.addEventListener('scroll',function(){
+    var h=document.documentElement,max=h.scrollHeight-h.clientHeight;
+    bar.style.width=(max>0?(h.scrollTop/max)*100:0)+'%';
+    if(bt)bt.classList.toggle('show',h.scrollTop>600);
+  },{passive:true});
+}
+
+/* ============ exam question reveal ============ */
+function initExamQ(){
+  $$('.exam-q').forEach(function(q){
+    var ans=q.querySelector('.answer'); if(!ans) return;
+    var b=document.createElement('button');b.className='reveal-btn';b.textContent='Reveal answer';
+    b.addEventListener('click',function(){q.classList.add('revealed');updateQCount();});
+    ans.parentNode.insertBefore(b,ans);
+  });
+  updateQCount();
+}
+function updateQCount(){
+  var all=$$('.exam-q'),done=all.filter(function(q){return q.classList.contains('revealed');});
+  var el=$('#qCount'); if(el) el.textContent=done.length+'/'+all.length;
+}
+function jumpToNextQ(){
+  var all=$$('.exam-q');if(!all.length)return;
+  var y=window.scrollY,pick=null;
+  var todo=all.filter(function(q){return !q.classList.contains('revealed');});
+  var pool=todo.length?todo:all;
+  for(var i=0;i<pool.length;i++){if(pool[i].getBoundingClientRect().top+y>y+120){pick=pool[i];break;}}
+  if(!pick)pick=pool[0];
+  var sec=pick.closest('.section');
+  if(sec&&sec.classList.contains('collapsed'))toggleSection(sec,false);
+  setTimeout(function(){
+    pick.scrollIntoView({behavior:'smooth',block:'center'});
+    pick.classList.remove('q-flash');void pick.offsetWidth;pick.classList.add('q-flash');
+  },sec&&sec.classList.contains('collapsed')?0:60);
+}
+
+/* ============ per-section progress ============ */
+var progress={};
+function loadProgress(){try{progress=JSON.parse(storageGet(STORAGE_PROGRESS_KEY)||'{}');}catch(e){progress={};}}
+function saveProgress(){storageSet(STORAGE_PROGRESS_KEY,JSON.stringify(progress));}
+function renderProgress(){
+  var reviewed=0;
+  SECTION_IDS.forEach(function(id){
+    var st=progress[id]||{},sec=document.getElementById(id);
+    if(st.reviewed)reviewed++;
+    if(sec){
+      var tools=sec.querySelector('.sec-tools');
+      if(tools){
+        tools.querySelector('.st-rev').classList.toggle('on',!!st.reviewed);
+        $$('.st-conf',tools).forEach(function(b){b.classList.toggle('on',+b.dataset.v===st.conf);});
+      }
+    }
+    var link=$('.toc-bar nav a[href="#'+id+'"]');
+    if(link){link.classList.toggle('done',!!st.reviewed);
+      link.classList.remove('conf-1','conf-2','conf-3');
+      if(st.conf)link.classList.add('conf-'+st.conf);}
+  });
+  var chip=$('#progressChip');
+  if(chip)chip.textContent=reviewed+'/'+SECTION_IDS.length+' reviewed';
+}
+function jumpToNextTodo(){
+  var target=null;
+  for(var i=0;i<SECTION_IDS.length&&!target;i++){var st=progress[SECTION_IDS[i]]||{};if(!st.reviewed)target=SECTION_IDS[i];}
+  for(var c=1;c<=2&&!target;c++){
+    for(var j=0;j<SECTION_IDS.length&&!target;j++){var s2=progress[SECTION_IDS[j]]||{};if(s2.conf===c)target=SECTION_IDS[j];}}
+  if(!target)target=SECTION_IDS[0];
+  var sec=document.getElementById(target); if(!sec)return;
+  if(sec.classList.contains('collapsed'))toggleSection(sec,false);
+  sec.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* ============ section tools + collapse ============ */
+function toggleSection(sec,force){
+  var willCollapse=(typeof force==='boolean')?force:!sec.classList.contains('collapsed');
+  sec.classList.toggle('collapsed',willCollapse);
+  var b=sec.querySelector('.st-collapse'); if(b)b.textContent=willCollapse?'▸ Expand':'▾ Collapse';
+}
+function toggleAllSections(){
+  var anyOpen=SECTION_IDS.some(function(id){var s=document.getElementById(id);return s&&!s.classList.contains('collapsed');});
+  SECTION_IDS.forEach(function(id){var s=document.getElementById(id);if(s)toggleSection(s,anyOpen);});
+  var b=$('#collapseAllBtn'); if(b)b.textContent=anyOpen?'⊞ Expand all':'⊟ Collapse all';
+}
+function initSectionTools(){
+  SECTION_IDS.forEach(function(id){
+    var sec=document.getElementById(id); if(!sec)return;
+    var container=sec.querySelector('.container'); if(!container)return;
+    var anchor=container.querySelector('.section-title'); if(!anchor)return;
+    var tools=document.createElement('div');
+    tools.className='sec-tools';
+    tools.innerHTML='<button class="st-rev">✓ Reviewed</button>'+
+      '<span class="st-lab">confidence</span>'+
+      '<button class="st-conf" data-v="1">\u{1F534} Shaky</button>'+
+      '<button class="st-conf" data-v="2">\u{1F7E1} Okay</button>'+
+      '<button class="st-conf" data-v="3">\u{1F7E2} Solid</button>'+
+      '<button class="st-collapse">▾ Collapse</button>';
+    anchor.parentNode.insertBefore(tools,anchor.nextSibling);
+    var note=document.createElement('div');
+    note.className='recall-note';
+    note.textContent='RECALL MODE — every bolded fact below is hidden. Say the answer out loud, then click the block to check it.';
+    tools.parentNode.insertBefore(note,tools.nextSibling);
+    var outer=document.createElement('div');outer.className='sec-body-outer';
+    var inner=document.createElement('div');inner.className='sec-body-inner';
+    outer.appendChild(inner);
+    while(note.nextSibling) inner.appendChild(note.nextSibling);
+    container.appendChild(outer);
+    tools.querySelector('.st-rev').addEventListener('click',function(){
+      progress[id]=progress[id]||{};progress[id].reviewed=!progress[id].reviewed;saveProgress();renderProgress();});
+    $$('.st-conf',tools).forEach(function(b){
+      b.addEventListener('click',function(){
+        progress[id]=progress[id]||{};
+        progress[id].conf=(progress[id].conf===+b.dataset.v)?0:+b.dataset.v;
+        saveProgress();renderProgress();});
+    });
+    tools.querySelector('.st-collapse').addEventListener('click',function(){toggleSection(sec);});
+  });
+  renderProgress();
+}
+
+/* ============ recall mode ============ */
+var recallMode=false;
+function recallTargets(){
+  return $$('.sec-body-inner :is(p,li,td,h4,dd) strong').filter(function(s){
+    return !s.closest('.exam-q')&&!s.closest('.tq-bar')&&!s.closest('.game')&&!s.closest('.abbr-strip')&&!s.closest('.legend')&&!s.closest('.watch');});
+}
+function updateRecallCount(){
+  var t=recallTargets(),o=t.filter(function(s){return s.classList.contains('rc-open');});
+  var el=$('#rcCount'); if(el) el.textContent=recallMode?(o.length+'/'+t.length):'';
+}
+function toggleRecall(){
+  recallMode=!recallMode;
+  document.body.classList.toggle('recall-mode',recallMode);
+  $('#recallBtn').classList.toggle('on',recallMode);
+  if(!recallMode) recallTargets().forEach(function(s){s.classList.remove('rc-open');});
+  else{
+    var allCollapsed=SECTION_IDS.every(function(id){var s=document.getElementById(id);return !s||s.classList.contains('collapsed');});
+    if(allCollapsed) toggleAllSections();
+  }
+  syncToolsDot();updateRecallCount();
+}
+function initRecall(){
+  document.addEventListener('click',function(e){
+    if(!recallMode)return;
+    var s=e.target.closest?e.target.closest('strong'):null;
+    if(!s||s.classList.contains('rc-open'))return;
+    if(s.closest('.exam-q')||s.closest('.game')||s.closest('.abbr-strip'))return;
+    if(!s.closest('.sec-body-inner'))return;
+    e.stopPropagation();s.classList.add('rc-open');updateRecallCount();
+  },true);
+}
+function syncToolsDot(){var t=$('#toolsTrigger');if(t)t.classList.toggle('busy',recallMode);}
+function toggleToolsMenu(){$('#floatingLeft').classList.toggle('open');}
+
+/* ============ HY one-pager ============ */
+function openHY(){var m=$('#hyModal');if(!m)return;m.classList.add('open');
+  document.body.classList.add('hy-mode');document.body.style.overflow='hidden';}
+function closeHY(){var m=$('#hyModal');if(!m)return;m.classList.remove('open');
+  document.body.classList.remove('hy-mode');document.body.style.overflow='';}
+function printHY(){window.print();}
+
+/* ============ table quiz ============ */
+function initTableQuiz(){
+  $$('table').forEach(function(table){
+    if(table.classList.contains('hy-mini-table'))return;
+    if(table.closest('.game'))return;
+    var headRow=table.rows[0]; if(!headRow)return;
+    var headers=Array.prototype.slice.call(headRow.cells).map(function(c){return c.textContent.trim();});
+    if(headers.length<2)return;
+    var bar=document.createElement('div');bar.className='tq-bar';
+    var toggle=document.createElement('button');toggle.className='tq-toggle';toggle.textContent='\u{1F9E9} Quiz this table';
+    var cols=document.createElement('div');cols.className='tq-cols';cols.style.display='none';
+    var start=document.createElement('button');start.className='tq-start';start.textContent='▶ Start';
+    start.disabled=true;start.style.display='none';
+    var shuf=document.createElement('button');shuf.className='tq-shuffle';shuf.textContent='\u{1F500} Shuffle rows';shuf.style.display='none';
+    var reset=document.createElement('button');reset.className='tq-reset';reset.textContent='↺ Reset';reset.style.display='none';
+    var score=document.createElement('span');score.className='tq-score';
+    bar.appendChild(toggle);bar.appendChild(cols);bar.appendChild(shuf);bar.appendChild(start);bar.appendChild(reset);bar.appendChild(score);
+    var host=table.parentNode.classList.contains('tbl-scroll')?table.parentNode:table;
+    host.parentNode.insertBefore(bar,host);
+
+    var sel=new Set(),running=false,hidden=[],revealed=0,originalOrder=null;
+    headers.forEach(function(h,i){
+      var b=document.createElement('button');b.className='tq-col-btn';b.textContent=h||('col '+(i+1));
+      b.addEventListener('click',function(){
+        if(running)return;
+        if(sel.has(i)){sel.delete(i);b.classList.remove('sel');}else{sel.add(i);b.classList.add('sel');}
+        start.disabled=sel.size===0;
+      });
+      cols.appendChild(b);
+    });
+    function dataRows(){
+      var parent=table.tBodies[0]||table;
+      return Array.prototype.slice.call(parent.rows).filter(function(r){return !r.querySelector('th')||r!==headRow;})
+        .filter(function(r){return r!==headRow;});
+    }
+    toggle.addEventListener('click',function(){
+      var open=cols.style.display==='none';
+      cols.style.display=open?'flex':'none';
+      start.style.display=shuf.style.display=open?'':'none';
+      toggle.classList.toggle('active',open);
+      toggle.textContent=open?'✕ Close quiz':'\u{1F9E9} Quiz this table';
+      if(!open)doReset();
+    });
+    shuf.addEventListener('click',function(){
+      var parent=table.tBodies[0]||table;
+      var rows=dataRows();
+      if(!originalOrder)originalOrder=rows.slice();
+      shuffle(rows).forEach(function(r){parent.appendChild(r);});
+    });
+    function updateScore(){
+      score.textContent=revealed+' / '+hidden.length+' revealed';
+      score.classList.toggle('done',hidden.length>0&&revealed===hidden.length);
+      if(hidden.length>0&&revealed===hidden.length)score.textContent='\u{1F389} '+revealed+' / '+hidden.length;
+    }
+    start.addEventListener('click',function(){
+      if(running||!sel.size)return;
+      running=true;hidden=[];revealed=0;
+      dataRows().forEach(function(r){
+        Array.prototype.slice.call(r.cells).forEach(function(c,i){
+          if(!sel.has(i)||!c.textContent.trim())return;
+          var w=document.createElement('span');w.className='tq-cell-content';w.innerHTML=c.innerHTML;
+          c.innerHTML='';c.appendChild(w);c.classList.add('quiz-hidden-cell');
+          c.dataset.tqOrig=w.innerHTML;
+          hidden.push(c);
+        });
+      });
+      reset.style.display='';start.disabled=true;updateScore();
+    });
+    table.addEventListener('click',function(e){
+      var c=e.target.closest?e.target.closest('td.quiz-hidden-cell'):null;
+      if(!c)return;
+      c.classList.remove('quiz-hidden-cell');c.innerHTML=c.dataset.tqOrig;revealed++;updateScore();
+    });
+    function doReset(){
+      hidden.forEach(function(c){if(c.classList.contains('quiz-hidden-cell')){c.classList.remove('quiz-hidden-cell');c.innerHTML=c.dataset.tqOrig;}});
+      if(originalOrder){var parent=table.tBodies[0]||table;originalOrder.forEach(function(r){parent.appendChild(r);});}
+      hidden=[];revealed=0;running=false;score.textContent='';score.classList.remove('done');
+      start.disabled=sel.size===0;reset.style.display='none';
+    }
+    reset.addEventListener('click',doReset);
+  });
+}
+
+/* ============ keyboard shortcuts ============ */
+function initKeys(){
+  document.addEventListener('keydown',function(e){
+    if(e.metaKey||e.ctrlKey||e.altKey)return;
+    var t=e.target,tag=t&&t.tagName;
+    if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT'||(t&&t.isContentEditable))return;
+    var hy=$('#hyModal');
+    if(e.key==='Escape'){ if(hy&&hy.classList.contains('open'))closeHY(); closeLightbox(); return; }
+    if(hy&&hy.classList.contains('open'))return;
+    var k=e.key.toLowerCase();
+    if(k==='q'){e.preventDefault();jumpToNextQ();return;}
+    if(k==='r'){
+      e.preventDefault();
+      var best=null,bd=Infinity,mid=window.innerHeight/2;
+      $$('.exam-q').forEach(function(q){var d=Math.abs(q.getBoundingClientRect().top+q.offsetHeight/2-mid);
+        if(d<bd){bd=d;best=q;}});
+      if(best){best.classList.add('revealed');updateQCount();}
+      return;
+    }
+    if(k==='j'||k==='k'){
+      e.preventDefault();
+      var y=window.scrollY+window.innerHeight*0.3,cur=0;
+      SECTION_IDS.forEach(function(id,i){var s=document.getElementById(id);if(s&&s.offsetTop<=y)cur=i;});
+      var nx=k==='j'?Math.min(SECTION_IDS.length-1,cur+1):Math.max(0,cur-1);
+      var target=document.getElementById(SECTION_IDS[nx]);
+      if(target)target.scrollIntoView({behavior:'smooth',block:'start'});
+    }
+  });
+}
+
+
+/* ============ lazy figures: fade in when loaded; force-load everything before printing ============ */
+function initLazyFigures(){
+  $$('.fig-frame img').forEach(function(img){
+    var done=function(){img.parentNode.classList.add('loaded');};
+    if(img.complete&&img.naturalWidth)done();
+    else{img.addEventListener('load',done);img.addEventListener('error',done);}
+  });
+  window.addEventListener('beforeprint',function(){$$('img[loading="lazy"]').forEach(function(i){i.loading='eager';});});
+}
+/* ============ video facade: swap the thumbnail for the real player only on click ============ */
+function initVideos(){
+  $$('.vid').forEach(function(b){
+    b.addEventListener('click',function(){
+      if(b.classList.contains('playing'))return;
+      var f=document.createElement('iframe');
+      f.src='https://www.youtube-nocookie.com/embed/'+b.dataset.yt+'?autoplay=1&rel=0';
+      f.title=b.dataset.title||'Video';
+      f.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+      f.allowFullscreen=true;
+      var t=b.querySelector('.vid-thumb');t.replaceWith(f);b.classList.add('playing');
+    });
+  });
+}
+
+/* ============ boot ============ */
+document.addEventListener('DOMContentLoaded',function(){
+  initVisualState();
+  loadProgress();
+  initSectionTools();
+  initExamQ();
+  initTableQuiz();
+  initLightbox();
+  initLazyFigures();
+  initVideos();
+  initScrollspy();
+  initProgress();
+  initRecall();
+  initKeys();
+  var hy=$('#hyModal');
+  if(hy) hy.addEventListener('click',function(e){if(e.target===this)closeHY();});
+  var rb=$('#recallBtn'); if(rb) rb.addEventListener('click',toggleRecall);
+  var nq=$('#nextQBtn'); if(nq) nq.addEventListener('click',jumpToNextQ);
+  var bt=$('#backtopBtn'); if(bt) bt.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});
+  document.addEventListener('click',function(e){
+    var fl=$('#floatingLeft');
+    if(fl&&fl.classList.contains('open')&&!fl.contains(e.target))fl.classList.remove('open');
+  });
+});
+
+
+
+
+</script>
+</body>
+</html>
