@@ -38,6 +38,31 @@ body.nbme-lock{overflow:hidden}
 .setup-sub{font-size:15px;color:rgba(255,255,255,.65);line-height:1.6}
 
 .setup-body{padding:32px 36px 36px}
+.nbme-bank-card{margin:0 0 28px;padding:24px;border:1px solid rgba(26,122,109,.2);border-radius:18px;background:linear-gradient(135deg,#f2faf7,#f8fbff)}
+.nbme-bank-card h2{margin:0 0 6px;color:var(--navy);font-size:22px}
+.nbme-bank-card p{margin:0 0 16px;color:var(--slate);line-height:1.5}
+.nbme-bank-controls{display:flex;flex-wrap:wrap;gap:12px;align-items:end}
+.nbme-bank-controls label{display:grid;gap:6px;min-width:140px;flex:1;font-size:12px;font-weight:800;color:var(--slate)}
+.nbme-bank-controls select{width:100%;min-height:43px;padding:8px 10px;border:1px solid var(--rule);border-radius:9px;background:var(--white);color:var(--ink);font:inherit;font-size:14px}
+.nbme-bank-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:17px}
+.nbme-bank-actions button{min-height:44px;padding:10px 15px;border:0;border-radius:10px;background:var(--navy);color:#fff;font:inherit;font-weight:800;cursor:pointer}
+.nbme-bank-actions button.secondary{background:#287e70}
+.nbme-bank-actions button:disabled{opacity:.45;cursor:not-allowed}
+.nbme-bank-note{margin:12px 0 0!important;font-size:12px}
+.nbme-import-label{margin-bottom:10px;font-size:13px;font-weight:800;color:var(--slate)}
+.nbme-ocr-stem{white-space:normal;line-height:1.6}
+.nbme-ocr-stem p{margin:0}
+.nbme-ocr-stem p+p{margin-top:.75em}
+.nbme-ocr-values{margin:.75em 0;padding:.65em .9em;border-left:3px solid var(--rule);background:var(--warm);line-height:1.55}
+.nbme-ocr-values>div{margin:.12em 0}
+.nbme-table-scroll{max-width:100%;overflow-x:auto;margin:.9em 0}
+.nbme-stem-table{border-collapse:collapse;min-width:410px;font-size:.88em;line-height:1.4}
+.nbme-stem-table th,.nbme-stem-table td{padding:.3em .6em;border:1px solid var(--rule);text-align:right;white-space:nowrap}
+.nbme-stem-table th:first-child,.nbme-stem-table td:first-child{text-align:left}
+.nbme-stem-table thead,.nbme-stem-table tbody tr:nth-child(even){background:var(--warm)}
+.nbme-import-image{display:block;width:auto;max-width:100%;height:auto;border:1px solid var(--rule);background:#fff}
+.nbme-source-image-link{display:block;margin-top:16px;cursor:zoom-in}
+.nbme-ocr-note{margin:12px 0 0;color:var(--slate);font-size:12px}
 
 /* instruction steps */
 .how-title{font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--mist);margin-bottom:16px}
@@ -637,6 +662,20 @@ body.nbme-lock{overflow:hidden}
   <div class="setup-body">
 <label class="reading-theme">Theme <select aria-label="Theme" data-reading-theme onchange="setReadingTheme(this.value)"><option value="light">Light</option><option value="dark">Dark</option><option value="soft">Easy on the eyes</option></select></label>
 
+    <section class="nbme-bank-card" id="nbmeBankCard" hidden>
+      <h2>NBME question bank</h2>
+      <p>Practice with searchable question and answer text from your NBME files. Figures and diagrams appear as cropped images when present.</p>
+      <div class="nbme-bank-controls">
+        <label>Form <select id="nbmeBankForm" onchange="syncNbmeBankSelector()"></select></label>
+        <label>Block <select id="nbmeBankBlock" onchange="syncNbmeBankSelector()"></select></label>
+      </div>
+      <div class="nbme-bank-actions">
+        <button id="nbmeBankPractice" type="button" onclick="launchNbmeBank(false)">Practice keyed questions</button>
+        <button class="secondary" type="button" onclick="launchNbmeBank(true)">Review all questions</button>
+      </div>
+      <p class="nbme-bank-note" id="nbmeBankNote"></p>
+    </section>
+
     <div class="how-title">How it works</div>
     <div class="steps">
       <div class="step">
@@ -970,6 +1009,7 @@ body.nbme-lock{overflow:hidden}
 <dialog class="study-window" id="studyCalculator" aria-labelledby="studyCalculatorTitle"><header class="study-window-head" tabindex="0" aria-label="Move calculator. Drag or use arrow keys."><span class="study-window-title"><span class="study-drag-dots" aria-hidden="true">⠿</span><span id="studyCalculatorTitle">Calculator</span></span><button class="study-window-close" type="button" aria-label="Close calculator" onclick="closeStudyWindow('studyCalculator')">×</button></header><div class="study-window-body"><label for="calculatorInput">Expression</label><div class="calc-display"><div class="calc-history" id="calculatorHistory"></div><input id="calculatorInput" type="text" autocomplete="off" spellcheck="false" placeholder="0" maxlength="300"></div><div class="calc-parentheses"><button type="button" onclick="calculatorKey('(')">(</button><button type="button" onclick="calculatorKey(')')">)</button><span>% divides by 100</span></div><div class="calculator-grid"><button type="button" class="calc-clear" aria-label="Clear calculator" onclick="calculatorKey('C')">AC</button><button type="button" class="calc-clear" aria-label="Backspace" onclick="calculatorKey('⌫')">⌫</button><button type="button" class="calc-operation"  onclick="calculatorKey('%')">%</button><button type="button" class="calc-operation"  onclick="calculatorKey('÷')">÷</button><button type="button" class=""  onclick="calculatorKey('7')">7</button><button type="button" class=""  onclick="calculatorKey('8')">8</button><button type="button" class=""  onclick="calculatorKey('9')">9</button><button type="button" class="calc-operation"  onclick="calculatorKey('×')">×</button><button type="button" class=""  onclick="calculatorKey('4')">4</button><button type="button" class=""  onclick="calculatorKey('5')">5</button><button type="button" class=""  onclick="calculatorKey('6')">6</button><button type="button" class="calc-operation"  onclick="calculatorKey('−')">−</button><button type="button" class=""  onclick="calculatorKey('1')">1</button><button type="button" class=""  onclick="calculatorKey('2')">2</button><button type="button" class=""  onclick="calculatorKey('3')">3</button><button type="button" class="calc-operation"  onclick="calculatorKey('+')">+</button><button type="button" class="" aria-label="Change sign" onclick="calculatorKey('±')">±</button><button type="button" class=""  onclick="calculatorKey('0')">0</button><button type="button" class=""  onclick="calculatorKey('.')">.</button><button type="button" class="calc-equals"  onclick="calculatorKey('=')">=</button></div><output class="calc-result" id="calculatorResult" aria-live="polite">Enter = calculate · Esc = close</output></div></dialog>
 <dialog class="study-window notes-window" id="studyNotes" aria-labelledby="studyNotesTitle"><header class="study-window-head" tabindex="0" aria-label="Move notes. Drag or use arrow keys."><span class="study-window-title"><span class="study-drag-dots" aria-hidden="true">⠿</span><span id="studyNotesTitle">Notes</span></span><button class="study-window-close" type="button" aria-label="Close notes" onclick="closeStudyWindow('studyNotes')">×</button></header><div class="study-window-body"><label for="studyNotesInput" id="studyNotesLabel">Current question</label><textarea id="studyNotesInput" placeholder="Your reasoning, reminders, and takeaways…" oninput="saveQuestionNote(Number(this.dataset.question),this.value)"></textarea><p class="notes-status" id="studyNotesStatus" role="status">Saved with your quiz progress · Included in summary exports.</p></div></dialog>
 
+<script src="assets/nbme/question_bank_ocr.js"></script>
 <script>
 
 // Themes are shared across quizzes; notes belong to the saved question order.
@@ -1118,8 +1158,8 @@ var highlightColor='#fff173', annotationRange=null, annotationRoot=null, suppres
 var labUnitMode='us';
 var timerSec=0,timerRunning=false,timerInterval=null;
 var fontStep=0;
-var LETTERS=['A','B','C','D','E','F','G','H'];
-var MAX_ANSWER_CHOICES=8;
+var LETTERS=['A','B','C','D','E','F','G','H','I','J','K','L'];
+var MAX_ANSWER_CHOICES=12;
 var PRELOADED_QUIZ_NAME="__QUIZ_BUILDER_PRELOADED_NAME__";
 var PRELOADED_QUESTIONS_JSON="__QUIZ_BUILDER_PRELOADED_QUESTIONS__";
 var PRELOADED_UI_MODE="__QUIZ_BUILDER_PRELOADED_UI_MODE__";
@@ -1452,10 +1492,11 @@ function cloneQuestion(q){
   return {
     stem:String(q.stem||''),
     choices:Array.isArray(q.choices)?q.choices.map(String):[],
-    correct:typeof q.correct==='number'?q.correct:(parseInt(q.correct,10)||0),
+    correct:q.correct===null?null:(typeof q.correct==='number'?q.correct:(parseInt(q.correct,10)||0)),
     explanation:String(q.explanation||''),
     wrongExplanations:Object.assign({},q.wrongExplanations||{}),
-    eli5:String(q.eli5||'')
+    eli5:String(q.eli5||''),
+    fixedChoices:!!q.fixedChoices
   };
 }
 function buildWrongExplanationLookup(rawChoices, rawCorrect, wrongExplanations){
@@ -1474,6 +1515,7 @@ function buildWrongExplanationLookup(rawChoices, rawCorrect, wrongExplanations){
 }
 function randomizeQuestionChoices(q){
   var source=cloneQuestion(q);
+  if(source.fixedChoices||source.correct===null)return source;
   var choiceMeta=source.choices.map(function(choiceText,idx){
     return {
       text:String(choiceText||''),
@@ -1498,8 +1540,9 @@ function randomizeQuestionsForSession(list){
 function normQ(q){
   if(!q.stem||!Array.isArray(q.choices)||q.choices.length<2)return null;
   var allChoices=q.choices.map(String);
-  var srcCorrect=typeof q.correct==='number'?q.correct:(parseInt(q.correct)||0);
-  if(srcCorrect<0||srcCorrect>=allChoices.length)srcCorrect=0;
+  var unkeyed=q.correct===null;
+  var srcCorrect=unkeyed?null:(typeof q.correct==='number'?q.correct:(parseInt(q.correct)||0));
+  if(!unkeyed&&(srcCorrect<0||srcCorrect>=allChoices.length))srcCorrect=0;
   // Resolve the wrong-answer explanations against the ORIGINAL choice indexes first,
   // then remap them, so dropping blanks below cannot shift them onto the wrong option.
   var srcLookup=buildWrongExplanationLookup(allChoices, srcCorrect, q.wrongExplanations);
@@ -1517,12 +1560,12 @@ function normQ(q){
     rawChoices.push(choiceText);
   });
   if(rawChoices.length<2)return null;
-  if(rawCorrect<0||rawCorrect>=rawChoices.length)rawCorrect=0;
+  if(!unkeyed&&(rawCorrect<0||rawCorrect>=rawChoices.length))rawCorrect=0;
   var wrongLookup=rawLookup;
-  var nq={stem:String(q.stem),choices:[],correct:0,explanation:String(q.explanation||''),wrongExplanations:{},eli5:String(q.eli5||'')};
+  var nq={stem:String(q.stem),choices:[],correct:unkeyed?null:0,explanation:String(q.explanation||''),wrongExplanations:{},eli5:String(q.eli5||''),fixedChoices:!!q.fixedChoices};
   rawChoices.forEach(function(choiceText,idx){
     nq.choices.push(choiceText);
-    if(idx===rawCorrect)nq.correct=idx;
+    if(!unkeyed&&idx===rawCorrect)nq.correct=idx;
     else if(wrongLookup[String(idx)])nq.wrongExplanations[String(idx)]=String(wrongLookup[String(idx)]);
   });
   return nq;
@@ -1764,6 +1807,45 @@ function startQuiz(valid,name){
   renderQ();
   if(restored)showToast('Previous session restored — press Reset for a fresh attempt.','ok');
 }
+var nbmeBankLastForm=null;
+function initializeNbmeBank(){
+  var list=window.NBME_QUESTION_BANK;
+  if(!Array.isArray(list)||!list.length)return;
+  var card=document.getElementById('nbmeBankCard');
+  var formSelect=document.getElementById('nbmeBankForm');
+  var forms=[...new Set(list.map(function(q){return q.form;}))].sort(function(a,b){return a-b;});
+  formSelect.innerHTML=forms.map(function(form){return '<option value="'+form+'">NBME '+form+'</option>';}).join('');
+  card.hidden=false;
+  syncNbmeBankSelector();
+}
+function syncNbmeBankSelector(){
+  var list=window.NBME_QUESTION_BANK||[];
+  var form=Number(document.getElementById('nbmeBankForm').value);
+  var blockSelect=document.getElementById('nbmeBankBlock');
+  if(form!==nbmeBankLastForm){
+    var blocks=[...new Set(list.filter(function(q){return q.form===form;}).map(function(q){return q.block;}))].sort(function(a,b){return a-b;});
+    blockSelect.innerHTML='<option value="all">All blocks</option>'+blocks.map(function(block){return '<option value="'+block+'">Block '+block+'</option>';}).join('');
+    nbmeBankLastForm=form;
+  }
+  var block=blockSelect.value;
+  var selected=list.filter(function(q){return q.form===form&&(block==='all'||q.block===Number(block));});
+  var keyed=selected.filter(function(q){return q.correct!==null;}).length;
+  var missing=selected.length-keyed;
+  document.getElementById('nbmeBankPractice').disabled=keyed===0;
+  document.getElementById('nbmeBankNote').textContent=selected.length+' questions available · '+keyed+' with an answer key · '+missing+' for review only. Explanations are blank.';
+}
+function launchNbmeBank(includeUnkeyed){
+  var list=window.NBME_QUESTION_BANK||[];
+  var form=Number(document.getElementById('nbmeBankForm').value);
+  var block=document.getElementById('nbmeBankBlock').value;
+  var selected=list.filter(function(q){
+    return q.form===form&&(block==='all'||q.block===Number(block))&&(includeUnkeyed||q.correct!==null);
+  });
+  if(!selected.length){showErr('No keyed questions are available in this selection. Use Review all questions.');return;}
+  selectLaunchUI('nbme');
+  var name='NBME '+form+' · '+(block==='all'?'All blocks':'Block '+block)+(includeUnkeyed?' · Review':' · Practice');
+  startQuiz(selected,name);
+}
 function getQuizPayload(){
   if(Array.isArray(questionBank)&&questionBank.length){
     return {name:getQuizTitle(),questions:questionBank.map(function(q){return cloneQuestion(q);})};
@@ -1892,7 +1974,7 @@ function launchQuiz(){
 
 // ── STATE HELPERS ──
 function stripChoiceLabel(text){
-  return String(text||'').replace(/^[A-H]\.\s*/i,'');
+  return String(text||'').replace(/^[A-L]\.\s*/i,'');
 }
 function choiceLetter(index){
   return LETTERS[index]||String.fromCharCode(65+index);
@@ -1926,16 +2008,17 @@ function updateScoreCounts(){
   NI=0;
   Object.keys(answers).forEach(function(key){
     if(answers[key].r==='c')NC++;
-    else NI++;
+    else if(answers[key].r==='i'||answers[key].r==='u')NI++;
   });
 }
 function getScorePercent(){
-  var denom=(quizMode==='exam'&&examSubmitted)?questions.length:(NC+NI);
+  var denom=NC+NI;
   return denom?Math.round(NC/denom*100):'—';
 }
 function getAnswerStateMeta(ans){
   if(!ans)return {label:'Pending',className:'unanswered'};
   if(ans.r==='c')return {label:'Correct',className:'correct'};
+  if(ans.r==='n')return {label:'No key',className:'unanswered'};
   if(ans.r==='u')return {label:'No Answer',className:'unanswered'};
   return {label:'Incorrect',className:'incorrect'};
 }
@@ -1953,7 +2036,7 @@ function buildReviewSheetItemsHTML(){
   return questions.map(function(q,index){
     var ans=answers[index];
     var meta=getAnswerStateMeta(ans);
-    var correctLetter=choiceLetter(q.correct);
+    var correctLetter=q.correct===null?'Not available':choiceLetter(q.correct);
     return `<article class="sum-item ${meta.className}">
       <div class="sum-meta">
         <div class="sum-num">Question ${index+1}</div>
@@ -1967,7 +2050,7 @@ function buildReviewSheetItemsHTML(){
         ${questionNotes[index]?'<div class="sum-section"><div class="sum-label">My notes</div><div class="sum-text study-notes-text">'+escapeStudyText(questionNotes[index])+'</div></div>':''}
         <div class="sum-section">
           <div class="sum-label">Correct Answer Explanation</div>
-          <div class="sum-text">${q.explanation||'No explanation provided.'}</div>
+          <div class="sum-text">${q.correct===null?'No answer key supplied.':(q.explanation||'No explanation provided.')}</div>
         </div>
         <div class="sum-section">
           <div class="sum-label">ELI5</div>
@@ -2201,6 +2284,7 @@ function updScore(){
 }
 function buildExplanationHTML(q,ans){
   if(!ans)return '';
+  if(q.correct===null)return '<div class="exb vis"><div class="exs"><div class="exl">Answer key unavailable</div><div class="ext">This question was included for review and is not graded.</div></div></div>';
   var correctLetter=choiceLetter(q.correct);
   var selectedLetter=(ans.s!==null&&ans.s!==undefined)?choiceLetter(ans.s):'';
   var myWrong='';
@@ -2222,7 +2306,7 @@ function buildExplanationHTML(q,ans){
   }
   var eli5=q.eli5?`<div class="exs exe"><div class="exl">💡 ELI5</div><div class="ext">${q.eli5}</div></div>`:'';
   return `<div class="exb vis">
-    <div class="exs exc"><div class="exl">✓ Why ${correctLetter} is Correct</div><div class="ext">${q.explanation}</div></div>
+    <div class="exs exc"><div class="exl">✓ ${q.explanation?'Why '+correctLetter+' is Correct':'Correct answer: '+correctLetter}</div>${q.explanation?'<div class="ext">'+q.explanation+'</div>':''}</div>
     ${myWrong}${others}${eli5}
   </div>`;
 }
@@ -2230,7 +2314,7 @@ function buildClassicDots(){
   return questions.map(function(_,i){
     var classes=['qd'];
     if(i===CQ)classes.push('on');
-    if(answers[i])classes.push(answers[i].r==='c'?'dc':'di');
+    if(answers[i]&&answers[i].r!=='n')classes.push(answers[i].r==='c'?'dc':'di');
     else if(selected[i]!==undefined)classes.push('asel');
     if(marked[i])classes.push('mk');
     return `<button class="${classes.join(' ')}" onclick="goQ(${i})" title="Q${i+1}"></button>`;
@@ -2247,8 +2331,8 @@ function buildClassicQuestion(){
     var classes=['ac'];
     if(ans){
       classes.push('dis');
-      if(ci===q.correct)classes.push('cor');
-      else if(ans.s!==null&&ci===ans.s)classes.push('inc');
+      if(q.correct!==null&&ci===q.correct)classes.push('cor');
+      else if(q.correct!==null&&ans.s!==null&&ci===ans.s)classes.push('inc');
     }else if(sel===ci){
       classes.push('sel');
     }
@@ -2288,7 +2372,7 @@ function buildNbmeRail(){
     var classes=['nb-rail-btn'];
     if(i===CQ&&!reviewOpen)classes.push('current');
     if(answers[i]||selected[i]!==undefined)classes.push('answered');
-    if(answers[i]&&answers[i].r&&answers[i].r!=='c'&&answers[i].r!=='u')classes.push('incorrect');
+    if(answers[i]&&answers[i].r&&answers[i].r!=='c'&&answers[i].r!=='u'&&answers[i].r!=='n')classes.push('incorrect');
     if(marked[i])classes.push('marked');
     return `<button class="${classes.join(' ')}" type="button" onclick="goQ(${i})" aria-label="Go to question ${i+1}">${i+1}</button>`;
   }).join('');
@@ -2304,8 +2388,8 @@ function buildNbmeQuestion(){
     if(ans)classes.push('locked');
     if(sel===ci)classes.push('selected');
     if(ans){
-      if(ci===q.correct)classes.push('correct');
-      else if(ans.s!==null&&ci===ans.s)classes.push('incorrect');
+      if(q.correct!==null&&ci===q.correct)classes.push('correct');
+      else if(q.correct!==null&&ans.s!==null&&ci===ans.s)classes.push('incorrect');
     }
     return `<div class="${classes.join(' ')}" onclick="pick(${ci})">
       <div class="nb-answer-glyph">${choiceLetter(ci)}</div>
@@ -2425,8 +2509,9 @@ function submitAns(){
     return;
   }
   if(answers[CQ])return;
-  var ok=selected[CQ]===questions[CQ].correct;
-  answers[CQ]={s:selected[CQ],r:ok?'c':'i'};
+  var keyed=questions[CQ].correct!==null;
+  var ok=keyed&&selected[CQ]===questions[CQ].correct;
+  answers[CQ]={s:selected[CQ],r:keyed?(ok?'c':'i'):'n'};
   updateScoreCounts();
   renderQ();
   if(quizMode==='learn'&&Object.keys(answers).length===questions.length)setTimeout(showFinish,300);
@@ -2440,7 +2525,9 @@ function submitExam(){
   NC=0;
   NI=0;
   questions.forEach(function(q,idx){
-    if(selected[idx]===undefined){
+    if(q.correct===null){
+      answers[idx]={s:selected[idx]===undefined?null:selected[idx],r:'n'};
+    }else if(selected[idx]===undefined){
       answers[idx]={s:null,r:'u'};
       NI++;
     }else{
@@ -2950,7 +3037,7 @@ document.addEventListener('keydown',function(event){
   if(event.key==='ArrowLeft')prevQ();
   if(event.key==='Enter'&&!answers[CQ]&&selected[CQ]!==undefined&&!reviewOpen){event.preventDefault();submitAns();return;}
   if((event.key==='m'||event.key==='M')&&!event.metaKey&&!event.ctrlKey){toggleMark();return;}
-  if(!answers[CQ]&&/^[a-hA-H]$/.test(event.key)){
+  if(!answers[CQ]&&/^[a-lA-L]$/.test(event.key)){
     var keyChoice=event.key.toUpperCase().charCodeAt(0)-65;
     if(keyChoice<questions[CQ].choices.length)pick(keyChoice);
   }
@@ -2968,6 +3055,7 @@ updScore();
 updTimer();
 applyFontSize();
 initStudyWindows();
+initializeNbmeBank();
 hydratePreloadedQuiz();
 </script>
 </body>

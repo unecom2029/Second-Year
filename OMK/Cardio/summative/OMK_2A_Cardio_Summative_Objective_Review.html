@@ -1,0 +1,2930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+(function(){
+  var NOTE_AUTH_KEY='une-study-hub-remembered-auth-v1';
+  var NOTE_LOGIN_URL='../../../index.html?login=notes';
+  /* Locked to Jeeval while the review is being built. Set the release date here when it is ready to share. */
+  var SUMMATIVE_RELEASE_AT=Date.parse('2099-01-01T00:00:00-05:00');
+  var SUMMATIVE_ALLOWED_EMAILS={'jmehta@une.edu':true};
+
+  function readCookie(name){
+    try{
+      var prefix=encodeURIComponent(name)+'=';
+      var parts=String(document.cookie||'').split(';');
+      for(var i=0;i<parts.length;i++){
+        var part=parts[i].trim();
+        if(part.indexOf(prefix)===0)return decodeURIComponent(part.slice(prefix.length));
+      }
+    }catch(err){}
+    return null;
+  }
+  function readAuthPayload(){
+    try{
+      var stored=localStorage.getItem(NOTE_AUTH_KEY);
+      if(stored)return stored;
+    }catch(err){}
+    return readCookie(NOTE_AUTH_KEY);
+  }
+  function getAuthState(){
+    var raw=readAuthPayload();
+    if(!raw)return {allowed:false,reason:'login'};
+    try{
+      var parsed=JSON.parse(raw);
+      var email=String(parsed&&parsed.email||'').trim().toLowerCase();
+      var expiresAt=Number(parsed&&parsed.expiresAt);
+      if(!/@une\.edu$/.test(email)||!expiresAt||Date.now()>=expiresAt)return {allowed:false,reason:'login'};
+      if(Date.now()<SUMMATIVE_RELEASE_AT&&!SUMMATIVE_ALLOWED_EMAILS[email]){
+        return {allowed:false,reason:'restricted'};
+      }
+      return {allowed:true,reason:'unlocked'};
+    }catch(err){return {allowed:false,reason:'login'};}
+  }
+  var PRINT_ALLOWED_EMAILS={'jmehta@une.edu':true};
+  function canJeevalPrint(){
+    /* Read the same payload the unlock gate uses: localStorage first, then the cookie.
+       A cookie-only check failed whenever the Study Hub login was remembered in
+       localStorage alone (for example when the file is opened straight from disk). */
+    var raw=readAuthPayload();
+    if(!raw)return false;
+    try{
+      var parsed=JSON.parse(raw);
+      var email=String(parsed&&parsed.email||'').trim().toLowerCase();
+      var expiresAt=Number(parsed&&parsed.expiresAt);
+      return PRINT_ALLOWED_EMAILS[email]===true&&Number.isFinite(expiresAt)&&Date.now()<expiresAt;
+    }catch(err){return false;}
+  }
+  function syncPrintAccess(){
+    var allowed=canJeevalPrint();
+    document.documentElement.setAttribute('data-print-auth',allowed?'jeeval':'locked');
+    var button=document.getElementById('hyPrintButton');
+    if(button){
+      button.disabled=!allowed;
+      button.setAttribute('aria-disabled',allowed?'false':'true');
+      button.title=allowed?'Print or save this review as a PDF':'Printing is available only when Jeeval Mehta is logged in through the Study Hub';
+    }
+    return allowed;
+  }
+  function updateGateContent(state){
+    var title=document.getElementById('noteAuthTitle');
+    var message=document.getElementById('noteAuthMessage');
+    var button=document.getElementById('noteAuthAction');
+    if(!title||!message||!button)return;
+    if(state.reason==='restricted'){
+      title.textContent='This review is not available yet.';
+      message.textContent='This review is still being built. For now it is available only to Jeeval Mehta.';
+      button.textContent='Open Study Hub';
+      button.onclick=function(){window.location.href='../../../index.html';};
+      return;
+    }
+    title.textContent='Please log in to continue with this note.';
+    message.textContent='Open the Study Hub login, enter your approved UNE email, and this note will unlock automatically.';
+    button.textContent='Log in to continue';
+    button.onclick=window.openNoteLogin;
+  }
+  function syncNoteAuth(){
+    var state=getAuthState();
+    document.documentElement.setAttribute('data-note-auth',state.allowed?'unlocked':'locked');
+    document.documentElement.setAttribute('data-note-auth-reason',state.reason);
+    updateGateContent(state);
+    syncPrintAccess();
+  }
+  window.openNoteLogin=function(){
+    var loginWindow=window.open(NOTE_LOGIN_URL,'uneStudyHubLogin');
+    if(!loginWindow)window.location.href=NOTE_LOGIN_URL;
+  };
+  window.refreshNoteAuth=syncNoteAuth;
+  window.canJeevalPrint=canJeevalPrint;
+  window.syncPrintAccess=syncPrintAccess;
+  window.addEventListener('message',function(event){
+    if(event&&event.data&&event.data.type==='une-study-hub-auth-complete')syncNoteAuth();
+  });
+  window.addEventListener('storage',function(event){
+    if(!event||event.key===NOTE_AUTH_KEY)syncNoteAuth();
+  });
+  window.addEventListener('beforeprint',syncNoteAuth);
+  window.addEventListener('focus',syncNoteAuth);
+  window.addEventListener('DOMContentLoaded',syncNoteAuth);
+  window.setInterval(syncNoteAuth,1000);
+  syncNoteAuth();
+})();
+</script>
+<title>OMK 2A Cardiology Summative — Learning-Objective Review</title>
+<link rel="icon" href="data:image/svg+xml,<svg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'><text%20y='.9em'%20font-size='56'>🫀</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ============ THEME TOKENS ============ */
+:root{
+  --ink:#25161a; --paper:#fff7f7; --cream:#f5e2e6;
+  --accent:#b51f3a; --accent2:#245f89; --gold:#b77b22; --muted:#75535c; --border:#dfb9c2;
+  --highlight:#f8e1a9; --highlight2:#d7e9f4; --green-bg:#d9eee2; --red-bg:#f8d5dc;
+  --blue-bg:#d6e9f5; --purple-bg:#eadcf0; --hero-bg:#173e63;
+  --panel-dark-bg:#173e63; --panel-dark-text:#f7fbff;
+  --hero-heading:#f7fbff; --hero-sub:#c8dceb;
+  --hero-meta-bg:rgba(255,255,255,0.08); --hero-meta-border:rgba(240,138,155,0.28);
+  --hero-meta-label:#a9c5d8; --hero-meta-value:#fff1f3;
+  --floating-ui-bg:#173e63; --floating-ui-fg:#f7fbff; --floating-ui-shadow:0 3px 12px rgba(23,62,99,0.26);
+  --quiz-overlay:rgba(36,95,137,0.38); --quiz-overlay-hover:rgba(36,95,137,0.62);
+  --hero-accent:#ff9aae;
+  --toc-w:250px;
+}
+[data-theme="venous"]{
+  --ink:#ecd9dc; --paper:#150a0e; --cream:#2c171e;
+  --accent:#f68292; --accent2:#5fbccd; --gold:#e6b761; --muted:#ab9095; --border:#3d2029;
+  --highlight:#3f2b13; --highlight2:#2e1822; --green-bg:#11291d; --red-bg:#35151a;
+  --blue-bg:#11262d; --purple-bg:#251b31; --hero-bg:#0c0507;
+  --panel-dark-bg:#1f1015; --panel-dark-text:#f8e9eb;
+  --hero-heading:#fbe9ec; --hero-sub:#c3a3a9;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#9a7a80; --hero-meta-value:#f6dfc7;
+  --floating-ui-bg:#080304; --floating-ui-fg:#fbe9ec; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(95,188,205,.42); --quiz-overlay-hover:rgba(95,188,205,.64);
+}
+[data-theme="marrow"]{
+  --ink:#241a2e; --paper:#fbf6fb; --cream:#ecdcee;
+  --accent:#8e2f6d; --accent2:#3c5aa0; --gold:#b4832a; --muted:#6f5a78; --border:#dcc6e0;
+  --highlight:#f7e3ae; --highlight2:#ead6ef; --green-bg:#d6ecdb; --red-bg:#f6d6e2;
+  --blue-bg:#d6dff2; --purple-bg:#e6dbf5; --hero-bg:#24132c;
+  --panel-dark-bg:#241a2e; --panel-dark-text:#fbf6fb;
+  --hero-heading:#f7eafa; --hero-sub:#c4aeca;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#9d84a5; --hero-meta-value:#f0dcf3;
+  --floating-ui-bg:#301b3a; --floating-ui-fg:#f7eafa; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(60,90,160,.50); --quiz-overlay-hover:rgba(60,90,160,.78);
+}
+[data-theme="paper"]{
+  --ink:#1a1209; --paper:#faf7f2; --cream:#ece1cd;
+  --accent:#a32c14; --accent2:#2c5f8a; --gold:#c9922a; --muted:#6b5e4e; --border:#d4cabb;
+  --highlight:#fbe4a0; --highlight2:#cfe4f7; --green-bg:#d7f0da; --red-bg:#f8d6d0;
+  --blue-bg:#d2e7f9; --purple-bg:#e6dbfa; --hero-bg:#1a1209;
+  --panel-dark-bg:#1a1209; --panel-dark-text:#faf7f2;
+  --hero-heading:#f5ede0; --hero-sub:#c9bcad;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#8a7a6a; --hero-meta-value:#f0e0c8;
+  --floating-ui-bg:#3a3030; --floating-ui-fg:#f5ede0; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(44,95,138,.50); --quiz-overlay-hover:rgba(44,95,138,.78);
+}
+[data-theme="night"]{
+  --ink:#e0e8f0; --paper:#0f1923; --cream:#1b2942;
+  --accent:#e8b84b; --accent2:#4aa8d8; --gold:#e8b84b; --muted:#94abc0; --border:#1e3048;
+  --highlight:#3a3016; --highlight2:#12283a; --green-bg:#10281c; --red-bg:#2e1616;
+  --blue-bg:#10233a; --purple-bg:#201a38; --hero-bg:#070e15;
+  --panel-dark-bg:#101a26; --panel-dark-text:#eef5fb;
+  --hero-heading:#f4f9ff; --hero-sub:#b8cad8;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#8fa4b8; --hero-meta-value:#f4f9ff;
+  --floating-ui-bg:#070e15; --floating-ui-fg:#f4f9ff; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(74,168,216,.42); --quiz-overlay-hover:rgba(74,168,216,.62);
+}
+[data-theme="ocean"]{
+  --ink:#0b2436; --paper:#eef7fb; --cream:#cdeaf5;
+  --accent:#a32536; --accent2:#0a5286; --gold:#d9a441; --muted:#4f7185; --border:#a8d4e8;
+  --highlight:#ffe6ad; --highlight2:#bfe3f2; --green-bg:#c9f0dc; --red-bg:#fad9d5;
+  --blue-bg:#c3e4f6; --purple-bg:#e1d7f6; --hero-bg:#0a3a5c;
+  --panel-dark-bg:#0b2436; --panel-dark-text:#eef7fb;
+  --hero-heading:#eaf6fd; --hero-sub:#a9c9dc;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#7ba0b8; --hero-meta-value:#d9edfa;
+  --floating-ui-bg:#0a3a5c; --floating-ui-fg:#eaf6fd; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(15,111,176,.48); --quiz-overlay-hover:rgba(15,111,176,.74);
+}
+[data-theme="forest"]{
+  --ink:#16241a; --paper:#f2f7f0; --cream:#d7ead2;
+  --accent:#8f3418; --accent2:#155c39; --gold:#b8860b; --muted:#52684f; --border:#b7d4ae;
+  --highlight:#f3e6a0; --highlight2:#cbe4c4; --green-bg:#c7ecc0; --red-bg:#f7ddd0;
+  --blue-bg:#cbe6df; --purple-bg:#e1dbee; --hero-bg:#12301c;
+  --panel-dark-bg:#16241a; --panel-dark-text:#f2f7f0;
+  --hero-heading:#eef7ea; --hero-sub:#b6cfb0;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#87a382; --hero-meta-value:#e2f2da;
+  --floating-ui-bg:#12301c; --floating-ui-fg:#eef7ea; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(31,122,77,.48); --quiz-overlay-hover:rgba(31,122,77,.74);
+}
+[data-theme="sepia"]{
+  --ink:#3a2414; --paper:#f7ecd9; --cream:#ecd7ae;
+  --accent:#9c3b17; --accent2:#2f5f6b; --gold:#8b5a17; --muted:#7a614a; --border:#d9bd8c;
+  --highlight:#f0d38a; --highlight2:#d7c39a; --green-bg:#dbe3bc; --red-bg:#f0d0c0;
+  --blue-bg:#cfdedd; --purple-bg:#e3d3e0; --hero-bg:#3f2814;
+  --panel-dark-bg:#3a2414; --panel-dark-text:#f7ecd9;
+  --hero-heading:#f7ecd9; --hero-sub:#cbb190;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#a08a68; --hero-meta-value:#f2ddb4;
+  --floating-ui-bg:#3f2814; --floating-ui-fg:#f7ecd9; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(47,95,107,.50); --quiz-overlay-hover:rgba(47,95,107,.78);
+}
+[data-theme="lavender"]{
+  --ink:#241c33; --paper:#f8f6fd; --cream:#e4ddf5;
+  --accent:#7b3fa0; --accent2:#3f5fa0; --gold:#a8862a; --muted:#665c80; --border:#d2c8ea;
+  --highlight:#f3e6ac; --highlight2:#ded4f2; --green-bg:#d7ecdc; --red-bg:#f4d7e0;
+  --blue-bg:#d6def4; --purple-bg:#e3d8f7; --hero-bg:#231a36;
+  --panel-dark-bg:#241c33; --panel-dark-text:#f8f6fd;
+  --hero-heading:#f2ecfd; --hero-sub:#bcb0d4;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#8f83ab; --hero-meta-value:#e8def8;
+  --floating-ui-bg:#2c2142; --floating-ui-fg:#f2ecfd; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(63,95,160,.50); --quiz-overlay-hover:rgba(63,95,160,.78);
+}
+[data-theme="slate"]{
+  --ink:#1c2229; --paper:#f4f5f7; --cream:#dde3ea;
+  --accent:#9e2c0f; --accent2:#2b5268; --gold:#a8862a; --muted:#5c6a76; --border:#c8d0d8;
+  --highlight:#f2e3ac; --highlight2:#d5e2ec; --green-bg:#d6ead9; --red-bg:#f4d8d0;
+  --blue-bg:#d3e2ef; --purple-bg:#dfd9ec; --hero-bg:#1c2530;
+  --panel-dark-bg:#1c2530; --panel-dark-text:#f4f5f7;
+  --hero-heading:#eef1f5; --hero-sub:#b3bfca;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#8595a3; --hero-meta-value:#e4ebf2;
+  --floating-ui-bg:#1c2530; --floating-ui-fg:#eef1f5; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(51,96,122,.50); --quiz-overlay-hover:rgba(51,96,122,.78);
+}
+
+/* ============ BASE ============ */
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;padding-left:var(--toc-w);background:var(--paper);color:var(--ink);
+  font-family:'Source Serif 4',Georgia,serif;font-size:16px;line-height:1.62;
+  transition:background .25s,color .25s,padding-left .22s ease}
+body.toc-hidden{padding-left:0}
+h1,h2,h3,h4,h5{font-family:'Playfair Display',Georgia,serif;line-height:1.18}
+a{color:var(--accent2)}
+strong{color:var(--accent2)}
+.container{max-width:min(1220px,94%);margin:0 auto}
+img{max-width:100%}
+
+.progress-bar{position:fixed;top:0;left:0;height:3px;width:0;z-index:200;
+  background:linear-gradient(90deg,var(--accent2),var(--accent));transition:width .1s linear}
+
+/* ============ TOC ============ */
+.toc-bar{position:fixed;top:0;left:0;bottom:0;z-index:90;width:var(--toc-w);
+  background:var(--hero-bg);border-right:1px solid rgba(255,255,255,.10);overflow-y:auto;overflow-x:hidden;
+  transition:transform .22s ease}
+body.toc-hidden .toc-bar{transform:translateX(-105%);pointer-events:none}
+.toc-bar::-webkit-scrollbar{width:6px}
+.toc-bar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14);border-radius:3px}
+.toc-bar::-webkit-scrollbar-track{background:transparent}
+.toc-head{padding:22px 18px 14px;border-bottom:1px solid rgba(255,255,255,.10)}
+.toc-eyebrow{display:block;font-family:'JetBrains Mono',monospace;font-size:.5rem;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--hero-meta-label);margin-bottom:7px}
+.toc-name{display:block;font-family:'Playfair Display',serif;font-weight:700;font-size:1.12rem;
+  color:var(--hero-heading);line-height:1.15}
+.toc-name em{font-style:normal;color:var(--accent)}
+.toc-group{font-family:'JetBrains Mono',monospace;font-size:.49rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--hero-meta-label);opacity:.75;margin:0;padding:16px 18px 6px}
+.toc-bar nav{display:flex;flex-direction:column;padding:0 0 26px}
+.toc-bar a{display:flex;align-items:center;gap:9px;text-decoration:none;font-family:'Source Serif 4',Georgia,serif;
+  font-size:.82rem;line-height:1.3;color:var(--hero-sub);padding:7px 14px 7px 15px;
+  border-left:3px solid transparent;transition:color .15s,border-color .15s,background .15s}
+.toc-num{flex:none;width:21px;height:21px;border-radius:50%;border:1px solid rgba(255,255,255,.18);
+  display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;
+  font-size:.54rem;font-weight:700;color:var(--hero-meta-label);transition:all .15s}
+.toc-num.dot{border:none;position:relative}
+.toc-num.dot::before{content:'';width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.28);transition:background .15s}
+.toc-bar a:hover{color:var(--hero-heading);background:rgba(255,255,255,.05)}
+.toc-bar a:hover .toc-num{border-color:rgba(255,255,255,.4);color:var(--hero-heading)}
+.toc-bar a.active{color:var(--hero-heading);border-left-color:var(--accent);background:rgba(255,255,255,.06);font-weight:600}
+.toc-bar a.active .toc-num{background:var(--accent);border-color:var(--accent);color:#fff}
+.toc-bar a.active .toc-num.dot{background:none;border-color:transparent}
+.toc-bar a.active .toc-num.dot::before{background:var(--accent);width:7px;height:7px}
+.toc-check{margin-left:auto;font-size:.7rem;display:none;line-height:1}
+/* sub-chapters: open only under the chapter you are in */
+.toc-sub{display:grid;grid-template-rows:0fr;transition:grid-template-rows .25s ease}
+.toc-sub>div{overflow:hidden;min-height:0}
+.toc-sub.open{grid-template-rows:1fr}
+.toc-bar .toc-sub a{font-size:.72rem;line-height:1.3;padding:4px 14px 4px 45px;color:var(--hero-sub);opacity:.72;
+  position:relative;border-left:3px solid transparent;font-weight:400}
+.toc-bar .toc-sub a::before{content:'';position:absolute;left:25px;top:0;bottom:0;width:1px;background:rgba(255,255,255,.14)}
+.toc-bar .toc-sub a.on{opacity:1;color:var(--hero-heading);font-weight:700;
+  background:rgba(255,255,255,.07);border-left-color:var(--accent)}
+.toc-bar .toc-sub a.on::before{background:var(--accent);width:2px;left:24.5px}
+.toc-sub>div>a:last-child{margin-bottom:6px}
+.toc-bar a.done .toc-check{display:inline}
+.toc-bar a.conf-1 .toc-check{color:#e0564a}
+.toc-bar a.conf-2 .toc-check{color:#d6a12a}
+.toc-bar a.conf-3 .toc-check{color:#3d9c5c}
+.toc-tools{display:flex;flex-direction:column;gap:6px;padding:14px 12px 0;margin-top:8px;
+  border-top:1px solid rgba(255,255,255,.10)}
+.toc-chip{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);color:var(--hero-sub);
+  font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.05em;padding:7px 9px;
+  border-radius:8px;cursor:pointer;text-align:left;transition:background .15s,color .15s}
+.toc-chip:hover{background:rgba(255,255,255,.14);color:var(--hero-heading)}
+.toc-show-btn{position:fixed;left:14px;top:14px;z-index:120;display:none;align-items:center;gap:7px;
+  border:1px solid rgba(255,255,255,.18);border-radius:22px;padding:9px 13px;
+  background:var(--floating-ui-bg);color:var(--floating-ui-fg);box-shadow:var(--floating-ui-shadow);
+  font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.04em;cursor:pointer}
+body.toc-hidden .toc-show-btn{display:inline-flex}
+.toc-hy-btn{display:flex;align-items:center;justify-content:center;gap:7px;width:calc(100% - 24px);
+  margin:14px 12px 2px;background:var(--gold);color:#2a1a00;border:none;padding:11px 10px;border-radius:24px;
+  cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:.58rem;font-weight:700;letter-spacing:.04em;
+  line-height:1.25;text-align:center;transition:transform .15s,box-shadow .15s}
+.toc-hy-btn:hover{transform:translateY(-1px);box-shadow:0 4px 13px rgba(0,0,0,.32)}
+
+/* ============ HERO ============ */
+.hero{background:var(--hero-bg);padding:50px 0 42px;width:100%}
+.hero-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--hero-meta-label);margin-bottom:16px}
+.hero h1{margin:0 0 12px;font-size:clamp(1.9rem,4.2vw,3.1rem);font-weight:900;color:var(--hero-heading);letter-spacing:-.01em}
+.hero h1 span{color:var(--accent)}
+.hero-sub{margin:0 0 18px;max-width:70ch;color:var(--hero-sub);font-size:1.02rem}
+.hero-meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.hero-meta-item{background:var(--hero-meta-bg);border:1px solid var(--hero-meta-border);border-radius:9px;
+  padding:9px 15px;min-width:112px}
+.hero-meta-item .label{display:block;font-family:'JetBrains Mono',monospace;font-size:.5rem;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--hero-meta-label);margin-bottom:4px}
+.hero-meta-item .value{display:block;font-family:'Playfair Display',serif;font-weight:700;font-size:1.02rem;color:var(--hero-meta-value)}
+.hy-btn{display:none;align-items:center;gap:8px;background:var(--gold);color:#2a1a00;border:none;padding:12px 22px;
+  border-radius:30px;font-family:'JetBrains Mono',monospace;font-size:.76rem;font-weight:700;letter-spacing:.04em;
+  cursor:pointer;margin-top:6px;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+
+/* ============ SECTIONS ============ */
+.section{padding:44px 0 8px;border-bottom:1px solid var(--border);scroll-margin-top:16px}
+.section:last-of-type{border-bottom:none}
+.badge-row{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px}
+.lo-badge{display:inline-block;background:var(--accent);color:#fff;font-family:'JetBrains Mono',monospace;
+  font-size:.57rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:5px 12px;border-radius:20px}
+.lo-badge.alt{background:var(--accent2)}
+.lo-badge.src{background:transparent;color:var(--muted);border:1px solid var(--border)}
+.section-label{font-family:'JetBrains Mono',monospace;font-size:.57rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 6px}
+.section-title{margin:0 0 6px;font-size:clamp(1.5rem,3vw,2.15rem);font-weight:700;
+  border-bottom:3px solid var(--accent);display:inline-block;padding-bottom:6px}
+.section h3{margin:28px 0 8px;font-size:1.2rem;border-left:4px solid var(--accent2);padding-left:11px}
+.section h4{margin:18px 0 6px;font-size:1.01rem}
+.lede{font-size:1.03rem;color:var(--muted);max-width:76ch}
+
+.sec-tools{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:14px 0 4px;padding:8px 12px;
+  background:var(--cream);border:1px solid var(--border);border-radius:9px;
+  font-family:'JetBrains Mono',monospace;font-size:.58rem}
+.sec-tools .st-lab{color:var(--muted);text-transform:uppercase;letter-spacing:.11em}
+.sec-tools button{font-family:'JetBrains Mono',monospace;font-size:.58rem;border:1px solid var(--border);
+  background:var(--paper);color:var(--ink);border-radius:20px;padding:4px 11px;cursor:pointer;transition:all .15s}
+.sec-tools button:hover{border-color:var(--accent2)}
+.sec-tools button.on{background:var(--accent2);color:#fff;border-color:var(--accent2)}
+.sec-tools .st-collapse{margin-left:auto}
+.sec-body-outer{display:grid;grid-template-rows:1fr;transition:grid-template-rows .35s ease}
+.sec-body-inner{overflow:hidden;min-height:0}
+.section.collapsed .sec-body-outer{grid-template-rows:0fr}
+.recall-note{display:none;margin:12px 0;padding:9px 13px;border:1px dashed var(--accent2);border-radius:8px;
+  background:var(--blue-bg);font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--ink)}
+body.recall-mode .recall-note{display:block}
+
+/* ============ CALLOUTS ============ */
+.callout{border-left:5px solid var(--accent2);border-radius:0 9px 9px 0;padding:14px 18px;margin:18px 0;background:var(--blue-bg)}
+.callout p:last-child,.callout ul:last-child{margin-bottom:0}
+.callout p:first-of-type{margin-top:0}
+.callout-title{font-family:'JetBrains Mono',monospace;font-size:.67rem;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;margin-bottom:7px;color:var(--ink)}
+.callout-key{border-left-color:var(--gold);background:var(--highlight)}
+.callout-concept{border-left-color:var(--accent2);background:var(--blue-bg)}
+.callout-clinical{border-left-color:#3d9c5c;background:var(--green-bg)}
+.callout-warning{border-left-color:var(--accent);background:var(--red-bg)}
+.callout-purple{border-left-color:#7a5aa8;background:var(--purple-bg)}
+.callout-hook{border-left-color:var(--gold);background:var(--highlight);border-left-style:dashed;border-left-width:5px}
+
+/* ============ LISTS ============ */
+.notes-list{list-style:none;padding-left:0;margin:12px 0}
+.notes-list li{position:relative;padding-left:20px;margin-bottom:7px}
+.notes-list li::before{content:'\203A';position:absolute;left:4px;color:var(--accent);font-weight:700}
+.step-list{list-style:none;counter-reset:st;padding-left:0;margin:16px 0}
+.step-list li{counter-increment:st;position:relative;padding-left:44px;margin-bottom:13px;min-height:30px}
+.step-list li::before{content:counter(st);position:absolute;left:0;top:0;width:30px;height:30px;border-radius:50%;
+  background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:700}
+.step-list li>strong:first-child{display:block;margin-bottom:2px;color:var(--accent)}
+
+/* ============ TABLES ============ */
+table{width:100%;border-collapse:collapse;margin:6px 0 20px;font-size:.9rem}
+th,td{border:1px solid var(--border);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:var(--panel-dark-bg);color:var(--panel-dark-text);font-family:'JetBrains Mono',monospace;
+  font-size:.61rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700}
+tr:nth-child(even) td{background:var(--cream)}
+tr:hover td{background:var(--highlight2)}
+.tbl-scroll{overflow-x:auto;margin-bottom:20px}
+.tbl-scroll table{margin-bottom:0}
+
+/* ============ EXAM Q ============ */
+.exam-q{background:var(--panel-dark-bg);color:var(--panel-dark-text);border-radius:11px;padding:20px 22px 18px;margin:22px 0;position:relative}
+.exam-q::before{content:'Exam Q';position:absolute;top:-10px;left:20px;background:var(--accent);color:#fff;
+  font-family:'JetBrains Mono',monospace;font-size:.55rem;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;padding:4px 11px;border-radius:12px}
+.exam-q p{margin:6px 0}
+.exam-q strong{color:var(--gold)}
+.exam-q .answer{margin-top:12px;padding-top:12px;border-top:1px dashed rgba(255,255,255,.28);display:none}
+.exam-q.revealed .answer{display:block;animation:fadeIn .32s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.exam-q .answer .label{font-family:'JetBrains Mono',monospace;font-size:.54rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--gold);margin-bottom:5px}
+.exam-q .reveal-btn{margin-top:11px;background:transparent;border:1px solid rgba(255,255,255,.4);
+  color:var(--panel-dark-text);font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.09em;
+  text-transform:uppercase;padding:6px 15px;border-radius:20px;cursor:pointer}
+.exam-q .reveal-btn:hover{background:rgba(255,255,255,.14)}
+.exam-q.revealed .reveal-btn{display:none}
+.exam-q.q-flash{outline:3px solid var(--gold);animation:qPulse 1.2s ease 1}
+@keyframes qPulse{0%{box-shadow:0 0 0 0 rgba(201,146,42,.55)}70%{box-shadow:0 0 0 14px rgba(201,146,42,0)}100%{box-shadow:none}}
+
+/* ============ CARDS ============ */
+.compare-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:14px;margin:18px 0}
+.compare-card{border:1px solid var(--border);border-radius:11px;padding:16px 18px;background:var(--cream)}
+.compare-card h4{margin:6px 0 6px;font-size:1.06rem}
+.compare-card .card-emoji{font-size:1.45rem;line-height:1}
+.compare-card p{margin:0 0 8px}
+.compare-card ul{margin:0;padding-left:18px;font-size:.88rem}
+.fact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,235px),1fr));gap:13px;margin:18px 0}
+.fact-card{border:1px solid var(--border);border-top:4px solid var(--accent2);border-radius:10px;
+  padding:14px 16px;background:var(--cream)}
+.fact-card h4{margin:0 0 3px;font-size:.98rem}
+.fact-card .generic{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.fact-card p{margin:0;font-size:.86rem}
+.hallmarks-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,215px),1fr));gap:13px;margin:18px 0}
+.hallmark-card{border:1px solid var(--border);border-top:4px solid var(--accent);border-radius:10px;
+  padding:14px 16px;background:var(--cream);position:relative}
+.hallmark-card:nth-child(3n+2){border-top-color:var(--accent2)}
+.hallmark-card:nth-child(3n+3){border-top-color:var(--gold)}
+.hallmark-card h4{margin:6px 0 4px;font-size:.97rem}
+.hallmark-card p{margin:0;font-size:.85rem}
+.hallmark-num{font-family:'JetBrains Mono',monospace;font-size:.66rem;font-weight:700;color:var(--muted)}
+
+/* ============ CHIPS ============ */
+.lab-code{font-family:'JetBrains Mono',monospace;background:var(--cream);border:1px solid var(--border);
+  padding:1px 6px;border-radius:4px;font-size:.8rem;white-space:nowrap}
+.gene-tag{font-family:'JetBrains Mono',monospace;color:var(--accent2);font-size:.87rem;font-weight:600}
+.hy-flag{display:inline-flex;align-items:center;gap:3px;background:var(--highlight);color:var(--gold);
+  border:1px solid var(--gold);font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.58rem;
+  padding:1px 8px;border-radius:20px;letter-spacing:.04em;vertical-align:middle}
+/* ============ USER TEXT ANNOTATIONS (select to highlight / strike) ============ */
+.usr-hl{background:linear-gradient(180deg,transparent 10%,var(--mark-color,#fff173) 10%,var(--mark-color,#fff173) 90%,transparent 90%);
+  color:#1a1014;padding:0;margin:0;border-radius:.1em;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.usr-st{text-decoration:line-through;text-decoration-thickness:1.5px;opacity:.55}
+.annotation-menu{position:fixed;z-index:600;display:flex;align-items:center;gap:0;background:#2b2b2b;
+  border-radius:24px;padding:5px 6px;box-shadow:0 8px 26px rgba(0,0,0,.35)}
+.annotation-menu[hidden]{display:none}
+.annotation-swatch{width:26px;height:26px;border-radius:50%;border:2px solid #777;cursor:pointer;margin:0 3px;padding:0}
+.annotation-swatch[aria-pressed="true"]{border-color:#fff}
+.annotation-strike,.annotation-erase{border:0;border-left:1px solid #777;background:transparent;color:#fff;
+  padding:5px 10px;font-size:15px;line-height:1;cursor:pointer;font-family:'JetBrains Mono',monospace}
+.annotation-strike{text-decoration:line-through;font-weight:700}
+.annotation-strike:hover,.annotation-erase:hover{background:rgba(255,255,255,.14);border-radius:14px}
+.rv-flag{display:inline-flex;align-items:center;gap:3px;background:var(--red-bg);color:#b3261e;
+  border:1px solid #b3261e;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.58rem;
+  padding:1px 8px;border-radius:20px;letter-spacing:.04em;vertical-align:middle}
+.callout-review{border-left-color:#b3261e;background:var(--red-bg);border-left-width:6px;outline:1px solid #b3261e;outline-offset:-1px}
+.callout-review .callout-title{color:#b3261e}
+.callout-review .rv-said{color:#b3261e;font-weight:700}
+.callout-review ol.rv-master li{margin-bottom:6px}
+.up{color:#c0392b;font-weight:700}
+.dn{color:#2c7fb8;font-weight:700}
+.abbr-strip{background:var(--cream);border:1px solid var(--border);border-left:4px solid var(--gold);
+  border-radius:0 9px 9px 0;padding:11px 15px;margin:14px 0;font-size:.84rem}
+.abbr-strip .t{font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--muted);display:block;margin-bottom:5px}
+
+/* ============ COVERAGE MATRIX (new) ============ */
+.cov-legend{display:flex;flex-wrap:wrap;gap:14px;margin:14px 0 18px;font-family:'JetBrains Mono',monospace;font-size:.62rem}
+.cov-legend span{display:inline-flex;align-items:center;gap:6px;color:var(--muted)}
+.cov-dot{width:11px;height:11px;border-radius:3px;display:inline-block}
+.cov-dot.full{background:#3d9c5c}.cov-dot.part{background:var(--gold)}.cov-dot.none{background:var(--muted);opacity:.45}
+.cov-filter{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.cov-filter button{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.06em;text-transform:uppercase;
+  border:1px solid var(--border);background:var(--paper);color:var(--ink);border-radius:20px;padding:5px 13px;cursor:pointer}
+.cov-filter button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.cov-table{width:100%;border-collapse:collapse;font-size:.85rem}
+.cov-table th{position:sticky;top:0;z-index:2}
+.cov-table td:first-child{width:52px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--muted)}
+.cov-table td:last-child{width:190px}
+.cov-status{display:inline-flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;
+  font-size:.58rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;border-radius:20px;white-space:nowrap}
+.cov-status.full{background:var(--green-bg);color:#22703a;border:1px solid #3d9c5c}
+.cov-status.part{background:var(--highlight);color:var(--gold);border:1px solid var(--gold)}
+.cov-status.none{background:transparent;color:var(--muted);border:1px dashed var(--border)}
+tr.lo-row.hide{display:none}
+tr.lo-row td a{font-family:'JetBrains Mono',monospace;font-size:.6rem;text-decoration:none;
+  border-bottom:1px dotted var(--accent2);display:inline-block;margin-top:4px}
+.cov-count{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:11px;margin:16px 0 6px}
+.cov-count div{border:1px solid var(--border);border-radius:10px;padding:12px 14px;background:var(--cream);text-align:center}
+.cov-count .n{display:block;font-family:'Playfair Display',serif;font-weight:900;font-size:1.9rem;line-height:1;color:var(--accent)}
+.cov-count .l{display:block;font-family:'JetBrains Mono',monospace;font-size:.53rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);margin-top:6px}
+
+/* ============ PENDING LO CARDS ============ */
+.pend-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr));gap:13px;margin:18px 0}
+.pend-card{border:1px dashed var(--border);border-left:4px solid var(--muted);border-radius:10px;padding:14px 16px;background:transparent}
+.pend-card h4{margin:0 0 4px;font-size:.98rem;color:var(--muted)}
+.pend-card .cnt{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);opacity:.8}
+.pend-card ul{margin:8px 0 0;padding-left:17px;font-size:.83rem;color:var(--muted)}
+.pend-card li{margin-bottom:4px}
+
+/* ============ TABLE QUIZ ============ */
+.tq-bar{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:6px;padding:8px 12px;
+  background:var(--cream);border:1px solid var(--border);border-radius:8px}
+.tq-toggle{font-family:'JetBrains Mono',monospace;font-size:.61rem;letter-spacing:.09em;text-transform:uppercase;
+  background:var(--accent2);color:#fff;border:none;border-radius:20px;padding:5px 12px;cursor:pointer}
+.tq-toggle.active{background:var(--accent)}
+.tq-cols{display:flex;flex-wrap:wrap;gap:5px;flex:1}
+.tq-col-btn{font-size:.68rem;padding:3px 9px;border:1px solid var(--border);border-radius:12px;background:var(--paper);
+  cursor:pointer;font-family:'JetBrains Mono',monospace;color:var(--ink);transition:all .15s}
+.tq-col-btn.sel{background:var(--accent2);color:#fff;border-color:var(--accent2)}
+.tq-start,.tq-reset{font-family:'JetBrains Mono',monospace;font-size:.61rem;color:#fff;border:none;
+  border-radius:20px;padding:5px 12px;cursor:pointer}
+.tq-start{background:#2e7d32}.tq-start:disabled{opacity:.35;cursor:not-allowed}
+.tq-reset{background:var(--accent)}
+.tq-score{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--muted)}
+.tq-score.done{color:#2e7d32;font-weight:700}
+.quiz-hidden-cell{position:relative!important;cursor:pointer!important}
+.quiz-hidden-cell .tq-cell-content{filter:blur(5px)!important;user-select:none!important;pointer-events:none!important;opacity:.4!important}
+.quiz-hidden-cell::after{content:'tap to reveal'!important;position:absolute!important;inset:0!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;background:var(--quiz-overlay)!important;
+  color:#fff!important;font-family:'JetBrains Mono',monospace!important;font-size:.56rem!important;font-weight:700!important;
+  letter-spacing:.12em!important;text-transform:uppercase!important;border-radius:4px!important}
+.quiz-hidden-cell:hover::after{background:var(--quiz-overlay-hover)!important}
+
+/* ============ RECALL MODE ============ */
+body.recall-mode .sec-body-inner :is(p,li,td,h4,dd) strong:not(.rc-open){color:transparent;background:var(--highlight2);
+  border-radius:4px;cursor:pointer;box-shadow:inset 0 0 0 1px var(--border);padding:0 2px}
+body.recall-mode .exam-q strong,body.recall-mode .tq-bar strong{color:var(--gold)!important;background:none!important;box-shadow:none!important}
+body.recall-mode .cov-table strong{color:inherit!important;background:none!important;box-shadow:none!important;cursor:auto}
+strong.rc-open{animation:rcReveal .35s ease}
+@keyframes rcReveal{from{background:var(--gold)}to{background:transparent}}
+
+/* ============ FLOATING UI ============ */
+.floating-stack{position:fixed;bottom:18px;right:18px;z-index:100;display:flex;flex-direction:column;align-items:flex-end;gap:9px}
+.font-btn-row{display:flex;align-items:center;background:var(--floating-ui-bg);color:var(--floating-ui-fg);
+  padding:7px 10px;border-radius:30px;box-shadow:var(--floating-ui-shadow);font-family:'JetBrains Mono',monospace;
+  font-size:.6rem;letter-spacing:.1em;gap:2px}
+.font-btn{background:none;border:none;cursor:pointer;color:var(--floating-ui-fg);font-family:'JetBrains Mono',monospace;
+  font-weight:700;font-size:1rem;padding:2px 8px;border-radius:6px;line-height:1}
+.font-btn:hover{background:rgba(255,255,255,.18)}
+.font-sep{color:rgba(255,255,255,.22);padding:0 3px}
+.font-label{font-size:.54rem;opacity:.7;padding:0 5px;text-transform:uppercase;letter-spacing:.1em}
+.theme-btn{display:flex;align-items:center;gap:7px;background:var(--floating-ui-bg);color:var(--floating-ui-fg);
+  border:none;padding:10px 17px;border-radius:30px;box-shadow:var(--floating-ui-shadow);cursor:pointer;
+  font-family:'JetBrains Mono',monospace;font-size:.64rem;letter-spacing:.09em;text-transform:uppercase}
+.theme-panel{position:absolute;bottom:100%;right:0;margin-bottom:10px;background:var(--floating-ui-bg);
+  color:var(--floating-ui-fg);border-radius:12px;padding:12px 10px;box-shadow:var(--floating-ui-shadow);
+  min-width:200px;display:none;max-height:70vh;overflow-y:auto}
+.theme-panel.open{display:block}
+.theme-panel-title{font-family:'JetBrains Mono',monospace;font-size:.54rem;letter-spacing:.16em;text-transform:uppercase;
+  opacity:.65;padding:0 8px 8px}
+.theme-option{display:flex;align-items:center;gap:9px;padding:7px 9px;border-radius:8px;cursor:pointer;
+  font-family:'JetBrains Mono',monospace;font-size:.64rem}
+.theme-option:hover{background:rgba(255,255,255,.12)}
+.theme-option.active{background:rgba(255,255,255,.18)}
+.theme-swatch{width:17px;height:17px;border-radius:50%;border:1px solid rgba(255,255,255,.35);flex:none}
+.floating-left{position:fixed;bottom:18px;left:calc(var(--toc-w) + 18px);z-index:100;
+  display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+.tools-menu{display:flex;flex-direction:column;gap:7px;opacity:0;pointer-events:none;transform:translateY(10px);
+  transition:opacity .22s,transform .22s}
+.floating-left:hover .tools-menu,.floating-left:focus-within .tools-menu,.floating-left.open .tools-menu{
+  opacity:1;pointer-events:auto;transform:none}
+.tool-btn{background:var(--floating-ui-bg);color:var(--floating-ui-fg);border:none;padding:9px 15px;border-radius:22px;
+  box-shadow:var(--floating-ui-shadow);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:.61rem;
+  letter-spacing:.05em;text-align:left;white-space:nowrap}
+.tool-btn:hover{filter:brightness(1.2)}
+.tool-btn.on{background:var(--accent);color:#fff}
+.tools-trigger{position:relative}
+.tools-trigger .dot{display:none;position:absolute;top:6px;right:8px;width:7px;height:7px;border-radius:50%;background:var(--gold)}
+.tools-trigger.busy .dot{display:block}
+
+/* ============ HY MODAL ============ */
+.hy-modal{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:300;display:none;align-items:flex-start;
+  justify-content:center;overflow-y:auto;padding:30px 16px}
+.hy-modal.open{display:flex}
+.hy-modal-card{background:var(--paper);color:var(--ink);max-width:1080px;width:100%;border-radius:14px;
+  padding:26px 30px 34px;box-shadow:0 20px 60px rgba(0,0,0,.45)}
+.hy-modal-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;
+  border-bottom:3px solid var(--accent);padding-bottom:10px;flex-wrap:wrap}
+.hy-modal-header h2{margin:0;font-size:1.32rem}
+.hy-modal-actions{display:flex;gap:8px;flex:none}
+.hy-action-btn{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.05em;text-transform:uppercase;
+  border:1px solid var(--border);background:var(--cream);color:var(--ink);padding:7px 13px;border-radius:20px;cursor:pointer}
+.hy-action-btn:disabled{opacity:.42;cursor:not-allowed;filter:grayscale(.35)}
+.hy-close-btn{background:var(--accent);color:#fff;border:none}
+.hy-subhead{font-family:'JetBrains Mono',monospace;font-size:.64rem;color:var(--muted);margin:0 0 13px}
+.hy-cols{columns:3;column-gap:11px;min-width:0}
+@media (max-width:1000px){.hy-cols{columns:2}}
+@media (max-width:760px){.hy-cols{columns:1}}
+.hy-cols>div{min-width:0}
+.hy-group{break-inside:avoid;-webkit-column-break-inside:avoid;display:flow-root}
+.hy-group.hy-breakable{break-inside:auto;-webkit-column-break-inside:auto}
+.hy-block{border:1px solid var(--border);border-radius:8px;padding:9px 11px;background:var(--cream);margin-bottom:9px;min-width:0;
+  break-inside:avoid;-webkit-column-break-inside:avoid;overflow:hidden}
+.hy-block h4{margin:0 0 5px;font-size:.75rem;color:var(--accent);border-bottom:1px solid var(--border);padding-bottom:4px}
+.hy-block p,.hy-block li{font-size:.66rem;line-height:1.4;margin:0 0 3px}
+.hy-block ul{margin:0;padding-left:15px}
+.hy-lo-tag{break-after:avoid;break-inside:avoid;display:block;font-family:'JetBrains Mono',monospace;font-size:.58rem;font-weight:700;color:#fff;
+  background:var(--accent2);padding:3px 9px;border-radius:10px;margin-bottom:7px;letter-spacing:.05em;text-align:center}
+.hy-mini-table{width:100%;border-collapse:collapse;font-size:.62rem;margin-top:4px}
+.hy-mini-table{table-layout:fixed}
+.hy-mini-table th,.hy-mini-table td{overflow-wrap:anywhere}
+.hy-block-wide .hy-mini-table{font-size:.56rem}
+.hy-block-wide .hy-mini-table th,.hy-block-wide .hy-mini-table td{padding:1px 2px}
+.hy-mini-table th,.hy-mini-table td{border:1px solid var(--border);padding:3px 5px;text-align:left;line-height:1.3}
+.hy-mini-table th{background:var(--panel-dark-bg);color:var(--panel-dark-text);font-size:.55rem;text-transform:uppercase}
+.hy-mini-table tr:nth-child(even) td{background:transparent}
+
+/* ============ GLOSSARY ============ */
+.gloss{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:10px;margin:16px 0}
+.gloss dl{margin:0;border:1px solid var(--border);border-radius:9px;padding:12px 14px;background:var(--cream)}
+.gloss dt{font-family:'JetBrains Mono',monospace;font-size:.71rem;font-weight:700;color:var(--accent);margin-top:8px}
+.gloss dt:first-child{margin-top:0}
+.gloss dd{margin:2px 0 0;font-size:.85rem}
+
+footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top:40px;font-size:.82rem}
+footer .container{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center}
+footer kbd{font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.2);
+  border-radius:4px;padding:1px 6px;font-size:.7rem}
+
+
+/* ============ MOBILE NAV DRAWER ============ */
+.mnav{display:none;position:fixed;top:0;left:0;right:0;z-index:130;align-items:center;gap:11px;
+  padding:9px 12px;background:var(--hero-bg);border-bottom:1px solid rgba(255,255,255,.12);
+  box-shadow:0 2px 10px rgba(0,0,0,.22)}
+.mnav-burger{flex:none;width:34px;height:32px;display:flex;flex-direction:column;justify-content:center;
+  gap:4px;padding:0 7px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);
+  border-radius:7px;cursor:pointer}
+.mnav-burger span{display:block;height:2px;border-radius:2px;background:var(--hero-heading);
+  transition:transform .22s ease,opacity .18s ease}
+body.nav-open .mnav-burger span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+body.nav-open .mnav-burger span:nth-child(2){opacity:0}
+body.nav-open .mnav-burger span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+.mnav-title{min-width:0;display:flex;flex-direction:column;gap:1px;line-height:1.15}
+.mnav-doc{font-family:'JetBrains Mono',monospace;font-size:.47rem;letter-spacing:.19em;
+  text-transform:uppercase;color:var(--hero-sub);opacity:.8}
+.mnav-here{font-family:'Source Serif 4',Georgia,serif;font-size:.86rem;font-weight:600;
+  color:var(--hero-heading);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mnav-hy{flex:none;margin-left:auto;width:34px;height:32px;font-size:.95rem;line-height:1;cursor:pointer;
+  background:var(--accent);border:none;border-radius:7px;color:#fff}
+.toc-scrim{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.5);opacity:0;
+  transition:opacity .25s ease;pointer-events:none}
+body.nav-open .toc-scrim{opacity:1;pointer-events:auto}
+
+/* ============ FIGURES (inline) ============ */
+.figs{margin:20px 0}
+.fig-grid{display:grid;gap:14px;margin:0}
+.fig-grid.n1{grid-template-columns:minmax(0,1fr);max-width:660px;margin-inline:auto}
+.fig-grid.n2{grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))}
+.fig-grid.n3{grid-template-columns:repeat(auto-fit,minmax(min(100%,215px),1fr))}
+.fig-grid.nx{grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr))}
+.fig-item{margin:0;border:1px solid var(--border);border-radius:10px;background:var(--cream);
+  overflow:hidden;display:flex;flex-direction:column;transition:border-color .15s,box-shadow .15s}
+.fig-item:hover{border-color:var(--accent);box-shadow:0 3px 14px rgba(0,0,0,.10)}
+.fig-item img{width:100%;display:block;margin:0 auto;background:#fff;cursor:zoom-in;
+  border-bottom:1px solid var(--border)}
+.fig-grid.n1 .fig-item img{max-height:430px;object-fit:contain;padding:6px}
+.fig-grid.n2 .fig-item img{height:210px;object-fit:contain;padding:6px}
+.fig-grid.n3 .fig-item img{height:168px;object-fit:contain;padding:5px}
+.fig-grid.nx .fig-item img{height:140px;object-fit:contain;padding:5px}
+.fig-cap{padding:9px 12px 11px;font-size:.75rem;line-height:1.45;color:var(--muted);text-align:center}
+.fig-cap b{color:var(--ink)}
+@media print{.figs{break-inside:avoid}.fig-item img{max-height:260px}}
+
+/* ============ LIGHTBOX ============ */
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:500;display:none;
+  align-items:center;justify-content:center;flex-direction:column;padding:26px 18px 14px}
+.lightbox.on{display:flex}
+.lightbox img{max-width:94vw;max-height:80vh;border-radius:6px;object-fit:contain}
+.lb-cap{color:#f2e7e4;font-family:'Source Serif 4',Georgia,serif;font-size:.9rem;line-height:1.5;
+  margin-top:14px;max-width:76ch;text-align:center}
+.lb-meta{color:rgba(255,255,255,.5);font-family:'JetBrains Mono',monospace;font-size:.6rem;
+  letter-spacing:.1em;text-transform:uppercase;margin-top:7px}
+.lb-x,.lb-prev,.lb-next{position:absolute;background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.22);
+  color:#fff;border-radius:50%;width:42px;height:42px;cursor:pointer;font-size:1.1rem;line-height:1;
+  display:flex;align-items:center;justify-content:center}
+.lb-x{top:16px;right:18px}
+.lb-prev{left:14px;top:50%;transform:translateY(-50%)}
+.lb-next{right:14px;top:50%;transform:translateY(-50%)}
+.lb-x:hover,.lb-prev:hover,.lb-next:hover{background:rgba(255,255,255,.24)}
+@media (max-width:640px){.lb-prev,.lb-next{width:36px;height:36px}.lightbox img{max-height:66vh}}
+
+/* ============ LO TOOLTIP ============ */
+.lo-badge[data-lo]{cursor:help;position:relative;border:none;font:inherit;font-family:'JetBrains Mono',monospace;
+  font-size:.57rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:5px 12px;
+  border-radius:20px;background:var(--accent);color:#fff}
+.lo-badge[data-lo].alt{background:var(--accent2)}
+.lo-badge[data-lo]::after{content:'';position:absolute;left:11px;right:11px;bottom:3px;height:1px;
+  border-bottom:1px dotted rgba(255,255,255,.55)}
+.lo-badge[data-lo]:hover,.lo-badge[data-lo].lo-open{filter:brightness(1.12)}
+.lo-tip{position:fixed;z-index:400;width:min(400px,calc(100vw - 24px));background:var(--cream);
+  color:var(--ink);border:1px solid var(--border);border-radius:11px;padding:13px 15px 12px;
+  box-shadow:0 10px 34px rgba(0,0,0,.28);font-family:'Source Serif 4',Georgia,serif;font-size:.83rem;
+  line-height:1.5;opacity:0;transform:translateY(4px);transition:opacity .13s ease,transform .13s ease;
+  pointer-events:none}
+.lo-tip.on{opacity:1;transform:translateY(0);pointer-events:auto}
+.lo-tip-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;
+  font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.12em;text-transform:uppercase}
+.lo-tip-num{background:var(--accent);color:#fff;padding:3px 9px;border-radius:20px;font-weight:700}
+.lo-tip-st{padding:3px 9px;border-radius:20px;font-weight:700}
+.lo-tip-st.full{background:var(--green-bg);color:#22703a;border:1px solid #3d9c5c}
+.lo-tip-st.part{background:var(--highlight);color:var(--gold);border:1px solid var(--gold)}
+.lo-tip-st.none{color:var(--muted);border:1px dashed var(--border)}
+.lo-tip-text{margin:0 0 9px}
+.lo-tip-text mark{background:var(--green-bg);color:inherit;padding:1px 2px;border-radius:3px;
+  box-shadow:inset 0 -1px 0 rgba(61,156,92,.75)}
+.lo-tip-text .lo-dim{color:var(--muted)}
+.lo-tip-foot{margin:0;padding-top:8px;border-top:1px solid var(--border);
+  font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.05em;color:var(--muted);
+  display:flex;flex-direction:column;gap:4px}
+.lo-tip-foot b{color:var(--ink);font-weight:700}
+.lo-tip-key{display:inline-flex;align-items:center;gap:5px}
+.lo-tip-key i{width:9px;height:9px;border-radius:2px;display:inline-block;background:#3d9c5c}
+.lo-tip-multi{margin:0;padding-left:16px}
+.lo-tip-multi li{margin-bottom:4px}
+.lo-row.lo-flash{animation:loFlash 1.6s ease}
+@keyframes loFlash{0%,70%{background:var(--highlight)}100%{background:transparent}}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width:1000px){
+  body{padding-left:0;padding-top:50px}
+  .mnav{display:flex}
+  .progress-bar{top:49px}
+  .toc-bar{width:min(300px,86vw);transform:translateX(-100%);
+    transition:transform .26s cubic-bezier(.4,0,.2,1);z-index:110;
+    box-shadow:6px 0 26px rgba(0,0,0,.34);padding-top:58px}
+  body.nav-open .toc-bar{transform:translateX(0)}
+  body.toc-hidden.nav-open .toc-bar{transform:translateX(-105%)}
+  .toc-show-btn{top:58px}
+  .toc-head{display:none}
+  .toc-hy-btn{margin-top:2px}
+  .toc-bar a{padding:11px 16px}
+  .toc-check{display:none}
+  .toc-bar a.done .toc-check{display:inline}
+  .hero .hy-btn{display:inline-flex}
+  .floating-left{left:14px;bottom:14px}
+  .cov-table td:last-child{width:auto}
+  .lo-tip{font-size:.8rem}
+}
+@media (max-width:1000px) and (prefers-reduced-motion:reduce){
+  .toc-bar{transition:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
+
+/* ============ PRINT ============ */
+@media print{
+  body{padding-left:0!important;padding-top:0!important;background:#fff;color:#000}
+  .container{max-width:100%!important}
+  .toc-bar,.toc-show-btn,.floating-stack,.floating-left,.progress-bar,.sec-tools,.recall-note,.tq-bar,
+  .toc-hy-btn,.hy-btn,.cov-filter,.exam-q .reveal-btn,.mnav,.toc-scrim,.lo-tip{display:none!important}
+  .section{page-break-inside:auto;border-bottom:1px solid #ccc}
+  .section.collapsed .sec-body-outer{grid-template-rows:1fr!important}
+  .exam-q .answer{display:block!important}
+  .hero{background:#fff!important;color:#000;padding:16px 0}
+  .hero h1,.hero-sub,.hero-tag,.hero-meta-item .value,.hero-meta-item .label{color:#000!important}
+  body.hy-mode .hero,body.hy-mode .section,body.hy-mode footer{display:none!important}
+  body.hy-mode .hy-modal{position:static!important;inset:auto!important;background:none!important;padding:0!important;
+    display:block!important;overflow:visible!important}
+  body.hy-mode .hy-modal-card{position:static!important;max-width:100%!important;width:100%!important;
+    box-shadow:none!important;padding:4px!important}
+  .hy-modal-actions{display:none!important}
+  .hy-cols{columns:3;column-gap:8px}
+  .hy-modal-header h2{font-size:1rem}
+  .hy-subhead{font-size:.55rem;margin-bottom:7px}
+  .hy-block{padding:5px 7px;margin-bottom:5px;break-inside:avoid}
+  .hy-block h4{font-size:.65rem;margin-bottom:3px;padding-bottom:2px}
+  .hy-block p,.hy-block li{font-size:.56rem;line-height:1.26;margin-bottom:2px}
+  .hy-mini-table{font-size:.53rem}
+  .hy-block-wide .hy-mini-table{font-size:.48rem}
+  .hy-mini-table th,.hy-mini-table td{padding:1.5px 3px}
+  .hy-lo-tag{font-size:.52rem;padding:2px 7px;margin-bottom:4px}
+  body.hy-mode .hy-modal-card{padding:4px 4px 0!important}
+  .hy-cols>:last-child,.hy-group>:last-child,.hy-block:last-child{margin-bottom:0}
+  @page{margin:11mm}
+}
+
+
+/* ---------------- print security ---------------- */
+@media print{
+  html:not([data-print-auth="jeeval"]),
+  html:not([data-print-auth="jeeval"]) body{background:#fff!important;color:#111!important;min-height:100%!important}
+  html:not([data-print-auth="jeeval"]) body{padding:0!important;margin:0!important}
+  html:not([data-print-auth="jeeval"]) body > *,
+  html:not([data-print-auth="jeeval"]) body.hy-mode > *,
+  html:not([data-print-auth="jeeval"]) body.hy-mode .hy-modal,
+  html:not([data-print-auth="jeeval"]) body.hy-mode .hy-modal-card{display:none!important}
+  html:not([data-print-auth="jeeval"]) body::before{
+    content:"Printing is disabled for this protected study review. Please use the secure online version.";
+    display:block!important;
+    margin:18mm;
+    padding:14mm;
+    border:2px solid #111;
+    border-radius:6px;
+    color:#111!important;
+    background:#fff!important;
+    font:700 18pt/1.4 Arial,Helvetica,sans-serif;
+  }
+}
+
+#noteAuthGate{display:none}
+html[data-note-auth="locked"] body{
+  min-height:100vh;
+  overflow:hidden;
+  background:#f4f5f7;
+  color:#1f2937;
+}
+html[data-note-auth="locked"] body>*:not(#noteAuthGate){display:none!important}
+html[data-note-auth="locked"] #noteAuthGate{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  background:linear-gradient(135deg,#f4f5f7,#ffffff 52%,#eef2f7);
+}
+.note-auth-card{
+  width:min(500px,100%);
+  padding:30px;
+  border:1px solid rgba(31,41,55,.14);
+  border-radius:14px;
+  background:rgba(255,255,255,.92);
+  box-shadow:0 22px 70px rgba(31,41,55,.16);
+  text-align:center;
+}
+.note-auth-kicker{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.68rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:#cf4520;
+  font-weight:700;
+  margin-bottom:12px;
+}
+.note-auth-card h1{
+  margin:0 0 12px;
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2rem,6vw,3rem);
+  line-height:.98;
+  color:#263241;
+}
+.note-auth-card p{
+  margin:0 0 22px;
+  font-size:1rem;
+  line-height:1.55;
+  color:#556070;
+}
+.note-auth-btn{
+  border:0;
+  border-radius:999px;
+  padding:12px 20px;
+  font:700 .9rem 'JetBrains Mono',monospace;
+  letter-spacing:.04em;
+  color:#fff;
+  background:#263241;
+  cursor:pointer;
+  box-shadow:0 12px 28px rgba(38,50,65,.22);
+}
+.note-auth-btn:hover{background:#cf4520}
+
+
+/* ============ CARDIO THEME (default) — blue hero and sidebar, per OMK_2_notes.md ============ */
+html:not([data-theme]) .hero{background:radial-gradient(circle at 88% 18%,rgba(181,31,58,0.42),transparent 30%),linear-gradient(135deg,#102e4b,#173e63 62%,#6f1d32)}
+html:not([data-theme]) .toc-bar{background:#173e63;border-color:#2c5f86}
+html:not([data-theme]) .hero h1 span,html:not([data-theme]) .toc-name em,
+html:not([data-theme]) .hero-sub strong{color:var(--hero-accent)}
+.hero{position:relative;overflow:hidden}
+.hero .container{position:relative;z-index:1}
+.hero-ecg{position:absolute;left:0;right:0;bottom:6px;width:100%;height:58px;z-index:0;pointer-events:none;opacity:.55}
+.hero-ecg path{fill:none;stroke:var(--hero-accent,var(--accent));stroke-width:2;stroke-linejoin:round;stroke-linecap:round;
+  stroke-dasharray:1400;stroke-dashoffset:1400;animation:ecgDraw 4.5s ease-out .3s forwards}
+@keyframes ecgDraw{to{stroke-dashoffset:0}}
+@media (prefers-reduced-motion:reduce){.hero-ecg path{animation:none;stroke-dashoffset:0}}
+@media print{.hero-ecg{display:none}}
+/* ============ SHELL PLACEHOLDERS (remove as content lands) ============ */
+.shell-todo{border:1.5px dashed var(--border);border-radius:8px;padding:10px 14px;margin:8px 0 22px;
+  color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase}
+.cov-table tr.lo-group td{background:var(--cream);color:var(--ink);text-align:left!important;width:auto!important;
+  font-family:'Playfair Display',serif;font-weight:700;font-size:.95rem;letter-spacing:0;padding-top:10px;padding-bottom:10px}
+.cov-table .lo-rep{display:block;font-size:.74rem;color:var(--muted);font-style:italic;margin-top:2px}
+</style>
+</head>
+<body>
+<div id="noteAuthGate" role="dialog" aria-modal="true" aria-labelledby="noteAuthTitle">
+  <div class="note-auth-card">
+    <div class="note-auth-kicker">2nd Year Study Hub</div>
+    <h1 id="noteAuthTitle">Please log in to continue with this note.</h1>
+    <p id="noteAuthMessage">Open the Study Hub login, enter your approved UNE email, and this note will unlock automatically.</p>
+    <button class="note-auth-btn" id="noteAuthAction" type="button" onclick="openNoteLogin()">Log in to continue</button>
+  </div>
+</div>
+<div class="progress-bar" id="progressBar"></div>
+
+<header class="mnav" id="mnav">
+  <button class="mnav-burger" id="mnavBurger" aria-label="Open section menu" aria-expanded="false" aria-controls="tocBar">
+    <span></span><span></span><span></span>
+  </button>
+  <span class="mnav-title">
+    <span class="mnav-doc">Cardio Summative · Objective Review</span>
+    <span class="mnav-here" id="mnavHere">Objective Coverage Map</span>
+  </span>
+  <button class="mnav-hy" onclick="openHY()" aria-label="Open the high-yield one-pager">🎯</button>
+</header>
+<div class="toc-scrim" id="tocScrim"></div>
+
+<aside class="toc-bar" id="tocBar">
+  <div class="toc-head">
+    <span class="toc-eyebrow">OMK 2A · Cardiology</span>
+    <span class="toc-name">Cardio Summative <em>Objective Review</em></span>
+  </div>
+  <button class="toc-hy-btn" onclick="openHY()">🎯 High-Yield One-Pager</button>
+  <p class="toc-group">Orientation</p>
+  <nav id="tocNav">
+    <a href="#coverage"><span class="toc-num dot"></span><span>Objective Coverage Map</span><span class="toc-check">●</span></a>
+    <a href="#checklist"><span class="toc-num dot"></span><span>Master High-Yield Checklist</span><span class="toc-check">●</span></a>
+  </nav>
+  <p class="toc-group">Part A · The Normal Heart</p>
+  <nav>
+    <a href="#s1-cardiac-cycle"><span class="toc-num">1</span><span>Cardiac Cycle &amp; Wiggers</span><span class="toc-check">●</span></a>
+    <a href="#s2-heart-sounds"><span class="toc-num">2</span><span>Heart Sounds</span><span class="toc-check">●</span></a>
+    <a href="#s3-murmurs"><span class="toc-num">3</span><span>Murmurs &amp; Maneuvers</span><span class="toc-check">●</span></a>
+    <a href="#s4-exercise"><span class="toc-num">4</span><span>Exercise &amp; Prevention</span><span class="toc-check">●</span></a>
+    <a href="#s5-pharm-basics"><span class="toc-num">5</span><span>CV Pharm Basics</span><span class="toc-check">●</span></a>
+  </nav>
+  <p class="toc-group">Part B · The ECG &amp; Arrhythmias</p>
+  <nav>
+    <a href="#s6-ecg-basics"><span class="toc-num">6</span><span>Reading the ECG</span><span class="toc-check">●</span></a>
+    <a href="#s7-ecg-patterns"><span class="toc-num">7</span><span>ECG Patterns of Disease</span><span class="toc-check">●</span></a>
+    <a href="#s8-arrhythmias"><span class="toc-num">8</span><span>Arrhythmias &amp; Heart Block</span><span class="toc-check">●</span></a>
+    <a href="#s9-afib"><span class="toc-num">9</span><span>Atrial Fibrillation</span><span class="toc-check">●</span></a>
+    <a href="#s10-antiarrhythmics"><span class="toc-num">10</span><span>Antiarrhythmic Drugs</span><span class="toc-check">●</span></a>
+  </nav>
+  <p class="toc-group">Part C · Atherosclerosis &amp; Ischemia</p>
+  <nav>
+    <a href="#s11-atherosclerosis"><span class="toc-num">11</span><span>Arterio- vs Atherosclerosis</span><span class="toc-check">●</span></a>
+    <a href="#s12-ihd-acs"><span class="toc-num">12</span><span>Stable Angina vs ACS</span><span class="toc-check">●</span></a>
+    <a href="#s13-biomarkers"><span class="toc-num">13</span><span>Troponin &amp; BNP</span><span class="toc-check">●</span></a>
+    <a href="#s14-mi-path"><span class="toc-num">14</span><span>MI Histology Timeline</span><span class="toc-check">●</span></a>
+    <a href="#s15-mi-complications"><span class="toc-num">15</span><span>Post-MI Complications</span><span class="toc-check">●</span></a>
+    <a href="#s16-ihd-pharm"><span class="toc-num">16</span><span>Antianginal Drugs</span><span class="toc-check">●</span></a>
+  </nav>
+  <p class="toc-group">Part D · Heart Failure &amp; the Myocardium</p>
+  <nav>
+    <a href="#s17-hf"><span class="toc-num">17</span><span>HFrEF vs HFpEF</span><span class="toc-check">●</span></a>
+    <a href="#s18-hf-pharm"><span class="toc-num">18</span><span>Heart Failure Drugs</span><span class="toc-check">●</span></a>
+    <a href="#s19-cardiomyopathy"><span class="toc-num">19</span><span>Cardiomyopathies</span><span class="toc-check">●</span></a>
+    <a href="#s20-tumors"><span class="toc-num">20</span><span>Heart Tumors</span><span class="toc-check">●</span></a>
+  </nav>
+  <p class="toc-group">Part E · Infection &amp; Inflammation</p>
+  <nav>
+    <a href="#s21-ie"><span class="toc-num">21</span><span>Endocarditis: Organisms</span><span class="toc-check">●</span></a>
+    <a href="#s22-ie-dx-rx"><span class="toc-num">22</span><span>Endocarditis: Diagnosis &amp; Treatment</span><span class="toc-check">●</span></a>
+    <a href="#s23-myo-peri"><span class="toc-num">23</span><span>Myocarditis &amp; Pericarditis</span><span class="toc-check">●</span></a>
+  </nav>
+  <p class="toc-group">Part F · Valves &amp; Surgery</p>
+  <nav>
+    <a href="#s24-valves"><span class="toc-num">24</span><span>Valve Disease</span><span class="toc-check">●</span></a>
+    <a href="#s25-avr"><span class="toc-num">25</span><span>Aortic Valve Replacement</span><span class="toc-check">●</span></a>
+  </nav>
+  <p class="toc-group">Part G · Congenital Heart Disease</p>
+  <nav>
+    <a href="#s26-chd"><span class="toc-num">26</span><span>Cyanotic vs Acyanotic</span><span class="toc-check">●</span></a>
+    <a href="#s27-coarct-newborn"><span class="toc-num">27</span><span>Coarctation &amp; Newborn Murmur</span><span class="toc-check">●</span></a>
+  </nav>
+  <p class="toc-group">Part H · Vessels</p>
+  <nav>
+    <a href="#s28-htn"><span class="toc-num">28</span><span>Hypertension</span><span class="toc-check">●</span></a>
+    <a href="#s29-htn-pharm"><span class="toc-num">29</span><span>Hypertension Drugs</span><span class="toc-check">●</span></a>
+    <a href="#s30-lipids"><span class="toc-num">30</span><span>Dyslipidemias</span><span class="toc-check">●</span></a>
+    <a href="#s31-lipid-pharm"><span class="toc-num">31</span><span>Lipid Drugs</span><span class="toc-check">●</span></a>
+    <a href="#s32-aneurysm-dissection"><span class="toc-num">32</span><span>Aneurysm &amp; Dissection</span><span class="toc-check">●</span></a>
+    <a href="#s33-ctd"><span class="toc-num">33</span><span>Connective Tissue Disorders</span><span class="toc-check">●</span></a>
+    <a href="#s34-vasculitis"><span class="toc-num">34</span><span>Vasculitis</span><span class="toc-check">●</span></a>
+    <a href="#s35-pad"><span class="toc-num">35</span><span>Peripheral Arterial Disease</span><span class="toc-check">●</span></a>
+    <a href="#s36-mesenteric"><span class="toc-num">36</span><span>Mesenteric Ischemia</span><span class="toc-check">●</span></a>
+  </nav>
+  <p class="toc-group">Supporting Lecture</p>
+  <nav>
+    <a href="#s37-women"><span class="toc-num">37</span><span>CV Health in Women</span><span class="toc-check">●</span></a>
+  </nav>
+  <p class="toc-group">Reference</p>
+  <nav>
+    <a href="#pending"><span class="toc-num dot"></span><span>Objectives Still Pending</span><span class="toc-check">●</span></a>
+    <a href="#glossary"><span class="toc-num dot"></span><span>Glossary &amp; Abbreviations</span><span class="toc-check">●</span></a>
+  </nav>
+  <div class="toc-tools">
+    <button class="toc-chip" onclick="jumpToNextTodo()">↷ Next unreviewed section</button>
+    <button class="toc-chip" onclick="toggleAllSections()">⊟ Collapse / expand all</button>
+    <button class="toc-chip" id="tocProgress">0 / 41 reviewed</button>
+    <button class="toc-chip" id="tocHideBtn" type="button" onclick="setSidebarHidden(true)">⇤ Hide sidebar</button>
+  </div>
+</aside>
+<button class="toc-show-btn" id="tocShowBtn" type="button" aria-controls="tocBar" aria-expanded="true" onclick="setSidebarHidden(false)">☰ Show sidebar</button>
+
+<div class="floating-left" id="floatingLeft">
+  <div class="tools-menu">
+    <button class="tool-btn" id="recallBtn" onclick="toggleRecall()">🫣 Recall mode <span id="recallCount"></span></button>
+    <button class="tool-btn" onclick="jumpToNextQ()">❓ Next exam question <span id="qCount"></span></button>
+    <button class="tool-btn" onclick="openHY()">🎯 One-pager</button>
+    <button class="tool-btn" onclick="clearAnnotations()">🧽 Clear highlights</button>
+    <button class="tool-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ Back to top</button>
+  </div>
+  <button class="tool-btn tools-trigger" id="toolsTrigger" onclick="toggleToolsMenu()">🧰 Study menu<span class="dot"></span></button>
+</div>
+
+<div class="floating-stack">
+  <div class="font-btn-row">
+    <span class="font-label">Text</span>
+    <button class="font-btn" onclick="changeFontSize(1)">A+</button>
+    <span class="font-sep">|</span>
+    <button class="font-btn" onclick="changeFontSize(-1)">A&minus;</button>
+  </div>
+  <div style="position:relative">
+    <div class="theme-panel" id="themePanel">
+      <div class="theme-panel-title">Choose Theme</div>
+      <div class="theme-option active" data-theme="cardio" onclick="setTheme('cardio',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#fff7f7,#b51f3a 55%,#245f89)"></div>Cardio (Heart)</div>
+      <div class="theme-option" data-theme="venous" onclick="setTheme('venous',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#150a0e,#e8556c)"></div>Venous (Dark)</div>
+      <div class="theme-option" data-theme="marrow" onclick="setTheme('marrow',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#fbf6fb,#8e2f6d)"></div>Marrow</div>
+      <div class="theme-option" data-theme="paper" onclick="setTheme('paper',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#faf7f2,#1a1209)"></div>Paper</div>
+      <div class="theme-option" data-theme="night" onclick="setTheme('night',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#0f1923,#e8b84b)"></div>Night</div>
+      <div class="theme-option" data-theme="ocean" onclick="setTheme('ocean',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#eef7fb,#0f6fb0)"></div>Ocean</div>
+      <div class="theme-option" data-theme="forest" onclick="setTheme('forest',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#f2f7f0,#1f7a4d)"></div>Forest</div>
+      <div class="theme-option" data-theme="sepia" onclick="setTheme('sepia',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#f7ecd9,#8b5a17)"></div>Sepia</div>
+      <div class="theme-option" data-theme="lavender" onclick="setTheme('lavender',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#f8f6fd,#7b3fa0)"></div>Lavender</div>
+      <div class="theme-option" data-theme="slate" onclick="setTheme('slate',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#f4f5f7,#9e2c0f)"></div>Slate</div>
+    </div>
+    <button class="theme-btn" onclick="toggleThemePanel()">🎨 Theme</button>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="container">
+    <p class="hero-tag">UNE COM · OMK 2A · Cardiology · Summative</p>
+    <h1>Cardiology Summative — <span>Objective Review</span></h1>
+    <p class="hero-sub">Built against <strong>last year&rsquo;s OMK 2A Cardiology Study Guide</strong>. Every one of its objective lines &mdash; <strong>101 as printed</strong>, eleven of them repeats &mdash; is listed and tracked. When this year&rsquo;s guide comes out, the objective list gets re-checked against it. Sections are laid out in teaching order, from the normal heart to the vessels.</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item"><span class="label">Objectives</span><span class="value">101 tracked</span></div>
+      <div class="hero-meta-item"><span class="label">Fully covered</span><span class="value">0</span></div>
+      <div class="hero-meta-item"><span class="label">Partly covered</span><span class="value">0</span></div>
+      <div class="hero-meta-item"><span class="label">Source notes</span><span class="value">20 files</span></div>
+      <div class="hero-meta-item"><span class="label">Sections</span><span class="value">37</span></div>
+      <div class="hero-meta-item"><span class="label">Exam questions</span><span class="value">0</span></div>
+    </div>
+    <button class="hy-btn" onclick="openHY()">🎯 High-Yield One-Pager</button>
+  </div>
+  <svg class="hero-ecg" viewBox="0 0 1200 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 40 H140 l10 -6 l10 6 H200 l6 6 l10 -40 l10 50 l8 -16 H330 l14 -8 l14 8 H480 l10 -6 l10 6 H540 l6 6 l10 -40 l10 50 l8 -16 H670 l14 -8 l14 8 H820 l10 -6 l10 6 H880 l6 6 l10 -40 l10 50 l8 -16 H1010 l14 -8 l14 8 H1200"/></svg>
+</header>
+
+<main class="container">
+
+<section class="section" id="coverage">
+  <div class="badge-row"><span class="lo-badge">Objective coverage map</span><span class="lo-badge src">Source: OMK 2A Cardiology Study Guide (last year&rsquo;s edition)</span></div>
+  <p class="section-label">Orientation</p>
+  <h2 class="section-title">Every Objective, and Where Each One Stands</h2>
+  <p class="lede">This is the spine of the file. Every objective printed in the study guide is listed below in the order it appears there, grouped under the guide&rsquo;s own topic headings, with an honest status. <strong>Covered</strong> means the objective is worked in full in a section below. <strong>Partial</strong> means part of it is here. <strong>Not written yet</strong> means its section is still an empty shell.</p>
+
+  <div class="cov-count">
+    <div><span class="n">0</span><span class="l">Covered in full</span></div>
+    <div><span class="n">0</span><span class="l">Partially covered</span></div>
+    <div><span class="n">101</span><span class="l">Not written yet</span></div>
+    <div><span class="n">101</span><span class="l">Total objectives</span></div>
+  </div>
+
+  <div class="callout callout-key">
+    <div class="callout-title">🔑 What feeds this file</div>
+    <p><strong>Twenty lecture note sets.</strong> <strong>Week 13:</strong> CV Pharm Basic Sciences Review · Cardiac Pathology · ECG Basics · Endocarditis, Myocarditis &amp; Pericarditis · Hypertension Pharmacology · Vascular Pathology. <strong>Week 14:</strong> Cardiac Physiology Review · ECG II &mdash; Clinical Arrhythmias · Antiarrhythmic Pharmacology · Ischemic Heart Disease Pharmacology · Heart Failure Pharmacology · Dyslipidemia Pharmacology · Pediatric Cardiology. <strong>Week 15:</strong> Cardiac Cycle &amp; Valve Hemodynamics · Application Session 1 &mdash; Chest Pain &amp; Hypertension · Application Session 2 &mdash; Heart Failure &amp; Peripheral Arterial Disease · Vascular Surgery · Exercise Rehabilitation · Cardiovascular Health in Women. <strong>Week 17:</strong> Cardiothoracic Surgery.</p>
+    <p>The UWorld and AMBOSS libraries are the primary source; First Aid, Pathoma and the UWorld questions come next; the class notes fill in what the lecturers emphasised.</p>
+    <p><strong>A note on the study guide.</strong> This is last year&rsquo;s guide, so the objectives may change. Topic 15, &ldquo;Pharmacology &amp; Management,&rdquo; only repeats objectives from earlier topics; those eleven lines are listed here and point to the sections that already cover them.</p>
+  </div>
+
+  <div class="cov-filter">
+    <button class="on" onclick="filterLO('all',this)">Show all</button>
+    <button onclick="filterLO('full',this)">Covered only</button>
+    <button onclick="filterLO('part',this)">Partial only</button>
+    <button onclick="filterLO('none',this)">Not written yet</button>
+  </div>
+  <div class="cov-legend">
+    <span><i class="cov-dot full"></i> Worked in full below</span>
+    <span><i class="cov-dot part"></i> Part here, part pending</span>
+    <span><i class="cov-dot none"></i> Section not written yet</span>
+  </div>
+
+  <div class="tbl-scroll">
+    <table class="cov-table">
+      <thead><tr><th>#</th><th>Learning objective, as printed in the study guide</th><th>Status</th></tr></thead>
+      <tbody>
+<tr class="lo-group"><td colspan="3">1. Cardiac Physiology &amp; Cardiac Cycle</td></tr>
+<tr class="lo-row" data-st="none"><td>1</td><td>Apply concepts related to the cardiac cycle to a clinical presentation.<br><a href="#s1-cardiac-cycle">&rarr; &sect;1 Cardiac Cycle &amp; Wiggers</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>2</td><td>Describe and differentiate normal from abnormal heart sounds.<br><a href="#s2-heart-sounds">&rarr; &sect;2 Heart Sounds</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>3</td><td>Understand the basic cardiorespiratory response to exercise.<br><a href="#s4-exercise">&rarr; &sect;4 Exercise &amp; Prevention</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>4</td><td>Identify the cardioprotective benefits of exercise.<br><a href="#s4-exercise">&rarr; &sect;4 Exercise &amp; Prevention</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>5</td><td>Understand the pathophysiology of heart murmurs, associated signs and symptoms including risk factors.<br><a href="#s3-murmurs">&rarr; &sect;3 Murmurs &amp; Maneuvers</a> · <a href="#s24-valves">&rarr; &sect;24 Valve Disease</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>6</td><td>Understand the pathophysiology of heart murmurs, including clinical presentation and auscultation findings.<br><a href="#s3-murmurs">&rarr; &sect;3 Murmurs &amp; Maneuvers</a> · <a href="#s24-valves">&rarr; &sect;24 Valve Disease</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>7</td><td>Given a clinical vignette, use the cardiac exam, auscultatory findings and Wigger&#x27;s Diagram to understand the hemodynamics of a cardiac murmur.<br><a href="#s1-cardiac-cycle">&rarr; &sect;1 Cardiac Cycle &amp; Wiggers</a> · <a href="#s3-murmurs">&rarr; &sect;3 Murmurs &amp; Maneuvers</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>8</td><td>Given a clinical vignette, use the cardiac exam and auscultatory findings to diagnose a cardiac murmur.<br><a href="#s3-murmurs">&rarr; &sect;3 Murmurs &amp; Maneuvers</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>9</td><td>Recognition that certain cardiac murmur’s qualities, location on the precordium/chest, and variation with patient position may often aid an examiner in identifying the etiology of the heart murmur.<br><a href="#s3-murmurs">&rarr; &sect;3 Murmurs &amp; Maneuvers</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-group"><td colspan="3">2. Congenital Heart Disease</td></tr>
+<tr class="lo-row" data-st="none"><td>10</td><td>Given a pediatric patient with congenital heart disease, differentiate cyanotic from acyanotic sub-types and the pathophysiologic mechanisms that result from changes to their cardiac anatomy.<br><a href="#s26-chd">&rarr; &sect;26 Cyanotic vs Acyanotic</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>11</td><td>Recognition of clinical features constituting cyanotic congenital heart disease and radiographic features on chest x-ray that may aid in the identification of the type of underlying cyanotic congenital heart disease.<br><a href="#s26-chd">&rarr; &sect;26 Cyanotic vs Acyanotic</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>12</td><td>Recognition that certain congenital syndromes in children are associated with particular types of congenital heart disease.<br><a href="#s26-chd">&rarr; &sect;26 Cyanotic vs Acyanotic</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>13</td><td>Understand the clinical presentation and exam findings of Coarctation of the aorta in a newborn infant.<br><a href="#s27-coarct-newborn">&rarr; &sect;27 Coarctation &amp; Newborn Murmur</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>14</td><td>Understand the presentation of the various congenital heart defects, including associated comorbid conditions.<br><a href="#s26-chd">&rarr; &sect;26 Cyanotic vs Acyanotic</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>15</td><td>Understand the relative incidence of structural heart abnormalities in infants suspected to have congenital heart disease and the predictive probability of findings on echocardiogram when faced with a significant systolic heart murmur discovered on a newborn’s physical exam.<br><a href="#s27-coarct-newborn">&rarr; &sect;27 Coarctation &amp; Newborn Murmur</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-group"><td colspan="3">3. Ischemic Heart Disease &amp; Acute Coronary Syndromes</td></tr>
+<tr class="lo-row" data-st="none"><td>16</td><td>Differentiate the clinical presentations, cardiac biomarkers and diagnostics, and medical management of stable ischemic heart disease versus ACS.<br><a href="#s12-ihd-acs">&rarr; &sect;12 Stable Angina vs ACS</a> · <a href="#s16-ihd-pharm">&rarr; &sect;16 Antianginal Drugs</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>17</td><td>Identify the common clinical presentations of stable ischemic heart disease and ACS and compare and contrast the ECG manifestations and medical management.<br><a href="#s12-ihd-acs">&rarr; &sect;12 Stable Angina vs ACS</a> · <a href="#s16-ihd-pharm">&rarr; &sect;16 Antianginal Drugs</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>18</td><td>Understand the acute management of patient-reported &quot;chest pain&quot; based upon specific signs and symptoms found on H&amp;P.<br><a href="#s12-ihd-acs">&rarr; &sect;12 Stable Angina vs ACS</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>19</td><td>Differentiate the mechanical and non-mechanical complications after a STEMI and distinguish their clinical features, lab and ECG findings and their management.<br><a href="#s15-mi-complications">&rarr; &sect;15 Post-MI Complications</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>20</td><td>Describe the morphologic and histologic features of a myocardial infarction (MI).<br><a href="#s14-mi-path">&rarr; &sect;14 MI Histology Timeline</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-group"><td colspan="3">4. Heart Failure</td></tr>
+<tr class="lo-row" data-st="none"><td>21</td><td>Describe the clinical presentations and pathologic features of Heart Failure including BOTH HFpEF and HFrEF.<br><a href="#s17-hf">&rarr; &sect;17 HFrEF vs HFpEF</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>22</td><td>Understand the clinical presentation, labs and diagnostics and pathophysiologic mechanisms that distinguish HFpEF and HFrEF.<br><a href="#s17-hf">&rarr; &sect;17 HFrEF vs HFpEF</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>23</td><td>Describe the physiology of biomarkers used in the diagnosis of congestive heart failure and differentiate limitations of BNP +/- NTproBNP.<br><a href="#s13-biomarkers">&rarr; &sect;13 Troponin &amp; BNP</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>24</td><td>Compare and contrast cardiac biomarkers (cardiac troponin, BNP and NTproBNP) and identify their physiology, uses as a quantitative marker in cardiac presentations, sensitivity + specificity, and weaknesses.<br><a href="#s13-biomarkers">&rarr; &sect;13 Troponin &amp; BNP</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>25</td><td>Identify the signs and symptoms that differentiate various presentations of congestive heart failure.<br><a href="#s17-hf">&rarr; &sect;17 HFrEF vs HFpEF</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>26</td><td>Differentiate the medications used in the management of congestive heart failure (CHF) and select which classes impact morbidity and mortality.<br><a href="#s18-hf-pharm">&rarr; &sect;18 Heart Failure Drugs</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>27</td><td>Outline and define the pharmacologic management of chronic congestive heart failure (CHF).<br><a href="#s18-hf-pharm">&rarr; &sect;18 Heart Failure Drugs</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>28</td><td>Identify the mechanism of action of drugs used in the treatment of HFrEF.<br><a href="#s18-hf-pharm">&rarr; &sect;18 Heart Failure Drugs</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-group"><td colspan="3">5. Cardiac Arrhythmias &amp; ECG</td></tr>
+<tr class="lo-row" data-st="none"><td>29</td><td>Discuss the evaluation and appropriate management of cardiac arrhythmias.<br><a href="#s8-arrhythmias">&rarr; &sect;8 Arrhythmias &amp; Heart Block</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>30</td><td>Discuss the evaluation and medical management of common cardiac dysrhythmias.<br><a href="#s8-arrhythmias">&rarr; &sect;8 Arrhythmias &amp; Heart Block</a> · <a href="#s9-afib">&rarr; &sect;9 Atrial Fibrillation</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>31</td><td>Discuss the risk stratification of atrial fibrillation.<br><a href="#s9-afib">&rarr; &sect;9 Atrial Fibrillation</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>32</td><td>Identify the mechanism of action and adverse effects of antiarrhythmic drugs.<br><a href="#s10-antiarrhythmics">&rarr; &sect;10 Antiarrhythmic Drugs</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>33</td><td>EKG Interpretation-Determine Axis by EKG.<br><a href="#s6-ecg-basics">&rarr; &sect;6 Reading the ECG</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>34</td><td>Evaluate ECG findings and correlate with cardiovascular conditions.<br><a href="#s7-ecg-patterns">&rarr; &sect;7 ECG Patterns of Disease</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>35</td><td>Evaluate the ECG findings of common clinical cardiovascular conditions.<br><a href="#s7-ecg-patterns">&rarr; &sect;7 ECG Patterns of Disease</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>36</td><td>Given a 12-lead ECG or rhythm strip, identify rates, waves, intervals and segments.<br><a href="#s6-ecg-basics">&rarr; &sect;6 Reading the ECG</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>37</td><td>Given a 12-lead ECG, interpret rate, rhythm and axis.<br><a href="#s6-ecg-basics">&rarr; &sect;6 Reading the ECG</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>38</td><td>Given a 12-lead ECG, recognize acute and chronic features of ischemia and myocardial necrosis.<br><a href="#s7-ecg-patterns">&rarr; &sect;7 ECG Patterns of Disease</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>39</td><td>Given a brief clinical scenario, be able to differentiate lethal and non-lethal dysrhythmias and identify their common clinical sequelae.<br><a href="#s8-arrhythmias">&rarr; &sect;8 Arrhythmias &amp; Heart Block</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>40</td><td>Given a brief clinical scenario, be able to interpret the provided ECG.<br><a href="#s8-arrhythmias">&rarr; &sect;8 Arrhythmias &amp; Heart Block</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>41</td><td>Given a clinical vignette and 12-lead ECG, interpret electrocardiographic characteristics consistent with electrolyte abnormalities.<br><a href="#s7-ecg-patterns">&rarr; &sect;7 ECG Patterns of Disease</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>42</td><td>Given a clinical vignette and a 12-lead ECG, interpret the specific ECG findings including the type of arrhythmia, heart block, bundle branch block, hypertrophy or ischemia/infarction.<br><a href="#s7-ecg-patterns">&rarr; &sect;7 ECG Patterns of Disease</a> · <a href="#s8-arrhythmias">&rarr; &sect;8 Arrhythmias &amp; Heart Block</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>43</td><td>Given a clinical vignette involving palpitations or syncope, interpret a rhythm strip and 12-lead ECG.<br><a href="#s8-arrhythmias">&rarr; &sect;8 Arrhythmias &amp; Heart Block</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>44</td><td>Given a clinical vignette involving palpitations or syncope, interpret a rhythm strip or 12-lead ECG to exclude a dysrhythmia or various types of heart block.<br><a href="#s8-arrhythmias">&rarr; &sect;8 Arrhythmias &amp; Heart Block</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>45</td><td>Given a clinical vignette, interpret a 12-lead ECG or rhythm strip.<br><a href="#s6-ecg-basics">&rarr; &sect;6 Reading the ECG</a> · <a href="#s8-arrhythmias">&rarr; &sect;8 Arrhythmias &amp; Heart Block</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>46</td><td>Given a clinical vignette, recognize lethal and non-lethal dysrhythmias and identify common clinical sequelae.<br><a href="#s8-arrhythmias">&rarr; &sect;8 Arrhythmias &amp; Heart Block</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>47</td><td>Understand the pathophysiology and differentiate lethal and non-lethal dysrhythmias and identify their common clinical sequelae.<br><a href="#s8-arrhythmias">&rarr; &sect;8 Arrhythmias &amp; Heart Block</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>48</td><td>Interpret a rhythm strip or 12-lead ECG to exclude a dysrhythmia or various types of heart block.<br><a href="#s8-arrhythmias">&rarr; &sect;8 Arrhythmias &amp; Heart Block</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-group"><td colspan="3">6. Valvular Heart Disease &amp; Cardiac Surgery</td></tr>
+<tr class="lo-row" data-st="none"><td>49</td><td>Understand options and indications for aortic valve replacement therapy.<br><a href="#s25-avr">&rarr; &sect;25 Aortic Valve Replacement</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>50</td><td>Understand the complications and management of aortic valve replacement surgery.<br><a href="#s25-avr">&rarr; &sect;25 Aortic Valve Replacement</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-group"><td colspan="3">7. Endocarditis, Myocarditis &amp; Pericarditis</td></tr>
+<tr class="lo-row" data-st="none"><td>51</td><td>Describe the differential diagnosis of endocarditis, myocarditis and pericarditis.<br><a href="#s23-myo-peri">&rarr; &sect;23 Myocarditis &amp; Pericarditis</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>52</td><td>Explain the relevant signs and symptoms associated with myocarditis.<br><a href="#s23-myo-peri">&rarr; &sect;23 Myocarditis &amp; Pericarditis</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>53</td><td>Explain the relevant signs and symptoms associated with pericarditis. Identify the principal microbial agents of pericarditis.<br><a href="#s23-myo-peri">&rarr; &sect;23 Myocarditis &amp; Pericarditis</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>54</td><td>Understand the clinical presentation of bacterial endocarditis and specific laboratory tests and cardiovascular imaging studies to define and diagnose bacterial endocarditis.<br><a href="#s22-ie-dx-rx">&rarr; &sect;22 Endocarditis: Diagnosis &amp; Treatment</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>55</td><td>Explain the pathogenesis of IE along with relevant pathologies by organ site. Identify the conventional management approach to IE.<br><a href="#s21-ie">&rarr; &sect;21 Endocarditis: Organisms</a> · <a href="#s22-ie-dx-rx">&rarr; &sect;22 Endocarditis: Diagnosis &amp; Treatment</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>56</td><td>Discuss relevant IE epidemiologic factors including incidence, acute/subacute prevalence, age/gender considerations, the role of health care facilities, risk factors<br><a href="#s21-ie">&rarr; &sect;21 Endocarditis: Organisms</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>57</td><td>Describe the principle clinical findings in left-sided and right-sided IE. Identify the principal microbial agents of IE, with a focus on Staphylococcus aureus, Staphylococcus epidermidis, members of the Viridans streptococci, Enterococcus, Gram (-) rods, HACEK, anaerobes and fungi.<br><a href="#s21-ie">&rarr; &sect;21 Endocarditis: Organisms</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>58</td><td>Describe the principal microbial agents seen in culture negative IE.<br><a href="#s21-ie">&rarr; &sect;21 Endocarditis: Organisms</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>59</td><td>Given a clinical vignette, identify the clinical presentations, labs and diagnostics, pathophysiologic mechanisms and management of infectious endocarditis.<br><a href="#s22-ie-dx-rx">&rarr; &sect;22 Endocarditis: Diagnosis &amp; Treatment</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>60</td><td>Identify the mechanism of action of antibiotics used in the treatment of bacterial endocarditis.<br><a href="#s22-ie-dx-rx">&rarr; &sect;22 Endocarditis: Diagnosis &amp; Treatment</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-group"><td colspan="3">8. Cardiomyopathies</td></tr>
+<tr class="lo-row" data-st="none"><td>61</td><td>Compare and contrast the clinical presentation of cardiomyopathies including their symptoms, signs, lab, diagnostic and echocardiographic findings and their general management.<br><a href="#s19-cardiomyopathy">&rarr; &sect;19 Cardiomyopathies</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>62</td><td>Define the clinical presentation, morphology and pathologic findings of cardiomyopathies.<br><a href="#s19-cardiomyopathy">&rarr; &sect;19 Cardiomyopathies</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-group"><td colspan="3">9. Heart Tumors</td></tr>
+<tr class="lo-row" data-st="none"><td>63</td><td>Be familiar with heart tumors, management and long-term survival.<br><a href="#s20-tumors">&rarr; &sect;20 Heart Tumors</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-group"><td colspan="3">10. Hypertension &amp; Dyslipidemia</td></tr>
+<tr class="lo-row" data-st="none"><td>64</td><td>Define the different subtypes of hypertension and understand clinical contexts.<br><a href="#s28-htn">&rarr; &sect;28 Hypertension</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>65</td><td>Identify common causes, labs and physical exam findings of resistant and secondary causes of hypertension<br><a href="#s28-htn">&rarr; &sect;28 Hypertension</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>66</td><td>Identify electrolyte abnormalities which may contribute to adverse drug events.<br><a href="#s29-htn-pharm">&rarr; &sect;29 Hypertension Drugs</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>67</td><td>Identify and describe different dyslipidemias.<br><a href="#s30-lipids">&rarr; &sect;30 Dyslipidemias</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>68</td><td>Identify and describe the pathophysiology of different dyslipidemias.<br><a href="#s30-lipids">&rarr; &sect;30 Dyslipidemias</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>69</td><td>Identify dietary approach to help manage dyslipidemias.<br><a href="#s30-lipids">&rarr; &sect;30 Dyslipidemias</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>70</td><td>Identify drug-drug interactions associated with drugs used to treat dyslipidemias.<br><a href="#s31-lipid-pharm">&rarr; &sect;31 Lipid Drugs</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>71</td><td>Identify strategies to prevent or decrease adverse drug events - treatment of dyslipidemias.<br><a href="#s31-lipid-pharm">&rarr; &sect;31 Lipid Drugs</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>72</td><td>Identify the benefits of diet and lifestyle modification in the primary prevention of cardiovascular disease.<br><a href="#s4-exercise">&rarr; &sect;4 Exercise &amp; Prevention</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-group"><td colspan="3">11. Peripheral Arterial Disease &amp; Claudication</td></tr>
+<tr class="lo-row" data-st="none"><td>73</td><td>Be able to differentiate between claudication that is limb threatening and neurogenic claudication.<br><a href="#s35-pad">&rarr; &sect;35 Peripheral Arterial Disease</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>74</td><td>Describe the clinical presentations (symptoms and physical exam findings) of peripheral arterial disease (PAD) and outline the diagnostic studies, pharmacologic management and the role of exercise and smoking cessation.<br><a href="#s35-pad">&rarr; &sect;35 Peripheral Arterial Disease</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>75</td><td>Understand the clinical presentation of Aortoiliac Occlusive disease.<br><a href="#s35-pad">&rarr; &sect;35 Peripheral Arterial Disease</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>76</td><td>Understand contemporary management of peripheral vascular disease.<br><a href="#s35-pad">&rarr; &sect;35 Peripheral Arterial Disease</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>77</td><td>Understand diagnosis of ischemic bowel and management.<br><a href="#s36-mesenteric">&rarr; &sect;36 Mesenteric Ischemia</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-group"><td colspan="3">12. Aneurysms &amp; Dissections</td></tr>
+<tr class="lo-row" data-st="none"><td>78</td><td>Describe the definitions, clinical features, gross and microscopic features of Aneurysms and Dissections and include the potential clinical consequences of each.<br><a href="#s32-aneurysm-dissection">&rarr; &sect;32 Aneurysm &amp; Dissection</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>79</td><td>Identify common locations, classification and pathogenesis of aneurysms and dissections.<br><a href="#s32-aneurysm-dissection">&rarr; &sect;32 Aneurysm &amp; Dissection</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>80</td><td>Understand the differences and classification of aortic dissection and their appropriate management.<br><a href="#s32-aneurysm-dissection">&rarr; &sect;32 Aneurysm &amp; Dissection</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>81</td><td>Understand the management and indication for surgical management of abdominal aneurysms.<br><a href="#s32-aneurysm-dissection">&rarr; &sect;32 Aneurysm &amp; Dissection</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>82</td><td>Compare and contrast connective tissue disorders clinical presentations, genetic abnormalities, and complications including aneurysm formation, dissection, valve.<br><a href="#s33-ctd">&rarr; &sect;33 Connective Tissue Disorders</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-group"><td colspan="3">13. Atherosclerosis, Arteriosclerosis &amp; Vascular Pathology</td></tr>
+<tr class="lo-row" data-st="none"><td>83</td><td>Compare and contrast the morphology, pathophysiology and clinical presentations of arteriosclerosis versus atherosclerosis.<br><a href="#s11-atherosclerosis">&rarr; &sect;11 Arterio- vs Atherosclerosis</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>84</td><td>Describe all aspects of atherosclerosis including pathology, natural history, clinical consequences, pathophysiology, epidemiology and risk factors.<br><a href="#s11-atherosclerosis">&rarr; &sect;11 Arterio- vs Atherosclerosis</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>85</td><td>Identify the cellular and mechanical consequences of vascular injury and the progression of atherosclerosis.<br><a href="#s11-atherosclerosis">&rarr; &sect;11 Arterio- vs Atherosclerosis</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-group"><td colspan="3">14. Vasculitis</td></tr>
+<tr class="lo-row" data-st="none"><td>86</td><td>Categorize and define the major subtypes of vasculitis. Describe how vasculitis may be induced by immunologic processes including immune complexes, ANCA associated, Direct antibody mediated, cell mediated processes, inflammation and infections.<br><a href="#s34-vasculitis">&rarr; &sect;34 Vasculitis</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>87</td><td>Compare and contrast the clinical presentations, laboratory and diagnostic features, histology and pathologic changes of the major types of vasculitis.<br><a href="#s34-vasculitis">&rarr; &sect;34 Vasculitis</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>88</td><td>Given a clinical vignette, compare and contrast the clinical presentations, laboratory and diagnostic features, histology and pathologic changes of the major types of vasculitis. Discuss common complications and their management.<br><a href="#s34-vasculitis">&rarr; &sect;34 Vasculitis</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>89</td><td>Identify and define the major subtypes of vasculitis and compare and contrast their clinical and pathologic presentations.<br><a href="#s34-vasculitis">&rarr; &sect;34 Vasculitis</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>90</td><td>Identify the phenotypical and potentially life-threatening complications of the major types of vasculitis and their management.<br><a href="#s34-vasculitis">&rarr; &sect;34 Vasculitis</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-group"><td colspan="3">15. Pharmacology &amp; Management</td></tr>
+<tr class="lo-row" data-st="none"><td>91</td><td>Differentiate the medications used in the management of congestive heart failure (CHF) and select which classes impact morbidity and mortality.<span class="lo-rep">Repeat of objective 26</span><br><a href="#s18-hf-pharm">&rarr; &sect;18 Heart Failure Drugs</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>92</td><td>Outline and define the pharmacologic management of chronic congestive heart failure (CHF).<span class="lo-rep">Repeat of objective 27</span><br><a href="#s18-hf-pharm">&rarr; &sect;18 Heart Failure Drugs</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>93</td><td>Identify the mechanism of action of drugs used in the treatment of HFrEF.<span class="lo-rep">Repeat of objective 28</span><br><a href="#s18-hf-pharm">&rarr; &sect;18 Heart Failure Drugs</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>94</td><td>Identify the mechanism of action and adverse effects of antiarrhythmic drugs.<span class="lo-rep">Repeat of objective 32</span><br><a href="#s10-antiarrhythmics">&rarr; &sect;10 Antiarrhythmic Drugs</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>95</td><td>Identify the mechanism of action of antibiotics used in the treatment of bacterial endocarditis.<span class="lo-rep">Repeat of objective 60</span><br><a href="#s22-ie-dx-rx">&rarr; &sect;22 Endocarditis: Diagnosis &amp; Treatment</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>96</td><td>Identify drug-drug interactions associated with drugs used to treat dyslipidemias.<span class="lo-rep">Repeat of objective 70</span><br><a href="#s31-lipid-pharm">&rarr; &sect;31 Lipid Drugs</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>97</td><td>Identify strategies to prevent or decrease adverse drug events - treatment of dyslipidemias.<span class="lo-rep">Repeat of objective 71</span><br><a href="#s31-lipid-pharm">&rarr; &sect;31 Lipid Drugs</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>98</td><td>Understand options and indications for aortic valve replacement therapy.<span class="lo-rep">Repeat of objective 49</span><br><a href="#s25-avr">&rarr; &sect;25 Aortic Valve Replacement</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>99</td><td>Understand the complications and management of aortic valve replacement surgery.<span class="lo-rep">Repeat of objective 50</span><br><a href="#s25-avr">&rarr; &sect;25 Aortic Valve Replacement</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>100</td><td>Understand the acute management of patient-reported &quot;chest pain&quot; based upon specific signs and symptoms found on H&amp;P.<span class="lo-rep">Repeat of objective 18</span><br><a href="#s12-ihd-acs">&rarr; &sect;12 Stable Angina vs ACS</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+<tr class="lo-row" data-st="none"><td>101</td><td>Identify dietary approaches to help manage dyslipidemias.<span class="lo-rep">Repeat of objective 69</span><br><a href="#s30-lipids">&rarr; &sect;30 Dyslipidemias</a></td><td><span class="cov-status none">Not written yet</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="section" id="checklist">
+  <div class="badge-row"><span class="lo-badge">Cross-cutting</span><span class="lo-badge alt">Read this first</span></div>
+  <p class="section-label">Orientation</p>
+  <h2 class="section-title">Master High-Yield Checklist</h2>
+  <p class="lede">The facts that show up in more than one objective, or that the source lectures flagged explicitly. These cards get written last, once the sections below are in.</p>
+  <div class="hallmarks-grid"></div>
+  <p class="shell-todo">Cards to come</p>
+</section>
+
+<section class="section" id="s1-cardiac-cycle">
+  <div class="badge-row"><span class="lo-badge">LO 1</span><span class="lo-badge">LO 7</span><span class="lo-badge src">Source: Cardiac Physiology Review · Cardiac Cycle &amp; Valve Hemodynamics</span></div>
+  <p class="section-label">Section 1 &middot; The Normal Heart</p>
+  <h2 class="section-title">The Cardiac Cycle and the Wiggers Diagram</h2>
+  <p class="lede shell-todo">Opening paragraph to come</p>
+  <h3>Pressure–volume loop and the seven phases</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Wiggers diagram: pressures, volumes, ECG and sounds together <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Preload, afterload and contractility</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Cardiac output, stroke volume and ejection fraction</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>From the cycle to the clinical presentation</h3>
+  <p class="shell-todo">Content to come</p>
+</section>
+
+<section class="section" id="s2-heart-sounds">
+  <div class="badge-row"><span class="lo-badge">LO 2</span><span class="lo-badge src">Source: Cardiac Cycle &amp; Valve Hemodynamics · Cardiac Physiology Review</span></div>
+  <p class="section-label">Section 2 &middot; The Normal Heart</p>
+  <h2 class="section-title">Heart Sounds, Normal and Abnormal</h2>
+  <p class="lede shell-todo">Opening paragraph to come</p>
+  <h3>S1, S2 and physiologic splitting</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Abnormal splitting: wide, fixed, paradoxical <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>S3 versus S4</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Clicks, snaps and rubs</h3>
+  <p class="shell-todo">Content to come</p>
+</section>
+
+<section class="section" id="s3-murmurs">
+  <div class="badge-row"><span class="lo-badge">LO 5</span><span class="lo-badge">LO 6</span><span class="lo-badge">LO 7</span><span class="lo-badge">LO 8</span><span class="lo-badge">LO 9</span><span class="lo-badge src">Source: Cardiac Cycle &amp; Valve Hemodynamics · Cardiac Pathology</span></div>
+  <p class="section-label">Section 3 &middot; The Normal Heart</p>
+  <h2 class="section-title">Murmurs: Hemodynamics, Location and Maneuvers</h2>
+  <p class="lede shell-todo">Opening paragraph to come</p>
+  <h3>Systolic versus diastolic murmurs on the Wiggers diagram</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Where each murmur is heard and where it radiates <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Maneuvers: Valsalva, squat, stand, handgrip, leg raise, inspiration <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Risk factors and accompanying signs</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>The full murmur comparison table <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+</section>
+
+<section class="section" id="s4-exercise">
+  <div class="badge-row"><span class="lo-badge">LO 3</span><span class="lo-badge">LO 4</span><span class="lo-badge">LO 72</span><span class="lo-badge src">Source: Exercise Rehabilitation</span></div>
+  <p class="section-label">Section 4 &middot; The Normal Heart</p>
+  <h2 class="section-title">Exercise Physiology, Cardioprotection and Prevention</h2>
+  <p class="lede shell-todo">Opening paragraph to come</p>
+  <h3>The cardiorespiratory response to exercise</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>The cardioprotective benefits of exercise</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Cardiac rehabilitation: who, when and the phases</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Diet and lifestyle in primary prevention</h3>
+  <p class="shell-todo">Content to come</p>
+</section>
+
+<section class="section" id="s5-pharm-basics">
+  <div class="badge-row"><span class="lo-badge alt">Supporting section</span><span class="lo-badge src">Source: CV Pharm Basic Sciences Review</span></div>
+  <p class="section-label">Section 5 &middot; The Normal Heart</p>
+  <h2 class="section-title">Cardiovascular Pharmacology: the Basic Science</h2>
+  <p class="lede shell-todo">Opening paragraph to come</p>
+  <h3>Adrenergic and cholinergic receptors in the heart and vessels</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Signaling in vascular smooth muscle and cardiac muscle</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>The drug classes at a glance</h3>
+  <p class="shell-todo">Content to come</p>
+</section>
+
+<section class="section" id="s6-ecg-basics">
+  <div class="badge-row"><span class="lo-badge">LO 33</span><span class="lo-badge">LO 36</span><span class="lo-badge">LO 37</span><span class="lo-badge">LO 45</span><span class="lo-badge src">Source: ECG Basics</span></div>
+  <p class="section-label">Section 6 &middot; The ECG &amp; Arrhythmias</p>
+  <h2 class="section-title">Reading the ECG: Rate, Rhythm, Waves, Intervals and Axis</h2>
+  <p class="lede shell-todo">Opening paragraph to come</p>
+  <h3>A systematic reading order <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Waves, intervals and segments, with normal values</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Calculating the rate</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Determining the axis <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+</section>
+
+<section class="section" id="s7-ecg-patterns">
+  <div class="badge-row"><span class="lo-badge">LO 34</span><span class="lo-badge">LO 35</span><span class="lo-badge">LO 38</span><span class="lo-badge">LO 41</span><span class="lo-badge">LO 42</span><span class="lo-badge src">Source: ECG Basics · ECG II</span></div>
+  <p class="section-label">Section 7 &middot; The ECG &amp; Arrhythmias</p>
+  <h2 class="section-title">The ECG of Disease: Hypertrophy, Bundle Branch Block, Ischemia and Electrolytes</h2>
+  <p class="lede shell-todo">Opening paragraph to come</p>
+  <h3>Atrial enlargement and ventricular hypertrophy</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Right versus left bundle branch block</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Ischemia and infarction: acute versus chronic, and the territories <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Potassium, calcium and magnesium on the ECG <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+</section>
+
+<section class="section" id="s8-arrhythmias">
+  <div class="badge-row"><span class="lo-badge">LO 29</span><span class="lo-badge">LO 30</span><span class="lo-badge">LO 39</span><span class="lo-badge">LO 40</span><span class="lo-badge">LO 42</span><span class="lo-badge">LO 43</span><span class="lo-badge">LO 44</span><span class="lo-badge">LO 45</span><span class="lo-badge">LO 46</span><span class="lo-badge">LO 47</span><span class="lo-badge">LO 48</span><span class="lo-badge src">Source: ECG II</span></div>
+  <p class="section-label">Section 8 &middot; The ECG &amp; Arrhythmias</p>
+  <h2 class="section-title">Arrhythmias and Heart Block: Lethal Versus Non-Lethal</h2>
+  <p class="lede shell-todo">Opening paragraph to come</p>
+  <h3>Narrow-complex tachycardias</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Wide-complex tachycardias</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Atrioventricular block: first, second and third degree <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>The lethal rhythms and what follows them <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Palpitations and syncope: the workup</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Acute management by rhythm, stable versus unstable</h3>
+  <p class="shell-todo">Content to come</p>
+</section>
+
+<section class="section" id="s9-afib">
+  <div class="badge-row"><span class="lo-badge">LO 30</span><span class="lo-badge">LO 31</span><span class="lo-badge src">Source: ECG II · Antiarrhythmic Pharmacology</span></div>
+  <p class="section-label">Section 9 &middot; The ECG &amp; Arrhythmias</p>
+  <h2 class="section-title">Atrial Fibrillation: Risk Stratification and Management</h2>
+  <p class="lede shell-todo">Opening paragraph to come</p>
+  <h3>Stroke risk scoring and the anticoagulation decision <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Rate control versus rhythm control</h3>
+  <p class="shell-todo">Content to come</p>
+</section>
+
+<section class="section" id="s10-antiarrhythmics">
+  <div class="badge-row"><span class="lo-badge">LO 32</span><span class="lo-badge src">Source: Antiarrhythmic Pharmacology</span></div>
+  <p class="section-label">Section 10 &middot; The ECG &amp; Arrhythmias</p>
+  <h2 class="section-title">Antiarrhythmic Drugs</h2>
+  <p class="lede shell-todo">Opening paragraph to come</p>
+  <h3>The Vaughan Williams classes and their mechanisms <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Adverse effects, class by class <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Matching the drug to the rhythm</h3>
+  <p class="shell-todo">Content to come</p>
+</section>
+
+<section class="section" id="s11-atherosclerosis">
+  <div class="badge-row"><span class="lo-badge">LO 83</span><span class="lo-badge">LO 84</span><span class="lo-badge">LO 85</span><span class="lo-badge src">Source: Vascular Pathology</span></div>
+  <p class="section-label">Section 11 &middot; Atherosclerosis &amp; Ischemia</p>
+  <h2 class="section-title">Arteriosclerosis Versus Atherosclerosis</h2>
+  <p class="lede shell-todo">Opening paragraph to come</p>
+  <h3>The arteriosclerosis subtypes</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>The response to vascular injury</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>How a plaque progresses, and its natural history <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Risk factors and epidemiology</h3>
+  <p class="shell-todo">Content to come</p>
+</section>
+
+<section class="section" id="s12-ihd-acs">
+  <div class="badge-row"><span class="lo-badge">LO 16</span><span class="lo-badge">LO 17</span><span class="lo-badge">LO 18</span><span class="lo-badge src">Source: Application Session 1 · Cardiac Pathology</span></div>
+  <p class="section-label">Section 12 &middot; Atherosclerosis &amp; Ischemia</p>
+  <h2 class="section-title">Stable Ischemic Heart Disease Versus Acute Coronary Syndrome</h2>
+  <p class="lede shell-todo">Opening paragraph to come</p>
+  <h3>Stable angina, unstable angina, NSTEMI and STEMI <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Chest pain: the approach from history and exam <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>The ECG in each</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Stress testing and catheterization</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Medical management side by side</h3>
+  <p class="shell-todo">Content to come</p>
+</section>
+
+<section class="section" id="s13-biomarkers">
+  <div class="badge-row"><span class="lo-badge">LO 23</span><span class="lo-badge">LO 24</span><span class="lo-badge src">Source: Application Sessions 1 &amp; 2</span></div>
+  <p class="section-label">Section 13 &middot; Atherosclerosis &amp; Ischemia</p>
+  <h2 class="section-title">Cardiac Biomarkers: Troponin, BNP and NT-proBNP</h2>
+  <p class="lede shell-todo">Opening paragraph to come</p>
+  <h3>Troponin: physiology, timing, sensitivity and specificity <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>BNP versus NT-proBNP: physiology and limitations <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Head-to-head comparison</h3>
+  <p class="shell-todo">Content to come</p>
+</section>
+
+<section class="section" id="s14-mi-path">
+  <div class="badge-row"><span class="lo-badge">LO 20</span><span class="lo-badge src">Source: Cardiac Pathology</span></div>
+  <p class="section-label">Section 14 &middot; Atherosclerosis &amp; Ischemia</p>
+  <h2 class="section-title">Myocardial Infarction: the Morphology and Histology Timeline</h2>
+  <p class="lede shell-todo">Opening paragraph to come</p>
+  <h3>Gross and microscopic changes over time <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Reperfusion injury</h3>
+  <p class="shell-todo">Content to come</p>
+</section>
+
+<section class="section" id="s15-mi-complications">
+  <div class="badge-row"><span class="lo-badge">LO 19</span><span class="lo-badge src">Source: Cardiac Pathology · Application Session 1</span></div>
+  <p class="section-label">Section 15 &middot; Atherosclerosis &amp; Ischemia</p>
+  <h2 class="section-title">Complications After STEMI</h2>
+  <p class="lede shell-todo">Opening paragraph to come</p>
+  <h3>Non-mechanical complications</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Mechanical complications <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Timing tells you the complication <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Labs, ECG and management of each</h3>
+  <p class="shell-todo">Content to come</p>
+</section>
+
+<section class="section" id="s16-ihd-pharm">
+  <div class="badge-row"><span class="lo-badge">LO 16</span><span class="lo-badge">LO 17</span><span class="lo-badge src">Source: Ischemic Heart Disease Pharmacology</span></div>
+  <p class="section-label">Section 16 &middot; Atherosclerosis &amp; Ischemia</p>
+  <h2 class="section-title">Ischemic Heart Disease Pharmacology</h2>
+  <p class="lede shell-todo">Opening paragraph to come</p>
+  <h3>Nitrates, beta blockers, calcium channel blockers and ranolazine</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>The acute coronary syndrome drug bundle</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Contraindications and interactions <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+</section>
+
+<section class="section" id="s17-hf">
+  <div class="badge-row"><span class="lo-badge">LO 21</span><span class="lo-badge">LO 22</span><span class="lo-badge">LO 25</span><span class="lo-badge src">Source: Application Session 2 · Cardiac Pathology · Cardiac Physiology Review</span></div>
+  <p class="section-label">Section 17 &middot; Heart Failure &amp; the Myocardium</p>
+  <h2 class="section-title">Heart Failure: Reduced Versus Preserved Ejection Fraction</h2>
+  <p class="lede shell-todo">Opening paragraph to come</p>
+  <h3>The pathophysiology of each <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Left-sided versus right-sided signs and symptoms</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Labs and diagnostics</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Gross and microscopic pathology</h3>
+  <p class="shell-todo">Content to come</p>
+</section>
+
+<section class="section" id="s18-hf-pharm">
+  <div class="badge-row"><span class="lo-badge">LO 26</span><span class="lo-badge">LO 27</span><span class="lo-badge">LO 28</span><span class="lo-badge src">Source: Heart Failure Pharmacology</span></div>
+  <p class="section-label">Section 18 &middot; Heart Failure &amp; the Myocardium</p>
+  <h2 class="section-title">Heart Failure Pharmacology</h2>
+  <p class="lede shell-todo">Opening paragraph to come</p>
+  <h3>Classes that lower mortality versus classes that only relieve symptoms <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>How each HFrEF drug works</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>The stepwise chronic regimen</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Adverse effects and monitoring</h3>
+  <p class="shell-todo">Content to come</p>
+</section>
+
+<section class="section" id="s19-cardiomyopathy">
+  <div class="badge-row"><span class="lo-badge">LO 61</span><span class="lo-badge">LO 62</span><span class="lo-badge src">Source: Cardiac Pathology</span></div>
+  <p class="section-label">Section 19 &middot; Heart Failure &amp; the Myocardium</p>
+  <h2 class="section-title">The Cardiomyopathies</h2>
+  <p class="lede shell-todo">Opening paragraph to come</p>
+  <h3>Dilated, hypertrophic, restrictive and arrhythmogenic compared <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Echocardiogram findings</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Morphology and histology</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Management</h3>
+  <p class="shell-todo">Content to come</p>
+</section>
+
+<section class="section" id="s20-tumors">
+  <div class="badge-row"><span class="lo-badge">LO 63</span><span class="lo-badge src">Source: Cardiac Pathology · Cardiothoracic Surgery</span></div>
+  <p class="section-label">Section 20 &middot; Heart Failure &amp; the Myocardium</p>
+  <h2 class="section-title">Heart Tumors</h2>
+  <p class="lede shell-todo">Opening paragraph to come</p>
+  <h3>Myxoma, rhabdomyoma and metastases</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Management and long-term survival</h3>
+  <p class="shell-todo">Content to come</p>
+</section>
+
+<section class="section" id="s21-ie">
+  <div class="badge-row"><span class="lo-badge">LO 55</span><span class="lo-badge">LO 56</span><span class="lo-badge">LO 57</span><span class="lo-badge">LO 58</span><span class="lo-badge src">Source: Endocarditis, Myocarditis &amp; Pericarditis</span></div>
+  <p class="section-label">Section 21 &middot; Infection &amp; Inflammation</p>
+  <h2 class="section-title">Infective Endocarditis: Epidemiology, Pathogenesis and Organisms</h2>
+  <p class="lede shell-todo">Opening paragraph to come</p>
+  <h3>Epidemiology and risk factors</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Pathogenesis and lesions by organ site</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Left-sided versus right-sided endocarditis <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Which organism, in which setting <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Culture-negative endocarditis</h3>
+  <p class="shell-todo">Content to come</p>
+</section>
+
+<section class="section" id="s22-ie-dx-rx">
+  <div class="badge-row"><span class="lo-badge">LO 54</span><span class="lo-badge">LO 55</span><span class="lo-badge">LO 59</span><span class="lo-badge">LO 60</span><span class="lo-badge src">Source: Endocarditis, Myocarditis &amp; Pericarditis</span></div>
+  <p class="section-label">Section 22 &middot; Infection &amp; Inflammation</p>
+  <h2 class="section-title">Infective Endocarditis: Diagnosis and Management</h2>
+  <p class="lede shell-todo">Opening paragraph to come</p>
+  <h3>Clinical presentation and exam signs</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Blood cultures, echocardiography and the diagnostic criteria <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Antibiotic regimens and how they work <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>When to operate</h3>
+  <p class="shell-todo">Content to come</p>
+</section>
+
+<section class="section" id="s23-myo-peri">
+  <div class="badge-row"><span class="lo-badge">LO 51</span><span class="lo-badge">LO 52</span><span class="lo-badge">LO 53</span><span class="lo-badge src">Source: Endocarditis, Myocarditis &amp; Pericarditis</span></div>
+  <p class="section-label">Section 23 &middot; Infection &amp; Inflammation</p>
+  <h2 class="section-title">Myocarditis and Pericarditis</h2>
+  <p class="lede shell-todo">Opening paragraph to come</p>
+  <h3>Endocarditis, myocarditis or pericarditis: the differential <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Myocarditis: signs, symptoms and causes</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Pericarditis: signs, ECG and organisms</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Effusion and tamponade</h3>
+  <p class="shell-todo">Content to come</p>
+</section>
+
+<section class="section" id="s24-valves">
+  <div class="badge-row"><span class="lo-badge">LO 5</span><span class="lo-badge">LO 6</span><span class="lo-badge src">Source: Cardiac Pathology · Cardiac Cycle &amp; Valve Hemodynamics</span></div>
+  <p class="section-label">Section 24 &middot; Valves &amp; Surgery</p>
+  <h2 class="section-title">Valvular Heart Disease</h2>
+  <p class="lede shell-todo">Opening paragraph to come</p>
+  <h3>Aortic stenosis and regurgitation</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Mitral stenosis, regurgitation and prolapse</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Rheumatic heart disease</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>The right-sided valves</h3>
+  <p class="shell-todo">Content to come</p>
+</section>
+
+<section class="section" id="s25-avr">
+  <div class="badge-row"><span class="lo-badge">LO 49</span><span class="lo-badge">LO 50</span><span class="lo-badge src">Source: Cardiothoracic Surgery</span></div>
+  <p class="section-label">Section 25 &middot; Valves &amp; Surgery</p>
+  <h2 class="section-title">Aortic Valve Replacement</h2>
+  <p class="lede shell-todo">Opening paragraph to come</p>
+  <h3>Indications <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Surgical versus transcatheter replacement</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Mechanical versus bioprosthetic valves</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Complications and their management</h3>
+  <p class="shell-todo">Content to come</p>
+</section>
+
+<section class="section" id="s26-chd">
+  <div class="badge-row"><span class="lo-badge">LO 10</span><span class="lo-badge">LO 11</span><span class="lo-badge">LO 12</span><span class="lo-badge">LO 14</span><span class="lo-badge src">Source: Pediatric Cardiology</span></div>
+  <p class="section-label">Section 26 &middot; Congenital Heart Disease</p>
+  <h2 class="section-title">Congenital Heart Disease: Cyanotic Versus Acyanotic</h2>
+  <p class="lede shell-todo">Opening paragraph to come</p>
+  <h3>Acyanotic lesions: the left-to-right shunts</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Cyanotic lesions: the five T’s <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Chest X-ray signs <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Syndromes and the lesions that go with them <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Eisenmenger syndrome</h3>
+  <p class="shell-todo">Content to come</p>
+</section>
+
+<section class="section" id="s27-coarct-newborn">
+  <div class="badge-row"><span class="lo-badge">LO 13</span><span class="lo-badge">LO 15</span><span class="lo-badge src">Source: Pediatric Cardiology</span></div>
+  <p class="section-label">Section 27 &middot; Congenital Heart Disease</p>
+  <h2 class="section-title">Coarctation and the Newborn Murmur</h2>
+  <p class="lede shell-todo">Opening paragraph to come</p>
+  <h3>Coarctation in the newborn: the exam findings <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>How common each structural lesion is</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>What an echocardiogram is likely to show for a significant newborn murmur</h3>
+  <p class="shell-todo">Content to come</p>
+</section>
+
+<section class="section" id="s28-htn">
+  <div class="badge-row"><span class="lo-badge">LO 64</span><span class="lo-badge">LO 65</span><span class="lo-badge src">Source: Application Session 1 · Hypertension Pharmacology</span></div>
+  <p class="section-label">Section 28 &middot; Vessels</p>
+  <h2 class="section-title">Hypertension: Subtypes, Secondary Causes and Resistance</h2>
+  <p class="lede shell-todo">Opening paragraph to come</p>
+  <h3>Subtypes and clinical contexts</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Resistant hypertension</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Secondary causes: the lab and exam clues <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Hypertensive urgency versus emergency</h3>
+  <p class="shell-todo">Content to come</p>
+</section>
+
+<section class="section" id="s29-htn-pharm">
+  <div class="badge-row"><span class="lo-badge">LO 66</span><span class="lo-badge src">Source: Hypertension Pharmacology</span></div>
+  <p class="section-label">Section 29 &middot; Vessels</p>
+  <h2 class="section-title">Hypertension Pharmacology and Electrolyte Adverse Events</h2>
+  <p class="lede shell-todo">Opening paragraph to come</p>
+  <h3>First-line classes and compelling indications</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Electrolyte disturbances, drug by drug <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+</section>
+
+<section class="section" id="s30-lipids">
+  <div class="badge-row"><span class="lo-badge">LO 67</span><span class="lo-badge">LO 68</span><span class="lo-badge">LO 69</span><span class="lo-badge src">Source: Dyslipidemia Pharmacology</span></div>
+  <p class="section-label">Section 30 &middot; Vessels</p>
+  <h2 class="section-title">The Dyslipidemias: Types and Pathophysiology</h2>
+  <p class="lede shell-todo">Opening paragraph to come</p>
+  <h3>Lipoprotein metabolism</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>The familial dyslipidemias <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>The dietary approach</h3>
+  <p class="shell-todo">Content to come</p>
+</section>
+
+<section class="section" id="s31-lipid-pharm">
+  <div class="badge-row"><span class="lo-badge">LO 70</span><span class="lo-badge">LO 71</span><span class="lo-badge src">Source: Dyslipidemia Pharmacology</span></div>
+  <p class="section-label">Section 31 &middot; Vessels</p>
+  <h2 class="section-title">Lipid-Lowering Drugs: Interactions and Adverse Events</h2>
+  <p class="lede shell-todo">Opening paragraph to come</p>
+  <h3>Statins, ezetimibe, PCSK9 inhibitors, fibrates, niacin and the rest</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Drug–drug interactions <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Preventing myopathy, liver injury and flushing</h3>
+  <p class="shell-todo">Content to come</p>
+</section>
+
+<section class="section" id="s32-aneurysm-dissection">
+  <div class="badge-row"><span class="lo-badge">LO 78</span><span class="lo-badge">LO 79</span><span class="lo-badge">LO 80</span><span class="lo-badge">LO 81</span><span class="lo-badge src">Source: Vascular Pathology · Vascular Surgery · Cardiothoracic Surgery</span></div>
+  <p class="section-label">Section 32 &middot; Vessels</p>
+  <h2 class="section-title">Aneurysms and Dissections</h2>
+  <p class="lede shell-todo">Opening paragraph to come</p>
+  <h3>Definitions and gross and microscopic features</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Locations and pathogenesis</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Abdominal aortic aneurysm: screening and when to operate <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Dissection: classification and management <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+</section>
+
+<section class="section" id="s33-ctd">
+  <div class="badge-row"><span class="lo-badge">LO 82</span><span class="lo-badge src">Source: Vascular Pathology · Cardiothoracic Surgery</span></div>
+  <p class="section-label">Section 33 &middot; Vessels</p>
+  <h2 class="section-title">Connective Tissue Disorders of the Aorta</h2>
+  <p class="lede shell-todo">Opening paragraph to come</p>
+  <h3>Marfan, Ehlers–Danlos, Loeys–Dietz and Turner: gene and complication <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+</section>
+
+<section class="section" id="s34-vasculitis">
+  <div class="badge-row"><span class="lo-badge">LO 86</span><span class="lo-badge">LO 87</span><span class="lo-badge">LO 88</span><span class="lo-badge">LO 89</span><span class="lo-badge">LO 90</span><span class="lo-badge src">Source: Vascular Pathology</span></div>
+  <p class="section-label">Section 34 &middot; Vessels</p>
+  <h2 class="section-title">Vasculitis</h2>
+  <p class="lede shell-todo">Opening paragraph to come</p>
+  <h3>The immunologic mechanisms</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Large-, medium- and small-vessel classification <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>The comparison table: presentation, labs and histology <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Life-threatening complications and their management</h3>
+  <p class="shell-todo">Content to come</p>
+</section>
+
+<section class="section" id="s35-pad">
+  <div class="badge-row"><span class="lo-badge">LO 73</span><span class="lo-badge">LO 74</span><span class="lo-badge">LO 75</span><span class="lo-badge">LO 76</span><span class="lo-badge src">Source: Vascular Surgery · Application Session 2</span></div>
+  <p class="section-label">Section 35 &middot; Vessels</p>
+  <h2 class="section-title">Peripheral Arterial Disease and Claudication</h2>
+  <p class="lede shell-todo">Opening paragraph to come</p>
+  <h3>Vascular versus neurogenic claudication <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>The exam and the ankle–brachial index</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Aortoiliac occlusive disease</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Acute limb ischemia</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Management: exercise, smoking cessation, drugs and revascularization</h3>
+  <p class="shell-todo">Content to come</p>
+</section>
+
+<section class="section" id="s36-mesenteric">
+  <div class="badge-row"><span class="lo-badge">LO 77</span><span class="lo-badge src">Source: Vascular Surgery</span></div>
+  <p class="section-label">Section 36 &middot; Vessels</p>
+  <h2 class="section-title">Mesenteric Ischemia</h2>
+  <p class="lede shell-todo">Opening paragraph to come</p>
+  <h3>Acute versus chronic</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Diagnosis and management <span class="hy-flag">★ HY</span></h3>
+  <p class="shell-todo">Content to come</p>
+</section>
+
+<section class="section" id="s37-women">
+  <div class="badge-row"><span class="lo-badge alt">Supporting section</span><span class="lo-badge src">Source: Cardiovascular Health in Women</span></div>
+  <p class="section-label">Section 37 &middot; Supporting Lecture</p>
+  <h2 class="section-title">Cardiovascular Health in Women</h2>
+  <p class="lede shell-todo">Opening paragraph to come</p>
+  <h3>How ischemia presents differently</h3>
+  <p class="shell-todo">Content to come</p>
+  <h3>Pregnancy-related cardiovascular conditions</h3>
+  <p class="shell-todo">Content to come</p>
+</section>
+
+<section class="section" id="pending">
+  <div class="badge-row"><span class="lo-badge src">101 objectives not written yet</span></div>
+  <p class="section-label">Reference</p>
+  <h2 class="section-title">Objectives Still Pending</h2>
+  <p class="lede">Once the sections are written, any objective that is only partly covered, or that has no lecture behind it, is listed here so nothing quietly disappears.</p>
+  <p class="shell-todo">List to come</p>
+</section>
+
+<section class="section" id="glossary">
+  <div class="badge-row"><span class="lo-badge src">Every abbreviation used above, expanded</span></div>
+  <p class="section-label">Reference</p>
+  <h2 class="section-title">Glossary and Abbreviations</h2>
+  <p class="lede">If a short form appears anywhere in this file, its long form is here. Each section also carries its own abbreviation strip at the top.</p>
+  <p class="shell-todo">Glossary to come</p>
+</section>
+
+</main>
+<footer>
+  <div class="container">
+    <span>OMK 2A Cardiology · Summative · Objective Review · UNE COM — for personal study use only</span>
+    <span>Keys: <kbd>J</kbd>/<kbd>K</kbd> sections · <kbd>Q</kbd> next question · <kbd>R</kbd> reveal · <kbd>H</kbd> one-pager · <kbd>Esc</kbd> close</span>
+  </div>
+</footer>
+
+<div class="hy-modal" id="hyModal" onclick="if(event.target===this)closeHY()">
+  <div class="hy-modal-card">
+    <div class="hy-modal-header">
+      <h2>🎯 Cardiology Summative — High-Yield One-Pager</h2>
+      <div class="hy-modal-actions">
+        <button class="hy-action-btn" id="hyPrintButton" type="button" onclick="printHY()" disabled aria-disabled="true" title="Printing is available only when Jeeval Mehta is logged in through the Study Hub">🖨️ Print / Save PDF</button>
+        <button class="hy-action-btn hy-close-btn" onclick="closeHY()">✕ Close</button>
+      </div>
+    </div>
+    <p class="hy-subhead">Condensed by part: the normal heart · the ECG and arrhythmias · ischemia · heart failure and the myocardium · infection and inflammation · valves and surgery · congenital heart disease · vessels.</p>
+    <div class="hy-cols">
+      <div class="hy-group">
+<span class="hy-lo-tag">The Normal Heart</span>
+        <div class="hy-block"><h4>Cardiac Cycle &amp; Wiggers</h4><p class="shell-todo">To come</p></div>
+        <div class="hy-block"><h4>Heart Sounds</h4><p class="shell-todo">To come</p></div>
+        <div class="hy-block"><h4>Murmurs &amp; Maneuvers</h4><p class="shell-todo">To come</p></div>
+        <div class="hy-block"><h4>Exercise &amp; Prevention</h4><p class="shell-todo">To come</p></div>
+        <div class="hy-block"><h4>CV Pharm Basics</h4><p class="shell-todo">To come</p></div>
+      </div>
+      <div class="hy-group">
+<span class="hy-lo-tag">The ECG &amp; Arrhythmias</span>
+        <div class="hy-block"><h4>Reading the ECG</h4><p class="shell-todo">To come</p></div>
+        <div class="hy-block"><h4>ECG Patterns of Disease</h4><p class="shell-todo">To come</p></div>
+        <div class="hy-block"><h4>Arrhythmias &amp; Heart Block</h4><p class="shell-todo">To come</p></div>
+        <div class="hy-block"><h4>Atrial Fibrillation</h4><p class="shell-todo">To come</p></div>
+        <div class="hy-block"><h4>Antiarrhythmic Drugs</h4><p class="shell-todo">To come</p></div>
+      </div>
+      <div class="hy-group">
+<span class="hy-lo-tag">Atherosclerosis &amp; Ischemia</span>
+        <div class="hy-block"><h4>Arterio- vs Atherosclerosis</h4><p class="shell-todo">To come</p></div>
+        <div class="hy-block"><h4>Stable Angina vs ACS</h4><p class="shell-todo">To come</p></div>
+        <div class="hy-block"><h4>Troponin &amp; BNP</h4><p class="shell-todo">To come</p></div>
+        <div class="hy-block"><h4>MI Histology Timeline</h4><p class="shell-todo">To come</p></div>
+        <div class="hy-block"><h4>Post-MI Complications</h4><p class="shell-todo">To come</p></div>
+        <div class="hy-block"><h4>Antianginal Drugs</h4><p class="shell-todo">To come</p></div>
+      </div>
+      <div class="hy-group">
+<span class="hy-lo-tag">Heart Failure &amp; the Myocardium</span>
+        <div class="hy-block"><h4>HFrEF vs HFpEF</h4><p class="shell-todo">To come</p></div>
+        <div class="hy-block"><h4>Heart Failure Drugs</h4><p class="shell-todo">To come</p></div>
+        <div class="hy-block"><h4>Cardiomyopathies</h4><p class="shell-todo">To come</p></div>
+        <div class="hy-block"><h4>Heart Tumors</h4><p class="shell-todo">To come</p></div>
+      </div>
+      <div class="hy-group">
+<span class="hy-lo-tag">Infection &amp; Inflammation</span>
+        <div class="hy-block"><h4>Endocarditis: Organisms</h4><p class="shell-todo">To come</p></div>
+        <div class="hy-block"><h4>Endocarditis: Diagnosis &amp; Treatment</h4><p class="shell-todo">To come</p></div>
+        <div class="hy-block"><h4>Myocarditis &amp; Pericarditis</h4><p class="shell-todo">To come</p></div>
+      </div>
+      <div class="hy-group">
+<span class="hy-lo-tag">Valves &amp; Surgery</span>
+        <div class="hy-block"><h4>Valve Disease</h4><p class="shell-todo">To come</p></div>
+        <div class="hy-block"><h4>Aortic Valve Replacement</h4><p class="shell-todo">To come</p></div>
+      </div>
+      <div class="hy-group">
+<span class="hy-lo-tag">Congenital Heart Disease</span>
+        <div class="hy-block"><h4>Cyanotic vs Acyanotic</h4><p class="shell-todo">To come</p></div>
+        <div class="hy-block"><h4>Coarctation &amp; Newborn Murmur</h4><p class="shell-todo">To come</p></div>
+      </div>
+      <div class="hy-group">
+<span class="hy-lo-tag">Vessels</span>
+        <div class="hy-block"><h4>Hypertension</h4><p class="shell-todo">To come</p></div>
+        <div class="hy-block"><h4>Hypertension Drugs</h4><p class="shell-todo">To come</p></div>
+        <div class="hy-block"><h4>Dyslipidemias</h4><p class="shell-todo">To come</p></div>
+        <div class="hy-block"><h4>Lipid Drugs</h4><p class="shell-todo">To come</p></div>
+        <div class="hy-block"><h4>Aneurysm &amp; Dissection</h4><p class="shell-todo">To come</p></div>
+        <div class="hy-block"><h4>Connective Tissue Disorders</h4><p class="shell-todo">To come</p></div>
+        <div class="hy-block"><h4>Vasculitis</h4><p class="shell-todo">To come</p></div>
+        <div class="hy-block"><h4>Peripheral Arterial Disease</h4><p class="shell-todo">To come</p></div>
+        <div class="hy-block"><h4>Mesenteric Ischemia</h4><p class="shell-todo">To come</p></div>
+      </div>
+      <div class="hy-group">
+<span class="hy-lo-tag">Supporting Lecture</span>
+        <div class="hy-block"><h4>CV Health in Women</h4><p class="shell-todo">To come</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+'use strict';
+var K_THEME='cardio-summ-theme', K_FONT='cardio-summ-font', K_PROG='cardio-summ-progress';
+var DEFAULT_THEME='cardio';
+var SECTION_IDS=[
+  'coverage',
+  'checklist',
+  's1-cardiac-cycle',
+  's2-heart-sounds',
+  's3-murmurs',
+  's4-exercise',
+  's5-pharm-basics',
+  's6-ecg-basics',
+  's7-ecg-patterns',
+  's8-arrhythmias',
+  's9-afib',
+  's10-antiarrhythmics',
+  's11-atherosclerosis',
+  's12-ihd-acs',
+  's13-biomarkers',
+  's14-mi-path',
+  's15-mi-complications',
+  's16-ihd-pharm',
+  's17-hf',
+  's18-hf-pharm',
+  's19-cardiomyopathy',
+  's20-tumors',
+  's21-ie',
+  's22-ie-dx-rx',
+  's23-myo-peri',
+  's24-valves',
+  's25-avr',
+  's26-chd',
+  's27-coarct-newborn',
+  's28-htn',
+  's29-htn-pharm',
+  's30-lipids',
+  's31-lipid-pharm',
+  's32-aneurysm-dissection',
+  's33-ctd',
+  's34-vasculitis',
+  's35-pad',
+  's36-mesenteric',
+  's37-women',
+  'pending',
+  'glossary'
+];
+
+function $(s,r){return (r||document).querySelector(s);}
+function $$(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));}
+function get(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+function set(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+
+/* ---------- theme ---------- */
+var themeOpen=false;
+window.toggleThemePanel=function(){themeOpen=!themeOpen;$('#themePanel').classList.toggle('open',themeOpen);};
+window.setTheme=function(t,el,skipStore){
+  if(t===DEFAULT_THEME){document.documentElement.removeAttribute('data-theme');}
+  else{document.documentElement.setAttribute('data-theme',t);}
+  $$('.theme-option').forEach(function(o){o.classList.toggle('active',o.dataset.theme===t);});
+  if(!skipStore)set(K_THEME,t);
+  if(el){themeOpen=false;$('#themePanel').classList.remove('open');}
+};
+
+/* ---------- font ---------- */
+var fontSize=parseInt(get(K_FONT)||'16',10);
+window.changeFontSize=function(d){
+  fontSize=Math.min(24,Math.max(12,fontSize+d));
+  document.body.style.fontSize=fontSize+'px';set(K_FONT,String(fontSize));
+};
+
+/* ---------- progress bar ---------- */
+function initProgressBar(){
+  var bar=$('#progressBar'),ticking=false;
+  function upd(){
+    var h=document.documentElement.scrollHeight-window.innerHeight;
+    bar.style.width=(h>0?(window.scrollY/h)*100:0)+'%';ticking=false;
+  }
+  window.addEventListener('scroll',function(){if(!ticking){ticking=true;requestAnimationFrame(upd);}},{passive:true});
+  upd();
+}
+
+/* ---------- scrollspy ---------- */
+function buildSubToc(){
+  $$('.toc-bar nav > a').forEach(function(a){
+    var sec=document.getElementById(a.getAttribute('href').slice(1));
+    if(!sec)return;
+    var hs=subTocHeadings(sec);
+    if(!hs.length)return;
+    var wrap=document.createElement('div');wrap.className='toc-sub';
+    var inner=document.createElement('div');wrap.appendChild(inner);
+    hs.forEach(function(h,i){
+      if(!h.id)h.id=sec.id+'-sub'+(i+1);
+      var full=h.textContent.trim();
+      var sa=document.createElement('a');
+      sa.href='#'+h.id;sa.title=full;
+      sa.textContent=subTocLabel(full);
+      inner.appendChild(sa);
+    });
+    a.after(wrap);
+  });
+}
+/* Headings for a section's sub-list. Most sections use h3; the few that are
+   built entirely out of callouts or h4s fall back to those, so every section
+   in the contents gets a working sub-list. */
+function subTocHeadings(sec){
+  function own(sel){
+    return [].slice.call(sec.querySelectorAll(sel)).filter(function(h){
+      return h.closest('.section')===sec&&!h.closest('.fact-card,.compare-card,.hallmark-card,.hy-block,.exam-q,.lo-tip');
+    });
+  }
+  var hs=own('h3');
+  if(hs.length)return hs;
+  hs=own('h4');
+  if(hs.length)return hs;
+  return own('.callout-title');
+}
+/* Short label: drop a leading emoji, then keep the text before an em/en dash. */
+function subTocLabel(text){
+  var t=text.replace(/^[^\w\u00c0-\u024f(]+/,'').trim();
+  var head=t.split(/\s[\u2014\u2013]\s/)[0].trim();
+  /* "Haptoglobin \u2014 nature's mop" keeps its whole line, because "Haptoglobin"
+     on its own is too thin to navigate by; longer heads stand alone fine. */
+  t=head.length<18?t:head;
+  return t.length>64?t.slice(0,63).replace(/[\s,;:]+\S*$/,'')+'\u2026':t;
+}
+/* A sub-link points inside the section body, which is clipped to zero height
+   while the section is collapsed — so open the section first, then scroll. */
+function revealAnchor(id){
+  var target=document.getElementById(id);
+  if(!target)return false;
+  var sec=target.closest('.section');
+  if(sec&&sec.classList.contains('collapsed')){
+    sec.classList.remove('collapsed');
+    var b=$('.st-collapse',sec);
+    if(b)b.textContent='\u25be Collapse';
+  }
+  requestAnimationFrame(function(){
+    var top=target.getBoundingClientRect().top+window.scrollY-90;
+    window.scrollTo({top:Math.max(0,top),behavior:'smooth'});
+  });
+  return true;
+}
+function initSubTocNav(){
+  $$('.toc-sub a').forEach(function(a){
+    a.addEventListener('click',function(ev){
+      var id=a.getAttribute('href').slice(1);
+      if(!document.getElementById(id))return;
+      ev.preventDefault();
+      revealAnchor(id);
+      if(history.replaceState)history.replaceState(null,'','#'+id);
+    });
+  });
+  window.addEventListener('hashchange',function(){
+    var id=location.hash.slice(1);
+    if(id)revealAnchor(id);
+  });
+  if(location.hash.length>1)setTimeout(function(){revealAnchor(location.hash.slice(1));},120);
+}
+/* The contents list is far taller than the sidebar, so the section you are
+   reading — and the sub-list it opens — can sit well outside the visible strip.
+   Follow it, unless the reader is busy pointing at the list themselves. */
+var tocHover=false;
+function initTocFollow(){
+  var bar=$('.toc-bar');
+  if(!bar)return;
+  bar.addEventListener('pointerenter',function(){tocHover=true;});
+  bar.addEventListener('pointerleave',function(){tocHover=false;});
+}
+function keepActiveVisible(a){
+  var bar=$('.toc-bar');
+  if(!bar||!a||tocHover||document.body.classList.contains('nav-open'))return;
+  var sub=a.nextElementSibling;
+  if(sub&&!sub.classList.contains('toc-sub'))sub=null;
+  var barTop=bar.getBoundingClientRect().top;
+  var rowTop=a.getBoundingClientRect().top-barTop+bar.scrollTop;
+  var end=sub?sub.getBoundingClientRect().bottom:a.getBoundingClientRect().bottom;
+  var rowEnd=end-barTop+bar.scrollTop;
+  var viewTop=bar.scrollTop,viewEnd=viewTop+bar.clientHeight,margin=22;
+  if(rowTop>=viewTop+margin&&rowEnd<=viewEnd-margin)return;   /* already comfortably in view */
+  /* Sit the section about a third down, so its sub-list has room underneath
+     rather than being pinned to the bottom edge. */
+  var to=rowTop-Math.round(bar.clientHeight*0.3);
+  if(rowEnd-to>bar.clientHeight-margin)to=Math.min(rowTop-margin,rowEnd-bar.clientHeight+margin);
+  to=Math.max(0,Math.min(to,bar.scrollHeight-bar.clientHeight));
+  if(Math.abs(to-bar.scrollTop)<2)return;
+  bar.scrollTo({top:to,behavior:'smooth'});
+}
+function initScrollspy(){
+  var links=$$('.toc-bar nav > a');
+  var subWraps=$$('.toc-sub');
+  var lastActive=null;
+  var secs=SECTION_IDS.map(function(id){return document.getElementById(id);}).filter(Boolean);
+  var ticking=false;
+  function upd(){
+    var y=window.scrollY+140,cur=secs[0];
+    for(var i=0;i<secs.length;i++){if(secs[i].offsetTop<=y)cur=secs[i];}
+    links.forEach(function(a){
+      var on=a.getAttribute('href')==='#'+cur.id;
+      a.classList.toggle('active',on);
+      if(on&&lastActive!==cur.id){
+        lastActive=cur.id;
+        keepActiveVisible(a);
+        /* the sub-list is still expanding — settle the position once it has */
+        setTimeout(function(){if(a.classList.contains('active'))keepActiveVisible(a);},320);
+      }
+      if(on){var lbl=a.querySelector('span:nth-child(2)'); if(lbl)setMobileHere(lbl.textContent);}
+      var sub=a.nextElementSibling;
+      if(sub&&sub.classList.contains('toc-sub')){
+        /* Exactly one sub-list follows the reading position: the new section
+           opens and the section just left closes. Hover never changes it. */
+        sub.classList.toggle('open',on);
+        var sl=sub.querySelectorAll('a'),cs=null;
+        if(on)sl.forEach(function(x){var t=document.getElementById(x.getAttribute('href').slice(1));if(t&&t.getBoundingClientRect().top+window.scrollY<=y)cs=x;});
+        sl.forEach(function(x){x.classList.toggle('on',x===cs);});
+      }
+    });
+    ticking=false;
+  }
+  window.addEventListener('scroll',function(){if(!ticking){ticking=true;requestAnimationFrame(upd);}},{passive:true});
+  upd();
+}
+
+/* ---------- mobile nav drawer ---------- */
+var navOpen=false;
+function setNav(open){
+  navOpen=open;
+  document.body.classList.toggle('nav-open',open);
+  var b=$('#mnavBurger');
+  if(b){b.setAttribute('aria-expanded',open?'true':'false');
+        b.setAttribute('aria-label',open?'Close section menu':'Open section menu');}
+}
+function initMobileNav(){
+  var b=$('#mnavBurger'),scrim=$('#tocScrim');
+  if(b)b.addEventListener('click',function(){setNav(!navOpen);});
+  if(scrim)scrim.addEventListener('click',function(){setNav(false);});
+  $$('.toc-bar a').forEach(function(a){a.addEventListener('click',function(){setNav(false);});});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&navOpen)setNav(false);});
+  window.addEventListener('resize',function(){if(window.innerWidth>1000&&navOpen)setNav(false);});
+}
+/* keeps the mobile bar labelled with the section you are actually in */
+function setMobileHere(txt){var el=$('#mnavHere'); if(el&&txt)el.textContent=txt;}
+
+/* ---------- sidebar visibility ---------- */
+var K_SIDEBAR='cardio-summ-objective-sidebar-hidden';
+window.setSidebarHidden=function(hidden,skipStore){
+  hidden=!!hidden;
+  document.body.classList.toggle('toc-hidden',hidden);
+  var bar=$('#tocBar'),show=$('#tocShowBtn');
+  if(bar)bar.setAttribute('aria-hidden',hidden?'true':'false');
+  if(show)show.setAttribute('aria-expanded',hidden?'false':'true');
+  if(hidden){
+    setNav(false);
+    if(document.activeElement&&bar&&bar.contains(document.activeElement))document.activeElement.blur();
+  }
+  if(!skipStore)set(K_SIDEBAR,hidden?'1':'0');
+};
+function initSidebarVisibility(){setSidebarHidden(get(K_SIDEBAR)==='1',true);}
+
+/* ---------- figure lightbox ---------- */
+var lb=null, lbList=[], lbIdx=0;
+function buildLightbox(){
+  lb=document.createElement('div');
+  lb.className='lightbox'; lb.setAttribute('role','dialog'); lb.setAttribute('aria-modal','true');
+  lb.innerHTML='<button class="lb-x" aria-label="Close">&#10005;</button>'+
+               '<button class="lb-prev" aria-label="Previous figure">&#8249;</button>'+
+               '<button class="lb-next" aria-label="Next figure">&#8250;</button>'+
+               '<img alt=""><p class="lb-cap"></p><p class="lb-meta"></p>';
+  document.body.appendChild(lb);
+  lb.querySelector('.lb-x').addEventListener('click',closeLB);
+  lb.querySelector('.lb-prev').addEventListener('click',function(e){e.stopPropagation();stepLB(-1);});
+  lb.querySelector('.lb-next').addEventListener('click',function(e){e.stopPropagation();stepLB(1);});
+  lb.addEventListener('click',function(e){if(e.target===lb)closeLB();});
+}
+function showLB(i){
+  if(!lbList.length)return;
+  lbIdx=(i+lbList.length)%lbList.length;
+  var f=lbList[lbIdx];
+  lb.querySelector('img').src=f.getAttribute('src');
+  lb.querySelector('img').alt=f.getAttribute('alt')||'';
+  var cap=f.parentNode.querySelector('.fig-cap');
+  lb.querySelector('.lb-cap').textContent=cap?cap.textContent:'';
+  lb.querySelector('.lb-meta').textContent=(lbIdx+1)+' / '+lbList.length+
+    (lbList.length>1?'  ·  \u2190 \u2192 to move  ·  Esc to close':'  ·  Esc to close');
+  lb.classList.add('on'); document.body.style.overflow='hidden';
+}
+function stepLB(d){showLB(lbIdx+d);}
+function closeLB(){if(!lb)return;lb.classList.remove('on');lb.querySelector('img').src='';
+  if(!$('#hyModal').classList.contains('open'))document.body.style.overflow='';}
+function initFigures(){
+  if(!document.querySelector('.fig-item'))return;
+  buildLightbox();
+  document.addEventListener('click',function(e){
+    var img=e.target.closest('.fig-item img'); if(!img)return;
+    /* browse every figure in this section, in reading order */
+    var scope=img.closest('.section')||img.closest('.fig-grid');
+    lbList=Array.prototype.slice.call(scope.querySelectorAll('.fig-item img'));
+    showLB(lbList.indexOf(img));
+  });
+}
+
+/* ---------- LO objective tooltips ---------- */
+var LO={},loTip=null,loAnchor=null,loHideT=null;
+
+function buildLOIndex(){
+  $$('tr.lo-row').forEach(function(tr){
+    var tds=tr.children; if(tds.length<2)return;
+    var num=(tds[0].textContent||'').trim();
+    var cell=tds[1].cloneNode(true);
+    var link=cell.querySelector('a');
+    var note=link?link.textContent.trim().replace(/^→\s*/,''):'';
+    var href=link?link.getAttribute('href'):'';
+    if(link)link.remove();
+    var br=cell.querySelector('br'); if(br)br.remove();
+    LO[num]={n:num,text:(cell.textContent||'').trim(),st:tr.dataset.st||'none',
+             cov:tr.dataset.cov||'',note:note,href:href,row:tr};
+  });
+}
+
+function esc(t){var d=document.createElement('div');d.textContent=t;return d.innerHTML;}
+
+/* renders the objective text with the covered parts marked and the rest dimmed */
+function loMarked(o){
+  if(o.st==='full')return '<mark>'+esc(o.text)+'</mark>';
+  if(o.st==='none')return '<span class="lo-dim">'+esc(o.text)+'</span>';
+  var frags=(o.cov||'').split('|').filter(Boolean);
+  if(!frags.length)return esc(o.text);
+  /* collect non-overlapping match ranges, then stitch marked / dimmed spans */
+  var hits=[];
+  frags.forEach(function(fr){
+    var i=o.text.toLowerCase().indexOf(fr.toLowerCase());
+    while(i>-1){hits.push([i,i+fr.length]);i=o.text.toLowerCase().indexOf(fr.toLowerCase(),i+1);}
+  });
+  hits.sort(function(a,b){return a[0]-b[0];});
+  var merged=[];
+  hits.forEach(function(h){
+    var last=merged[merged.length-1];
+    if(last&&h[0]<=last[1])last[1]=Math.max(last[1],h[1]);else merged.push([h[0],h[1]]);
+  });
+  var out='',pos=0;
+  merged.forEach(function(h){
+    if(h[0]>pos)out+='<span class="lo-dim">'+esc(o.text.slice(pos,h[0]))+'</span>';
+    out+='<mark>'+esc(o.text.slice(h[0],h[1]))+'</mark>';
+    pos=h[1];
+  });
+  if(pos<o.text.length)out+='<span class="lo-dim">'+esc(o.text.slice(pos))+'</span>';
+  return out;
+}
+
+var ST_LABEL={full:'Covered in full',part:'Partially covered',none:'Not written yet'};
+
+function loTipHTML(nums){
+  var known=nums.filter(function(n){return LO[n];});
+  if(!known.length)return '';
+  if(known.length===1){
+    var o=LO[known[0]];
+    var foot='<span class="lo-tip-key"><i></i> highlighted = worked through in this file</span>';
+    if(o.st==='part')foot+='<span>Where it lands: <b>'+esc(o.note||'see the coverage map')+'</b></span>'+
+        '<span>Greyed-out wording is not in this file yet.</span>';
+    else if(o.st==='full'&&o.note)foot+='<span>Worked in <b>'+esc(o.note)+'</b></span>';
+    else if(o.st==='none')foot+='<span>Its section has not been written yet.</span>';
+    return '<div class="lo-tip-head"><span class="lo-tip-num">Objective '+esc(o.n)+'</span>'+
+           '<span class="lo-tip-st '+o.st+'">'+ST_LABEL[o.st]+'</span></div>'+
+           '<p class="lo-tip-text">'+loMarked(o)+'</p>'+
+           '<p class="lo-tip-foot">'+foot+'<span>Click the badge to jump to it in the coverage map.</span></p>';
+  }
+  var items=known.map(function(n){
+    var o=LO[n];
+    return '<li><b>Objective '+esc(o.n)+'</b> — '+ST_LABEL[o.st].toLowerCase()+'<br>'+
+           '<span style="font-size:.78rem">'+loMarked(o)+'</span></li>';
+  }).join('');
+  return '<div class="lo-tip-head"><span class="lo-tip-num">'+known.length+' objectives</span></div>'+
+         '<ul class="lo-tip-multi">'+items+'</ul>'+
+         '<p class="lo-tip-foot"><span class="lo-tip-key"><i></i> highlighted = worked through in this file</span></p>';
+}
+
+function placeLOTip(badge){
+  var r=badge.getBoundingClientRect(),t=loTip.getBoundingClientRect();
+  var left=Math.min(Math.max(12,r.left),Math.max(12,window.innerWidth-t.width-12));
+  var top=r.bottom+9;
+  if(top+t.height>window.innerHeight-12)top=r.top-t.height-9;               /* flip above */
+  top=Math.min(Math.max(12,top),Math.max(12,window.innerHeight-t.height-12)); /* stay on screen */
+  loTip.style.left=left+'px';loTip.style.top=top+'px';
+}
+
+function showLOTip(badge){
+  clearTimeout(loHideT);
+  var html=badge._loHTML; if(!html)return;
+  if(loAnchor&&loAnchor!==badge)loAnchor.classList.remove('lo-open');
+  loAnchor=badge;badge.classList.add('lo-open');
+  loTip.innerHTML=html;loTip.classList.add('on');
+  loTip.style.left='-9999px';loTip.style.top='0px';
+  placeLOTip(badge);
+}
+function hideLOTip(now){
+  clearTimeout(loHideT);
+  loHideT=setTimeout(function(){
+    loTip.classList.remove('on');
+    if(loAnchor)loAnchor.classList.remove('lo-open');
+    loAnchor=null;
+  },now?0:130);
+}
+
+window.jumpToLO=function(num){
+  var o=LO[num]; if(!o)return;
+  var sec=document.getElementById('coverage');
+  if(sec&&sec.classList.contains('collapsed')){
+    sec.classList.remove('collapsed');
+    var b=$('.st-collapse',sec); if(b)b.textContent='▾ Collapse';
+  }
+  o.row.classList.remove('hide');
+  o.row.scrollIntoView({behavior:'smooth',block:'center'});
+  o.row.classList.remove('lo-flash');
+  void o.row.offsetWidth;
+  o.row.classList.add('lo-flash');
+  setTimeout(function(){o.row.classList.remove('lo-flash');},1700);
+};
+
+function initLOTips(){
+  buildLOIndex();
+  loTip=document.createElement('div');loTip.className='lo-tip';loTip.setAttribute('role','tooltip');
+  loTip.addEventListener('mouseenter',function(){clearTimeout(loHideT);});
+  loTip.addEventListener('mouseleave',function(){hideLOTip();});
+  document.body.appendChild(loTip);
+
+  $$('.lo-badge').forEach(function(b){
+    if(b.classList.contains('src'))return;
+    var nums=(b.textContent.match(/\d+/g)||[]).filter(function(n){return LO[n];});
+    if(!nums.length)return;
+    var html=loTipHTML(nums); if(!html)return;
+    b._loHTML=html;
+    b.dataset.lo=nums.join(',');
+    b.setAttribute('tabindex','0');
+    b.setAttribute('role','button');
+    b.setAttribute('aria-label',b.textContent.trim()+' — show the full objective');
+    b.addEventListener('mouseenter',function(){showLOTip(b);});
+    b.addEventListener('mouseleave',function(){hideLOTip();});
+    b.addEventListener('focus',function(){showLOTip(b);});
+    b.addEventListener('blur',function(){hideLOTip(true);});
+    b.addEventListener('click',function(e){
+      e.preventDefault();
+      /* touch: first tap opens the tooltip, badge stays a shortcut into the map */
+      if(loAnchor!==b){showLOTip(b);return;}
+      hideLOTip(true);jumpToLO(nums[0]);
+    });
+    b.addEventListener('keydown',function(e){
+      if(e.key==='Enter'||e.key===' '){e.preventDefault();hideLOTip(true);jumpToLO(nums[0]);}
+    });
+  });
+  window.addEventListener('scroll',function(){
+    if(!loAnchor)return;
+    var r=loAnchor.getBoundingClientRect();
+    if(r.bottom<0||r.top>window.innerHeight){hideLOTip(true);return;}
+    placeLOTip(loAnchor);
+  },{passive:true});
+  window.addEventListener('resize',function(){hideLOTip(true);});
+  document.addEventListener('click',function(e){
+    if(loAnchor&&!e.target.closest('.lo-badge')&&!e.target.closest('.lo-tip'))hideLOTip(true);
+  });
+}
+
+/* ---------- coverage filter ---------- */
+window.filterLO=function(what,btn){
+  $$('.cov-filter button').forEach(function(b){b.classList.toggle('on',b===btn);});
+  $$('tr.lo-row').forEach(function(tr){
+    tr.classList.toggle('hide', what!=='all' && tr.dataset.st!==what);
+  });
+};
+
+/* ---------- section tools: reviewed + confidence + collapse ---------- */
+var progress={};
+try{progress=JSON.parse(get(K_PROG)||'{}');}catch(e){progress={};}
+function saveProgress(){set(K_PROG,JSON.stringify(progress));}
+
+function renderProgress(){
+  var done=0;
+  SECTION_IDS.forEach(function(id){
+    var p=progress[id]||{};
+    if(p.done)done++;
+    var sec=document.getElementById(id);
+    if(sec){
+      var rb=$('.st-reviewed',sec); if(rb){rb.classList.toggle('on',!!p.done);rb.textContent=p.done?'✓ Reviewed':'Mark reviewed';}
+      $$('.st-conf',sec).forEach(function(b){b.classList.toggle('on',p.conf===b.dataset.conf);});
+    }
+    var link=$('.toc-bar a[href="#'+id+'"]');
+    if(link){
+      link.classList.toggle('done',!!p.done);
+      link.classList.remove('conf-1','conf-2','conf-3');
+      if(p.conf)link.classList.add('conf-'+p.conf);
+    }
+  });
+  var el=$('#tocProgress'); if(el)el.textContent=done+' / '+SECTION_IDS.length+' reviewed';
+}
+
+window.toggleAllSections=function(){
+  var any=$$('.section').some(function(s){return !s.classList.contains('collapsed');});
+  $$('.section').forEach(function(s){s.classList.toggle('collapsed',any);
+    var b=$('.st-collapse',s);
+    if(b)b.textContent=any?(b.dataset.expandLabel||'▸ Expand'):'▾ Collapse';});
+};
+
+window.jumpToNextTodo=function(){
+  for(var i=0;i<SECTION_IDS.length;i++){
+    var id=SECTION_IDS[i];
+    if(!(progress[id]&&progress[id].done)){
+      var el=document.getElementById(id);
+      if(el){el.scrollIntoView({behavior:'smooth',block:'start'});return;}
+    }
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+};
+
+var COLLAPSED_BY_DEFAULT=['coverage'];
+function initSectionTools(){
+  $$('.section').forEach(function(sec){
+    var id=sec.id; if(!id)return;
+    var title=$('.section-title',sec); if(!title)return;
+
+    /* wrap everything after the title in a collapsible body */
+    var outer=document.createElement('div');outer.className='sec-body-outer';
+    var inner=document.createElement('div');inner.className='sec-body-inner';
+    outer.appendChild(inner);
+    var nodes=[],n=title.nextSibling;
+    while(n){nodes.push(n);n=n.nextSibling;}
+    nodes.forEach(function(x){inner.appendChild(x);});
+    sec.appendChild(outer);
+
+    var bar=document.createElement('div');bar.className='sec-tools';
+    bar.innerHTML='<span class="st-lab">Track</span>'+
+      '<button class="st-reviewed">Mark reviewed</button>'+
+      '<span class="st-lab">Confidence</span>'+
+      '<button class="st-conf" data-conf="1">😰 Shaky</button>'+
+      '<button class="st-conf" data-conf="2">🙂 OK</button>'+
+      '<button class="st-conf" data-conf="3">💪 Solid</button>'+
+      '<button class="st-collapse">▾ Collapse</button>';
+    sec.insertBefore(bar,outer);
+
+    $('.st-reviewed',bar).addEventListener('click',function(){
+      progress[id]=progress[id]||{};progress[id].done=!progress[id].done;saveProgress();renderProgress();
+    });
+    $$('.st-conf',bar).forEach(function(b){
+      b.addEventListener('click',function(){
+        progress[id]=progress[id]||{};
+        progress[id].conf=(progress[id].conf===b.dataset.conf)?null:b.dataset.conf;
+        saveProgress();renderProgress();
+      });
+    });
+    var cbtn=$('.st-collapse',bar);
+    cbtn.addEventListener('click',function(){
+      var c=sec.classList.toggle('collapsed');
+      this.textContent=c?(this.dataset.expandLabel||'▸ Expand'):'▾ Collapse';
+    });
+    /* the coverage map is an 83-row table — start it folded away */
+    if(COLLAPSED_BY_DEFAULT.indexOf(id)>-1){
+      sec.classList.add('collapsed');
+      cbtn.dataset.expandLabel='▸ Show all 101 objectives';
+      cbtn.textContent=cbtn.dataset.expandLabel;
+    }
+
+    var note=document.createElement('div');note.className='recall-note';
+    note.textContent='Recall mode is on — bolded facts are hidden. Tap one to reveal it.';
+    inner.insertBefore(note,inner.firstChild);
+  });
+}
+
+/* ---------- exam questions ---------- */
+var qIndex=-1;
+function allQ(){return $$('.exam-q');}
+function updateQCount(){
+  var qs=allQ(),done=qs.filter(function(q){return q.classList.contains('revealed');}).length;
+  var el=$('#qCount'); if(el)el.textContent='('+done+'/'+qs.length+')';
+}
+window.jumpToNextQ=function(){
+  var qs=allQ();if(!qs.length)return;
+  var start=qIndex,i,target=null;
+  for(i=1;i<=qs.length;i++){
+    var j=(start+i+qs.length)%qs.length;
+    if(!qs[j].classList.contains('revealed')){target=j;break;}
+  }
+  if(target===null)target=(start+1+qs.length)%qs.length;
+  qIndex=target;
+  var q=qs[target];
+  var sec=q.closest('.section');
+  if(sec&&sec.classList.contains('collapsed')){
+    sec.classList.remove('collapsed');
+    var b=$('.st-collapse',sec); if(b)b.textContent='▾ Collapse';
+  }
+  q.scrollIntoView({behavior:'smooth',block:'center'});
+  q.classList.add('q-flash');
+  setTimeout(function(){q.classList.remove('q-flash');},1400);
+};
+function revealNearest(){
+  var qs=allQ(),best=null,bd=1e9,mid=window.innerHeight/2;
+  qs.forEach(function(q){
+    var r=q.getBoundingClientRect();
+    if(r.bottom<0||r.top>window.innerHeight)return;
+    var d=Math.abs(r.top+r.height/2-mid);
+    if(d<bd){bd=d;best=q;}
+  });
+  if(best){best.classList.add('revealed');updateQCount();}
+}
+function initExamQ(){
+  allQ().forEach(function(q){
+    var b=$('.reveal-btn',q);
+    if(b)b.addEventListener('click',updateQCount);
+  });
+  updateQCount();
+}
+
+/* ---------- recall mode ---------- */
+var recallMode=false;
+function recallTargets(){
+  return $$('.sec-body-inner :is(p,li,td,h4,dd) strong').filter(function(s){
+    return !s.closest('.exam-q')&&!s.closest('.tq-bar')&&!s.closest('.cov-table');
+  });
+}
+function updateRecallCount(){
+  var el=$('#recallCount'); if(!el)return;
+  if(!recallMode){el.textContent='';return;}
+  var t=recallTargets(),open=t.filter(function(s){return s.classList.contains('rc-open');}).length;
+  el.textContent='('+open+'/'+t.length+')';
+}
+window.toggleRecall=function(){
+  recallMode=!recallMode;
+  document.body.classList.toggle('recall-mode',recallMode);
+  $('#recallBtn').classList.toggle('on',recallMode);
+  $('#toolsTrigger').classList.toggle('busy',recallMode);
+  if(!recallMode)recallTargets().forEach(function(s){s.classList.remove('rc-open');});
+  updateRecallCount();
+};
+function initRecall(){
+  document.addEventListener('click',function(e){
+    if(!recallMode)return;
+    var s=e.target.closest('strong');
+    if(s&&s.closest('.sec-body-inner')&&!s.closest('.exam-q')&&!s.closest('.cov-table')){
+      s.classList.add('rc-open');updateRecallCount();
+    }
+  });
+}
+
+/* ---------- tools menu ---------- */
+window.toggleToolsMenu=function(){$('#floatingLeft').classList.toggle('open');};
+
+/* ---------- HY modal ---------- */
+window.openHY=function(){
+  var m=$('#hyModal');if(!m)return;
+  m.classList.add('open');document.body.style.overflow='hidden';
+  balanceHY();
+  /* Web fonts can land after the first measurement, and a resize changes the
+     column height, so re-balance whenever the geometry can have moved. */
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(balanceHY);
+};
+var hyResizeTimer=null;
+window.addEventListener('resize',function(){
+  var m=$('#hyModal');
+  if(!m||!m.classList.contains('open'))return;
+  clearTimeout(hyResizeTimer);
+  hyResizeTimer=setTimeout(balanceHY,150);
+});
+window.addEventListener('beforeprint',balanceHY);
+/* A cluster normally stays whole inside one column. A cluster taller than this
+   would otherwise push a big empty gap to the foot of a column or a printed
+   page, so the tallest ones are allowed to break instead. */
+function balanceHY(){
+  var groups=$$('.hy-group');
+  if(!groups.length)return;
+  var heights=groups.map(function(g){g.classList.remove('hy-breakable');return g.offsetHeight;});
+  var total=heights.reduce(function(a,b){return a+b;},0);
+  if(!total)return;
+  var limit=Math.max(420,total*0.055);
+  groups.forEach(function(g,i){if(heights[i]>limit)g.classList.add('hy-breakable');});
+}
+window.closeHY=function(){var m=$('#hyModal');if(!m)return;m.classList.remove('open');document.body.style.overflow='';};
+window.printHY=function(){
+  if(!window.syncPrintAccess||!window.syncPrintAccess()){
+    alert('Printing is available only when Jeeval Mehta is logged in through the Study Hub.');
+    return;
+  }
+  document.body.classList.add('hy-mode');
+  window.print();
+  setTimeout(function(){document.body.classList.remove('hy-mode');},600);
+};
+
+/* ---------- table quiz ---------- */
+function initTableQuiz(){
+  $$('table[data-quiz]').forEach(function(tbl,ti){
+    var head=tbl.tHead; if(!head||!head.rows.length)return;
+    var heads=Array.prototype.slice.call(head.rows[head.rows.length-1].cells);
+    if(heads.length<2)return;
+
+    /* wrap every data cell's content so we can blur it without losing the text */
+    var rows=Array.prototype.slice.call(tbl.tBodies[0]?tbl.tBodies[0].rows:[]);
+    rows.forEach(function(r){
+      Array.prototype.slice.call(r.cells).forEach(function(c){
+        if(!$('.tq-cell-content',c)){
+          var w=document.createElement('span');w.className='tq-cell-content';
+          while(c.firstChild)w.appendChild(c.firstChild);
+          c.appendChild(w);
+        }
+      });
+    });
+
+    var bar=document.createElement('div');bar.className='tq-bar';
+    var cols=heads.map(function(h,i){
+      var label=(h.textContent||'').trim()||('Col '+(i+1));
+      if(label.length>22)label=label.slice(0,20)+'…';
+      return '<button class="tq-col-btn" data-i="'+i+'">'+label+'</button>';
+    }).join('');
+    bar.innerHTML='<button class="tq-toggle">🧩 Quiz this table</button>'+
+      '<div class="tq-cols" hidden>'+cols+'</div>'+
+      '<button class="tq-start" hidden disabled>Hide selected</button>'+
+      '<button class="tq-reset" hidden>Reveal all</button>'+
+      '<span class="tq-score" hidden></span>';
+    tbl.parentNode.insertBefore(bar,tbl);
+
+    var toggle=$('.tq-toggle',bar),colsEl=$('.tq-cols',bar),startBtn=$('.tq-start',bar),
+        resetBtn=$('.tq-reset',bar),score=$('.tq-score',bar);
+    var sel={},active=false;
+
+    function hiddenCells(){return $$('td.quiz-hidden-cell',tbl);}
+    function updScore(){
+      var tot=$$('td',tbl).filter(function(c){return c.dataset.tqTracked==='1';}).length;
+      var left=hiddenCells().length;
+      score.textContent=(tot-left)+' / '+tot+' revealed';
+      score.classList.toggle('done',tot>0&&left===0);
+    }
+    function apply(){
+      $$('td',tbl).forEach(function(c){c.classList.remove('quiz-hidden-cell');delete c.dataset.tqTracked;});
+      rows.forEach(function(r){
+        Array.prototype.slice.call(r.cells).forEach(function(c,i){
+          if(sel[i]&&c.tagName==='TD'){c.classList.add('quiz-hidden-cell');c.dataset.tqTracked='1';}
+        });
+      });
+      active=true;updScore();
+    }
+    toggle.addEventListener('click',function(){
+      var on=toggle.classList.toggle('active');
+      [colsEl,startBtn,resetBtn,score].forEach(function(e){e.hidden=!on;});
+      toggle.textContent=on?'✕ Close quiz':'🧩 Quiz this table';
+      if(!on){$$('td',tbl).forEach(function(c){c.classList.remove('quiz-hidden-cell');});active=false;}
+    });
+    $$('.tq-col-btn',bar).forEach(function(b){
+      b.addEventListener('click',function(){
+        var i=+b.dataset.i;sel[i]=!sel[i];b.classList.toggle('sel',sel[i]);
+        startBtn.disabled=!Object.keys(sel).some(function(k){return sel[k];});
+        if(active)apply();
+      });
+    });
+    startBtn.addEventListener('click',apply);
+    resetBtn.addEventListener('click',function(){
+      $$('td.quiz-hidden-cell',tbl).forEach(function(c){c.classList.remove('quiz-hidden-cell');});
+      updScore();
+    });
+    tbl.addEventListener('click',function(e){
+      var c=e.target.closest('td.quiz-hidden-cell');
+      if(c){c.classList.remove('quiz-hidden-cell');updScore();}
+    });
+  });
+}
+
+/* ---------- keyboard ---------- */
+function initKeys(){
+  document.addEventListener('keydown',function(e){
+    if(e.metaKey||e.ctrlKey||e.altKey)return;
+    var t=e.target.tagName;
+    if(t==='INPUT'||t==='TEXTAREA'||e.target.isContentEditable)return;
+    var k=e.key.toLowerCase();
+    if(k==='escape'){
+      if(lb&&lb.classList.contains('on')){closeLB();return;}
+      if($('#hyModal').classList.contains('open')){closeHY();return;}
+      if(themeOpen){toggleThemePanel();return;}
+      if(recallMode){toggleRecall();return;}
+      return;
+    }
+    if(lb&&lb.classList.contains('on')){
+      if(k==='arrowleft'){e.preventDefault();stepLB(-1);return;}
+      if(k==='arrowright'){e.preventDefault();stepLB(1);return;}
+    }
+    if(k==='j'||k==='k'){
+      e.preventDefault();
+      var secs=SECTION_IDS.map(function(id){return document.getElementById(id);}).filter(Boolean);
+      var y=window.scrollY+140,idx=0;
+      for(var i=0;i<secs.length;i++){if(secs[i].offsetTop<=y)idx=i;}
+      idx=k==='j'?Math.min(secs.length-1,idx+1):Math.max(0,idx-1);
+      secs[idx].scrollIntoView({behavior:'smooth',block:'start'});
+    }
+    else if(k==='q'){e.preventDefault();jumpToNextQ();}
+    else if(k==='r'){e.preventDefault();if(recallMode)toggleRecall();else revealNearest();}
+    else if(k==='h'){e.preventDefault();if($('#hyModal').classList.contains('open'))closeHY();else openHY();}
+  });
+}
+
+
+
+/* ---------- init ---------- */
+document.addEventListener('DOMContentLoaded',function(){
+  setTheme(get(K_THEME)||DEFAULT_THEME,null,true);
+  document.body.style.fontSize=fontSize+'px';
+  initSectionTools();
+  initTableQuiz();
+  initExamQ();
+  initRecall();
+  initProgressBar();
+  buildSubToc();initSubTocNav();initTocFollow();
+  initScrollspy();
+  initMobileNav();
+  initSidebarVisibility();
+  initLOTips();
+  initFigures();
+  initKeys();
+  renderProgress();
+  document.addEventListener('click',function(e){
+    if(themeOpen&&!e.target.closest('.theme-panel')&&!e.target.closest('.theme-btn'))
+      {themeOpen=false;$('#themePanel').classList.remove('open');}
+  });
+});
+})();
+</script>
+<script>
+/* ============================================================
+   TEXT ANNOTATION — select to highlight or strike out
+   Ported from the quiz builder's annotation engine.
+   Scope: any leaf text block inside <main class="container">.
+   Persistence: character offsets per block, in localStorage.
+   ============================================================ */
+(function(){
+var ROOT=document.querySelector('main.container');
+if(!ROOT)return;
+var STORE_KEY='cardio-summ-annotations-v1';
+var BLOCK_SEL='p,li,td,th,dd,dt,h2,h3,h4,figcaption,blockquote';
+var COLORS=[['Yellow','#fff173'],['Green','#b1ff66'],['Cyan','#83edf0'],['Pink','#ffb5d7']];
+var activeColor='#fff173';
+var annRange=null;
+
+/* ---------- scopes ---------- */
+var scopes=[];
+Array.prototype.forEach.call(ROOT.querySelectorAll(BLOCK_SEL),function(el){
+  if(el.querySelector(BLOCK_SEL))return;          /* leaf blocks only */
+  if(el.closest('.reveal-btn,button,.toc-bar'))return;
+  el.setAttribute('data-ann',String(scopes.length));
+  scopes.push(el);
+});
+function scopeKey(el){return (el.textContent||'').replace(/\s+/g,' ').trim().slice(0,32);}
+
+/* ---------- range helpers (from the quiz builder) ---------- */
+function intersects(range,node){
+  if(typeof range.intersectsNode==='function'){try{return range.intersectsNode(node);}catch(e){}}
+  var r=document.createRange();r.selectNodeContents(node);
+  return !(range.compareBoundaryPoints(Range.END_TO_START,r)<=0||range.compareBoundaryPoints(Range.START_TO_END,r)>=0);
+}
+function scopedSegments(range){
+  return scopes.map(function(scope){
+    if(!intersects(range,scope))return null;
+    var sr=document.createRange();sr.selectNodeContents(scope);
+    if(range.compareBoundaryPoints(Range.START_TO_START,sr)>0)sr.setStart(range.startContainer,range.startOffset);
+    if(range.compareBoundaryPoints(Range.END_TO_END,sr)<0)sr.setEnd(range.endContainer,range.endOffset);
+    if(sr.collapsed)return null;
+    return {scope:scope,range:sr};
+  }).filter(Boolean);
+}
+function textNodesIn(range,scope){
+  var nodes=[],walker=document.createTreeWalker(scope,NodeFilter.SHOW_TEXT,{acceptNode:function(n){
+    if(!n.textContent)return NodeFilter.FILTER_REJECT;
+    return intersects(range,n)?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT;
+  }});
+  var cur;while((cur=walker.nextNode()))nodes.push(cur);
+  return nodes;
+}
+function wrapTextNode(node,range,mode,color){
+  var start=0,end=node.textContent.length;
+  if(node===range.startContainer&&range.startContainer.nodeType===Node.TEXT_NODE)start=range.startOffset;
+  if(node===range.endContainer&&range.endContainer.nodeType===Node.TEXT_NODE)end=range.endOffset;
+  if(start>=end)return 0;
+  if(start>0){node=node.splitText(start);end-=start;}
+  if(end<node.textContent.length)node.splitText(end);
+  if(node.parentNode.closest(mode==='hl'?'.usr-hl':'.usr-st')){
+    if(mode==='st')return 1;
+    node.parentNode.closest('.usr-hl').style.setProperty('--mark-color',color);
+    return 1;
+  }
+  var wrapper=document.createElement(mode==='hl'?'mark':'s');
+  wrapper.className=mode==='hl'?'usr-hl':'usr-st';
+  if(mode==='hl')wrapper.style.setProperty('--mark-color',color);
+  node.parentNode.insertBefore(wrapper,node);
+  wrapper.appendChild(node);
+  return 1;
+}
+function normalize(scope,tag){
+  Array.prototype.forEach.call(scope.querySelectorAll(tag),function(node){
+    while(node.nextSibling&&node.nextSibling.nodeType===Node.ELEMENT_NODE&&node.nextSibling.tagName===node.tagName&&
+          node.nextSibling.className===node.className&&node.nextSibling.getAttribute('style')===node.getAttribute('style')){
+      var sib=node.nextSibling;
+      while(sib.firstChild)node.appendChild(sib.firstChild);
+      sib.remove();
+    }
+  });
+  scope.normalize();
+}
+function applyToRange(range,mode,color){
+  var applied=0;
+  scopedSegments(range).forEach(function(seg){
+    var hits=0;
+    textNodesIn(seg.range,seg.scope).forEach(function(n){hits+=wrapTextNode(n,seg.range,mode,color);});
+    if(hits){normalize(seg.scope,mode==='hl'?'mark.usr-hl':'s.usr-st');persistScope(seg.scope);applied+=hits;}
+  });
+  return applied>0;
+}
+function eraseRange(range){
+  var touched=[];
+  scopedSegments(range).forEach(function(seg){
+    Array.prototype.forEach.call(seg.scope.querySelectorAll('.usr-hl,.usr-st'),function(node){
+      if(!intersects(seg.range,node))return;
+      while(node.firstChild)node.parentNode.insertBefore(node.firstChild,node);
+      node.remove();
+    });
+    seg.scope.normalize();touched.push(seg.scope);
+  });
+  touched.forEach(persistScope);
+  return touched.length>0;
+}
+
+/* ---------- persistence ---------- */
+function readStore(){try{return JSON.parse(localStorage.getItem(STORE_KEY)||'{}')||{};}catch(e){return {};}}
+function writeStore(data){try{localStorage.setItem(STORE_KEY,JSON.stringify(data));}catch(e){}}
+function runsOf(scope){
+  var runs=[],offset=0,walker=document.createTreeWalker(scope,NodeFilter.SHOW_TEXT,null),node;
+  while((node=walker.nextNode())){
+    var len=node.textContent.length;
+    if(!len)continue;
+    var hl=node.parentNode.closest?node.parentNode.closest('.usr-hl'):null;
+    var st=node.parentNode.closest?node.parentNode.closest('.usr-st'):null;
+    if(hl&&!scope.contains(hl))hl=null;
+    if(st&&!scope.contains(st))st=null;
+    if(hl||st){
+      var color=hl?(hl.style.getPropertyValue('--mark-color')||'#fff173').trim():'';
+      var last=runs[runs.length-1];
+      if(last&&last[1]===offset&&last[2]===color&&last[3]===(st?1:0))last[1]=offset+len;
+      else runs.push([offset,offset+len,color,st?1:0]);
+    }
+    offset+=len;
+  }
+  return runs;
+}
+function persistScope(scope){
+  var data=readStore(),id=scope.getAttribute('data-ann'),runs=runsOf(scope);
+  if(runs.length)data[id]={k:scopeKey(scope),r:runs};
+  else delete data[id];
+  writeStore(data);
+}
+function rangeFromOffsets(scope,start,end){
+  var walker=document.createTreeWalker(scope,NodeFilter.SHOW_TEXT,null),offset=0,node,range=document.createRange(),set=false;
+  while((node=walker.nextNode())){
+    var len=node.textContent.length;
+    if(!len)continue;
+    var next=offset+len;
+    if(!set&&start<next){range.setStart(node,start-offset);set=true;}
+    if(set&&end<=next){range.setEnd(node,end-offset);return range;}
+    offset=next;
+  }
+  return null;
+}
+function restore(){
+  var data=readStore(),dirty=false;
+  Object.keys(data).forEach(function(id){
+    var scope=scopes[parseInt(id,10)],entry=data[id];
+    if(!scope||!entry||!entry.r){dirty=true;delete data[id];return;}
+    if(entry.k&&entry.k!==scopeKey(scope)){dirty=true;delete data[id];return;}  /* document changed under it */
+    entry.r.forEach(function(run){
+      var range=rangeFromOffsets(scope,run[0],run[1]);
+      if(!range)return;
+      if(run[2])applyRestore(range,'hl',run[2]);
+      if(run[3]){var r2=rangeFromOffsets(scope,run[0],run[1]);if(r2)applyRestore(r2,'st','');}
+    });
+  });
+  if(dirty)writeStore(data);
+}
+function applyRestore(range,mode,color){
+  var scope=range.commonAncestorContainer.nodeType===Node.ELEMENT_NODE?range.commonAncestorContainer:range.commonAncestorContainer.parentNode;
+  scope=scope.closest('[data-ann]');
+  if(!scope)return;
+  var hits=0;
+  textNodesIn(range,scope).forEach(function(n){hits+=wrapTextNode(n,range,mode,color);});
+  if(hits)normalize(scope,mode==='hl'?'mark.usr-hl':'s.usr-st');
+}
+
+/* ---------- floating palette ---------- */
+var menu=document.createElement('div');
+menu.className='annotation-menu';menu.hidden=true;
+menu.setAttribute('role','toolbar');menu.setAttribute('aria-label','Text annotations');
+COLORS.forEach(function(color){
+  var b=document.createElement('button');
+  b.type='button';b.className='annotation-swatch';b.style.background=color[1];
+  b.title=color[0]+' highlight';b.setAttribute('aria-label',color[0]+' highlight');
+  b.onclick=function(){activeColor=color[1];commit('hl');};
+  menu.appendChild(b);
+});
+function iconBtn(cls,label,title,handler){
+  var b=document.createElement('button');
+  b.type='button';b.className=cls;b.textContent=label;b.title=title;b.setAttribute('aria-label',title);
+  b.onclick=handler;menu.appendChild(b);return b;
+}
+iconBtn('annotation-strike','S','Strike out selected text',function(){commit('st');});
+iconBtn('annotation-erase','⌫','Remove highlight or strikeout from selection',function(){commit('erase');});
+document.body.appendChild(menu);
+menu.addEventListener('pointerdown',function(e){e.preventDefault();});
+function hideMenu(){menu.hidden=true;annRange=null;}
+function placeMenu(rect){
+  menu.hidden=false;
+  Array.prototype.forEach.call(menu.querySelectorAll('.annotation-swatch'),function(b,i){
+    b.setAttribute('aria-pressed',String(COLORS[i][1]===activeColor));
+  });
+  var w=menu.offsetWidth,h=menu.offsetHeight;
+  menu.style.left=Math.max(8,Math.min(rect.left,window.innerWidth-w-8))+'px';
+  var top=rect.bottom+8;
+  if(top+h>window.innerHeight-8)top=rect.top-h-8;
+  menu.style.top=Math.max(8,Math.min(top,window.innerHeight-h-8))+'px';
+}
+function commit(mode){
+  var range=annRange;
+  if(!range||!ROOT.contains(range.commonAncestorContainer)){hideMenu();return;}
+  var changed=mode==='erase'?eraseRange(range):applyToRange(range,mode,activeColor);
+  if(changed){var sel=window.getSelection();if(sel)sel.removeAllRanges();}
+  hideMenu();
+}
+function onSelect(event){
+  if(event&&event.target&&menu.contains(event.target))return;
+  var sel=window.getSelection();
+  if(!sel||sel.isCollapsed||!sel.rangeCount){hideMenu();return;}
+  var range=sel.getRangeAt(0);
+  if(!ROOT.contains(range.commonAncestorContainer)||!scopedSegments(range).length){hideMenu();return;}
+  annRange=range.cloneRange();
+  placeMenu(range.getBoundingClientRect());
+}
+document.addEventListener('pointerup',function(e){setTimeout(function(){onSelect(e);},0);});
+document.addEventListener('keyup',function(e){
+  if(e.key==='Escape'){hideMenu();return;}
+  if(e.key==='Shift'||e.key.indexOf('Arrow')===0)onSelect(e);
+});
+document.addEventListener('pointerdown',function(e){if(!menu.contains(e.target))hideMenu();});
+document.addEventListener('scroll',hideMenu,true);
+window.addEventListener('resize',hideMenu);
+
+/* ---------- clear everything ---------- */
+window.clearAnnotations=function(){
+  var count=ROOT.querySelectorAll('.usr-hl,.usr-st').length;
+  if(!count){alert('There are no highlights or strikeouts to clear.');return;}
+  if(!confirm('Remove all '+count+' highlights and strikeouts on this page? This cannot be undone.'))return;
+  Array.prototype.forEach.call(ROOT.querySelectorAll('.usr-hl,.usr-st'),function(node){
+    while(node.firstChild)node.parentNode.insertBefore(node.firstChild,node);
+    node.remove();
+  });
+  scopes.forEach(function(s){s.normalize();});
+  writeStore({});
+  hideMenu();
+};
+
+restore();
+})();
+</script>
+</body>
+</html>

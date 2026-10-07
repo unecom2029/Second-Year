@@ -1,0 +1,197 @@
+
+<!-- ==================== PRACTICE ==================== -->
+<div class="section" id="practice">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge alt">Practice</div></div>
+    <p class="section-label">Both cases, rapid fire</p>
+    <h2 class="section-title">Drill</h2>
+    <div class="abbr-strip"><span class="t">Abbreviations</span>ACS = acute coronary syndrome · NSTEMI = non-ST-elevation MI · VSR = ventricular septal rupture · PA = primary aldosteronism · ARR = aldosterone-to-renin ratio · MRA = mineralocorticoid receptor antagonist · AVS = adrenal venous sampling · FH = familial hypercholesterolemia</div>
+    <div class="tool drill" id="s1Drill">
+      <h4>🎯 Quick check</h4>
+      <p class="t-intro">Shuffled; instant feedback.</p>
+      <div class="d-q" id="dQ"></div>
+      <div class="d-opts" id="dOpts"></div>
+      <div class="t-out" id="dOut"></div>
+      <div class="d-nav"><button class="tb" id="dNext" type="button">Next →</button><span id="dScore">0 / 0 correct</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== GLOSSARY ==================== -->
+<div class="section" id="glossary">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge alt">Reference</div></div>
+    <p class="section-label">Every short form used in these notes</p>
+    <h2 class="section-title">Glossary &amp; Abbreviations</h2>
+    <div class="gloss">
+      <dl>
+        <dt>ABPM · HBPM</dt><dd>24-hour ambulatory · home BP monitoring</dd>
+        <dt>ACS · NSTE-ACS</dt><dd>Acute coronary syndrome · non-ST-elevation ACS</dd>
+        <dt>AME</dt><dd>Apparent mineralocorticoid excess (licorice, 11β-HSD2 deficiency)</dd>
+        <dt>ANP</dt><dd>Atrial natriuretic peptide</dd>
+        <dt>ARR</dt><dd>Aldosterone-to-renin ratio</dd>
+        <dt>AVS</dt><dd>Adrenal venous sampling</dd>
+        <dt>CAC · CCTA</dt><dd>Coronary artery calcium score · coronary CT angiography</dd>
+        <dt>CFR</dt><dd>Coronary flow reserve</dd>
+      </dl>
+      <dl>
+        <dt>DHP / non-DHP CCB</dt><dd>Dihydropyridine (vascular) / non-dihydropyridine (cardiac) calcium channel blocker</dd>
+        <dt>ENaC · ROMK</dt><dd>Epithelial Na⁺ channel · renal outer medullary K⁺ channel</dd>
+        <dt>ETT · MPI</dt><dd>Exercise treadmill test · myocardial perfusion imaging</dd>
+        <dt>FH</dt><dd>Familial hypercholesterolemia (or familial hyperaldosteronism, in Topic 14)</dd>
+        <dt>GRACE</dt><dd>Risk score for ACS (&gt; 140 = high risk)</dd>
+        <dt>hs-cTn</dt><dd>High-sensitivity cardiac troponin</dd>
+        <dt>MRA</dt><dd>Mineralocorticoid receptor antagonist</dd>
+      </dl>
+      <dl>
+        <dt>OMT</dt><dd>Optimal medical therapy (antiplatelet, statin, ACEi/ARB, β-blocker)</dd>
+        <dt>PA</dt><dd>Primary aldosteronism</dd>
+        <dt>PEA</dt><dd>Pulseless electrical activity</dd>
+        <dt>PREVENT</dt><dd>AHA risk equations (10/30-year CVD, ASCVD, HF)</dd>
+        <dt>SIHD</dt><dd>Stable ischemic heart disease</dd>
+        <dt>TOD</dt><dd>Target-organ damage (brain, heart, kidney, retina)</dd>
+        <dt>VSR</dt><dd>Ventricular septal rupture</dd>
+      </dl>
+    </div>
+  </div>
+</div>
+
+<style>
+.tool input.t-in{width:90px;padding:6px 8px;border:1px solid var(--border);border-radius:8px;background:var(--paper);color:var(--ink);font-family:'JetBrains Mono',monospace;font-size:.9rem}
+.case-card{background:var(--highlight);border:1px solid var(--border);border-left:5px solid var(--gold);border-radius:0 10px 10px 0;padding:12px 16px;margin:14px 0;font-size:.95rem;line-height:1.6}
+.case-card b:first-child{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);margin-right:4px}
+ul.checklist{list-style:none}
+@media print{#s1Drill,#raTool,#bpTool{display:none!important}}
+</style>
+<script>
+(function(){
+  function $(id){return document.getElementById(id);}
+  function bp(){var s=+$('bpS').value,d=+$('bpD').value,o=$('bpOut');if(!s||!d){o.innerHTML='Enter both values.';return;}
+    var c,n='';
+    if(s>=140||d>=90)c='Stage 2 hypertension';else if(s>=130||d>=80)c='Stage 1 hypertension';else if(s>=120)c='Elevated';else c='Normal';
+    if(s>180||d>120)n='<br>⚠️ <b>Severe (&gt; 180/120)</b>: assess for acute target-organ damage (brain, heart, kidney, retina). With TOD it is a <b>hypertensive emergency</b>.';
+    o.innerHTML='Category: <b>'+c+'</b> (use the higher of the SBP and DBP categories).'+n;}
+  ['bpS','bpD'].forEach(function(id){$(id).addEventListener('input',bp);});bp();
+  var R=null,A=null,M={'lo-hi':'<b>Primary aldosteronism</b>: autonomous aldosterone suppresses renin. Confirm a suppressed renin with non-suppressed aldosterone (ARR), then CT + AVS if surgery is an option.',
+    'hi-hi':'<b>Secondary hyperaldosteronism</b>: renin drives aldosterone. Think renal artery stenosis (fibromuscular dysplasia in the young, atherosclerosis in the old), diuretics, renin-secreting tumor.',
+    'lo-lo':'<b>Non-aldosterone mineralocorticoid effect</b>: Liddle syndrome (ENaC gain-of-function), licorice / AME (11β-HSD2 blocked), Cushing, CAH (11β- or 17α-hydroxylase), DOC-secreting tumor. Hyperkalemia + acidosis instead → Gordon syndrome.',
+    'hi-lo':'An unusual pattern for hypertensive hypokalemia. High renin with low aldosterone suggests adrenal insufficiency or a drug effect (e.g. ACE inhibitor/ARB); recheck the clinical picture.'};
+  function ra(){document.querySelectorAll('#raTool [data-r]').forEach(function(b){b.classList.toggle('on',b.dataset.r===R);});
+    document.querySelectorAll('#raTool [data-a]').forEach(function(b){b.classList.toggle('on',b.dataset.a===A);});
+    if(R&&A)$('raOut').innerHTML=M[R+'-'+A];}
+  document.querySelectorAll('#raTool [data-r]').forEach(function(b){b.addEventListener('click',function(){R=b.dataset.r;ra();});});
+  document.querySelectorAll('#raTool [data-a]').forEach(function(b){b.addEventListener('click',function(){A=b.dataset.a;ra();});});
+
+  var QS=[
+    ['Question Dr. Watkins adds to every chest-pain history.',['"Can you make it occur?"','"Is it worse when you breathe?"','"Does nitroglycerin help?"','"Is it on the left side?"'],0,'Angina is <b>predictable and inducible</b>. Relief with NTG is <b>not</b> diagnostic.'],
+    ['Highly specific sign of familial hypercholesterolemia.',['Tendon xanthoma','Xanthelasma','Eruptive xanthoma','Acanthosis nigricans'],0,'<b>Tendon xanthoma</b> (and arcus &lt; 45). Xanthelasma has low specificity.'],
+    ['Pre-test probability that defines "intermediate" in this case.',['~40–50%','~5%','~90%','~15%'],0,'CAD Consortium basic 40%, clinical 43–50%.'],
+    ['Best test for an intermediate-risk woman who can exercise, normal ECG.',['Exercise stress echo','Outpatient troponin','Immediate coronary angiography','No testing'],0,'Imaging adds sensitivity and specificity over ETT, <b>especially in women</b>.'],
+    ['Antianginal contraindicated in HOCM.',['Nitrates','β-blockers','Verapamil','Ranolazine'],0,'↓ preload worsens dynamic outflow obstruction.'],
+    ['Ranolazine works by blocking…',['The late Na⁺ current','The funny current (HCN)','β₁ receptors','L-type Ca²⁺ channels'],0,'Ivabradine blocks I<sub>f</sub>; the slide mixed them up.'],
+    ['Patient with ACS symptoms in your office. Transport?',['Ambulance, after aspirin/NTG/monitoring','Have her drive to the ER','Stress echo first','Schedule cath next week'],0,'<b>Never by car</b>; start initial therapy in the office.'],
+    ['NSTE-ACS with cardiogenic shock: cath timing.',['< 2 hours','< 24 hours','< 72 hours','Elective'],0,'Very high risk → immediate invasive.'],
+    ['Type 2 (secondary) MI is caused by…',['Supply–demand mismatch','Plaque rupture with thrombus','Stent thrombosis','Coronary dissection'],0,'Sepsis, shock, tachycardia, severe HTN, anemia.'],
+    ['Post-MI: new LSB holosystolic murmur, thrill, O₂ step-up RA→PA.',['Ventricular septal rupture','Papillary muscle rupture','Free-wall rupture','Dressler syndrome'],0,'<b>VSR</b>: left-to-right shunt.'],
+    ['Papillary muscle most often ruptured after inferior MI.',['Posteromedial','Anterolateral','Septal','Right ventricular'],0,'Single PDA supply → 3× more likely.'],
+    ['A cuff over clothing can distort BP by up to…',['50 mm Hg','5 mm Hg','2 mm Hg','100 mm Hg'],0,'5–50 mm Hg.'],
+    ['BP 142/86 is…',['Stage 2 HTN','Stage 1 HTN','Elevated','Normal'],0,'SBP ≥ 140 alone qualifies.'],
+    ['Low renin, high aldosterone, hypokalemia.',['Primary aldosteronism','Renal artery stenosis','Liddle syndrome','Licorice ingestion'],0,'Autonomous aldosterone suppresses renin.'],
+    ['Medication that must be held 4 weeks before ARR testing.',['Spironolactone','Verapamil','Doxazosin','Hydralazine'],0,'MRAs are mandatory holds; the others can be continued.'],
+    ['β-blockers affect the ARR by…',['False positive (↓ renin)','False negative (↑ renin)','No effect','Lowering aldosterone only'],0,'ACEi/ARB/diuretics give false negatives.'],
+    ['Why PA patients rarely have edema.',['Aldosterone escape','Hypokalemic diuresis alone','Low cardiac output','ADH suppression'],0,'Pressure natriuresis + ANP.'],
+    ['Why the milk-jug patient had polyuria.',['Hypokalemia → nephrogenic DI','Hypercalcemia','Central DI','Pressure natriuresis'],0,'K⁺ 2.6–2.7 → nephrogenic DI.'],
+    ['Most common PA subtype.',['Bilateral idiopathic hyperplasia','Aldosterone-producing adenoma','Adrenal carcinoma','GRA'],0,'~60% bilateral, ~30% adenoma.'],
+    ['Confirmed PA, wants surgery, 1.5-cm nodule on CT. Next.',['Adrenal venous sampling','Adrenalectomy now','Bilateral adrenalectomy','Repeat CT in 1 year'],0,'Lateralize before the scalpel.'],
+    ['Strongest complication excess in PA vs essential HTN.',['Atrial fibrillation (OR ~3.5)','Aortic dissection','Retinal detachment','Gout'],0,'Also stroke, LVH, HF, CAD, proteinuria.']];
+  for(var i=QS.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=QS[i];QS[i]=QS[j];QS[j]=t;}
+  var qi=0,right=0,done=0;
+  function show(){var q=QS[qi%QS.length];$('dQ').innerHTML='<b>'+((qi%QS.length)+1)+'.</b> '+q[0];$('dOut').innerHTML='';var o=$('dOpts');o.innerHTML='';delete o.dataset.answered;
+    var ord=q[1].map(function(_,k){return k;});for(var a=ord.length-1;a>0;a--){var b=Math.floor(Math.random()*(a+1)),t=ord[a];ord[a]=ord[b];ord[b]=t;}
+    ord.forEach(function(k){var btn=document.createElement('button');btn.className='tb';btn.type='button';btn.innerHTML=q[1][k];btn.dataset.k=k;
+      btn.addEventListener('click',function(){if(o.dataset.answered)return;o.dataset.answered='1';done++;
+        if(k===q[2]){right++;btn.classList.add('right');$('dOut').innerHTML='✅ '+q[3];}
+        else{btn.classList.add('wrong');o.querySelector('[data-k="'+q[2]+'"]').classList.add('right');$('dOut').innerHTML='❌ '+q[3];}
+        $('dScore').textContent=right+' / '+done+' correct';});o.appendChild(btn);});}
+  $('dNext').addEventListener('click',function(){qi++;show();});show();
+})();
+</script>
+
+<div class="hy-modal" id="hyModal">
+  <div class="hy-modal-card">
+    <div class="hy-modal-header">
+      <h2>🎯 Application Session 1 — Chest Pain &amp; Secondary HTN</h2>
+      <div class="hy-modal-actions">
+        <button class="hy-action-btn" onclick="printHY()">🖨️ Print / Save PDF</button>
+        <button class="hy-action-btn hy-close-btn" onclick="closeHY()">✕ Close</button>
+      </div>
+    </div>
+    <p class="hy-subhead">Watkins (CAD case module) · Segal (HTN case) · OMK 2 Cardio · October 2026</p>
+    <div class="hy-cols">
+      <div>
+        <span class="hy-lo-tag">CHEST PAIN → SIHD</span>
+        <div class="hy-block"><h4>History</h4><ul>
+          <li>Quality, location, onset, duration, relief, associated sx + <strong>"can you make it occur?"</strong></li>
+          <li>Ischemic: pressure, substernal → neck/jaw, minutes, exertion/stress, predictable</li>
+          <li>Non-ischemic: sharp/pleuritic/positional, ripping to back, seconds, pinpoint; NTG relief not diagnostic</li>
+          <li>Women: smoking 6× (men 3×), DM more potent, CAD ~10 y later</li>
+        </ul></div>
+        <div class="hy-block"><h4>Exam &amp; work-up</h4><ul>
+          <li>Pulses, bruits, S3, edema, xanthomas · FH: <strong>tendon xanthoma, arcus &lt; 45</strong> (xanthelasma low spec)</li>
+          <li>CBC, CMP, A1c, lipids, Lp(a) once · ECG for all · TTE · <strong>no outpatient troponin</strong></li>
+          <li>CAD Consortium pre-test prob 40–50% = intermediate → testing</li>
+          <li>Can exercise + interpretable ECG: low-int → ETT; int-high → stress echo/MPI or CCTA · can't exercise → pharmacologic stress or CCTA</li>
+          <li>Stress echo &gt; ETT, esp. in women</li>
+        </ul></div>
+        <div class="hy-block"><h4>Antianginals</h4><ul>
+          <li><strong>BB 1st line</strong> (↓ HR, contractility) · nitrates 2nd (↓ preload; CI HOCM, PDE-5i)</li>
+          <li>DHP CCB ↓ afterload · non-DHP ↓ HR/inotropy (CI severe AS, HOCM, low EF)</li>
+          <li>Ivabradine = I<sub>f</sub> (HCN) · ranolazine = late Na⁺ (↑ QTc)</li>
+          <li>OMT = antiplatelet + statin + ACEi/ARB + BB</li>
+        </ul></div>
+      </div>
+      <div>
+        <span class="hy-lo-tag">ACS · MI TYPES · COMPLICATIONS</span>
+        <div class="hy-block"><h4>Crescendo → NSTEMI</h4><ul>
+          <li>No stress test with active ischemia · <strong>never by car</strong> · office: aspirin, NTG, O₂ prn, monitor → ambulance</li>
+          <li>ER: ACS protocol, serial ECG/hs-cTn, POCUS, IV NTG, heparin, clopidogrel load</li>
+          <li>Invasive: very high (shock, refractory pain, VT/arrest, mechanical, AHF) <strong>&lt; 2 h</strong> · high (NSTEMI, dynamic ST, GRACE &gt; 140) <strong>&lt; 24 h</strong> · intermediate <strong>&lt; 72 h</strong></li>
+          <li>STEMI door-to-balloon &lt; 90 min</li>
+        </ul></div>
+        <div class="hy-block"><h4>MI classification</h4><ul>
+          <li>Primary (type 1) = plaque/thrombus; younger men · Secondary (type 2) = supply–demand; older women, comorbid · Procedural</li>
+          <li>CFR: max flow ↓ from ~50% stenosis; rest flow until 80–90%</li>
+          <li>hs-cTn = gold standard (up 7–10 days)</li>
+        </ul></div>
+        <div class="hy-block"><h4>Mechanical complications</h4><ul>
+          <li><strong>Papillary</strong>: inferior MI, posteromedial (PDA), ≤ 7 d, pulm edema, apical murmur → axilla</li>
+          <li><strong>VSR</strong>: 3–5 d, LSB holosystolic + thrill, <strong>O₂ step-up</strong> → ICU, surgery</li>
+          <li><strong>Free wall</strong>: anterior, &gt; 70, women, 24 h or 3–5 d, tamponade, <strong>PEA</strong></li>
+          <li>Dx: ECG + echo</li>
+        </ul></div>
+      </div>
+      <div>
+        <span class="hy-lo-tag">HTN → PRIMARY ALDOSTERONISM</span>
+        <div class="hy-block"><h4>Measure &amp; classify</h4><ul>
+          <li>Seated 5 min, back/feet supported, arm at heart, both arms, right cuff, bare arm; avg ≥ 2 readings on ≥ 2 visits</li>
+          <li>Cuff over clothing ±5–50 mm Hg</li>
+          <li>Elevated 120–129/&lt; 80 · <strong>St 1 130–139 or 80–89 · St 2 ≥ 140 or ≥ 90</strong> · &gt; 180/120 severe → check TOD</li>
+          <li>White-coat vs masked (ABPM/HBPM)</li>
+        </ul></div>
+        <div class="hy-block"><h4>Suspect secondary</h4><ul>
+          <li>Resistant, abrupt, <strong>&lt; 30 y</strong>, loss of control, disproportionate TOD, malignant, new DBP ≥ 65 y, <strong>unprovoked ↓K⁺</strong></li>
+          <li>Resistant HTN: OSA &gt; 30%, PA 6–23%</li>
+          <li>↓R ↑A = PA · ↑R ↑A = RAS/diuretics · ↓R ↓A = Liddle, licorice, Cushing, CAH</li>
+        </ul></div>
+        <div class="hy-block"><h4>Primary aldosteronism</h4><ul>
+          <li>Most common curable endocrine HTN (5–14%); K⁺ usually normal</li>
+          <li>Screen: ES 2025 everyone; ACC/AHA 2025 resistant HTN</li>
+          <li>ARR: AM, seated; correct K⁺; <strong>hold MRA 4 wk</strong>; BB false +, ACEi/ARB/diuretic false −; only meaningful if renin suppressed</li>
+          <li>60% bilateral, 30% adenoma · <strong>CT + AVS</strong> → unilateral adrenalectomy / bilateral spironolactone (eplerenone), amiloride</li>
+          <li>No edema = aldosterone escape (pressure natriuresis + ANP) · ↓K⁺ → nephrogenic DI polyuria</li>
+          <li>PA vs essential: AF OR 3.5, stroke, LVH, HF, CAD</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+</div>

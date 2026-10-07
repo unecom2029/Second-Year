@@ -51,7 +51,13 @@ if __name__=='__main__':
           'wh':[('q_wh_v1','Cardiovascular Health in Women — Quiz V1','Cardiovascular_Health_in_Women_Quiz_V1.html'),
                 ('q_wh_v2','Cardiovascular Health in Women — Quiz V2','Cardiovascular_Health_in_Women_Quiz_V2.html')],
           'er':[('q_er_v1','Exercise Rehabilitation — Quiz V1','Exercise_Rehabilitation_Quiz_V1.html'),
-                ('q_er_v2','Exercise Rehabilitation — Quiz V2','Exercise_Rehabilitation_Quiz_V2.html')]}
+                ('q_er_v2','Exercise Rehabilitation — Quiz V2','Exercise_Rehabilitation_Quiz_V2.html')],
+          'cc':[('q_cc_v1','Cardiac Cycle & Valve Hemodynamics — Quiz V1','Cardiac_Cycle_Valve_Hemodynamics_Quiz_V1.html'),
+                ('q_cc_v2','Cardiac Cycle & Valve Hemodynamics — Quiz V2','Cardiac_Cycle_Valve_Hemodynamics_Quiz_V2.html')],
+          'as1':[('q_as1_v1','Application Session 1 (Chest Pain & Secondary HTN) — Quiz V1','Application_Session_1_Chest_Pain_HTN_Quiz_V1.html'),
+                ('q_as1_v2','Application Session 1 (Chest Pain & Secondary HTN) — Quiz V2','Application_Session_1_Chest_Pain_HTN_Quiz_V2.html')],
+          'as2':[('q_as2_v1','Application Session 2 (Heart Failure & PAD) — Quiz V1','Application_Session_2_Heart_Failure_PAD_Quiz_V1.html'),
+                ('q_as2_v2','Application Session 2 (Heart Failure & PAD) — Quiz V2','Application_Session_2_Heart_Failure_PAD_Quiz_V2.html')]}
     for v in sys.argv[1:]:
         if v.startswith('write'): continue
         job,_,only=v.partition(':')

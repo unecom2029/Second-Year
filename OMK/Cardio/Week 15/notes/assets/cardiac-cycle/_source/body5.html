@@ -1,0 +1,105 @@
+
+<style>
+.tool input.t-in{width:90px;padding:6px 8px;border:1px solid var(--border);border-radius:8px;background:var(--paper);color:var(--ink);font-family:'JetBrains Mono',monospace;font-size:.9rem}
+.phase-view{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:16px;align-items:start;margin-top:10px}
+.phase-pic .slide-img{margin:0;width:100%;height:auto;cursor:zoom-in;background:#fff}
+.phase-txt{background:var(--paper);border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-size:.93rem;line-height:1.55}
+.phase-txt h5{margin:0 0 4px;font-family:'Playfair Display',serif;font-size:1.15rem}
+.phase-txt .pv{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;background:var(--chip-blue);color:var(--chip-fg);border-radius:10px;padding:2px 9px;margin:2px 0 8px}
+.phase-txt ul{margin:0;padding-left:18px}
+.phase-txt li{margin:3px 0}
+#phaseBtns .tb{min-width:38px}
+.lg-stage{display:grid;grid-template-columns:minmax(0,1fr);gap:10px}
+.lg-pic img{max-width:min(100%,480px);display:block;border:1px solid var(--border);border-radius:10px;background:#fff}
+.lesion-tbl td{vertical-align:top}
+.lesion-tbl img.thumb{width:150px;height:auto;max-width:none;margin:0;display:block;border:1px solid var(--border);border-radius:6px;background:#fff;cursor:zoom-in}
+@media (max-width:760px){.phase-view{grid-template-columns:1fr}}
+@media print{#lesionGame,#ccDrill,#phaseBtns,.d-nav{display:none!important}}
+</style>
+<script>
+(function(){
+  function $(id){return document.getElementById(id);}
+  /* ---------- phase stepper ---------- */
+  var P=[
+    ['cc-phase1-atrial.jpg','1 · Atrial systole','AV valves open · semilunar closed',['<b>P wave</b>, then the atria contract: the <b>a wave</b>.','Tops the LV up to <b>EDV</b> (the <b>atrial kick</b>, ~20–25% of output per the lecture).','An <b>S4</b> appears here if the LV is stiff. Lost in <b>atrial fibrillation</b>.','Ends when LVP rises above LAP, closing the mitral valve (<b>S1</b>).']],
+    ['cc-phase2-ivc.jpg','2 · Isovolumetric contraction','ALL valves closed',['Starts with the <b>QRS</b> and <b>S1</b> (mitral and tricuspid close).','LV pressure <b>rises steeply</b>; volume <b>constant</b> at EDV.','The closed mitral valve bulges into the LA: the <b>c wave</b>.','Ends when LVP exceeds aortic pressure (~80 mm Hg) and the aortic valve opens.']],
+    ['cc-phase3-rapid-ejection.jpg','3 · Rapid ejection','Aortic &amp; pulmonic open · AV closed',['LVP and aortic pressure rise together to the peak (~120); <b>no gradient</b> across a normal valve.','LV volume <b>falls fast</b>: most of the stroke volume leaves now.','Aortic pressure rises as the stroke volume is pushed in.']],
+    ['cc-phase4-reduced-ejection.jpg','4 · Reduced ejection','Aortic &amp; pulmonic open · AV closed',['Ejection <b>slows</b>; LV volume drifts down to <b>ESV</b>.','The <b>T wave</b> (repolarization) is inscribed.','The LA keeps filling, so the <b>v wave</b> builds.','Ends when LVP falls below aortic pressure: the aortic valve closes (<b>S2</b>, dicrotic notch).']],
+    ['cc-phase5-ivr.jpg','5 · Isovolumetric relaxation','ALL valves closed',['Starts at <b>S2</b>; the <b>dicrotic notch</b> is on the aortic tracing.','LV pressure <b>falls steeply</b>; volume <b>constant</b> at ESV.','The <b>v wave</b> peaks.','Ends when LVP falls below LAP and the mitral valve opens (an <b>opening snap</b> if it\'s stenotic).']],
+    ['cc-phase6-rapid-filling.jpg','6 · Rapid filling','AV valves open · semilunar closed',['Blood rushes from the LA into the relaxed LV: <b>most of filling</b> happens here.','LA and LV pressures nearly <b>equal</b> (laminar flow).','An <b>S3</b> appears here if the LV is volume-overloaded.']],
+    ['cc-phase7-reduced-filling.jpg','7 · Reduced filling (diastasis)','AV valves open · semilunar closed',['Slow filling; LV volume <b>barely changes</b>.','The phase that <b>shortens first when heart rate rises</b>.','Next comes the P wave, then atrial systole (phase 1).']]];
+  var pi=0, btns=$('phaseBtns');
+  P.forEach(function(p,k){var b=document.createElement('button');b.className='tb';b.type='button';b.textContent=k+1;b.addEventListener('click',function(){pi=k;showP();});btns.appendChild(b);});
+  function showP(){var p=P[pi];var im=$('phaseImg');im.src='assets/cardiac-cycle/'+p[0];im.alt='Lecture slide: '+p[1].replace(/&amp;/g,'&');
+    $('phaseTxt').innerHTML='<h5>'+p[1]+'</h5><span class="pv">'+p[2]+'</span><ul><li>'+p[3].join('</li><li>')+'</li></ul>';
+    Array.prototype.forEach.call(btns.children,function(b,k){b.classList.toggle('on',k===pi);});
+    $('phaseCount').textContent='Phase '+(pi+1)+' of 7 · lecture slide '+(pi+12);}
+  $('phasePrev').addEventListener('click',function(){pi=(pi+6)%7;showP();});
+  $('phaseNext').addEventListener('click',function(){pi=(pi+1)%7;showP();});
+  showP();
+
+  /* ---------- SV / EF / CO ---------- */
+  function co(){var e=+$('coEdv').value,s=+$('coEsv').value,h=+$('coHr').value,o=$('coOut');
+    if(!e||s<0||s>=e){o.innerHTML='Enter an EDV larger than the ESV.';return;}
+    var sv=e-s,ef=Math.round(100*sv/e),c=(sv*h/1000);
+    var tag=ef>=50?'normal range, about 50–70%':(ef>=41?'mildly reduced, 41–49%':'reduced, ≤ 40% as in HFrEF');
+    o.innerHTML='SV = '+e+' − '+s+' = <b>'+sv+' mL</b> · EF = '+sv+' ÷ '+e+' = <b>'+ef+'%</b> ('+tag+')'+(h?' · CO = '+sv+' mL × '+h+' = <b>'+c.toFixed(1)+' L/min</b>':'');}
+  ['coEdv','coEsv','coHr'].forEach(function(id){$(id).addEventListener('input',co);}); co();
+
+  function shuf(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;}return a;}
+  function quiz(cfg){
+    var QS=shuf(cfg.qs),qi=0,right=0,done=0;
+    function show(){var q=QS[qi%QS.length];$(cfg.q).innerHTML='<b>'+((qi%QS.length)+1)+'.</b> '+q[0];$(cfg.out).innerHTML='';
+      if(cfg.pic){$(cfg.pic).innerHTML=q[4]?'<img src="assets/cardiac-cycle/'+q[4]+'" alt="Pressure tracing to identify" loading="lazy">':'';}
+      var o=$(cfg.opts);o.innerHTML='';delete o.dataset.answered;
+      shuf(q[1].map(function(_,k){return k;})).forEach(function(k){var b=document.createElement('button');b.className='tb';b.type='button';b.textContent=q[1][k];b.dataset.k=k;
+        b.addEventListener('click',function(){if(o.dataset.answered)return;o.dataset.answered='1';done++;
+          if(k===q[2]){right++;b.classList.add('right');$(cfg.out).innerHTML='✅ '+q[3];}
+          else{b.classList.add('wrong');o.querySelector('[data-k="'+q[2]+'"]').classList.add('right');$(cfg.out).innerHTML='❌ '+q[3];}
+          $(cfg.score).textContent=right+' / '+done+' correct';});o.appendChild(b);});}
+    $(cfg.next).addEventListener('click',function(){qi++;show();});show();}
+
+  /* ---------- name the lesion ---------- */
+  var L=['Mitral stenosis','Aortic stenosis','Mitral regurgitation','Aortic regurgitation'];
+  quiz({q:'lgQ',opts:'lgOpts',out:'lgOut',next:'lgNext',score:'lgScore',pic:'lgPic',qs:[
+    ['Which lesion does this tracing show? (LAP, LVP, AP)',L,0,'<b>MS</b>: LA pressure stays above LV pressure through diastole (the shaded diastolic gradient).','cc-ms-tracing.jpg'],
+    ['Which lesion does this tracing show?',L,1,'<b>AS</b>: LV systolic pressure far above aortic, a systolic gradient.','cc-as-tracing.jpg'],
+    ['Which lesion does this tracing show?',L,2,'<b>MR</b>: a tall v wave on the LA tracing.','cc-mr-tracing.jpg'],
+    ['Which lesion does this tracing show?',L,3,'<b>AR</b>: ↑ systolic, ↓ diastolic aortic pressure (wide pulse pressure), with LV and aortic peaks superimposed.','cc-ar-tracing.jpg'],
+    ['Which lesion matches this schematic? (LA 25, LV 115/6, Ao 115/80)',L,0,'<b>MS</b>: high LA, low LV diastolic pressure.','cc-ms-schematic.jpg'],
+    ['Which lesion matches this schematic? (LV 200/25, Ao 110/70)',L,1,'<b>AS</b>: a 90 mm Hg LV–aortic systolic gradient, with a thick LV.','cc-as-schematic.jpg'],
+    ['Which lesion matches this schematic? (LA 25, LV 110/25)',L,2,'<b>MR</b>: a systolic jet back into the LA.','cc-mr-schematic.jpg'],
+    ['Which lesion matches this schematic? (Ao 160/60, LV 160/20)',L,3,'<b>AR</b>: wide pulse pressure, diastolic jet into the LV.','cc-ar-schematic.jpg'],
+    ['Diastolic rumble at the apex with an opening snap.',L,0,'<b>MS</b>.'],
+    ['Systolic crescendo–decrescendo murmur at the right 2nd intercostal space; weak, delayed carotid upstrokes.',L,1,'<b>AS</b>.'],
+    ['Mid-systolic click followed by a late systolic murmur.',L,2,'<b>MR from mitral valve prolapse</b>.'],
+    ['Diastolic murmur with bounding, water-hammer pulses.',L,3,'<b>AR</b>.'],
+    ['Concentric left ventricular hypertrophy with a non-compliant ventricle.',L,1,'<b>AS</b> (pressure overload).'],
+    ['The LV is underfilled and spared while the LA enlarges.',L,0,'<b>MS</b>: the obstruction is upstream of the LV.'],
+    ['Holosystolic apical murmur radiating to the axilla in a patient with a dilated cardiomyopathy.',L,2,'<b>Secondary (functional) MR</b> from annular dilation.'],
+    ['Most common cause worldwide is rheumatic heart disease.',L,0,'<b>MS</b>.'],
+    ['Screen the patient for an ascending aortic aneurysm and coarctation.',L,1,'<b>AS from a bicuspid valve</b>, which comes with an aortopathy.'],
+    ['The aorta loses blood in two directions during diastole.',L,3,'<b>AR</b>: regurgitation back into the LV plus systemic runoff.']]});
+
+  /* ---------- drill ---------- */
+  quiz({q:'ccQ',opts:'ccOpts',out:'ccOut',next:'ccNext',score:'ccScore',qs:[
+    ['The mitral valve closes when…',['LV pressure exceeds LA pressure','LA pressure exceeds LV pressure','LV pressure exceeds aortic pressure','Aortic pressure exceeds LV pressure'],0,'<b>LVP &gt; LAP</b> closes it, producing S1.'],
+    ['All four valves are closed during…',['Isovolumetric contraction and relaxation','Rapid ejection and rapid filling','Atrial systole only','Diastasis'],0,'Both <b>isovolumetric</b> phases.'],
+    ['The a wave of the atrial tracing reflects…',['Atrial contraction','Atrial filling against a closed AV valve','AV valve bulging','Aortic valve closure'],0,'<b>Atrial contraction</b>, right after the P wave.'],
+    ['The v wave reflects…',['Atrial filling against a closed AV valve','Atrial contraction','Ventricular repolarization','Aortic valve opening'],0,'<b>Atrial filling</b>; it is tall in MR.'],
+    ['The dicrotic notch coincides with…',['Aortic valve closure','Aortic valve opening','Mitral valve closure','Mitral valve opening'],0,'<b>Aortic valve closure</b> (S2) plus elastic recoil.'],
+    ['Most ventricular filling occurs during…',['Rapid filling','Atrial systole','Diastasis','Isovolumetric relaxation'],0,'<b>Rapid filling</b>, early diastole.'],
+    ['S3 is a marker of…',['Volume overload','A stiff hypertrophied ventricle','Mitral stenosis','Aortic valve closure'],0,'<b>Volume overload</b> (e.g. HFrEF); it can be physiologic in the young.'],
+    ['S4 occurs…',['Just before S1','Just after S2','Mid-systole','During isovolumetric relaxation'],0,'<b>Just before S1</b>: the atrial kick into a stiff LV.'],
+    ['Which rhythm abolishes the atrial kick and the S4?',['Atrial fibrillation','Sinus tachycardia','First-degree AV block','Sinus bradycardia'],0,'<b>Atrial fibrillation</b>.'],
+    ['EDV 120 mL, ESV 48 mL. Ejection fraction?',['60%','40%','72%','48%'],0,'SV 72 ÷ 120 = <b>60%</b>.'],
+    ['In a failing, dilated heart, tachycardia tends to…',['Lower cardiac output','Raise cardiac output','Not change cardiac output','Raise ejection fraction'],0,'Less filling time, so SV falls and <b>CO falls</b>.'],
+    ['Hallmark hemodynamic finding of mitral regurgitation.',['Tall v wave','LA–LV diastolic gradient','LV–aortic systolic gradient','Wide pulse pressure'],0,'<b>Tall v wave</b>.'],
+    ['Hallmark hemodynamic finding of aortic regurgitation.',['Wide pulse pressure','Tall v wave','LA–LV diastolic gradient','LV–aortic systolic gradient'],0,'<b>Wide pulse pressure</b>.'],
+    ['Most common cause of primary MR in the US.',['Mitral valve prolapse','Rheumatic heart disease','Inferior MI','Endocarditis'],0,'<b>MVP</b> (myxomatous degeneration).'],
+    ['Ischemic MR after an inferior MI involves the…',['Posteromedial papillary muscle','Anterolateral papillary muscle','Aortic annulus','Tricuspid chordae'],0,'<b>Posteromedial</b> papillary muscle.'],
+    ['First symptom of severe aortic stenosis, per the lecture.',['Exercise intolerance','Hemoptysis','Syncope at rest','Palpitations'],0,'<b>Exercise intolerance</b>, then angina, exertional syncope, heart failure.'],
+    ['Did statins slow calcific AS in Otto\'s trial?',['No','Yes, by half','Only in bicuspid valves','Only with high-dose atorvastatin'],0,'<b>No</b>; treatment is valve replacement.'],
+    ['A murmur whose peak moves later and muffles S2 suggests…',['More severe aortic stenosis','Milder aortic stenosis','Mitral valve prolapse','Aortic regurgitation'],0,'A <b>late peak and soft S2</b> mean severe AS.']]});
+})();
+</script>

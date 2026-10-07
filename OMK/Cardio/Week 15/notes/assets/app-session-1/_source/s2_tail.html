@@ -1,0 +1,215 @@
+
+<!-- ==================== PRACTICE ==================== -->
+<div class="section" id="practice">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge alt">Practice</div></div>
+    <p class="section-label">All three cases, rapid fire</p>
+    <h2 class="section-title">Drill</h2>
+    <div class="abbr-strip"><span class="t">Abbreviations</span>HFpEF / HFrEF = HF with preserved / reduced EF · BNP = B-type natriuretic peptide · ARNI = angiotensin receptor–neprilysin inhibitor · SGLT2i = SGLT2 inhibitor · MRA = mineralocorticoid receptor antagonist · PAD = peripheral artery disease · ABI = ankle–brachial index · ALI = acute limb ischemia · CLTI = chronic limb-threatening ischemia</div>
+    <div class="tool drill" id="s2Drill">
+      <h4>🎯 Quick check</h4>
+      <p class="t-intro">Shuffled; instant feedback.</p>
+      <div class="d-q" id="dQ"></div>
+      <div class="d-opts" id="dOpts"></div>
+      <div class="t-out" id="dOut"></div>
+      <div class="d-nav"><button class="tb" id="dNext" type="button">Next →</button><span id="dScore">0 / 0 correct</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== GLOSSARY ==================== -->
+<div class="section" id="glossary">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge alt">Reference</div></div>
+    <p class="section-label">Every short form used in these notes</p>
+    <h2 class="section-title">Glossary &amp; Abbreviations</h2>
+    <div class="gloss">
+      <dl>
+        <dt>ABI · TBI</dt><dd>Ankle–brachial · toe–brachial index</dd>
+        <dt>ADHF</dt><dd>Acute decompensated heart failure</dd>
+        <dt>ALI · CLTI</dt><dd>Acute limb ischemia · chronic limb-threatening ischemia</dd>
+        <dt>ARNI</dt><dd>Angiotensin receptor–neprilysin inhibitor (sacubitril/valsartan)</dd>
+        <dt>BNP · NT-proBNP</dt><dd>B-type natriuretic peptide · its inert N-terminal fragment</dd>
+        <dt>Braking phenomenon</dt><dd>Diuretic tolerance from distal tubule hypertrophy and post-diuretic Na⁺ retention</dd>
+        <dt>Cocaethylene</dt><dd>Cardiotoxic metabolite formed from cocaine + alcohol</dd>
+      </dl>
+      <dl>
+        <dt>Forrester profiles</dt><dd>Warm/cold (perfusion) × dry/wet (congestion)</dd>
+        <dt>GDMT</dt><dd>Guideline-directed medical therapy (ARNI, β-blocker, MRA, SGLT2i)</dd>
+        <dt>H₂FPEF</dt><dd>Heavy, Hypertensive, AF, Pulmonary HTN, Elder, Filling pressure score</dd>
+        <dt>HFrEF · HFmrEF · HFpEF · HFimpEF</dt><dd>EF ≤ 40 · 41–49 · ≥ 50 · improved from ≤ 40 to &gt; 40</dd>
+        <dt>HJR</dt><dd>Hepatojugular reflux</dd>
+        <dt>MACE · MALE</dt><dd>Major adverse cardiovascular · limb events</dd>
+        <dt>MRA</dt><dd>Mineralocorticoid receptor antagonist (spironolactone, eplerenone, finerenone)</dd>
+      </dl>
+      <dl>
+        <dt>NKCC2 · NCC · ENaC</dt><dd>Loop · thiazide · amiloride-sensitive Na⁺ transporters</dd>
+        <dt>NYHA</dt><dd>New York Heart Association functional class I–IV</dd>
+        <dt>PDE3</dt><dd>Phosphodiesterase-3 (cilostazol target)</dd>
+        <dt>SAPT · DAPT</dt><dd>Single · dual antiplatelet therapy</dd>
+        <dt>SET</dt><dd>Supervised exercise therapy</dd>
+        <dt>SGLT2i</dt><dd>Sodium–glucose cotransporter-2 inhibitor</dd>
+        <dt>TGF</dt><dd>Tubuloglomerular feedback</dd>
+      </dl>
+    </div>
+  </div>
+</div>
+
+<style>
+.tool input.t-in{width:80px;padding:6px 8px;border:1px solid var(--border);border-radius:8px;background:var(--paper);color:var(--ink);font-family:'JetBrains Mono',monospace;font-size:.9rem}
+.case-card{background:var(--highlight);border:1px solid var(--border);border-left:5px solid var(--gold);border-radius:0 10px 10px 0;padding:12px 16px;margin:14px 0;font-size:.95rem;line-height:1.6}
+.case-card b:first-child{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);margin-right:4px}
+@media print{#s2Drill,#h2Tool,#fTool,#abiTool{display:none!important}}
+</style>
+<script>
+(function(){
+  function $(id){return document.getElementById(id);}
+  /* H2FPEF */
+  var PR=[15,25,40,57,72,83,91,95,97,98];
+  function h2(){var s=0;document.querySelectorAll('#h2Tool input[type=checkbox]').forEach(function(c){if(c.checked)s+=+c.dataset.p;});
+    var band=s<=1?'low':(s<=5?'intermediate':'high');
+    $('h2Out').innerHTML='Score <b>'+s+'</b> / 9 → probability of HFpEF ≈ <b>'+PR[s]+'%</b> ('+band+'). '+(s>=6?'High enough to diagnose HFpEF.':(s<=1?'HFpEF unlikely; look for another cause.':'Intermediate: confirm with further testing (e.g. exercise or invasive hemodynamics).'));}
+  document.querySelectorAll('#h2Tool input').forEach(function(c){c.addEventListener('change',h2);});h2();
+  /* Forrester */
+  var C=null,P=null,M={'dry-warm':'<b>Dry and warm</b>: compensated. Continue and optimize oral GDMT.',
+    'wet-warm':'<b>Wet and warm</b> (most common): <b>IV loop ± thiazide</b>, strict intake/output, daily weights, Na⁺ restriction, electrolytes. Usually the <b>floor or PCU</b>. Decongest first, then afterload reduction.',
+    'dry-cold':'<b>Dry and cold</b>: low output without congestion. <b>Trial of fluids</b> if tolerated; often needs <b>inotropes</b>.',
+    'wet-cold':'<b>Wet and cold = cardiogenic shock</b> → <b>ICU</b>: <b>inotropes</b> plus decongestion (diuretics, vasodilators if BP allows, ultrafiltration), advanced therapies. Don\'t start a β-blocker.'};
+  function f(){document.querySelectorAll('#fTool [data-c]').forEach(function(b){b.classList.toggle('on',b.dataset.c===C);});
+    document.querySelectorAll('#fTool [data-p]').forEach(function(b){b.classList.toggle('on',b.dataset.p===P);});
+    if(C&&P)$('fOut').innerHTML=M[C+'-'+P];}
+  document.querySelectorAll('#fTool [data-c]').forEach(function(b){b.addEventListener('click',function(){C=b.dataset.c;f();});});
+  document.querySelectorAll('#fTool [data-p]').forEach(function(b){b.addEventListener('click',function(){P=b.dataset.p;f();});});
+  /* ABI */
+  function cat(x){if(x>1.4)return 'non-compressible (> 1.40) → get a toe–brachial index';if(x>=1.0)return 'normal';if(x>0.9)return 'borderline → exercise ABI';if(x>0.7)return '<b>PAD</b>, mild (0.71–0.90)';if(x>0.4)return '<b>PAD</b>, moderate (0.41–0.70)';return '<b>PAD, severe</b> (≤ 0.40: rest pain / tissue loss range)';}
+  function abi(){var arm=Math.max(+$('aRa').value||0,+$('aLa').value||0),o=$('abiOut');if(!arm){o.innerHTML='Enter arm pressures.';return;}
+    var r=Math.max(+$('aRd').value||0,+$('aRp').value||0)/arm,l=Math.max(+$('aLd').value||0,+$('aLp').value||0)/arm;
+    o.innerHTML='Denominator = highest arm = <b>'+arm+'</b><br>Right ABI = <b>'+r.toFixed(2)+'</b>: '+cat(r)+'<br>Left ABI = <b>'+l.toFixed(2)+'</b>: '+cat(l);}
+  ['aRa','aLa','aRd','aRp','aLd','aLp'].forEach(function(id){$(id).addEventListener('input',abi);});abi();
+
+  var QS=[
+    ['Edema from ↓ plasma oncotic pressure.',['Nephrotic syndrome','Heart failure','Venous insufficiency','Amlodipine'],0,'Also cirrhosis and protein-losing states; the others raise hydrostatic pressure.'],
+    ['S4 indicates…',['A non-compliant ventricle','Volume overload','A stenotic mitral valve','Normal youth'],0,'Atrial kick into a stiff LV; S3 = volume overload (or young and compliant).'],
+    ['Never order this outpatient: send the patient to the ED instead.',['Troponin','NT-proBNP','TSH','Iron studies'],0,'"That patient should be in an emergency room." (Dr. Qazi)'],
+    ['Natriuretic peptide not affected by sacubitril.',['NT-proBNP','BNP','ANP','CNP'],0,'Neprilysin degrades BNP; NT-proBNP is inert.'],
+    ['NT-proBNP rule-out threshold.',['≤ 300 pg/mL','≤ 100 pg/mL','≤ 1800 pg/mL','≤ 30 pg/mL'],0,'BNP rule-out ≤ 100.'],
+    ['LVH voltage "11 and 35" means…',['R aVL > 11; S V1/2 + R V5/6 ≥ 35','QRS > 110; R V1 > 35','PR > 0.11; QT > 0.35','Axis −11 to −35'],0,'Valid in adults (≥ 40).'],
+    ['Grade 1 diastolic dysfunction in an 80-year-old implies LA pressure is…',['Usually normal','Elevated','Severely elevated','Unmeasurable'],0,'Grade 2 (pseudonormal) = elevated LA pressure.'],
+    ['Most points in H₂FPEF.',['Atrial fibrillation (3)','BMI > 30 (2)','Age > 60 (1)','E/e′ > 9 (1)'],0,'AF 3, heavy 2, the rest 1 each.'],
+    ['HFpEF EF cut-off.',['≥ 50%','≥ 40%','≥ 60%','≥ 35%'],0,'HFrEF ≤ 40, HFmrEF 41–49.'],
+    ['Most common cause of right-sided HF.',['Left-sided HF','Pulmonary embolism','RV infarction','Tricuspid regurgitation'],0,'Backward failure.'],
+    ['High-output HF: CO and SVR.',['↑ CO, ↓ SVR','↓ CO, ↑ SVR','↑ CO, ↑ SVR','↓ CO, ↓ SVR'],0,'Thyrotoxicosis, AV fistula, severe obesity, beriberi.'],
+    ['Why loop diuretics stop working over time.',['Distal tubule hypertrophy (braking)','Loss of NKCC2 expression','Hyperkalemia','Antibodies to furosemide'],0,'Add a thiazide: sequential blockade.'],
+    ['Diuretic-induced acid–base disorder.',['Hypokalemic metabolic alkalosis','Hyperkalemic acidosis','Respiratory alkalosis','Normal anion gap acidosis'],0,'↑ distal Na⁺ → ENaC → K⁺ and H⁺ secretion.'],
+    ['SGLT2 inhibitors lower intraglomerular pressure via…',['TGF → afferent constriction','Efferent dilation','Angiotensin II blockade','ADH antagonism'],0,'↑ NaCl at the macula densa.'],
+    ['Cocaine + metoprolol worsens HF because…',['Unopposed α → ↑ afterload','β₂ blockade → bronchospasm','↑ preload from venodilation','Direct negative chronotropy'],0,'Carvedilol/labetalol block α as well.'],
+    ['Wet and cold profile.',['Cardiogenic shock → ICU, inotropes','Compensated → oral GDMT','Hypovolemia → fluids only','Floor + IV diuretics only'],0,'Low perfusion + congestion.'],
+    ['Do NOT newly start during decompensation.',['β-blocker','IV furosemide','Daily weights','Na⁺ restriction'],0,'Negative inotropy; start once near euvolemic.'],
+    ['β-blocker without HFrEF mortality evidence.',['Atenolol','Carvedilol','Bisoprolol','Metoprolol succinate'],0,'The proven three: carvedilol, bisoprolol, metoprolol succinate.'],
+    ['Vericiguat is a soluble guanylate cyclase…',['Stimulator','Inhibitor','Antagonist','Substrate'],0,'The slide said inhibitor; it\'s a stimulator.'],
+    ['Walking uphill/leaning on a cart relieves…',['Neurogenic claudication','Vascular claudication','DVT','Venous insufficiency'],0,'Flexion opens the canal (ligamentum flavum).'],
+    ['Strongest modifiable PAD risk factor.',['Smoking','LDL-C','Family history','Female sex'],0,'2–4× risk, persists ~30 years.'],
+    ['Leriche triad.',['Buttock claudication, ↓ femoral pulses, ED','Rest pain, gangrene, ulcers','Pain, pallor, paralysis','HTN, ↓K⁺, alkalosis'],0,'Aortoiliac occlusion.'],
+    ['ABI 1.6 in a diabetic with CKD. Next.',['Toe–brachial index','Reassure: normal','Angiography now','Repeat ABI in a year'],0,'Non-compressible vessels.'],
+    ['First-line therapy for claudication, ABI 0.7.',['Supervised exercise therapy','Stent','Bypass','Pentoxifylline'],0,'Plus lifestyle and medical therapy.'],
+    ['Cilostazol is contraindicated in…',['Heart failure of any severity','Diabetes','CKD','Smokers'],0,'Boxed warning (PDE3 inhibitor).'],
+    ['Best reduction in MACE + MALE in symptomatic PAD.',['Aspirin + rivaroxaban 2.5 mg BID','Aspirin alone','Vorapaxar alone','Cilostazol'],0,'COMPASS / VOYAGER-PAD.'],
+    ['Acute limb ischemia: first drug.',['IV unfractionated heparin','Cilostazol','Aspirin alone','Alteplase IV push'],0,'Then emergent vascular surgery.'],
+    ['Cytisine acts as…',['α4β2 nicotinic partial agonist','Dopamine reuptake inhibitor','Nicotine replacement','MAO-B inhibitor'],0,'Same mechanism as varenicline.']];
+  for(var i=QS.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=QS[i];QS[i]=QS[j];QS[j]=t;}
+  var qi=0,right=0,done=0;
+  function show(){var q=QS[qi%QS.length];$('dQ').innerHTML='<b>'+((qi%QS.length)+1)+'.</b> '+q[0];$('dOut').innerHTML='';var o=$('dOpts');o.innerHTML='';delete o.dataset.answered;
+    var ord=q[1].map(function(_,k){return k;});for(var a=ord.length-1;a>0;a--){var b=Math.floor(Math.random()*(a+1)),t=ord[a];ord[a]=ord[b];ord[b]=t;}
+    ord.forEach(function(k){var btn=document.createElement('button');btn.className='tb';btn.type='button';btn.innerHTML=q[1][k];btn.dataset.k=k;
+      btn.addEventListener('click',function(){if(o.dataset.answered)return;o.dataset.answered='1';done++;
+        if(k===q[2]){right++;btn.classList.add('right');$('dOut').innerHTML='✅ '+q[3];}
+        else{btn.classList.add('wrong');o.querySelector('[data-k="'+q[2]+'"]').classList.add('right');$('dOut').innerHTML='❌ '+q[3];}
+        $('dScore').textContent=right+' / '+done+' correct';});o.appendChild(btn);});}
+  $('dNext').addEventListener('click',function(){qi++;show();});show();
+})();
+</script>
+
+<div class="hy-modal" id="hyModal">
+  <div class="hy-modal-card">
+    <div class="hy-modal-header">
+      <h2>🎯 Application Session 2 — Heart Failure &amp; PAD</h2>
+      <div class="hy-modal-actions">
+        <button class="hy-action-btn" onclick="printHY()">🖨️ Print / Save PDF</button>
+        <button class="hy-action-btn hy-close-btn" onclick="closeHY()">✕ Close</button>
+      </div>
+    </div>
+    <p class="hy-subhead">Segal · Scully · Qazi · OMK 2 Cardio · October 2026</p>
+    <div class="hy-cols">
+      <div>
+        <span class="hy-lo-tag">HFpEF CASE</span>
+        <div class="hy-block"><h4>Work-up</h4><ul>
+          <li>Dyspnea buckets: cardiac, pulm, anemia, neuromuscular, anxiety (last)</li>
+          <li>Edema: ↑ hydrostatic (HF) vs ↓ oncotic (cirrhosis, nephrotic)</li>
+          <li>S4 = stiff LV · S3 = volume overload (or young) · JVP = height + 5</li>
+          <li>Labs: CBC, CMP, TSH, A1C, <strong>iron</strong>, NP · <strong>no office troponin</strong></li>
+          <li><strong>BNP</strong> active, t½ 20 min, rule-out ≤ 100, ↑ by ARNI · <strong>NT-proBNP</strong> inert, 1–2 h, ≤ 300, age cut-offs 450/900/1800</li>
+          <li>LVH "11 and 35" (age ≥ 40) · concentric = pressure, eccentric = volume</li>
+          <li>Diastolic grade 1 = normal LA pressure (normal for age) · grade 2 = ↑ LA pressure</li>
+          <li><strong>H₂FPEF</strong>: BMI&gt;30 2, ≥2 BP meds 1, <strong>AF 3</strong>, PASP&gt;35 1, age&gt;60 1, E/e′&gt;9 1</li>
+        </ul></div>
+        <div class="hy-block"><h4>Classify</h4><ul>
+          <li>HFrEF ≤ 40 · HFmrEF 41–49 · <strong>HFpEF ≥ 50</strong> · HFimpEF ≤40→&gt;40</li>
+          <li>Right HF: ↑JVP, edema, hepatomegaly, ascites · Left: orthopnea, PND, crackles · <strong>#1 cause of right HF = left HF</strong></li>
+          <li>High output: thyrotoxic, AV fistula, obesity, beriberi (↑CO ↓SVR)</li>
+          <li>HFpEF: older women, HTN/DM/obesity/CKD/AF; HFrEF: younger men post-MI</li>
+        </ul></div>
+        <div class="hy-block"><h4>HFpEF treatment</h4><ul>
+          <li>DASH/Mediterranean, exercise (−16% mortality), no routine fluid restriction, weight, OSA</li>
+          <li>Everyone: loop ± thiazide; <strong>SGLT2i</strong> unless CI · Some: GLP-1 (BMI ≥ 30), MRA (K ≤ 4.7, eGFR ≥ 30) · ACEi/ARB/ARNI not 1°</li>
+        </ul></div>
+      </div>
+      <div>
+        <span class="hy-lo-tag">DIURETICS · ADHF · GDMT</span>
+        <div class="hy-block"><h4>Diuretic pharm</h4><ul>
+          <li>Loop (NKCC2, TAL 20–30% of Na⁺) first · <strong>braking</strong> = DCT hypertrophy · Lasix "lasts six" then 18 h retention</li>
+          <li>Add thiazide (NCC) = sequential blockade</li>
+          <li>Both → ENaC → <strong>hypokalemic metabolic alkalosis</strong>; loop also ↓Mg, ↓Ca</li>
+          <li>SGLT2i: A1C ↓ 0.5% only; natriuretic; <strong>TGF → afferent constriction</strong></li>
+          <li>Spironolactone gynecomastia → eplerenone (BID); finerenone non-steroidal</li>
+        </ul></div>
+        <div class="hy-block"><h4>Decompensated HFrEF</h4><ul>
+          <li>EtOH (± thiamine/wet beriberi), cocaine, iron overload, IE, myocarditis, ischemia</li>
+          <li><strong>Cocaine + β₁-selective BB → unopposed α → ↑ afterload</strong>; carvedilol/labetalol · cocaethylene · check CK</li>
+          <li>Flat mild troponin = secondary MI · Kerley B lines</li>
+          <li>Forrester: wet–warm → floor, IV diuretics · <strong>wet–cold → ICU, inotropes</strong> · dry–cold → fluids, ± inotropes</li>
+          <li><strong>Preload first (diurese), then afterload</strong> · no new BB while decompensated</li>
+        </ul></div>
+        <div class="hy-block"><h4>Four pillars</h4><ul>
+          <li><strong>ARNI &gt; ACEi &gt;&gt; ARB · BB (metoprolol succ, carvedilol, bisoprolol) · MRA · SGLT2i</strong></li>
+          <li>RRR mortality: BB 35%, MRA 30%, ARNI switch 28%, ACEi/SGLT2i 17%</li>
+          <li>HR 0.84 → 0.36 with all four · ~5 y longer (RRR 73%, NNT 3.9)</li>
+          <li>Start all low, in hospital; 7–10 d follow-up; watch K⁺/Cr</li>
+          <li>Ivabradine (I<sub>f</sub>) · digoxin · vericiguat = sGC <strong>stimulator</strong></li>
+        </ul></div>
+      </div>
+      <div>
+        <span class="hy-lo-tag">PAD</span>
+        <div class="hy-block"><h4>Recognize</h4><ul>
+          <li>Vascular: cramping, reproducible, relieved by standing still in minutes, ↓ pulses/ABI · Neurogenic: relieved by flexion, <strong>shopping cart, uphill</strong></li>
+          <li>Smoking 2–4× (persists 30 y), DM → severe, HTN 40%, M = F, age</li>
+          <li>Nocebo: statin "side effects" mostly expectation (SAMSON)</li>
+          <li><strong>CLTI</strong> ≥ 2 wk rest pain/ulcer/gangrene, dependent rubor · <strong>ALI</strong> &lt; 2 wk, 6 Ps → IV heparin, emergent surgery</li>
+          <li>Buttock/hip = aortoiliac · upper calf = SFA · lower calf = popliteal · <strong>Leriche: claudication + ↓ femorals + ED</strong></li>
+        </ul></div>
+        <div class="hy-block"><h4>Test</h4><ul>
+          <li>Arm BP difference &lt; 10 · PP ≈ SV/compliance</li>
+          <li><strong>ABI = highest ankle / highest arm</strong> · ≤ 0.90 PAD · 0.91–0.99 borderline · &gt; 1.40 non-compressible → TBI · &lt; 0.40 critical</li>
+          <li>Doppler triphasic → biphasic → monophasic</li>
+        </ul></div>
+        <div class="hy-block"><h4>Treat</h4><ul>
+          <li><strong>SET first</strong> (30–45 min, ≥ 3/wk, 12 wk) · pentoxifylline no role</li>
+          <li>High-intensity statin, BP, DM, smoking cessation, foot care</li>
+          <li>SAPT (clopidogrel or aspirin) · <strong>aspirin + rivaroxaban 2.5 BID ↓ MACE + MALE</strong></li>
+          <li>Cilostazol (PDE3) helps walking; <strong>CI in any HF</strong> · vorapaxar = PAR-1, ↑ ICH</li>
+          <li>Varenicline/cytisine (α4β2 partial agonist), bupropion, NRT, quitline</li>
+          <li>5-y: MI/stroke 20%, death 15–30% » CLI 1–2% · polyvascular 1-y events 5 → 26%</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+</div>

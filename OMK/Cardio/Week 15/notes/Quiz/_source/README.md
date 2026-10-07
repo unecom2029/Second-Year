@@ -5,8 +5,11 @@
 | `vs` | `q_vs_v1.py`, `q_vs_v2.py` | `Vascular_Disease_Quiz_V1.html`, `Vascular_Disease_Image_Quiz_V2.html` | V1 6, V2 all 18 |
 | `wh` | `q_wh_v1.py`, `q_wh_v2.py` | `Cardiovascular_Health_in_Women_Quiz_V1/V2.html` | 2 / 1 |
 | `er` | `q_er_v1.py`, `q_er_v2.py` | `Exercise_Rehabilitation_Quiz_V1/V2.html` | 3 / 2 |
+| `cc` | `q_cc_v1.py`, `q_cc_v2.py` | `Cardiac_Cycle_Valve_Hemodynamics_Quiz_V1/V2.html` | 4 / 6 |
+| `as1` | `q_as1_v1.py`, `q_as1_v2.py` | `Application_Session_1_Chest_Pain_HTN_Quiz_V1/V2.html` | 4 / 4 |
+| `as2` | `q_as2_v1.py`, `q_as2_v2.py` | `Application_Session_2_Heart_Failure_PAD_Quiz_V1/V2.html` | 4 / 5 |
 
-Rebuild: `python3 build.py vs wh er write` (one file: `python3 build.py vs:q_vs_v2 write`; omit `write` to audit answer lengths).
+Rebuild: `python3 build.py vs wh er cc as1 as2 write` (one file: `python3 build.py vs:q_vs_v2 write`; omit `write` to audit answer lengths).
 Per-item length ranks: `python3 lens.py q_vs_v1`. Contact sheet of images: `python3 vsheet.py out.jpg Key1 Key2 …`.
 
 `build.py`, `lens.py`, `vsheet.py` and the loader in `images.py` are copied from `Week 14/notes/Quiz/_source/`.
@@ -26,3 +29,39 @@ explicit negatives that kill options, inventory lead-ins), one buried clue + one
 4–7 options (ordered series, matched-set table rows, extended differentials, communication scripts, one chart-format item per
 vascular quiz), and counterfactual wrong-answer explanations ("Would be correct if…"). Images kept (his instruction).
 `build.py` now turns "\n" in a stem into <br> so chart and table stems render.
+
+## Cardiac Cycle & Valve Hemodynamics (2026-10-06)
+V1 and V2, 18 items each, to the NBME/NBOME spec. Sources: Qazi deck + the two-part recording; Board add-ons from the UWorld and AMBOSS libraries are noted in the explanations.
+Images (keys `Cms Cas Cmr Car Casx Cph` in `images.py`) come from `../../assets/cardiac-cycle/`. **Masked giveaways:** lesion titles on all four
+tracings ("Mitral Valve Stenosis", etc.), the "Tall v-wave" label (MR), the "↑Systolic AP", "↑LAP" and "↓Diastolic AP" labels (AR), the
+"Normal / Aortic Stenosis" labels under the schematic (cropped), and the phase-slide titles such as "All Valves Closed" (cropped to the graph). Captions name the
+curve colours, never the lesion. V1 covers phases, valve opening pressure, S3/S4, EF arithmetic, tachycardia in cardiomyopathy, AF and the atrial kick, the MS gradient,
+AS exam/bicuspid screening/TAVR/LA pressure, the post-inferior-MI papillary muscle, MVP histology, AR diastolic pressure, MR remodeling, a chart-format rheumatic MS item, and the v wave.
+V2 covers different angles: reading each tracing (MS auscultation, MR diagnosis, AR pulse), concentric hypertrophy, the end of isovolumetric relaxation, AF and interval 1,
+the A2–opening snap interval, warfarin in MS with AF, exertional syncope, chart-format AS, valve area by murmur timing, nitrates in AS, when MR backflow begins,
+MVP on standing, acute chordal rupture, secondary MR, coronary perfusion pressure in AR, and the AR murmur grid.
+Length audit after balancing: V1 key longest 1/10, shortest 1/10; V2 1/8 and 1/8 (chance ≈ 2 and 1.6).
+
+## Application Session 1 — Chest Pain & Secondary HTN (2026-10-07)
+V1 and V2, 18 items each (≈9 CAD case / 9 HTN case per version), NBME spec. Images (`images.py` keys): `A1xanth` and `A1arcus` (individual photos cropped out of the
+labelled FH-signs slide, upscaled), `A1ecg` (case NSTEMI ECG, journal caption cropped off), `A1vsr` (case echo; header with "VSR …" patient label blacked out),
+and clean AMBOSS figures `Aretino` (grade IV hypertensive retinopathy), `Ahypok` (hypokalemia ECG), `Alvh` (LVH with strain), `Ainfstemi` (acute inferior STEMI).
+V1: ischemic history feature, FH genetics (tendon xanthoma), exercise stress echo for uninterpretable ECG, office NSTE-ACS (no car), NSTEMI <24 h timing, type 2 MI,
+coronary flow reserve, ranolazine, free-wall rupture, hypertensive emergency (fundus), white-coat HTN, pseudoephedrine, renin/aldo grid (hypokalemia ECG),
+hypokalemic nephrogenic DI, aldosterone escape, MRA washout, chart-format AVS before adrenalectomy, eplerenone for gynecomastia.
+V2: smoking RR in women, FH by arcus, LVH ECG → concentric LVH, CAC in CAD Consortium, nitrates in HOCM, verapamil in HFrEF, ivabradine phosphenes, NSTEMI ED care
+(no lytics), VSR echo, inferior STEMI ECG → posteromedial papillary rupture, severe HTN → assess TOD first, chart-format atherosclerotic RAS, RAS renin/aldo grid,
+licorice/AME, Gordon syndrome, β-blocker false-positive ARR, bilateral hyperplasia, PA complication ORs (AF).
+Length audit after balancing: V1 key longest 1/10, shortest 2/10; V2 1/8 and 2/8.
+
+## Application Session 2 — Heart Failure & PAD (2026-10-07)
+V1 and V2, 18 items each (≈7 HFpEF, ≈5 ADHF/GDMT, ≈6 PAD), NBME spec. Images: lecture `A2ecg` (case LVH ECG), `A2psax` (concentric LVH echo), `A2cxr` (case
+Kerley-line CXR), `A2rubor` (panel letter masked), `A2leriche` (journal caption cropped off; arrows kept), and clean AMBOSS `Aedema` (pitting edema), `Acpe`
+(cardiogenic pulmonary edema CXR), `Adcm` (dilated cardiomyopathy gross), `Agangrene` (toe gangrene).
+V1: nephrotic edema (↓ oncotic), NT-proBNP on an ARNI, S4 in HFpEF (case ECG), H₂FPEF arithmetic, diuretic braking, diuretic hypokalemic alkalosis, SGLT2i TGF,
+Kerley B lines (case CXR), cocaine + β₁-blocker → unopposed α₁, chart-format wet–cold → dobutamine, quadruple GDMT before discharge, wet beriberi, β-blocker largest
+RRR, vericiguat = sGC stimulator, neurogenic claudication, CLTI with dependent rubor, ABI arithmetic, SET (cilostazol CI in HF).
+V2: thyroid before "panic", HFpEF on PSAX, NT-proBNP age cut-offs, grade I diastolic dysfunction, AV-fistula high-output grid, chart-format RV failure from LV
+failure, euglycemic DKA on SGLT2i in T1DM, MRA hyperkalemia, alcoholic DCM remodeling grid, acute limb ischemia → IV heparin, wet–warm → IV furosemide (CXR),
+Starling shift, ivabradine, metoprolol succinate vs tartrate, Leriche on CTA, TBI for non-compressible ABI, rivaroxaban = Xa, varenicline partial agonist.
+Length audit after balancing: V1 key longest 1/9, shortest 1/9; V2 1/6 and 1/6.

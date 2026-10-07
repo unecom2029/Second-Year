@@ -66,9 +66,35 @@ IMGS={
  'Efit':(V.replace('vasc-surg','exercise-rehab')+'er-fitness-change.jpg',None,'Exercise Rehab lecture · slide 14 (Blair, JAMA 1995)'),
  'Epredimed':(V.replace('vasc-surg','exercise-rehab')+'er-predimed.jpg',None,'Exercise Rehab lecture · slide 38 (Estruch, NEJM 2013)'),
  'Edash':(V.replace('vasc-surg','exercise-rehab')+'er-dash-sodium.jpg',None,'Exercise Rehab lecture · slide 41 (NEJM 2001)',[(0,0.93,0.06,1)]),
+ # Cardiac cycle & valve hemodynamics (repo copies in notes/assets/cardiac-cycle); lesion titles and answer labels masked
+ 'Cms':(V.replace('vasc-surg','cardiac-cycle')+'cc-ms-tracing.jpg',None,'Cardiac Cycle lecture · slide 20',[(0.44,0.10,0.73,0.28,(250,247,238))]),
+ 'Cas':(V.replace('vasc-surg','cardiac-cycle')+'cc-as-tracing.jpg',None,'Cardiac Cycle lecture · slide 22',[(0.46,0.168,0.76,0.29,(240,236,233))]),
+ 'Cmr':(V.replace('vasc-surg','cardiac-cycle')+'cc-mr-tracing.jpg',None,'Cardiac Cycle lecture · slide 24',[(0.31,0.192,0.84,0.275,(238,234,231)),(0.385,0.525,0.525,0.635,(238,234,231))]),
+ 'Car':(V.replace('vasc-surg','cardiac-cycle')+'cc-ar-tracing.jpg',None,'Cardiac Cycle lecture · slide 26',[(0.30,0.20,0.88,0.275,(245,242,235)),(0.555,0.295,0.71,0.405,(245,242,235)),(0.42,0.595,0.53,0.665,(245,242,235)),(0.715,0.63,0.865,0.735,(245,242,235))]),
+ 'Casx':(V.replace('vasc-surg','cardiac-cycle')+'cc-as-schematic.jpg',(0,0,1,0.86),'Cardiac Cycle lecture · slide 22'),
+ 'Cph':(V.replace('vasc-surg','cardiac-cycle')+'cc-phase2-ivc.jpg',(0.33,0.14,1,0.97),'Cardiac Cycle lecture · slide 13'),
+ # Application Session 1 (repo copies in notes/assets/app-session-1) + clean AMBOSS figures
+ 'A1xanth':(V.replace('vasc-surg','app-session-1')+'as1-fh-signs.jpg',(0.03,0.45,0.34,0.79),'Application Session 1 · Watkins CAD case'),
+ 'A1arcus':(V.replace('vasc-surg','app-session-1')+'as1-fh-signs.jpg',(0.685,0.45,1.0,0.79),'Application Session 1 · Watkins CAD case'),
+ 'A1ecg':(V.replace('vasc-surg','app-session-1')+'as1-nstemi-ecg.jpg',(0.12,0.0,0.97,0.88),'Application Session 1 · Watkins CAD case'),
+ 'A1vsr':(V.replace('vasc-surg','app-session-1')+'as1-vsr-echo.jpg',None,'Application Session 1 · Watkins CAD case',[(0.08,0.02,0.72,0.14,'black')]),
+ 'Aretino':(AM+'Grade IV hypertensive retinopathy.png',None,'AMBOSS'),
+ 'Ahypok':(AM+'ECG features of hypokalemia.png',None,'AMBOSS'),
+ 'Alvh':(AM+'ECG in left ventricular hypertrophy.png',None,'AMBOSS'),
+ 'Ainfstemi':(AM+'Acute inferior STEMI.png',None,'AMBOSS'),
+ # Application Session 2 (repo copies in notes/assets/app-session-2) + clean AMBOSS figures
+ 'A2ecg':(V.replace('vasc-surg','app-session-2')+'as2-hfpef-ecg.jpg',None,'Application Session 2 · HF case'),
+ 'A2psax':(V.replace('vasc-surg','app-session-2')+'as2-psax-lvh.jpg',None,'Application Session 2 · HF case'),
+ 'A2cxr':(V.replace('vasc-surg','app-session-2')+'as2-cxr-edema.jpg',None,'Application Session 2 · HF case'),
+ 'A2rubor':(V.replace('vasc-surg','app-session-2')+'as2-dependent-rubor.jpg',None,'Application Session 2 · PAD case',[(0,0.015,0.085,0.095,(86,152,205))]),
+ 'A2leriche':(V.replace('vasc-surg','app-session-2')+'as2-leriche-ct.jpg',(0,0,1,0.755),'Application Session 2 · PAD case'),
+ 'Aedema':(AM+'Pitting edema of lower leg.png',None,'AMBOSS'),
+ 'Acpe':(AM+'Cardiogenic pulmonary edema.png',None,'AMBOSS',[(0,0,0.2,0.08,'black')]),
+ 'Adcm':(AM+'Dilated cardiomyopathy.png',None,'AMBOSS'),
+ 'Agangrene':(AM+'Toe gangrene.png',None,'AMBOSS'),
 }
 # small sources are upscaled so they don't show as thumbnails
-UPSCALE={}
+UPSCALE={'A1xanth':760,'A1arcus':760}
 def load(key, maxw=1100):
     e=IMGS[key]; p,crop=e[0],e[1]; masks=e[3] if len(e)>3 else []
     im=_ongrid(p) if p.endswith('.gif') else Image.open(p).convert('RGB')

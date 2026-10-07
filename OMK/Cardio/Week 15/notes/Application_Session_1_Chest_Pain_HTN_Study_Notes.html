@@ -1,0 +1,2296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+(function(){
+  var NOTE_AUTH_KEY='une-study-hub-remembered-auth-v1';
+  var NOTE_LOGIN_URL='../../../../index.html?login=notes';
+
+  function readCookie(name){
+    try{
+      var prefix=encodeURIComponent(name)+'=';
+      var parts=String(document.cookie||'').split(';');
+      for(var i=0;i<parts.length;i++){
+        var part=parts[i].trim();
+        if(part.indexOf(prefix)===0)return decodeURIComponent(part.slice(prefix.length));
+      }
+    }catch(err){}
+    return null;
+  }
+  function readAuthPayload(){
+    try{
+      var stored=localStorage.getItem(NOTE_AUTH_KEY);
+      if(stored)return stored;
+    }catch(err){}
+    return readCookie(NOTE_AUTH_KEY);
+  }
+  function hasValidNoteAuth(){
+    var raw=readAuthPayload();
+    if(!raw)return false;
+    try{
+      var parsed=JSON.parse(raw);
+      var email=String(parsed&&parsed.email||'').trim().toLowerCase();
+      var expiresAt=Number(parsed&&parsed.expiresAt);
+      return /@une\.edu$/.test(email)&&expiresAt&&Date.now()<expiresAt;
+    }catch(err){return false}
+  }
+  function syncNoteAuth(){
+    document.documentElement.setAttribute('data-note-auth',hasValidNoteAuth()?'unlocked':'locked');
+  }
+  window.openNoteLogin=function(){
+    var loginWindow=window.open(NOTE_LOGIN_URL,'uneStudyHubLogin');
+    if(!loginWindow)window.location.href=NOTE_LOGIN_URL;
+  };
+  window.refreshNoteAuth=syncNoteAuth;
+  window.addEventListener('message',function(event){
+    if(event&&event.data&&event.data.type==='une-study-hub-auth-complete')syncNoteAuth();
+  });
+  window.addEventListener('storage',function(event){
+    if(!event||event.key===NOTE_AUTH_KEY)syncNoteAuth();
+  });
+  window.addEventListener('focus',syncNoteAuth);
+  window.setInterval(syncNoteAuth,1000);
+  syncNoteAuth();
+})();
+</script>
+<title>Application Session 1 — Chest Pain &amp; Secondary HTN — Study Notes</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%20100%20100%27%3E%3Ctext%20y%3D%27.9em%27%20font-size%3D%2788%27%3E%F0%9F%A9%BA%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Cardio (default) — soft ECG blush page, arterial red accent, clinical-blue accent2 */
+  --ink:#25161a; --paper:#fff7f7; --cream:#f5e2e6;
+  --accent:#b51f3a; --accent2:#245f89; --gold:#b77b22; --muted:#75535c; --border:#dfb9c2;
+  --highlight:#f8e1a9; --highlight2:#d7e9f4; --green-bg:#d9eee2; --red-bg:#f8d5dc;
+  --blue-bg:#d6e9f5; --purple-bg:#eadcf0; --hero-bg:#173e63;
+  --panel-dark-bg:#173e63; --panel-dark-text:#f7fbff;
+  /* Theme-INDEPENDENT chip colors (sit on saturated / fixed-dark backgrounds in every theme) */
+  --chip-red:#b51f3a; --chip-blue:#245f89; --chip-fg:#ffffff; --panel-dark-accent:#ffd27a;
+  --hero-heading:#f7fbff; --hero-sub:#c8dceb;
+  --hero-meta-bg:rgba(255,255,255,0.08); --hero-meta-border:rgba(240,138,155,0.28);
+  --hero-meta-label:#a9c5d8; --hero-meta-value:#fff1f3; --hero-accent:#ff9aae;
+  --floating-ui-bg:#173e63; --floating-ui-fg:#f7fbff; --floating-ui-shadow:0 3px 12px rgba(23,62,99,0.26);
+  --quiz-overlay:rgba(36,95,137,.38); --quiz-overlay-hover:rgba(36,95,137,.62);
+}
+html:not([data-theme]) .hero{background:
+  radial-gradient(circle at 88% 18%,rgba(181,31,58,0.42),transparent 30%),
+  linear-gradient(135deg,#102e4b,#173e63 62%,#6f1d32)}
+html:not([data-theme]) .toc-bar{border-right-color:#2c5f86}
+
+[data-theme="hemo"]{
+  --ink:#f3dfe1; --paper:#170a0d; --cream:#2b1218;
+  --accent:#ff6b6b; --accent2:#8fb8ea; --gold:#e7b95c; --muted:#b4919a; --border:#431d25;
+  --highlight:#402c14; --highlight2:#33161f; --green-bg:#11291e; --red-bg:#45151a;
+  --blue-bg:#12243c; --purple-bg:#261b3a; --hero-bg:#0c0407;
+  --panel-dark-bg:#2e1017; --panel-dark-text:#f9e7e9;
+  --hero-heading:#fbeaea; --hero-sub:#c9a3a8;
+  --hero-meta-bg:rgba(255,255,255,0.06); --hero-meta-border:rgba(255,107,107,0.18);
+  --hero-meta-label:#b4919a; --hero-meta-value:#ffd9d0; --hero-accent:#ff6b6b;
+  --floating-ui-bg:#0c0407; --floating-ui-fg:#fbeaea; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.45);
+  --quiz-overlay:rgba(143,184,234,.40); --quiz-overlay-hover:rgba(143,184,234,.62);
+}
+[data-theme="hemo"] .toc-bar{border-right-color:#431d25}
+
+[data-theme="paper"]{
+  --hero-accent:#f08a6e;
+  --ink:#1a1209; --paper:#faf7f2; --cream:#ece1cd;
+  --accent:#a32c14; --accent2:#2c5f8a; --gold:#c9922a; --muted:#6b5e4e; --border:#d4cabb;
+  --highlight:#fbe4a0; --highlight2:#cfe4f7; --green-bg:#d7f0da; --red-bg:#f8d6d0;
+  --blue-bg:#d2e7f9; --purple-bg:#e6dbfa; --hero-bg:#1a1209;
+  --panel-dark-bg:#1a1209; --panel-dark-text:#faf7f2;
+  --hero-heading:#f5ede0; --hero-sub:#c9bcad;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#8a7a6a; --hero-meta-value:#f0e0c8;
+  --floating-ui-bg:#3a3030; --floating-ui-fg:#f5ede0; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(44,95,138,.50); --quiz-overlay-hover:rgba(44,95,138,.78);
+}
+[data-theme="night"]{
+  --hero-accent:#e8b84b;
+  --ink:#e0e8f0; --paper:#0f1923; --cream:#1b2942;
+  --accent:#e8b84b; --accent2:#4aa8d8; --gold:#e8b84b; --muted:#94abc0; --border:#1e3048;
+  --highlight:#3a3016; --highlight2:#12283a; --green-bg:#10281c; --red-bg:#2e1616;
+  --blue-bg:#10233a; --purple-bg:#201a38; --hero-bg:#070e15;
+  --panel-dark-bg:#101a26; --panel-dark-text:#eef5fb;
+  --hero-heading:#f4f9ff; --hero-sub:#b8cad8;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#8fa4b8; --hero-meta-value:#f4f9ff;
+  --floating-ui-bg:#070e15; --floating-ui-fg:#f4f9ff; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(74,168,216,.42); --quiz-overlay-hover:rgba(74,168,216,.62);
+}
+[data-theme="ocean"]{
+  --hero-accent:#ff9aa5;
+  --ink:#0b2436; --paper:#eef7fb; --cream:#cdeaf5;
+  --accent:#a32536; --accent2:#0a5286; --gold:#d9a441; --muted:#4f7185; --border:#a8d4e8;
+  --highlight:#ffe6ad; --highlight2:#bfe3f2; --green-bg:#c9f0dc; --red-bg:#fad9d5;
+  --blue-bg:#c3e4f6; --purple-bg:#e1d7f6; --hero-bg:#0a3a5c;
+  --panel-dark-bg:#0b2436; --panel-dark-text:#eef7fb;
+  --hero-heading:#eaf6fd; --hero-sub:#a9c9dc;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#7ba0b8; --hero-meta-value:#d9edfa;
+  --floating-ui-bg:#0a3a5c; --floating-ui-fg:#eaf6fd; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(15,111,176,.48); --quiz-overlay-hover:rgba(15,111,176,.74);
+}
+[data-theme="forest"]{
+  --hero-accent:#f0a07c;
+  --ink:#16241a; --paper:#f2f7f0; --cream:#d7ead2;
+  --accent:#8f3418; --accent2:#155c39; --gold:#b8860b; --muted:#52684f; --border:#b7d4ae;
+  --highlight:#f3e6a0; --highlight2:#cbe4c4; --green-bg:#c7ecc0; --red-bg:#f7ddd0;
+  --blue-bg:#cbe6df; --purple-bg:#e1dbee; --hero-bg:#12301c;
+  --panel-dark-bg:#16241a; --panel-dark-text:#f2f7f0;
+  --hero-heading:#eef7ea; --hero-sub:#b6cfb0;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#87a382; --hero-meta-value:#e2f2da;
+  --floating-ui-bg:#12301c; --floating-ui-fg:#eef7ea; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(31,122,77,.48); --quiz-overlay-hover:rgba(31,122,77,.74);
+}
+[data-theme="sepia"]{
+  --hero-accent:#f0a57e;
+  --ink:#3a2414; --paper:#f7ecd9; --cream:#ecd7ae;
+  --accent:#9c3b17; --accent2:#2f5f6b; --gold:#8b5a17; --muted:#7a614a; --border:#d9bd8c;
+  --highlight:#f0d38a; --highlight2:#d7c39a; --green-bg:#dbe3bc; --red-bg:#f0d0c0;
+  --blue-bg:#cfdedd; --purple-bg:#e3d3e0; --hero-bg:#3f2814;
+  --panel-dark-bg:#3a2414; --panel-dark-text:#f7ecd9;
+  --hero-heading:#f7ecd9; --hero-sub:#cbb190;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#a08a68; --hero-meta-value:#f2ddb4;
+  --floating-ui-bg:#3f2814; --floating-ui-fg:#f7ecd9; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(47,95,107,.50); --quiz-overlay-hover:rgba(47,95,107,.78);
+}
+[data-theme="slate"]{
+  --hero-accent:#ff9a78;
+  --ink:#1c2229; --paper:#f4f5f7; --cream:#dde3ea;
+  --accent:#9e2c0f; --accent2:#2b5268; --gold:#a8862a; --muted:#5c6a76; --border:#c8d0d8;
+  --highlight:#f2e3ac; --highlight2:#d5e2ec; --green-bg:#d6ead9; --red-bg:#f4d8d0;
+  --blue-bg:#d3e2ef; --purple-bg:#dfd9ec; --hero-bg:#1c2530;
+  --panel-dark-bg:#1c2530; --panel-dark-text:#f4f5f7;
+  --hero-heading:#eef1f5; --hero-sub:#b3bfca;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#8595a3; --hero-meta-value:#e4ebf2;
+  --floating-ui-bg:#1c2530; --floating-ui-fg:#eef1f5; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(51,96,122,.50); --quiz-overlay-hover:rgba(51,96,122,.78);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;padding-left:var(--toc-w);background:var(--paper);color:var(--ink);
+  font-family:'Source Serif 4',Georgia,serif;font-size:16px;line-height:1.65;overflow-wrap:break-word;
+  transition:background .25s,color .25s}
+:root{--toc-w:258px}
+h1,h2,h3,h4{font-family:'Playfair Display',Georgia,serif;line-height:1.18}
+a{color:var(--accent2)}
+strong{color:var(--accent2)}
+.container{max-width:min(1220px,94%);margin:0 auto}
+img{max-width:100%}
+
+/* ---------------- reading progress ---------------- */
+.progress-bar{position:fixed;top:0;left:0;height:3px;width:0;z-index:200;
+  background:linear-gradient(90deg,var(--accent2),var(--accent));transition:width .1s linear}
+
+/* ---------------- TOC sidebar ---------------- */
+.toc-bar{position:fixed;top:0;left:0;bottom:0;z-index:90;width:var(--toc-w);
+  background:var(--hero-bg);border-right:1px solid rgba(255,255,255,.10);overflow-y:auto;overflow-x:hidden}
+.toc-bar::-webkit-scrollbar{width:6px}
+.toc-bar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14);border-radius:3px}
+.toc-bar::-webkit-scrollbar-track{background:transparent}
+.toc-head{padding:24px 20px 16px;border-bottom:1px solid rgba(255,255,255,.10)}
+.toc-eyebrow{display:block;font-family:'JetBrains Mono',monospace;font-size:.5rem;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--hero-meta-label);margin-bottom:7px}
+.toc-name{display:block;font-family:'Playfair Display',serif;font-weight:700;font-size:1.2rem;
+  color:var(--hero-heading);line-height:1.15}
+.toc-name em{font-style:normal;color:var(--hero-accent)}
+.toc-group{font-family:'JetBrains Mono',monospace;font-size:.49rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--hero-meta-label);opacity:.75;margin:0;padding:18px 20px 7px}
+.toc-bar nav{display:flex;flex-direction:column;padding:0 0 26px}
+.toc-bar a{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:'Source Serif 4',Georgia,serif;
+  font-size:.85rem;line-height:1.3;color:var(--hero-sub);padding:8px 16px 8px 17px;
+  border-left:3px solid transparent;transition:color .15s,border-color .15s,background .15s}
+.toc-num{flex:none;width:21px;height:21px;border-radius:50%;border:1px solid rgba(255,255,255,.18);
+  display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;
+  font-size:.56rem;font-weight:700;color:var(--hero-meta-label);transition:all .15s}
+.toc-num.dot{border:none;position:relative}
+.toc-num.dot::before{content:'';width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.28);transition:background .15s}
+.toc-bar a:hover{color:var(--hero-heading);background:rgba(255,255,255,.05)}
+.toc-bar a:hover .toc-num{border-color:rgba(255,255,255,.4);color:var(--hero-heading)}
+.toc-bar a:hover .toc-num.dot::before{background:var(--accent)}
+.toc-bar a.active{color:var(--hero-heading);border-left-color:var(--accent);background:rgba(255,255,255,.06);font-weight:600}
+.toc-bar a.active .toc-num{background:var(--chip-red);border-color:var(--chip-red);color:var(--chip-fg)}
+.toc-bar a.active .toc-num.dot{background:none;border-color:transparent}
+.toc-bar a.active .toc-num.dot::before{background:var(--accent);width:7px;height:7px}
+.toc-check{margin-left:auto;font-size:.72rem;display:none;line-height:1}
+.toc-bar a.done .toc-check{display:inline}
+.toc-bar a.conf-1 .toc-check{color:#e0564a}
+.toc-bar a.conf-2 .toc-check{color:#d6a12a}
+.toc-bar a.conf-3 .toc-check{color:#3d9c5c}
+.toc-tools{display:flex;flex-direction:column;gap:6px;padding:14px 14px 0;margin-top:8px;
+  border-top:1px solid rgba(255,255,255,.10)}
+.toc-chip{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);color:var(--hero-sub);
+  font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.05em;padding:7px 9px;
+  border-radius:8px;cursor:pointer;text-align:left;transition:background .15s,color .15s}
+.toc-chip:hover{background:rgba(255,255,255,.14);color:var(--hero-heading)}
+.toc-hy-btn{display:flex;align-items:center;justify-content:center;gap:7px;width:calc(100% - 28px);
+  margin:15px 14px 2px;background:var(--gold);color:#2a1a00;border:none;padding:11px 10px;border-radius:24px;
+  cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.04em;
+  line-height:1.25;text-align:center;transition:transform .15s,box-shadow .15s}
+.toc-hy-btn:hover{transform:translateY(-1px);box-shadow:0 4px 13px rgba(0,0,0,.32)}
+
+/* ---------------- hero ---------------- */
+.hero{background:var(--hero-bg);padding:52px 0 64px;width:100%;position:relative;overflow:hidden}
+.hero-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--hero-meta-label);margin-bottom:16px}
+.hero h1{margin:0 0 12px;font-size:clamp(2rem,4.4vw,3.3rem);font-weight:900;color:var(--hero-heading);letter-spacing:-.01em}
+.hero h1 span{color:var(--hero-accent)}
+.hero-sub{margin:0 0 20px;max-width:66ch;color:var(--hero-sub);font-size:1.03rem}
+.hero-meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.hero-meta-item{background:var(--hero-meta-bg);border:1px solid var(--hero-meta-border);border-radius:9px;
+  padding:9px 15px;min-width:118px}
+.hero-meta-item .label{display:block;font-family:'JetBrains Mono',monospace;font-size:.5rem;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--hero-meta-label);margin-bottom:4px}
+.hero-meta-item .value{display:block;font-family:'Playfair Display',serif;font-weight:700;font-size:1.02rem;color:var(--hero-meta-value)}
+.hy-btn{display:none;align-items:center;gap:8px;background:var(--gold);color:#2a1a00;border:none;padding:12px 22px;
+  border-radius:30px;font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700;letter-spacing:.04em;
+  cursor:pointer;margin-top:4px;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+
+/* ---------------- sections ---------------- */
+.section{padding:46px 0 8px;border-bottom:1px solid var(--border);scroll-margin-top:20px}
+.section:last-of-type{border-bottom:none}
+.badge-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.lo-badge{display:inline-block;background:var(--chip-red);color:var(--chip-fg);font-family:'JetBrains Mono',monospace;
+  font-size:.6rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;padding:6px 13px;border-radius:20px}
+.lo-badge.alt{background:var(--chip-blue)}
+.section-label{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 6px}
+.section-title{margin:0 0 6px;font-size:clamp(1.55rem,3vw,2.3rem);font-weight:700;
+  border-bottom:3px solid var(--accent);display:inline-block;padding-bottom:6px}
+.section h3{margin:30px 0 8px;font-size:1.24rem;border-left:4px solid var(--accent2);padding-left:11px}
+.section h4{margin:18px 0 6px;font-size:1.03rem}
+.lede{font-size:1.05rem;color:var(--muted);max-width:74ch}
+
+/* section tools (injected) */
+.sec-tools{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:14px 0 4px;padding:8px 12px;
+  background:var(--cream);border:1px solid var(--border);border-radius:9px;
+  font-family:'JetBrains Mono',monospace;font-size:.6rem}
+.sec-tools .st-lab{color:var(--muted);text-transform:uppercase;letter-spacing:.11em}
+.sec-tools button{font-family:'JetBrains Mono',monospace;font-size:.6rem;border:1px solid var(--border);
+  background:var(--paper);color:var(--ink);border-radius:20px;padding:4px 11px;cursor:pointer;transition:all .15s}
+.sec-tools button:hover{border-color:var(--accent2)}
+.sec-tools button.on{background:var(--accent2);color:#fff;border-color:var(--accent2)}
+.sec-tools .st-collapse{margin-left:auto}
+.sec-body-outer{display:grid;grid-template-rows:1fr;transition:grid-template-rows .35s ease}
+.sec-body-inner{overflow:hidden;min-height:0}
+.section.collapsed .sec-body-outer{grid-template-rows:0fr}
+.recall-note{display:none;margin:12px 0;padding:9px 13px;border:1px dashed var(--accent2);border-radius:8px;
+  background:var(--blue-bg);font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--ink)}
+body.recall-mode .recall-note{display:block}
+
+/* ---------------- callouts ---------------- */
+.callout{border-left:5px solid var(--accent2);border-radius:0 9px 9px 0;padding:14px 18px;margin:18px 0;background:var(--blue-bg)}
+.callout p:last-child,.callout ul:last-child{margin-bottom:0}
+.callout p:first-of-type{margin-top:0}
+.callout-title{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;margin-bottom:7px;color:var(--ink)}
+.callout-key{border-left-color:var(--gold);background:var(--highlight)}
+.callout-concept{border-left-color:var(--accent2);background:var(--blue-bg)}
+.callout-clinical{border-left-color:#3d9c5c;background:var(--green-bg)}
+.callout-warning{border-left-color:var(--accent);background:var(--red-bg)}
+.callout-purple{border-left-color:#7a5aa8;background:var(--purple-bg)}
+.callout-hook{border-left-color:var(--gold);background:var(--highlight);border-left-style:dashed;border-left-width:5px}
+
+/* ---------------- lists ---------------- */
+.notes-list{list-style:none;padding-left:0;margin:12px 0}
+.notes-list li{position:relative;padding-left:20px;margin-bottom:7px}
+.notes-list li::before{content:'\203A';position:absolute;left:4px;color:var(--accent);font-weight:700}
+.step-list{list-style:none;counter-reset:st;padding-left:0;margin:16px 0}
+.step-list li{counter-increment:st;position:relative;padding-left:44px;margin-bottom:14px;min-height:30px}
+.step-list li::before{content:counter(st);position:absolute;left:0;top:0;width:30px;height:30px;border-radius:50%;
+  background:var(--chip-red);color:var(--chip-fg);display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:700}
+.step-list li>div>strong:first-child{display:block;margin-bottom:2px;color:var(--accent)}
+
+/* ---------------- tables ---------------- */
+table{width:100%;border-collapse:collapse;margin:6px 0 20px;font-size:.92rem}
+th,td{border:1px solid var(--border);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:var(--panel-dark-bg);color:var(--panel-dark-text);font-family:'JetBrains Mono',monospace;
+  font-size:.63rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700}
+tr:nth-child(even) td{background:var(--cream)}
+tr:hover td{background:var(--highlight2)}
+.tbl-scroll{overflow-x:auto;margin-bottom:20px}
+.tbl-scroll table{margin-bottom:0}
+
+/* ---------------- exam Q ---------------- */
+.exam-q{background:var(--panel-dark-bg);color:var(--panel-dark-text);border-radius:11px;padding:20px 22px 18px;margin:22px 0;position:relative}
+.exam-q::before{content:'Exam Q';position:absolute;top:-10px;left:20px;background:var(--chip-red);color:var(--chip-fg);
+  font-family:'JetBrains Mono',monospace;font-size:.56rem;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;padding:4px 11px;border-radius:12px}
+.exam-q p{margin:6px 0}
+.exam-q strong{color:var(--panel-dark-accent)}
+.exam-q .answer{margin-top:12px;padding-top:12px;border-top:1px dashed rgba(255,255,255,.28);display:none}
+.exam-q.revealed .answer{display:block;animation:fadeIn .32s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.exam-q .answer .label{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--panel-dark-accent);margin-bottom:5px}
+.exam-q .reveal-btn{margin-top:11px;background:transparent;border:1px solid rgba(255,255,255,.4);
+  color:var(--panel-dark-text);font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.09em;
+  text-transform:uppercase;padding:6px 15px;border-radius:20px;cursor:pointer}
+.exam-q .reveal-btn:hover{background:rgba(255,255,255,.14)}
+.exam-q.revealed .reveal-btn{display:none}
+.exam-q.q-flash{outline:3px solid var(--gold);animation:qPulse 1.2s ease 1}
+@keyframes qPulse{0%{box-shadow:0 0 0 0 rgba(201,146,42,.55)}70%{box-shadow:0 0 0 14px rgba(201,146,42,0)}100%{box-shadow:none}}
+
+/* ---------------- cards & grids ---------------- */
+.compare-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:14px;margin:18px 0}
+.compare-card{border:1px solid var(--border);border-radius:11px;padding:16px 18px;background:var(--cream)}
+.compare-card h4{margin:6px 0 6px;font-size:1.08rem}
+.compare-card .card-emoji{font-size:1.5rem;line-height:1}
+.compare-card p{margin:0 0 8px}
+.fact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,235px),1fr));gap:13px;margin:18px 0}
+.fact-card{border:1px solid var(--border);border-top:4px solid var(--accent2);border-radius:10px;
+  padding:14px 16px;background:var(--cream)}
+.fact-card h4{margin:0 0 3px;font-size:1rem}
+.fact-card .generic{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.fact-card p{margin:0;font-size:.87rem}
+.hallmarks-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,215px),1fr));gap:13px;margin:18px 0}
+.hallmark-card{border:1px solid var(--border);border-top:4px solid var(--accent);border-radius:10px;
+  padding:14px 16px;background:var(--cream);position:relative}
+.hallmark-card:nth-child(3n+2){border-top-color:var(--accent2)}
+.hallmark-card:nth-child(3n+3){border-top-color:var(--gold)}
+.hallmark-card h4{margin:6px 0 4px;font-size:.99rem}
+.hallmark-card p{margin:0;font-size:.86rem}
+.hallmark-num{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;color:var(--muted)}
+
+/* inline chips */
+.lab-code{font-family:'JetBrains Mono',monospace;background:var(--cream);border:1px solid var(--border);
+  padding:1px 6px;border-radius:4px;font-size:.82rem;white-space:nowrap}
+.gene-tag{font-family:'JetBrains Mono',monospace;color:var(--accent2);font-size:.88rem;font-weight:600}
+.hy-flag{display:inline-flex;align-items:center;gap:3px;background:var(--highlight);color:var(--gold);
+  border:1px solid var(--gold);font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.6rem;
+  padding:1px 8px;border-radius:20px;letter-spacing:.04em;vertical-align:middle}
+.up{color:#c0392b;font-weight:700}
+.dn{color:#2c7fb8;font-weight:700}
+
+/* ---------------- images ---------------- */
+.slide-img{width:100%;display:block;border:1px solid var(--border);border-radius:10px;margin:18px 0 5px;
+  cursor:zoom-in;background:#fff}
+.slide-caption{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 20px;text-align:center}
+/* small source images: cap the width so they are not upscaled into blur */
+.slide-img.sm{width:auto;max-width:min(100%,540px);margin-left:auto;margin-right:auto}
+/* portrait images: cap the height instead of the width */
+.slide-img.tall{width:auto;max-width:100%;max-height:560px;margin-left:auto;margin-right:auto}
+.img-pair .slide-img.tall{max-height:420px}
+.img-pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px 20px;margin:18px 0;
+  align-items:start}
+.img-pair .slide-img{margin:0}
+.img-pair .slide-img.sm{width:100%;max-width:100%}
+.img-pair .slide-caption{margin:6px 0 0}
+.img-pair>div{display:flex;flex-direction:column}
+.fig{margin:18px 0}
+.fig svg{width:100%;height:auto;display:block;border:1px solid var(--border);border-radius:10px;background:var(--cream)}
+
+/* ---------------- table quiz ---------------- */
+.tq-bar{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:6px;padding:8px 12px;
+  background:var(--cream);border:1px solid var(--border);border-radius:8px}
+.tq-toggle{font-family:'JetBrains Mono',monospace;font-size:.63rem;letter-spacing:.09em;text-transform:uppercase;
+  background:var(--accent2);color:#fff;border:none;border-radius:20px;padding:5px 12px;cursor:pointer}
+.tq-toggle.active{background:var(--chip-red);color:var(--chip-fg)}
+.tq-cols{display:flex;flex-wrap:wrap;gap:5px;flex:1}
+.tq-col-btn{font-size:.7rem;padding:3px 9px;border:1px solid var(--border);border-radius:12px;background:var(--paper);
+  cursor:pointer;font-family:'JetBrains Mono',monospace;color:var(--ink);transition:all .15s}
+.tq-col-btn.sel{background:var(--chip-blue);color:var(--chip-fg);border-color:var(--chip-blue)}
+.tq-start,.tq-shuffle,.tq-reset{font-family:'JetBrains Mono',monospace;font-size:.63rem;color:#fff;border:none;
+  border-radius:20px;padding:5px 12px;cursor:pointer}
+.tq-start{background:#2e7d32}.tq-start:disabled{opacity:.35;cursor:not-allowed}
+.tq-shuffle{background:var(--accent2)}
+.tq-reset{background:var(--accent)}
+.tq-score{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted)}
+.tq-score.done{color:#2e7d32;font-weight:700}
+.quiz-hidden-cell{position:relative!important;cursor:pointer!important}
+.quiz-hidden-cell .tq-cell-content{filter:blur(5px)!important;user-select:none!important;pointer-events:none!important;opacity:.4!important}
+.quiz-hidden-cell::after{content:'tap to reveal'!important;position:absolute!important;inset:0!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;background:var(--quiz-overlay)!important;
+  color:#fff!important;font-family:'JetBrains Mono',monospace!important;font-size:.58rem!important;font-weight:700!important;
+  letter-spacing:.12em!important;text-transform:uppercase!important;border-radius:4px!important}
+.quiz-hidden-cell:hover::after{background:var(--quiz-overlay-hover)!important}
+
+/* ---------------- recall mode ---------------- */
+body.recall-mode .sec-body-inner :is(p,li,td,h4,dd) strong:not(.rc-open){color:transparent;background:var(--highlight2);
+  border-radius:4px;cursor:pointer;box-shadow:inset 0 0 0 1px var(--border);padding:0 2px}
+body.recall-mode .exam-q strong,body.recall-mode .tq-bar strong{color:var(--panel-dark-accent)!important;background:none!important;box-shadow:none!important}
+body.recall-mode .game strong{color:inherit!important;background:none!important;box-shadow:none!important;cursor:auto}
+strong.rc-open{animation:rcReveal .35s ease}
+@keyframes rcReveal{from{background:var(--gold)}to{background:transparent}}
+
+/* ---------------- games ---------------- */
+.game{background:var(--cream);border:1px solid var(--border);border-top:4px solid var(--accent);border-radius:12px;
+  padding:18px 20px;margin:22px 0}
+.g-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:4px}
+.g-head h3{margin:0;font-size:1.16rem;border:none;padding:0}
+.g-emoji{margin-right:.45em}
+.g-score{margin-left:auto;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.72rem;color:var(--muted)}
+.g-intro{font-size:.87rem;color:var(--muted);margin:0 0 10px}
+.g-stage{background:var(--paper);border:1px solid var(--border);border-radius:14px;padding:20px 18px 16px;margin:10px 0 0}
+.g-vign{text-align:left;font-size:.97rem;line-height:1.55;min-height:2.4em}
+.g-vign .lead{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--muted);display:block;margin-bottom:6px}
+.g-opts{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));margin-top:14px}
+.g-opt{border:1px solid var(--border);background:var(--cream);border-radius:11px;padding:9px 14px;font-weight:700;
+  cursor:pointer;font-size:.88rem;font-family:'Source Serif 4',Georgia,serif;color:var(--ink);text-align:center;
+  transition:transform .12s ease,border-color .12s,background .12s}
+.g-opt:hover{transform:translateY(-2px);border-color:var(--accent)}
+.g-opt.correct{background:var(--green-bg);border-color:#2e7d32;color:#1f5c24}
+.g-opt.wrong{background:var(--red-bg);border-color:var(--accent);color:var(--accent)}
+.g-fb{min-height:2.4em;margin-top:12px;font-size:.9rem;line-height:1.55}
+.g-fb .ok{color:#2e7d32;font-weight:700}
+.g-fb .no{color:var(--accent);font-weight:700}
+.g-btn{margin-top:14px;background:var(--accent);color:#fff;border:none;border-radius:22px;padding:8px 20px;
+  font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.06em;cursor:pointer}
+.g-btn:hover{filter:brightness(1.1)}
+.g-bank{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-top:12px}
+.g-bank .g-opt{padding:7px 13px;font-size:.83rem}
+.g-opt.picked{opacity:.5;pointer-events:none}
+.g-slots{display:grid;gap:9px;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));margin-top:12px}
+.g-slot{border:1px dashed var(--border);border-radius:10px;padding:10px 12px;background:var(--cream);min-height:62px}
+.g-slot h5{margin:0 0 6px;font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted)}
+.g-slot.sel{border-style:solid;border-color:var(--accent2);box-shadow:0 0 0 2px var(--blue-bg)}
+.g-slot ul{margin:0;padding-left:16px;font-size:.82rem}
+.g-timer{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--accent);font-weight:700}
+
+/* ---------------- floating UI ---------------- */
+.floating-stack{position:fixed;bottom:18px;right:18px;z-index:100;display:flex;flex-direction:column;align-items:flex-end;gap:9px}
+.font-btn-row{display:flex;align-items:center;background:var(--floating-ui-bg);color:var(--floating-ui-fg);
+  padding:7px 10px;border-radius:30px;box-shadow:var(--floating-ui-shadow);font-family:'JetBrains Mono',monospace;
+  font-size:.62rem;letter-spacing:.1em;gap:2px}
+.font-btn{background:none;border:none;cursor:pointer;color:var(--floating-ui-fg);font-family:'JetBrains Mono',monospace;
+  font-weight:700;font-size:1rem;padding:2px 8px;border-radius:6px;line-height:1}
+.font-btn:hover{background:rgba(255,255,255,.18)}
+.font-sep{color:rgba(255,255,255,.22);padding:0 3px}
+.font-label{font-size:.56rem;opacity:.7;padding:0 5px;text-transform:uppercase;letter-spacing:.1em}
+.theme-btn{display:flex;align-items:center;gap:7px;background:var(--floating-ui-bg);color:var(--floating-ui-fg);
+  border:none;padding:10px 17px;border-radius:30px;box-shadow:var(--floating-ui-shadow);cursor:pointer;
+  font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.09em;text-transform:uppercase}
+.theme-panel{position:absolute;bottom:100%;right:0;margin-bottom:10px;background:var(--floating-ui-bg);
+  color:var(--floating-ui-fg);border-radius:12px;padding:12px 10px;box-shadow:var(--floating-ui-shadow);
+  min-width:196px;display:none}
+.theme-panel.open{display:block}
+.theme-panel-title{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.16em;text-transform:uppercase;
+  opacity:.65;padding:0 8px 8px}
+.theme-option{display:flex;align-items:center;gap:9px;padding:7px 9px;border-radius:8px;cursor:pointer;
+  font-family:'JetBrains Mono',monospace;font-size:.66rem}
+.theme-option:hover{background:rgba(255,255,255,.12)}
+.theme-option.active{background:rgba(255,255,255,.18)}
+.theme-swatch{width:17px;height:17px;border-radius:50%;border:1px solid rgba(255,255,255,.35);flex:none}
+
+.floating-left{position:fixed;bottom:18px;left:calc(var(--toc-w) + 18px);z-index:100;
+  display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+.tools-menu{display:flex;flex-direction:column;gap:7px;opacity:0;pointer-events:none;transform:translateY(10px);
+  transition:opacity .22s,transform .22s}
+.floating-left:hover .tools-menu,.floating-left:focus-within .tools-menu,.floating-left.open .tools-menu{
+  opacity:1;pointer-events:auto;transform:none}
+.tool-btn{background:var(--floating-ui-bg);color:var(--floating-ui-fg);border:none;padding:9px 15px;border-radius:22px;
+  box-shadow:var(--floating-ui-shadow);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:.63rem;
+  letter-spacing:.05em;text-align:left;white-space:nowrap}
+.tool-btn:hover{filter:brightness(1.2)}
+.tool-btn.on{background:var(--accent);color:#fff}
+.tools-trigger{position:relative}
+.tools-trigger .dot{display:none;position:absolute;top:6px;right:8px;width:7px;height:7px;border-radius:50%;background:var(--gold)}
+.tools-trigger.busy .dot{display:block}
+.backtop{display:none}
+.backtop.show{display:block}
+
+/* ---------------- lightbox ---------------- */
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:400;display:none;align-items:center;
+  justify-content:center;cursor:zoom-out;padding:22px}
+.lightbox.active{display:flex}
+.lightbox img{max-width:92vw;max-height:88vh;border-radius:6px}
+
+/* ---------------- HY one-pager ---------------- */
+.hy-modal{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:300;display:none;align-items:flex-start;
+  justify-content:center;overflow-y:auto;padding:30px 16px}
+.hy-modal.open{display:flex}
+.hy-modal-card{background:var(--paper);color:var(--ink);max-width:1060px;width:100%;border-radius:14px;
+  padding:26px 30px 34px;box-shadow:0 20px 60px rgba(0,0,0,.45)}
+.hy-modal-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;
+  border-bottom:3px solid var(--accent);padding-bottom:10px;flex-wrap:wrap}
+.hy-modal-header h2{margin:0;font-size:1.35rem}
+.hy-modal-actions{display:flex;gap:8px;flex:none}
+.hy-action-btn{font-family:'JetBrains Mono',monospace;font-size:.64rem;letter-spacing:.05em;text-transform:uppercase;
+  border:1px solid var(--border);background:var(--cream);color:var(--ink);padding:7px 13px;border-radius:20px;cursor:pointer}
+.hy-close-btn{background:var(--chip-red);color:var(--chip-fg);border:none}
+.hy-subhead{font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--muted);margin:0 0 13px}
+.hy-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;min-width:0}
+@media (max-width:760px){.hy-cols{grid-template-columns:1fr}}
+.hy-cols>div{min-width:0}
+.hy-block{border:1px solid var(--border);border-radius:8px;padding:9px 11px;background:var(--cream);margin-bottom:9px;min-width:0}
+.hy-block h4{margin:0 0 5px;font-size:.76rem;color:var(--accent);border-bottom:1px solid var(--border);padding-bottom:4px}
+.hy-block p,.hy-block li{font-size:.67rem;line-height:1.4;margin:0 0 3px}
+.hy-block ul{margin:0;padding-left:15px}
+.hy-lo-tag{display:block;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;color:var(--chip-fg);
+  background:var(--chip-blue);padding:3px 9px;border-radius:10px;margin-bottom:7px;letter-spacing:.05em;text-align:center}
+.hy-mini-table{width:100%;border-collapse:collapse;font-size:.63rem;margin-top:4px}
+.hy-mini-table th,.hy-mini-table td{border:1px solid var(--border);padding:3px 5px;text-align:left;line-height:1.3}
+.hy-mini-table th{background:var(--panel-dark-bg);color:var(--panel-dark-text);font-size:.56rem;text-transform:uppercase}
+.hy-mini-table tr:nth-child(even) td{background:transparent}
+
+/* ---------------- glossary ---------------- */
+.gloss{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:10px;margin:16px 0}
+.gloss dl{margin:0;border:1px solid var(--border);border-radius:9px;padding:12px 14px;background:var(--cream)}
+.gloss dt{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;color:var(--accent);margin-top:8px}
+.gloss dt:first-child{margin-top:0}
+.gloss dd{margin:2px 0 0;font-size:.86rem}
+.abbr-strip{background:var(--cream);border:1px solid var(--border);border-left:4px solid var(--gold);
+  border-radius:0 9px 9px 0;padding:11px 15px;margin:14px 0;font-size:.85rem}
+.abbr-strip .t{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--muted);display:block;margin-bottom:5px}
+
+footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top:40px;font-size:.83rem}
+footer .container{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center}
+footer kbd{font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.2);
+  border-radius:4px;padding:1px 6px;font-size:.72rem}
+
+/* ---------------- responsive ---------------- */
+@media (max-width:1000px){
+  body{padding-left:0}
+  .toc-bar{position:sticky;top:0;bottom:auto;width:100%;height:auto;border-right:none;
+    border-bottom:1px solid rgba(255,255,255,.12);overflow-x:auto;overflow-y:hidden}
+  .toc-head,.toc-group,.toc-hy-btn,.toc-tools{display:none}
+  .toc-bar nav{flex-direction:row;padding:0 8px;white-space:nowrap}
+  .toc-bar a{padding:11px 13px;border-left:none;border-bottom:2px solid transparent;gap:8px}
+  .toc-bar a:hover,.toc-bar a.active{border-left-color:transparent;border-bottom-color:var(--accent);background:none}
+  .toc-num{width:18px;height:18px;font-size:.53rem}
+  .toc-check{display:none!important}
+  .hero .hy-btn{display:inline-flex}
+  .floating-left{left:14px;bottom:14px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
+
+/* ---------------- print ---------------- */
+@media print{
+  body{padding-left:0!important;background:#fff;color:#000}
+  .container{max-width:100%!important}
+  .toc-bar,.floating-stack,.floating-left,.progress-bar,.sec-tools,.recall-note,.tq-bar,
+  .toc-hy-btn,.hy-btn,.lightbox,.game,.exam-q .reveal-btn{display:none!important}
+  .section{page-break-inside:auto;border-bottom:1px solid #ccc}
+  .section.collapsed .sec-body-outer{grid-template-rows:1fr!important}
+  .exam-q .answer{display:block!important}
+  .hero{background:#fff!important;color:#000;padding:16px 0}
+  .hero h1,.hero-sub,.hero-tag,.hero-meta-item .value,.hero-meta-item .label{color:#000!important}
+  .slide-img{page-break-inside:avoid}
+  body.hy-mode .hero,body.hy-mode .section,body.hy-mode footer{display:none!important}
+  body.hy-mode .hy-modal{position:static!important;inset:auto!important;background:none!important;padding:0!important;
+    display:block!important;overflow:visible!important}
+  body.hy-mode .hy-modal-card{position:static!important;max-width:100%!important;width:100%!important;
+    box-shadow:none!important;padding:4px!important}
+  .hy-modal-actions{display:none!important}
+  .hy-cols{grid-template-columns:repeat(3,1fr);gap:6px}
+  .hy-modal-header h2{font-size:1.02rem}
+  .hy-subhead{font-size:.56rem;margin-bottom:7px}
+  .hy-block{padding:4px 6px;margin-bottom:4px;break-inside:avoid}
+  .hy-block h4{font-size:.60rem;margin-bottom:2px;padding-bottom:1.5px}
+  .hy-block p,.hy-block li{font-size:.50rem;line-height:1.2;margin-bottom:1.5px}
+  .hy-mini-table{font-size:.465rem}
+  .hy-mini-table th,.hy-mini-table td{padding:1px 2.5px;line-height:1.18}
+  .hy-lo-tag{font-size:.53rem;padding:2px 7px;margin-bottom:4px}
+  @page{margin:8mm}
+}
+
+
+#noteAuthGate{display:none}
+html[data-note-auth="locked"] body{
+  min-height:100vh;
+  overflow:hidden;
+  background:#f4f5f7;
+  color:#1f2937;
+}
+html[data-note-auth="locked"] body>*:not(#noteAuthGate){display:none!important}
+html[data-note-auth="locked"] #noteAuthGate{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  background:linear-gradient(135deg,#f4f5f7,#ffffff 52%,#eef2f7);
+}
+.note-auth-card{
+  width:min(460px,100%);
+  padding:30px;
+  border:1px solid rgba(31,41,55,.14);
+  border-radius:14px;
+  background:rgba(255,255,255,.92);
+  box-shadow:0 22px 70px rgba(31,41,55,.16);
+  text-align:center;
+}
+.note-auth-kicker{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.68rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:#cf4520;
+  font-weight:700;
+  margin-bottom:12px;
+}
+.note-auth-card h1{
+  margin:0 0 12px;
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2rem,6vw,3rem);
+  line-height:.98;
+  color:#263241;
+}
+.note-auth-card p{
+  margin:0 0 22px;
+  font-size:1rem;
+  line-height:1.55;
+  color:#556070;
+}
+.note-auth-btn{
+  border:0;
+  border-radius:999px;
+  padding:12px 20px;
+  font:700 .9rem 'JetBrains Mono',monospace;
+  letter-spacing:.04em;
+  color:#fff;
+  background:#263241;
+  cursor:pointer;
+  box-shadow:0 12px 28px rgba(38,50,65,.22);
+}
+.note-auth-btn:hover{background:#cf4520}
+
+/* ---------------- pharmacology components ---------------- */
+.drug-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:13px;margin:18px 0}
+.drug-card{border:1px solid var(--border);border-top:4px solid var(--accent2);border-radius:10px;
+  padding:14px 16px;background:var(--cream)}
+.drug-card h4{margin:0 0 3px;font-size:1rem}
+.drug-card .generic{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.drug-card p{margin:0;font-size:.86rem}
+.drug-card p+p{margin-top:5px}
+.drug-card.span2{grid-column:span 2}
+@media (max-width:760px){.drug-card.span2{grid-column:auto}}
+
+.box-warning{border:2px solid var(--accent);border-left-width:9px;border-radius:9px;background:var(--red-bg);
+  padding:15px 18px 13px;margin:20px 0}
+.bw-label{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;background:var(--chip-red);color:var(--chip-fg);
+  padding:4px 11px;border-radius:5px;margin-bottom:9px}
+.box-warning p{margin:0;font-size:.93rem}
+.box-warning p+p{margin-top:7px}
+
+.rems-badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.55rem;font-weight:700;
+  letter-spacing:.1em;background:var(--purple-bg);color:var(--accent2);border:1px solid var(--border);
+  padding:2px 6px;border-radius:4px;vertical-align:middle;margin-left:3px}
+
+.moa-chain{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:14px 0;padding:13px 15px;
+  background:var(--cream);border:1px solid var(--border);border-radius:10px}
+.moa-chain span{font-family:'JetBrains Mono',monospace;font-size:.7rem;line-height:1.35;
+  background:var(--paper);border:1px solid var(--border);border-radius:6px;padding:5px 9px}
+.moa-chain span.hit{background:var(--highlight);border-color:var(--gold);font-weight:700}
+.moa-chain i{font-style:normal;color:var(--accent);font-weight:700}
+
+.suffix-key{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:10px;margin:16px 0}
+.suffix-key div{border:1px solid var(--border);border-left:4px solid var(--gold);border-radius:8px;
+  padding:9px 12px;background:var(--cream)}
+.suffix-key code{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--accent);font-size:.9rem}
+.suffix-key p{margin:3px 0 0;font-size:.82rem;color:var(--muted)}
+
+.timing-bar{display:flex;align-items:center;gap:10px;margin:7px 0;font-size:.86rem}
+.timing-bar .tl{flex:none;width:min(38%,215px);font-weight:600}
+.timing-bar .tt{flex:1;height:15px;background:var(--cream);border:1px solid var(--border);
+  border-radius:8px;position:relative;overflow:hidden}
+.timing-bar .tf{position:absolute;top:0;bottom:0;background:var(--accent);opacity:.78;border-radius:8px}
+.timing-bar .tv{flex:none;font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--muted);
+  width:min(30%,140px);text-align:right}
+
+
+/* ---------------- Cardio additions ---------------- */
+.hero .container{position:relative;z-index:1}
+.hero-ecg{position:absolute;left:0;right:0;bottom:6px;width:100%;height:58px;z-index:0;pointer-events:none;opacity:.55}
+.hero-ecg path{fill:none;stroke:var(--hero-accent);stroke-width:2;stroke-linejoin:round;stroke-linecap:round;
+  stroke-dasharray:1400;stroke-dashoffset:1400;animation:ecgDraw 4.5s ease-out .3s forwards}
+@keyframes ecgDraw{to{stroke-dashoffset:0}}
+strong.hot{color:var(--accent)}
+.num{background:var(--highlight);color:var(--ink);font-weight:700;padding:0 4px;border-radius:4px;white-space:nowrap}
+.src-tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.55rem;font-weight:700;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--ink);border:1px dashed var(--muted);border-radius:4px;padding:0 5px;
+  vertical-align:middle;white-space:nowrap}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;margin:16px 0 6px;padding:11px 15px;
+  background:var(--cream);border:1px solid var(--border);border-radius:10px;font-size:.86rem}
+.legend-t{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.order-list{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 16px}
+.order-list span{background:var(--cream);border:1px solid var(--border);border-left:4px solid var(--accent);
+  border-radius:8px;padding:6px 12px;font-size:.9rem}
+.tbl-note{font-size:.88rem;color:var(--muted);margin-top:-8px}
+table.dense{font-size:.8rem}
+table.dense td,table.dense th{padding:5px 7px}
+.timeline-table tr.phase td{background:var(--panel-dark-bg)!important;color:var(--panel-dark-text);font-family:'JetBrains Mono',monospace;
+  font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;padding:4px 11px}
+
+/* ---- labeled, lazy-loaded figures (images live in ./assets/, not base64) ---- */
+.fig-card{margin:20px auto;max-width:960px;border:1px solid var(--border);border-radius:12px;background:var(--cream);overflow:hidden;
+  break-inside:avoid;page-break-inside:avoid}
+.fig-frame{position:relative;background:#fff;display:flex;justify-content:center;align-items:center}
+.fig-frame::before{content:'';position:absolute;inset:0;
+  background:linear-gradient(100deg,rgba(0,0,0,0) 30%,rgba(181,31,58,.07) 50%,rgba(0,0,0,0) 70%) #fdf1f3;
+  background-size:220% 100%;animation:figShimmer 1.3s linear infinite;transition:opacity .3s}
+.fig-frame.loaded::before{opacity:0;animation:none}
+@keyframes figShimmer{from{background-position:120% 0}to{background-position:-120% 0}}
+.fig-card .slide-img{position:relative;margin:0;border:none;border-radius:0;width:100%;height:auto;opacity:0;transition:opacity .35s}
+.fig-frame.loaded .slide-img{opacity:1}
+.fig-card.tall .slide-img{width:auto;max-width:100%;max-height:560px}
+.fig-card.sm .slide-img{width:auto;max-width:min(100%,560px)}
+.fig-row .fig-card.tall .slide-img{max-height:440px}
+.fig-card figcaption{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;padding:9px 13px 10px;
+  border-top:1px solid var(--border);font-size:.86rem;line-height:1.4}
+.fig-num{font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  background:var(--chip-blue);color:var(--chip-fg);padding:2px 8px;border-radius:10px;flex:none}
+.fig-title{flex:1 1 220px;color:var(--ink)}
+.fig-src{font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);flex:none}
+.fig-src b{color:var(--accent);font-weight:700}
+.fig-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px;margin:20px 0;align-items:start}
+.fig-row .fig-card{margin:0;max-width:none}
+.lightbox{flex-direction:column;gap:12px}
+.lightbox-cap{max-width:min(92vw,900px);color:#f3f3f3;font-size:.9rem;text-align:center;line-height:1.45}
+.lightbox-cap .fig-num{margin-right:6px}
+
+details.case-box{background:var(--cream);border:1px solid var(--border);border-left:5px solid var(--accent2);
+  border-radius:0 12px 12px 0;margin:16px 0;overflow:hidden}
+details.case-box summary{cursor:pointer;padding:13px 18px;font-family:'Playfair Display',serif;font-weight:700;font-size:1.05rem;
+  list-style:none;display:flex;gap:10px;align-items:center}
+details.case-box summary::-webkit-details-marker{display:none}
+details.case-box summary::before{content:'▸';color:var(--accent);transition:transform .2s}
+details.case-box[open] summary::before{transform:rotate(90deg)}
+details.case-box .case-body{padding:0 18px 12px;border-top:1px solid var(--border)}
+@media print{details.case-box .case-body{display:block}}
+
+/* ---- click-to-play video facade: no YouTube iframe loads until you ask for it ---- */
+.watch{margin:26px 0 8px;padding:14px 16px 16px;border:1px solid var(--border);border-left:5px solid var(--accent);
+  border-radius:0 12px 12px 0;background:var(--cream)}
+.watch-title{font-family:'JetBrains Mono',monospace;font-size:.64rem;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink);margin-bottom:10px}
+.watch-title span{color:var(--muted);font-weight:400;letter-spacing:.04em;text-transform:none}
+.vid-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr));gap:12px}
+.vid{display:flex;flex-direction:column;text-align:left;padding:0;border:1px solid var(--border);border-radius:10px;
+  overflow:hidden;background:var(--paper);color:var(--ink);cursor:pointer;font:inherit;transition:transform .15s,box-shadow .15s}
+.vid:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.14)}
+.vid-thumb{position:relative;aspect-ratio:16/9;background:#1c1c1c;overflow:hidden}
+.vid-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.vid-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:50px;height:36px;border-radius:10px;
+  background:rgba(181,31,58,.92);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1rem;
+  box-shadow:0 3px 10px rgba(0,0,0,.35)}
+.vid-meta{padding:8px 10px 10px;font-size:.8rem;line-height:1.35}
+.vid-meta b{display:block;font-weight:600}
+.vid-meta i{font-style:normal;font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted)}
+.vid.playing{cursor:default;transform:none;box-shadow:none}
+.vid iframe{width:100%;aspect-ratio:16/9;border:0;display:block}
+@media print{
+  .watch{display:none!important}
+  .fig-frame::before{display:none}
+  .fig-card .slide-img{opacity:1!important}
+  .fig-card{background:#fff}
+}
+@media (prefers-reduced-motion:reduce){.hero-ecg path{stroke-dashoffset:0}}
+</style>
+
+</head>
+<body>
+<div id="noteAuthGate" role="dialog" aria-modal="true" aria-labelledby="noteAuthTitle">
+  <div class="note-auth-card">
+    <div class="note-auth-kicker">2nd Year Study Hub</div>
+    <h1 id="noteAuthTitle">Please log in to continue with this note.</h1>
+    <p>Open the Study Hub login, enter your approved UNE email, and this note will unlock automatically.</p>
+    <button class="note-auth-btn" type="button" onclick="openNoteLogin()">Log in to continue</button>
+  </div>
+</div>
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="toc-bar">
+  <div class="toc-head">
+    <span class="toc-eyebrow">OMK 2 · Cardio · Application Session 1</span>
+    <span class="toc-name">Chest Pain <em>&amp; Secondary HTN</em></span>
+  </div>
+  <button class="toc-hy-btn" onclick="openHY()">🎯 High-Yield One-Pager</button>
+  <nav>
+    <p class="toc-group">Start</p>
+    <a href="#orientation"><span class="toc-num dot"></span><span>Orientation: Two Cases</span><span class="toc-check">✓</span></a>
+    <p class="toc-group">Case A · Chest Pain (Watkins)</p>
+    <a href="#a1-history"><span class="toc-num">1</span><span>Taking the Chest-Pain History</span><span class="toc-check">✓</span></a>
+    <a href="#a2-exam"><span class="toc-num">2</span><span>Exam, Risk Factors &amp; FH Stigmata</span><span class="toc-check">✓</span></a>
+    <a href="#a3-workup"><span class="toc-num">3</span><span>Labs, ECG &amp; Pre-Test Probability</span><span class="toc-check">✓</span></a>
+    <a href="#a4-testing"><span class="toc-num">4</span><span>Choosing a Test &amp; the Plan</span><span class="toc-check">✓</span></a>
+    <a href="#a5-meds"><span class="toc-num">5</span><span>Medical Therapy for Stable Angina</span><span class="toc-check">✓</span></a>
+    <a href="#a6-acs"><span class="toc-num">6</span><span>When It Becomes ACS</span><span class="toc-check">✓</span></a>
+    <a href="#a7-mi"><span class="toc-num">7</span><span>MI Types, Troponin &amp; Flow Reserve</span><span class="toc-check">✓</span></a>
+    <a href="#a8-complications"><span class="toc-num">8</span><span>Mechanical Complications After MI</span><span class="toc-check">✓</span></a>
+    <p class="toc-group">Case B · Hypertension (Segal)</p>
+    <a href="#b1-history"><span class="toc-num">9</span><span>History &amp; Exam in New HTN</span><span class="toc-check">✓</span></a>
+    <a href="#b2-measure"><span class="toc-num">10</span><span>Measuring BP · Drugs · Sodium</span><span class="toc-check">✓</span></a>
+    <a href="#b3-classify"><span class="toc-num">11</span><span>Categories, Phenotypes &amp; Labs</span><span class="toc-check">✓</span></a>
+    <a href="#b4-secondary"><span class="toc-num">12</span><span>When to Suspect Secondary HTN</span><span class="toc-check">✓</span></a>
+    <a href="#b5-aldo"><span class="toc-num">13</span><span>Hypokalemia, Renin &amp; Aldosterone</span><span class="toc-check">✓</span></a>
+    <a href="#b6-pa"><span class="toc-num">14</span><span>Primary Aldosteronism: Screen &amp; Test</span><span class="toc-check">✓</span></a>
+    <a href="#b7-treat"><span class="toc-num">15</span><span>Treating PA &amp; Why It Matters</span><span class="toc-check">✓</span></a>
+    <p class="toc-group">Reference</p>
+    <a href="#practice"><span class="toc-num dot"></span><span>Drill</span><span class="toc-check">✓</span></a>
+    <a href="#glossary"><span class="toc-num dot"></span><span>Glossary &amp; Abbreviations</span><span class="toc-check">✓</span></a>
+  </nav>
+  <div class="toc-tools">
+    <button class="toc-chip" id="progressChip" onclick="jumpToNextTodo()">0/0 reviewed</button>
+    <button class="toc-chip" id="collapseAllBtn" onclick="toggleAllSections()">⊟ Collapse all</button>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="container">
+    <div class="hero-tag">Application Session 1 · Matthew W. Watkins, MD (CAD case module) · Paul Segal, DO (HTN case) · UNE COM · OMK 2 · October 2026</div>
+    <h1>Chest Pain <span>&amp; Secondary Hypertension</span></h1>
+    <p class="hero-sub">Case A follows a 72-year-old woman from new exertional chest pressure through pre-test probability, testing and antianginal therapy, then an NSTEMI and a post-MI ventricular septal rupture. Case B follows a 26-year-old with a BP of 200/110 and a potassium of 3.1, from the hypertension work-up to primary aldosteronism.</p>
+    <button class="hy-btn" onclick="openHY()">🎯 High-Yield One-Pager</button>
+    <div class="hero-meta"><div class="hero-meta-item"><span class="label">Presenters</span><span class="value">Watkins · Segal</span></div><div class="hero-meta-item"><span class="label">Sources</span><span class="value">46 + 34 slides · recording (end of HTN)</span></div><div class="hero-meta-item"><span class="label">Cases</span><span class="value">2</span></div><div class="hero-meta-item"><span class="label">Labeled figures</span><span class="value">23</span></div><div class="hero-meta-item"><span class="label">Exam questions</span><span class="value">29</span></div></div>
+  </div>
+  <svg class="hero-ecg" viewBox="0 0 1200 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 40 H140 l10 -6 l10 6 H200 l6 6 l10 -40 l10 50 l8 -16 H330 l14 -8 l14 8 H480 l10 -6 l10 6 H540 l6 6 l10 -40 l10 50 l8 -16 H670 l14 -8 l14 8 H820 l10 -6 l10 6 H880 l6 6 l10 -40 l10 50 l8 -16 H1010 l14 -8 l14 8 H1200"/></svg>
+</div>
+<style>
+.tool{background:var(--cream);border:1px solid var(--border);border-top:4px solid var(--accent2);border-radius:12px;padding:16px 18px;margin:22px 0}
+.tool h4{margin:0 0 4px;font-size:1.08rem}
+.tool .t-intro{font-size:.86rem;color:var(--ink);margin:0 0 12px}
+.tool .t-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0}
+.tool .t-lab{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);min-width:96px}
+.tool button.tb{border:1px solid var(--border);background:var(--paper);color:var(--ink);border-radius:20px;padding:6px 14px;cursor:pointer;
+  font-family:'Source Serif 4',Georgia,serif;font-size:.9rem;transition:all .15s}
+.tool button.tb:hover{border-color:var(--accent2)}
+.tool button.tb.on{background:var(--chip-blue);color:var(--chip-fg);border-color:var(--chip-blue)}
+.tool .t-out{margin-top:12px;padding:12px 14px;border-radius:10px;background:var(--paper);border:1px dashed var(--border);min-height:2.2em;font-size:.95rem;line-height:1.55}
+.tool .t-out b{color:var(--accent)}
+.tool label.ck{display:flex;gap:8px;align-items:flex-start;padding:7px 10px;border:1px solid var(--border);border-radius:9px;background:var(--paper);cursor:pointer;font-size:.9rem}
+.tool label.ck input{margin-top:3px;accent-color:var(--accent2)}
+.tool .ck-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:6px}
+.drill .d-q{font-size:.97rem;line-height:1.55;margin:4px 0 10px}
+.drill .d-opts{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr))}
+.drill .d-opts button.tb{border-radius:12px;text-align:left}
+.drill .d-opts button.tb.right{background:var(--green-bg);border-color:#2e7d32;color:var(--ink)}
+.drill .d-opts button.tb.wrong{background:var(--red-bg);border-color:var(--accent);color:var(--accent)}
+.drill .d-nav{display:flex;gap:10px;align-items:center;margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted)}
+.checklist{list-style:none;padding:0;margin:10px 0;counter-reset:ck}
+.checklist li{counter-increment:ck;display:flex;gap:10px;align-items:flex-start;padding:9px 12px;margin:6px 0;border:1px solid var(--border);border-radius:10px;background:var(--cream)}
+.checklist li::before{content:counter(ck);flex:none;width:26px;height:26px;border-radius:50%;background:var(--chip-red);color:var(--chip-fg);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.75rem;font-weight:700}
+.checklist li b{display:block}
+.step-q{border:1px solid var(--border);border-radius:10px;background:var(--paper);padding:10px 12px;margin:8px 0}
+.step-q.done{opacity:.6}
+.step-q p{margin:0 0 8px}
+details.case-box.ecg summary{font-size:1rem}
+.fig-card figcaption .fig-src{flex:0 1 auto;min-width:0;overflow-wrap:break-word}
+</style>
+
+<!-- ==================== ORIENTATION ==================== -->
+<div class="section" id="orientation">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge alt">Orientation</div></div>
+    <p class="section-label">"If you do not consider CAD you will never diagnose it"</p>
+    <h2 class="section-title">Two Cases, One Morning</h2>
+
+    <p class="lede">The application sessions take material you've had in lecture and run it as a case: what to ask, what to examine, which labs and tests to order (and which <em>not</em> to), and what to do next. Dr. Segal's rule for the morning: <strong>don't throw a net of labs and hope to catch the fish</strong>. Think through the history and exam, then order what the differential needs.</p>
+
+    <div class="legend">
+      <span class="legend-t">How to read the colours</span>
+      <span><strong class="hot">Red bold</strong> = presenter emphasis ("boards love this")</span>
+      <span><strong>Blue bold</strong> = key fact</span>
+      <span><span class="num">Yellow</span> = number to memorise</span>
+      <span><span class="src-tag">Board add-on</span> = UWorld / AMBOSS / guideline, not on the slides</span>
+    </div>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>CAD = coronary artery disease · SIHD = stable ischemic heart disease · ACS = acute coronary syndrome · NSTEMI / STEMI = non-ST / ST-elevation MI · MI = myocardial infarction · HTN = hypertension · BP = blood pressure · PA = primary aldosteronism · ARR = aldosterone-to-renin ratio · TOD = target-organ damage · ECG = electrocardiogram</div>
+
+    <div class="compare-grid">
+      <div class="compare-card" style="background:var(--blue-bg);border-color:var(--accent2)"><span class="card-emoji">🫀</span><h4>Case A: office chest pain (Topics 1–8)</h4><p>72-year-old woman, treated HTN, ex-smoker (40 pack-years), father died of an MI at 50. Eight weeks of exertional chest pressure → intermediate pre-test probability → stress echo planned → <strong>NSTEMI</strong> a week later → RCA stent → <strong>ventricular septal rupture</strong> 3 days after discharge.</p></div>
+      <div class="compare-card" style="background:var(--red-bg);border-color:var(--accent)"><span class="card-emoji">🩸</span><h4>Case B: severe new HTN (Topics 9–15)</h4><p>26-year-old with no history, BP <strong>200/110</strong> (120/80 a year ago). K⁺ 3.1, HCO₃⁻ 29 → a young patient with abrupt-onset HTN and unprovoked hypokalemia → suppressed renin, ARR 40 → <strong>primary aldosteronism</strong>.</p></div>
+    </div>
+
+    <div class="callout callout-warning">
+      <div class="callout-title">⚠️ What the recording covers</div>
+      <p>The transcript you have starts at the <strong>end of the HTN case</strong> ("why is there no edema?"), so Topics 14–15 carry Dr. Segal's spoken emphasis. Case A and the first half of Case B are built from the slides. The same recording then continues into Application Session 2 (heart failure and PAD).</p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== A1 HISTORY ==================== -->
+<div class="section" id="a1-history">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Case A · Topic 1</div><span class="hy-flag">⭐ "Listen to the patient and they will tell you the diagnosis"</span></div>
+    <p class="section-label">what to ask about chest pain · typical vs non-ischemic features · women and CAD</p>
+    <h2 class="section-title">Taking the Chest-Pain History</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>CP = chest pain · CAD = coronary artery disease · HTN = hypertension · ARB = angiotensin receptor blocker · MI = myocardial infarction · DM = diabetes mellitus · ACS = acute coronary syndrome</div>
+
+    <div class="case-card"><b>The patient:</b> 72-year-old woman seen for HTN management and a new complaint of chest pain over 8 weeks. HTN for 5 years on losartan/hydrochlorothiazide 50/12.5. Retired lawyer, lives independently with her husband. <strong>Ex-smoker, 40 pack-years</strong> (1 pack/day from 24 to 64). Two glasses of wine a day, no drugs.</div>
+
+    <h3>Always ask</h3>
+    <p><strong>Quality · location · onset · duration · what relieves it · associated symptoms</strong>, and the question Dr. Watkins adds: <strong class="hot">"Can you make the chest pain occur?"</strong></p>
+
+    <h3>His summary of typical angina, "what I have learned over 30 years"</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>Feature</th><th>Points toward ischemia</th><th>Points away</th></tr>
+      <tr><td>Quality</td><td><strong>Dull pressure, squeezing</strong></td><td>Sharp or tearing</td></tr>
+      <tr><td>Location</td><td><strong>Substernal with radiation</strong></td><td>Pinpoint or migratory</td></tr>
+      <tr><td>Duration</td><td><strong>Minutes</strong></td><td>Seconds or hours</td></tr>
+      <tr><td>Onset</td><td><strong>Exertion or emotional stress</strong></td><td>No clear cause</td></tr>
+      <tr><td>Pattern</td><td><strong>Predictable; the patient can induce it</strong></td><td>Random</td></tr>
+      <tr><td>Resolution</td><td><strong>Over minutes</strong> with rest</td><td>Seconds or hours</td></tr>
+    </table></div>
+    <div class="fig-row"><figure class="fig-card sm" id="fig-ischemia-descriptors"><div class="fig-frame"><img class="slide-img" src="assets/app-session-1/as1-ischemia-descriptors.jpg" alt="Descriptors and the probability that chest pain is ischemic: pressure, squeezing, exertional → high; sharp, fleeting, positional, pleuritic → low" width="900" height="600" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig A1.1</span><span class="fig-title">Descriptors and the probability that chest pain is ischemic: pressure, squeezing, exertional → high; sharp, fleeting, positional, pleuritic → low</span><span class="fig-src"><b>Watkins — CAD case module</b> · Gulati, Circulation 2021</span></figcaption></figure><figure class="fig-card sm" id="fig-chest-pain-table"><div class="fig-frame"><img class="slide-img" src="assets/app-session-1/as1-chest-pain-table.jpg" alt="Chest-pain characteristics and their likely causes: nature, onset, location, severity, precipitating and relieving factors" width="1139" height="760" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig A1.2</span><span class="fig-title">Chest-pain characteristics and their likely causes: nature, onset, location, severity, precipitating and relieving factors</span><span class="fig-src"><b>Watkins — CAD case module</b> · 2021 Chest Pain Guideline</span></figcaption></figure></div>
+    <ul class="notes-list">
+      <li>From the 2021 chest-pain guideline table: <strong>sharp pain worse with inspiration and lying supine</strong> → pericarditis; <strong>sudden ripping pain to the back</strong> → acute aortic syndrome; <strong>fleeting pain of seconds</strong> or pain <strong>localized to a fingertip-sized spot</strong> → unlikely ischemic; <strong>relief with nitroglycerin is not diagnostic</strong> of ischemia.</li>
+      <li>Women, people with diabetes and the elderly more often describe atypical symptoms (left- or right-sided, stabbing, throat or abdominal discomfort).</li>
+    </ul>
+
+    <h3>Is there a sex difference in CAD risk?</h3>
+    <ul class="notes-list">
+      <li><strong>Smoking is more harmful in women</strong>: ~<span class="num">6×</span> MI risk vs ~<span class="num">3×</span> in men.</li>
+      <li><strong>Diabetes is a more potent CAD risk factor in women</strong>; HTN is more prevalent in women after 60; lipids worsen across the menopause transition.</li>
+      <li>CAD presents <strong>~10 years later in women</strong>: a woman of 70 carries the risk of a man of 60.</li>
+      <li>Women-specific factors: pregnancy complications, menopause, breast cancer (therapy).</li>
+    </ul>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> Which single question does Dr. Watkins add to the standard chest-pain history, and why does it matter?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>"Can you make it happen?"</strong> Angina is <strong>predictable and inducible</strong> (same exertion, same symptoms), which separates it from random, non-ischemic pain.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> A patient's chest pain is sharp, worse lying flat and with deep breaths, and better sitting forward. Ischemic or not, and what does it suggest?</p>
+      <div class="answer"><div class="label">Answer</div><p>Unlikely to be ischemic; this pattern suggests <strong>acute pericarditis</strong>.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== A2 EXAM ==================== -->
+<div class="section" id="a2-exam">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Case A · Topic 2</div><span class="hy-flag">⭐ Tendon xanthoma and arcus &lt; 45 are highly specific for FH</span></div>
+    <p class="section-label">what to examine · risk factors · stigmata of familial hypercholesterolemia · her full story</p>
+    <h2 class="section-title">Exam, Risk Factors &amp; FH Stigmata</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>FH = familial hypercholesterolemia · S3 = third heart sound · CRF = cardiac risk factors · LDL-C = low-density lipoprotein cholesterol · BP = blood pressure</div>
+
+    <div class="compare-grid">
+      <div class="compare-card"><span class="card-emoji">🩺</span><h4>Physical exam</h4><p>Full and equal pulses, <strong>bruits</strong>, normal heart sounds (listen for an <strong>S3</strong>), peripheral edema, and <strong>skin for xanthomas</strong>. You are screening for vascular disease elsewhere and for heart failure.</p></div>
+      <div class="compare-card"><span class="card-emoji">📋</span><h4>Risk factors</h4><p><strong>Smoking</strong>, <strong>family history (especially onset &lt; 60)</strong>, lipids, diabetes, HTN. Also stress, alcohol and drug use, and medication adherence.</p></div>
+    </div>
+
+    <h3>Signs of familial hypercholesterolemia</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>Sign</th><th>Specificity for FH</th></tr>
+      <tr><td><strong>Tendon xanthoma</strong> (Achilles, extensor tendons)</td><td><strong>Highly specific</strong></td></tr>
+      <tr><td><strong>Corneal arcus</strong> before age 45</td><td><strong>Highly specific</strong></td></tr>
+      <tr><td>Xanthelasma (eyelids)</td><td>Low specificity</td></tr>
+    </table></div>
+    <p>Any of these should prompt lipid testing and an FH clinical score; cascade-screening apps help test relatives. <strong>Planar or eruptive xanthomas</strong> point elsewhere (eruptive = very high triglycerides).</p>
+    <figure class="fig-card sm" id="fig-fh-signs"><div class="fig-frame"><img class="slide-img" src="assets/app-session-1/as1-fh-signs.jpg" alt="Signs of familial hypercholesterolemia: tendon xanthoma and corneal arcus &lt; 45 (highly specific); xanthelasma (low specificity)" width="1100" height="713" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig A1.3</span><span class="fig-title">Signs of familial hypercholesterolemia: tendon xanthoma and corneal arcus < 45 (highly specific); xanthelasma (low specificity)</span><span class="fig-src"><b>Watkins — CAD case module</b></span></figcaption></figure>
+
+    <div class="case-card"><b>Her story in full:</b> 2 months of <strong>chest fullness about twice a week, walking up a steep hill with her dog</strong>. Lasts minutes and resolves in minutes with rest. Mid-chest with radiation to the <strong>neck and jaw</strong>. No dyspnea, nausea, palpitations or sweating. The same hill doesn't always provoke it; once it came after an argument with her husband. <strong>Not increasing in frequency or severity, no rest symptoms</strong>, doing all her normal activities. Risk factors: treated HTN, remote smoking, <strong>father died of an MI at 50</strong>. Exam normal except <strong>BP 150/90</strong>.</div>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> Which two eye and tendon findings are highly specific for familial hypercholesterolemia, and which common eyelid finding is not?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Tendon xanthomas</strong> and <strong>corneal arcus before 45</strong> are highly specific. <strong>Xanthelasma</strong> has low specificity.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== A3 WORKUP ==================== -->
+<div class="section" id="a3-workup">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Case A · Topic 3</div><span class="hy-flag">⭐ Troponin belongs in the ED, not the office</span></div>
+    <p class="section-label">labs · the resting ECG · CAD Consortium pre-test probability · ASCVD and PREVENT calculators</p>
+    <h2 class="section-title">Labs, ECG &amp; Pre-Test Probability</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>CBC = complete blood count · CMP = comprehensive metabolic panel · HbA1c = hemoglobin A1c · Lp(a) = lipoprotein(a) · hs-CRP = high-sensitivity C-reactive protein · UACR = urine albumin-to-creatinine ratio · LBBB = left bundle branch block · CCTA = coronary CT angiography · ETT = exercise treadmill test · CAC = coronary artery calcium · ASCVD = atherosclerotic cardiovascular disease · PREVENT = AHA Predicting Risk of CVD EVENTs equations · SDI = social deprivation index</div>
+
+    <div class="compare-grid">
+      <div class="compare-card"><span class="card-emoji">🧪</span><h4>Labs</h4><p><strong>CBC · CMP</strong> (K⁺, kidney and liver) · <strong>HbA1c</strong> if glucose ↑ · <strong>full lipid panel</strong> · extra risk markers: <strong>Lp(a) once</strong> (especially with family history), hs-CRP, UACR. <strong>Troponin only for suspected ACS, in the ED, as serial values.</strong></p></div>
+      <div class="compare-card"><span class="card-emoji">📈</span><h4>Studies</h4><p><strong>12-lead ECG for everyone</strong> (look for ST ↑, LBBB, Q waves, ST ↓, T-wave changes) · CXR to exclude alternatives · <strong>TTE</strong> for valves and LV function · then <strong>anatomic</strong> (CCTA or angiography) or <strong>functional</strong> testing (ETT, stress echo, nuclear perfusion), chosen by risk.</p></div>
+    </div>
+
+    <h3>Her resting ECG</h3>
+    <p>Rate ~80/min (14 large boxes in 6 s → 84/min), <strong>sinus rhythm</strong>, axis about +10°, normal intervals, <strong>no hypertrophy, Q waves or ST changes</strong>: a normal ECG. Pathologic Q waves would suggest a prior MI.</p>
+
+    <h3>First, estimate pre-test probability</h3>
+    <ul class="notes-list">
+      <li>The <strong>CAD Consortium calculator</strong> (QxMD) uses age, sex and symptom type (basic model), adds risk factors (clinical model), and can add the <strong>coronary calcium score</strong> (which raises specificity).</li>
+      <li>Her results: <strong>basic model <span class="num">40%</span></strong>; <strong>clinical model <span class="num">43%</span></strong>, rising to <strong>50%</strong> if she has hyperlipidemia → <strong>intermediate risk</strong>.</li>
+    </ul>
+    <h3>Population risk calculators</h3>
+    <ul class="notes-list">
+      <li><strong>ACC/AHA Pooled Cohort (ASCVD) estimator</strong>: 10-year and lifetime ASCVD risk for people <em>without</em> known disease.</li>
+      <li><strong>AHA PREVENT</strong>: 10- and 30-year total CVD, ASCVD, <strong>heart failure</strong>, CHD and stroke risk. Optional inputs: <strong>UACR, HbA1c and zip code</strong> (social deprivation index).</li>
+      <li>These are for <strong>prevention</strong>. For a patient who already has symptoms, the question is pre-test probability of CAD.</li>
+    </ul>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> You are seeing a patient with 2 months of stable exertional angina in your office. Should you send a troponin?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>No.</strong> Troponin is for suspected <strong>ACS</strong>, measured <strong>serially in the ED</strong>. If you're worried enough to want one, the patient belongs in the emergency department. Dr. Qazi said the same in Session 2: "I would never order a troponin in the outpatient setting."</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> What does adding a coronary calcium score to the CAD Consortium model do?</p>
+      <div class="answer"><div class="label">Answer</div><p>It refines the pre-test probability and <strong>increases specificity</strong> (a CAC of 0 makes obstructive CAD much less likely).</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== A4 TESTING ==================== -->
+<div class="section" id="a4-testing">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Case A · Topic 4</div><span class="hy-flag">⭐ Intermediate risk → functional or anatomic testing</span></div>
+    <p class="section-label">working diagnosis · choosing a non-invasive test · the plan</p>
+    <h2 class="section-title">Choosing a Test &amp; the Plan</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>SIHD = stable ischemic heart disease · ACS = acute coronary syndrome · USA = unstable angina · CCTA = coronary CT angiography · MPI = myocardial perfusion imaging · ETT = exercise treadmill test · NTG = nitroglycerin · TFTs = thyroid function tests · CAC = coronary artery calcium</div>
+
+    <h3>The working-diagnosis question</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>Option</th><th>Verdict</th></tr>
+      <tr><td>"Her symptoms are not anginal"</td><td>No. They have typical anginal features and there's no clear alternative diagnosis. <strong>Must consider CAD.</strong></td></tr>
+      <tr><td>"New angina, so this is ACS / unstable angina"</td><td>No. Symptoms are new but <strong>stable</strong>: no prolonged, rest or progressive symptoms.</td></tr>
+      <tr><td><strong>"Moderate or greater risk of CAD; more testing warranted"</strong></td><td><strong>Yes.</strong></td></tr>
+      <tr><td>"It's accelerated HTN; treat the BP first, then think about CAD"</td><td>Possible, but the wrong approach. <strong class="hot">Not missing a diagnosis of CAD is the priority.</strong></td></tr>
+    </table></div>
+
+    <h3>Which non-invasive test?</h3>
+    <p>The goal of testing is to <strong>identify CAD and estimate prognosis</strong>.</p>
+    <ul class="notes-list">
+      <li>Any suspicion of <strong>ACS</strong> → follow the ACS pathway, not outpatient testing.</li>
+      <li><strong>Able to exercise, interpretable resting ECG</strong>: low-to-intermediate likelihood → <strong>standard exercise ECG</strong>; intermediate-to-high → <strong>exercise with imaging</strong> (echo or MPI), or <strong>CCTA</strong>.</li>
+      <li><strong>Uninterpretable resting ECG</strong> (e.g. LBBB, paced rhythm, digoxin, LVH with strain) → exercise <strong>with imaging</strong>.</li>
+      <li><strong>Unable to exercise</strong> → <strong>pharmacologic</strong> stress echo or MPI, or CCTA.</li>
+    </ul>
+    <figure class="fig-card" id="fig-sihd-testing"><div class="fig-frame"><img class="slide-img" src="assets/app-session-1/as1-sihd-testing.jpg" alt="Choosing a non-invasive test for suspected SIHD: ability to exercise, interpretable ECG and pre-test likelihood decide ETT vs stress imaging vs CCTA" width="1400" height="920" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig A1.4</span><span class="fig-title">Choosing a non-invasive test for suspected SIHD: ability to exercise, interpretable ECG and pre-test likelihood decide ETT vs stress imaging vs CCTA</span><span class="fig-src"><b>Watkins — CAD case module</b> · Katz & Gavin, Ann Intern Med 2019</span></figcaption></figure>
+
+    <h3>Her plan</h3>
+    <ol class="step-list">
+      <li><div><strong>No ED referral today</strong>, but review the <strong>red flags</strong> (prolonged, severe or rest pain → call 911).</div></li>
+      <li><div><strong>Treat the BP</strong>: losartan up to 100/12.5 (back off if orthostatic). <strong>PRN sublingual NTG.</strong></div></li>
+      <li><div><strong>Labs</strong>: TFTs and fasting lipids.</div></li>
+      <li><div><strong>Stress echocardiogram</strong> for intermediate risk: <strong>more sensitive and specific than a plain ETT, especially in women</strong>. Discuss the alternatives too: anatomic testing (CCTA ± calcium score) or no testing.</div></li>
+    </ol>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> A 72-year-old woman has 2 months of stable exertional chest pressure, a normal ECG and a pre-test probability of ~45%. She can walk on a treadmill. Which test did the presenter choose, and why?</p>
+      <div class="answer"><div class="label">Answer</div><p>An <strong>exercise stress echocardiogram</strong>. She is intermediate risk and can exercise, and adding imaging increases sensitivity and specificity over a plain ETT, <strong>especially in women</strong>.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> Her BP is 150/90. Why is "treat the HTN first, then evaluate for CAD" the wrong approach?</p>
+      <div class="answer"><div class="label">Answer</div><p>Her symptoms are typical of angina with no alternative cause. Delaying the work-up risks <strong>missing CAD</strong>; treat the BP <em>and</em> pursue testing.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== A5 MEDS ==================== -->
+<div class="section" id="a5-meds">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Case A · Topic 5</div><span class="hy-flag">⭐ β-blockers first line; nitrates second</span></div>
+    <p class="section-label">antianginal drugs · optimal medical therapy</p>
+    <h2 class="section-title">Medical Therapy for Stable Angina</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>NO = nitric oxide · SBP / DBP = systolic / diastolic BP · HA = headache · HOCM = hypertrophic obstructive cardiomyopathy · COPD = chronic obstructive pulmonary disease · CCB = calcium channel blocker · DHP = dihydropyridine · AS = aortic stenosis · EF = ejection fraction · HCN = hyperpolarization-activated cyclic nucleotide-gated channel · QTc = corrected QT interval · ACEi / ARB = ACE inhibitor / angiotensin receptor blocker</div>
+
+    <div class="tbl-scroll"><table>
+      <tr><th>Agent</th><th>Mechanism</th><th>Side effects</th><th>Contraindications</th></tr>
+      <tr><td><strong>β-blockers (1st line)</strong></td><td>Block β₁ → <strong>↓ HR, contractility, wall tension and BP</strong> (↓ O₂ demand)</td><td>Fatigue, bradycardia, heart block, bronchospasm</td><td>Cardiogenic shock; asthma/COPD (relative)</td></tr>
+      <tr><td><strong>Nitrates (2nd line)</strong></td><td>↑ NO → vascular smooth-muscle relaxation → <strong>↓ preload</strong> (and SBP, DBP)</td><td><strong>Tachyphylaxis</strong>, headache, postural hypotension</td><td><strong>HOCM</strong> (and PDE-5 inhibitors <span class="src-tag">Board add-on</span>)</td></tr>
+      <tr><td><strong>CCBs</strong></td><td><strong>DHP</strong> (amlodipine): vasodilation → ↓ afterload. <strong>Non-DHP</strong> (verapamil, diltiazem): ↓ chronotropy and inotropy</td><td>DHP: reflex tachycardia, edema. Non-DHP: bradycardia, heart block, worsened low EF</td><td>DHP: low BP. Non-DHP: severe AS, HOCM (and low EF <span class="src-tag">Board add-on</span>)</td></tr>
+      <tr><td><strong>Ivabradine</strong></td><td>Sinus-node inhibitor: slows diastolic depolarization of the SA node → ↓ HR</td><td>Headache, visual disturbance (luminous phenomena), dizziness, AF</td><td>Severe hepatic disease; not with non-DHP CCBs</td></tr>
+      <tr><td><strong>Ranolazine</strong></td><td>Blocks the <strong>late Na⁺ current</strong> in ischemic myocardium → ↓ Ca²⁺ overload and O₂ demand</td><td>Dizziness, constipation, <strong>QTc prolongation</strong></td><td>Liver cirrhosis, long-QT syndromes</td></tr>
+    </table></div>
+    <div class="callout callout-warning">
+      <div class="callout-title">⚠️ Slide mix-up: ivabradine vs ranolazine</div>
+      <p>Slide 20 lists ivabradine's mechanism as "inhibits late Na⁺ current." Ivabradine blocks the <strong>funny current (I<sub>f</sub>) through HCN channels</strong> in the SA node; it is <strong>ranolazine</strong> that blocks the <strong>late Na⁺ current</strong>. Dr. Segal's Session 2 HF slides give the correct ivabradine mechanism.</p>
+    </div>
+
+    <h3>Optimal medical therapy saves lives</h3>
+    <p>Four classes make up optimal medical therapy: <strong>antiplatelet + statin + ACEi/ARB + β-blocker</strong>. In long-term follow-up, patients on none, one or two of these had ~<span class="num">20%</span> 10-year mortality versus ~<span class="num">13%</span> on three or four.</p>
+    <figure class="fig-card sm" id="fig-omt-survival"><div class="fig-frame"><img class="slide-img" src="assets/app-session-1/as1-omt-survival.jpg" alt="All-cause mortality 5–10 years by number of OMT drug classes (antiplatelet, statin, ACEi/ARB, β-blocker): ~20% on 0–2 vs ~13% on 3–4" width="778" height="600" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig A1.5</span><span class="fig-title">All-cause mortality 5–10 years by number of OMT drug classes (antiplatelet, statin, ACEi/ARB, β-blocker): ~20% on 0–2 vs ~13% on 3–4</span><span class="fig-src"><b>Watkins — CAD case module</b> · Kawashima, JACC 2021</span></figcaption></figure>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> A patient with stable angina and hypertrophic obstructive cardiomyopathy has chest pain. Which antianginal class should you avoid, and why?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Nitrates</strong> (and DHP vasodilators). Lowering preload shrinks the LV cavity and worsens the dynamic outflow obstruction.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> Which antianginal drug blocks the late sodium current and can prolong the QTc?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Ranolazine.</strong></p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== A6 ACS ==================== -->
+<div class="section" id="a6-acs">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Case A · Topic 6</div><span class="hy-flag">⭐ No patient with ACS symptoms is ever driven to the ER by car</span></div>
+    <p class="section-label">crescendo angina · NSTEMI ECG · what to do in the office · the ED and invasive timing</p>
+    <h2 class="section-title">When It Becomes ACS</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>ACS = acute coronary syndrome · NSTEMI / STEMI = non-ST / ST-elevation MI · AVB = atrioventricular block · NTG = nitroglycerin · ER = emergency room · POCUS = point-of-care ultrasound · hs-cTn = high-sensitivity cardiac troponin · GRACE = Global Registry of Acute Coronary Events score · PCI = percutaneous coronary intervention · CABG = coronary artery bypass grafting · LVEF = left ventricular ejection fraction · RCA = right coronary artery · DES = drug-eluting stent</div>
+
+    <div class="case-card"><b>One week later:</b> she returns for the stress echo. Over <strong>4 days</strong> her angina has increased, with episodes <strong>up to 45 minutes</strong> and more severe pressure. Last night she had <strong>4 hours of severe rest chest pain</strong> with nausea. She has 2/10 pressure now. BP 160/100, RR 18, O₂ sat 93%, appears uncomfortable.</div>
+
+    <h3>The ECG</h3>
+    <p>Sinus ~84/min, <strong>first-degree AV block</strong>, <strong>down-sloping ST depression ~1–2 mm</strong> in I, II, III, aVF and V3–V5 (inferolateral), with <strong>ST elevation in V1</strong>. In NSTEMI, ST depression is seen in about a third of patients; <strong>deep T-wave inversions (≥ 3 mm)</strong> are more common but less specific.</p>
+    <figure class="fig-card" id="fig-nstemi-ecg"><div class="fig-frame"><img class="slide-img" src="assets/app-session-1/as1-nstemi-ecg.jpg" alt="Her return ECG: down-sloping ST depression in the inferolateral leads (I, II, III, aVF, V3–V5) with ST elevation in V1" width="1400" height="765" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig A1.6</span><span class="fig-title">Her return ECG: down-sloping ST depression in the inferolateral leads (I, II, III, aVF, V3–V5) with ST elevation in V1</span><span class="fig-src"><b>Watkins — CAD case module</b></span></figcaption></figure>
+
+    <h3>What now?</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>Option</th><th>Verdict</th></tr>
+      <tr><td>Proceed with the stress echo</td><td><strong>No.</strong> Stress testing during active ischemia is contraindicated, and the diagnosis is already made.</td></tr>
+      <tr><td>STEMI → straight to the cath lab</td><td><strong>No.</strong> Symptoms fit, but there is no ST elevation meeting criteria.</td></tr>
+      <tr><td>NSTEMI with high-risk features → have her drive to the ER</td><td><strong class="hot">No. No patient with ACS symptoms should ever be transferred by car.</strong></td></tr>
+      <tr><td>Ambulance to the ER, nothing else useful in clinic</td><td><strong>No.</strong> <strong>Start initial therapy in the office: NTG, O₂, telemetry monitoring and aspirin</strong>, while the ambulance comes.</td></tr>
+    </table></div>
+    <p>"<strong>Know where the patient is on the ACS pyramid and you will know what to do</strong>": asymptomatic → low → intermediate → high risk → ACS, each with its own testing strategy.</p>
+    <figure class="fig-card sm" id="fig-acs-pyramid"><div class="fig-frame"><img class="slide-img" src="assets/app-session-1/as1-acs-pyramid.jpg" alt="The chest-pain pyramid: asymptomatic → low → intermediate → high risk → ACS, with the testing strategy for each level" width="1300" height="781" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig A1.7</span><span class="fig-title">The chest-pain pyramid: asymptomatic → low → intermediate → high risk → ACS, with the testing strategy for each level</span><span class="fig-src"><b>Watkins — CAD case module</b> · Gulati, Circulation 2021</span></figcaption></figure>
+
+    <h3>In the ER</h3>
+    <ul class="notes-list">
+      <li><strong>Admit on the ACS protocol with a cardiology consult</strong> (expedited chest-pain pathways improve outcomes). Waiting for insurance pre-approval would be "malpractice."</li>
+      <li><strong>Repeat ECG, serial troponin, bedside echo</strong> (POCUS for new regional wall-motion abnormality).</li>
+      <li><strong>O₂ as needed, IV NTG, heparin bolus, clopidogrel load.</strong></li>
+      <li><strong>Urgent or emergency catheterization</strong> depending on the clinical course and troponin.</li>
+    </ul>
+    <h3>How fast to the cath lab in NSTE-ACS?</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>Risk</th><th>Features</th><th>Timing</th></tr>
+      <tr><td><strong>Very high</strong></td><td>Hemodynamic instability or cardiogenic shock · recurrent or refractory chest pain · life-threatening arrhythmia or cardiac arrest · mechanical complication of MI · acute heart failure · recurrent dynamic ST–T changes</td><td><strong>Immediate (&lt; <span class="num">2</span> h)</strong></td></tr>
+      <tr><td><strong>High</strong></td><td>NSTEMI by troponin · dynamic ST/T changes (symptomatic or silent) · GRACE &gt; 140</td><td><strong>Early (&lt; <span class="num">24</span> h)</strong></td></tr>
+      <tr><td><strong>Intermediate</strong></td><td>Diabetes or renal insufficiency · LVEF &lt; 40% or HF · early post-infarction angina · prior PCI/CABG · GRACE 109–140 · recurrent symptoms or ischemia on testing</td><td><strong>Invasive (&lt; <span class="num">72</span> h)</strong></td></tr>
+    </table></div>
+    <figure class="fig-card sm" id="fig-nste-acs-invasive"><div class="fig-frame"><img class="slide-img" src="assets/app-session-1/as1-nste-acs-invasive.jpg" alt="Timing of invasive evaluation in NSTE-ACS: very high risk &lt; 2 h, high risk &lt; 24 h, intermediate risk &lt; 72 h" width="850" height="469" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig A1.8</span><span class="fig-title">Timing of invasive evaluation in NSTE-ACS: very high risk < 2 h, high risk < 24 h, intermediate risk < 72 h</span><span class="fig-src"><b>Watkins — CAD case module</b> · ESC 2020</span></figcaption></figure>
+
+    <div class="case-card"><b>Her course:</b> pain improves with treatment but doesn't resolve. <strong>Troponin 50 → 325 at 4 hours.</strong> Urgent cath: a <strong>90% ruptured plaque in the RCA with thrombus</strong>, no other high-grade disease → <strong>two drug-eluting stents</strong>, good result. For <strong>STEMI</strong> the standard is <strong>door-to-balloon &lt; <span class="num">90</span> minutes</strong>.</div>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> In clinic, your patient with known angina describes 4 hours of rest chest pain last night and has new inferolateral ST depression. What do you do before the ambulance arrives?</p>
+      <div class="answer"><div class="label">Answer</div><p>Treat as <strong>NSTE-ACS</strong>: <strong>aspirin, nitroglycerin, O₂ if hypoxic, cardiac monitoring</strong>, and <strong>ambulance transfer</strong>. Never stress-test, and never let her drive.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> An NSTEMI patient develops cardiogenic shock in the ED. How soon should catheterization occur?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Immediately (&lt; 2 hours)</strong>: very-high-risk features.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== A7 MI TYPES ==================== -->
+<div class="section" id="a7-mi">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Case A · Topic 7</div><span class="hy-flag">⭐ Primary (plaque) vs secondary (supply–demand) vs procedural MI</span></div>
+    <p class="section-label">the 2023 trigger-based MI classification · type 1 vs type 2 phenotypes · coronary flow reserve · high-sensitivity troponin</p>
+    <h2 class="section-title">MI Types, Troponin &amp; Flow Reserve</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>MI = myocardial infarction · CAD = coronary artery disease · hs-cTn = high-sensitivity cardiac troponin · AF = atrial fibrillation · PCI / CABG = stent / bypass · CK-MB = creatine kinase, MB fraction · CFR = coronary flow reserve</div>
+
+    <div class="tbl-scroll"><table>
+      <tr><th>New classification (Lindahl, 2023)</th><th>Old equivalent</th><th>Triggers</th></tr>
+      <tr><td><strong>Primary MI</strong></td><td>Type 1</td><td>Coronary disease: <strong>plaque rupture or erosion with thrombus</strong>, spontaneous dissection</td></tr>
+      <tr><td><strong>Secondary MI</strong></td><td>Type 2</td><td><strong>Supply–demand mismatch</strong>: sepsis, shock, tachycardia, severe HTN, anemia</td></tr>
+      <tr><td><strong>Procedural MI</strong></td><td>Types 4–5</td><td>Complications of PCI or cardiac surgery</td></tr>
+    </table></div>
+    <figure class="fig-card sm" id="fig-mi-classification"><div class="fig-frame"><img class="slide-img" src="assets/app-session-1/as1-mi-classification.jpg" alt="Trigger-based MI classification: primary (atherothrombosis, dissection), secondary (supply–demand), procedural" width="667" height="460" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig A1.9</span><span class="fig-title">Trigger-based MI classification: primary (atherothrombosis, dissection), secondary (supply–demand), procedural</span><span class="fig-src"><b>Watkins — CAD case module</b> · Lindahl, Nature Medicine 2023</span></figcaption></figure>
+
+    <h3>Type 1 vs type 2 phenotypes</h3>
+    <div class="compare-grid">
+      <div class="compare-card" style="background:var(--red-bg);border-color:var(--accent)"><h4>Type 1 (primary)</h4><p><strong>Younger, male</strong>; smoking, dyslipidemia, prior MI/PCI/CABG. Most get angiography (57%, PCI 38.5%, CABG 7.8%). <strong>Higher</strong> in-hospital death and 30-day MI readmission.</p></div>
+      <div class="compare-card" style="background:var(--blue-bg);border-color:var(--accent2)"><h4>Type 2 (secondary)</h4><p><strong>Older, female</strong>; HF, AF, valve disease, HTN, renal or liver failure, cancer, depression, alcohol or substance use. Few get angiography (10.9%; PCI 1.7%). Lower in-hospital mortality and MI readmission, though long-term outcomes are poor.</p></div>
+    </div>
+    <figure class="fig-card sm" id="fig-type1-type2-mi"><div class="fig-frame"><img class="slide-img" src="assets/app-session-1/as1-type1-type2-mi.jpg" alt="Type 1 vs type 2 MI: plaque rupture in younger men vs supply–demand mismatch in older women with comorbidities; very different rates of angiography and revascularization" width="1200" height="1151" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig A1.10</span><span class="fig-title">Type 1 vs type 2 MI: plaque rupture in younger men vs supply–demand mismatch in older women with comorbidities; very different rates of angiography and revascularization</span><span class="fig-src"><b>Watkins — CAD case module</b> · McCarthy, JACC 2021</span></figcaption></figure>
+    <p>Both types can show ST depression or elevation and a troponin rise; <strong>type 2 usually has a lower peak hs-cTn</strong>. With ongoing ACS, <strong>initial treatment is the same</strong>.</p>
+
+    <h3>Coronary flow reserve</h3>
+    <p>Resting coronary flow stays normal until a stenosis is <strong>~80–90%</strong>, but <strong>maximal (stress) flow begins to fall at ~50%</strong>. That's why stable angina appears with exertion first, and why stress testing unmasks a lesion the resting ECG misses.</p>
+    <figure class="fig-card sm" id="fig-coronary-flow-reserve"><div class="fig-frame"><img class="slide-img" src="assets/app-session-1/as1-coronary-flow-reserve.jpg" alt="Coronary flow reserve: maximal flow falls from ~50% stenosis while resting flow holds until ~80–90%" width="720" height="540" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig A1.11</span><span class="fig-title">Coronary flow reserve: maximal flow falls from ~50% stenosis while resting flow holds until ~80–90%</span><span class="fig-src"><b>Watkins — CAD case module</b> · Gould</span></figcaption></figure>
+
+    <h3>High-sensitivity troponin is the gold standard</h3>
+    <p>Troponin rises within hours and stays elevated for <strong>~7–10 days</strong>; CK-MB peaks earlier and clears in 2–3 days (useful only for re-infarction). Diagnose MI by a <strong>rise and/or fall</strong> on serial values, as in our patient (50 → 325).</p>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> An 84-year-old woman with septic shock and a heart rate of 140 has a troponin rise and diffuse ST depression; angiography a year ago showed mild fixed CAD. Which MI category is this?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Secondary (type 2) MI</strong>: supply–demand mismatch from sepsis, hypotension and tachycardia, not plaque rupture.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> At what degree of stenosis does maximal coronary flow start to fall, and at what degree does resting flow fall?</p>
+      <div class="answer"><div class="label">Answer</div><p>Maximal flow falls from about <strong>50%</strong>; resting flow is preserved until about <strong>80–90%</strong>.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== A8 COMPLICATIONS ==================== -->
+<div class="section" id="a8-complications">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Case A · Topic 8</div><span class="hy-flag">⭐ New holosystolic murmur + thrill + step-up = VSR</span></div>
+    <p class="section-label">sudden dyspnea after MI · non-mechanical vs mechanical complications · papillary muscle, septal and free-wall rupture</p>
+    <h2 class="section-title">Mechanical Complications After MI</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>MI = myocardial infarction · NSTEMI / STEMI = non-ST / ST-elevation MI · RCA = right coronary artery · PDA = posterior descending artery · VSR / VSD = ventricular septal rupture / defect · LSB = left sternal border · PEA = pulseless electrical activity · NSVT / VT = non-sustained / ventricular tachycardia · AF = atrial fibrillation · CHF = congestive heart failure</div>
+
+    <div class="case-card"><b>Three days after discharge:</b> the same woman, after an <strong>inferior NSTEMI</strong> with an RCA stent (echo: focal inferior hypokinesis, EF 50%), develops <strong>sudden dyspnea</strong> with minimal chest pain. She's breathless walking into the office and can't lie flat. <strong>HR 130, RR 24, BP 100/60</strong>, bilateral crackles, and a <strong>holosystolic murmur with a thrill</strong>.</div>
+    <div class="tbl-scroll"><table>
+      <tr><th>Option</th><th>Verdict</th></tr>
+      <tr><td>Stent thrombosis</td><td>Possible, but usually presents with chest pain</td></tr>
+      <tr><td>Arrhythmia</td><td>No; the sinus tachycardia is reactive</td></tr>
+      <tr><td><strong>Mechanical complication post-MI</strong></td><td><strong>Yes</strong>: sudden dyspnea plus a new murmur</td></tr>
+      <tr><td>Anxiety</td><td>No</td></tr>
+    </table></div>
+    <p><strong>Critical tests: ECG and echocardiogram.</strong> Here the echo showed a <strong>ventricular septal rupture</strong> → ICU, stabilization, evaluation for surgical repair.</p>
+    <div class="fig-row"><figure class="fig-card sm" id="fig-vsr-echo"><div class="fig-frame"><img class="slide-img" src="assets/app-session-1/as1-vsr-echo.jpg" alt="Echocardiogram with color Doppler: flow across the interventricular septum after MI (ventricular septal rupture)" width="872" height="509" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig A1.12</span><span class="fig-title">Echocardiogram with color Doppler: flow across the interventricular septum after MI (ventricular septal rupture)</span><span class="fig-src"><b>Watkins — CAD case module</b></span></figcaption></figure><figure class="fig-card sm" id="fig-mechanical-complications"><div class="fig-frame"><img class="slide-img" src="assets/app-session-1/as1-mechanical-complications.jpg" alt="Mechanical complications of acute MI: papillary muscle infarction, ventricular septal rupture, LV free-wall rupture" width="767" height="549" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig A1.13</span><span class="fig-title">Mechanical complications of acute MI: papillary muscle infarction, ventricular septal rupture, LV free-wall rupture</span><span class="fig-src"><b>Watkins — CAD case module</b></span></figcaption></figure></div>
+
+    <h3>Complications after MI</h3>
+    <div class="compare-grid">
+      <div class="compare-card"><h4>Non-mechanical</h4><p>Recurrent ischemia (stent thrombosis, untreated CAD) · arrhythmias (AF, NSVT, VT) · moderate CHF · non-anginal chest pain from anxiety (common).</p></div>
+      <div class="compare-card" style="background:var(--red-bg);border-color:var(--accent)"><h4>Mechanical</h4><p>Necrotic muscle "blows out" → <strong>sudden, severe</strong> heart failure, respiratory failure and shock.</p></div>
+    </div>
+    <div class="tbl-scroll"><table>
+      <tr><th>Complication</th><th>Risk predictors</th><th>Presentation</th><th>Key extra</th></tr>
+      <tr><td><strong>Papillary muscle rupture</strong></td><td>Older, HTN, <strong>inferior MI</strong></td><td>Acute <strong>hypotension, pulmonary edema</strong>; 80% within 7 days of inferior STEMI; <strong>holosystolic apical murmur → axilla</strong></td><td><strong>Posteromedial</strong> muscle 3× more likely (single PDA supply); surgery cuts mortality to ~30%</td></tr>
+      <tr><td><strong>Ventricular septal rupture</strong></td><td>↑ Female, older; ECG with large ST deviation (III and V2)</td><td>Acute HF (less severe than papillary rupture) + hypotension; <strong>3–5 days</strong>; <strong>holosystolic murmur at the LSB ± thrill</strong></td><td><strong>Left → right shunt: O₂ "step-up" RA → PA</strong></td></tr>
+      <tr><td><strong>Free-wall rupture</strong></td><td>Age &gt; 70, ↑ female, <strong>anterior</strong> MI</td><td>Two peaks: early (24 h) and late (3–5 days); hypotension, <strong>tamponade</strong>, shock, <strong>sudden death</strong> (&gt; 50% mortality)</td><td><strong>PEA</strong> has ~95% predictive accuracy; sudden pain after coughing or straining</td></tr>
+    </table></div>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> Four days after an anterior MI a patient becomes hypotensive with a new harsh holosystolic murmur at the left sternal border and a palpable thrill. A pulmonary artery catheter shows O₂ saturation 62% in the RA and 80% in the PA. Diagnosis?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Ventricular septal rupture</strong>: the left-to-right shunt causes the <strong>oxygen step-up</strong>. Papillary muscle rupture would give an apical murmur radiating to the axilla with no step-up.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> An elderly woman 4 days after a large anterior STEMI coughs, has sudden chest pain and loses her pulse while the monitor still shows sinus rhythm. What happened?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Left ventricular free-wall rupture</strong> → tamponade → <strong>pulseless electrical activity</strong>.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== B1 HISTORY ==================== -->
+<div class="section" id="b1-history">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Case B · Topic 9</div><span class="hy-flag">⭐ Key: screen for target-organ damage</span></div>
+    <p class="section-label">a 26-year-old with 200/110 · historical clues · examination</p>
+    <h2 class="section-title">History &amp; Exam in New HTN</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>BP = blood pressure · CPE = complete physical exam · HA = headache · PA = primary aldosteronism · OSA = obstructive sleep apnea · STOP-BANG = OSA screening questionnaire · CVD / CVA = cardiovascular disease / stroke · CKD = chronic kidney disease · PKD = polycystic kidney disease · TOD = target-organ damage · CHF = congestive heart failure · PVD = peripheral vascular disease · WCH = white-coat HTN · MEN = multiple endocrine neoplasia</div>
+
+    <div class="case-card"><b>The case:</b> a <strong>26-year-old with no past medical history</strong> comes for a new-patient visit. <strong>BP 200/110 mm Hg.</strong> A year ago at a physical it was <strong>120/80</strong>.</div>
+
+    <h3>Historical details that matter</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>Ask about</th><th>Points to</th></tr>
+      <tr><td>Palpitations, tachycardia, paroxysmal headache, sweating, "spells"</td><td><strong>Pheochromocytoma</strong></td></tr>
+      <tr><td>Muscle weakness, <strong>nocturia ± polyuria</strong></td><td><strong>Primary aldosteronism</strong></td></tr>
+      <tr><td>Snoring, daytime sleepiness, positive STOP-BANG</td><td><strong>Obstructive sleep apnea</strong></td></tr>
+      <tr><td>Weight loss, heat intolerance</td><td>Hyperthyroidism</td></tr>
+      <tr><td>Diet and salt, physical activity, tobacco, alcohol, drugs</td><td>Sodium intake; tobacco, alcohol and illicit stimulants (amphetamines, cocaine)</td></tr>
+      <tr><td>Weight pattern, obesity</td><td>Primary trigger for BP ↑, contributes to OSA</td></tr>
+      <tr><td>Family history: HTN, CVD, DM, stroke, CKD, hematuria, proteinuria, PKD</td><td>Familial pattern; genetic disorders (tubulopathies)</td></tr>
+      <tr><td>Global CV risk and TOD</td><td>Retinopathy, CHF, kidney disease, PVD (claudication)</td></tr>
+      <tr><td>Home BP readings</td><td>Baseline; white-coat or masked HTN</td></tr>
+      <tr><td>Pregnancy history</td><td>Preeclampsia, eclampsia</td></tr>
+    </table></div>
+
+    <h3>Examination</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>Item</th><th>What you're looking for</th></tr>
+      <tr><td>Appearance, height, weight, BMI, waist, skin</td><td>Metabolic syndrome; <strong>striae</strong> (Cushing); mucosal fibromas (MEN 2)</td></tr>
+      <tr><td><strong>Fundoscopy</strong></td><td>Grades: arteriolar narrowing (1), AV nicking (2), hemorrhages or exudates (3), <strong>papilledema (4)</strong></td></tr>
+      <tr><td>Neck</td><td>Thyroid enlargement, carotid bruits</td></tr>
+      <tr><td>Heart and lungs</td><td>Rales and gallops (HF); <strong>interscapular murmur over the back → coarctation</strong></td></tr>
+      <tr><td>Abdomen</td><td>Palpable kidneys (PKD); <strong>mid-epigastric bruit → renal artery disease</strong></td></tr>
+      <tr><td>Neurologic</td><td>Prior stroke; cognition (HTN is a risk factor for decline)</td></tr>
+      <tr><td><strong>Peripheral pulses</strong></td><td>Reduced leg pulses → <strong>coarctation</strong> or atherosclerosis. Measure <strong>lower-extremity BP ± radio-femoral delay</strong></td></tr>
+    </table></div>
+    <p><strong>Key: screen for target-organ damage</strong>: vision change (blurring, diplopia), dyspnea, DOE, syncope, chest pain, neurologic deficits.</p>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> A hypertensive patient reports nocturia and muscle weakness. Which secondary cause does this history suggest?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Primary aldosteronism</strong>: hypokalemia causes weakness and a nephrogenic diabetes-insipidus-like polyuria.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== B2 MEASURE ==================== -->
+<div class="section" id="b2-measure">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Case B · Topic 10</div><span class="hy-flag">⭐ A cuff over clothing can be off by up to 50 mm Hg</span></div>
+    <p class="section-label">measuring BP correctly · office vs home vs ambulatory · drugs that raise BP · sodium</p>
+    <h2 class="section-title">Measuring BP · Drugs · Sodium</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>BP = blood pressure · ABPM = 24-hour ambulatory BP monitoring · HBPM = home BP monitoring · MAOI = monoamine oxidase inhibitor · SNRI / SSRI / TCA = antidepressant classes · VEGF = vascular endothelial growth factor · NSAIDs = non-steroidal anti-inflammatory drugs · NO = nitric oxide · ROS = reactive oxygen species · NHANES = National Health and Nutrition Examination Survey</div>
+
+    <h3>Proper technique</h3>
+    <ul class="notes-list">
+      <li>Seated, feet flat, back supported, <strong>≥ 5 minutes</strong> of rest (an exam table does not count). No caffeine, exercise or smoking for <strong>≥ 30 min</strong>. Empty bladder.</li>
+      <li>Arm supported at heart level; <strong>check both arms</strong> and use the higher arm from then on; nobody talks; correct cuff size; never over a thick sleeve.</li>
+      <li><strong>Average ≥ 2 readings on ≥ 2 occasions</strong> to estimate the patient's BP.</li>
+    </ul>
+    <div class="tbl-scroll"><table>
+      <tr><th>Positioning problem</th><th>Reading may be off by</th></tr>
+      <tr><td>Crossed legs</td><td>2–8 mm Hg</td></tr>
+      <tr><td><strong>Cuff over clothing</strong></td><td><strong>5–50 mm Hg</strong></td></tr>
+      <tr><td>Cuff too small</td><td>2–10 mm Hg</td></tr>
+      <tr><td>Full bladder · talking or listening · unsupported arm</td><td>10 mm Hg each</td></tr>
+      <tr><td>Unsupported back or feet</td><td>6 mm Hg</td></tr>
+    </table></div>
+    <div class="fig-row"><figure class="fig-card sm" id="fig-bp-positioning"><div class="fig-frame"><img class="slide-img" src="assets/app-session-1/as1-bp-positioning.jpg" alt="Positioning errors and how far they push the reading: cuff over clothing 5–50, cuff too small 2–10, crossed legs 2–8, full bladder/talking/unsupported arm 10 mm Hg" width="1000" height="667" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig A1.14</span><span class="fig-title">Positioning errors and how far they push the reading: cuff over clothing 5–50, cuff too small 2–10, crossed legs 2–8, full bladder/talking/unsupported arm 10 mm Hg</span><span class="fig-src"><b>Segal — HTN case</b></span></figcaption></figure><figure class="fig-card sm" id="fig-bp-methods"><div class="fig-frame"><img class="slide-img" src="assets/app-session-1/as1-bp-methods.jpg" alt="Clinic vs home vs ambulatory BP: description, strengths (outcome association, white-coat and masked HTN detection) and weaknesses" width="778" height="852" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig A1.15</span><span class="fig-title">Clinic vs home vs ambulatory BP: description, strengths (outcome association, white-coat and masked HTN detection) and weaknesses</span><span class="fig-src"><b>Segal — HTN case</b> · Muntner, JACC 2019</span></figcaption></figure></div>
+    <p><strong>Clinic</strong> readings are tied to outcomes and were used in the treatment trials. <strong>Home</strong> and <strong>ambulatory</strong> readings correlate more strongly with outcomes and catch <strong>white-coat and masked HTN</strong>. ABPM also captures night-time BP, but some patients don't tolerate it and devices are less available.</p>
+
+    <h3>Drugs and substances that raise BP</h3>
+    <div class="compare-grid">
+      <div class="compare-card"><h4>Prescription</h4><p>Carbamazepine · antidepressants (MAOIs, SNRIs, SSRIs, TCAs) · metoclopramide, prochlorperazine · antineoplastics (alkylators, paclitaxel, <strong>tyrosine kinase and VEGF inhibitors</strong>) · clozapine · <strong>calcineurin inhibitors</strong> (cyclosporine, tacrolimus) · <strong>estrogen contraceptives</strong> · <strong>erythropoietin</strong> · <strong>glucocorticoids, mineralocorticoids</strong></p></div>
+      <div class="compare-card"><h4>Non-prescription</h4><p><strong>Amphetamines, caffeine, cocaine, alcohol</strong> · <strong>decongestants</strong> (phenylephrine, pseudoephedrine) · herbals (blue cohosh, <em>Citrus aurantium</em>, ephedra / ma huang) · <strong>NSAIDs</strong></p></div>
+    </div>
+
+    <h3>Sodium</h3>
+    <ul class="notes-list">
+      <li>Salt is <strong>40% Na⁺, 60% Cl⁻</strong>. <strong>One teaspoon ≈ <span class="num">2,330</span> mg Na⁺</strong>, the whole 24-hour limit.</li>
+      <li>NHANES 2003–2018: most US adults eat well above the &lt; 2,300 mg/day recommendation.</li>
+      <li>Mechanism: high sodium → <strong>oxidative stress</strong> and endothelial Na⁺ channel activation → <strong>endothelial dysfunction (↓ NO)</strong> → ↑ systemic vascular resistance, plus large-artery matrix remodeling (MMP-2/9, TGF-β₁, elastin fragmentation, collagen accumulation) → <strong>arterial stiffness</strong> → ↑ SBP.</li>
+    </ul>
+    <figure class="fig-card sm" id="fig-sodium-mechanism"><div class="fig-frame"><img class="slide-img" src="assets/app-session-1/as1-sodium-mechanism.jpg" alt="High sodium → oxidative stress and endothelial Na⁺ channel activation → endothelial dysfunction (↓ NO) and large-artery stiffening → ↑ SVR and SBP" width="1200" height="1011" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig A1.16</span><span class="fig-title">High sodium → oxidative stress and endothelial Na⁺ channel activation → endothelial dysfunction (↓ NO) and large-artery stiffening → ↑ SVR and SBP</span><span class="fig-src"><b>Segal — HTN case</b></span></figcaption></figure>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> A 24-year-old's BP is 168/100 in clinic, measured through his sweatshirt. What is the first step?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Re-measure properly</strong> (bare arm, correct cuff, seated 5 min) and confirm with repeated readings and home/ambulatory BP. A cuff over clothing can overstate BP by up to <strong>50 mm Hg</strong>.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> A kidney-transplant recipient's BP rises after starting a new immunosuppressant. Which drug class is the likely culprit?</p>
+      <div class="answer"><div class="label">Answer</div><p>A <strong>calcineurin inhibitor</strong> (cyclosporine or tacrolimus).</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== B3 CLASSIFY ==================== -->
+<div class="section" id="b3-classify">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Case B · Topic 11</div><span class="hy-flag">⭐ Stage 2 = ≥ 140 or ≥ 90</span></div>
+    <p class="section-label">BP categories · white-coat and masked HTN · basic and optional labs</p>
+    <h2 class="section-title">Categories, Phenotypes &amp; Labs</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>SBP / DBP = systolic / diastolic BP · eGFR = estimated glomerular filtration rate · TSH = thyroid-stimulating hormone · UA = urinalysis · ECG = electrocardiogram · UACR = urine albumin-to-creatinine ratio · ABPM = ambulatory BP monitoring · PTH = parathyroid hormone</div>
+
+    <div class="tbl-scroll"><table>
+      <tr><th>Category</th><th>SBP</th><th></th><th>DBP</th></tr>
+      <tr><td><strong>Normal</strong></td><td>&lt; 120</td><td>and</td><td>&lt; 80</td></tr>
+      <tr><td><strong>Elevated</strong></td><td>120–129</td><td>and</td><td>&lt; 80</td></tr>
+      <tr><td><strong>Stage 1 HTN</strong></td><td>130–139</td><td><em>or</em></td><td>80–89</td></tr>
+      <tr><td><strong>Stage 2 HTN</strong></td><td>≥ 140</td><td><em>or</em></td><td>≥ 90</td></tr>
+    </table></div>
+    <p>If SBP and DBP fall in different categories, use the <strong>higher</strong> one. <span class="src-tag">Board add-on</span> &gt; 180/120 is <strong>severe HTN</strong>; with acute target-organ damage it is a <strong>hypertensive emergency</strong> (pearl 2).</p>
+
+    <div class="tool" id="bpTool">
+      <h4>🩺 BP category</h4>
+      <p class="t-intro">Enter an averaged, properly measured reading.</p>
+      <div class="t-row"><span class="t-lab">SBP</span><input class="t-in" id="bpS" type="number" value="200"><span class="t-lab">DBP</span><input class="t-in" id="bpD" type="number" value="110"></div>
+      <div class="t-out" id="bpOut"></div>
+    </div>
+
+    <h3>Phenotypes: office vs out-of-office BP</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th></th><th>Out-of-office BP normal</th><th>Out-of-office BP high</th></tr>
+      <tr><td><strong>Office BP high</strong></td><td><strong>White-coat HTN</strong></td><td>Sustained HTN</td></tr>
+      <tr><td><strong>Office BP normal</strong></td><td>Normotension</td><td><strong>Masked HTN</strong></td></tr>
+    </table></div>
+
+    <h3>Labs</h3>
+    <div class="compare-grid">
+      <div class="compare-card"><h4>Basic (everyone)</h4><p>Fasting glucose · CBC · lipid profile · creatinine with eGFR · <strong>Na⁺, K⁺, Ca²⁺</strong> · TSH · urinalysis · <strong>ECG</strong></p></div>
+      <div class="compare-card"><h4>Optional</h4><p>Echocardiogram · uric acid · <strong>urine albumin-to-creatinine ratio</strong></p></div>
+      <div class="compare-card"><h4>Additional (± warranted)</h4><p>24-h ABPM · PTH · endocrine evaluation · urine toxicology · sleep study · renal US · <strong>renal artery duplex</strong> · genetic testing · referrals</p></div>
+    </div>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> Office BP 152/94 on three visits; 24-hour ambulatory average 118/74. Phenotype?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>White-coat hypertension.</strong></p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> BP 134/78. Category?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Stage 1 HTN</strong> (SBP 130–139 qualifies on its own).</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== B4 SECONDARY ==================== -->
+<div class="section" id="b4-secondary">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Case B · Topic 12</div><span class="hy-flag">⭐ Atypical story → think secondary</span></div>
+    <p class="section-label">when to screen · causes by age · the eight common secondary causes</p>
+    <h2 class="section-title">When to Suspect Secondary HTN</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>TOD = target-organ damage · OSA = obstructive sleep apnea · ARR = aldosterone-to-renin ratio · TSH = thyroid-stimulating hormone · AF = atrial fibrillation · CT / MRI = imaging · fT4 = free thyroxine</div>
+
+    <h3>Screen for a secondary cause with new-onset or uncontrolled HTN plus any of:</h3>
+    <ul class="checklist">
+      <li><div><b>Drug-resistant or drug-induced HTN</b></div></li>
+      <li><div><b>Abrupt onset</b></div></li>
+      <li><div><b>Onset before age 30</b></div></li>
+      <li><div><b>Exacerbation of previously controlled HTN</b></div></li>
+      <li><div><b>TOD out of proportion to the degree of HTN</b></div></li>
+      <li><div><b>Accelerated or malignant HTN</b></div></li>
+      <li><div><b>New diastolic HTN at ≥ 65</b></div></li>
+      <li><div><b>Unprovoked or excessive hypokalemia</b></div></li>
+    </ul>
+    <p>Our 26-year-old already ticks two boxes: <strong>onset under 30</strong> and <strong>abrupt onset</strong> (120/80 a year ago).</p>
+
+    <h3>Most common causes by age</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>Age</th><th>% with an underlying cause</th><th>Most common</th></tr>
+      <tr><td>Children (0–11)</td><td>70–85</td><td>Renal parenchymal disease, coarctation</td></tr>
+      <tr><td>Adolescents (12–18)</td><td>10–15</td><td>Renal parenchymal disease, coarctation</td></tr>
+      <tr><td>Young adults (19–39)</td><td>5</td><td>Thyroid dysfunction, <strong>fibromuscular dysplasia</strong>, renal parenchymal disease</td></tr>
+      <tr><td>Middle-aged (40–64)</td><td>8–12</td><td><strong>Hyperaldosteronism</strong>, thyroid, OSA, Cushing, pheochromocytoma</td></tr>
+      <tr><td>Older adults (≥ 65)</td><td>17</td><td><strong>Atherosclerotic renal artery stenosis</strong>, renal failure, hypothyroidism</td></tr>
+    </table></div>
+
+    <h3>The common secondary causes</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>Cause</th><th>% of HTN · resistant HTN</th><th>Clues</th><th>Screen</th><th>Labs</th></tr>
+      <tr><td><strong>Obstructive sleep apnea</strong></td><td>&gt; 5–15 · <strong>&gt; 30</strong></td><td>Snoring, sleepiness, morning headache; ↑ neck circumference</td><td>Questionnaire, polysomnography</td><td>Not specific</td></tr>
+      <tr><td><strong>Renal parenchymal disease</strong></td><td>1.6–8 · 2–10</td><td>Loss of BP control, DM, nocturia; edema, pallor</td><td>Creatinine, renal US</td><td>↑ Cr, proteinuria, ↓ Ca²⁺, ↑ K⁺, ↑ PO₄</td></tr>
+      <tr><td><strong>Renal artery stenosis</strong></td><td>1–8 · 2.5–20</td><td>Atherosclerosis, <strong>flash pulmonary edema</strong>, abdominal bruit</td><td>Duplex, CT/MR angiography</td><td>Secondary aldosteronism: ↓ K⁺</td></tr>
+      <tr><td><strong>Primary aldosteronism</strong></td><td>1.4–10 · <strong>6–23</strong></td><td>Fatigue, <strong>polyuria, polydipsia</strong>, weakness</td><td><strong>ARR</strong></td><td><strong>↓ K⁺, ↑ ARR</strong></td></tr>
+      <tr><td>Thyroid disease</td><td>1–2 · 1–3</td><td>Hyper: tachycardia, AF, weight loss. Hypo: weight gain, bradycardia</td><td>TSH</td><td>TSH ↓/↑, fT4</td></tr>
+      <tr><td>Cushing syndrome</td><td>0.5 · &lt; 1</td><td>Weight gain, striae, skin atrophy, osteopenia</td><td>24-h urine cortisol, dexamethasone test</td><td>↑ cortisol, glucose, cholesterol; ↓ K⁺</td></tr>
+      <tr><td>Pheochromocytoma</td><td>0.2–0.5 · &lt; 1</td><td>Paroxysmal HTN, headache, sweating, palpitations, pallor</td><td>Plasma metanephrines</td><td>↑ metanephrines</td></tr>
+      <tr><td><strong>Coarctation</strong></td><td>&lt; 1 · &lt; 1</td><td>Arm–leg BP difference ≥ 20/10; ↓/delayed femorals; interscapular murmur; rib notching</td><td>Echo</td><td>Not specific</td></tr>
+    </table></div>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> A 31-year-old woman has new HTN and an abdominal bruit; she has no atherosclerotic risk factors. Most likely cause?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Fibromuscular dysplasia</strong> of the renal artery (a young-adult cause of renovascular HTN).</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> Which secondary cause is most common overall in resistant hypertension?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Obstructive sleep apnea</strong> (&gt; 30%), followed by primary aldosteronism (6–23%).</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== B5 ALDO ==================== -->
+<div class="section" id="b5-aldo">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Case B · Topic 13</div><span class="hy-flag">⭐ HTN + ↓K⁺ + alkalosis: read the renin</span></div>
+    <p class="section-label">the labs come back · what aldosterone does · renin and aldosterone patterns · low-renin hypertension</p>
+    <h2 class="section-title">Hypokalemia, Renin &amp; Aldosterone</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>ENaC = epithelial Na⁺ channel · ROMK = renal outer medullary K⁺ channel · MR = mineralocorticoid receptor · 11β-HSD = 11β-hydroxysteroid dehydrogenase (type 2) · PA = primary aldosteronism · ARR = aldosterone-to-renin ratio · AME = apparent mineralocorticoid excess · CAH = congenital adrenal hyperplasia · DOC = deoxycorticosterone · eGFR = estimated glomerular filtration rate</div>
+
+    <div class="case-card"><b>Labs:</b> Na⁺ <strong>144</strong>, <strong>K⁺ 3.1</strong>, <strong>CO₂ 29</strong>, BUN/Cr 15/1.0 (eGFR 106). So: <strong>unprovoked hypokalemia with metabolic alkalosis</strong> and a high-normal sodium, in a young patient with abrupt, severe HTN. "What would cause spontaneous hypokalemia in the setting of HTN?"</div>
+
+    <h3>What aldosterone does</h3>
+    <ul class="notes-list">
+      <li>At the <strong>principal cell</strong>, aldosterone binds the MR → more <strong>ENaC</strong> (Na⁺ in) and <strong>ROMK</strong> (K⁺ out) and Na⁺/K⁺-ATPase → <strong>Na⁺ reabsorption, K⁺ secretion</strong>, and <strong>H⁺ excretion</strong> (intercalated cells) → <strong>hypokalemia and metabolic alkalosis</strong>.</li>
+      <li>Cortisol can also bind the MR; <strong>11β-HSD2 inactivates it to cortisone</strong>, protecting the receptor. Licorice blocks 11β-HSD2 → apparent mineralocorticoid excess.</li>
+      <li><strong>Spironolactone</strong> blocks the MR.</li>
+      <li>Beyond the kidney, aldosterone causes vascular endothelial dysfunction, fibrosis and remodeling, and metabolic effects (insulin resistance, inflammation) → HTN and cardiometabolic syndrome.</li>
+    </ul>
+    <div class="fig-row"><figure class="fig-card sm" id="fig-aldosterone-principal-cell"><div class="fig-frame"><img class="slide-img" src="assets/app-session-1/as1-aldosterone-principal-cell.jpg" alt="Collecting-duct principal cell: aldosterone (and cortisol, unless inactivated by 11β-HSD2) activates the MR → ENaC, ROMK and Na⁺/K⁺-ATPase; spironolactone blocks the MR" width="1200" height="845" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig A1.17</span><span class="fig-title">Collecting-duct principal cell: aldosterone (and cortisol, unless inactivated by 11β-HSD2) activates the MR → ENaC, ROMK and Na⁺/K⁺-ATPase; spironolactone blocks the MR</span><span class="fig-src"><b>Segal — HTN case</b> · Geetha, CCJM 2022</span></figcaption></figure><figure class="fig-card sm" id="fig-aldosterone-tissues"><div class="fig-frame"><img class="slide-img" src="assets/app-session-1/as1-aldosterone-tissues.jpg" alt="Aldosterone acts on kidney, vessels, liver and fat via MR and GPER → hypertension and cardiometabolic syndrome" width="696" height="382" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig A1.18</span><span class="fig-title">Aldosterone acts on kidney, vessels, liver and fat via MR and GPER → hypertension and cardiometabolic syndrome</span><span class="fig-src"><b>Segal — HTN case</b></span></figcaption></figure></div>
+
+    <h3>Read the renin (pearl 5)</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>Renin</th><th>Aldosterone</th><th>Think</th></tr>
+      <tr><td><strong>↓</strong></td><td><strong>↑</strong></td><td><strong>Primary aldosteronism</strong> (autonomous aldosterone)</td></tr>
+      <tr><td><strong>↑</strong></td><td><strong>↑</strong></td><td><strong>Secondary</strong>: renovascular disease (renal artery stenosis), diuretics, renin-secreting tumor</td></tr>
+      <tr><td><strong>↓</strong></td><td><strong>↓</strong></td><td><strong>Non-aldosterone mineralocorticoid</strong>: Liddle syndrome, licorice (AME), Cushing, CAH (11β- or 17α-hydroxylase), DOC-secreting tumor</td></tr>
+    </table></div>
+    <div class="tool" id="raTool">
+      <h4>🧭 Renin–aldosterone reader</h4>
+      <p class="t-intro">Pick the pattern in a hypertensive, hypokalemic patient.</p>
+      <div class="t-row"><span class="t-lab">Renin</span><button class="tb" data-r="lo" type="button">Low</button><button class="tb" data-r="hi" type="button">High</button></div>
+      <div class="t-row"><span class="t-lab">Aldosterone</span><button class="tb" data-a="hi" type="button">High</button><button class="tb" data-a="lo" type="button">Low</button></div>
+      <div class="t-out" id="raOut">Choose both.</div>
+    </div>
+
+    <h3>Low-renin hypertension algorithm</h3>
+    <ol class="step-list">
+      <li><div><strong>Check diet and medications</strong>, and a 24-h urine sodium, for interfering factors: antihypertensives, estrogen, <strong>licorice</strong>, high salt intake. If present → correct and re-evaluate.</div></li>
+      <li><div><strong>Measure plasma aldosterone.</strong> ARR elevated → <strong>primary aldosteronism</strong>.</div></li>
+      <li><div>ARR normal (low renin <em>and</em> low aldosterone): no red flags (young age, family history) → renin-independent non-classic hyperaldosteronism, AME, Liddle-like, DOC-secreting tumor.</div></li>
+      <li><div>With red flags → <strong>hyperkalemia + hyperchloremic acidosis</strong>? Yes → <strong>Gordon syndrome</strong>. No → <strong>Liddle syndrome</strong>, 11β- or 17α-hydroxylase deficiency, AME, activating MR mutation.</div></li>
+    </ol>
+    <figure class="fig-card sm" id="fig-low-renin-algorithm"><div class="fig-frame"><img class="slide-img" src="assets/app-session-1/as1-low-renin-algorithm.jpg" alt="Low-renin hypertension: exclude interfering factors → aldosterone → elevated ARR = PA; normal ARR → Liddle, AME, CAH, Gordon, DOC-secreting tumor" width="1100" height="1436" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig A1.19</span><span class="fig-title">Low-renin hypertension: exclude interfering factors → aldosterone → elevated ARR = PA; normal ARR → Liddle, AME, CAH, Gordon, DOC-secreting tumor</span><span class="fig-src"><b>Segal — HTN case</b> · Shah, Hypertension 2024</span></figcaption></figure>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> A 19-year-old with severe HTN, K⁺ 2.9 and metabolic alkalosis has <strong>low renin and low aldosterone</strong>; his father also had early HTN. Amiloride normalizes his BP. Diagnosis?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Liddle syndrome</strong> (gain-of-function ENaC): mineralocorticoid-like physiology without aldosterone, treated with an ENaC blocker.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> HTN, hypokalemia, high renin and high aldosterone with an abdominal bruit. Category and likely cause?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Secondary hyperaldosteronism</strong> from <strong>renal artery stenosis</strong> (renovascular HTN).</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== B6 PA ==================== -->
+<div class="section" id="b6-pa">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Case B · Topic 14</div><span class="hy-flag">⭐ The ARR means something only when renin is suppressed</span></div>
+    <p class="section-label">how common · who to screen · subtypes · how to test · why no edema</p>
+    <h2 class="section-title">Primary Aldosteronism: Screen &amp; Test</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>PA = primary aldosteronism · ARR = aldosterone-to-renin ratio · OSA = obstructive sleep apnea · AF = atrial fibrillation · APA = aldosterone-producing adenoma · IHA = idiopathic (bilateral) hyperplasia · FH = familial hyperaldosteronism · GRA = glucocorticoid-remediable aldosteronism · MRA = mineralocorticoid receptor antagonist · ACEi / ARB = ACE inhibitor / angiotensin receptor blocker · DHP CCB = dihydropyridine calcium channel blocker · ANP = atrial natriuretic peptide · DI = diabetes insipidus · ES = Endocrine Society</div>
+
+    <h3>It's common, and the K⁺ is usually normal</h3>
+    <ul class="notes-list">
+      <li>PA is the <strong>most common curable endocrine cause of HTN</strong>: ~<span class="num">5–14%</span> of HTN in primary care, and <strong>36% of patients with resistant HTN ± OSA</strong>. Renin-independent aldosterone production rises <strong>on a continuum with BP severity</strong> (Brown, 2020).</li>
+      <li><strong>Hypokalemia is seen in only a minority</strong>; a normal K⁺ doesn't exclude PA.</li>
+      <li><strong>Resistant HTN</strong> = uncontrolled despite 3 drugs of different classes at maximally tolerated doses, ideally including a diuretic (or controlled on ≥ 4 drugs).</li>
+    </ul>
+    <figure class="fig-card sm" id="fig-pa-prevalence"><div class="fig-frame"><img class="slide-img" src="assets/app-session-1/as1-pa-prevalence.jpg" alt="Renin-independent aldosterone production rises on a continuum with BP severity, from normotension to resistant HTN; PA prevalence is high" width="960" height="720" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig A1.20</span><span class="fig-title">Renin-independent aldosterone production rises on a continuum with BP severity, from normotension to resistant HTN; PA prevalence is high</span><span class="fig-src"><b>Segal — HTN case</b> · Brown, Ann Intern Med 2020</span></figcaption></figure>
+
+    <h3>Who should be screened</h3>
+    <ul class="notes-list">
+      <li>2016 ES criteria (any one): <strong>resistant HTN</strong> · <strong>hypokalemia</strong> (spontaneous or diuretic-induced) · <strong>adrenal nodule</strong> · <strong>AF</strong> · family history of early stroke (&lt; 40) · first-degree relative with PA · <strong>OSA</strong>.</li>
+      <li><strong>2025 Endocrine Society: screen everyone with HTN.</strong> <strong>2025 ACC/AHA: screen resistant HTN, regardless of K⁺.</strong></li>
+    </ul>
+    <div class="callout callout-hook">
+      <div class="callout-title">🎙️ From the recording: does he screen everyone?</div>
+      <p>Asked whether anyone really checks an ARR in every hypertensive patient, Dr. Segal said <strong>"I don't think so… that's a little bit much."</strong> He screens when patients start to look <strong>resistant</strong>, and more readily as a referral specialist. He spends a lot of time warning young hypertensive patients that <strong>they'll feel miserable for about 1–3 months</strong> as their BP is lowered; otherwise they stop their medicines.</p>
+    </div>
+
+    <h3>Subtypes</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>Type</th><th>Share</th></tr>
+      <tr><td><strong>Bilateral idiopathic hyperplasia</strong></td><td><strong>~60%</strong></td></tr>
+      <tr><td><strong>Aldosterone-producing adenoma</strong> (Conn)</td><td><strong>~30%</strong></td></tr>
+      <tr><td>Unilateral adrenal hyperplasia</td><td>2%</td></tr>
+      <tr><td>Familial: FH II (&lt; 6%); FH I = GRA, FH III (<i>KCNJ5</i>), FH IV (<i>CACNA1H</i>) each &lt; 1%</td><td></td></tr>
+      <tr><td>Adrenocortical carcinoma, ectopic tumors</td><td>&lt; 1%</td></tr>
+    </table></div>
+
+    <h3>How to test</h3>
+    <ul class="notes-list">
+      <li><strong>Aldosterone/renin ratio</strong>: <strong>morning draw, seated, on an unrestricted diet</strong>. Positive: ARR ≥ <span class="num">30</span> with plasma aldosterone ≥ <span class="num">10</span> ng/dL (pearl 6 quotes ARR &gt; 20 with renin ≤ 1 ng/mL/h; cut-offs are assay-dependent).</li>
+      <li><strong>Correct K⁺ first</strong>: hypokalemia suppresses aldosterone and gives a false negative.</li>
+      <li><strong class="hot">The ARR is only meaningful when renin is suppressed and aldosterone is inappropriately non-suppressed</strong> (a very low renin alone can make the ratio high).</li>
+      <li>Drug interference: <strong>β-blockers → false positive</strong> (they lower renin); <strong>ACEi/ARB/diuretics → false negative</strong> (they raise renin).</li>
+    </ul>
+    <div class="tbl-scroll"><table>
+      <tr><th>Medication</th><th>Hold before testing?</th><th>For</th></tr>
+      <tr><td><strong>MRAs</strong> (spironolactone, eplerenone)</td><td><strong>Mandatory</strong></td><td><strong>4 weeks</strong></td></tr>
+      <tr><td>ACEi, ARBs, β-blockers, diuretics, DHP CCBs</td><td>Optional</td><td>2–4 weeks</td></tr>
+      <tr><td><strong>α-blockers, non-DHP CCBs, vasodilators</strong> (hydralazine)</td><td><strong>Continue</strong> (use these to control BP while testing)</td><td>—</td></tr>
+    </table></div>
+
+    <h3>Why no edema? Aldosterone escape</h3>
+    <p>Aldosterone drives Na⁺ retention → <strong>plasma volume expansion</strong> → ↑ renal blood flow and peritubular capillary pressure (<strong>pressure natriuresis</strong>) plus <strong>atrial stretch → ANP</strong> → natriuresis. Na⁺ retention plateaus, so <strong>HTN without edema</strong>. Edema in a patient with suspected PA should send you looking for another cause.</p>
+    <figure class="fig-card sm" id="fig-aldosterone-escape"><div class="fig-frame"><img class="slide-img" src="assets/app-session-1/as1-aldosterone-escape.jpg" alt="Aldosterone escape: Na⁺ retention → plasma volume expansion → ↑ renal flow and peritubular pressure + atrial stretch (ANP) → natriuresis, so no edema" width="1200" height="853" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig A1.21</span><span class="fig-title">Aldosterone escape: Na⁺ retention → plasma volume expansion → ↑ renal flow and peritubular pressure + atrial stretch (ANP) → natriuresis, so no edema</span><span class="fig-src"><b>Segal — HTN case</b> · MyEndoConsult</span></figcaption></figure>
+    <div class="callout callout-hook">
+      <div class="callout-title">🎙️ From the recording: the man with the milk jug</div>
+      <p>A patient arrived holding <strong>a milk jug full of his urine</strong> to show how much he was passing. The cause wasn't the high BP: it was <strong class="hot">hypokalemia (K⁺ 2.6–2.7) causing nephrogenic diabetes insipidus</strong>, "kind of like putting someone on lithium." Polyuria and nocturia are a clue to PA. He had a unilateral adenoma; after AVS and adrenalectomy his BP fell (he still needed some medication after years of HTN), and his verdict was "I no longer have to carry a jug."</p>
+    </div>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> A patient on metoprolol has an ARR of 45 with aldosterone 8 ng/dL and renin 0.18 ng/mL/h. Is this PA?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Not established.</strong> The β-blocker suppresses renin and inflates the ratio (false positive), and aldosterone isn't inappropriately elevated. The ARR only counts when renin is suppressed <em>and</em> aldosterone is non-suppressed.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> Why do patients with primary aldosteronism rarely have edema?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Aldosterone escape</strong>: volume expansion triggers <strong>pressure natriuresis</strong> and <strong>ANP release</strong>, which cap Na⁺ retention.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> Which antihypertensive must be stopped for 4 weeks before ARR testing, and which classes can be used to control BP meanwhile?</p>
+      <div class="answer"><div class="label">Answer</div><p>Stop <strong>MRAs</strong> (spironolactone, eplerenone). Use <strong>α-blockers, non-DHP CCBs or hydralazine</strong>, which barely affect renin.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== B7 TREAT ==================== -->
+<div class="section" id="b7-treat">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">Case B · Topic 15</div><span class="hy-flag">⭐ Lateralize before the scalpel: CT + adrenal venous sampling</span></div>
+    <p class="section-label">the management algorithm · surgery vs MRA · harm beyond the BP number · pearls</p>
+    <h2 class="section-title">Treating PA &amp; Why It Matters</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>PA = primary aldosteronism · ARR = aldosterone-to-renin ratio · AVS = adrenal venous sampling · CT = computed tomography · MRA = mineralocorticoid receptor antagonist · ENaC = epithelial Na⁺ channel · AF = atrial fibrillation · LVH = left ventricular hypertrophy · CAD = coronary artery disease · HF = heart failure · OR = odds ratio</div>
+
+    <div class="case-card"><b>Slide 30:</b> his K⁺ is corrected; labs return with a <strong>suppressed renin and elevated aldosterone, ARR 40</strong> → primary aldosteronism. Next steps?</div>
+
+    <ol class="step-list">
+      <li><div><strong>Low renin + inappropriately high aldosterone = PA.</strong> If not, consider a false negative (interfering drugs, uncorrected hypokalemia).</div></li>
+      <li><div><strong>Is the patient interested in and eligible for surgery?</strong> If not → medical therapy.</div></li>
+      <li><div>If yes → <strong>adrenal CT + adrenal venous sampling (AVS)</strong> to <strong>lateralize</strong>. CT alone misclassifies; small adenomas and non-functioning incidentalomas are common. (ES 2025 lets select young patients with marked hypokalemia and a clear unilateral adenoma &gt; 1 cm skip AVS.)</div></li>
+      <li><div><strong>Unilateral → laparoscopic adrenalectomy.</strong> <strong>Bilateral → medical therapy.</strong></div></li>
+      <li><div><strong>Medical therapy</strong>: sodium restriction; <strong>1st line spironolactone</strong> (steroidal MRA; switch to <strong>eplerenone</strong> for gynecomastia); 2nd line an <strong>ENaC inhibitor</strong> (amiloride). Emerging: non-steroidal MRAs, aldosterone synthase inhibitors. <strong>Titrate to un-suppress renin</strong>: a persistently suppressed renin on an MRA is linked to more CV events.</div></li>
+    </ol>
+    <figure class="fig-card" id="fig-pa-management"><div class="fig-frame"><img class="slide-img" src="assets/app-session-1/as1-pa-management.jpg" alt="PA management: low renin + high aldosterone → surgical candidate? → adrenal CT + AVS → lateralized → adrenalectomy; otherwise MRA (spironolactone), then ENaC inhibitor" width="1400" height="908" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig A1.22</span><span class="fig-title">PA management: low renin + high aldosterone → surgical candidate? → adrenal CT + AVS → lateralized → adrenalectomy; otherwise MRA (spironolactone), then ENaC inhibitor</span><span class="fig-src"><b>Segal — HTN case</b></span></figcaption></figure>
+    <div class="callout callout-hook">
+      <div class="callout-title">🎙️ From the recording: why not take both adrenals out?</div>
+      <p>With <strong>bilateral hyperplasia</strong>, removing both glands would be "a very aggressive surgery" and would commit the patient to <strong>lifelong glucocorticoid and mineralocorticoid replacement</strong>, so bilateral disease is treated medically. Unilateral disease gets a <strong>laparoscopic adrenalectomy</strong>. He had to send his Maine patients to Boston for AVS because it wasn't available locally.</p>
+    </div>
+
+    <h3>Why treat aggressively: PA vs matched essential HTN</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>Risk</th><th>Odds ratio</th></tr>
+      <tr><td><strong>Atrial fibrillation</strong></td><td><strong><span class="num">3.52</span></strong></td></tr>
+      <tr><td>Proteinuria</td><td>2.68</td></tr>
+      <tr><td>Stroke</td><td>2.58</td></tr>
+      <tr><td>LVH</td><td>2.29</td></tr>
+      <tr><td>Heart failure</td><td>2.05</td></tr>
+      <tr><td>CAD</td><td>1.77</td></tr>
+    </table></div>
+    <p>Aldosterone damages the endothelium and myocardium directly, beyond its effect on BP. "You've got to identify this, you've got to treat this. It's not something that you just let smolder." Renin-independent aldosterone production causes a vicious cycle: ↑ distal Na⁺ delivery → ↑ Na⁺ reabsorption, volume and BP → ↑ K⁺ and H⁺ excretion → cardiovascular and kidney disease.</p>
+    <figure class="fig-card" id="fig-renin-independent-aldo"><div class="fig-frame"><img class="slide-img" src="assets/app-session-1/as1-renin-independent-aldo.jpg" alt="Renin-independent aldosteronism: ↑ distal Na⁺ delivery and reabsorption, volume expansion and BP; ↑ K⁺ and H⁺ excretion; cardiovascular and kidney disease" width="1400" height="756" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig A1.23</span><span class="fig-title">Renin-independent aldosteronism: ↑ distal Na⁺ delivery and reabsorption, volume expansion and BP; ↑ K⁺ and H⁺ excretion; cardiovascular and kidney disease</span><span class="fig-src"><b>Segal — HTN case</b> · Endocrine Society</span></figcaption></figure>
+
+    <div class="callout callout-key">
+      <div class="callout-title">🔑 Key takeaways</div>
+      <p>Primary HTN is common, but <strong>screen for secondary causes when patients present atypically or have resistant HTN</strong>. PA prevalence is <strong>underestimated</strong>. You need the <strong>renin–aldosterone physiology</strong> to read the ARR correctly. <strong>Aggressive management of aldosterone excess</strong> prevents adverse CV effects. "This is something that you're going to see on boards."</p>
+    </div>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> A 45-year-old with confirmed PA has a 1.5-cm left adrenal nodule on CT and wants surgery. What is the next step?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Adrenal venous sampling</strong> to confirm lateralization before adrenalectomy. At 45, the nodule could be a non-functioning incidentaloma with bilateral hyperplasia.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> AVS shows bilateral aldosterone secretion. Treatment?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Spironolactone</strong> (eplerenone if gynecomastia) with sodium restriction; amiloride second line.</p></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ==================== PRACTICE ==================== -->
+<div class="section" id="practice">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge alt">Practice</div></div>
+    <p class="section-label">Both cases, rapid fire</p>
+    <h2 class="section-title">Drill</h2>
+    <div class="abbr-strip"><span class="t">Abbreviations</span>ACS = acute coronary syndrome · NSTEMI = non-ST-elevation MI · VSR = ventricular septal rupture · PA = primary aldosteronism · ARR = aldosterone-to-renin ratio · MRA = mineralocorticoid receptor antagonist · AVS = adrenal venous sampling · FH = familial hypercholesterolemia</div>
+    <div class="tool drill" id="s1Drill">
+      <h4>🎯 Quick check</h4>
+      <p class="t-intro">Shuffled; instant feedback.</p>
+      <div class="d-q" id="dQ"></div>
+      <div class="d-opts" id="dOpts"></div>
+      <div class="t-out" id="dOut"></div>
+      <div class="d-nav"><button class="tb" id="dNext" type="button">Next →</button><span id="dScore">0 / 0 correct</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== GLOSSARY ==================== -->
+<div class="section" id="glossary">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge alt">Reference</div></div>
+    <p class="section-label">Every short form used in these notes</p>
+    <h2 class="section-title">Glossary &amp; Abbreviations</h2>
+    <div class="gloss">
+      <dl>
+        <dt>ABPM · HBPM</dt><dd>24-hour ambulatory · home BP monitoring</dd>
+        <dt>ACS · NSTE-ACS</dt><dd>Acute coronary syndrome · non-ST-elevation ACS</dd>
+        <dt>AME</dt><dd>Apparent mineralocorticoid excess (licorice, 11β-HSD2 deficiency)</dd>
+        <dt>ANP</dt><dd>Atrial natriuretic peptide</dd>
+        <dt>ARR</dt><dd>Aldosterone-to-renin ratio</dd>
+        <dt>AVS</dt><dd>Adrenal venous sampling</dd>
+        <dt>CAC · CCTA</dt><dd>Coronary artery calcium score · coronary CT angiography</dd>
+        <dt>CFR</dt><dd>Coronary flow reserve</dd>
+      </dl>
+      <dl>
+        <dt>DHP / non-DHP CCB</dt><dd>Dihydropyridine (vascular) / non-dihydropyridine (cardiac) calcium channel blocker</dd>
+        <dt>ENaC · ROMK</dt><dd>Epithelial Na⁺ channel · renal outer medullary K⁺ channel</dd>
+        <dt>ETT · MPI</dt><dd>Exercise treadmill test · myocardial perfusion imaging</dd>
+        <dt>FH</dt><dd>Familial hypercholesterolemia (or familial hyperaldosteronism, in Topic 14)</dd>
+        <dt>GRACE</dt><dd>Risk score for ACS (&gt; 140 = high risk)</dd>
+        <dt>hs-cTn</dt><dd>High-sensitivity cardiac troponin</dd>
+        <dt>MRA</dt><dd>Mineralocorticoid receptor antagonist</dd>
+      </dl>
+      <dl>
+        <dt>OMT</dt><dd>Optimal medical therapy (antiplatelet, statin, ACEi/ARB, β-blocker)</dd>
+        <dt>PA</dt><dd>Primary aldosteronism</dd>
+        <dt>PEA</dt><dd>Pulseless electrical activity</dd>
+        <dt>PREVENT</dt><dd>AHA risk equations (10/30-year CVD, ASCVD, HF)</dd>
+        <dt>SIHD</dt><dd>Stable ischemic heart disease</dd>
+        <dt>TOD</dt><dd>Target-organ damage (brain, heart, kidney, retina)</dd>
+        <dt>VSR</dt><dd>Ventricular septal rupture</dd>
+      </dl>
+    </div>
+  </div>
+</div>
+
+<style>
+.tool input.t-in{width:90px;padding:6px 8px;border:1px solid var(--border);border-radius:8px;background:var(--paper);color:var(--ink);font-family:'JetBrains Mono',monospace;font-size:.9rem}
+.case-card{background:var(--highlight);border:1px solid var(--border);border-left:5px solid var(--gold);border-radius:0 10px 10px 0;padding:12px 16px;margin:14px 0;font-size:.95rem;line-height:1.6}
+.case-card b:first-child{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);margin-right:4px}
+ul.checklist{list-style:none}
+@media print{#s1Drill,#raTool,#bpTool{display:none!important}}
+</style>
+<script>
+(function(){
+  function $(id){return document.getElementById(id);}
+  function bp(){var s=+$('bpS').value,d=+$('bpD').value,o=$('bpOut');if(!s||!d){o.innerHTML='Enter both values.';return;}
+    var c,n='';
+    if(s>=140||d>=90)c='Stage 2 hypertension';else if(s>=130||d>=80)c='Stage 1 hypertension';else if(s>=120)c='Elevated';else c='Normal';
+    if(s>180||d>120)n='<br>⚠️ <b>Severe (&gt; 180/120)</b>: assess for acute target-organ damage (brain, heart, kidney, retina). With TOD it is a <b>hypertensive emergency</b>.';
+    o.innerHTML='Category: <b>'+c+'</b> (use the higher of the SBP and DBP categories).'+n;}
+  ['bpS','bpD'].forEach(function(id){$(id).addEventListener('input',bp);});bp();
+  var R=null,A=null,M={'lo-hi':'<b>Primary aldosteronism</b>: autonomous aldosterone suppresses renin. Confirm a suppressed renin with non-suppressed aldosterone (ARR), then CT + AVS if surgery is an option.',
+    'hi-hi':'<b>Secondary hyperaldosteronism</b>: renin drives aldosterone. Think renal artery stenosis (fibromuscular dysplasia in the young, atherosclerosis in the old), diuretics, renin-secreting tumor.',
+    'lo-lo':'<b>Non-aldosterone mineralocorticoid effect</b>: Liddle syndrome (ENaC gain-of-function), licorice / AME (11β-HSD2 blocked), Cushing, CAH (11β- or 17α-hydroxylase), DOC-secreting tumor. Hyperkalemia + acidosis instead → Gordon syndrome.',
+    'hi-lo':'An unusual pattern for hypertensive hypokalemia. High renin with low aldosterone suggests adrenal insufficiency or a drug effect (e.g. ACE inhibitor/ARB); recheck the clinical picture.'};
+  function ra(){document.querySelectorAll('#raTool [data-r]').forEach(function(b){b.classList.toggle('on',b.dataset.r===R);});
+    document.querySelectorAll('#raTool [data-a]').forEach(function(b){b.classList.toggle('on',b.dataset.a===A);});
+    if(R&&A)$('raOut').innerHTML=M[R+'-'+A];}
+  document.querySelectorAll('#raTool [data-r]').forEach(function(b){b.addEventListener('click',function(){R=b.dataset.r;ra();});});
+  document.querySelectorAll('#raTool [data-a]').forEach(function(b){b.addEventListener('click',function(){A=b.dataset.a;ra();});});
+
+  var QS=[
+    ['Question Dr. Watkins adds to every chest-pain history.',['"Can you make it occur?"','"Is it worse when you breathe?"','"Does nitroglycerin help?"','"Is it on the left side?"'],0,'Angina is <b>predictable and inducible</b>. Relief with NTG is <b>not</b> diagnostic.'],
+    ['Highly specific sign of familial hypercholesterolemia.',['Tendon xanthoma','Xanthelasma','Eruptive xanthoma','Acanthosis nigricans'],0,'<b>Tendon xanthoma</b> (and arcus &lt; 45). Xanthelasma has low specificity.'],
+    ['Pre-test probability that defines "intermediate" in this case.',['~40–50%','~5%','~90%','~15%'],0,'CAD Consortium basic 40%, clinical 43–50%.'],
+    ['Best test for an intermediate-risk woman who can exercise, normal ECG.',['Exercise stress echo','Outpatient troponin','Immediate coronary angiography','No testing'],0,'Imaging adds sensitivity and specificity over ETT, <b>especially in women</b>.'],
+    ['Antianginal contraindicated in HOCM.',['Nitrates','β-blockers','Verapamil','Ranolazine'],0,'↓ preload worsens dynamic outflow obstruction.'],
+    ['Ranolazine works by blocking…',['The late Na⁺ current','The funny current (HCN)','β₁ receptors','L-type Ca²⁺ channels'],0,'Ivabradine blocks I<sub>f</sub>; the slide mixed them up.'],
+    ['Patient with ACS symptoms in your office. Transport?',['Ambulance, after aspirin/NTG/monitoring','Have her drive to the ER','Stress echo first','Schedule cath next week'],0,'<b>Never by car</b>; start initial therapy in the office.'],
+    ['NSTE-ACS with cardiogenic shock: cath timing.',['< 2 hours','< 24 hours','< 72 hours','Elective'],0,'Very high risk → immediate invasive.'],
+    ['Type 2 (secondary) MI is caused by…',['Supply–demand mismatch','Plaque rupture with thrombus','Stent thrombosis','Coronary dissection'],0,'Sepsis, shock, tachycardia, severe HTN, anemia.'],
+    ['Post-MI: new LSB holosystolic murmur, thrill, O₂ step-up RA→PA.',['Ventricular septal rupture','Papillary muscle rupture','Free-wall rupture','Dressler syndrome'],0,'<b>VSR</b>: left-to-right shunt.'],
+    ['Papillary muscle most often ruptured after inferior MI.',['Posteromedial','Anterolateral','Septal','Right ventricular'],0,'Single PDA supply → 3× more likely.'],
+    ['A cuff over clothing can distort BP by up to…',['50 mm Hg','5 mm Hg','2 mm Hg','100 mm Hg'],0,'5–50 mm Hg.'],
+    ['BP 142/86 is…',['Stage 2 HTN','Stage 1 HTN','Elevated','Normal'],0,'SBP ≥ 140 alone qualifies.'],
+    ['Low renin, high aldosterone, hypokalemia.',['Primary aldosteronism','Renal artery stenosis','Liddle syndrome','Licorice ingestion'],0,'Autonomous aldosterone suppresses renin.'],
+    ['Medication that must be held 4 weeks before ARR testing.',['Spironolactone','Verapamil','Doxazosin','Hydralazine'],0,'MRAs are mandatory holds; the others can be continued.'],
+    ['β-blockers affect the ARR by…',['False positive (↓ renin)','False negative (↑ renin)','No effect','Lowering aldosterone only'],0,'ACEi/ARB/diuretics give false negatives.'],
+    ['Why PA patients rarely have edema.',['Aldosterone escape','Hypokalemic diuresis alone','Low cardiac output','ADH suppression'],0,'Pressure natriuresis + ANP.'],
+    ['Why the milk-jug patient had polyuria.',['Hypokalemia → nephrogenic DI','Hypercalcemia','Central DI','Pressure natriuresis'],0,'K⁺ 2.6–2.7 → nephrogenic DI.'],
+    ['Most common PA subtype.',['Bilateral idiopathic hyperplasia','Aldosterone-producing adenoma','Adrenal carcinoma','GRA'],0,'~60% bilateral, ~30% adenoma.'],
+    ['Confirmed PA, wants surgery, 1.5-cm nodule on CT. Next.',['Adrenal venous sampling','Adrenalectomy now','Bilateral adrenalectomy','Repeat CT in 1 year'],0,'Lateralize before the scalpel.'],
+    ['Strongest complication excess in PA vs essential HTN.',['Atrial fibrillation (OR ~3.5)','Aortic dissection','Retinal detachment','Gout'],0,'Also stroke, LVH, HF, CAD, proteinuria.']];
+  for(var i=QS.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=QS[i];QS[i]=QS[j];QS[j]=t;}
+  var qi=0,right=0,done=0;
+  function show(){var q=QS[qi%QS.length];$('dQ').innerHTML='<b>'+((qi%QS.length)+1)+'.</b> '+q[0];$('dOut').innerHTML='';var o=$('dOpts');o.innerHTML='';delete o.dataset.answered;
+    var ord=q[1].map(function(_,k){return k;});for(var a=ord.length-1;a>0;a--){var b=Math.floor(Math.random()*(a+1)),t=ord[a];ord[a]=ord[b];ord[b]=t;}
+    ord.forEach(function(k){var btn=document.createElement('button');btn.className='tb';btn.type='button';btn.innerHTML=q[1][k];btn.dataset.k=k;
+      btn.addEventListener('click',function(){if(o.dataset.answered)return;o.dataset.answered='1';done++;
+        if(k===q[2]){right++;btn.classList.add('right');$('dOut').innerHTML='✅ '+q[3];}
+        else{btn.classList.add('wrong');o.querySelector('[data-k="'+q[2]+'"]').classList.add('right');$('dOut').innerHTML='❌ '+q[3];}
+        $('dScore').textContent=right+' / '+done+' correct';});o.appendChild(btn);});}
+  $('dNext').addEventListener('click',function(){qi++;show();});show();
+})();
+</script>
+
+<div class="hy-modal" id="hyModal">
+  <div class="hy-modal-card">
+    <div class="hy-modal-header">
+      <h2>🎯 Application Session 1 — Chest Pain &amp; Secondary HTN</h2>
+      <div class="hy-modal-actions">
+        <button class="hy-action-btn" onclick="printHY()">🖨️ Print / Save PDF</button>
+        <button class="hy-action-btn hy-close-btn" onclick="closeHY()">✕ Close</button>
+      </div>
+    </div>
+    <p class="hy-subhead">Watkins (CAD case module) · Segal (HTN case) · OMK 2 Cardio · October 2026</p>
+    <div class="hy-cols">
+      <div>
+        <span class="hy-lo-tag">CHEST PAIN → SIHD</span>
+        <div class="hy-block"><h4>History</h4><ul>
+          <li>Quality, location, onset, duration, relief, associated sx + <strong>"can you make it occur?"</strong></li>
+          <li>Ischemic: pressure, substernal → neck/jaw, minutes, exertion/stress, predictable</li>
+          <li>Non-ischemic: sharp/pleuritic/positional, ripping to back, seconds, pinpoint; NTG relief not diagnostic</li>
+          <li>Women: smoking 6× (men 3×), DM more potent, CAD ~10 y later</li>
+        </ul></div>
+        <div class="hy-block"><h4>Exam &amp; work-up</h4><ul>
+          <li>Pulses, bruits, S3, edema, xanthomas · FH: <strong>tendon xanthoma, arcus &lt; 45</strong> (xanthelasma low spec)</li>
+          <li>CBC, CMP, A1c, lipids, Lp(a) once · ECG for all · TTE · <strong>no outpatient troponin</strong></li>
+          <li>CAD Consortium pre-test prob 40–50% = intermediate → testing</li>
+          <li>Can exercise + interpretable ECG: low-int → ETT; int-high → stress echo/MPI or CCTA · can't exercise → pharmacologic stress or CCTA</li>
+          <li>Stress echo &gt; ETT, esp. in women</li>
+        </ul></div>
+        <div class="hy-block"><h4>Antianginals</h4><ul>
+          <li><strong>BB 1st line</strong> (↓ HR, contractility) · nitrates 2nd (↓ preload; CI HOCM, PDE-5i)</li>
+          <li>DHP CCB ↓ afterload · non-DHP ↓ HR/inotropy (CI severe AS, HOCM, low EF)</li>
+          <li>Ivabradine = I<sub>f</sub> (HCN) · ranolazine = late Na⁺ (↑ QTc)</li>
+          <li>OMT = antiplatelet + statin + ACEi/ARB + BB</li>
+        </ul></div>
+      </div>
+      <div>
+        <span class="hy-lo-tag">ACS · MI TYPES · COMPLICATIONS</span>
+        <div class="hy-block"><h4>Crescendo → NSTEMI</h4><ul>
+          <li>No stress test with active ischemia · <strong>never by car</strong> · office: aspirin, NTG, O₂ prn, monitor → ambulance</li>
+          <li>ER: ACS protocol, serial ECG/hs-cTn, POCUS, IV NTG, heparin, clopidogrel load</li>
+          <li>Invasive: very high (shock, refractory pain, VT/arrest, mechanical, AHF) <strong>&lt; 2 h</strong> · high (NSTEMI, dynamic ST, GRACE &gt; 140) <strong>&lt; 24 h</strong> · intermediate <strong>&lt; 72 h</strong></li>
+          <li>STEMI door-to-balloon &lt; 90 min</li>
+        </ul></div>
+        <div class="hy-block"><h4>MI classification</h4><ul>
+          <li>Primary (type 1) = plaque/thrombus; younger men · Secondary (type 2) = supply–demand; older women, comorbid · Procedural</li>
+          <li>CFR: max flow ↓ from ~50% stenosis; rest flow until 80–90%</li>
+          <li>hs-cTn = gold standard (up 7–10 days)</li>
+        </ul></div>
+        <div class="hy-block"><h4>Mechanical complications</h4><ul>
+          <li><strong>Papillary</strong>: inferior MI, posteromedial (PDA), ≤ 7 d, pulm edema, apical murmur → axilla</li>
+          <li><strong>VSR</strong>: 3–5 d, LSB holosystolic + thrill, <strong>O₂ step-up</strong> → ICU, surgery</li>
+          <li><strong>Free wall</strong>: anterior, &gt; 70, women, 24 h or 3–5 d, tamponade, <strong>PEA</strong></li>
+          <li>Dx: ECG + echo</li>
+        </ul></div>
+      </div>
+      <div>
+        <span class="hy-lo-tag">HTN → PRIMARY ALDOSTERONISM</span>
+        <div class="hy-block"><h4>Measure &amp; classify</h4><ul>
+          <li>Seated 5 min, back/feet supported, arm at heart, both arms, right cuff, bare arm; avg ≥ 2 readings on ≥ 2 visits</li>
+          <li>Cuff over clothing ±5–50 mm Hg</li>
+          <li>Elevated 120–129/&lt; 80 · <strong>St 1 130–139 or 80–89 · St 2 ≥ 140 or ≥ 90</strong> · &gt; 180/120 severe → check TOD</li>
+          <li>White-coat vs masked (ABPM/HBPM)</li>
+        </ul></div>
+        <div class="hy-block"><h4>Suspect secondary</h4><ul>
+          <li>Resistant, abrupt, <strong>&lt; 30 y</strong>, loss of control, disproportionate TOD, malignant, new DBP ≥ 65 y, <strong>unprovoked ↓K⁺</strong></li>
+          <li>Resistant HTN: OSA &gt; 30%, PA 6–23%</li>
+          <li>↓R ↑A = PA · ↑R ↑A = RAS/diuretics · ↓R ↓A = Liddle, licorice, Cushing, CAH</li>
+        </ul></div>
+        <div class="hy-block"><h4>Primary aldosteronism</h4><ul>
+          <li>Most common curable endocrine HTN (5–14%); K⁺ usually normal</li>
+          <li>Screen: ES 2025 everyone; ACC/AHA 2025 resistant HTN</li>
+          <li>ARR: AM, seated; correct K⁺; <strong>hold MRA 4 wk</strong>; BB false +, ACEi/ARB/diuretic false −; only meaningful if renin suppressed</li>
+          <li>60% bilateral, 30% adenoma · <strong>CT + AVS</strong> → unilateral adrenalectomy / bilateral spironolactone (eplerenone), amiloride</li>
+          <li>No edema = aldosterone escape (pressure natriuresis + ANP) · ↓K⁺ → nephrogenic DI polyuria</li>
+          <li>PA vs essential: AF OR 3.5, stroke, LVH, HF, CAD</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" aria-hidden="true"><img id="lightboxImg" alt="Zoomed figure"><div class="lightbox-cap" id="lightboxCap"></div></div>
+
+<div class="floating-left" id="floatingLeft">
+  <div class="tools-menu">
+    <button class="tool-btn backtop" id="backtopBtn">↑ Top</button>
+    <button class="tool-btn" id="nextQBtn">❓ Next question <span id="qCount"></span></button>
+    <button class="tool-btn" id="recallBtn">🙈 Recall mode <span id="rcCount"></span></button>
+  </div>
+  <button class="tool-btn tools-trigger" id="toolsTrigger" onclick="toggleToolsMenu()">🧰 Study<span class="dot"></span></button>
+</div>
+
+<div class="floating-stack">
+  <div class="theme-panel" id="themePanel">
+    <div class="theme-panel-title">Choose Theme</div>
+    <div class="theme-option active" data-theme="cardio" onclick="setTheme('cardio',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#fff7f7,#b51f3a 55%,#245f89)"></div>Cardio (Default)</div>
+    <div class="theme-option" data-theme="hemo" onclick="setTheme('hemo',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#170a0d,#ff6b6b)"></div>Hemo (Dark)</div>
+    <div class="theme-option" data-theme="paper" onclick="setTheme('paper',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#faf7f2,#1a1209)"></div>Paper</div>
+    <div class="theme-option" data-theme="night" onclick="setTheme('night',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#0f1923,#e8b84b)"></div>Night</div>
+    <div class="theme-option" data-theme="ocean" onclick="setTheme('ocean',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#eef7fb,#0a5286)"></div>Ocean</div>
+    <div class="theme-option" data-theme="forest" onclick="setTheme('forest',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#f2f7f0,#155c39)"></div>Forest</div>
+    <div class="theme-option" data-theme="sepia" onclick="setTheme('sepia',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#f7ecd9,#9c3b17)"></div>Sepia</div>
+    <div class="theme-option" data-theme="slate" onclick="setTheme('slate',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#f4f5f7,#9e2c0f)"></div>Slate</div>
+  </div>
+  <div class="font-btn-row">
+    <span class="font-label">Text</span>
+    <button class="font-btn" onclick="changeFontSize(1)" title="Increase font size">A+</button>
+    <span class="font-sep">|</span>
+    <button class="font-btn" onclick="changeFontSize(-1)" title="Decrease font size">A−</button>
+  </div>
+  <button class="theme-btn" id="themeBtn" onclick="toggleThemePanel()" title="Switch theme"><span>🎨</span><span>Theme</span></button>
+</div>
+
+<footer>
+  <div class="container">
+    <div>Built from Application Session 1: <em>CAD case modules</em> (Matthew W. Watkins, MD; 46 slides, no recording) and <em>HTN Case</em> (Paul Segal, DO; 34 slides). The recording (<em>Application Session transcript 2</em>) begins at the end of the HTN case; its emphasis is in the "From the recording" boxes. Figures are labeled by source. Items tagged "Board add-on" come from UWorld/AMBOSS or current guidelines. Slide errors are flagged in red boxes. No UWorld images. Personal study notes; course material remains the copyright of its authors.</div>
+    <div>Shortcuts: <kbd>J</kbd>/<kbd>K</kbd> section · <kbd>Q</kbd> next question · <kbd>R</kbd> reveal · <kbd>Esc</kbd> close</div>
+  </div>
+</footer>
+<script>
+var STORAGE_THEME_KEY='cardio-w15-app-session-1-theme';
+var STORAGE_FONT_KEY='cardio-w15-app-session-1-font';
+var STORAGE_PROGRESS_KEY='cardio-w15-app-session-1-progress';
+var DEFAULT_THEME='cardio';
+var SECTION_IDS=['orientation', 'a1-history', 'a2-exam', 'a3-workup', 'a4-testing', 'a5-meds', 'a6-acs', 'a7-mi', 'a8-complications', 'b1-history', 'b2-measure', 'b3-classify', 'b4-secondary', 'b5-aldo', 'b6-pa', 'b7-treat', 'practice', 'glossary'];
+
+var $  = function(s,r){return (r||document).querySelector(s);};
+var $$ = function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));};
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function storageGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+function storageSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+
+/* ============ theme ============ */
+var themePanelOpen=false;
+function toggleThemePanel(){themePanelOpen=!themePanelOpen;$('#themePanel').classList.toggle('open',themePanelOpen);}
+function syncThemeOptions(t){$$('.theme-option').forEach(function(o){o.classList.toggle('active',o.dataset.theme===t);});}
+function setTheme(t,el,skipStorage){
+  if(t===DEFAULT_THEME){document.documentElement.removeAttribute('data-theme');}
+  else{document.documentElement.setAttribute('data-theme',t);}
+  syncThemeOptions(t);
+  if(!skipStorage) storageSet(STORAGE_THEME_KEY,t);
+  setTimeout(function(){themePanelOpen=false;var p=$('#themePanel');if(p)p.classList.remove('open');},260);
+}
+document.addEventListener('click',function(e){
+  var p=$('#themePanel'),b=$('#themeBtn');
+  if(themePanelOpen&&p&&b&&!p.contains(e.target)&&!b.contains(e.target)){themePanelOpen=false;p.classList.remove('open');}
+});
+
+/* ============ font size ============ */
+var currentFontSize=16;
+function applyFontSize(size,skipStorage){
+  currentFontSize=Math.min(24,Math.max(12,Number(size)||16));
+  document.documentElement.style.fontSize=currentFontSize+'px';
+  document.body.style.fontSize=currentFontSize+'px';
+  if(!skipStorage)storageSet(STORAGE_FONT_KEY,currentFontSize);
+}
+function changeFontSize(d){applyFontSize(currentFontSize+d);}
+
+function initVisualState(){
+  var t=storageGet(STORAGE_THEME_KEY)||DEFAULT_THEME; setTheme(t,null,true);
+  var f=parseInt(storageGet(STORAGE_FONT_KEY),10);
+  applyFontSize(f&&f>=12&&f<=24?f:currentFontSize,true);
+}
+
+/* ============ lightbox ============ */
+function openLightbox(img){var lb=$('#lightbox');$('#lightboxImg').src=img.currentSrc||img.src;
+  $('#lightboxImg').alt=img.alt||'';
+  var cap=img.closest('figure')?img.closest('figure').querySelector('figcaption'):null;
+  $('#lightboxCap').innerHTML=cap?cap.innerHTML:'';
+  lb.classList.add('active');lb.setAttribute('aria-hidden','false');}
+function closeLightbox(){var lb=$('#lightbox');lb.classList.remove('active');
+  lb.setAttribute('aria-hidden','true');$('#lightboxImg').src='';}
+function initLightbox(){
+  $$('.slide-img').forEach(function(i){i.addEventListener('click',function(){openLightbox(i);});});
+  $('#lightbox').addEventListener('click',closeLightbox);
+}
+
+/* ============ scrollspy ============ */
+function initScrollspy(){
+  var links=$$('.toc-bar nav a'),map={},sections=[];
+  links.forEach(function(a){var id=a.getAttribute('href').slice(1),s=document.getElementById(id);
+    if(s){map[id]=a;sections.push(s);}});
+  if(!sections.length)return;
+  function update(){
+    var best=null,bestTop=-Infinity;
+    sections.forEach(function(s){var top=s.getBoundingClientRect().top;
+      if(top<=140&&top>bestTop){bestTop=top;best=s;}});
+    if(!best)best=sections[0];
+    links.forEach(function(a){a.classList.remove('active');});
+    if(map[best.id])map[best.id].classList.add('active');
+  }
+  window.addEventListener('scroll',update,{passive:true});update();
+}
+
+/* ============ reading progress ============ */
+function initProgress(){
+  var bar=$('#progressBar'),bt=$('#backtopBtn');
+  window.addEventListener('scroll',function(){
+    var h=document.documentElement,max=h.scrollHeight-h.clientHeight;
+    bar.style.width=(max>0?(h.scrollTop/max)*100:0)+'%';
+    if(bt)bt.classList.toggle('show',h.scrollTop>600);
+  },{passive:true});
+}
+
+/* ============ exam question reveal ============ */
+function initExamQ(){
+  $$('.exam-q').forEach(function(q){
+    var ans=q.querySelector('.answer'); if(!ans) return;
+    var b=document.createElement('button');b.className='reveal-btn';b.textContent='Reveal answer';
+    b.addEventListener('click',function(){q.classList.add('revealed');updateQCount();});
+    ans.parentNode.insertBefore(b,ans);
+  });
+  updateQCount();
+}
+function updateQCount(){
+  var all=$$('.exam-q'),done=all.filter(function(q){return q.classList.contains('revealed');});
+  var el=$('#qCount'); if(el) el.textContent=done.length+'/'+all.length;
+}
+function jumpToNextQ(){
+  var all=$$('.exam-q');if(!all.length)return;
+  var y=window.scrollY,pick=null;
+  var todo=all.filter(function(q){return !q.classList.contains('revealed');});
+  var pool=todo.length?todo:all;
+  for(var i=0;i<pool.length;i++){if(pool[i].getBoundingClientRect().top+y>y+120){pick=pool[i];break;}}
+  if(!pick)pick=pool[0];
+  var sec=pick.closest('.section');
+  if(sec&&sec.classList.contains('collapsed'))toggleSection(sec,false);
+  setTimeout(function(){
+    pick.scrollIntoView({behavior:'smooth',block:'center'});
+    pick.classList.remove('q-flash');void pick.offsetWidth;pick.classList.add('q-flash');
+  },sec&&sec.classList.contains('collapsed')?0:60);
+}
+
+/* ============ per-section progress ============ */
+var progress={};
+function loadProgress(){try{progress=JSON.parse(storageGet(STORAGE_PROGRESS_KEY)||'{}');}catch(e){progress={};}}
+function saveProgress(){storageSet(STORAGE_PROGRESS_KEY,JSON.stringify(progress));}
+function renderProgress(){
+  var reviewed=0;
+  SECTION_IDS.forEach(function(id){
+    var st=progress[id]||{},sec=document.getElementById(id);
+    if(st.reviewed)reviewed++;
+    if(sec){
+      var tools=sec.querySelector('.sec-tools');
+      if(tools){
+        tools.querySelector('.st-rev').classList.toggle('on',!!st.reviewed);
+        $$('.st-conf',tools).forEach(function(b){b.classList.toggle('on',+b.dataset.v===st.conf);});
+      }
+    }
+    var link=$('.toc-bar nav a[href="#'+id+'"]');
+    if(link){link.classList.toggle('done',!!st.reviewed);
+      link.classList.remove('conf-1','conf-2','conf-3');
+      if(st.conf)link.classList.add('conf-'+st.conf);}
+  });
+  var chip=$('#progressChip');
+  if(chip)chip.textContent=reviewed+'/'+SECTION_IDS.length+' reviewed';
+}
+function jumpToNextTodo(){
+  var target=null;
+  for(var i=0;i<SECTION_IDS.length&&!target;i++){var st=progress[SECTION_IDS[i]]||{};if(!st.reviewed)target=SECTION_IDS[i];}
+  for(var c=1;c<=2&&!target;c++){
+    for(var j=0;j<SECTION_IDS.length&&!target;j++){var s2=progress[SECTION_IDS[j]]||{};if(s2.conf===c)target=SECTION_IDS[j];}}
+  if(!target)target=SECTION_IDS[0];
+  var sec=document.getElementById(target); if(!sec)return;
+  if(sec.classList.contains('collapsed'))toggleSection(sec,false);
+  sec.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* ============ section tools + collapse ============ */
+function toggleSection(sec,force){
+  var willCollapse=(typeof force==='boolean')?force:!sec.classList.contains('collapsed');
+  sec.classList.toggle('collapsed',willCollapse);
+  var b=sec.querySelector('.st-collapse'); if(b)b.textContent=willCollapse?'▸ Expand':'▾ Collapse';
+}
+function toggleAllSections(){
+  var anyOpen=SECTION_IDS.some(function(id){var s=document.getElementById(id);return s&&!s.classList.contains('collapsed');});
+  SECTION_IDS.forEach(function(id){var s=document.getElementById(id);if(s)toggleSection(s,anyOpen);});
+  var b=$('#collapseAllBtn'); if(b)b.textContent=anyOpen?'⊞ Expand all':'⊟ Collapse all';
+}
+function initSectionTools(){
+  SECTION_IDS.forEach(function(id){
+    var sec=document.getElementById(id); if(!sec)return;
+    var container=sec.querySelector('.container'); if(!container)return;
+    var anchor=container.querySelector('.section-title'); if(!anchor)return;
+    var tools=document.createElement('div');
+    tools.className='sec-tools';
+    tools.innerHTML='<button class="st-rev">✓ Reviewed</button>'+
+      '<span class="st-lab">confidence</span>'+
+      '<button class="st-conf" data-v="1">\u{1F534} Shaky</button>'+
+      '<button class="st-conf" data-v="2">\u{1F7E1} Okay</button>'+
+      '<button class="st-conf" data-v="3">\u{1F7E2} Solid</button>'+
+      '<button class="st-collapse">▾ Collapse</button>';
+    anchor.parentNode.insertBefore(tools,anchor.nextSibling);
+    var note=document.createElement('div');
+    note.className='recall-note';
+    note.textContent='RECALL MODE — every bolded fact below is hidden. Say the answer out loud, then click the block to check it.';
+    tools.parentNode.insertBefore(note,tools.nextSibling);
+    var outer=document.createElement('div');outer.className='sec-body-outer';
+    var inner=document.createElement('div');inner.className='sec-body-inner';
+    outer.appendChild(inner);
+    while(note.nextSibling) inner.appendChild(note.nextSibling);
+    container.appendChild(outer);
+    tools.querySelector('.st-rev').addEventListener('click',function(){
+      progress[id]=progress[id]||{};progress[id].reviewed=!progress[id].reviewed;saveProgress();renderProgress();});
+    $$('.st-conf',tools).forEach(function(b){
+      b.addEventListener('click',function(){
+        progress[id]=progress[id]||{};
+        progress[id].conf=(progress[id].conf===+b.dataset.v)?0:+b.dataset.v;
+        saveProgress();renderProgress();});
+    });
+    tools.querySelector('.st-collapse').addEventListener('click',function(){toggleSection(sec);});
+  });
+  renderProgress();
+}
+
+/* ============ recall mode ============ */
+var recallMode=false;
+function recallTargets(){
+  return $$('.sec-body-inner :is(p,li,td,h4,dd) strong').filter(function(s){
+    return !s.closest('.exam-q')&&!s.closest('.tq-bar')&&!s.closest('.game')&&!s.closest('.abbr-strip')&&!s.closest('.legend')&&!s.closest('.watch');});
+}
+function updateRecallCount(){
+  var t=recallTargets(),o=t.filter(function(s){return s.classList.contains('rc-open');});
+  var el=$('#rcCount'); if(el) el.textContent=recallMode?(o.length+'/'+t.length):'';
+}
+function toggleRecall(){
+  recallMode=!recallMode;
+  document.body.classList.toggle('recall-mode',recallMode);
+  $('#recallBtn').classList.toggle('on',recallMode);
+  if(!recallMode) recallTargets().forEach(function(s){s.classList.remove('rc-open');});
+  else{
+    var allCollapsed=SECTION_IDS.every(function(id){var s=document.getElementById(id);return !s||s.classList.contains('collapsed');});
+    if(allCollapsed) toggleAllSections();
+  }
+  syncToolsDot();updateRecallCount();
+}
+function initRecall(){
+  document.addEventListener('click',function(e){
+    if(!recallMode)return;
+    var s=e.target.closest?e.target.closest('strong'):null;
+    if(!s||s.classList.contains('rc-open'))return;
+    if(s.closest('.exam-q')||s.closest('.game')||s.closest('.abbr-strip'))return;
+    if(!s.closest('.sec-body-inner'))return;
+    e.stopPropagation();s.classList.add('rc-open');updateRecallCount();
+  },true);
+}
+function syncToolsDot(){var t=$('#toolsTrigger');if(t)t.classList.toggle('busy',recallMode);}
+function toggleToolsMenu(){$('#floatingLeft').classList.toggle('open');}
+
+/* ============ HY one-pager ============ */
+function openHY(){var m=$('#hyModal');if(!m)return;m.classList.add('open');
+  document.body.classList.add('hy-mode');document.body.style.overflow='hidden';}
+function closeHY(){var m=$('#hyModal');if(!m)return;m.classList.remove('open');
+  document.body.classList.remove('hy-mode');document.body.style.overflow='';}
+function printHY(){window.print();}
+
+/* ============ table quiz ============ */
+function initTableQuiz(){
+  $$('table').forEach(function(table){
+    if(table.classList.contains('hy-mini-table'))return;
+    if(table.closest('.game'))return;
+    var headRow=table.rows[0]; if(!headRow)return;
+    var headers=Array.prototype.slice.call(headRow.cells).map(function(c){return c.textContent.trim();});
+    if(headers.length<2)return;
+    var bar=document.createElement('div');bar.className='tq-bar';
+    var toggle=document.createElement('button');toggle.className='tq-toggle';toggle.textContent='\u{1F9E9} Quiz this table';
+    var cols=document.createElement('div');cols.className='tq-cols';cols.style.display='none';
+    var start=document.createElement('button');start.className='tq-start';start.textContent='▶ Start';
+    start.disabled=true;start.style.display='none';
+    var shuf=document.createElement('button');shuf.className='tq-shuffle';shuf.textContent='\u{1F500} Shuffle rows';shuf.style.display='none';
+    var reset=document.createElement('button');reset.className='tq-reset';reset.textContent='↺ Reset';reset.style.display='none';
+    var score=document.createElement('span');score.className='tq-score';
+    bar.appendChild(toggle);bar.appendChild(cols);bar.appendChild(shuf);bar.appendChild(start);bar.appendChild(reset);bar.appendChild(score);
+    var host=table.parentNode.classList.contains('tbl-scroll')?table.parentNode:table;
+    host.parentNode.insertBefore(bar,host);
+
+    var sel=new Set(),running=false,hidden=[],revealed=0,originalOrder=null;
+    headers.forEach(function(h,i){
+      var b=document.createElement('button');b.className='tq-col-btn';b.textContent=h||('col '+(i+1));
+      b.addEventListener('click',function(){
+        if(running)return;
+        if(sel.has(i)){sel.delete(i);b.classList.remove('sel');}else{sel.add(i);b.classList.add('sel');}
+        start.disabled=sel.size===0;
+      });
+      cols.appendChild(b);
+    });
+    function dataRows(){
+      var parent=table.tBodies[0]||table;
+      return Array.prototype.slice.call(parent.rows).filter(function(r){return !r.querySelector('th')||r!==headRow;})
+        .filter(function(r){return r!==headRow;});
+    }
+    toggle.addEventListener('click',function(){
+      var open=cols.style.display==='none';
+      cols.style.display=open?'flex':'none';
+      start.style.display=shuf.style.display=open?'':'none';
+      toggle.classList.toggle('active',open);
+      toggle.textContent=open?'✕ Close quiz':'\u{1F9E9} Quiz this table';
+      if(!open)doReset();
+    });
+    shuf.addEventListener('click',function(){
+      var parent=table.tBodies[0]||table;
+      var rows=dataRows();
+      if(!originalOrder)originalOrder=rows.slice();
+      shuffle(rows).forEach(function(r){parent.appendChild(r);});
+    });
+    function updateScore(){
+      score.textContent=revealed+' / '+hidden.length+' revealed';
+      score.classList.toggle('done',hidden.length>0&&revealed===hidden.length);
+      if(hidden.length>0&&revealed===hidden.length)score.textContent='\u{1F389} '+revealed+' / '+hidden.length;
+    }
+    start.addEventListener('click',function(){
+      if(running||!sel.size)return;
+      running=true;hidden=[];revealed=0;
+      dataRows().forEach(function(r){
+        Array.prototype.slice.call(r.cells).forEach(function(c,i){
+          if(!sel.has(i)||!c.textContent.trim())return;
+          var w=document.createElement('span');w.className='tq-cell-content';w.innerHTML=c.innerHTML;
+          c.innerHTML='';c.appendChild(w);c.classList.add('quiz-hidden-cell');
+          c.dataset.tqOrig=w.innerHTML;
+          hidden.push(c);
+        });
+      });
+      reset.style.display='';start.disabled=true;updateScore();
+    });
+    table.addEventListener('click',function(e){
+      var c=e.target.closest?e.target.closest('td.quiz-hidden-cell'):null;
+      if(!c)return;
+      c.classList.remove('quiz-hidden-cell');c.innerHTML=c.dataset.tqOrig;revealed++;updateScore();
+    });
+    function doReset(){
+      hidden.forEach(function(c){if(c.classList.contains('quiz-hidden-cell')){c.classList.remove('quiz-hidden-cell');c.innerHTML=c.dataset.tqOrig;}});
+      if(originalOrder){var parent=table.tBodies[0]||table;originalOrder.forEach(function(r){parent.appendChild(r);});}
+      hidden=[];revealed=0;running=false;score.textContent='';score.classList.remove('done');
+      start.disabled=sel.size===0;reset.style.display='none';
+    }
+    reset.addEventListener('click',doReset);
+  });
+}
+
+/* ============ keyboard shortcuts ============ */
+function initKeys(){
+  document.addEventListener('keydown',function(e){
+    if(e.metaKey||e.ctrlKey||e.altKey)return;
+    var t=e.target,tag=t&&t.tagName;
+    if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT'||(t&&t.isContentEditable))return;
+    var hy=$('#hyModal');
+    if(e.key==='Escape'){ if(hy&&hy.classList.contains('open'))closeHY(); closeLightbox(); return; }
+    if(hy&&hy.classList.contains('open'))return;
+    var k=e.key.toLowerCase();
+    if(k==='q'){e.preventDefault();jumpToNextQ();return;}
+    if(k==='r'){
+      e.preventDefault();
+      var best=null,bd=Infinity,mid=window.innerHeight/2;
+      $$('.exam-q').forEach(function(q){var d=Math.abs(q.getBoundingClientRect().top+q.offsetHeight/2-mid);
+        if(d<bd){bd=d;best=q;}});
+      if(best){best.classList.add('revealed');updateQCount();}
+      return;
+    }
+    if(k==='j'||k==='k'){
+      e.preventDefault();
+      var y=window.scrollY+window.innerHeight*0.3,cur=0;
+      SECTION_IDS.forEach(function(id,i){var s=document.getElementById(id);if(s&&s.offsetTop<=y)cur=i;});
+      var nx=k==='j'?Math.min(SECTION_IDS.length-1,cur+1):Math.max(0,cur-1);
+      var target=document.getElementById(SECTION_IDS[nx]);
+      if(target)target.scrollIntoView({behavior:'smooth',block:'start'});
+    }
+  });
+}
+
+
+/* ============ lazy figures: fade in when loaded; force-load everything before printing ============ */
+function initLazyFigures(){
+  $$('.fig-frame img').forEach(function(img){
+    var done=function(){img.parentNode.classList.add('loaded');};
+    if(img.complete&&img.naturalWidth)done();
+    else{img.addEventListener('load',done);img.addEventListener('error',done);}
+  });
+  window.addEventListener('beforeprint',function(){$$('img[loading="lazy"]').forEach(function(i){i.loading='eager';});});
+}
+/* ============ video facade: swap the thumbnail for the real player only on click ============ */
+function initVideos(){
+  $$('.vid').forEach(function(b){
+    b.addEventListener('click',function(){
+      if(b.classList.contains('playing'))return;
+      var f=document.createElement('iframe');
+      f.src='https://www.youtube-nocookie.com/embed/'+b.dataset.yt+'?autoplay=1&rel=0';
+      f.title=b.dataset.title||'Video';
+      f.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+      f.allowFullscreen=true;
+      var t=b.querySelector('.vid-thumb');t.replaceWith(f);b.classList.add('playing');
+    });
+  });
+}
+
+/* ============ boot ============ */
+document.addEventListener('DOMContentLoaded',function(){
+  initVisualState();
+  loadProgress();
+  initSectionTools();
+  initExamQ();
+  initTableQuiz();
+  initLightbox();
+  initLazyFigures();
+  initVideos();
+  initScrollspy();
+  initProgress();
+  initRecall();
+  initKeys();
+  var hy=$('#hyModal');
+  if(hy) hy.addEventListener('click',function(e){if(e.target===this)closeHY();});
+  var rb=$('#recallBtn'); if(rb) rb.addEventListener('click',toggleRecall);
+  var nq=$('#nextQBtn'); if(nq) nq.addEventListener('click',jumpToNextQ);
+  var bt=$('#backtopBtn'); if(bt) bt.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});
+  document.addEventListener('click',function(e){
+    var fl=$('#floatingLeft');
+    if(fl&&fl.classList.contains('open')&&!fl.contains(e.target))fl.classList.remove('open');
+  });
+});
+
+
+
+
+</script>
+</body>
+</html>

@@ -107,3 +107,24 @@ Figures are resized copies (≤ 1400 px JPEG) from the lecture deck and AMBOSS. 
 | E19 | `er-predimed.jpg` | PREDIMED: Mediterranean diet with extra-virgin olive oil or nuts cut MI, stroke and CV death by ~30% (HR 0.70) in 7,447 high-risk adults | Qazi — Exercise Rehab lecture · slide 38 · Estruch, NEJM 2013 | 1400×749, 131 KB |
 | E20 | `er-sodium.jpg` | Higher sodium intake: ↑ stroke 24%, ↑ fatal CHD 32%; sodium reduction lowers SBP by ~3.4 mm Hg | Qazi — Exercise Rehab lecture · slide 40 · Aburto, BMJ 2013 | 1167×518, 70 KB |
 | E21 | `er-dash-sodium.jpg` | DASH-Sodium: the DASH diet and lower sodium each lower SBP, and the effects add (largest at high sodium) | Qazi — Exercise Rehab lecture · slide 41 · Appel/Sacks, NEJM 2001 | 700×528, 43 KB |
+
+
+## Cardiac Cycle & Valve Hemodynamics — `assets/cardiac-cycle/` → `Cardiac_Cycle_Valve_Hemodynamics_Study_Notes.html`
+
+| Fig | File | Label | Source |
+|---|---|---|---|
+| C1 | `cc-wiggers.jpg` | Normal Wiggers diagram: aortic, atrial and ventricular pressure, ventricular volume, ECG, phonocardiogram | Qazi — Cardiac Cycle lecture · slide 11 |
+| — | `cc-phase1-atrial.jpg … cc-phase7-reduced-filling.jpg` | Phase-stepper panels 1–7 (atrial systole, isovolumetric contraction, rapid ejection, reduced ejection, isovolumetric relaxation, rapid filling, reduced filling) | Qazi — Cardiac Cycle lecture · slide 12–18 |
+| C2 | `cc-ms-schematic.jpg` | Normal vs mitral stenosis: LA 25, LV 115/6 | Qazi — Cardiac Cycle lecture · slide 20 |
+| C3 | `cc-ms-tracing.jpg` | Mitral stenosis: LA–LV diastolic gradient | Qazi — Cardiac Cycle lecture · slide 20 |
+| C4 | `cc-as-schematic.jpg` | Normal vs aortic stenosis: LV 200/25, Ao 110/70, LA 25 | Qazi — Cardiac Cycle lecture · slide 22 |
+| C5 | `cc-as-tracing.jpg` | Aortic stenosis: LV–aortic systolic gradient | Qazi — Cardiac Cycle lecture · slide 22 |
+| C6 | `cc-mr-schematic.jpg` | Normal vs mitral regurgitation: LA 25, LV 110/25 | Qazi — Cardiac Cycle lecture · slide 24 |
+| C7 | `cc-mr-tracing.jpg` | Mitral regurgitation: tall v wave | Qazi — Cardiac Cycle lecture · slide 24 |
+| C8 | `cc-ar-schematic.jpg` | Normal vs aortic regurgitation: Ao 160/60, LV 160/20 | Qazi — Cardiac Cycle lecture · slide 26 |
+| C9 | `cc-ar-tracing.jpg` | Aortic regurgitation: wide pulse pressure | Qazi — Cardiac Cycle lecture · slide 26 |
+
+
+## Application Sessions 1 & 2 — `assets/app-session-1/` (as1-*, 23 files) and `assets/app-session-2/` (as2-*, 43 files)
+
+Captions and slide numbers for every figure are in `assets/app-session-1/_source/build_app.py` (Session 1) and `s2figs.py` (Session 2). Sources: Watkins CAD case module, Segal HTN/HF/PAD cases (deck slides; journal figures credited in each caption). No UWorld images.
