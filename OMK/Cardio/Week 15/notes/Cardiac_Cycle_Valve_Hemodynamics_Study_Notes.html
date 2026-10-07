@@ -1,0 +1,2203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+(function(){
+  var NOTE_AUTH_KEY='une-study-hub-remembered-auth-v1';
+  var NOTE_LOGIN_URL='../../../../index.html?login=notes';
+
+  function readCookie(name){
+    try{
+      var prefix=encodeURIComponent(name)+'=';
+      var parts=String(document.cookie||'').split(';');
+      for(var i=0;i<parts.length;i++){
+        var part=parts[i].trim();
+        if(part.indexOf(prefix)===0)return decodeURIComponent(part.slice(prefix.length));
+      }
+    }catch(err){}
+    return null;
+  }
+  function readAuthPayload(){
+    try{
+      var stored=localStorage.getItem(NOTE_AUTH_KEY);
+      if(stored)return stored;
+    }catch(err){}
+    return readCookie(NOTE_AUTH_KEY);
+  }
+  function hasValidNoteAuth(){
+    var raw=readAuthPayload();
+    if(!raw)return false;
+    try{
+      var parsed=JSON.parse(raw);
+      var email=String(parsed&&parsed.email||'').trim().toLowerCase();
+      var expiresAt=Number(parsed&&parsed.expiresAt);
+      return /@une\.edu$/.test(email)&&expiresAt&&Date.now()<expiresAt;
+    }catch(err){return false}
+  }
+  function syncNoteAuth(){
+    document.documentElement.setAttribute('data-note-auth',hasValidNoteAuth()?'unlocked':'locked');
+  }
+  window.openNoteLogin=function(){
+    var loginWindow=window.open(NOTE_LOGIN_URL,'uneStudyHubLogin');
+    if(!loginWindow)window.location.href=NOTE_LOGIN_URL;
+  };
+  window.refreshNoteAuth=syncNoteAuth;
+  window.addEventListener('message',function(event){
+    if(event&&event.data&&event.data.type==='une-study-hub-auth-complete')syncNoteAuth();
+  });
+  window.addEventListener('storage',function(event){
+    if(!event||event.key===NOTE_AUTH_KEY)syncNoteAuth();
+  });
+  window.addEventListener('focus',syncNoteAuth);
+  window.setInterval(syncNoteAuth,1000);
+  syncNoteAuth();
+})();
+</script>
+<title>Cardiac Cycle & Valve Hemodynamics — Study Notes</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%20100%20100%27%3E%3Ctext%20y%3D%27.9em%27%20font-size%3D%2788%27%3E%F0%9F%AB%80%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Cardio (default) — soft ECG blush page, arterial red accent, clinical-blue accent2 */
+  --ink:#25161a; --paper:#fff7f7; --cream:#f5e2e6;
+  --accent:#b51f3a; --accent2:#245f89; --gold:#b77b22; --muted:#75535c; --border:#dfb9c2;
+  --highlight:#f8e1a9; --highlight2:#d7e9f4; --green-bg:#d9eee2; --red-bg:#f8d5dc;
+  --blue-bg:#d6e9f5; --purple-bg:#eadcf0; --hero-bg:#173e63;
+  --panel-dark-bg:#173e63; --panel-dark-text:#f7fbff;
+  /* Theme-INDEPENDENT chip colors (sit on saturated / fixed-dark backgrounds in every theme) */
+  --chip-red:#b51f3a; --chip-blue:#245f89; --chip-fg:#ffffff; --panel-dark-accent:#ffd27a;
+  --hero-heading:#f7fbff; --hero-sub:#c8dceb;
+  --hero-meta-bg:rgba(255,255,255,0.08); --hero-meta-border:rgba(240,138,155,0.28);
+  --hero-meta-label:#a9c5d8; --hero-meta-value:#fff1f3; --hero-accent:#ff9aae;
+  --floating-ui-bg:#173e63; --floating-ui-fg:#f7fbff; --floating-ui-shadow:0 3px 12px rgba(23,62,99,0.26);
+  --quiz-overlay:rgba(36,95,137,.38); --quiz-overlay-hover:rgba(36,95,137,.62);
+}
+html:not([data-theme]) .hero{background:
+  radial-gradient(circle at 88% 18%,rgba(181,31,58,0.42),transparent 30%),
+  linear-gradient(135deg,#102e4b,#173e63 62%,#6f1d32)}
+html:not([data-theme]) .toc-bar{border-right-color:#2c5f86}
+
+[data-theme="hemo"]{
+  --ink:#f3dfe1; --paper:#170a0d; --cream:#2b1218;
+  --accent:#ff6b6b; --accent2:#8fb8ea; --gold:#e7b95c; --muted:#b4919a; --border:#431d25;
+  --highlight:#402c14; --highlight2:#33161f; --green-bg:#11291e; --red-bg:#45151a;
+  --blue-bg:#12243c; --purple-bg:#261b3a; --hero-bg:#0c0407;
+  --panel-dark-bg:#2e1017; --panel-dark-text:#f9e7e9;
+  --hero-heading:#fbeaea; --hero-sub:#c9a3a8;
+  --hero-meta-bg:rgba(255,255,255,0.06); --hero-meta-border:rgba(255,107,107,0.18);
+  --hero-meta-label:#b4919a; --hero-meta-value:#ffd9d0; --hero-accent:#ff6b6b;
+  --floating-ui-bg:#0c0407; --floating-ui-fg:#fbeaea; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.45);
+  --quiz-overlay:rgba(143,184,234,.40); --quiz-overlay-hover:rgba(143,184,234,.62);
+}
+[data-theme="hemo"] .toc-bar{border-right-color:#431d25}
+
+[data-theme="paper"]{
+  --hero-accent:#f08a6e;
+  --ink:#1a1209; --paper:#faf7f2; --cream:#ece1cd;
+  --accent:#a32c14; --accent2:#2c5f8a; --gold:#c9922a; --muted:#6b5e4e; --border:#d4cabb;
+  --highlight:#fbe4a0; --highlight2:#cfe4f7; --green-bg:#d7f0da; --red-bg:#f8d6d0;
+  --blue-bg:#d2e7f9; --purple-bg:#e6dbfa; --hero-bg:#1a1209;
+  --panel-dark-bg:#1a1209; --panel-dark-text:#faf7f2;
+  --hero-heading:#f5ede0; --hero-sub:#c9bcad;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#8a7a6a; --hero-meta-value:#f0e0c8;
+  --floating-ui-bg:#3a3030; --floating-ui-fg:#f5ede0; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(44,95,138,.50); --quiz-overlay-hover:rgba(44,95,138,.78);
+}
+[data-theme="night"]{
+  --hero-accent:#e8b84b;
+  --ink:#e0e8f0; --paper:#0f1923; --cream:#1b2942;
+  --accent:#e8b84b; --accent2:#4aa8d8; --gold:#e8b84b; --muted:#94abc0; --border:#1e3048;
+  --highlight:#3a3016; --highlight2:#12283a; --green-bg:#10281c; --red-bg:#2e1616;
+  --blue-bg:#10233a; --purple-bg:#201a38; --hero-bg:#070e15;
+  --panel-dark-bg:#101a26; --panel-dark-text:#eef5fb;
+  --hero-heading:#f4f9ff; --hero-sub:#b8cad8;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#8fa4b8; --hero-meta-value:#f4f9ff;
+  --floating-ui-bg:#070e15; --floating-ui-fg:#f4f9ff; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(74,168,216,.42); --quiz-overlay-hover:rgba(74,168,216,.62);
+}
+[data-theme="ocean"]{
+  --hero-accent:#ff9aa5;
+  --ink:#0b2436; --paper:#eef7fb; --cream:#cdeaf5;
+  --accent:#a32536; --accent2:#0a5286; --gold:#d9a441; --muted:#4f7185; --border:#a8d4e8;
+  --highlight:#ffe6ad; --highlight2:#bfe3f2; --green-bg:#c9f0dc; --red-bg:#fad9d5;
+  --blue-bg:#c3e4f6; --purple-bg:#e1d7f6; --hero-bg:#0a3a5c;
+  --panel-dark-bg:#0b2436; --panel-dark-text:#eef7fb;
+  --hero-heading:#eaf6fd; --hero-sub:#a9c9dc;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#7ba0b8; --hero-meta-value:#d9edfa;
+  --floating-ui-bg:#0a3a5c; --floating-ui-fg:#eaf6fd; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(15,111,176,.48); --quiz-overlay-hover:rgba(15,111,176,.74);
+}
+[data-theme="forest"]{
+  --hero-accent:#f0a07c;
+  --ink:#16241a; --paper:#f2f7f0; --cream:#d7ead2;
+  --accent:#8f3418; --accent2:#155c39; --gold:#b8860b; --muted:#52684f; --border:#b7d4ae;
+  --highlight:#f3e6a0; --highlight2:#cbe4c4; --green-bg:#c7ecc0; --red-bg:#f7ddd0;
+  --blue-bg:#cbe6df; --purple-bg:#e1dbee; --hero-bg:#12301c;
+  --panel-dark-bg:#16241a; --panel-dark-text:#f2f7f0;
+  --hero-heading:#eef7ea; --hero-sub:#b6cfb0;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#87a382; --hero-meta-value:#e2f2da;
+  --floating-ui-bg:#12301c; --floating-ui-fg:#eef7ea; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(31,122,77,.48); --quiz-overlay-hover:rgba(31,122,77,.74);
+}
+[data-theme="sepia"]{
+  --hero-accent:#f0a57e;
+  --ink:#3a2414; --paper:#f7ecd9; --cream:#ecd7ae;
+  --accent:#9c3b17; --accent2:#2f5f6b; --gold:#8b5a17; --muted:#7a614a; --border:#d9bd8c;
+  --highlight:#f0d38a; --highlight2:#d7c39a; --green-bg:#dbe3bc; --red-bg:#f0d0c0;
+  --blue-bg:#cfdedd; --purple-bg:#e3d3e0; --hero-bg:#3f2814;
+  --panel-dark-bg:#3a2414; --panel-dark-text:#f7ecd9;
+  --hero-heading:#f7ecd9; --hero-sub:#cbb190;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#a08a68; --hero-meta-value:#f2ddb4;
+  --floating-ui-bg:#3f2814; --floating-ui-fg:#f7ecd9; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(47,95,107,.50); --quiz-overlay-hover:rgba(47,95,107,.78);
+}
+[data-theme="slate"]{
+  --hero-accent:#ff9a78;
+  --ink:#1c2229; --paper:#f4f5f7; --cream:#dde3ea;
+  --accent:#9e2c0f; --accent2:#2b5268; --gold:#a8862a; --muted:#5c6a76; --border:#c8d0d8;
+  --highlight:#f2e3ac; --highlight2:#d5e2ec; --green-bg:#d6ead9; --red-bg:#f4d8d0;
+  --blue-bg:#d3e2ef; --purple-bg:#dfd9ec; --hero-bg:#1c2530;
+  --panel-dark-bg:#1c2530; --panel-dark-text:#f4f5f7;
+  --hero-heading:#eef1f5; --hero-sub:#b3bfca;
+  --hero-meta-bg:rgba(255,255,255,0.07); --hero-meta-border:rgba(255,255,255,0.13);
+  --hero-meta-label:#8595a3; --hero-meta-value:#e4ebf2;
+  --floating-ui-bg:#1c2530; --floating-ui-fg:#eef1f5; --floating-ui-shadow:0 3px 12px rgba(0,0,0,0.30);
+  --quiz-overlay:rgba(51,96,122,.50); --quiz-overlay-hover:rgba(51,96,122,.78);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;padding-left:var(--toc-w);background:var(--paper);color:var(--ink);
+  font-family:'Source Serif 4',Georgia,serif;font-size:16px;line-height:1.65;overflow-wrap:break-word;
+  transition:background .25s,color .25s}
+:root{--toc-w:258px}
+h1,h2,h3,h4{font-family:'Playfair Display',Georgia,serif;line-height:1.18}
+a{color:var(--accent2)}
+strong{color:var(--accent2)}
+.container{max-width:min(1220px,94%);margin:0 auto}
+img{max-width:100%}
+
+/* ---------------- reading progress ---------------- */
+.progress-bar{position:fixed;top:0;left:0;height:3px;width:0;z-index:200;
+  background:linear-gradient(90deg,var(--accent2),var(--accent));transition:width .1s linear}
+
+/* ---------------- TOC sidebar ---------------- */
+.toc-bar{position:fixed;top:0;left:0;bottom:0;z-index:90;width:var(--toc-w);
+  background:var(--hero-bg);border-right:1px solid rgba(255,255,255,.10);overflow-y:auto;overflow-x:hidden}
+.toc-bar::-webkit-scrollbar{width:6px}
+.toc-bar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14);border-radius:3px}
+.toc-bar::-webkit-scrollbar-track{background:transparent}
+.toc-head{padding:24px 20px 16px;border-bottom:1px solid rgba(255,255,255,.10)}
+.toc-eyebrow{display:block;font-family:'JetBrains Mono',monospace;font-size:.5rem;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--hero-meta-label);margin-bottom:7px}
+.toc-name{display:block;font-family:'Playfair Display',serif;font-weight:700;font-size:1.2rem;
+  color:var(--hero-heading);line-height:1.15}
+.toc-name em{font-style:normal;color:var(--hero-accent)}
+.toc-group{font-family:'JetBrains Mono',monospace;font-size:.49rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--hero-meta-label);opacity:.75;margin:0;padding:18px 20px 7px}
+.toc-bar nav{display:flex;flex-direction:column;padding:0 0 26px}
+.toc-bar a{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:'Source Serif 4',Georgia,serif;
+  font-size:.85rem;line-height:1.3;color:var(--hero-sub);padding:8px 16px 8px 17px;
+  border-left:3px solid transparent;transition:color .15s,border-color .15s,background .15s}
+.toc-num{flex:none;width:21px;height:21px;border-radius:50%;border:1px solid rgba(255,255,255,.18);
+  display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;
+  font-size:.56rem;font-weight:700;color:var(--hero-meta-label);transition:all .15s}
+.toc-num.dot{border:none;position:relative}
+.toc-num.dot::before{content:'';width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.28);transition:background .15s}
+.toc-bar a:hover{color:var(--hero-heading);background:rgba(255,255,255,.05)}
+.toc-bar a:hover .toc-num{border-color:rgba(255,255,255,.4);color:var(--hero-heading)}
+.toc-bar a:hover .toc-num.dot::before{background:var(--accent)}
+.toc-bar a.active{color:var(--hero-heading);border-left-color:var(--accent);background:rgba(255,255,255,.06);font-weight:600}
+.toc-bar a.active .toc-num{background:var(--chip-red);border-color:var(--chip-red);color:var(--chip-fg)}
+.toc-bar a.active .toc-num.dot{background:none;border-color:transparent}
+.toc-bar a.active .toc-num.dot::before{background:var(--accent);width:7px;height:7px}
+.toc-check{margin-left:auto;font-size:.72rem;display:none;line-height:1}
+.toc-bar a.done .toc-check{display:inline}
+.toc-bar a.conf-1 .toc-check{color:#e0564a}
+.toc-bar a.conf-2 .toc-check{color:#d6a12a}
+.toc-bar a.conf-3 .toc-check{color:#3d9c5c}
+.toc-tools{display:flex;flex-direction:column;gap:6px;padding:14px 14px 0;margin-top:8px;
+  border-top:1px solid rgba(255,255,255,.10)}
+.toc-chip{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);color:var(--hero-sub);
+  font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.05em;padding:7px 9px;
+  border-radius:8px;cursor:pointer;text-align:left;transition:background .15s,color .15s}
+.toc-chip:hover{background:rgba(255,255,255,.14);color:var(--hero-heading)}
+.toc-hy-btn{display:flex;align-items:center;justify-content:center;gap:7px;width:calc(100% - 28px);
+  margin:15px 14px 2px;background:var(--gold);color:#2a1a00;border:none;padding:11px 10px;border-radius:24px;
+  cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.04em;
+  line-height:1.25;text-align:center;transition:transform .15s,box-shadow .15s}
+.toc-hy-btn:hover{transform:translateY(-1px);box-shadow:0 4px 13px rgba(0,0,0,.32)}
+
+/* ---------------- hero ---------------- */
+.hero{background:var(--hero-bg);padding:52px 0 64px;width:100%;position:relative;overflow:hidden}
+.hero-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--hero-meta-label);margin-bottom:16px}
+.hero h1{margin:0 0 12px;font-size:clamp(2rem,4.4vw,3.3rem);font-weight:900;color:var(--hero-heading);letter-spacing:-.01em}
+.hero h1 span{color:var(--hero-accent)}
+.hero-sub{margin:0 0 20px;max-width:66ch;color:var(--hero-sub);font-size:1.03rem}
+.hero-meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.hero-meta-item{background:var(--hero-meta-bg);border:1px solid var(--hero-meta-border);border-radius:9px;
+  padding:9px 15px;min-width:118px}
+.hero-meta-item .label{display:block;font-family:'JetBrains Mono',monospace;font-size:.5rem;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--hero-meta-label);margin-bottom:4px}
+.hero-meta-item .value{display:block;font-family:'Playfair Display',serif;font-weight:700;font-size:1.02rem;color:var(--hero-meta-value)}
+.hy-btn{display:none;align-items:center;gap:8px;background:var(--gold);color:#2a1a00;border:none;padding:12px 22px;
+  border-radius:30px;font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700;letter-spacing:.04em;
+  cursor:pointer;margin-top:4px;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+
+/* ---------------- sections ---------------- */
+.section{padding:46px 0 8px;border-bottom:1px solid var(--border);scroll-margin-top:20px}
+.section:last-of-type{border-bottom:none}
+.badge-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.lo-badge{display:inline-block;background:var(--chip-red);color:var(--chip-fg);font-family:'JetBrains Mono',monospace;
+  font-size:.6rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;padding:6px 13px;border-radius:20px}
+.lo-badge.alt{background:var(--chip-blue)}
+.section-label{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 6px}
+.section-title{margin:0 0 6px;font-size:clamp(1.55rem,3vw,2.3rem);font-weight:700;
+  border-bottom:3px solid var(--accent);display:inline-block;padding-bottom:6px}
+.section h3{margin:30px 0 8px;font-size:1.24rem;border-left:4px solid var(--accent2);padding-left:11px}
+.section h4{margin:18px 0 6px;font-size:1.03rem}
+.lede{font-size:1.05rem;color:var(--muted);max-width:74ch}
+
+/* section tools (injected) */
+.sec-tools{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:14px 0 4px;padding:8px 12px;
+  background:var(--cream);border:1px solid var(--border);border-radius:9px;
+  font-family:'JetBrains Mono',monospace;font-size:.6rem}
+.sec-tools .st-lab{color:var(--muted);text-transform:uppercase;letter-spacing:.11em}
+.sec-tools button{font-family:'JetBrains Mono',monospace;font-size:.6rem;border:1px solid var(--border);
+  background:var(--paper);color:var(--ink);border-radius:20px;padding:4px 11px;cursor:pointer;transition:all .15s}
+.sec-tools button:hover{border-color:var(--accent2)}
+.sec-tools button.on{background:var(--accent2);color:#fff;border-color:var(--accent2)}
+.sec-tools .st-collapse{margin-left:auto}
+.sec-body-outer{display:grid;grid-template-rows:1fr;transition:grid-template-rows .35s ease}
+.sec-body-inner{overflow:hidden;min-height:0}
+.section.collapsed .sec-body-outer{grid-template-rows:0fr}
+.recall-note{display:none;margin:12px 0;padding:9px 13px;border:1px dashed var(--accent2);border-radius:8px;
+  background:var(--blue-bg);font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--ink)}
+body.recall-mode .recall-note{display:block}
+
+/* ---------------- callouts ---------------- */
+.callout{border-left:5px solid var(--accent2);border-radius:0 9px 9px 0;padding:14px 18px;margin:18px 0;background:var(--blue-bg)}
+.callout p:last-child,.callout ul:last-child{margin-bottom:0}
+.callout p:first-of-type{margin-top:0}
+.callout-title{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;margin-bottom:7px;color:var(--ink)}
+.callout-key{border-left-color:var(--gold);background:var(--highlight)}
+.callout-concept{border-left-color:var(--accent2);background:var(--blue-bg)}
+.callout-clinical{border-left-color:#3d9c5c;background:var(--green-bg)}
+.callout-warning{border-left-color:var(--accent);background:var(--red-bg)}
+.callout-purple{border-left-color:#7a5aa8;background:var(--purple-bg)}
+.callout-hook{border-left-color:var(--gold);background:var(--highlight);border-left-style:dashed;border-left-width:5px}
+
+/* ---------------- lists ---------------- */
+.notes-list{list-style:none;padding-left:0;margin:12px 0}
+.notes-list li{position:relative;padding-left:20px;margin-bottom:7px}
+.notes-list li::before{content:'\203A';position:absolute;left:4px;color:var(--accent);font-weight:700}
+.step-list{list-style:none;counter-reset:st;padding-left:0;margin:16px 0}
+.step-list li{counter-increment:st;position:relative;padding-left:44px;margin-bottom:14px;min-height:30px}
+.step-list li::before{content:counter(st);position:absolute;left:0;top:0;width:30px;height:30px;border-radius:50%;
+  background:var(--chip-red);color:var(--chip-fg);display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:700}
+.step-list li>div>strong:first-child{display:block;margin-bottom:2px;color:var(--accent)}
+
+/* ---------------- tables ---------------- */
+table{width:100%;border-collapse:collapse;margin:6px 0 20px;font-size:.92rem}
+th,td{border:1px solid var(--border);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:var(--panel-dark-bg);color:var(--panel-dark-text);font-family:'JetBrains Mono',monospace;
+  font-size:.63rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700}
+tr:nth-child(even) td{background:var(--cream)}
+tr:hover td{background:var(--highlight2)}
+.tbl-scroll{overflow-x:auto;margin-bottom:20px}
+.tbl-scroll table{margin-bottom:0}
+
+/* ---------------- exam Q ---------------- */
+.exam-q{background:var(--panel-dark-bg);color:var(--panel-dark-text);border-radius:11px;padding:20px 22px 18px;margin:22px 0;position:relative}
+.exam-q::before{content:'Exam Q';position:absolute;top:-10px;left:20px;background:var(--chip-red);color:var(--chip-fg);
+  font-family:'JetBrains Mono',monospace;font-size:.56rem;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;padding:4px 11px;border-radius:12px}
+.exam-q p{margin:6px 0}
+.exam-q strong{color:var(--panel-dark-accent)}
+.exam-q .answer{margin-top:12px;padding-top:12px;border-top:1px dashed rgba(255,255,255,.28);display:none}
+.exam-q.revealed .answer{display:block;animation:fadeIn .32s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.exam-q .answer .label{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--panel-dark-accent);margin-bottom:5px}
+.exam-q .reveal-btn{margin-top:11px;background:transparent;border:1px solid rgba(255,255,255,.4);
+  color:var(--panel-dark-text);font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.09em;
+  text-transform:uppercase;padding:6px 15px;border-radius:20px;cursor:pointer}
+.exam-q .reveal-btn:hover{background:rgba(255,255,255,.14)}
+.exam-q.revealed .reveal-btn{display:none}
+.exam-q.q-flash{outline:3px solid var(--gold);animation:qPulse 1.2s ease 1}
+@keyframes qPulse{0%{box-shadow:0 0 0 0 rgba(201,146,42,.55)}70%{box-shadow:0 0 0 14px rgba(201,146,42,0)}100%{box-shadow:none}}
+
+/* ---------------- cards & grids ---------------- */
+.compare-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:14px;margin:18px 0}
+.compare-card{border:1px solid var(--border);border-radius:11px;padding:16px 18px;background:var(--cream)}
+.compare-card h4{margin:6px 0 6px;font-size:1.08rem}
+.compare-card .card-emoji{font-size:1.5rem;line-height:1}
+.compare-card p{margin:0 0 8px}
+.fact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,235px),1fr));gap:13px;margin:18px 0}
+.fact-card{border:1px solid var(--border);border-top:4px solid var(--accent2);border-radius:10px;
+  padding:14px 16px;background:var(--cream)}
+.fact-card h4{margin:0 0 3px;font-size:1rem}
+.fact-card .generic{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.fact-card p{margin:0;font-size:.87rem}
+.hallmarks-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,215px),1fr));gap:13px;margin:18px 0}
+.hallmark-card{border:1px solid var(--border);border-top:4px solid var(--accent);border-radius:10px;
+  padding:14px 16px;background:var(--cream);position:relative}
+.hallmark-card:nth-child(3n+2){border-top-color:var(--accent2)}
+.hallmark-card:nth-child(3n+3){border-top-color:var(--gold)}
+.hallmark-card h4{margin:6px 0 4px;font-size:.99rem}
+.hallmark-card p{margin:0;font-size:.86rem}
+.hallmark-num{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;color:var(--muted)}
+
+/* inline chips */
+.lab-code{font-family:'JetBrains Mono',monospace;background:var(--cream);border:1px solid var(--border);
+  padding:1px 6px;border-radius:4px;font-size:.82rem;white-space:nowrap}
+.gene-tag{font-family:'JetBrains Mono',monospace;color:var(--accent2);font-size:.88rem;font-weight:600}
+.hy-flag{display:inline-flex;align-items:center;gap:3px;background:var(--highlight);color:var(--gold);
+  border:1px solid var(--gold);font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.6rem;
+  padding:1px 8px;border-radius:20px;letter-spacing:.04em;vertical-align:middle}
+.up{color:#c0392b;font-weight:700}
+.dn{color:#2c7fb8;font-weight:700}
+
+/* ---------------- images ---------------- */
+.slide-img{width:100%;display:block;border:1px solid var(--border);border-radius:10px;margin:18px 0 5px;
+  cursor:zoom-in;background:#fff}
+.slide-caption{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 20px;text-align:center}
+/* small source images: cap the width so they are not upscaled into blur */
+.slide-img.sm{width:auto;max-width:min(100%,540px);margin-left:auto;margin-right:auto}
+/* portrait images: cap the height instead of the width */
+.slide-img.tall{width:auto;max-width:100%;max-height:560px;margin-left:auto;margin-right:auto}
+.img-pair .slide-img.tall{max-height:420px}
+.img-pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px 20px;margin:18px 0;
+  align-items:start}
+.img-pair .slide-img{margin:0}
+.img-pair .slide-img.sm{width:100%;max-width:100%}
+.img-pair .slide-caption{margin:6px 0 0}
+.img-pair>div{display:flex;flex-direction:column}
+.fig{margin:18px 0}
+.fig svg{width:100%;height:auto;display:block;border:1px solid var(--border);border-radius:10px;background:var(--cream)}
+
+/* ---------------- table quiz ---------------- */
+.tq-bar{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:6px;padding:8px 12px;
+  background:var(--cream);border:1px solid var(--border);border-radius:8px}
+.tq-toggle{font-family:'JetBrains Mono',monospace;font-size:.63rem;letter-spacing:.09em;text-transform:uppercase;
+  background:var(--accent2);color:#fff;border:none;border-radius:20px;padding:5px 12px;cursor:pointer}
+.tq-toggle.active{background:var(--chip-red);color:var(--chip-fg)}
+.tq-cols{display:flex;flex-wrap:wrap;gap:5px;flex:1}
+.tq-col-btn{font-size:.7rem;padding:3px 9px;border:1px solid var(--border);border-radius:12px;background:var(--paper);
+  cursor:pointer;font-family:'JetBrains Mono',monospace;color:var(--ink);transition:all .15s}
+.tq-col-btn.sel{background:var(--chip-blue);color:var(--chip-fg);border-color:var(--chip-blue)}
+.tq-start,.tq-shuffle,.tq-reset{font-family:'JetBrains Mono',monospace;font-size:.63rem;color:#fff;border:none;
+  border-radius:20px;padding:5px 12px;cursor:pointer}
+.tq-start{background:#2e7d32}.tq-start:disabled{opacity:.35;cursor:not-allowed}
+.tq-shuffle{background:var(--accent2)}
+.tq-reset{background:var(--accent)}
+.tq-score{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted)}
+.tq-score.done{color:#2e7d32;font-weight:700}
+.quiz-hidden-cell{position:relative!important;cursor:pointer!important}
+.quiz-hidden-cell .tq-cell-content{filter:blur(5px)!important;user-select:none!important;pointer-events:none!important;opacity:.4!important}
+.quiz-hidden-cell::after{content:'tap to reveal'!important;position:absolute!important;inset:0!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;background:var(--quiz-overlay)!important;
+  color:#fff!important;font-family:'JetBrains Mono',monospace!important;font-size:.58rem!important;font-weight:700!important;
+  letter-spacing:.12em!important;text-transform:uppercase!important;border-radius:4px!important}
+.quiz-hidden-cell:hover::after{background:var(--quiz-overlay-hover)!important}
+
+/* ---------------- recall mode ---------------- */
+body.recall-mode .sec-body-inner :is(p,li,td,h4,dd) strong:not(.rc-open){color:transparent;background:var(--highlight2);
+  border-radius:4px;cursor:pointer;box-shadow:inset 0 0 0 1px var(--border);padding:0 2px}
+body.recall-mode .exam-q strong,body.recall-mode .tq-bar strong{color:var(--panel-dark-accent)!important;background:none!important;box-shadow:none!important}
+body.recall-mode .game strong{color:inherit!important;background:none!important;box-shadow:none!important;cursor:auto}
+strong.rc-open{animation:rcReveal .35s ease}
+@keyframes rcReveal{from{background:var(--gold)}to{background:transparent}}
+
+/* ---------------- games ---------------- */
+.game{background:var(--cream);border:1px solid var(--border);border-top:4px solid var(--accent);border-radius:12px;
+  padding:18px 20px;margin:22px 0}
+.g-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:4px}
+.g-head h3{margin:0;font-size:1.16rem;border:none;padding:0}
+.g-emoji{margin-right:.45em}
+.g-score{margin-left:auto;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.72rem;color:var(--muted)}
+.g-intro{font-size:.87rem;color:var(--muted);margin:0 0 10px}
+.g-stage{background:var(--paper);border:1px solid var(--border);border-radius:14px;padding:20px 18px 16px;margin:10px 0 0}
+.g-vign{text-align:left;font-size:.97rem;line-height:1.55;min-height:2.4em}
+.g-vign .lead{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--muted);display:block;margin-bottom:6px}
+.g-opts{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));margin-top:14px}
+.g-opt{border:1px solid var(--border);background:var(--cream);border-radius:11px;padding:9px 14px;font-weight:700;
+  cursor:pointer;font-size:.88rem;font-family:'Source Serif 4',Georgia,serif;color:var(--ink);text-align:center;
+  transition:transform .12s ease,border-color .12s,background .12s}
+.g-opt:hover{transform:translateY(-2px);border-color:var(--accent)}
+.g-opt.correct{background:var(--green-bg);border-color:#2e7d32;color:#1f5c24}
+.g-opt.wrong{background:var(--red-bg);border-color:var(--accent);color:var(--accent)}
+.g-fb{min-height:2.4em;margin-top:12px;font-size:.9rem;line-height:1.55}
+.g-fb .ok{color:#2e7d32;font-weight:700}
+.g-fb .no{color:var(--accent);font-weight:700}
+.g-btn{margin-top:14px;background:var(--accent);color:#fff;border:none;border-radius:22px;padding:8px 20px;
+  font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.06em;cursor:pointer}
+.g-btn:hover{filter:brightness(1.1)}
+.g-bank{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-top:12px}
+.g-bank .g-opt{padding:7px 13px;font-size:.83rem}
+.g-opt.picked{opacity:.5;pointer-events:none}
+.g-slots{display:grid;gap:9px;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));margin-top:12px}
+.g-slot{border:1px dashed var(--border);border-radius:10px;padding:10px 12px;background:var(--cream);min-height:62px}
+.g-slot h5{margin:0 0 6px;font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted)}
+.g-slot.sel{border-style:solid;border-color:var(--accent2);box-shadow:0 0 0 2px var(--blue-bg)}
+.g-slot ul{margin:0;padding-left:16px;font-size:.82rem}
+.g-timer{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--accent);font-weight:700}
+
+/* ---------------- floating UI ---------------- */
+.floating-stack{position:fixed;bottom:18px;right:18px;z-index:100;display:flex;flex-direction:column;align-items:flex-end;gap:9px}
+.font-btn-row{display:flex;align-items:center;background:var(--floating-ui-bg);color:var(--floating-ui-fg);
+  padding:7px 10px;border-radius:30px;box-shadow:var(--floating-ui-shadow);font-family:'JetBrains Mono',monospace;
+  font-size:.62rem;letter-spacing:.1em;gap:2px}
+.font-btn{background:none;border:none;cursor:pointer;color:var(--floating-ui-fg);font-family:'JetBrains Mono',monospace;
+  font-weight:700;font-size:1rem;padding:2px 8px;border-radius:6px;line-height:1}
+.font-btn:hover{background:rgba(255,255,255,.18)}
+.font-sep{color:rgba(255,255,255,.22);padding:0 3px}
+.font-label{font-size:.56rem;opacity:.7;padding:0 5px;text-transform:uppercase;letter-spacing:.1em}
+.theme-btn{display:flex;align-items:center;gap:7px;background:var(--floating-ui-bg);color:var(--floating-ui-fg);
+  border:none;padding:10px 17px;border-radius:30px;box-shadow:var(--floating-ui-shadow);cursor:pointer;
+  font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.09em;text-transform:uppercase}
+.theme-panel{position:absolute;bottom:100%;right:0;margin-bottom:10px;background:var(--floating-ui-bg);
+  color:var(--floating-ui-fg);border-radius:12px;padding:12px 10px;box-shadow:var(--floating-ui-shadow);
+  min-width:196px;display:none}
+.theme-panel.open{display:block}
+.theme-panel-title{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.16em;text-transform:uppercase;
+  opacity:.65;padding:0 8px 8px}
+.theme-option{display:flex;align-items:center;gap:9px;padding:7px 9px;border-radius:8px;cursor:pointer;
+  font-family:'JetBrains Mono',monospace;font-size:.66rem}
+.theme-option:hover{background:rgba(255,255,255,.12)}
+.theme-option.active{background:rgba(255,255,255,.18)}
+.theme-swatch{width:17px;height:17px;border-radius:50%;border:1px solid rgba(255,255,255,.35);flex:none}
+
+.floating-left{position:fixed;bottom:18px;left:calc(var(--toc-w) + 18px);z-index:100;
+  display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+.tools-menu{display:flex;flex-direction:column;gap:7px;opacity:0;pointer-events:none;transform:translateY(10px);
+  transition:opacity .22s,transform .22s}
+.floating-left:hover .tools-menu,.floating-left:focus-within .tools-menu,.floating-left.open .tools-menu{
+  opacity:1;pointer-events:auto;transform:none}
+.tool-btn{background:var(--floating-ui-bg);color:var(--floating-ui-fg);border:none;padding:9px 15px;border-radius:22px;
+  box-shadow:var(--floating-ui-shadow);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:.63rem;
+  letter-spacing:.05em;text-align:left;white-space:nowrap}
+.tool-btn:hover{filter:brightness(1.2)}
+.tool-btn.on{background:var(--accent);color:#fff}
+.tools-trigger{position:relative}
+.tools-trigger .dot{display:none;position:absolute;top:6px;right:8px;width:7px;height:7px;border-radius:50%;background:var(--gold)}
+.tools-trigger.busy .dot{display:block}
+.backtop{display:none}
+.backtop.show{display:block}
+
+/* ---------------- lightbox ---------------- */
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:400;display:none;align-items:center;
+  justify-content:center;cursor:zoom-out;padding:22px}
+.lightbox.active{display:flex}
+.lightbox img{max-width:92vw;max-height:88vh;border-radius:6px}
+
+/* ---------------- HY one-pager ---------------- */
+.hy-modal{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:300;display:none;align-items:flex-start;
+  justify-content:center;overflow-y:auto;padding:30px 16px}
+.hy-modal.open{display:flex}
+.hy-modal-card{background:var(--paper);color:var(--ink);max-width:1060px;width:100%;border-radius:14px;
+  padding:26px 30px 34px;box-shadow:0 20px 60px rgba(0,0,0,.45)}
+.hy-modal-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;
+  border-bottom:3px solid var(--accent);padding-bottom:10px;flex-wrap:wrap}
+.hy-modal-header h2{margin:0;font-size:1.35rem}
+.hy-modal-actions{display:flex;gap:8px;flex:none}
+.hy-action-btn{font-family:'JetBrains Mono',monospace;font-size:.64rem;letter-spacing:.05em;text-transform:uppercase;
+  border:1px solid var(--border);background:var(--cream);color:var(--ink);padding:7px 13px;border-radius:20px;cursor:pointer}
+.hy-close-btn{background:var(--chip-red);color:var(--chip-fg);border:none}
+.hy-subhead{font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--muted);margin:0 0 13px}
+.hy-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;min-width:0}
+@media (max-width:760px){.hy-cols{grid-template-columns:1fr}}
+.hy-cols>div{min-width:0}
+.hy-block{border:1px solid var(--border);border-radius:8px;padding:9px 11px;background:var(--cream);margin-bottom:9px;min-width:0}
+.hy-block h4{margin:0 0 5px;font-size:.76rem;color:var(--accent);border-bottom:1px solid var(--border);padding-bottom:4px}
+.hy-block p,.hy-block li{font-size:.67rem;line-height:1.4;margin:0 0 3px}
+.hy-block ul{margin:0;padding-left:15px}
+.hy-lo-tag{display:block;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;color:var(--chip-fg);
+  background:var(--chip-blue);padding:3px 9px;border-radius:10px;margin-bottom:7px;letter-spacing:.05em;text-align:center}
+.hy-mini-table{width:100%;border-collapse:collapse;font-size:.63rem;margin-top:4px}
+.hy-mini-table th,.hy-mini-table td{border:1px solid var(--border);padding:3px 5px;text-align:left;line-height:1.3}
+.hy-mini-table th{background:var(--panel-dark-bg);color:var(--panel-dark-text);font-size:.56rem;text-transform:uppercase}
+.hy-mini-table tr:nth-child(even) td{background:transparent}
+
+/* ---------------- glossary ---------------- */
+.gloss{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:10px;margin:16px 0}
+.gloss dl{margin:0;border:1px solid var(--border);border-radius:9px;padding:12px 14px;background:var(--cream)}
+.gloss dt{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;color:var(--accent);margin-top:8px}
+.gloss dt:first-child{margin-top:0}
+.gloss dd{margin:2px 0 0;font-size:.86rem}
+.abbr-strip{background:var(--cream);border:1px solid var(--border);border-left:4px solid var(--gold);
+  border-radius:0 9px 9px 0;padding:11px 15px;margin:14px 0;font-size:.85rem}
+.abbr-strip .t{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--muted);display:block;margin-bottom:5px}
+
+footer{background:var(--hero-bg);color:var(--hero-sub);padding:30px 0;margin-top:40px;font-size:.83rem}
+footer .container{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center}
+footer kbd{font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.2);
+  border-radius:4px;padding:1px 6px;font-size:.72rem}
+
+/* ---------------- responsive ---------------- */
+@media (max-width:1000px){
+  body{padding-left:0}
+  .toc-bar{position:sticky;top:0;bottom:auto;width:100%;height:auto;border-right:none;
+    border-bottom:1px solid rgba(255,255,255,.12);overflow-x:auto;overflow-y:hidden}
+  .toc-head,.toc-group,.toc-hy-btn,.toc-tools{display:none}
+  .toc-bar nav{flex-direction:row;padding:0 8px;white-space:nowrap}
+  .toc-bar a{padding:11px 13px;border-left:none;border-bottom:2px solid transparent;gap:8px}
+  .toc-bar a:hover,.toc-bar a.active{border-left-color:transparent;border-bottom-color:var(--accent);background:none}
+  .toc-num{width:18px;height:18px;font-size:.53rem}
+  .toc-check{display:none!important}
+  .hero .hy-btn{display:inline-flex}
+  .floating-left{left:14px;bottom:14px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
+
+/* ---------------- print ---------------- */
+@media print{
+  body{padding-left:0!important;background:#fff;color:#000}
+  .container{max-width:100%!important}
+  .toc-bar,.floating-stack,.floating-left,.progress-bar,.sec-tools,.recall-note,.tq-bar,
+  .toc-hy-btn,.hy-btn,.lightbox,.game,.exam-q .reveal-btn{display:none!important}
+  .section{page-break-inside:auto;border-bottom:1px solid #ccc}
+  .section.collapsed .sec-body-outer{grid-template-rows:1fr!important}
+  .exam-q .answer{display:block!important}
+  .hero{background:#fff!important;color:#000;padding:16px 0}
+  .hero h1,.hero-sub,.hero-tag,.hero-meta-item .value,.hero-meta-item .label{color:#000!important}
+  .slide-img{page-break-inside:avoid}
+  body.hy-mode .hero,body.hy-mode .section,body.hy-mode footer{display:none!important}
+  body.hy-mode .hy-modal{position:static!important;inset:auto!important;background:none!important;padding:0!important;
+    display:block!important;overflow:visible!important}
+  body.hy-mode .hy-modal-card{position:static!important;max-width:100%!important;width:100%!important;
+    box-shadow:none!important;padding:4px!important}
+  .hy-modal-actions{display:none!important}
+  .hy-cols{grid-template-columns:repeat(3,1fr);gap:6px}
+  .hy-modal-header h2{font-size:1.02rem}
+  .hy-subhead{font-size:.56rem;margin-bottom:7px}
+  .hy-block{padding:4px 6px;margin-bottom:4px;break-inside:avoid}
+  .hy-block h4{font-size:.60rem;margin-bottom:2px;padding-bottom:1.5px}
+  .hy-block p,.hy-block li{font-size:.50rem;line-height:1.2;margin-bottom:1.5px}
+  .hy-mini-table{font-size:.465rem}
+  .hy-mini-table th,.hy-mini-table td{padding:1px 2.5px;line-height:1.18}
+  .hy-lo-tag{font-size:.53rem;padding:2px 7px;margin-bottom:4px}
+  @page{margin:8mm}
+}
+
+
+#noteAuthGate{display:none}
+html[data-note-auth="locked"] body{
+  min-height:100vh;
+  overflow:hidden;
+  background:#f4f5f7;
+  color:#1f2937;
+}
+html[data-note-auth="locked"] body>*:not(#noteAuthGate){display:none!important}
+html[data-note-auth="locked"] #noteAuthGate{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  background:linear-gradient(135deg,#f4f5f7,#ffffff 52%,#eef2f7);
+}
+.note-auth-card{
+  width:min(460px,100%);
+  padding:30px;
+  border:1px solid rgba(31,41,55,.14);
+  border-radius:14px;
+  background:rgba(255,255,255,.92);
+  box-shadow:0 22px 70px rgba(31,41,55,.16);
+  text-align:center;
+}
+.note-auth-kicker{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.68rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:#cf4520;
+  font-weight:700;
+  margin-bottom:12px;
+}
+.note-auth-card h1{
+  margin:0 0 12px;
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2rem,6vw,3rem);
+  line-height:.98;
+  color:#263241;
+}
+.note-auth-card p{
+  margin:0 0 22px;
+  font-size:1rem;
+  line-height:1.55;
+  color:#556070;
+}
+.note-auth-btn{
+  border:0;
+  border-radius:999px;
+  padding:12px 20px;
+  font:700 .9rem 'JetBrains Mono',monospace;
+  letter-spacing:.04em;
+  color:#fff;
+  background:#263241;
+  cursor:pointer;
+  box-shadow:0 12px 28px rgba(38,50,65,.22);
+}
+.note-auth-btn:hover{background:#cf4520}
+
+/* ---------------- pharmacology components ---------------- */
+.drug-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:13px;margin:18px 0}
+.drug-card{border:1px solid var(--border);border-top:4px solid var(--accent2);border-radius:10px;
+  padding:14px 16px;background:var(--cream)}
+.drug-card h4{margin:0 0 3px;font-size:1rem}
+.drug-card .generic{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.drug-card p{margin:0;font-size:.86rem}
+.drug-card p+p{margin-top:5px}
+.drug-card.span2{grid-column:span 2}
+@media (max-width:760px){.drug-card.span2{grid-column:auto}}
+
+.box-warning{border:2px solid var(--accent);border-left-width:9px;border-radius:9px;background:var(--red-bg);
+  padding:15px 18px 13px;margin:20px 0}
+.bw-label{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;background:var(--chip-red);color:var(--chip-fg);
+  padding:4px 11px;border-radius:5px;margin-bottom:9px}
+.box-warning p{margin:0;font-size:.93rem}
+.box-warning p+p{margin-top:7px}
+
+.rems-badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.55rem;font-weight:700;
+  letter-spacing:.1em;background:var(--purple-bg);color:var(--accent2);border:1px solid var(--border);
+  padding:2px 6px;border-radius:4px;vertical-align:middle;margin-left:3px}
+
+.moa-chain{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:14px 0;padding:13px 15px;
+  background:var(--cream);border:1px solid var(--border);border-radius:10px}
+.moa-chain span{font-family:'JetBrains Mono',monospace;font-size:.7rem;line-height:1.35;
+  background:var(--paper);border:1px solid var(--border);border-radius:6px;padding:5px 9px}
+.moa-chain span.hit{background:var(--highlight);border-color:var(--gold);font-weight:700}
+.moa-chain i{font-style:normal;color:var(--accent);font-weight:700}
+
+.suffix-key{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:10px;margin:16px 0}
+.suffix-key div{border:1px solid var(--border);border-left:4px solid var(--gold);border-radius:8px;
+  padding:9px 12px;background:var(--cream)}
+.suffix-key code{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--accent);font-size:.9rem}
+.suffix-key p{margin:3px 0 0;font-size:.82rem;color:var(--muted)}
+
+.timing-bar{display:flex;align-items:center;gap:10px;margin:7px 0;font-size:.86rem}
+.timing-bar .tl{flex:none;width:min(38%,215px);font-weight:600}
+.timing-bar .tt{flex:1;height:15px;background:var(--cream);border:1px solid var(--border);
+  border-radius:8px;position:relative;overflow:hidden}
+.timing-bar .tf{position:absolute;top:0;bottom:0;background:var(--accent);opacity:.78;border-radius:8px}
+.timing-bar .tv{flex:none;font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--muted);
+  width:min(30%,140px);text-align:right}
+
+
+/* ---------------- Cardio additions ---------------- */
+.hero .container{position:relative;z-index:1}
+.hero-ecg{position:absolute;left:0;right:0;bottom:6px;width:100%;height:58px;z-index:0;pointer-events:none;opacity:.55}
+.hero-ecg path{fill:none;stroke:var(--hero-accent);stroke-width:2;stroke-linejoin:round;stroke-linecap:round;
+  stroke-dasharray:1400;stroke-dashoffset:1400;animation:ecgDraw 4.5s ease-out .3s forwards}
+@keyframes ecgDraw{to{stroke-dashoffset:0}}
+strong.hot{color:var(--accent)}
+.num{background:var(--highlight);color:var(--ink);font-weight:700;padding:0 4px;border-radius:4px;white-space:nowrap}
+.src-tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.55rem;font-weight:700;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--ink);border:1px dashed var(--muted);border-radius:4px;padding:0 5px;
+  vertical-align:middle;white-space:nowrap}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;margin:16px 0 6px;padding:11px 15px;
+  background:var(--cream);border:1px solid var(--border);border-radius:10px;font-size:.86rem}
+.legend-t{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.order-list{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 16px}
+.order-list span{background:var(--cream);border:1px solid var(--border);border-left:4px solid var(--accent);
+  border-radius:8px;padding:6px 12px;font-size:.9rem}
+.tbl-note{font-size:.88rem;color:var(--muted);margin-top:-8px}
+table.dense{font-size:.8rem}
+table.dense td,table.dense th{padding:5px 7px}
+.timeline-table tr.phase td{background:var(--panel-dark-bg)!important;color:var(--panel-dark-text);font-family:'JetBrains Mono',monospace;
+  font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;padding:4px 11px}
+
+/* ---- labeled, lazy-loaded figures (images live in ./assets/, not base64) ---- */
+.fig-card{margin:20px auto;max-width:960px;border:1px solid var(--border);border-radius:12px;background:var(--cream);overflow:hidden;
+  break-inside:avoid;page-break-inside:avoid}
+.fig-frame{position:relative;background:#fff;display:flex;justify-content:center;align-items:center}
+.fig-frame::before{content:'';position:absolute;inset:0;
+  background:linear-gradient(100deg,rgba(0,0,0,0) 30%,rgba(181,31,58,.07) 50%,rgba(0,0,0,0) 70%) #fdf1f3;
+  background-size:220% 100%;animation:figShimmer 1.3s linear infinite;transition:opacity .3s}
+.fig-frame.loaded::before{opacity:0;animation:none}
+@keyframes figShimmer{from{background-position:120% 0}to{background-position:-120% 0}}
+.fig-card .slide-img{position:relative;margin:0;border:none;border-radius:0;width:100%;height:auto;opacity:0;transition:opacity .35s}
+.fig-frame.loaded .slide-img{opacity:1}
+.fig-card.tall .slide-img{width:auto;max-width:100%;max-height:560px}
+.fig-card.sm .slide-img{width:auto;max-width:min(100%,560px)}
+.fig-row .fig-card.tall .slide-img{max-height:440px}
+.fig-card figcaption{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;padding:9px 13px 10px;
+  border-top:1px solid var(--border);font-size:.86rem;line-height:1.4}
+.fig-num{font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  background:var(--chip-blue);color:var(--chip-fg);padding:2px 8px;border-radius:10px;flex:none}
+.fig-title{flex:1 1 220px;color:var(--ink)}
+.fig-src{font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);flex:none}
+.fig-src b{color:var(--accent);font-weight:700}
+.fig-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px;margin:20px 0;align-items:start}
+.fig-row .fig-card{margin:0;max-width:none}
+.lightbox{flex-direction:column;gap:12px}
+.lightbox-cap{max-width:min(92vw,900px);color:#f3f3f3;font-size:.9rem;text-align:center;line-height:1.45}
+.lightbox-cap .fig-num{margin-right:6px}
+
+details.case-box{background:var(--cream);border:1px solid var(--border);border-left:5px solid var(--accent2);
+  border-radius:0 12px 12px 0;margin:16px 0;overflow:hidden}
+details.case-box summary{cursor:pointer;padding:13px 18px;font-family:'Playfair Display',serif;font-weight:700;font-size:1.05rem;
+  list-style:none;display:flex;gap:10px;align-items:center}
+details.case-box summary::-webkit-details-marker{display:none}
+details.case-box summary::before{content:'▸';color:var(--accent);transition:transform .2s}
+details.case-box[open] summary::before{transform:rotate(90deg)}
+details.case-box .case-body{padding:0 18px 12px;border-top:1px solid var(--border)}
+@media print{details.case-box .case-body{display:block}}
+
+/* ---- click-to-play video facade: no YouTube iframe loads until you ask for it ---- */
+.watch{margin:26px 0 8px;padding:14px 16px 16px;border:1px solid var(--border);border-left:5px solid var(--accent);
+  border-radius:0 12px 12px 0;background:var(--cream)}
+.watch-title{font-family:'JetBrains Mono',monospace;font-size:.64rem;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink);margin-bottom:10px}
+.watch-title span{color:var(--muted);font-weight:400;letter-spacing:.04em;text-transform:none}
+.vid-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr));gap:12px}
+.vid{display:flex;flex-direction:column;text-align:left;padding:0;border:1px solid var(--border);border-radius:10px;
+  overflow:hidden;background:var(--paper);color:var(--ink);cursor:pointer;font:inherit;transition:transform .15s,box-shadow .15s}
+.vid:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.14)}
+.vid-thumb{position:relative;aspect-ratio:16/9;background:#1c1c1c;overflow:hidden}
+.vid-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.vid-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:50px;height:36px;border-radius:10px;
+  background:rgba(181,31,58,.92);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1rem;
+  box-shadow:0 3px 10px rgba(0,0,0,.35)}
+.vid-meta{padding:8px 10px 10px;font-size:.8rem;line-height:1.35}
+.vid-meta b{display:block;font-weight:600}
+.vid-meta i{font-style:normal;font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted)}
+.vid.playing{cursor:default;transform:none;box-shadow:none}
+.vid iframe{width:100%;aspect-ratio:16/9;border:0;display:block}
+@media print{
+  .watch{display:none!important}
+  .fig-frame::before{display:none}
+  .fig-card .slide-img{opacity:1!important}
+  .fig-card{background:#fff}
+}
+@media (prefers-reduced-motion:reduce){.hero-ecg path{stroke-dashoffset:0}}
+</style>
+
+</head>
+<body>
+<div id="noteAuthGate" role="dialog" aria-modal="true" aria-labelledby="noteAuthTitle">
+  <div class="note-auth-card">
+    <div class="note-auth-kicker">2nd Year Study Hub</div>
+    <h1 id="noteAuthTitle">Please log in to continue with this note.</h1>
+    <p>Open the Study Hub login, enter your approved UNE email, and this note will unlock automatically.</p>
+    <button class="note-auth-btn" type="button" onclick="openNoteLogin()">Log in to continue</button>
+  </div>
+</div>
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="toc-bar">
+  <div class="toc-head">
+    <span class="toc-eyebrow">OMK 2 · Cardio · Physiology</span>
+    <span class="toc-name">Cardiac Cycle <em>&amp; Valves</em></span>
+  </div>
+  <button class="toc-hy-btn" onclick="openHY()">🎯 High-Yield One-Pager</button>
+  <nav>
+    <p class="toc-group">Start</p>
+    <a href="#orientation"><span class="toc-num dot"></span><span>Orientation: One Diagram Explains It All</span><span class="toc-check">✓</span></a>
+    <p class="toc-group">The Normal Cycle · LO 1–3</p>
+    <a href="#s1-rules"><span class="toc-num">1</span><span>Systole, Diastole &amp; the Valve Rule</span><span class="toc-check">✓</span></a>
+    <a href="#s2-wiggers"><span class="toc-num">2</span><span>Reading the Wiggers Diagram</span><span class="toc-check">✓</span></a>
+    <a href="#s3-phases"><span class="toc-num">3</span><span>The Seven Phases, Step by Step</span><span class="toc-check">✓</span></a>
+    <p class="toc-group">Clinical Correlation · LO 4</p>
+    <a href="#s4-sounds"><span class="toc-num">4</span><span>Heart Sounds S1–S4</span><span class="toc-check">✓</span></a>
+    <a href="#s5-output"><span class="toc-num">5</span><span>Stroke Volume, EF, Cardiac Output &amp; Heart Rate</span><span class="toc-check">✓</span></a>
+    <p class="toc-group">Valve Lesions on the Tracing</p>
+    <a href="#s6-ms"><span class="toc-num">6</span><span>Mitral Stenosis</span><span class="toc-check">✓</span></a>
+    <a href="#s7-as"><span class="toc-num">7</span><span>Aortic Stenosis</span><span class="toc-check">✓</span></a>
+    <a href="#s8-mr"><span class="toc-num">8</span><span>Mitral Regurgitation &amp; Prolapse</span><span class="toc-check">✓</span></a>
+    <a href="#s9-ar"><span class="toc-num">9</span><span>Aortic Regurgitation</span><span class="toc-check">✓</span></a>
+    <a href="#s10-compare"><span class="toc-num">10</span><span>The Four Lesions Side by Side</span><span class="toc-check">✓</span></a>
+    <p class="toc-group">Reference</p>
+    <a href="#practice"><span class="toc-num dot"></span><span>Drill</span><span class="toc-check">✓</span></a>
+    <a href="#glossary"><span class="toc-num dot"></span><span>Glossary &amp; Abbreviations</span><span class="toc-check">✓</span></a>
+  </nav>
+  <div class="toc-tools">
+    <button class="toc-chip" id="progressChip" onclick="jumpToNextTodo()">0/0 reviewed</button>
+    <button class="toc-chip" id="collapseAllBtn" onclick="toggleAllSections()">⊟ Collapse all</button>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="container">
+    <div class="hero-tag">The Wiggers Diagram and the Cardiac Cycle · Amina Qazi, DO, FACC · UNE COM · OMK 2 · 2026</div>
+    <h1>Cardiac Cycle <span>&amp; Valve Hemodynamics</span></h1>
+    <p class="hero-sub">How pressure differences open and close the valves, how to read every line of the Wiggers diagram (aortic, ventricular and atrial pressure, ventricular volume, ECG, heart sounds), the seven phases of one beat, S1 to S4, and what mitral stenosis, aortic stenosis, mitral regurgitation and aortic regurgitation each do to the tracing.</p>
+    <button class="hy-btn" onclick="openHY()">🎯 High-Yield One-Pager</button>
+    <div class="hero-meta"><div class="hero-meta-item"><span class="label">Lecturer</span><span class="value">Amina Qazi, DO, FACC</span></div><div class="hero-meta-item"><span class="label">Sources</span><span class="value">27 slides + 2-part recording</span></div><div class="hero-meta-item"><span class="label">Learning objectives</span><span class="value">4</span></div><div class="hero-meta-item"><span class="label">Lecture figures</span><span class="value">16</span></div><div class="hero-meta-item"><span class="label">Exam questions</span><span class="value">25</span></div></div>
+  </div>
+  <svg class="hero-ecg" viewBox="0 0 1200 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 40 H140 l10 -6 l10 6 H200 l6 6 l10 -40 l10 50 l8 -16 H330 l14 -8 l14 8 H480 l10 -6 l10 6 H540 l6 6 l10 -40 l10 50 l8 -16 H670 l14 -8 l14 8 H820 l10 -6 l10 6 H880 l6 6 l10 -40 l10 50 l8 -16 H1010 l14 -8 l14 8 H1200"/></svg>
+</div>
+
+<style>
+.tool{background:var(--cream);border:1px solid var(--border);border-top:4px solid var(--accent2);border-radius:12px;padding:16px 18px;margin:22px 0}
+.tool h4{margin:0 0 4px;font-size:1.08rem}
+.tool .t-intro{font-size:.86rem;color:var(--ink);margin:0 0 12px}
+.tool .t-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0}
+.tool .t-lab{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);min-width:96px}
+.tool button.tb{border:1px solid var(--border);background:var(--paper);color:var(--ink);border-radius:20px;padding:6px 14px;cursor:pointer;
+  font-family:'Source Serif 4',Georgia,serif;font-size:.9rem;transition:all .15s}
+.tool button.tb:hover{border-color:var(--accent2)}
+.tool button.tb.on{background:var(--chip-blue);color:var(--chip-fg);border-color:var(--chip-blue)}
+.tool .t-out{margin-top:12px;padding:12px 14px;border-radius:10px;background:var(--paper);border:1px dashed var(--border);min-height:2.2em;font-size:.95rem;line-height:1.55}
+.tool .t-out b{color:var(--accent)}
+.tool label.ck{display:flex;gap:8px;align-items:flex-start;padding:7px 10px;border:1px solid var(--border);border-radius:9px;background:var(--paper);cursor:pointer;font-size:.9rem}
+.tool label.ck input{margin-top:3px;accent-color:var(--accent2)}
+.tool .ck-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:6px}
+.drill .d-q{font-size:.97rem;line-height:1.55;margin:4px 0 10px}
+.drill .d-opts{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr))}
+.drill .d-opts button.tb{border-radius:12px;text-align:left}
+.drill .d-opts button.tb.right{background:var(--green-bg);border-color:#2e7d32;color:var(--ink)}
+.drill .d-opts button.tb.wrong{background:var(--red-bg);border-color:var(--accent);color:var(--accent)}
+.drill .d-nav{display:flex;gap:10px;align-items:center;margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted)}
+.checklist{list-style:none;padding:0;margin:10px 0;counter-reset:ck}
+.checklist li{counter-increment:ck;display:flex;gap:10px;align-items:flex-start;padding:9px 12px;margin:6px 0;border:1px solid var(--border);border-radius:10px;background:var(--cream)}
+.checklist li::before{content:counter(ck);flex:none;width:26px;height:26px;border-radius:50%;background:var(--chip-red);color:var(--chip-fg);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.75rem;font-weight:700}
+.checklist li b{display:block}
+.step-q{border:1px solid var(--border);border-radius:10px;background:var(--paper);padding:10px 12px;margin:8px 0}
+.step-q.done{opacity:.6}
+.step-q p{margin:0 0 8px}
+details.case-box.ecg summary{font-size:1rem}
+.fig-card figcaption .fig-src{flex:0 1 auto;min-width:0;overflow-wrap:break-word}
+</style>
+
+<!-- ==================== ORIENTATION ==================== -->
+<div class="section" id="orientation">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge alt">Orientation</div></div>
+    <p class="section-label">"If you understand that diagram, you should be able to understand cardiovascular hemodynamics"</p>
+    <h2 class="section-title">One Diagram Explains It All</h2>
+
+    <p class="lede">Dr. Qazi's goal for this session: <strong>understand the cardiac cycle well enough to read the Wiggers diagram</strong>. That one figure stacks the pressure tracings, the left ventricular volume curve, the ECG and the heart sounds on a shared time axis. Once you can read the normal diagram, each valve lesion is just a variation on it. Stenosis shows up as a <strong>pressure gradient</strong>, and regurgitation shows up as <strong>extra volume</strong>.</p>
+
+    <div class="legend">
+      <span class="legend-t">How to read the colours</span>
+      <span><strong class="hot">Red bold</strong> = lecturer said "this will be on the exam" or repeated it</span>
+      <span><strong>Blue bold</strong> = key fact</span>
+      <span><span class="num">Yellow</span> = number to memorise</span>
+      <span><span class="src-tag">Board add-on</span> = UWorld / AMBOSS library, not in the lecture</span>
+    </div>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>LA / LV = left atrium / left ventricle · Ao = aorta · LAP / LVP / AoP = left atrial / left ventricular / aortic pressure · ECG = electrocardiogram · S1–S4 = first to fourth heart sounds · EDV / ESV = end-diastolic / end-systolic volume · SV = stroke volume · EF = ejection fraction · CO = cardiac output · HR = heart rate · MS / AS = mitral / aortic stenosis · MR / AR = mitral / aortic regurgitation</div>
+
+    <h3>The learning objectives</h3>
+    <ol class="checklist">
+      <li><div><b>Describe the phases of the cardiac cycle</b>Atrial systole, isovolumetric contraction, ejection, isovolumetric relaxation, filling (Topics 1, 3).</div></li>
+      <li><div><b>Interpret the components of the Wiggers diagram</b>Aortic, LV and LA pressure, LV volume, ECG, heart sounds (Topic 2).</div></li>
+      <li><div><b>Correlate electrical, mechanical and pressure–volume events</b>ECG waves come before pressure changes; pressure crossovers open and shut the valves (Topics 1–3, 5).</div></li>
+      <li><div><b>Identify the clinical relevance of heart sounds and pressure changes</b>S1–S4, and how stenosis and regurgitation change the curves (Topics 4, 6–10).</div></li>
+    </ol>
+
+    <div class="callout callout-hook">
+      <div class="callout-title">🎙️ From the recording: how she wants you to think</div>
+      <p><strong class="hot">Blood flows from high pressure to low pressure.</strong> A valve opens when the chamber <em>before</em> it has the higher pressure, and it closes when the chamber <em>after</em> it overtakes. If you hold onto that one rule, every event on the diagram follows. She also said bluntly: on boards, <strong>"if you overthink the question you're gonna get it wrong."</strong> Learn the buzzwords for each lesion and trust them.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 1. RULES ==================== -->
+<div class="section" id="s1-rules">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">LO 1 &amp; 3 · Topic 1</div><span class="hy-flag">⭐ Valves open and close only because of pressure differences</span></div>
+    <p class="section-label">Slides 4–8 · systole vs diastole · the pressure rule · electrical before mechanical</p>
+    <h2 class="section-title">Systole, Diastole &amp; the Valve Rule</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>LA / LV = left atrium / ventricle · LAP / LVP / AoP = left atrial / left ventricular / aortic pressure · AV valves = atrioventricular valves (mitral, tricuspid) · semilunar valves = aortic, pulmonic · ECG = electrocardiogram · S1 / S2 = first / second heart sound</div>
+
+    <div class="compare-grid">
+      <div class="compare-card" style="background:var(--red-bg);border-color:var(--accent)"><span class="card-emoji">💥</span><h4>Systole</h4><p><strong>Ventricular contraction and ejection.</strong> Starts at <strong>S1</strong> (AV valves close) and ends at <strong>S2</strong> (semilunar valves close). Made up of isovolumetric contraction, rapid ejection and reduced ejection.</p></div>
+      <div class="compare-card" style="background:var(--blue-bg);border-color:var(--accent2)"><span class="card-emoji">🫗</span><h4>Diastole</h4><p><strong>Ventricular relaxation and filling.</strong> Starts at <strong>S2</strong>. Made up of isovolumetric relaxation, rapid filling, diastasis (slow filling) and finally atrial systole (the "atrial kick").</p></div>
+    </div>
+
+    <h3>The valve rule (slide 8 + recording)</h3>
+    <ul class="notes-list">
+      <li>For a valve to <strong>open</strong>, the pressure in the chamber <strong>before</strong> it (proximal) must be <strong>higher</strong> than the chamber after it (distal).</li>
+      <li>For a valve to <strong>close</strong>, pressure in the <strong>distal</strong> chamber must rise above the proximal chamber.</li>
+      <li>That gives four crossover points on the left side of the heart:</li>
+    </ul>
+    <div class="tbl-scroll"><table>
+      <tr><th>Pressure crossover</th><th>Valve event</th><th>What you hear / see</th></tr>
+      <tr><td><strong>LVP rises above LAP</strong></td><td>Mitral valve <strong>closes</strong></td><td><strong>S1</strong>; start of isovolumetric contraction</td></tr>
+      <tr><td><strong>LVP rises above AoP</strong> (~80 mm Hg)</td><td>Aortic valve <strong>opens</strong></td><td>Ejection begins (silent in a normal valve)</td></tr>
+      <tr><td><strong>LVP falls below AoP</strong></td><td>Aortic valve <strong>closes</strong></td><td><strong>S2</strong> and the dicrotic notch; start of isovolumetric relaxation</td></tr>
+      <tr><td><strong>LVP falls below LAP</strong></td><td>Mitral valve <strong>opens</strong></td><td>Filling begins (silent normally; an <strong>opening snap</strong> in mitral stenosis)</td></tr>
+    </table></div>
+
+    <h3>Electrical before mechanical (slides 4, 8)</h3>
+    <ul class="notes-list">
+      <li><strong>P wave</strong> (atrial depolarization) comes just before <strong>atrial contraction</strong>.</li>
+      <li><strong>QRS complex</strong> (ventricular depolarization) comes just before <strong>ventricular contraction</strong>.</li>
+      <li><strong>T wave</strong> = ventricular <strong>repolarization</strong>, which happens during late ejection, just before relaxation.</li>
+      <li><strong>Volume</strong>: LV volume falls during ejection and rises during filling. It is <strong>flat</strong> during both isovolumetric phases.</li>
+    </ul>
+
+    <div class="callout callout-concept">
+      <div class="callout-title">🧠 Why "isovolumetric"</div>
+      <p>In both isovolumetric phases <strong>all four valves are closed</strong>, so blood has nowhere to go and the volume can't change. Only the pressure moves: it <strong>rises</strong> in isovolumetric contraction and <strong>falls</strong> in isovolumetric relaxation. <span class="src-tag">Board add-on</span> There is never a moment when all the valves are open (AMBOSS).</p>
+    </div>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> What has to happen to the pressures for the aortic valve to open, and what closes it again?</p>
+      <div class="answer"><div class="label">Answer</div><p>It opens when <strong>LV pressure exceeds aortic pressure</strong> (~80 mm Hg). It closes when <strong>LV pressure falls below aortic pressure</strong> at the end of ejection, producing <strong>S2</strong> and the dicrotic notch.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> During which two phases are all four valves closed, and what changes in each?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Isovolumetric contraction</strong>, where pressure rises at constant volume, and <strong>isovolumetric relaxation</strong>, where pressure falls at constant volume.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 2. WIGGERS ==================== -->
+<div class="section" id="s2-wiggers">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">LO 2 · Topic 2</div><span class="hy-flag">⭐ a = atrial contraction · c = mitral bulging · v = atrial filling</span></div>
+    <p class="section-label">Slides 5–6, 11 · aortic pressure and the dicrotic notch · LV pressure · LA a, c, v waves · LV volume · ECG · phonocardiogram</p>
+    <h2 class="section-title">Reading the Wiggers Diagram</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>Ao = aorta · LA / LV = left atrium / ventricle · EDV / ESV = end-diastolic / end-systolic volume · SV = stroke volume · ECG = electrocardiogram · S1–S3 = heart sounds · JVP = jugular venous pulse</div>
+
+    <p>The Wiggers diagram is one graph that combines the <strong>ECG, the aortic, LV and LA pressures, the LV volume and the heart sounds</strong> on one time axis. It shows how the electrical signal drives the mechanical events, and it is the reference "normal" that every lesion in Topics 6–9 is compared against.</p>
+    <figure class="fig-card" id="fig-cc-wiggers"><div class="fig-frame"><img class="slide-img" src="assets/cardiac-cycle/cc-wiggers.jpg" alt="Line graph of cardiac pressures, ventricular volume, ECG and heart sounds over two beats" width="1400" height="1060" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig C1</span><span class="fig-title">Normal Wiggers diagram: aortic, atrial and ventricular pressure, ventricular volume, ECG and phonocardiogram, with the phases named across the top</span><span class="fig-src"><b>Qazi — Cardiac Cycle lecture</b> · slide 11</span></figcaption></figure>
+
+    <h3>Line by line</h3>
+    <div class="fact-grid">
+      <div class="fact-card"><h4>Aortic pressure</h4><div class="generic">Grey top curve · ~80 to ~120 mm Hg</div><p>Rises during <strong>ejection</strong> because the stroke volume is pushed into it, then drifts down as blood <strong>runs off</strong> into the systemic circulation. The <strong>dicrotic notch</strong> marks <strong>aortic valve closure</strong>.</p></div>
+      <div class="fact-card"><h4>LV pressure</h4><div class="generic">Blue · ~0–10 → ~120 mm Hg</div><p>Near zero through diastole. It shoots up in <strong>isovolumetric contraction</strong>, tracks right on top of aortic pressure during ejection (no gradient across a normal valve), and plunges in <strong>isovolumetric relaxation</strong>.</p></div>
+      <div class="fact-card"><h4>LA pressure</h4><div class="generic">Grey bottom curve · ~5–10 mm Hg</div><p>Three small waves: <strong>a</strong>, <strong>c</strong> and <strong>v</strong> (below). In diastole, while the mitral valve is open, LA and LV pressures sit almost on top of each other.</p></div>
+      <div class="fact-card"><h4>LV volume</h4><div class="generic">Red · EDV ~130 → ESV ~50 mL</div><p>Flat at <strong>EDV</strong> during isovolumetric contraction, falls steeply then slowly during ejection, flat at <strong>ESV</strong> during isovolumetric relaxation, then rapid filling, diastasis and the atrial kick. <strong>EDV − ESV = stroke volume.</strong></p></div>
+      <div class="fact-card"><h4>ECG</h4><div class="generic">Navy</div><p><strong>P</strong> just before atrial contraction · <strong>QRS</strong> just before ventricular contraction · <strong>T</strong> = repolarization late in ejection.</p></div>
+      <div class="fact-card"><h4>Phonocardiogram</h4><div class="generic">Grey bottom trace</div><p><strong>S1</strong> = mitral and tricuspid closure · <strong>S2</strong> = aortic and pulmonic closure · <strong>S3</strong> in early diastole during rapid filling.</p></div>
+    </div>
+
+    <h3>The atrial pressure waves (recording)</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>Wave</th><th>What causes it</th><th>Timing</th></tr>
+      <tr><td><strong class="hot">a</strong></td><td><strong>Atrial contraction</strong> (atrial systole). Pressure rises as the atrium squeezes, then falls as blood empties into the LV</td><td>Right after the <strong>P wave</strong>, end of diastole</td></tr>
+      <tr><td><strong class="hot">c</strong></td><td>The ventricle contracts against the closed mitral valve and <strong>bows the valve back into the LA</strong>, which briefly raises LA pressure</td><td>Start of ventricular systole (lecturer: during early, rapid ejection)</td></tr>
+      <tr><td><strong class="hot">v</strong></td><td><strong>Atrial filling</strong> ("atrial diastole"). Pulmonary venous blood fills the LA against the closed mitral valve, so volume and pressure rise together</td><td>Late systole, peaking just before the mitral valve opens</td></tr>
+    </table></div>
+    <div class="callout callout-warning">
+      <div class="callout-title">⚠️ Recording vs textbook: timing of the c wave</div>
+      <p>Dr. Qazi placed the c wave during <em>rapid ejection</em>, with the aortic valve already open. UWorld and AMBOSS place it at the <strong>start of ventricular systole, during isovolumetric contraction</strong>, when the AV valve closes and bulges back into the atrium. On the slide 11 diagram the c wave sits right at the boundary between the two. For boards, say <strong>"AV valve bulging at the onset of systole."</strong> Both versions agree on the mechanism.</p>
+    </div>
+    <div class="callout callout-concept">
+      <div class="callout-title">🧠 Same waves, right side <span class="src-tag">Board add-on</span></div>
+      <p>The jugular venous pulse shows the same a, c and v waves from the right atrium. Two board favourites: <strong>atrial fibrillation removes the a wave</strong> (no organized atrial contraction), and <strong>tricuspid regurgitation gives a giant v wave</strong>, just as mitral regurgitation does on the left (Topic 8). The dips are named too: the <strong>x descent</strong> (atrial relaxation) follows a and c, and the <strong>y descent</strong> (atrium empties when the AV valve opens) follows v.</p>
+    </div>
+
+    <h3>The dicrotic notch (recording)</h3>
+    <ul class="notes-list">
+      <li>It lines up with <strong class="hot">aortic valve closure</strong> (S2).</li>
+      <li>It has two causes. The valve <strong>snaps shut</strong>, and the stretched aorta <strong>recoils elastically</strong>, giving a small rebound in pressure as blood runs off into the systemic circulation.</li>
+    </ul>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> On a left atrial pressure tracing, what produces the a wave, the c wave and the v wave?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>a</strong> = atrial contraction (after the P wave). <strong>c</strong> = the closed mitral valve bulging back into the atrium as the ventricle starts to contract. <strong>v</strong> = atrial filling from the pulmonary veins against the closed mitral valve.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> What event does the dicrotic notch mark, and why is there a small pressure rebound after it?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Aortic valve closure</strong> (S2). The rebound comes from the valve snapping shut plus the <strong>elastic recoil</strong> of the stretched aorta.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> On the normal diagram, the LV volume is 130 mL at the end of diastole and 50 mL at the end of systole. What is the stroke volume?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>80 mL</strong> (EDV − ESV), which gives an ejection fraction of about <strong>62%</strong>.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 3. PHASES ==================== -->
+<div class="section" id="s3-phases">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">LO 1 &amp; 3 · Topic 3</div><span class="hy-flag">⭐ Filling = rapid filling → diastasis → atrial kick</span></div>
+    <p class="section-label">Slides 7, 12–18 · the seven numbered phases on the lecture figure · which valves are open in each</p>
+    <h2 class="section-title">The Seven Phases, Step by Step</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>AV valves = atrioventricular valves (mitral, tricuspid) · SL valves = semilunar valves (aortic, pulmonic) · LA / LV = left atrium / ventricle · LAP / LVP / AP = left atrial / left ventricular / aortic pressure · LVEDV / LVESV = LV end-diastolic / end-systolic volume · S1–S4 = heart sounds · AF = atrial fibrillation</div>
+
+    <p>The lecture figures number the beat <strong>1 to 7</strong>. Step through them below; each panel is the matching lecture slide, with the phase shaded on the graph and the heart cartoon showing which valves are open.</p>
+
+    <div class="tool" id="phaseTool">
+      <h4>🔁 Phase stepper</h4>
+      <p class="t-intro">Click a phase, or use the ◀ ▶ buttons. The picture is the lecture slide for that phase.</p>
+      <div class="t-row" id="phaseBtns"></div>
+      <div class="phase-view">
+        <div class="phase-pic"><img id="phaseImg" class="slide-img" src="assets/cardiac-cycle/cc-phase1-atrial.jpg" alt="Lecture slide for the selected phase of the cardiac cycle" width="1100" height="1007" decoding="async"></div>
+        <div class="phase-txt" id="phaseTxt"></div>
+      </div>
+      <div class="d-nav"><button class="tb" id="phasePrev" type="button">◀ Previous</button><button class="tb" id="phaseNext" type="button">Next ▶</button><span id="phaseCount"></span></div>
+    </div>
+
+    <h3>All seven at a glance</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>#</th><th>Phase</th><th>Valves</th><th>Pressure</th><th>LV volume</th><th>Markers</th></tr>
+      <tr><td>1</td><td><strong>Atrial systole</strong></td><td>AV open · SL closed</td><td>a wave in LA</td><td>Final top-up (<strong>atrial kick</strong>) to EDV</td><td>After P wave · S4 if the LV is stiff</td></tr>
+      <tr><td>2</td><td><strong>Isovolumetric contraction</strong></td><td><strong>All closed</strong></td><td>LVP rises steeply</td><td>Constant (EDV)</td><td>After QRS · <strong>S1</strong> at the start · c wave</td></tr>
+      <tr><td>3</td><td><strong>Rapid ejection</strong></td><td>SL open · AV closed</td><td>LVP ≈ AP, both rise to peak</td><td>Falls fast (most of the SV)</td><td>Aortic pressure peaks</td></tr>
+      <tr><td>4</td><td><strong>Reduced ejection</strong></td><td>SL open · AV closed</td><td>LVP and AP start to fall</td><td>Falls slowly to ESV</td><td>T wave · v wave building</td></tr>
+      <tr><td>5</td><td><strong>Isovolumetric relaxation</strong></td><td><strong>All closed</strong></td><td>LVP falls steeply</td><td>Constant (ESV)</td><td><strong>S2</strong> at the start · dicrotic notch · v wave peaks</td></tr>
+      <tr><td>6</td><td><strong>Rapid filling</strong></td><td>AV open · SL closed</td><td>LAP ≈ LVP, both low</td><td>Rises fast (most of filling)</td><td><strong>S3</strong> if the LV is volume-overloaded</td></tr>
+      <tr><td>7</td><td><strong>Reduced filling (diastasis)</strong></td><td>AV open · SL closed</td><td>Low, slowly rising</td><td>Rises slowly</td><td>The phase that shrinks first when HR rises</td></tr>
+    </table></div>
+
+    <div class="callout callout-key">
+      <div class="callout-title">🔑 The atrial kick (recording)</div>
+      <p>Atrial systole adds the last part of LV filling, which the lecturer put at about <strong><span class="num">20–25%</span> of cardiac output</strong> (roughly a quarter to a third of LV volume). <strong class="hot">Atrial fibrillation loses the atrial kick</strong>, and that matters most in stiff or obstructed hearts such as aortic stenosis, mitral stenosis and hypertrophy. <span class="src-tag">Board add-on</span> Most textbooks give ~20% of filling at rest, rising in older or stiff ventricles.</p>
+    </div>
+    <div class="callout callout-concept">
+      <div class="callout-title">🧠 Diastole shortens first <span class="src-tag">Board add-on</span></div>
+      <p>When heart rate rises, <strong>diastole shortens much more than systole</strong>, and diastasis is the first part to go. Coronary arteries fill mainly in diastole, which is why tachycardia provokes angina in coronary disease, and why slowing the heart helps mitral stenosis (more time to empty the atrium).</p>
+    </div>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> Put the three parts of ventricular filling in order and say which one is lost in atrial fibrillation.</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Rapid filling → diastasis → atrial systole</strong>. Atrial fibrillation removes the <strong>atrial kick</strong> (and the a wave).</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> In which phase does most ventricular filling occur, and which heart sound can appear then?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Rapid filling</strong> (early diastole, right after the mitral valve opens). An <strong>S3</strong> occurs here when the ventricle is volume-overloaded.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> During reduced ejection, which ECG wave is inscribed and which atrial wave is building?</p>
+      <div class="answer"><div class="label">Answer</div><p>The <strong>T wave</strong> (ventricular repolarization), while the <strong>v wave</strong> builds as the LA fills against the closed mitral valve.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 4. SOUNDS ==================== -->
+<div class="section" id="s4-sounds">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">LO 4 · Topic 4</div><span class="hy-flag">⭐ S3 = volume (filling a full ventricle) · S4 = pressure (kicking into a stiff one)</span></div>
+    <p class="section-label">Slides 4, 6, 9 · S1 and S2 · the pathologic S3 and S4 · splitting</p>
+    <h2 class="section-title">Heart Sounds S1–S4</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>S1–S4 = first to fourth heart sounds · A2 / P2 = aortic / pulmonic part of S2 · LV = left ventricle · HFrEF = heart failure with reduced ejection fraction · LVH = left ventricular hypertrophy · AF = atrial fibrillation · AS = aortic stenosis · LBBB = left bundle branch block · ASD = atrial septal defect</div>
+
+    <div class="tbl-scroll"><table>
+      <tr><th>Sound</th><th>Cause</th><th>Timing</th><th>Meaning</th></tr>
+      <tr><td><strong>S1 "lub"</strong></td><td>Mitral and tricuspid (AV) valves <strong>close</strong></td><td>Start of systole</td><td>Normal</td></tr>
+      <tr><td><strong>S2 "dub"</strong></td><td>Aortic and pulmonic (semilunar) valves <strong>close</strong></td><td>Start of diastole</td><td>Normal</td></tr>
+      <tr><td><strong class="hot">S3</strong></td><td>Rapid early filling hits a <strong>volume-overloaded</strong> ventricle, which vibrates</td><td><strong>Right after S2</strong> (early diastole)</td><td>In adults, <strong>pathologic</strong>: HFrEF, volume overload. Can be <strong>physiologic in young people</strong></td></tr>
+      <tr><td><strong class="hot">S4</strong></td><td>The <strong>atrial kick</strong> pushes blood into a <strong>stiff, non-compliant</strong> (hypertrophied) ventricle</td><td>Late diastole, <strong>just before S1</strong></td><td>Pathologic: LVH from hypertension or aortic stenosis, ischemia. <strong>Can't occur in AF</strong> (no atrial kick)</td></tr>
+    </table></div>
+
+    <div class="compare-grid">
+      <div class="compare-card" style="background:var(--blue-bg);border-color:var(--accent2)"><span class="card-emoji">🌊</span><h4>S3: a VOLUME problem</h4><p>"You're trying to fill the ventricle in the context of <strong>a lot of volume</strong>." It's a marker of <strong>volume overload</strong> on exam, typically in <strong>HFrEF / dilated cardiomyopathy</strong>, and in mitral and aortic regurgitation. <span class="src-tag">Board add-on</span> Cadence "Ken-<b>tuck-y</b>" (S1–S2–S3).</p></div>
+      <div class="compare-card" style="background:var(--red-bg);border-color:var(--accent)"><span class="card-emoji">🧱</span><h4>S4: a PRESSURE / stiffness problem</h4><p>"You're trying to fill the ventricle in the context of <strong>high pressure</strong>." The hypertrophied ventricle <strong>can't stretch</strong>, so it fills poorly. Think <strong>LVH, aortic stenosis, hypertensive heart disease</strong>. <span class="src-tag">Board add-on</span> Cadence "<b>Ten</b>-nes-see" (S4–S1–S2).</p></div>
+    </div>
+
+    <div class="callout callout-warning">
+      <div class="callout-title">⚠️ Recording slip: where the S4 falls</div>
+      <p>In the recording the lecturer said S4 is "just before S2." It is <strong>just before S1</strong>, in late diastole, because it comes from atrial contraction (look at the S4 tick on the lecture figure, slide 12, sitting right before S1). Her mechanism (the atrial kick into a non-compliant ventricle) is correct.</p>
+    </div>
+
+    <h3>Splitting of S2 <span class="src-tag">Board add-on</span></h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>Split</th><th>What happens</th><th>Classic cause</th></tr>
+      <tr><td><strong>Physiologic</strong></td><td>A2 then P2, wider on <strong>inspiration</strong> (more venous return to the right heart delays P2)</td><td>Normal</td></tr>
+      <tr><td><strong>Wide</strong></td><td>Exaggerated physiologic split</td><td>Pulmonic stenosis, right bundle branch block</td></tr>
+      <tr><td><strong>Fixed</strong></td><td>Doesn't change with breathing</td><td><strong>ASD</strong></td></tr>
+      <tr><td><strong>Paradoxical</strong></td><td>A2 comes <em>after</em> P2, so the split appears on expiration and closes on inspiration</td><td><strong>Severe AS</strong>, <strong>LBBB</strong> (delayed aortic closure)</td></tr>
+    </table></div>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> A 68-year-old with long-standing hypertension has an extra sound just before S1. What is it and why does it happen?</p>
+      <div class="answer"><div class="label">Answer</div><p>An <strong>S4</strong>: the atrial kick forces blood into a <strong>stiff, hypertrophied (non-compliant) LV</strong>. It disappears if the patient goes into atrial fibrillation.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> A patient with a dilated cardiomyopathy and an ejection fraction of 20% has an extra sound right after S2. What does it signify?</p>
+      <div class="answer"><div class="label">Answer</div><p>An <strong>S3</strong>, which marks <strong>volume overload</strong>: rapid early filling of an already full ventricle.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 5. OUTPUT ==================== -->
+<div class="section" id="s5-output">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">LO 3 · Topic 5</div><span class="hy-flag">⭐ Tachycardia helps a healthy heart and hurts a sick one</span></div>
+    <p class="section-label">Slide 19 + recording · SV, EF and CO from the volume curve · why heart rate cuts both ways</p>
+    <h2 class="section-title">Stroke Volume, EF, Cardiac Output &amp; Heart Rate</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>SV = stroke volume · EDV / ESV = end-diastolic / end-systolic volume · EF = ejection fraction · CO = cardiac output · HR = heart rate · LV = left ventricle · HFrEF = heart failure with reduced ejection fraction</div>
+
+    <div class="fact-grid">
+      <div class="fact-card"><h4>Stroke volume</h4><div class="generic">SV = EDV − ESV</div><p>The volume ejected in <strong>one beat</strong>, between S1 and S2.</p></div>
+      <div class="fact-card"><h4>Ejection fraction</h4><div class="generic">EF = SV ÷ EDV</div><p>The fraction of the filled ventricle that's ejected. <span class="src-tag">Board add-on</span> Normal is about <span class="num">50–70%</span>.</p></div>
+      <div class="fact-card"><h4>Cardiac output</h4><div class="generic">CO = SV × HR</div><p>The volume pumped per minute. A low SV means a low CO unless HR makes up the difference. <span class="src-tag">Board add-on</span> About <span class="num">5 L/min</span> at rest.</p></div>
+    </div>
+
+    <div class="tool" id="coTool">
+      <h4>🧮 SV · EF · CO calculator</h4>
+      <p class="t-intro">Read EDV and ESV off a volume curve. The defaults are the normal Wiggers diagram values.</p>
+      <div class="t-row"><span class="t-lab">EDV (mL)</span><input class="t-in" id="coEdv" type="number" value="130"><span class="t-lab">ESV (mL)</span><input class="t-in" id="coEsv" type="number" value="50"><span class="t-lab">HR (bpm)</span><input class="t-in" id="coHr" type="number" value="75"></div>
+      <div class="t-out" id="coOut"></div>
+    </div>
+
+    <h3>Heart rate cuts both ways (recording)</h3>
+    <div class="compare-grid">
+      <div class="compare-card" style="background:var(--green-bg);border-color:#2e7d32"><span class="card-emoji">🏃</span><h4>Normal, compliant heart</h4><p>With exercise, <strong>HR, BP and contractility all rise</strong>. A healthy heart on the Starling curve also <strong>stretches to hold a larger stroke volume</strong>, so a faster rate <strong>raises CO</strong>.</p></div>
+      <div class="compare-card" style="background:var(--red-bg);border-color:var(--accent)"><span class="card-emoji">💔</span><h4>Sick heart (cardiomyopathy)</h4><p>SV is already low. A fast rate <strong>cuts diastolic filling time</strong>, so SV falls further, and <strong class="hot">tachycardia can actually lower CO</strong>.</p></div>
+    </div>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> EDV 150 mL, ESV 90 mL, HR 100 bpm. Calculate SV, EF and CO.</p>
+      <div class="answer"><div class="label">Answer</div><p>SV = <strong>60 mL</strong>; EF = 60/150 = <strong>40%</strong>; CO = 60 × 100 = <strong>6.0 L/min</strong>.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> Why can a heart rate of 140 lower cardiac output in a patient with a dilated cardiomyopathy, when it raises output in an athlete?</p>
+      <div class="answer"><div class="label">Answer</div><p>The cardiomyopathy patient's stroke volume is already impaired. Tachycardia <strong>shortens diastolic filling time</strong>, so SV drops further and outweighs the gain in rate. The athlete's compliant ventricle keeps filling and stretching, so CO = SV × HR rises.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 6. MS ==================== -->
+<div class="section" id="s6-ms">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">LO 4 · Topic 6</div><span class="hy-flag">⭐ Diastolic rumble + opening snap at the apex</span></div>
+    <p class="section-label">Slides 20–21 + recording · the mitral apparatus · rheumatic disease · the LA–LV diastolic gradient</p>
+    <h2 class="section-title">Mitral Stenosis</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>MS = mitral stenosis · LA / LV = left atrium / ventricle · LAP / LVP = left atrial / left ventricular pressure · LVEDP = LV end-diastolic pressure · Ao = aorta · AF = atrial fibrillation · OS = opening snap · A2 = aortic part of S2 · PBMC = percutaneous balloon mitral commissurotomy (balloon valvuloplasty) · TEE = transesophageal echocardiography</div>
+
+    <h3>The mitral apparatus first (recording)</h3>
+    <ul class="notes-list">
+      <li><strong>Two leaflets</strong>, anterior and posterior. The anterior one <em>looks</em> bigger and the posterior is crescent-shaped, but their <strong>surface areas are about the same</strong>.</li>
+      <li><strong>Chordae tendineae</strong> tie the leaflets to <strong>two papillary muscles</strong> (anterolateral and posteromedial). Chordae from <strong>each</strong> papillary muscle go to <strong>both</strong> leaflets.</li>
+      <li>The <strong>LV itself is part of the apparatus</strong>: LV contraction pulls on the papillary muscles and chordae to close the valve. This is why LV disease can cause MR (Topic 8).</li>
+    </ul>
+
+    <h3>What it is and who gets it</h3>
+    <ul class="notes-list">
+      <li>Restricted opening of the mitral orifice. The lecturer's example: a normal valve opens to about <span class="num">4 cm²</span>, and in MS the orifice is smaller.</li>
+      <li><strong class="hot">Most common cause worldwide: rheumatic heart disease.</strong> It's everywhere in South Asia (India, Pakistan), where balloon valvuloplasty is the bread-and-butter procedure, but <strong>rare in the US</strong>, where a few specialists do it.</li>
+    </ul>
+
+    <div class="fig-row"><figure class="fig-card sm" id="fig-cc-ms-schematic"><div class="fig-frame"><img class="slide-img" src="assets/cardiac-cycle/cc-ms-schematic.jpg" alt="Two heart outlines comparing a normal mitral valve with a narrowed one, with chamber pressures" width="730" height="776" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig C2</span><span class="fig-title">Normal vs mitral stenosis: LA 10 → 25 mm Hg, LV 120/10 → 115/6, turbulent flow through the narrowed valve</span><span class="fig-src"><b>Qazi — Cardiac Cycle lecture</b> · slide 20</span></figcaption></figure><figure class="fig-card sm" id="fig-cc-ms-tracing"><div class="fig-frame"><img class="slide-img" src="assets/cardiac-cycle/cc-ms-tracing.jpg" alt="Pressure tracing with the LA curve above the LV curve during diastole" width="730" height="458" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig C3</span><span class="fig-title">Mitral stenosis: LA pressure stays above LV pressure through diastole (shaded diastolic gradient)</span><span class="fig-src"><b>Qazi — Cardiac Cycle lecture</b> · slide 20</span></figcaption></figure></div>
+
+    <h3>Hemodynamics</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>Chamber</th><th>Normal</th><th>Mitral stenosis</th><th>Why</th></tr>
+      <tr><td><strong>LA</strong></td><td>10</td><td><strong>25 ↑</strong></td><td>Obstruction to outflow, plus <strong>volume left behind</strong> after each atrial contraction. The LA <strong>enlarges</strong></td></tr>
+      <tr><td><strong>LV</strong></td><td>120/10</td><td><strong>115/6</strong> (low diastolic)</td><td>Less blood gets in, so LV diastolic pressure and volume are <strong>low</strong></td></tr>
+      <tr><td><strong>Aorta</strong></td><td>120/80</td><td>115/80</td><td>Roughly normal</td></tr>
+    </table></div>
+    <div class="callout callout-key">
+      <div class="callout-title">🔑 Hallmark: the diastolic LA–LV gradient</div>
+      <p><strong class="hot">LA pressure stays above LV diastolic pressure all through diastole</strong> (the grey shaded area on the tracing). Normally, once the mitral valve opens, flow is <strong>laminar</strong> and the two pressures <strong>equalize</strong> (the lines sit on top of each other, gradient 0–5 mm Hg). In MS, flow is <strong>turbulent</strong> and the gradient persists.</p>
+    </div>
+    <ul class="notes-list">
+      <li>The <strong>c wave may fade</strong> as the disease progresses and the leaflets stiffen (it's still there while the leaflets are mobile).</li>
+      <li>Today the diagnosis and its severity come from <strong>echocardiography</strong> (including 3D), which is more accurate than the old cath-lab tracings.</li>
+    </ul>
+
+    <h3>On exam</h3>
+    <div class="callout callout-clinical">
+      <div class="callout-title">🩺 Buzzwords she said will be on boards</div>
+      <p>A <strong class="hot">diastolic, rumbling murmur</strong> heard best at the <strong>apex</strong>, always with an <strong class="hot">opening snap</strong>. The vignette: a patient who grew up where rheumatic fever is common (e.g. recently emigrated from India), with a childhood streptococcal infection. Think MS immediately.</p>
+    </div>
+
+    <h3>Board details <span class="src-tag">Board add-on</span></h3>
+    <ul class="notes-list">
+      <li><strong>Severity</strong>: severe MS = valve area <strong>≤ <span class="num">1.5</span> cm²</strong>. The <strong>shorter the A2–to–opening-snap interval, the more severe</strong> (high LA pressure opens the valve earlier).</li>
+      <li><strong>Presystolic accentuation</strong> of the rumble comes from atrial contraction, so it <strong>disappears in AF</strong>. UWorld describes S1 as usually <strong>soft</strong> (a stiff, calcified valve); older teaching gives a loud S1 while the leaflets are still pliable.</li>
+      <li>The big LA leads to <strong>AF and LA thrombus</strong>, so stroke can be the first sign. Anticoagulate with <strong>warfarin</strong> (preferred over direct oral anticoagulants in MS).</li>
+      <li>Back-pressure leads to <strong>pulmonary edema, hemoptysis, pulmonary hypertension and RV failure</strong>. Pregnancy (more blood volume) often unmasks it, and about 80% of rheumatic MS is in women.</li>
+      <li>Treatment: <strong>β-blockers</strong> (more diastolic filling time), diuretics, and <strong>PBMC</strong> for severe symptomatic disease.</li>
+    </ul>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— the slide 21 video; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="GZect8nfMU0" data-title="Mitral stenosis — the lecture video"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/GZect8nfMU0/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Mitral stenosis: turbulent flow and the rumbling diastolic murmur</b><i>Lecture slide 21 · YouTube</i></span></button></div></div>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> A 34-year-old woman who emigrated from Pakistan has exertional dyspnea and a low-pitched diastolic murmur at the apex preceded by a sharp early diastolic sound. What will the LA and LV pressure tracings show?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Rheumatic mitral stenosis</strong> with an opening snap. LA pressure stays <strong>above LV diastolic pressure throughout diastole</strong> (a persistent diastolic gradient). The LA is high and enlarged, and LV diastolic pressure is low.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> Why are LA and LV pressures nearly identical during diastole in a normal heart?</p>
+      <div class="answer"><div class="label">Answer</div><p>A wide-open mitral valve allows <strong>laminar, unobstructed flow</strong>, so pressure equalizes across it (gradient ≈ 0–5 mm Hg).</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 7. AS ==================== -->
+<div class="section" id="s7-as">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">LO 4 · Topic 7</div><span class="hy-flag">⭐ Systolic crescendo–decrescendo, right 2nd interspace, blunted carotids</span></div>
+    <p class="section-label">Slides 22–23 + recording · bicuspid vs calcific · concentric hypertrophy · the LV–aortic systolic gradient · TAVR</p>
+    <h2 class="section-title">Aortic Stenosis</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>AS = aortic stenosis · LA / LV = left atrium / ventricle · LVH = left ventricular hypertrophy · Ao = aorta · CT = computed tomography · TAVR = transcatheter aortic valve replacement (TAVI = implantation) · SAVR = surgical aortic valve replacement · PCI = percutaneous coronary intervention · RUSB = right upper sternal border (2nd intercostal space) · LVEF = LV ejection fraction · S2 / S4 = heart sounds</div>
+
+    <h3>Who gets it: a bimodal disease</h3>
+    <div class="compare-grid">
+      <div class="compare-card" style="background:var(--blue-bg);border-color:var(--accent2)"><span class="card-emoji">🧬</span><h4>40s–60s: bicuspid aortic valve</h4><p>Born with a congenitally abnormal valve. <strong class="hot">AS is the most common lesion of a bicuspid valve</strong> (AR and mixed disease also occur). A bicuspid valve always comes with an <strong>aortopathy</strong> (abnormal aortic connective tissue), so <strong>screen for an ascending aortic aneurysm and coarctation</strong>, e.g. with a contrast CT of the chest.</p></div>
+      <div class="compare-card" style="background:var(--highlight);border-color:var(--gold)"><span class="card-emoji">🦴</span><h4>70s–90s: calcific (age-related)</h4><p>A normal three-leaflet valve calcifies with age. Catherine Otto's pathology work found <strong>inflammatory cells and actual lamellar bone</strong> in the leaflets. <strong>Statins did not slow progression.</strong> Treatment is mechanical: replace the valve.</p></div>
+    </div>
+
+    <div class="fig-row"><figure class="fig-card sm" id="fig-cc-as-schematic"><div class="fig-frame"><img class="slide-img" src="assets/cardiac-cycle/cc-as-schematic.jpg" alt="Two heart outlines comparing a normal aortic valve with a narrowed one, with chamber pressures" width="730" height="670" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig C4</span><span class="fig-title">Normal vs aortic stenosis: LV 120/10 → 200/25 with a thick wall, aorta 110/70, LA 25</span><span class="fig-src"><b>Qazi — Cardiac Cycle lecture</b> · slide 22</span></figcaption></figure><figure class="fig-card sm" id="fig-cc-as-tracing"><div class="fig-frame"><img class="slide-img" src="assets/cardiac-cycle/cc-as-tracing.jpg" alt="Pressure tracing with the LV peak near 200 and the aortic peak near 115" width="730" height="626" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig C5</span><span class="fig-title">Aortic stenosis: LV systolic pressure far above aortic pressure (shaded systolic gradient)</span><span class="fig-src"><b>Qazi — Cardiac Cycle lecture</b> · slide 22</span></figcaption></figure></div>
+
+    <h3>Hemodynamics</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>Chamber</th><th>Normal</th><th>Aortic stenosis</th><th>Why</th></tr>
+      <tr><td><strong>LV</strong></td><td>120/10</td><td><strong>200/25 ↑↑</strong></td><td>It must generate huge pressure to push the stroke volume through a <strong>fixed outflow obstruction</strong>, leading to <strong>concentric LVH</strong></td></tr>
+      <tr><td><strong>Aorta</strong></td><td>120/80</td><td>110/70</td><td>Normal or a little low</td></tr>
+      <tr><td><strong>LA</strong></td><td>10</td><td><strong>25 ↑</strong></td><td>The thick, <strong>non-compliant LV</strong> won't accept a normal volume, so blood backs up and the <strong>LA enlarges</strong></td></tr>
+    </table></div>
+    <div class="callout callout-key">
+      <div class="callout-title">🔑 Hallmark: the systolic LV–aortic gradient</div>
+      <p><strong class="hot">LV systolic pressure is far above aortic systolic pressure</strong>. The peaks split apart (grey shading), whereas on the normal Wiggers diagram they sit on top of each other.</p>
+    </div>
+    <div class="callout callout-hook">
+      <div class="callout-title">🎙️ She repeated this: LA pressure is ALWAYS high in AS</div>
+      <p>"Take my word on this." The cause isn't a problem at the mitral valve. It's the <strong>hypertrophied, non-compliant LV</strong>, "the epitome of diastolic dysfunction," which can't accept a normal volume. That is a different mechanism from MS, where the obstruction sits right at the LA outlet.</p>
+    </div>
+
+    <h3>Why the patient gets symptoms</h3>
+    <ul class="notes-list">
+      <li>Compensation is <strong>concentric LVH</strong>. Myocardial hypertrophy is <strong>never normal</strong> (unlike skeletal muscle): the wall is thick and stiff. Afterload rises (with peripheral vasoconstriction), preload rises, and eventually the ventricle <strong>falls off the Starling curve</strong> into heart failure.</li>
+      <li><strong>Exercise intolerance comes first</strong> ("I get really exhausted walking up that hill"), because CO can't rise with exercise.</li>
+      <li><strong>Angina</strong> from a supply–demand mismatch: low CO, plus a thick muscle with high O₂ demand.</li>
+      <li><strong>Exertional syncope</strong>: CO can't rise to meet exercise.</li>
+      <li><strong>Congestive heart failure</strong> at the end.</li>
+    </ul>
+
+    <h3>On exam</h3>
+    <div class="callout callout-clinical">
+      <div class="callout-title">🩺 Buzzwords</div>
+      <p>A <strong class="hot">systolic crescendo–decrescendo murmur</strong> heard best at the <strong>right 2nd intercostal space</strong>, with <strong class="hot">blunted (weak, delayed) carotid upstrokes</strong>. Pair it with a young patient with a bicuspid valve or an 85-year-old with new exercise intolerance.</p>
+      <p><strong>Severity clues</strong>: as AS worsens, the murmur's <strong>peak moves later</strong> (more crescendo) and can <strong>muffle S2</strong>. A crisp S2 makes severe AS less likely. A <strong>paradoxically split S2</strong> can occur (delayed aortic closure) but often doesn't.</p>
+    </div>
+    <div class="callout callout-warning">
+      <div class="callout-title">⚠️ Pulse pressure in AS: recording vs UWorld</div>
+      <p>A student asked whether AS gives a narrow pulse pressure. Dr. Qazi: <strong>not necessarily</strong>. It may be wide, normal or narrow, and it is "not the defining characteristic" (unlike AR, where a wide pulse pressure <em>is</em> the hallmark). UWorld lists a <strong>narrow pulse pressure with pulsus parvus et tardus</strong> as the expected finding in severe AS. For boards: <strong>parvus et tardus + late-peaking murmur + soft S2</strong> are the reliable signs, and a narrow pulse pressure supports them.</p>
+    </div>
+
+    <h3>Treatment (recording)</h3>
+    <ul class="notes-list">
+      <li>No medical therapy slows it, so it must be <strong>monitored and then replaced</strong>. The lecturer's practice is to intervene <strong>once it reaches severe on echo</strong>, rather than waiting for symptoms.</li>
+      <li><strong>TAVR is now first-line</strong>, mostly <strong>transfemoral</strong>, and "kind of like having a PCI." Surgical replacement (SAVR) means at least <span class="num">5</span> days in hospital and a month or more for the sternotomy to heal.</li>
+    </ul>
+
+    <h3>Board details <span class="src-tag">Board add-on</span></h3>
+    <ul class="notes-list">
+      <li>Severe AS on echo: jet <strong>≥ <span class="num">4</span> m/s</strong>, mean gradient <strong>≥ <span class="num">40</span> mm Hg</strong>, valve area <strong>≤ <span class="num">1.0</span> cm²</strong>.</li>
+      <li>Guideline triggers for valve replacement: <strong>severe AS with any symptom</strong>, or <strong>severe AS with LVEF &lt; 50%</strong>.</li>
+      <li>The murmur <strong>radiates to the carotids</strong>, and an <strong>S4</strong> is common.</li>
+      <li>Severe AS is <strong>preload-dependent</strong>: <strong>avoid nitrates</strong> and over-diuresis.</li>
+      <li>Symptomatic severe AS untreated: mean survival about <strong>1–3 years</strong>.</li>
+      <li><strong>Heyde syndrome</strong>: AS plus GI bleeding from angiodysplasia, because the shear stress across the valve cleaves von Willebrand factor.</li>
+    </ul>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— the slide 23 video; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="GGiQIoZMQ_k" data-title="Aortic stenosis — the lecture video"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/GGiQIoZMQ_k/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Aortic stenosis: the crescendo–decrescendo murmur</b><i>Lecture slide 23 · YouTube</i></span></button></div></div>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> An 84-year-old has new exertional fatigue and a harsh systolic crescendo–decrescendo murmur at the right 2nd intercostal space with weak, delayed carotid pulses. What does simultaneous LV and aortic pressure recording show?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Calcific aortic stenosis</strong>: a large <strong>systolic gradient</strong>, with LV systolic pressure far above aortic systolic pressure. LA pressure is also high, because of the stiff LV.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> A 45-year-old is found to have AS from a bicuspid valve. Which two aortic problems should you screen for?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Ascending aortic aneurysm</strong> and <strong>coarctation of the aorta</strong>, because of the associated aortopathy.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> Why does angina occur in AS even with normal coronary arteries?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Supply–demand mismatch</strong>: the hypertrophied LV has a high oxygen demand while the fixed obstruction limits cardiac output (supply), especially with exercise.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 8. MR ==================== -->
+<div class="section" id="s8-mr">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">LO 4 · Topic 8</div><span class="hy-flag">⭐ "Tall v wave" = mitral regurgitation</span></div>
+    <p class="section-label">Slides 24–25 + recording · LA filled from two sources · primary (prolapse) vs secondary (functional) MR · click and late systolic murmur</p>
+    <h2 class="section-title">Mitral Regurgitation &amp; Prolapse</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>MR = mitral regurgitation · MVP = mitral valve prolapse · LA / LV = left atrium / ventricle · LVEDP = LV end-diastolic pressure · MI = myocardial infarction · PMI = point of maximal impulse · AF = atrial fibrillation · S1 / S3 = heart sounds</div>
+
+    <ul class="notes-list">
+      <li>Blood <strong>leaks back into the LA</strong> through a mitral valve that should be closed, so it happens in <strong>systole</strong>. It's very common: after AS, the second most common lesion in her clinic.</li>
+      <li>The LA now fills from <strong>two sources</strong>: normal pulmonary venous return <em>plus</em> the regurgitant jet. LA volume and pressure rise, and the <strong>LA enlarges</strong>.</li>
+      <li>That extra LA volume goes into the LV in diastole, making MR a <strong>high-preload state</strong>: <strong>LVEDP rises</strong> and the <strong>LV dilates</strong> (eccentric hypertrophy).</li>
+    </ul>
+
+    <div class="fig-row"><figure class="fig-card sm" id="fig-cc-mr-schematic"><div class="fig-frame"><img class="slide-img" src="assets/cardiac-cycle/cc-mr-schematic.jpg" alt="Two heart outlines comparing normal mitral closure with a leaking valve" width="730" height="594" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig C6</span><span class="fig-title">Normal vs mitral regurgitation: systolic jet back into the LA, LA 25, LV 110/25</span><span class="fig-src"><b>Qazi — Cardiac Cycle lecture</b> · slide 24</span></figcaption></figure><figure class="fig-card sm" id="fig-cc-mr-tracing"><div class="fig-frame"><img class="slide-img" src="assets/cardiac-cycle/cc-mr-tracing.jpg" alt="Pressure tracing with a labelled tall v wave on the LA curve" width="730" height="564" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig C7</span><span class="fig-title">Mitral regurgitation: a tall v wave on the LA curve, rising toward LV pressure late in systole</span><span class="fig-src"><b>Qazi — Cardiac Cycle lecture</b> · slide 24</span></figcaption></figure></div>
+
+    <div class="tbl-scroll"><table>
+      <tr><th>Chamber</th><th>Normal</th><th>Mitral regurgitation</th></tr>
+      <tr><td><strong>LA</strong></td><td>10</td><td><strong>25 ↑</strong>, with a <strong>tall v wave</strong></td></tr>
+      <tr><td><strong>LV</strong></td><td>120/10</td><td><strong>110/25</strong>: end-diastolic pressure ↑</td></tr>
+    </table></div>
+    <div class="callout callout-key">
+      <div class="callout-title">🔑 Hallmark: a tall v wave</div>
+      <p>"<strong class="hot">That's what's gonna be on the exam.</strong>" The v wave is the LA filling phase, and in MR it's swollen by the regurgitant volume. If a vignette mentions a <strong>tall v wave on a hemodynamic tracing</strong>, think <strong>significant MR</strong>, which comes with a high LV end-diastolic pressure.</p>
+    </div>
+    <div class="callout callout-concept">
+      <div class="callout-title">🧠 Big LA in MS vs MR</div>
+      <p>Both enlarge the LA. In <strong>MS</strong> it's mainly a <strong>pressure</strong> problem from the obstruction. In <strong>MR</strong> it's mainly a <strong>volume</strong> problem from two inflows.</p>
+    </div>
+
+    <h3>Primary vs secondary MR</h3>
+    <div class="compare-grid">
+      <div class="compare-card" style="background:var(--purple-bg);border-color:#7a5aa8"><span class="card-emoji">🎈</span><h4>Primary: the valve itself (MVP)</h4><p><strong class="hot">Most common cause of MR in the US: mitral valve prolapse.</strong> The leaflets are <strong>myxomatous</strong>: long, floppy, infiltrated with proteoglycans. A long leaflet billows up into the LA and leaves a <strong>gap</strong>. Tension stretches the chordae, so it worsens over time. If a chord <strong>ruptures</strong>, the leaflet becomes <strong>flail</strong>, causing a huge gap, <strong>acute heart failure</strong>, and <strong>surgery before discharge</strong>.</p></div>
+      <div class="compare-card" style="background:var(--blue-bg);border-color:var(--accent2)"><span class="card-emoji">🫀</span><h4>Secondary (functional): the LV</h4><p>The valve is normal; the <strong>ventricle</strong> is not. A <strong>dilated cardiomyopathy</strong> stretches the annulus and pulls on the papillary muscles, causing a central leak. An <strong>inferior MI</strong> damages the wall under the <strong>posteromedial papillary muscle</strong>, which tethers the posterior leaflet <em>down</em> (the opposite of prolapse); this is <strong>ischemic MR</strong>.</p></div>
+    </div>
+    <ul class="notes-list">
+      <li>The distinction matters because <strong>treatment differs</strong>. Primary MR is a valve problem: <strong>surgical mitral valve repair</strong> is the standard.</li>
+      <li>Repair is highly specialized. Send the patient to a surgeon with about <span class="num">95%</span> odds of <strong>repair rather than replacement</strong>. A good repair lasts a lifetime, while a prosthetic valve has a limited lifespan and commits the patient to another procedure.</li>
+    </ul>
+
+    <h3>On exam</h3>
+    <div class="callout callout-clinical">
+      <div class="callout-title">🩺 Buzzwords</div>
+      <p>A <strong>systolic murmur at the apex radiating to the axilla</strong> (and the back). Functional MR is <strong>holosystolic</strong>, the same pitch throughout. <strong class="hot">MVP: a mid-systolic click followed by a late systolic murmur.</strong> The click is the prolapsing leaflet and chordae snapping taut. As with any valve lesion, the first symptom is usually <strong>exercise intolerance</strong>, and later heart failure.</p>
+    </div>
+
+    <h3>Board details <span class="src-tag">Board add-on</span></h3>
+    <ul class="notes-list">
+      <li>Chronic severe MR: <strong>S3</strong>, a <strong>soft S1</strong>, a <strong>laterally displaced PMI</strong>, and frequent <strong>AF</strong>.</li>
+      <li><strong>Acute MR</strong> (papillary muscle rupture after an inferior MI, chordal rupture, endocarditis): pulmonary edema and shock, with a murmur that may be <strong>soft or absent</strong> because LA pressure rises fast and equalizes with the LV.</li>
+      <li><strong>MVP maneuvers</strong>: anything that <strong>shrinks the LV</strong> (standing, Valsalva) makes the <strong>click earlier and the murmur longer</strong>. Squatting and handgrip do the opposite. MVP is associated with <strong>Marfan and Ehlers–Danlos syndromes</strong>.</li>
+      <li>Handgrip (↑ afterload) <strong>increases</strong> the MR murmur.</li>
+    </ul>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— the slide 25 video; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="JzNz1pCtMsQ" data-title="Mitral regurgitation — the lecture video"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/JzNz1pCtMsQ/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Mitral regurgitation and prolapse: the click and the murmur</b><i>Lecture slide 25 · YouTube</i></span></button></div></div>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> A pulmonary capillary wedge (LA) tracing shows a very tall v wave. Which lesion, and why?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Mitral regurgitation.</strong> During systole the LA fills from the pulmonary veins <em>and</em> the regurgitant jet, so the filling wave (v) towers.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> A thin 30-year-old woman has a mid-systolic click followed by a late systolic murmur at the apex. What is the valve pathology?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Mitral valve prolapse</strong> from <strong>myxomatous degeneration</strong> (elongated, floppy leaflets), the most common cause of primary MR in the US.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> Three days after an inferior MI a patient develops new MR. Which papillary muscle is involved, and is this primary or secondary MR?</p>
+      <div class="answer"><div class="label">Answer</div><p>The <strong>posteromedial papillary muscle</strong> (supplied by the inferior wall). Dysfunction is <strong>secondary (ischemic, functional) MR</strong>; outright rupture causes acute MR and needs emergency surgery.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 9. AR ==================== -->
+<div class="section" id="s9-ar">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">LO 4 · Topic 9</div><span class="hy-flag">⭐ Wide pulse pressure + diastolic murmur + bounding pulses</span></div>
+    <p class="section-label">Slides 26–27 + recording · causes · the aorta loses blood two ways · eccentric hypertrophy · water-hammer pulse</p>
+    <h2 class="section-title">Aortic Regurgitation</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>AR = aortic regurgitation · AS = aortic stenosis · LA / LV = left atrium / ventricle · LVEDP = LV end-diastolic pressure · Ao = aorta · LSB = left sternal border · RUSB = right upper sternal border · PMI = point of maximal impulse · S3 = third heart sound</div>
+
+    <h3>Causes</h3>
+    <ul class="notes-list">
+      <li>Less common than AS or MR. In the lecturer's practice the commonest setting is <strong>bacterial endocarditis</strong>.</li>
+      <li><strong>Bicuspid aortic valve</strong>: mostly AS, but many have mixed disease and some have pure AR.</li>
+      <li><strong>Marfan syndrome</strong> (a connective-tissue disorder): AR, MVP, and ascending aortic aneurysm.</li>
+      <li><span class="src-tag">Board add-on</span> UWorld: the <strong>commonest cause in resource-rich countries is a bicuspid valve</strong>, and rheumatic disease in resource-limited ones. <strong>Aortic root dilation</strong> (Marfan, Ehlers–Danlos, ankylosing spondylitis, giant cell or Takayasu arteritis) is another route. <strong>Acute AR</strong> comes from <strong>aortic dissection</strong> or endocarditis.</li>
+    </ul>
+
+    <div class="fig-row"><figure class="fig-card sm" id="fig-cc-ar-schematic"><div class="fig-frame"><img class="slide-img" src="assets/cardiac-cycle/cc-ar-schematic.jpg" alt="Two heart outlines comparing a normal aortic valve with a leaking one" width="730" height="610" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig C8</span><span class="fig-title">Normal vs aortic regurgitation: diastolic jet into the LV, aorta 160/60, LV 160/20, LA 20</span><span class="fig-src"><b>Qazi — Cardiac Cycle lecture</b> · slide 26</span></figcaption></figure><figure class="fig-card sm" id="fig-cc-ar-tracing"><div class="fig-frame"><img class="slide-img" src="assets/cardiac-cycle/cc-ar-tracing.jpg" alt="Pressure tracing labelled with raised systolic and lowered diastolic aortic pressure" width="730" height="542" loading="lazy" decoding="async"></div><figcaption><span class="fig-num">Fig C9</span><span class="fig-title">Aortic regurgitation: ↑ systolic and ↓ diastolic aortic pressure (wide pulse pressure), LV and aortic peaks superimposed</span><span class="fig-src"><b>Qazi — Cardiac Cycle lecture</b> · slide 26</span></figcaption></figure></div>
+
+    <h3>Hemodynamics</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>Chamber</th><th>Normal</th><th>Aortic regurgitation</th><th>Why</th></tr>
+      <tr><td><strong>Aorta</strong></td><td>120/80</td><td><strong>160/60</strong>: wide pulse pressure</td><td>A big stroke volume raises systolic pressure. The aorta <strong>loses blood two ways</strong> in diastole (back into the LV and forward runoff), so diastolic pressure is <strong>low</strong></td></tr>
+      <tr><td><strong>LV</strong></td><td>120/10</td><td><strong>160/20</strong></td><td>Extra diastolic volume, so systolic and end-diastolic pressures rise, but nowhere near AS levels</td></tr>
+      <tr><td><strong>LA</strong></td><td>10</td><td><strong>20 ↑</strong></td><td>The LA empties into a fuller, higher-pressure LV</td></tr>
+    </table></div>
+    <div class="callout callout-key">
+      <div class="callout-title">🔑 Hallmark: a widened pulse pressure</div>
+      <p><strong class="hot">Systolic pressure high, diastolic pressure low.</strong> LV and aortic systolic peaks are <strong>superimposed</strong> (no obstruction, unlike AS). The difference shows in diastole, where aortic pressure falls away.</p>
+    </div>
+
+    <h3>Remodeling: stenosis vs regurgitation (her recap)</h3>
+    <div class="compare-grid">
+      <div class="compare-card" style="background:var(--red-bg);border-color:var(--accent)"><span class="card-emoji">🧱</span><h4>AS: pressure overload</h4><p>A fixed obstruction makes the LV work hard, causing <strong>concentric hypertrophy</strong>: a thick wall, non-compliant, with very high intraventricular pressure.</p></div>
+      <div class="compare-card" style="background:var(--blue-bg);border-color:var(--accent2)"><span class="card-emoji">🎈</span><h4>AR (and MR): volume overload</h4><p>Too much volume sits in the LV, causing <strong>LV dilation</strong> with <strong>eccentric hypertrophy</strong>. Wall thickness may look normal, but the myocytes are still abnormal. MR adds LA enlargement on top.</p></div>
+    </div>
+    <p class="lede" style="margin-top:6px">Her rule: <strong>if the wall thickens, it's concentric; if the chamber enlarges, it's eccentric.</strong></p>
+
+    <h3>On exam</h3>
+    <div class="callout callout-clinical">
+      <div class="callout-title">🩺 Buzzwords</div>
+      <p>A <strong class="hot">diastolic murmur</strong> plus <strong class="hot">bounding ("water-hammer") pulses</strong>. The pulse bounds because of the forceful ejection followed by rapid runoff.</p>
+    </div>
+
+    <h3>Board details <span class="src-tag">Board add-on</span></h3>
+    <ul class="notes-list">
+      <li>The murmur is <strong>early diastolic, decrescendo, high-pitched and blowing</strong>. Valvular AR is heard best at the <strong>left sternal border</strong> (sitting forward, end-expiration); root dilation at the <strong>RUSB</strong>.</li>
+      <li><strong>Austin Flint murmur</strong>: an apical diastolic rumble in severe AR (the jet hits the anterior mitral leaflet), which mimics MS.</li>
+      <li>Hyperdynamic signs: <strong>Corrigan</strong> (carotid "water-hammer"), <strong>de Musset</strong> (head bobbing), <strong>Quincke</strong> (nail-bed pulsations), <strong>Traube</strong> (pistol-shot femorals), <strong>Duroziez</strong> (femoral to-and-fro bruit), <strong>Müller</strong> (uvula pulsation).</li>
+      <li>Also: <strong>S3</strong>, a <strong>displaced PMI</strong>, and angina (low diastolic pressure, so poor coronary perfusion; often <strong>nocturnal</strong> with bradycardia).</li>
+      <li><strong>Acute AR</strong> (dissection, endocarditis): sudden pulmonary edema and shock, with a soft or short murmur and <em>no</em> time for a wide pulse pressure to develop.</li>
+    </ul>
+
+    <div class="watch"><div class="watch-title">🎬 Watch <span>— the slide 27 video; nothing loads until you click</span></div><div class="vid-grid"><button class="vid" type="button" data-yt="HtDzHWNYKQM" data-title="Aortic regurgitation — the lecture video"><span class="vid-thumb"><img src="https://i.ytimg.com/vi/HtDzHWNYKQM/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="vid-play">▶</span></span><span class="vid-meta"><b>Aortic regurgitation: the diastolic murmur</b><i>Lecture slide 27 · YouTube</i></span></button></div></div>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> A tall 25-year-old with long fingers has BP 160/50, bounding pulses and a diastolic murmur. Explain the low diastolic pressure.</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Aortic regurgitation</strong> (Marfan, aortic root). In diastole the aorta loses blood <strong>two ways</strong>: backward into the LV and forward into the systemic runoff. Diastolic pressure therefore falls, while the large stroke volume raises systolic pressure, giving a <strong>wide pulse pressure</strong>.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> Contrast the LV remodeling in aortic stenosis and aortic regurgitation.</p>
+      <div class="answer"><div class="label">Answer</div><p>AS is <strong>pressure overload</strong>, causing <strong>concentric hypertrophy</strong> (thick, stiff wall). AR is <strong>volume overload</strong>, causing <strong>dilation with eccentric hypertrophy</strong>.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 10. COMPARE ==================== -->
+<div class="section" id="s10-compare">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge">LO 4 · Topic 10</div><span class="hy-flag">⭐ Stenosis = gradient · regurgitation = extra volume</span></div>
+    <p class="section-label">Slides 20–27 together · one table to memorise · name the lesion from its tracing</p>
+    <h2 class="section-title">The Four Lesions Side by Side</h2>
+
+    <div class="abbr-strip"><span class="t">Abbreviations</span>MS / AS = mitral / aortic stenosis · MR / AR = mitral / aortic regurgitation · LA / LV = left atrium / ventricle · LVH = left ventricular hypertrophy · RUSB = right upper sternal border · LSB = left sternal border · MVP = mitral valve prolapse</div>
+
+    <div class="tbl-scroll"><table class="lesion-tbl">
+      <tr><th>Lesion</th><th>Tracing</th><th>When</th><th>Hallmark on the tracing</th><th>Murmur &amp; signs</th><th>Remodeling</th><th>Classic cause</th></tr>
+      <tr><td><strong>MS</strong></td><td><img class="slide-img thumb" src="assets/cardiac-cycle/cc-ms-tracing.jpg" alt="Pressure tracing with the LA curve above the LV curve during diastole" loading="lazy" decoding="async"></td><td>Diastole</td><td><strong>LA &gt; LV diastolic gradient</strong></td><td>Rumbling diastolic murmur, <strong>opening snap</strong>, apex</td><td>LA enlarged; LV spared and underfilled</td><td>Rheumatic (worldwide)</td></tr>
+      <tr><td><strong>AS</strong></td><td><img class="slide-img thumb" src="assets/cardiac-cycle/cc-as-tracing.jpg" alt="Pressure tracing with the LV peak near 200 and the aortic peak near 115" loading="lazy" decoding="async"></td><td>Systole</td><td><strong>LV &gt; aortic systolic gradient</strong></td><td>Systolic crescendo–decrescendo, RUSB; <strong>blunted carotids</strong></td><td><strong>Concentric LVH</strong>; LA high</td><td>Bicuspid (40s–60s) · calcific (70s+)</td></tr>
+      <tr><td><strong>MR</strong></td><td><img class="slide-img thumb" src="assets/cardiac-cycle/cc-mr-tracing.jpg" alt="Pressure tracing with a labelled tall v wave on the LA curve" loading="lazy" decoding="async"></td><td>Systole</td><td><strong>Tall v wave</strong></td><td>Holosystolic at the apex to the axilla · MVP: <strong>mid-systolic click + late systolic</strong></td><td>LA enlarged + <strong>LV dilated</strong> (eccentric)</td><td>MVP (US)</td></tr>
+      <tr><td><strong>AR</strong></td><td><img class="slide-img thumb" src="assets/cardiac-cycle/cc-ar-tracing.jpg" alt="Pressure tracing labelled with raised systolic and lowered diastolic aortic pressure" loading="lazy" decoding="async"></td><td>Diastole</td><td><strong>Wide pulse pressure</strong> (↑ systolic, ↓ diastolic)</td><td>Diastolic decrescendo; <strong>bounding / water-hammer pulses</strong></td><td><strong>LV dilated</strong> (eccentric)</td><td>Endocarditis, bicuspid, Marfan / root</td></tr>
+    </table></div>
+
+    <div class="callout callout-key">
+      <div class="callout-title">🔑 Two questions solve most vignettes</div>
+      <p><strong>1. Systolic or diastolic?</strong> In systole the aortic valve should be open and the mitral closed, so a systolic murmur is <strong>AS or MR</strong>. In diastole it's the reverse, so a diastolic murmur is <strong>MS or AR</strong>.<br><strong>2. Pressure or volume?</strong> A stenosis creates a <strong>gradient</strong> across the valve. A regurgitant valve dumps <strong>volume</strong> into the chamber behind it: a tall v wave in the LA (MR), or a dilated LV with a wide pulse pressure (AR).</p>
+    </div>
+
+    <div class="tool" id="lesionGame">
+      <h4>🩻 Name the lesion</h4>
+      <p class="t-intro">A tracing or a clue appears; pick the lesion. Shuffled each time.</p>
+      <div class="lg-stage"><div class="lg-pic" id="lgPic"></div><div class="d-q" id="lgQ"></div></div>
+      <div class="d-opts" id="lgOpts"></div>
+      <div class="t-out" id="lgOut"></div>
+      <div class="d-nav"><button class="tb" id="lgNext" type="button">Next →</button><span id="lgScore">0 / 0 correct</span></div>
+    </div>
+
+    <div class="exam-q">
+      <p><strong>Q:</strong> Which two lesions produce a systolic murmur, and which hemodynamic sign separates them?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>AS and MR.</strong> AS has an <strong>LV–aortic systolic gradient</strong> (with blunted carotids). MR has a <strong>tall LA v wave</strong> with no gradient between the LV and aorta.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> Which two lesions produce a diastolic murmur, and which hemodynamic sign separates them?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>MS and AR.</strong> MS has an <strong>LA–LV diastolic gradient</strong> (opening snap, rumble). AR has a <strong>wide pulse pressure</strong> with bounding pulses.</p></div>
+    </div>
+    <div class="exam-q">
+      <p><strong>Q:</strong> In which lesion is the LV small and underfilled rather than hypertrophied or dilated?</p>
+      <div class="answer"><div class="label">Answer</div><p><strong>Mitral stenosis.</strong> The obstruction is upstream of the LV, so the LV is <strong>protected</strong> and underfilled while the LA takes the strain.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PRACTICE ==================== -->
+<div class="section" id="practice">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge alt">Practice</div></div>
+    <p class="section-label">Phases, waves, sounds and lesions</p>
+    <h2 class="section-title">Drill</h2>
+    <div class="abbr-strip"><span class="t">Abbreviations</span>LA / LV = left atrium / ventricle · LVP / AoP = LV / aortic pressure · EDV / ESV = end-diastolic / end-systolic volume · EF = ejection fraction · AF = atrial fibrillation · MS / AS / MR / AR = mitral / aortic stenosis / regurgitation · MVP = mitral valve prolapse</div>
+    <div class="tool drill" id="ccDrill">
+      <h4>🎯 Quick check</h4>
+      <p class="t-intro">Shuffled; instant feedback.</p>
+      <div class="d-q" id="ccQ"></div>
+      <div class="d-opts" id="ccOpts"></div>
+      <div class="t-out" id="ccOut"></div>
+      <div class="d-nav"><button class="tb" id="ccNext" type="button">Next →</button><span id="ccScore">0 / 0 correct</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== GLOSSARY ==================== -->
+<div class="section" id="glossary">
+  <div class="container">
+    <div class="badge-row"><div class="lo-badge alt">Reference</div></div>
+    <p class="section-label">Every short form used in these notes</p>
+    <h2 class="section-title">Glossary &amp; Abbreviations</h2>
+    <div class="gloss">
+      <dl>
+        <dt>a · c · v waves</dt><dd>Atrial pressure waves: atrial contraction · AV valve bulging at the start of systole · atrial filling</dd>
+        <dt>AF</dt><dd>Atrial fibrillation</dd>
+        <dt>AoP · LAP · LVP</dt><dd>Aortic · left atrial · left ventricular pressure</dd>
+        <dt>AS · AR</dt><dd>Aortic stenosis · aortic regurgitation</dd>
+        <dt>AV valves</dt><dd>Atrioventricular valves: mitral, tricuspid</dd>
+        <dt>CO</dt><dd>Cardiac output = SV × HR</dd>
+        <dt>Concentric / eccentric hypertrophy</dt><dd>Thick wall from pressure overload / dilated chamber from volume overload</dd>
+      </dl>
+      <dl>
+        <dt>Diastasis</dt><dd>Slow, late-diastolic filling between rapid filling and the atrial kick</dd>
+        <dt>Dicrotic notch</dt><dd>Dip on the aortic tracing at aortic valve closure</dd>
+        <dt>EDV · ESV</dt><dd>End-diastolic · end-systolic volume</dd>
+        <dt>EF</dt><dd>Ejection fraction = SV ÷ EDV</dd>
+        <dt>HFrEF</dt><dd>Heart failure with reduced ejection fraction</dd>
+        <dt>Isovolumetric</dt><dd>All valves closed; volume constant while pressure changes</dd>
+        <dt>LVEDP</dt><dd>Left ventricular end-diastolic pressure</dd>
+      </dl>
+      <dl>
+        <dt>LVH</dt><dd>Left ventricular hypertrophy</dd>
+        <dt>MS · MR · MVP</dt><dd>Mitral stenosis · mitral regurgitation · mitral valve prolapse</dd>
+        <dt>OS</dt><dd>Opening snap (mitral stenosis)</dd>
+        <dt>PBMC</dt><dd>Percutaneous balloon mitral commissurotomy (valvuloplasty)</dd>
+        <dt>S1 · S2 · S3 · S4</dt><dd>AV closure · semilunar closure · early-diastolic volume sound · presystolic stiff-ventricle sound</dd>
+        <dt>SV</dt><dd>Stroke volume = EDV − ESV</dd>
+        <dt>TAVR · SAVR</dt><dd>Transcatheter · surgical aortic valve replacement</dd>
+      </dl>
+    </div>
+  </div>
+</div>
+
+
+<style>
+.tool input.t-in{width:90px;padding:6px 8px;border:1px solid var(--border);border-radius:8px;background:var(--paper);color:var(--ink);font-family:'JetBrains Mono',monospace;font-size:.9rem}
+.phase-view{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:16px;align-items:start;margin-top:10px}
+.phase-pic .slide-img{margin:0;width:100%;height:auto;cursor:zoom-in;background:#fff}
+.phase-txt{background:var(--paper);border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-size:.93rem;line-height:1.55}
+.phase-txt h5{margin:0 0 4px;font-family:'Playfair Display',serif;font-size:1.15rem}
+.phase-txt .pv{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;background:var(--chip-blue);color:var(--chip-fg);border-radius:10px;padding:2px 9px;margin:2px 0 8px}
+.phase-txt ul{margin:0;padding-left:18px}
+.phase-txt li{margin:3px 0}
+#phaseBtns .tb{min-width:38px}
+.lg-stage{display:grid;grid-template-columns:minmax(0,1fr);gap:10px}
+.lg-pic img{max-width:min(100%,480px);display:block;border:1px solid var(--border);border-radius:10px;background:#fff}
+.lesion-tbl td{vertical-align:top}
+.lesion-tbl img.thumb{width:150px;height:auto;max-width:none;margin:0;display:block;border:1px solid var(--border);border-radius:6px;background:#fff;cursor:zoom-in}
+@media (max-width:760px){.phase-view{grid-template-columns:1fr}}
+@media print{#lesionGame,#ccDrill,#phaseBtns,.d-nav{display:none!important}}
+</style>
+<script>
+(function(){
+  function $(id){return document.getElementById(id);}
+  /* ---------- phase stepper ---------- */
+  var P=[
+    ['cc-phase1-atrial.jpg','1 · Atrial systole','AV valves open · semilunar closed',['<b>P wave</b>, then the atria contract: the <b>a wave</b>.','Tops the LV up to <b>EDV</b> (the <b>atrial kick</b>, ~20–25% of output per the lecture).','An <b>S4</b> appears here if the LV is stiff. Lost in <b>atrial fibrillation</b>.','Ends when LVP rises above LAP, closing the mitral valve (<b>S1</b>).']],
+    ['cc-phase2-ivc.jpg','2 · Isovolumetric contraction','ALL valves closed',['Starts with the <b>QRS</b> and <b>S1</b> (mitral and tricuspid close).','LV pressure <b>rises steeply</b>; volume <b>constant</b> at EDV.','The closed mitral valve bulges into the LA: the <b>c wave</b>.','Ends when LVP exceeds aortic pressure (~80 mm Hg) and the aortic valve opens.']],
+    ['cc-phase3-rapid-ejection.jpg','3 · Rapid ejection','Aortic &amp; pulmonic open · AV closed',['LVP and aortic pressure rise together to the peak (~120); <b>no gradient</b> across a normal valve.','LV volume <b>falls fast</b>: most of the stroke volume leaves now.','Aortic pressure rises as the stroke volume is pushed in.']],
+    ['cc-phase4-reduced-ejection.jpg','4 · Reduced ejection','Aortic &amp; pulmonic open · AV closed',['Ejection <b>slows</b>; LV volume drifts down to <b>ESV</b>.','The <b>T wave</b> (repolarization) is inscribed.','The LA keeps filling, so the <b>v wave</b> builds.','Ends when LVP falls below aortic pressure: the aortic valve closes (<b>S2</b>, dicrotic notch).']],
+    ['cc-phase5-ivr.jpg','5 · Isovolumetric relaxation','ALL valves closed',['Starts at <b>S2</b>; the <b>dicrotic notch</b> is on the aortic tracing.','LV pressure <b>falls steeply</b>; volume <b>constant</b> at ESV.','The <b>v wave</b> peaks.','Ends when LVP falls below LAP and the mitral valve opens (an <b>opening snap</b> if it\'s stenotic).']],
+    ['cc-phase6-rapid-filling.jpg','6 · Rapid filling','AV valves open · semilunar closed',['Blood rushes from the LA into the relaxed LV: <b>most of filling</b> happens here.','LA and LV pressures nearly <b>equal</b> (laminar flow).','An <b>S3</b> appears here if the LV is volume-overloaded.']],
+    ['cc-phase7-reduced-filling.jpg','7 · Reduced filling (diastasis)','AV valves open · semilunar closed',['Slow filling; LV volume <b>barely changes</b>.','The phase that <b>shortens first when heart rate rises</b>.','Next comes the P wave, then atrial systole (phase 1).']]];
+  var pi=0, btns=$('phaseBtns');
+  P.forEach(function(p,k){var b=document.createElement('button');b.className='tb';b.type='button';b.textContent=k+1;b.addEventListener('click',function(){pi=k;showP();});btns.appendChild(b);});
+  function showP(){var p=P[pi];var im=$('phaseImg');im.src='assets/cardiac-cycle/'+p[0];im.alt='Lecture slide: '+p[1].replace(/&amp;/g,'&');
+    $('phaseTxt').innerHTML='<h5>'+p[1]+'</h5><span class="pv">'+p[2]+'</span><ul><li>'+p[3].join('</li><li>')+'</li></ul>';
+    Array.prototype.forEach.call(btns.children,function(b,k){b.classList.toggle('on',k===pi);});
+    $('phaseCount').textContent='Phase '+(pi+1)+' of 7 · lecture slide '+(pi+12);}
+  $('phasePrev').addEventListener('click',function(){pi=(pi+6)%7;showP();});
+  $('phaseNext').addEventListener('click',function(){pi=(pi+1)%7;showP();});
+  showP();
+
+  /* ---------- SV / EF / CO ---------- */
+  function co(){var e=+$('coEdv').value,s=+$('coEsv').value,h=+$('coHr').value,o=$('coOut');
+    if(!e||s<0||s>=e){o.innerHTML='Enter an EDV larger than the ESV.';return;}
+    var sv=e-s,ef=Math.round(100*sv/e),c=(sv*h/1000);
+    var tag=ef>=50?'normal range, about 50–70%':(ef>=41?'mildly reduced, 41–49%':'reduced, ≤ 40% as in HFrEF');
+    o.innerHTML='SV = '+e+' − '+s+' = <b>'+sv+' mL</b> · EF = '+sv+' ÷ '+e+' = <b>'+ef+'%</b> ('+tag+')'+(h?' · CO = '+sv+' mL × '+h+' = <b>'+c.toFixed(1)+' L/min</b>':'');}
+  ['coEdv','coEsv','coHr'].forEach(function(id){$(id).addEventListener('input',co);}); co();
+
+  function shuf(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;}return a;}
+  function quiz(cfg){
+    var QS=shuf(cfg.qs),qi=0,right=0,done=0;
+    function show(){var q=QS[qi%QS.length];$(cfg.q).innerHTML='<b>'+((qi%QS.length)+1)+'.</b> '+q[0];$(cfg.out).innerHTML='';
+      if(cfg.pic){$(cfg.pic).innerHTML=q[4]?'<img src="assets/cardiac-cycle/'+q[4]+'" alt="Pressure tracing to identify" loading="lazy">':'';}
+      var o=$(cfg.opts);o.innerHTML='';delete o.dataset.answered;
+      shuf(q[1].map(function(_,k){return k;})).forEach(function(k){var b=document.createElement('button');b.className='tb';b.type='button';b.textContent=q[1][k];b.dataset.k=k;
+        b.addEventListener('click',function(){if(o.dataset.answered)return;o.dataset.answered='1';done++;
+          if(k===q[2]){right++;b.classList.add('right');$(cfg.out).innerHTML='✅ '+q[3];}
+          else{b.classList.add('wrong');o.querySelector('[data-k="'+q[2]+'"]').classList.add('right');$(cfg.out).innerHTML='❌ '+q[3];}
+          $(cfg.score).textContent=right+' / '+done+' correct';});o.appendChild(b);});}
+    $(cfg.next).addEventListener('click',function(){qi++;show();});show();}
+
+  /* ---------- name the lesion ---------- */
+  var L=['Mitral stenosis','Aortic stenosis','Mitral regurgitation','Aortic regurgitation'];
+  quiz({q:'lgQ',opts:'lgOpts',out:'lgOut',next:'lgNext',score:'lgScore',pic:'lgPic',qs:[
+    ['Which lesion does this tracing show? (LAP, LVP, AP)',L,0,'<b>MS</b>: LA pressure stays above LV pressure through diastole (the shaded diastolic gradient).','cc-ms-tracing.jpg'],
+    ['Which lesion does this tracing show?',L,1,'<b>AS</b>: LV systolic pressure far above aortic, a systolic gradient.','cc-as-tracing.jpg'],
+    ['Which lesion does this tracing show?',L,2,'<b>MR</b>: a tall v wave on the LA tracing.','cc-mr-tracing.jpg'],
+    ['Which lesion does this tracing show?',L,3,'<b>AR</b>: ↑ systolic, ↓ diastolic aortic pressure (wide pulse pressure), with LV and aortic peaks superimposed.','cc-ar-tracing.jpg'],
+    ['Which lesion matches this schematic? (LA 25, LV 115/6, Ao 115/80)',L,0,'<b>MS</b>: high LA, low LV diastolic pressure.','cc-ms-schematic.jpg'],
+    ['Which lesion matches this schematic? (LV 200/25, Ao 110/70)',L,1,'<b>AS</b>: a 90 mm Hg LV–aortic systolic gradient, with a thick LV.','cc-as-schematic.jpg'],
+    ['Which lesion matches this schematic? (LA 25, LV 110/25)',L,2,'<b>MR</b>: a systolic jet back into the LA.','cc-mr-schematic.jpg'],
+    ['Which lesion matches this schematic? (Ao 160/60, LV 160/20)',L,3,'<b>AR</b>: wide pulse pressure, diastolic jet into the LV.','cc-ar-schematic.jpg'],
+    ['Diastolic rumble at the apex with an opening snap.',L,0,'<b>MS</b>.'],
+    ['Systolic crescendo–decrescendo murmur at the right 2nd intercostal space; weak, delayed carotid upstrokes.',L,1,'<b>AS</b>.'],
+    ['Mid-systolic click followed by a late systolic murmur.',L,2,'<b>MR from mitral valve prolapse</b>.'],
+    ['Diastolic murmur with bounding, water-hammer pulses.',L,3,'<b>AR</b>.'],
+    ['Concentric left ventricular hypertrophy with a non-compliant ventricle.',L,1,'<b>AS</b> (pressure overload).'],
+    ['The LV is underfilled and spared while the LA enlarges.',L,0,'<b>MS</b>: the obstruction is upstream of the LV.'],
+    ['Holosystolic apical murmur radiating to the axilla in a patient with a dilated cardiomyopathy.',L,2,'<b>Secondary (functional) MR</b> from annular dilation.'],
+    ['Most common cause worldwide is rheumatic heart disease.',L,0,'<b>MS</b>.'],
+    ['Screen the patient for an ascending aortic aneurysm and coarctation.',L,1,'<b>AS from a bicuspid valve</b>, which comes with an aortopathy.'],
+    ['The aorta loses blood in two directions during diastole.',L,3,'<b>AR</b>: regurgitation back into the LV plus systemic runoff.']]});
+
+  /* ---------- drill ---------- */
+  quiz({q:'ccQ',opts:'ccOpts',out:'ccOut',next:'ccNext',score:'ccScore',qs:[
+    ['The mitral valve closes when…',['LV pressure exceeds LA pressure','LA pressure exceeds LV pressure','LV pressure exceeds aortic pressure','Aortic pressure exceeds LV pressure'],0,'<b>LVP &gt; LAP</b> closes it, producing S1.'],
+    ['All four valves are closed during…',['Isovolumetric contraction and relaxation','Rapid ejection and rapid filling','Atrial systole only','Diastasis'],0,'Both <b>isovolumetric</b> phases.'],
+    ['The a wave of the atrial tracing reflects…',['Atrial contraction','Atrial filling against a closed AV valve','AV valve bulging','Aortic valve closure'],0,'<b>Atrial contraction</b>, right after the P wave.'],
+    ['The v wave reflects…',['Atrial filling against a closed AV valve','Atrial contraction','Ventricular repolarization','Aortic valve opening'],0,'<b>Atrial filling</b>; it is tall in MR.'],
+    ['The dicrotic notch coincides with…',['Aortic valve closure','Aortic valve opening','Mitral valve closure','Mitral valve opening'],0,'<b>Aortic valve closure</b> (S2) plus elastic recoil.'],
+    ['Most ventricular filling occurs during…',['Rapid filling','Atrial systole','Diastasis','Isovolumetric relaxation'],0,'<b>Rapid filling</b>, early diastole.'],
+    ['S3 is a marker of…',['Volume overload','A stiff hypertrophied ventricle','Mitral stenosis','Aortic valve closure'],0,'<b>Volume overload</b> (e.g. HFrEF); it can be physiologic in the young.'],
+    ['S4 occurs…',['Just before S1','Just after S2','Mid-systole','During isovolumetric relaxation'],0,'<b>Just before S1</b>: the atrial kick into a stiff LV.'],
+    ['Which rhythm abolishes the atrial kick and the S4?',['Atrial fibrillation','Sinus tachycardia','First-degree AV block','Sinus bradycardia'],0,'<b>Atrial fibrillation</b>.'],
+    ['EDV 120 mL, ESV 48 mL. Ejection fraction?',['60%','40%','72%','48%'],0,'SV 72 ÷ 120 = <b>60%</b>.'],
+    ['In a failing, dilated heart, tachycardia tends to…',['Lower cardiac output','Raise cardiac output','Not change cardiac output','Raise ejection fraction'],0,'Less filling time, so SV falls and <b>CO falls</b>.'],
+    ['Hallmark hemodynamic finding of mitral regurgitation.',['Tall v wave','LA–LV diastolic gradient','LV–aortic systolic gradient','Wide pulse pressure'],0,'<b>Tall v wave</b>.'],
+    ['Hallmark hemodynamic finding of aortic regurgitation.',['Wide pulse pressure','Tall v wave','LA–LV diastolic gradient','LV–aortic systolic gradient'],0,'<b>Wide pulse pressure</b>.'],
+    ['Most common cause of primary MR in the US.',['Mitral valve prolapse','Rheumatic heart disease','Inferior MI','Endocarditis'],0,'<b>MVP</b> (myxomatous degeneration).'],
+    ['Ischemic MR after an inferior MI involves the…',['Posteromedial papillary muscle','Anterolateral papillary muscle','Aortic annulus','Tricuspid chordae'],0,'<b>Posteromedial</b> papillary muscle.'],
+    ['First symptom of severe aortic stenosis, per the lecture.',['Exercise intolerance','Hemoptysis','Syncope at rest','Palpitations'],0,'<b>Exercise intolerance</b>, then angina, exertional syncope, heart failure.'],
+    ['Did statins slow calcific AS in Otto\'s trial?',['No','Yes, by half','Only in bicuspid valves','Only with high-dose atorvastatin'],0,'<b>No</b>; treatment is valve replacement.'],
+    ['A murmur whose peak moves later and muffles S2 suggests…',['More severe aortic stenosis','Milder aortic stenosis','Mitral valve prolapse','Aortic regurgitation'],0,'A <b>late peak and soft S2</b> mean severe AS.']]});
+})();
+</script>
+
+
+<div class="hy-modal" id="hyModal">
+  <div class="hy-modal-card">
+    <div class="hy-modal-header">
+      <h2>🎯 Cardiac Cycle &amp; Valve Hemodynamics — High-Yield One-Pager</h2>
+      <div class="hy-modal-actions">
+        <button class="hy-action-btn" onclick="printHY()">🖨️ Print / Save PDF</button>
+        <button class="hy-action-btn hy-close-btn" onclick="closeHY()">✕ Close</button>
+      </div>
+    </div>
+    <p class="hy-subhead">Amina Qazi, DO, FACC · OMK 2 Cardio · LO 1 phases → LO 2 Wiggers diagram → LO 3 electrical, mechanical and pressure–volume links → LO 4 heart sounds and valve lesions</p>
+    <div class="hy-cols">
+      <div>
+        <span class="hy-lo-tag">THE NORMAL CYCLE</span>
+        <div class="hy-block"><h4>Valve rule</h4><ul>
+          <li>Flow goes high → low pressure. A valve <strong>opens</strong> when the proximal chamber is higher, <strong>closes</strong> when the distal one overtakes</li>
+          <li>LVP &gt; LAP: mitral closes (<strong>S1</strong>) · LVP &gt; AoP: aortic opens · LVP &lt; AoP: aortic closes (<strong>S2</strong>, dicrotic notch) · LVP &lt; LAP: mitral opens</li>
+          <li>P before atrial contraction · QRS before ventricular contraction · T = repolarization in late ejection</li>
+        </ul></div>
+        <div class="hy-block"><h4>Seven phases</h4><ul>
+          <li>1 atrial systole (a wave, kick, S4) · 2 <strong>isovolumetric contraction</strong> (all closed, P ↑, V flat, c wave)</li>
+          <li>3 rapid / 4 reduced ejection (aortic open, T wave, v builds)</li>
+          <li>5 <strong>isovolumetric relaxation</strong> (all closed, P ↓, V flat, v peaks)</li>
+          <li>6 rapid filling (most filling, S3) · 7 diastasis (shortens first with ↑ HR)</li>
+        </ul></div>
+        <div class="hy-block"><h4>Waves &amp; notch</h4><ul>
+          <li><strong>a</strong> = atrial contraction · <strong>c</strong> = AV valve bulges back at onset of systole · <strong>v</strong> = atrial filling</li>
+          <li>AF: no a wave, no kick, no S4</li>
+          <li><strong>Dicrotic notch</strong> = aortic closure + elastic recoil</li>
+          <li>Normal: LV and aortic peaks superimposed; LA and LV diastolic pressures superimposed</li>
+        </ul></div>
+        <div class="hy-block"><h4>Numbers</h4><ul>
+          <li>Ao 120/80 · LV 120/10 · LA ~10 · EDV ~130, ESV ~50 mL</li>
+          <li><strong>SV = EDV − ESV · EF = SV/EDV</strong> (50–70%) · <strong>CO = SV × HR</strong> (~5 L/min)</li>
+          <li>Atrial kick ≈ 20–25% of output (lecture)</li>
+        </ul></div>
+      </div>
+      <div>
+        <span class="hy-lo-tag">SOUNDS &amp; OUTPUT</span>
+        <div class="hy-block"><h4>Heart sounds</h4><ul>
+          <li>S1 AV closure · S2 semilunar closure</li>
+          <li><strong>S3</strong> right after S2: rapid filling of a <strong>volume-overloaded</strong> LV (HFrEF, MR, AR); can be normal in the young · "Ken-tuck-y"</li>
+          <li><strong>S4</strong> just <strong>before S1</strong>: kick into a <strong>stiff</strong> LV (LVH, AS, hypertension) · "Ten-nes-see" · recording said "before S2" (slip)</li>
+          <li>Paradoxical split S2: severe AS, LBBB · fixed: ASD</li>
+        </ul></div>
+        <div class="hy-block"><h4>Heart rate</h4><ul>
+          <li>Healthy: ↑ HR + ↑ contractility + stretch → ↑ CO</li>
+          <li><strong>Sick heart: tachycardia cuts filling time → ↓ SV → ↓ CO</strong></li>
+        </ul></div>
+        <div class="hy-block"><h4>Two-question method</h4><ul>
+          <li>Systolic murmur → <strong>AS or MR</strong> · diastolic → <strong>MS or AR</strong></li>
+          <li>Stenosis → <strong>gradient</strong> · regurgitation → <strong>extra volume</strong></li>
+          <li>Pressure overload → <strong>concentric</strong> LVH · volume overload → <strong>dilation (eccentric)</strong></li>
+        </ul></div>
+        <div class="hy-block"><h4>Mitral apparatus</h4><ul>
+          <li>2 leaflets of ~equal area · chordae from both papillary muscles go to both leaflets · the LV is part of the apparatus</li>
+        </ul></div>
+      </div>
+      <div>
+        <span class="hy-lo-tag">VALVE LESIONS</span>
+        <table class="hy-mini-table">
+          <tr><th>Lesion</th><th>Tracing hallmark</th><th>Exam</th></tr>
+          <tr><td><strong>MS</strong></td><td>LA &gt; LV diastolic gradient · LA 25, LV 115/6</td><td>Diastolic rumble + <strong>opening snap</strong>, apex · rheumatic</td></tr>
+          <tr><td><strong>AS</strong></td><td>LV &gt; Ao systolic gradient · LV 200/25, Ao 110/70 · LA high</td><td>Systolic crescendo–decrescendo, R 2nd ICS, <strong>blunted carotids</strong></td></tr>
+          <tr><td><strong>MR</strong></td><td><strong>Tall v wave</strong> · LA 25, LV 110/25</td><td>Holosystolic, apex → axilla · MVP: <strong>mid-systolic click + late systolic</strong></td></tr>
+          <tr><td><strong>AR</strong></td><td><strong>Wide pulse pressure</strong> · Ao 160/60, peaks superimposed</td><td>Diastolic murmur + <strong>bounding / water-hammer</strong> pulses</td></tr>
+        </table>
+        <div class="hy-block" style="margin-top:9px"><h4>AS</h4><ul>
+          <li>Bimodal: <strong>bicuspid</strong> (40s–60s; screen for ascending aneurysm + coarctation) vs <strong>calcific</strong> (70s+; lamellar bone; statins don't help)</li>
+          <li>Exercise intolerance → angina → exertional syncope → HF · LA always high (stiff LV)</li>
+          <li>Severe: late-peaking murmur, soft S2 · ≥ 4 m/s, ≥ 40 mm Hg, ≤ 1.0 cm² · <strong>TAVR first-line</strong> · avoid nitrates</li>
+        </ul></div>
+        <div class="hy-block"><h4>MS · MR · AR extras</h4><ul>
+          <li>MS: severe ≤ 1.5 cm²; short A2–OS = severe; AF + LA clot (warfarin); PBMC</li>
+          <li>MR: MVP = myxomatous, chordal rupture → flail → acute HF · secondary: dilated LV, inferior MI (posteromedial papillary) · <strong>repair over replace</strong></li>
+          <li>AR: endocarditis, bicuspid, Marfan / root, dissection (acute) · Corrigan, de Musset, Quincke, Austin Flint</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" aria-hidden="true"><img id="lightboxImg" alt="Zoomed figure"><div class="lightbox-cap" id="lightboxCap"></div></div>
+
+<div class="floating-left" id="floatingLeft">
+  <div class="tools-menu">
+    <button class="tool-btn backtop" id="backtopBtn">↑ Top</button>
+    <button class="tool-btn" id="nextQBtn">❓ Next question <span id="qCount"></span></button>
+    <button class="tool-btn" id="recallBtn">🙈 Recall mode <span id="rcCount"></span></button>
+  </div>
+  <button class="tool-btn tools-trigger" id="toolsTrigger" onclick="toggleToolsMenu()">🧰 Study<span class="dot"></span></button>
+</div>
+
+<div class="floating-stack">
+  <div class="theme-panel" id="themePanel">
+    <div class="theme-panel-title">Choose Theme</div>
+    <div class="theme-option active" data-theme="cardio" onclick="setTheme('cardio',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#fff7f7,#b51f3a 55%,#245f89)"></div>Cardio (Default)</div>
+    <div class="theme-option" data-theme="hemo" onclick="setTheme('hemo',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#170a0d,#ff6b6b)"></div>Hemo (Dark)</div>
+    <div class="theme-option" data-theme="paper" onclick="setTheme('paper',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#faf7f2,#1a1209)"></div>Paper</div>
+    <div class="theme-option" data-theme="night" onclick="setTheme('night',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#0f1923,#e8b84b)"></div>Night</div>
+    <div class="theme-option" data-theme="ocean" onclick="setTheme('ocean',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#eef7fb,#0a5286)"></div>Ocean</div>
+    <div class="theme-option" data-theme="forest" onclick="setTheme('forest',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#f2f7f0,#155c39)"></div>Forest</div>
+    <div class="theme-option" data-theme="sepia" onclick="setTheme('sepia',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#f7ecd9,#9c3b17)"></div>Sepia</div>
+    <div class="theme-option" data-theme="slate" onclick="setTheme('slate',this)"><div class="theme-swatch" style="background:linear-gradient(135deg,#f4f5f7,#9e2c0f)"></div>Slate</div>
+  </div>
+  <div class="font-btn-row">
+    <span class="font-label">Text</span>
+    <button class="font-btn" onclick="changeFontSize(1)" title="Increase font size">A+</button>
+    <span class="font-sep">|</span>
+    <button class="font-btn" onclick="changeFontSize(-1)" title="Decrease font size">A−</button>
+  </div>
+  <button class="theme-btn" id="themeBtn" onclick="toggleThemePanel()" title="Switch theme"><span>🎨</span><span>Theme</span></button>
+</div>
+
+<footer>
+  <div class="container">
+    <div>Built from <em>The Wigger’s Diagram and the Cardiac Cycle</em> (Amina Qazi, DO, FACC, UNE COM; 27 slides) and the two-part lecture recording (cardiac cycle → mitral and aortic stenosis; mitral and aortic regurgitation → cardiac rehab). Figures are from the lecture deck and labeled by slide. Items tagged "Board add-on" come from the UWorld and AMBOSS library articles (Valve disorders; Cardiovascular hemodynamics; Cardiac physiology; Cardiovascular examination). Recording-vs-textbook discrepancies are flagged in red boxes. No UWorld images. Personal study notes; course material remains the copyright of its authors.</div>
+    <div>Shortcuts: <kbd>J</kbd>/<kbd>K</kbd> section · <kbd>Q</kbd> next question · <kbd>R</kbd> reveal · <kbd>Esc</kbd> close</div>
+  </div>
+</footer>
+<script>
+var STORAGE_THEME_KEY='cardio-w15-cardiac-cycle-theme';
+var STORAGE_FONT_KEY='cardio-w15-cardiac-cycle-font';
+var STORAGE_PROGRESS_KEY='cardio-w15-cardiac-cycle-progress';
+var DEFAULT_THEME='cardio';
+var SECTION_IDS=['orientation', 's1-rules', 's2-wiggers', 's3-phases', 's4-sounds', 's5-output', 's6-ms', 's7-as', 's8-mr', 's9-ar', 's10-compare', 'practice', 'glossary'];
+
+var $  = function(s,r){return (r||document).querySelector(s);};
+var $$ = function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));};
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function storageGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+function storageSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+
+/* ============ theme ============ */
+var themePanelOpen=false;
+function toggleThemePanel(){themePanelOpen=!themePanelOpen;$('#themePanel').classList.toggle('open',themePanelOpen);}
+function syncThemeOptions(t){$$('.theme-option').forEach(function(o){o.classList.toggle('active',o.dataset.theme===t);});}
+function setTheme(t,el,skipStorage){
+  if(t===DEFAULT_THEME){document.documentElement.removeAttribute('data-theme');}
+  else{document.documentElement.setAttribute('data-theme',t);}
+  syncThemeOptions(t);
+  if(!skipStorage) storageSet(STORAGE_THEME_KEY,t);
+  setTimeout(function(){themePanelOpen=false;var p=$('#themePanel');if(p)p.classList.remove('open');},260);
+}
+document.addEventListener('click',function(e){
+  var p=$('#themePanel'),b=$('#themeBtn');
+  if(themePanelOpen&&p&&b&&!p.contains(e.target)&&!b.contains(e.target)){themePanelOpen=false;p.classList.remove('open');}
+});
+
+/* ============ font size ============ */
+var currentFontSize=16;
+function applyFontSize(size,skipStorage){
+  currentFontSize=Math.min(24,Math.max(12,Number(size)||16));
+  document.documentElement.style.fontSize=currentFontSize+'px';
+  document.body.style.fontSize=currentFontSize+'px';
+  if(!skipStorage)storageSet(STORAGE_FONT_KEY,currentFontSize);
+}
+function changeFontSize(d){applyFontSize(currentFontSize+d);}
+
+function initVisualState(){
+  var t=storageGet(STORAGE_THEME_KEY)||DEFAULT_THEME; setTheme(t,null,true);
+  var f=parseInt(storageGet(STORAGE_FONT_KEY),10);
+  applyFontSize(f&&f>=12&&f<=24?f:currentFontSize,true);
+}
+
+/* ============ lightbox ============ */
+function openLightbox(img){var lb=$('#lightbox');$('#lightboxImg').src=img.currentSrc||img.src;
+  $('#lightboxImg').alt=img.alt||'';
+  var cap=img.closest('figure')?img.closest('figure').querySelector('figcaption'):null;
+  $('#lightboxCap').innerHTML=cap?cap.innerHTML:'';
+  lb.classList.add('active');lb.setAttribute('aria-hidden','false');}
+function closeLightbox(){var lb=$('#lightbox');lb.classList.remove('active');
+  lb.setAttribute('aria-hidden','true');$('#lightboxImg').src='';}
+function initLightbox(){
+  $$('.slide-img').forEach(function(i){i.addEventListener('click',function(){openLightbox(i);});});
+  $('#lightbox').addEventListener('click',closeLightbox);
+}
+
+/* ============ scrollspy ============ */
+function initScrollspy(){
+  var links=$$('.toc-bar nav a'),map={},sections=[];
+  links.forEach(function(a){var id=a.getAttribute('href').slice(1),s=document.getElementById(id);
+    if(s){map[id]=a;sections.push(s);}});
+  if(!sections.length)return;
+  function update(){
+    var best=null,bestTop=-Infinity;
+    sections.forEach(function(s){var top=s.getBoundingClientRect().top;
+      if(top<=140&&top>bestTop){bestTop=top;best=s;}});
+    if(!best)best=sections[0];
+    links.forEach(function(a){a.classList.remove('active');});
+    if(map[best.id])map[best.id].classList.add('active');
+  }
+  window.addEventListener('scroll',update,{passive:true});update();
+}
+
+/* ============ reading progress ============ */
+function initProgress(){
+  var bar=$('#progressBar'),bt=$('#backtopBtn');
+  window.addEventListener('scroll',function(){
+    var h=document.documentElement,max=h.scrollHeight-h.clientHeight;
+    bar.style.width=(max>0?(h.scrollTop/max)*100:0)+'%';
+    if(bt)bt.classList.toggle('show',h.scrollTop>600);
+  },{passive:true});
+}
+
+/* ============ exam question reveal ============ */
+function initExamQ(){
+  $$('.exam-q').forEach(function(q){
+    var ans=q.querySelector('.answer'); if(!ans) return;
+    var b=document.createElement('button');b.className='reveal-btn';b.textContent='Reveal answer';
+    b.addEventListener('click',function(){q.classList.add('revealed');updateQCount();});
+    ans.parentNode.insertBefore(b,ans);
+  });
+  updateQCount();
+}
+function updateQCount(){
+  var all=$$('.exam-q'),done=all.filter(function(q){return q.classList.contains('revealed');});
+  var el=$('#qCount'); if(el) el.textContent=done.length+'/'+all.length;
+}
+function jumpToNextQ(){
+  var all=$$('.exam-q');if(!all.length)return;
+  var y=window.scrollY,pick=null;
+  var todo=all.filter(function(q){return !q.classList.contains('revealed');});
+  var pool=todo.length?todo:all;
+  for(var i=0;i<pool.length;i++){if(pool[i].getBoundingClientRect().top+y>y+120){pick=pool[i];break;}}
+  if(!pick)pick=pool[0];
+  var sec=pick.closest('.section');
+  if(sec&&sec.classList.contains('collapsed'))toggleSection(sec,false);
+  setTimeout(function(){
+    pick.scrollIntoView({behavior:'smooth',block:'center'});
+    pick.classList.remove('q-flash');void pick.offsetWidth;pick.classList.add('q-flash');
+  },sec&&sec.classList.contains('collapsed')?0:60);
+}
+
+/* ============ per-section progress ============ */
+var progress={};
+function loadProgress(){try{progress=JSON.parse(storageGet(STORAGE_PROGRESS_KEY)||'{}');}catch(e){progress={};}}
+function saveProgress(){storageSet(STORAGE_PROGRESS_KEY,JSON.stringify(progress));}
+function renderProgress(){
+  var reviewed=0;
+  SECTION_IDS.forEach(function(id){
+    var st=progress[id]||{},sec=document.getElementById(id);
+    if(st.reviewed)reviewed++;
+    if(sec){
+      var tools=sec.querySelector('.sec-tools');
+      if(tools){
+        tools.querySelector('.st-rev').classList.toggle('on',!!st.reviewed);
+        $$('.st-conf',tools).forEach(function(b){b.classList.toggle('on',+b.dataset.v===st.conf);});
+      }
+    }
+    var link=$('.toc-bar nav a[href="#'+id+'"]');
+    if(link){link.classList.toggle('done',!!st.reviewed);
+      link.classList.remove('conf-1','conf-2','conf-3');
+      if(st.conf)link.classList.add('conf-'+st.conf);}
+  });
+  var chip=$('#progressChip');
+  if(chip)chip.textContent=reviewed+'/'+SECTION_IDS.length+' reviewed';
+}
+function jumpToNextTodo(){
+  var target=null;
+  for(var i=0;i<SECTION_IDS.length&&!target;i++){var st=progress[SECTION_IDS[i]]||{};if(!st.reviewed)target=SECTION_IDS[i];}
+  for(var c=1;c<=2&&!target;c++){
+    for(var j=0;j<SECTION_IDS.length&&!target;j++){var s2=progress[SECTION_IDS[j]]||{};if(s2.conf===c)target=SECTION_IDS[j];}}
+  if(!target)target=SECTION_IDS[0];
+  var sec=document.getElementById(target); if(!sec)return;
+  if(sec.classList.contains('collapsed'))toggleSection(sec,false);
+  sec.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* ============ section tools + collapse ============ */
+function toggleSection(sec,force){
+  var willCollapse=(typeof force==='boolean')?force:!sec.classList.contains('collapsed');
+  sec.classList.toggle('collapsed',willCollapse);
+  var b=sec.querySelector('.st-collapse'); if(b)b.textContent=willCollapse?'▸ Expand':'▾ Collapse';
+}
+function toggleAllSections(){
+  var anyOpen=SECTION_IDS.some(function(id){var s=document.getElementById(id);return s&&!s.classList.contains('collapsed');});
+  SECTION_IDS.forEach(function(id){var s=document.getElementById(id);if(s)toggleSection(s,anyOpen);});
+  var b=$('#collapseAllBtn'); if(b)b.textContent=anyOpen?'⊞ Expand all':'⊟ Collapse all';
+}
+function initSectionTools(){
+  SECTION_IDS.forEach(function(id){
+    var sec=document.getElementById(id); if(!sec)return;
+    var container=sec.querySelector('.container'); if(!container)return;
+    var anchor=container.querySelector('.section-title'); if(!anchor)return;
+    var tools=document.createElement('div');
+    tools.className='sec-tools';
+    tools.innerHTML='<button class="st-rev">✓ Reviewed</button>'+
+      '<span class="st-lab">confidence</span>'+
+      '<button class="st-conf" data-v="1">\u{1F534} Shaky</button>'+
+      '<button class="st-conf" data-v="2">\u{1F7E1} Okay</button>'+
+      '<button class="st-conf" data-v="3">\u{1F7E2} Solid</button>'+
+      '<button class="st-collapse">▾ Collapse</button>';
+    anchor.parentNode.insertBefore(tools,anchor.nextSibling);
+    var note=document.createElement('div');
+    note.className='recall-note';
+    note.textContent='RECALL MODE — every bolded fact below is hidden. Say the answer out loud, then click the block to check it.';
+    tools.parentNode.insertBefore(note,tools.nextSibling);
+    var outer=document.createElement('div');outer.className='sec-body-outer';
+    var inner=document.createElement('div');inner.className='sec-body-inner';
+    outer.appendChild(inner);
+    while(note.nextSibling) inner.appendChild(note.nextSibling);
+    container.appendChild(outer);
+    tools.querySelector('.st-rev').addEventListener('click',function(){
+      progress[id]=progress[id]||{};progress[id].reviewed=!progress[id].reviewed;saveProgress();renderProgress();});
+    $$('.st-conf',tools).forEach(function(b){
+      b.addEventListener('click',function(){
+        progress[id]=progress[id]||{};
+        progress[id].conf=(progress[id].conf===+b.dataset.v)?0:+b.dataset.v;
+        saveProgress();renderProgress();});
+    });
+    tools.querySelector('.st-collapse').addEventListener('click',function(){toggleSection(sec);});
+  });
+  renderProgress();
+}
+
+/* ============ recall mode ============ */
+var recallMode=false;
+function recallTargets(){
+  return $$('.sec-body-inner :is(p,li,td,h4,dd) strong').filter(function(s){
+    return !s.closest('.exam-q')&&!s.closest('.tq-bar')&&!s.closest('.game')&&!s.closest('.abbr-strip')&&!s.closest('.legend')&&!s.closest('.watch');});
+}
+function updateRecallCount(){
+  var t=recallTargets(),o=t.filter(function(s){return s.classList.contains('rc-open');});
+  var el=$('#rcCount'); if(el) el.textContent=recallMode?(o.length+'/'+t.length):'';
+}
+function toggleRecall(){
+  recallMode=!recallMode;
+  document.body.classList.toggle('recall-mode',recallMode);
+  $('#recallBtn').classList.toggle('on',recallMode);
+  if(!recallMode) recallTargets().forEach(function(s){s.classList.remove('rc-open');});
+  else{
+    var allCollapsed=SECTION_IDS.every(function(id){var s=document.getElementById(id);return !s||s.classList.contains('collapsed');});
+    if(allCollapsed) toggleAllSections();
+  }
+  syncToolsDot();updateRecallCount();
+}
+function initRecall(){
+  document.addEventListener('click',function(e){
+    if(!recallMode)return;
+    var s=e.target.closest?e.target.closest('strong'):null;
+    if(!s||s.classList.contains('rc-open'))return;
+    if(s.closest('.exam-q')||s.closest('.game')||s.closest('.abbr-strip'))return;
+    if(!s.closest('.sec-body-inner'))return;
+    e.stopPropagation();s.classList.add('rc-open');updateRecallCount();
+  },true);
+}
+function syncToolsDot(){var t=$('#toolsTrigger');if(t)t.classList.toggle('busy',recallMode);}
+function toggleToolsMenu(){$('#floatingLeft').classList.toggle('open');}
+
+/* ============ HY one-pager ============ */
+function openHY(){var m=$('#hyModal');if(!m)return;m.classList.add('open');
+  document.body.classList.add('hy-mode');document.body.style.overflow='hidden';}
+function closeHY(){var m=$('#hyModal');if(!m)return;m.classList.remove('open');
+  document.body.classList.remove('hy-mode');document.body.style.overflow='';}
+function printHY(){window.print();}
+
+/* ============ table quiz ============ */
+function initTableQuiz(){
+  $$('table').forEach(function(table){
+    if(table.classList.contains('hy-mini-table'))return;
+    if(table.closest('.game'))return;
+    var headRow=table.rows[0]; if(!headRow)return;
+    var headers=Array.prototype.slice.call(headRow.cells).map(function(c){return c.textContent.trim();});
+    if(headers.length<2)return;
+    var bar=document.createElement('div');bar.className='tq-bar';
+    var toggle=document.createElement('button');toggle.className='tq-toggle';toggle.textContent='\u{1F9E9} Quiz this table';
+    var cols=document.createElement('div');cols.className='tq-cols';cols.style.display='none';
+    var start=document.createElement('button');start.className='tq-start';start.textContent='▶ Start';
+    start.disabled=true;start.style.display='none';
+    var shuf=document.createElement('button');shuf.className='tq-shuffle';shuf.textContent='\u{1F500} Shuffle rows';shuf.style.display='none';
+    var reset=document.createElement('button');reset.className='tq-reset';reset.textContent='↺ Reset';reset.style.display='none';
+    var score=document.createElement('span');score.className='tq-score';
+    bar.appendChild(toggle);bar.appendChild(cols);bar.appendChild(shuf);bar.appendChild(start);bar.appendChild(reset);bar.appendChild(score);
+    var host=table.parentNode.classList.contains('tbl-scroll')?table.parentNode:table;
+    host.parentNode.insertBefore(bar,host);
+
+    var sel=new Set(),running=false,hidden=[],revealed=0,originalOrder=null;
+    headers.forEach(function(h,i){
+      var b=document.createElement('button');b.className='tq-col-btn';b.textContent=h||('col '+(i+1));
+      b.addEventListener('click',function(){
+        if(running)return;
+        if(sel.has(i)){sel.delete(i);b.classList.remove('sel');}else{sel.add(i);b.classList.add('sel');}
+        start.disabled=sel.size===0;
+      });
+      cols.appendChild(b);
+    });
+    function dataRows(){
+      var parent=table.tBodies[0]||table;
+      return Array.prototype.slice.call(parent.rows).filter(function(r){return !r.querySelector('th')||r!==headRow;})
+        .filter(function(r){return r!==headRow;});
+    }
+    toggle.addEventListener('click',function(){
+      var open=cols.style.display==='none';
+      cols.style.display=open?'flex':'none';
+      start.style.display=shuf.style.display=open?'':'none';
+      toggle.classList.toggle('active',open);
+      toggle.textContent=open?'✕ Close quiz':'\u{1F9E9} Quiz this table';
+      if(!open)doReset();
+    });
+    shuf.addEventListener('click',function(){
+      var parent=table.tBodies[0]||table;
+      var rows=dataRows();
+      if(!originalOrder)originalOrder=rows.slice();
+      shuffle(rows).forEach(function(r){parent.appendChild(r);});
+    });
+    function updateScore(){
+      score.textContent=revealed+' / '+hidden.length+' revealed';
+      score.classList.toggle('done',hidden.length>0&&revealed===hidden.length);
+      if(hidden.length>0&&revealed===hidden.length)score.textContent='\u{1F389} '+revealed+' / '+hidden.length;
+    }
+    start.addEventListener('click',function(){
+      if(running||!sel.size)return;
+      running=true;hidden=[];revealed=0;
+      dataRows().forEach(function(r){
+        Array.prototype.slice.call(r.cells).forEach(function(c,i){
+          if(!sel.has(i)||!c.textContent.trim())return;
+          var w=document.createElement('span');w.className='tq-cell-content';w.innerHTML=c.innerHTML;
+          c.innerHTML='';c.appendChild(w);c.classList.add('quiz-hidden-cell');
+          c.dataset.tqOrig=w.innerHTML;
+          hidden.push(c);
+        });
+      });
+      reset.style.display='';start.disabled=true;updateScore();
+    });
+    table.addEventListener('click',function(e){
+      var c=e.target.closest?e.target.closest('td.quiz-hidden-cell'):null;
+      if(!c)return;
+      c.classList.remove('quiz-hidden-cell');c.innerHTML=c.dataset.tqOrig;revealed++;updateScore();
+    });
+    function doReset(){
+      hidden.forEach(function(c){if(c.classList.contains('quiz-hidden-cell')){c.classList.remove('quiz-hidden-cell');c.innerHTML=c.dataset.tqOrig;}});
+      if(originalOrder){var parent=table.tBodies[0]||table;originalOrder.forEach(function(r){parent.appendChild(r);});}
+      hidden=[];revealed=0;running=false;score.textContent='';score.classList.remove('done');
+      start.disabled=sel.size===0;reset.style.display='none';
+    }
+    reset.addEventListener('click',doReset);
+  });
+}
+
+/* ============ keyboard shortcuts ============ */
+function initKeys(){
+  document.addEventListener('keydown',function(e){
+    if(e.metaKey||e.ctrlKey||e.altKey)return;
+    var t=e.target,tag=t&&t.tagName;
+    if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT'||(t&&t.isContentEditable))return;
+    var hy=$('#hyModal');
+    if(e.key==='Escape'){ if(hy&&hy.classList.contains('open'))closeHY(); closeLightbox(); return; }
+    if(hy&&hy.classList.contains('open'))return;
+    var k=e.key.toLowerCase();
+    if(k==='q'){e.preventDefault();jumpToNextQ();return;}
+    if(k==='r'){
+      e.preventDefault();
+      var best=null,bd=Infinity,mid=window.innerHeight/2;
+      $$('.exam-q').forEach(function(q){var d=Math.abs(q.getBoundingClientRect().top+q.offsetHeight/2-mid);
+        if(d<bd){bd=d;best=q;}});
+      if(best){best.classList.add('revealed');updateQCount();}
+      return;
+    }
+    if(k==='j'||k==='k'){
+      e.preventDefault();
+      var y=window.scrollY+window.innerHeight*0.3,cur=0;
+      SECTION_IDS.forEach(function(id,i){var s=document.getElementById(id);if(s&&s.offsetTop<=y)cur=i;});
+      var nx=k==='j'?Math.min(SECTION_IDS.length-1,cur+1):Math.max(0,cur-1);
+      var target=document.getElementById(SECTION_IDS[nx]);
+      if(target)target.scrollIntoView({behavior:'smooth',block:'start'});
+    }
+  });
+}
+
+
+/* ============ lazy figures: fade in when loaded; force-load everything before printing ============ */
+function initLazyFigures(){
+  $$('.fig-frame img').forEach(function(img){
+    var done=function(){img.parentNode.classList.add('loaded');};
+    if(img.complete&&img.naturalWidth)done();
+    else{img.addEventListener('load',done);img.addEventListener('error',done);}
+  });
+  window.addEventListener('beforeprint',function(){$$('img[loading="lazy"]').forEach(function(i){i.loading='eager';});});
+}
+/* ============ video facade: swap the thumbnail for the real player only on click ============ */
+function initVideos(){
+  $$('.vid').forEach(function(b){
+    b.addEventListener('click',function(){
+      if(b.classList.contains('playing'))return;
+      var f=document.createElement('iframe');
+      f.src='https://www.youtube-nocookie.com/embed/'+b.dataset.yt+'?autoplay=1&rel=0';
+      f.title=b.dataset.title||'Video';
+      f.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+      f.allowFullscreen=true;
+      var t=b.querySelector('.vid-thumb');t.replaceWith(f);b.classList.add('playing');
+    });
+  });
+}
+
+/* ============ boot ============ */
+document.addEventListener('DOMContentLoaded',function(){
+  initVisualState();
+  loadProgress();
+  initSectionTools();
+  initExamQ();
+  initTableQuiz();
+  initLightbox();
+  initLazyFigures();
+  initVideos();
+  initScrollspy();
+  initProgress();
+  initRecall();
+  initKeys();
+  var hy=$('#hyModal');
+  if(hy) hy.addEventListener('click',function(e){if(e.target===this)closeHY();});
+  var rb=$('#recallBtn'); if(rb) rb.addEventListener('click',toggleRecall);
+  var nq=$('#nextQBtn'); if(nq) nq.addEventListener('click',jumpToNextQ);
+  var bt=$('#backtopBtn'); if(bt) bt.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});
+  document.addEventListener('click',function(e){
+    var fl=$('#floatingLeft');
+    if(fl&&fl.classList.contains('open')&&!fl.contains(e.target))fl.classList.remove('open');
+  });
+});
+
+
+
+
+</script>
+</body>
+</html>

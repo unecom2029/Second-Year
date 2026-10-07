@@ -56,6 +56,16 @@ IMGS={
  'Alivedo':(AM+'Livedo reticularis.png',None,'AMBOSS'),
  'Atoegang':(AM+'Toe gangrene.png',None,'AMBOSS'),
  'Adiabfoot':(AM+'Diabetic foot ulcer.png',None,'AMBOSS'),
+ # Women's CV health (repo copies in notes/assets/women-cv)
+ 'Wmenarche':(V.replace('vasc-surg','women-cv')+'wh-menarche.jpg',(0.5,0.17,1,0.93),'Women lecture · slide 12 (Canoy, Circulation 2015)'),
+ 'Wprev':(V.replace('vasc-surg','women-cv')+'wh-prevalence.jpg',None,'Women lecture · slide 8 (AHA statistics)'),
+ 'Wptd':(V.replace('vasc-surg','women-cv')+'wh-preterm.jpg',(0.2,0.14,0.68,1),'Women lecture · slide 19 (Kessous 2013)'),
+ # Exercise rehab
+ 'Esv':(V.replace('vasc-surg','exercise-rehab')+'er-exercise-response.jpg',(0.5,0,1,0.5),'Exercise Rehab lecture · slide 8',[(0.5,0,0.6,0.5)]),
+ 'Ebp':(V.replace('vasc-surg','exercise-rehab')+'er-exercise-response.jpg',(0,0.5,0.5,1),'Exercise Rehab lecture · slide 10',[(0,0.5,0.06,0.62)]),
+ 'Efit':(V.replace('vasc-surg','exercise-rehab')+'er-fitness-change.jpg',None,'Exercise Rehab lecture · slide 14 (Blair, JAMA 1995)'),
+ 'Epredimed':(V.replace('vasc-surg','exercise-rehab')+'er-predimed.jpg',None,'Exercise Rehab lecture · slide 38 (Estruch, NEJM 2013)'),
+ 'Edash':(V.replace('vasc-surg','exercise-rehab')+'er-dash-sodium.jpg',None,'Exercise Rehab lecture · slide 41 (NEJM 2001)',[(0,0.93,0.06,1)]),
 }
 # small sources are upscaled so they don't show as thumbnails
 UPSCALE={}

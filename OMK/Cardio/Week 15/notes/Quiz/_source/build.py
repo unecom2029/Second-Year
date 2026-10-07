@@ -10,7 +10,7 @@ def fig(key,cap):
 def to_json(Q):
     out=[]
     for q in Q:
-        stem=q['stem'].replace('{FIG}',fig(q['img'],q['cap']) if q.get('img') else '<br><br>')
+        stem=q['stem'].replace('\n','<br>').replace('{FIG}',fig(q['img'],q['cap']) if q.get('img') else '<br><br>')
         assert set(q['wrong'])==set(range(len(q['choices'])))-{q['key']}, q['stem'][:40]
         order=list(range(len(q['choices'])))
         if not all(c[:1].isdigit() for c in q['choices']):
@@ -47,7 +47,11 @@ if __name__=='__main__':
     import importlib
     D='/Users/jeeval/Documents/GitHub/Second-Year/OMK/Cardio/Week 15/notes/Quiz/'
     jobs={'vs':[('q_vs_v1','Vascular Disease — Quiz V1','Vascular_Disease_Quiz_V1.html'),
-                ('q_vs_v2','Vascular Disease — Image Quiz V2','Vascular_Disease_Image_Quiz_V2.html')]}
+                ('q_vs_v2','Vascular Disease — Image Quiz V2','Vascular_Disease_Image_Quiz_V2.html')],
+          'wh':[('q_wh_v1','Cardiovascular Health in Women — Quiz V1','Cardiovascular_Health_in_Women_Quiz_V1.html'),
+                ('q_wh_v2','Cardiovascular Health in Women — Quiz V2','Cardiovascular_Health_in_Women_Quiz_V2.html')],
+          'er':[('q_er_v1','Exercise Rehabilitation — Quiz V1','Exercise_Rehabilitation_Quiz_V1.html'),
+                ('q_er_v2','Exercise Rehabilitation — Quiz V2','Exercise_Rehabilitation_Quiz_V2.html')]}
     for v in sys.argv[1:]:
         if v.startswith('write'): continue
         job,_,only=v.partition(':')
