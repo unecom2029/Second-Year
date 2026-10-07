@@ -314,6 +314,7 @@ body.nbme-lock{overflow:hidden}
 .nb-question-side .exb::-webkit-scrollbar-thumb{background:rgba(18,32,60,.28);border-radius:999px}
 .nb-question-side .exb::after{content:'';display:block;height:clamp(88px,12vh,136px);background:transparent}
 .nb-question-label{margin-bottom:16px;color:#5b6570;font-weight:700;font-size:calc(var(--ui-meta-size) * 1.16);letter-spacing:.02em}
+.nb-question-category{margin:-9px 0 16px;color:var(--slate);font-size:calc(var(--ui-meta-size) * .8);line-height:1.35}
 .nb-question-stem{font-size:calc(var(--stem-size) * .72);line-height:1.58;user-select:text}
 .nb-question-stem mark,.nb-answer-copy mark{
   background:linear-gradient(180deg,transparent 16%,var(--mark-color,#fff173) 16%,var(--mark-color,#fff173) 86%,transparent 86%);
@@ -668,6 +669,8 @@ body.nbme-lock{overflow:hidden}
       <div class="nbme-bank-controls">
         <label>Form <select id="nbmeBankForm" onchange="syncNbmeBankSelector()"></select></label>
         <label>Block <select id="nbmeBankBlock" onchange="syncNbmeBankSelector()"></select></label>
+        <label>System <select id="nbmeBankSystem" onchange="syncNbmeBankSelector()"></select></label>
+        <label>Subject <select id="nbmeBankSubject" onchange="syncNbmeBankSelector()"></select></label>
       </div>
       <div class="nbme-bank-actions">
         <button id="nbmeBankPractice" type="button" onclick="launchNbmeBank(false)">Practice keyed questions</button>
@@ -1496,7 +1499,12 @@ function cloneQuestion(q){
     explanation:String(q.explanation||''),
     wrongExplanations:Object.assign({},q.wrongExplanations||{}),
     eli5:String(q.eli5||''),
-    fixedChoices:!!q.fixedChoices
+    fixedChoices:!!q.fixedChoices,
+    form:q.form,block:q.block,number:q.number,
+    system:String(q.system||''),subject:String(q.subject||''),topic:String(q.topic||''),
+    systemConfidence:Number(q.systemConfidence||0),subjectConfidence:Number(q.subjectConfidence||0),
+    categorySource:String(q.categorySource||''),
+    keySource:q.keySource||null,answerStatus:String(q.answerStatus||'')
   };
 }
 function buildWrongExplanationLookup(rawChoices, rawCorrect, wrongExplanations){
@@ -1526,7 +1534,10 @@ function randomizeQuestionChoices(q){
   var realChoices=choiceMeta.filter(function(choice){return choice.text.trim();});
   var blankChoices=choiceMeta.filter(function(choice){return !choice.text.trim();});
   var shuffledChoices=shuffle(realChoices).concat(blankChoices);
-  var randomized={stem:source.stem,choices:[],correct:0,explanation:source.explanation,wrongExplanations:{},eli5:source.eli5};
+  var randomized={stem:source.stem,choices:[],correct:0,explanation:source.explanation,wrongExplanations:{},eli5:source.eli5,
+    form:source.form,block:source.block,number:source.number,system:source.system,subject:source.subject,topic:source.topic,
+    systemConfidence:source.systemConfidence,subjectConfidence:source.subjectConfidence,categorySource:source.categorySource,
+    keySource:source.keySource,answerStatus:source.answerStatus};
   shuffledChoices.forEach(function(choice,idx){
     randomized.choices.push(choice.text);
     if(choice.isCorrect)randomized.correct=idx;
@@ -1808,42 +1819,60 @@ function startQuiz(valid,name){
   if(restored)showToast('Previous session restored — press Reset for a fresh attempt.','ok');
 }
 var nbmeBankLastForm=null;
+function nbmeBankMatches(q,form,block,system,subject){
+  return (form==='all'||q.form===Number(form))&&(block==='all'||q.block===Number(block))&&
+    (system==='all'||q.system===system)&&(subject==='all'||q.subject===subject);
+}
+function setNbmeFilterOptions(select,allLabel,values){
+  var previous=select.value;
+  select.innerHTML='<option value="all">'+allLabel+'</option>'+values.map(function(value){return '<option value="'+escapeStudyText(value)+'">'+escapeStudyText(value)+'</option>';}).join('');
+  if(values.indexOf(previous)>=0)select.value=previous;
+}
 function initializeNbmeBank(){
   var list=window.NBME_QUESTION_BANK;
   if(!Array.isArray(list)||!list.length)return;
   var card=document.getElementById('nbmeBankCard');
   var formSelect=document.getElementById('nbmeBankForm');
   var forms=[...new Set(list.map(function(q){return q.form;}))].sort(function(a,b){return a-b;});
-  formSelect.innerHTML=forms.map(function(form){return '<option value="'+form+'">NBME '+form+'</option>';}).join('');
+  formSelect.innerHTML='<option value="all">All forms</option>'+forms.map(function(form){return '<option value="'+form+'">NBME '+form+'</option>';}).join('');
   card.hidden=false;
   syncNbmeBankSelector();
 }
 function syncNbmeBankSelector(){
   var list=window.NBME_QUESTION_BANK||[];
-  var form=Number(document.getElementById('nbmeBankForm').value);
+  var form=document.getElementById('nbmeBankForm').value;
   var blockSelect=document.getElementById('nbmeBankBlock');
   if(form!==nbmeBankLastForm){
-    var blocks=[...new Set(list.filter(function(q){return q.form===form;}).map(function(q){return q.block;}))].sort(function(a,b){return a-b;});
+    var blocks=[...new Set(list.filter(function(q){return form==='all'||q.form===Number(form);}).map(function(q){return q.block;}))].sort(function(a,b){return a-b;});
     blockSelect.innerHTML='<option value="all">All blocks</option>'+blocks.map(function(block){return '<option value="'+block+'">Block '+block+'</option>';}).join('');
     nbmeBankLastForm=form;
   }
   var block=blockSelect.value;
-  var selected=list.filter(function(q){return q.form===form&&(block==='all'||q.block===Number(block));});
+  var base=list.filter(function(q){return nbmeBankMatches(q,form,block,'all','all');});
+  var systemSelect=document.getElementById('nbmeBankSystem');
+  setNbmeFilterOptions(systemSelect,'All systems',[...new Set(base.map(function(q){return q.system;}).filter(Boolean))].sort());
+  var system=systemSelect.value;
+  var subjectSelect=document.getElementById('nbmeBankSubject');
+  setNbmeFilterOptions(subjectSelect,'All subjects',[...new Set(base.filter(function(q){return system==='all'||q.system===system;}).map(function(q){return q.subject;}).filter(Boolean))].sort());
+  var selected=base.filter(function(q){return nbmeBankMatches(q,form,block,system,subjectSelect.value);});
   var keyed=selected.filter(function(q){return q.correct!==null;}).length;
   var missing=selected.length-keyed;
   document.getElementById('nbmeBankPractice').disabled=keyed===0;
-  document.getElementById('nbmeBankNote').textContent=selected.length+' questions available · '+keyed+' with an answer key · '+missing+' for review only. Explanations are blank.';
+  document.getElementById('nbmeBankNote').textContent=selected.length+' questions available · '+keyed+' with an answer · '+missing+' for review only. Categories are suggested from UWorld; community answers are identified in the question data. Explanations are blank.';
 }
 function launchNbmeBank(includeUnkeyed){
   var list=window.NBME_QUESTION_BANK||[];
-  var form=Number(document.getElementById('nbmeBankForm').value);
+  var form=document.getElementById('nbmeBankForm').value;
   var block=document.getElementById('nbmeBankBlock').value;
+  var system=document.getElementById('nbmeBankSystem').value;
+  var subject=document.getElementById('nbmeBankSubject').value;
   var selected=list.filter(function(q){
-    return q.form===form&&(block==='all'||q.block===Number(block))&&(includeUnkeyed||q.correct!==null);
+    return nbmeBankMatches(q,form,block,system,subject)&&(includeUnkeyed||q.correct!==null);
   });
   if(!selected.length){showErr('No keyed questions are available in this selection. Use Review all questions.');return;}
   selectLaunchUI('nbme');
-  var name='NBME '+form+' · '+(block==='all'?'All blocks':'Block '+block)+(includeUnkeyed?' · Review':' · Practice');
+  var name=(form==='all'?'All NBME forms':'NBME '+form)+' · '+(block==='all'?'All blocks':'Block '+block)+
+    (system==='all'?'':' · '+system)+(subject==='all'?'':' · '+subject)+(includeUnkeyed?' · Review':' · Practice');
   startQuiz(selected,name);
 }
 function getQuizPayload(){
@@ -2305,9 +2334,10 @@ function buildExplanationHTML(q,ans){
     }
   }
   var eli5=q.eli5?`<div class="exs exe"><div class="exl">💡 ELI5</div><div class="ext">${q.eli5}</div></div>`:'';
+  var answerSource=q.answerStatus?`<div class="exs"><div class="exl">Answer source</div><div class="ext">${escapeStudyText(q.answerStatus)}</div></div>`:'';
   return `<div class="exb vis">
     <div class="exs exc"><div class="exl">✓ ${q.explanation?'Why '+correctLetter+' is Correct':'Correct answer: '+correctLetter}</div>${q.explanation?'<div class="ext">'+q.explanation+'</div>':''}</div>
-    ${myWrong}${others}${eli5}
+    ${answerSource}${myWrong}${others}${eli5}
   </div>`;
 }
 function buildClassicDots(){
@@ -2400,6 +2430,7 @@ function buildNbmeQuestion(){
   var feedbackHTML=ans?buildExplanationHTML(q,ans):'';
   var mainHTML=`<div class="nb-question-main">
     <div class="nb-question-label">QUESTION ${CQ+1}</div>
+    ${q.system||q.subject?`<div class="nb-question-category">Suggested category: ${escapeStudyText(q.system)}${q.subject?' · '+escapeStudyText(q.subject):''}</div>`:''}
     <div class="nb-question-stem" id="nbStemEl" data-stem-html="1">${getStemHTML(CQ)}</div>
     <div class="nb-answers">${answersHTML}</div>
     ${submitHTML}

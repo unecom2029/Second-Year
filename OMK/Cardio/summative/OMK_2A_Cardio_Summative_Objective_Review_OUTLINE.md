@@ -3,7 +3,7 @@
 > Skeleton only, no content yet. Same layout as `OMK/Heme/summative/OMK_2A_Heme_Summative_3_Objective_Review.html`.
 > Built from **last year's** *Cardio Study Guide.docx*. This year's objectives may change, so re-check the list when the new guide comes out.
 > Objective IDs (e.g. **5.7**) mean study-guide topic 5, bullet 7. The HTML page numbers the same lines 1–101 in printed order (the **#** column in the map below).
-> HTML shell: `OMK_2A_Cardio_Summative_Objective_Review.html` (built 2026-10-07; every section is a placeholder).
+> HTML page: `OMK_2A_Cardio_Summative_Objective_Review.html`. Part A (§1–§5) written 2026-10-07; Parts B–H are shells. How to continue: `HANDOFF_Cardio_Summative_Review.md`.
 > Study-guide topic 15 ("Pharmacology & Management") repeats bullets from other topics, so it gets no sections of its own. Its bullets are listed against the sections that own them (see the map at the bottom).
 
 ---
@@ -67,11 +67,16 @@ Primary sources are the UWorld + AMBOSS libraries, then First Aid / Pathoma / UW
 - Cardiac rehabilitation: who, when, phases
 - Lifestyle in primary prevention
 
-### §5 Cardiovascular Pharmacology: Basic Sciences (`s5-pharm-basics`)
-*Sources: CV Pharm Basic Sciences Review (W13) · Objectives: none listed (supporting section)*
-- Adrenergic and cholinergic receptors in the heart and vessels
-- Vascular smooth muscle and myocyte signaling
-- Drug classes at a glance (map to §§ that own them)
+### §5 Control of the Circulation: Receptors, Signals, Pressure and Flow (`s5-pharm-basics`)
+*Sources: CV Pharm Basic Sciences Review (W13), Cardiac Physiology Review (W14) topics 2, 3, 7–10 · Objectives: none listed (supporting section)*
+- Autonomic receptors of the heart and vessels
+- G-protein signalling (odd Gq, even Gi, betas Gs)
+- Pacemaker and fast-response action potentials ★ HY
+- MAP = cardiac output × total peripheral resistance, and the dials drugs turn ★ HY
+- Flow, resistance and Poiseuille's law
+- Venous return, mean systemic filling pressure and the Guyton curves
+- Regulating MAP: the reflexes and the heart-failure paradox ★ HY
+- The four reflex questions from class
 
 ---
 
