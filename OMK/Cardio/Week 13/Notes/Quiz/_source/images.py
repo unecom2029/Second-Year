@@ -1,5 +1,5 @@
 import base64, io, json
-from PIL import Image
+from PIL import Image, ImageDraw
 N='/Users/jeeval/Documents/GitHub/Second-Year/OMK/Cardio/Week 13/Notes/assets/'
 R='/Users/jeeval/Board Study/figures/Robbins/The Heart - '
 A='/Users/jeeval/Board Study/figures/amboss/'
@@ -14,7 +14,9 @@ def _ongrid(p):
     for x in range(0,im.width,_GRID.width):
         for y in range(0,im.height,_GRID.height): bg.paste(_GRID,(x,y))
     bg.alpha_composite(im); return bg.convert('RGB')
-# key: (path, crop box as fractions (l,t,r,b) or None, source credit)
+# key: (path, crop box as fractions (l,t,r,b) or None, source credit[, list of white-out boxes as fractions (l,t,r,b[,fill])])
+V=N+'vascular/'
+RV='/Users/jeeval/Board Study/figures/Robbins/Blood Vessels - '
 IMGS={
  # cardiac pathology
  'hcm':(N+'cardiac/c-hcm.jpg',None,'Gardner lecture · slide 77'),
@@ -115,15 +117,49 @@ IMGS={
  'Lhypok':(L+'img_hypok.gif',None,'ecglibrary.com'),
  'Lstach':(L+'img_stach.gif',None,'ecglibrary.com'),
  'Lwpw':(L+'img_wpw.gif',(0,0.28,1,1),'ecglibrary.com'),
+ # vascular pathology (Gardner) — panel letters and answer labels masked
+ 'Vhyal':(V+'v-hyaline-hyperplastic.jpg',(0.012,0,0.452,0.655),'Gardner lecture · slide 25'),
+ 'Vonion':(V+'v-onion-skin.jpg',None,'Robbins & Cotran Atlas of Pathology'),
+ 'Vmonck':(V+'v-monckeberg.jpg',None,'AMBOSS'),
+ 'Vfmd':(V+'v-fmd-beads.jpg',None,'Robbins & Cotran Atlas of Pathology'),
+ 'Vpanang':(RV+'b2720b718d77b61f.png',None,'Robbins & Cotran Atlas of Pathology'),
+ 'Vtemple':(RV+'a53a2a9dfa291908.png',None,'Robbins & Cotran Atlas of Pathology'),
+ 'Vtaka':(V+'v-takayasu.jpg',(0,0,1,0.535),'Gardner lecture · slide 35',[(0,0.47,0.06,0.535,'black')]),
+ 'Vpanca':(V+'v-p-anca.jpg',None,'AMBOSS',[(0.55,0.86,1,1,(26,26,26))]),
+ 'Vpurp':(V+'v-palpable-purpura.jpg',None,'Robbins & Cotran Atlas of Pathology'),
+ 'Vleuko':(V+'v-leukocytoclastic.jpg',None,'Gardner lecture · slide 40'),
+ 'Vathero':(RV+'da87884cf963efc8.png',None,'Robbins & Cotran Atlas of Pathology'),
+ 'Vrupture':(V+'v-cad-death.jpg',(0,0.578,1,1),'Gardner lecture · slide 21',[(0,0.93,0.12,1)]),
+ 'Vaaa':(V+'v-aaa-gross.jpg',None,'Robbins & Cotran Atlas of Pathology'),
+ 'Vdouble':(V+'v-double-barrel.jpg',None,'Gardner lecture · slide 29'),
+ 'Veds':(A+'Facial features of Ehlers-Danlos syndrome.png',(0,0,0.418,1),'AMBOSS'),
+ 'Vks':(V+'v-kaposi-skin.jpg',None,'Robbins & Cotran Atlas of Pathology'),
+ 'Vstraw':(V+'v-strawberry.jpg',None,'Gardner lecture · slide 45'),
+ 'Vraynaud':(RV+'ca6eebbb2cabbec9.png',None,'Robbins & Cotran Atlas of Pathology'),
+ 'Vberry':(A+'Cerebral aneurysm.png',None,'AMBOSS'),
+ 'Vascan':(A+'Aneurysm of the ascending aorta.png',None,'AMBOSS'),
+ 'Vgcahisto':(V+'v-gca-histo.jpg',None,'Gardner lecture · slide 34'),
+ 'Vegpa':(A+'Eosinophilic granulomatosis with polyangiitis.png',None,'AMBOSS'),
+ 'Vsaddle':(V+'v-saddle-pe.jpg',None,'Gardner lecture · slide 44'),
+ 'Vangio':(V+'v-angiosarcoma.jpg',(0.338,0,1,0.895),'Gardner lecture · slide 45'),
 }
+# small sources are upscaled so they don't show as thumbnails
+UPSCALE={'Vstraw':760,'Vsaddle':760,'Vleuko':700,'Vangio':860}
 def load(key, maxw=1100):
-    p,crop,_=IMGS[key]
+    e=IMGS[key]; p,crop=e[0],e[1]; masks=e[3] if len(e)>3 else []
     im=_ongrid(p) if p.endswith('.gif') else Image.open(p).convert('RGB')
+    if masks:
+        d=ImageDraw.Draw(im); w,h=im.size
+        for m in masks:
+            l,t,r,b=m[:4]; d.rectangle((int(l*w),int(t*h),int(r*w),int(b*h)),fill=(m[4] if len(m)>4 else 'white'))
     if crop:
         w,h=im.size; l,t,r,b=crop
         im=im.crop((int(l*w),int(t*h),int(r*w),int(b*h)))
     if key=='osler':
         im=im.resize((im.width*2,im.height*2),Image.LANCZOS)
+    up=UPSCALE.get(key)
+    if up and im.width<up:
+        im=im.resize((up,int(im.height*up/im.width)),Image.LANCZOS)
     if im.width>maxw:
         im=im.resize((maxw,int(im.height*maxw/im.width)),Image.LANCZOS)
     return im

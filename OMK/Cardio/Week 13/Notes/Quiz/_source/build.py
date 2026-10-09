@@ -11,7 +11,7 @@ def fig(key,cap):
 def to_json(Q):
     out=[]
     for q in Q:
-        stem=q['stem'].replace('{FIG}',fig(q['img'],q['cap']) if q.get('img') else '<br><br>')
+        stem=q['stem'].replace('\n','<br>').replace('{FIG}',fig(q['img'],q['cap']) if q.get('img') else '<br><br>')
         assert set(q['wrong'])==set(range(len(q['choices'])))-{q['key']}, q['stem'][:40]
         order=list(range(len(q['choices'])))
         if not all(c[:1].isdigit() for c in q['choices']):
@@ -57,6 +57,8 @@ if __name__=='__main__':
                    ('q_htn_v2','Hypertension Pharmacology — Quiz V2','Hypertension_Pharmacology_Quiz_V2.html'),
                    ('q_bsr_v1','CV Pharm Basic Sciences Review — Quiz V1','CV_Pharm_Basic_Sciences_Quiz_V1.html'),
                    ('q_bsr_v2','CV Pharm Basic Sciences Review — Quiz V2','CV_Pharm_Basic_Sciences_Quiz_V2.html')],
+          'vasc':[('q_vasc_v1','Vascular Pathology — Quiz V1','Vascular_Pathology_Quiz_V1.html'),
+                  ('q_vasc_v2','Vascular Pathology — Image Quiz V2','Vascular_Pathology_Image_Quiz_V2.html')],
           'ecg0':[('q_ecg_v0','ECG Basics — Concept Quiz V0','ECG_Basics_Concept_Quiz_V0.html')]}
     for v in sys.argv[1:]:
         if v.startswith('write'): continue

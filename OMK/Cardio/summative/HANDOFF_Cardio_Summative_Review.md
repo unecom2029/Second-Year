@@ -1,7 +1,7 @@
 # HANDOFF — Cardio Summative Objective Review
 
 > For any Claude session, on any account, picking this up. **Read this whole file before touching the page.**
-> Last updated: **2026-10-07**, after Part A (§1–§5) was written and checked in the browser.
+> Last updated: **2026-10-09**, after Part H (§28–§36) and §37 were written and checked in the browser. **All Parts are done.**
 > Update §8 (status) and §9 (log) every time a section lands, before you start the next one.
 
 ---
@@ -59,6 +59,7 @@ The owner is **Jeeval**, a second-year osteopathic medical student at UNE COM. U
 
 **Process**
 - Jeeval reviews in pieces. Deliver **one Part at a time**, show it, and list the judgement calls they may want to override.
+- **2026-10-09 instruction:** "after C, just keep going until you run out of credit" — so Parts D–H are being written back to back without waiting for review. Keep updating §8/§9 after each Part.
 - Keep this handoff current as each section lands. Conversations get compacted.
 - **The study guide is last year's.** If a new guide arrives, diff it against the 101 lines before writing more.
 
@@ -219,20 +220,86 @@ Each week's `assets/` folder holds the figures those notes use. `Week 14/notes/a
 | Part | Sections | State | Objectives marked full |
 |---|---|---|---|
 | **A — The normal heart** | §1–§5 | **Written, injected, checked in the browser (2026-10-07)** | 1–9, 72 |
-| B — ECG & arrhythmias | §6–§10 | Shell | — |
-| C — Atherosclerosis & ischemia | §11–§16 | Shell | — |
-| D — Heart failure & myocardium | §17–§20 | Shell | — |
-| E — Infection & inflammation | §21–§23 | Shell | — |
-| F — Valves & surgery | §24–§25 | Shell | — |
-| G — Congenital | §26–§27 | Shell | — |
-| H — Vessels | §28–§36 | Shell | — |
-| Supporting | §37 | Shell | — |
+| **B — ECG & arrhythmias** | §6–§10 | **Written, injected, checked in the browser (2026-10-09)** | 29–48, 94 |
+| **C — Atherosclerosis & ischemia** | §11–§16 | **Written, injected, checked in the browser (2026-10-09)** | 16–20, 23, 24, 83–85, 100 |
+| **D — Heart failure & myocardium** | §17–§20 | **Written, injected, checked in the browser (2026-10-09)** | 21, 22, 25–28, 61–63, 91–93 |
+| **E — Infection & inflammation** | §21–§23 | **Written, injected, checked in the browser (2026-10-09)** | 51–60, 95 |
+| **F — Valves & surgery** | §24–§25 | **Written, injected, checked in the browser (2026-10-09)** | 49, 50, 98, 99 (5–6 already full) |
+| **G — Congenital** | §26–§27 | **Written, injected, checked in the browser (2026-10-09)** | 10–14; **15 partial** (no predictive-value figure in the lecture) |
+| **H — Vessels** | §28–§36 | **Written, injected, checked in the browser (2026-10-09)** | 64–71, 73–82, 86–90, 96, 97, 101 |
+| Supporting | §37 | **Written (2026-10-09)** — short; no objective maps to it | — |
 
-Totals now: **10 / 101 objectives covered**, 30 exam questions, 17 checklist cards, 50 glossary terms. The page still has 32 "To come" one-pager blocks and the shell placeholders in unwritten sections.
+Totals now: **100 full + 1 partial (objective 15) / 101 objectives**, 235 exam questions, 81 checklist cards, 11 glossary groups. No `shell-todo` and no "To come" blocks remain.
 
----
+**Next up: nothing is left to write.** When this year's study guide arrives, diff its objectives against the coverage map and add or retire sections. Objective 15 stays partial until a source gives the echo predictive value. Unused assets left in `assets/` from earlier sessions (`aa-*`, `k-*`, `p-*`, `r-a-vt-criteria`, `b-raas`, `b-ace-bradykinin`, `er-prevention-pyramid`) were not deleted; `b-raas` may be a UWorld figure, so check it before using it.
+
+**New tool:** `_build/imgsize.py <fragments>` fills `width`/`height` on every `<img>` from the real file, so fragments can be written without sizes. Run it before `inject.py`.
 
 ## 9. Log
+
+**2026-10-09 — Whole-page audit (after all Parts were written)**
+- Abbreviations: every section's strip was checked against the abbreviations its text uses; 33 strips gained entries (e.g. QRS/PR/ST in the ECG sections, IV, GI, ICU, NSAID, SGLT2). Mnemonics (WiLLiaM, QUEEN PROofreads DISsertations, FROM JANE, SAD, BS), trial names and gene symbols were left out on purpose. `AV` means arteriovenous in §28 and §35. The checker is ``cd _build/sections && python3 ../abbrcheck.py --dry` (without `--dry` it appends the missing entries).
+- No arrow chains in prose anywhere. No UWorld question counts or IDs; UWorld is only named where sources disagree.
+- Pictures: §2 (heart sounds) had none, so it now has two AMBOSS figures (`pc-a-fixed-split`, `pc-a-phono-systolic`). The §32 aneurysm-location table has a Picture column (`vs-cta-aneurysm`, `vs-splenic-aneurysm`, `vs-popliteal-aneurysm`); the standalone popliteal figure moved into it. No non-UWorld pictures exist for the other tumour, aneurysm or pericarditis rows.
+- Walls of text: the 11 paragraphs over 85 words (§3, §6, §7, §8, §9, §10, §23) became bullet lists, with the content unchanged.
+- Numbers: every figure in §1–§37 was searched for in the lecture notes. All are sourced except the textbook normal EDV and EF in §1. Fixed: PAD smoking risk is 2–3× (2–4× on one quiz slide). Confirmed from slide images: the dental bacteremia rates (§21) and DCM 20–50% genetic (§19).
+- Checks: idempotent, 342 `main img` all load, no console errors.
+
+**2026-10-09 — Part H and §37**
+- §28 Hypertension, §29 HTN pharmacology, §30 dyslipidemias, §31 lipid pharmacology, §32 aneurysm and dissection, §33 connective-tissue aortopathies, §34 vasculitis: written and injected earlier in the day (see the status row).
+- §35 PAD (LO 73–76): vascular vs neurogenic claudication table (shopping cart, uphill), the rest of the differential (statin nocebo/SAMSON), the clinical spectrum (claudication, CLTI, ALI), the exam (dependent rubor vs cellulitis, blue toe), the ABI table with the worked 54/140 example, CTA-not-angiogram trap, aortoiliac disease with Leriche and the bypass-patency table, infrainguinal and tibial disease, acute limb ischemia (six P's, heparin first, lysis vs Fogarty, thrombolysis contraindications, reperfusion compartment syndrome, amputation energy cost), and management (SET dose, smoking, statin, SAPT or aspirin + rivaroxaban, cilostazol HF warning, revascularisation indications), with natural history and polyvascular risk. Two slips flagged: the backwards rest-relief row on one App Session 2 table, and the recording's "anticoagulation first" for claudication. 7 questions.
+- §36 Mesenteric ischemia (LO 77): anatomy and collaterals, acute types table (embolus, thrombosis, NOMI, venous, infarction) plus chronic, CTA and "when in doubt, operate". 3 questions.
+- §37 Women's CV health (no objective, kept short): myths and numbers, female-specific presentations (board add-on), menarche, pregnancy complications, menopause and the MHT timing hypothesis and traffic light. 3 questions.
+- Figures: `vs-` (Ciraulo), `as2-` (Segal PAD case; `as2-leriche-ct` cropped to drop its caption), `wh-` (Qazi). No UWorld images. `vs-splenic-aneurysm` copy removed as unused.
+- Wrap-up: checklist cards 68–81 (intro now says Parts A–H), glossary group "Vessels", pending Part H "things to know" card and an "All Parts" recheck card replacing "Still to write"; pending intro rewritten. `inject.py` pending badge now reads "1 objective partly covered · none unwritten" once nothing is unwritten.
+- Checks: injector idempotent (same md5 twice), all 338 `main img` load, no console errors, no `shell-todo`, page width 375 = scrollWidth after reloading at 375 px, nothing in §35–§37 overflows outside table scrollers.
+
+**2026-10-09 — Part G**
+- §26 CHD: fetal circulation and first breath, sorting grid, **picture-column acyanotic table** (VSD/ASD/PDA/coarct, peds slides), gross specimens, ASD types and AVSD, Eisenmenger, 5 T's, **picture-column cyanotic table** (TOF, TGA, HLHS + board rows for truncus, tricuspid atresia, TAPVR, Ebstein), TOF depth with tet-spell and BT-shunt figures, cyanotic features + CXR-sign table, syndrome → lesion → gene table (Gardner genetics + First Aid associations), presentations and comorbidities. 7 questions.
+- §27 Coarct/newborn: the 6-hour-old case, exam-findings table, coarct facts and treatment, figures, older-child box, incidence (peds chart + Gardner table) with a disagreement callout, the newborn murmur (lecture), predictive value (**approximate literature range, flagged — objective 15 left partial**), CCHD pulse-ox screening (UWorld), a triage table. 6 questions.
+- Figures: more `pc-` (peds) and `c-` (Gardner). Checks: idempotent, no console errors, 270 images load, no shell-todo in §26–§27.
+
+**2026-10-09 — Part F**
+- §24 Valves (pathology + management, linking back to §3): valve plane, a **picture-column table of the four left-sided lesions** (cause, pathology, treatment), AS (bimodal, lamellar bone, statins don't help, aortopathy, symptoms and survival, Heyde), AR (root vs valve, surgical triggers), McGrath's upstream cascade, MS treatment (β-blocker, diuretic, warfarin, PBMC, MVR), MR/MVP with repair-vs-replace, RHD pathogenesis and histology, a right-sided-valve table (UWorld articles 1164–1167) and carcinoid. 6 questions.
+- §25 AVR: indications table, work-up (cath mandatory), SAVR vs TAVR cards and choice table, TAVR-in-pure-AR and durability warnings, mechanical vs bioprosthetic **picture-column table**, a full complications table (McGrath + UWorld article 294), CPB figure. 7 questions.
+- Figures: more `s-` (CT surgery). No UWorld images (the `c-bicuspid` drawing in the Week 13 assets is UWorld and stays unused).
+- Checks: injector idempotent, no console errors, 247 images load, no shell-todo in §24–§25.
+
+**2026-10-09 — Part E**
+- §21 IE who/what: acute vs subacute table, numbers, risk-factor table, IDU box, 5-step pathogenesis, biofilm, seeding/destruction/emboli, organ-lesion table, **left vs right table**, organism table, culture-negative. Libman–Sacks figure. 6 questions.
+- §22 IE dx/rx: **picture-column peripheral-signs table** (petechiae, splinter, Janeway, Osler, Roth — ID deck), labs, imaging ladder with TTE/TOE/PET figures, full Duke 2023 tables, vignette work-up steps, handout regimen table, **antibiotic mechanism table (board add-on, for objective 60/95)**, synergy, surgical indications and prophylaxis (board add-ons), McGrath cases. Leukopenia disagreement, MSSA typo, Bartonella correction flagged. 7 questions.
+- §23 Myo/peri: **endo/myo/peri differential table with a picture row**, myocarditis mechanisms, causes, Chagas, histology, forms, diagnosis, treatment (Gardner's bed rest); pericarditis sac, causes, Gardner fluid types, pain, ECG + 4 stages (ECG II case figure), ≥2 of 4, myo- vs peri-myo, treatment; effusion/tamponade; constrictive (board add-on). 7 questions.
+- Figures: `e-` (ID endocarditis deck), `c-libman`, `c-viral-myo`, `c-chagas-histo`, `c-kissing-bug`, `c-fibrinous`, `r-case-pericarditis`, `s-a-tamponade`, `pc-effusion-echo`. Captions trimmed off `e-aortic-perforation`, `e-splinter`, `e-roth`, `e-pet`. The two UWorld figures in the ID notes (biofilm cycle, strep ID flowchart) were not used.
+- Checks: injector idempotent, no console errors, 234 images load, no horizontal scroll at 375 px **after a reload** (resizing without reloading gives a false overflow reading), no shell-todo in §21–§23.
+
+**2026-10-09 — Part D**
+- §17 HF: overload → failure steps, concentric/eccentric table, HFrEF vs HFpEF mechanics (Morganelli PV loops) and tissue/patient table (Gardner + Segal), neurohumoral spiral (Scully), left vs right, classification (EF, output, NYHA/ACC-AHA), Forrester, alcohol/cocaine, differential, exam, labs, echo/ECG/CXR, H₂FPEF, pathology table. HFpEF "reduced EF" recording slip flagged. 7 questions.
+- §18 HF pharm: mortality vs symptoms, pillar table with RRRs, ARNI/ACEi/BB/MRA/SGLT2i, other-drug table (loops, ethacrynic acid, thiazide, digoxin, ivabradine, hydralazine+ISDN, vericiguat, nitroprusside), braking phenomenon, inotropes, Frank–Starling A–G table, decompensation steps, getting on four pillars, HFpEF drugs, race note, AE/monitoring table. Vericiguat slide error and α-intercalated slip flagged. 8 questions.
+- §19 Cardiomyopathies: **picture-column table** (DCM gross, HCM gross cropped from Gardner slide 77, amyloid, ARVC AMBOSS), HCM detail incl. the peds SCD data and championship case, takotsubo/peripartum/Chagas, echo table, morphology table with myofibre disarray and iron, management table. 6 questions.
+- §20 Tumours: tumour table (myxoma, rhabdomyoma, fibroelastoma, metastases, sarcoma/mesothelioma), "most common" callout, McGrath case, management. 4 questions.
+- Figures: `as2-` (App Session 2), `hf-` (HF pharm), `pc-` (peds), `s-` (CT surgery), `p-hfref-loop`/`p-hfpef-loop`, `r-a-arvc`; cropped `c-hcm-gross`, `c-hcm-disarray`, `c-myxoma-gross`, `c-myxoma-histo`, trimmed `as2-forrester`. No UWorld images.
+- Checks: injector idempotent, no console errors, 204 images load, no shell-todo in §17–§20.
+
+**2026-10-09 — Part C**
+- §11 Arteriosclerosis vs atherosclerosis: the two words, a **picture-column subtype table** (hyaline, hyperplastic, Mönckeberg, intimal hyperplasia, atherosclerosis; hyaline/hyperplastic split from one Gardner figure), FMD look-alike, endothelial switch, response to injury, six-step plaque pathogenesis (Gardner + Scully's unused foam-cell slide `b-atherosclerosis.jpg`), plaque anatomy, sites, thin vs thick cap, outcomes, risk factors. 6 exam questions.
+- §12 SIHD vs ACS: spectrum table with **artery-strip pictures** (cropped from Scully's angina slide) and AMBOSS transmural/subendocardial schemas; flow reserve; type 1/2 MI; Watkins chest-pain history table; differential (board add-on); ECG points linking to §7; pre-test probability, test choice, cath timing; management side by side; OMT; "never by car". 6 questions.
+- §13 Biomarkers: troponin physiology, timing table, uses and non-MI causes; BNP physiology, uses, limitations table (sacubitril, CKD, age, obesity — obesity is a board add-on), head-to-head table. 5 questions.
+- §14 MI histology: infarct clock with **picture column** cropped from Gardner slide 63 (A–E panels), wavy-fibre timing disagreement callout, gross pictures, reperfusion injury. 5 questions.
+- §15 Post-STEMI complications: non-mechanical table, mechanical table, timing table, labs/ECG/management table, other-organ injury; disagreement callout on free-wall timing and the papillary murmur. 7 questions.
+- §16 IHD pharm: treatment map, nitrates (dosage forms, tolerance, ALDH2), beta-blockers, CCBs, BB+nitrate table, ranolazine, ivabradine slide slip, vasospastic angina, ACS bundle (Watkins + UWorld library, tagged), contraindication/interaction table. 7 questions.
+- Figures: prefixes `v-` (vascular path), `as1-` (App Session 1), `ihd-` (IHD pharm), plus more `c-` and `b-`. No UWorld images. Cropped derivatives: `v-hyaline`, `v-hyperplastic`, `c-mi-histo-a…e`, `ihd-*-strip`, `c-transmural-schema`, `c-subendo-schema`; captions trimmed off `v-intimal-thickening`, `v-plaque-anatomy`, `v-plaque-outcomes`, `c-troponin-curves`, `c-troponin-complex`, `c-conduction-supply`, `as1-nstemi-ecg`.
+- Checks: injector idempotent, no console errors, all 170 `main img` load, no horizontal scroll at 375 px, no `shell-todo` in §11–§16.
+
+**2026-10-09 — Part B**
+- §6 Reading the ECG: the seven-step order, the "read the patient too" rules from the electrophysiology lecture (the ~8-of-10-points framing and the ABIM line), paper/waves/leads with a normal-values table, QRS naming, rate by ×6, the five sinus criteria, the five irregular rhythms as a picture table, atrial flutter, and axis from leads I and aVF with the left/right cause lists and the RBBB-normal-axis trap. 6 exam questions.
+- §7 ECG of disease: atrial enlargement (P mitrale/P pulmonale with the "which half grew" hook), LVH criteria with specific vs sensitive called out, R-wave progression and RVH, a **picture-column comparison table for LBBB / RBBB / LAFB / LPFB** with WiLLiaM–MaRRoW, the delta wave as a sight-read, QT and its lengtheners, hyper- vs hypokalemia, coronary territories, the three ischemia findings as a picture table, reciprocal change, STEMI evolution and posterior MI, plus the pericarditis and early-repolarisation mimics pointing forward to §23. 7 exam questions.
+- §8 Arrhythmias: the three mechanisms with re-entry drawn out in four steps, the AV-block table (P–P / R–R / PR) with the Mobitz I "PR after the drop is shorter" tip and the 2:1 trick tracing, the SVT family as a picture table, why AVNRT hides its P wave, the full stable/unstable breaking algorithm with carotid-massage contraindications and the adenosine table, atrial flutter (circuit, why the waves point as they do, why it locks at 150, CTI ablation), VT vs SVT with the clinical and ECG discriminators and the four Brugada steps, WPW (toll-booth analogy, pattern vs syndrome, the no-nodal-blockers rule, procainamide dosing), long QT and the genetic syndromes, and a palpitations/syncope work-up sequence plus a lethal-vs-non-lethal summary written for objectives 46–48. 8 exam questions.
+- §9 Atrial fibrillation: recognition, the four definitions, young-vs-old mechanisms, triggers, the "fatigue and shortness of breath, not palpitations" point, the five acute steps, CHA₂DS₂-VASc as a scored table with the ≥2 rule and the CHA₂DS₂-VA change, the flutter-anticoagulation trap, AFFIRM and rate vs rhythm, and the ICU hemodynamics. 6 exam questions.
+- §10 Antiarrhythmics: the rate-node / rhythm-myocyte frame, the two action potentials phase by phase, autonomic control, the Vaughan Williams table, class I with use-dependence, "salty CAB" and Goldilocks, IA/IB/IC drug-by-drug, class II by generation with the propranolol-long-QT and labetalol-pregnancy answers Scully flagged, class III with the torsades percentages, amiodarone's organ table with monitoring, class IV, then adenosine, digoxin (mechanism chain, the potassium rule, the interaction table, toxicity) and atropine with the toxidrome and physostigmine. Both summary tables reproduced. 12 exam questions.
+- **Figures:** 70 new files copied into `assets/` with the `k-` (ECG Basics), `r-` (ECG II) and `aa-` (antiarrhythmic pharm) prefixes. **The two UWorld figures in the source notes — the conduction-system drawing (Fig K4) and the coronary-dominance diagram (Fig K41) — were deliberately not used**; the anatomy is given as text instead.
+- **Explicitly excluded because the lecturers excluded them:** Wellens' morphology table for VT, and the delayed- vs rapid delayed-rectifier potassium subtypes.
+- Source slips flagged on the page: carotid body vs carotid sinus, adenosine and cAMP direction (Gi-coupled, so cAMP falls), and "QRS" said for "QT" in the long-QT case. The atrial-kick disagreement now has a third number (15%) and is noted in §9 and in the pending list.
+- Checks run: injector idempotent (same md5 on a second run), no console errors, all 118 `main img` load with naturalWidth > 0, no horizontal page scroll at 375 px, coverage statuses match `status.json`, no `shell-todo` left inside §6–§10.
 
 **2026-10-07 — Part A**
 - §1 Cardiac cycle and Wiggers: valve rule, Wiggers line by line, a/c/v waves, seven phases, normal numbers, sarcomere and calcium, PV loops, preload/afterload/contractility, clinical applications. Sources: Morganelli physiology review (topics 1, 4, 5), Qazi cardiac cycle (topics 1–3, 5).

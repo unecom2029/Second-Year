@@ -116,8 +116,10 @@ if st_file.exists():
     s = re.sub(r'<span class="n">\d+</span><span class="l">Not written yet</span>', f'<span class="n">{none}</span><span class="l">Not written yet</span>', s)
     s = re.sub(r'(<span class="label">Fully covered</span><span class="value">)\d+', rf'\g<1>{full}', s)
     s = re.sub(r'(<span class="label">Partly covered</span><span class="value">)\d+', rf'\g<1>{part}', s)
-    s = re.sub(r'<span class="lo-badge src">\d+ objectives not written yet</span>',
-               f'<span class="lo-badge src">{none} objectives not written yet</span>', s)
+    pend_txt = (f'{none} objectives not written yet' if none else
+                f'{part} objective{"s" if part != 1 else ""} partly covered &middot; none unwritten')
+    s = re.sub(r'<span class="lo-badge src">(?:\d+ objectives not written yet|\d+ objectives? partly covered &middot; none unwritten)</span>',
+               f'<span class="lo-badge src">{pend_txt}</span>', s)
 
     # TOC label overrides (e.g. a renamed section)
     for sid, label in st.get('toc_labels', {}).items():
