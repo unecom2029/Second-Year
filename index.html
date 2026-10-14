@@ -2165,9 +2165,48 @@ body:not(.auth-locked) .secrets-fab{background:rgba(255,255,255,.92);color:var(-
 
 
 body:not(.quiz-builder-enabled) .quiz-builder-wrap{display:none!important}
+
+/* This retiring version uses a static interface. */
+*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+.migration-banner{position:relative;padding:24px;align-items:center}
+.migration-summary{font-size:20px}
+@media(max-width:640px){.migration-banner{flex-direction:column;align-items:stretch}.migration-banner>.migration-link{width:100%}}
+#secretsFab{display:none!important}
+.migration-details{font-size:16px}
+.migration-link{display:inline-block;padding:14px 20px;border-radius:12px;background:#1a7a6d;color:#fff!important;text-decoration:none;font-weight:800;text-align:center;overflow-wrap:anywhere}
+.migration-dialog{width:min(680px,calc(100vw - 32px));max-height:calc(100dvh - 32px);overflow:auto;margin:auto;padding:clamp(24px,5vw,44px);border:0;border-top:8px solid #1a7a6d;border-radius:20px;background:#fff;color:#1b2a4a;box-shadow:0 24px 80px #0005;font-family:'Nunito',sans-serif}
+.migration-dialog::backdrop{background:rgba(3,11,20,.78)}
+.migration-dialog h2,.migration-closed h1{font-family:'Crimson Pro',serif;font-size:clamp(30px,6vw,42px);line-height:1.1;margin:0 0 20px}
+.migration-dialog p,.migration-closed p{font-size:18px;line-height:1.65;margin:16px 0}
+.migration-dialog .migration-actions{flex-wrap:wrap;margin-top:24px}
+.migration-continue{padding:13px 18px;border:1px solid #c8cfd5;border-radius:12px;background:#fff;color:#1b2a4a;font:inherit;font-weight:800;cursor:pointer}
+.migration-closed{display:none;min-height:100dvh;align-items:center;justify-content:center;padding:24px;background:#f6f3ec;color:#1b2a4a}
+.migration-closed-card{max-width:700px;padding:clamp(24px,5vw,48px);border-radius:24px;background:#fff;box-shadow:0 18px 60px #12203c18}
+body.site-retired> :not(#migrationClosed){display:none!important}
+body.site-retired{overflow:auto!important}
+body.site-retired>#migrationClosed{display:flex!important}
 </style>
 </head>
 <body class="auth-locked">
+<section id="migrationClosed" class="migration-closed" aria-labelledby="migrationClosedTitle">
+  <div class="migration-closed-card">
+    <h1 id="migrationClosedTitle" tabindex="-1">Study Hub has moved</h1>
+    <p>Thank you for using this site. This version closed on October 23, 2026. Please visit and bookmark our new home.</p>
+    <p>You’ll need to sign in with your UNE email through UNE’s Okta sign-in.</p>
+    <a class="migration-link" href="https://lectures.medstudyhub.us">Go to the new Study Hub</a>
+  </div>
+</section>
+<dialog id="migrationDialog" class="migration-dialog" aria-labelledby="migrationTitle" aria-describedby="migrationMessage">
+  <h2 id="migrationTitle">Thank you for using Study Hub!</h2>
+  <p id="migrationMessage">We’re moving to a new home. This version of the site will close on <strong>Friday, October 23, 2026</strong>.</p>
+  <p>Please move to and bookmark <a href="https://lectures.medstudyhub.us">lectures.medstudyhub.us</a>.</p>
+  <p><strong>Going forward, you’ll need to sign in with your UNE email through UNE’s Okta sign-in.</strong></p>
+  <div class="migration-actions">
+    <a class="migration-link" href="https://lectures.medstudyhub.us">Go to the new Study Hub</a>
+    <button class="migration-continue" type="button" onclick="document.getElementById('migrationDialog').close()">Continue here for now</button>
+  </div>
+</dialog>
+
 <div class="auth-overlay" id="authOverlay">
   <div class="auth-orb auth-orb-a"></div>
   <div class="auth-orb auth-orb-b"></div>
@@ -2300,7 +2339,7 @@ body:not(.quiz-builder-enabled) .quiz-builder-wrap{display:none!important}
 <button class="sb-tog" onclick="document.querySelector('.sb').classList.toggle('mo')">&#9776;</button>
 <div class="app">
 <nav class="sb" id="sb"></nav>
-<div class="mn"><section class="migration-banner" id="migrationBanner" role="status" aria-label="Website transition notice" hidden><div class="migration-copy"><p class="migration-summary"><strong>ATTENTION</strong>This version of the Study Hub will be discontinued in about a week.</p><p class="migration-details" id="migrationDetails" hidden>We’re moving the Study Hub to a new platform that can better support its growing size. We’ll share access details soon. We apologize for the disruption and appreciate your patience.</p></div><div class="migration-actions"><button class="migration-read-more" id="migrationReadMore" type="button" aria-expanded="false" aria-controls="migrationDetails" onclick="toggleMigrationDetails()">Read More</button><button class="migration-close" type="button" aria-label="Dismiss notice" onclick="dismissMigrationBanner()">×</button></div></section><div class="mn-hd" id="hd"></div><div class="mn-bd"><div class="mn-inner" id="bd"></div></div></div>
+<div class="mn"><section class="migration-banner" id="migrationBanner" role="status" aria-label="Website transition notice" hidden><div class="migration-copy"><p class="migration-summary">Study Hub is moving — this version closes October 23.</p><p class="migration-details">Thank you for using this site! Please bookmark our new home. Sign in there with your UNE email through Okta.</p></div><a class="migration-link" href="https://lectures.medstudyhub.us">Go to the new Study Hub</a></section><div class="mn-hd" id="hd"></div><div class="mn-bd"><div class="mn-inner" id="bd"></div></div></div>
 </div>
 <div class="qo" id="qo" data-fs="md">
 <div class="qt-bar"><h2 id="qoT">Quiz</h2><div class="qt-btns"><button class="qt-btn reset" onclick="resetQ()">&#8634; Reset</button><button class="qt-btn print" id="printBtn" onclick="printReport()">&#128196; Print Report</button><button class="qt-btn close" onclick="closeQ()">&#10005; Close</button></div></div>
@@ -4655,205 +4694,42 @@ function prepareAuthLoginEffect(){
   var defer=window.requestIdleCallback||function(fn){return window.setTimeout(fn,240)};
   defer(function(){preloadAllLoginEffectAssets();});
 }
+// Midnight at the start of October 23 in America/New_York (EDT).
+var SITE_CLOSES_AT=Date.parse('2026-10-23T00:00:00-04:00');
+function isSiteRetired(){return Date.now()>=SITE_CLOSES_AT;}
+function enforceSiteClosure(){
+  if(!isSiteRetired())return false;
+  clearRememberedAuth();
+  AUTH_STATE.user=null;
+  AUTH_STATE.admin=false;
+  document.querySelectorAll('dialog[open]').forEach(function(dialog){dialog.close();});
+  document.body.classList.add('auth-locked','site-retired');
+  document.title='Study Hub has moved';
+  document.getElementById('migrationClosedTitle').focus();
+  return true;
+}
 function setupAuth(){
+  if(enforceSiteClosure())return;
+  // Recheck open tabs as well as new visits and restored sessions.
+  setTimeout(enforceSiteClosure,Math.min(SITE_CLOSES_AT-Date.now(),2147483647));
+  setInterval(function(){if(!document.body.classList.contains('site-retired'))enforceSiteClosure();},30000);
+  window.addEventListener('pageshow',enforceSiteClosure);
+  document.addEventListener('visibilitychange',function(){if(!document.hidden)enforceSiteClosure();});
   var form=document.getElementById('authForm');
   var input=document.getElementById('authEmail');
   var rememberedUser=readRememberedAuth();
   if(rememberedUser){
-      AUTH_STATE.user=rememberedUser;
+    AUTH_STATE.user=rememberedUser;
     writeLastLogin(rememberedUser.email);
     unlockApp();
     return;
   }
-  prepareAuthLoginEffect();
   if(form&&input){
     form.addEventListener('submit',tryAuthLogin);
-    input.addEventListener('input',function(){
-      var typed=normEmail(input.value);
-      syncJeevalPasswordField();
-      if(AUTH_CAT_INPUT_TIMER)clearTimeout(AUTH_CAT_INPUT_TIMER);
-      if(AUTH_SPIDER_INPUT_TIMER)clearTimeout(AUTH_SPIDER_INPUT_TIMER);
-      if(AUTH_THANOS_INPUT_TIMER)clearTimeout(AUTH_THANOS_INPUT_TIMER);
-      if(AUTH_JAWS_INPUT_TIMER)clearTimeout(AUTH_JAWS_INPUT_TIMER);
-      if(AUTH_ORIGAMI_INPUT_TIMER)clearTimeout(AUTH_ORIGAMI_INPUT_TIMER);
-      if(AUTH_TROJAN_INPUT_TIMER)clearTimeout(AUTH_TROJAN_INPUT_TIMER);
-      if(AUTH_CAR_INPUT_TIMER)clearTimeout(AUTH_CAR_INPUT_TIMER);
-      if(AUTH_SCALPEL_INPUT_TIMER)clearTimeout(AUTH_SCALPEL_INPUT_TIMER);
-      if(AUTH_HAAD_INPUT_TIMER)clearTimeout(AUTH_HAAD_INPUT_TIMER);
-      if(AUTH_BOXER_INPUT_TIMER)clearTimeout(AUTH_BOXER_INPUT_TIMER);
-      if(AUTH_DISNEY_INPUT_TIMER)clearTimeout(AUTH_DISNEY_INPUT_TIMER);
-      if(AUTH_WOODY_INPUT_TIMER)clearTimeout(AUTH_WOODY_INPUT_TIMER);
-      if(AUTH_DOLLY_INPUT_TIMER)clearTimeout(AUTH_DOLLY_INPUT_TIMER);
-      if(AUTH_WILLARD_INPUT_TIMER)clearTimeout(AUTH_WILLARD_INPUT_TIMER);
-      if(AUTH_KNOCK_INPUT_TIMER)clearTimeout(AUTH_KNOCK_INPUT_TIMER);
-      if(AUTH_MINECRAFT_INPUT_TIMER)clearTimeout(AUTH_MINECRAFT_INPUT_TIMER);
-      if(typed==='cat'){
-        AUTH_CAT_INPUT_TIMER=window.setTimeout(function(){
-          if(normEmail(input.value)!=='cat')return;
-          triggerCatLoginGrab({toastLabel:'Cat paw unlocked',reset:true});
-          input.value='';
-          setAuthMsg('Paw grab only. No login attempted.','success');
-        },420);
-        return;
-      }
-      if(typed==='spiderman'||typed==='spider-man'){
-        AUTH_SPIDER_INPUT_TIMER=window.setTimeout(function(){
-          var current=normEmail(input.value);
-          if(current!=='spiderman'&&current!=='spider-man')return;
-          triggerSpiderManEasterEgg({toastLabel:'Web-slinger unlocked'});
-          input.value='';
-          setAuthMsg('Web-swing only. No login attempted.','success');
-        },420);
-        return;
-      }
-      if(typed==='thanos'){
-        AUTH_THANOS_INPUT_TIMER=window.setTimeout(function(){
-          if(normEmail(input.value)!=='thanos')return;
-          triggerThanosSnapEasterEgg({toastLabel:'Thanos snap unlocked'});
-          input.value='';
-          setAuthMsg('Perfectly balanced. No login attempted.','success');
-        },420);
-        return;
-      }
-      if(typed==='jaws'){
-        AUTH_JAWS_INPUT_TIMER=window.setTimeout(function(){
-          if(normEmail(input.value)!=='jaws')return;
-          triggerJawsLoginEasterEgg({toastLabel:'Jaws unlocked',reset:true});
-          input.value='';
-          setAuthMsg('Jaws preview only. No login attempted.','success');
-        },420);
-        return;
-      }
-      if(typed==='rocket'){
-        input.value='';
-        triggerRocketLogin({});
-        return;
-      }
-      if(typed==='origami'){
-        AUTH_ORIGAMI_INPUT_TIMER=window.setTimeout(function(){
-          if(normEmail(input.value)!=='origami')return;
-          triggerOrigamiLoginExit({toastLabel:'Origami flight unlocked'});
-          input.value='';
-          setAuthMsg('Origami flight only. No login attempted.','success');
-        },420);
-        return;
-      }
-      if(typed==='trojan'||typed==='odyssey'){
-        AUTH_TROJAN_INPUT_TIMER=window.setTimeout(function(){
-          var current=normEmail(input.value);
-          if(current!=='trojan'&&current!=='odyssey')return;
-          triggerTrojanHorseEasterEgg({toastLabel:'Trojan horse unlocked'});
-          input.value='';
-          setAuthMsg('Trojan horse only. No login attempted.','success');
-        },420);
-        return;
-      }
-      if(typed==='car'){
-        AUTH_CAR_INPUT_TIMER=window.setTimeout(function(){
-          if(normEmail(input.value)!=='car')return;
-          triggerCarLoginEasterEgg({toastLabel:'Car assist unlocked',reset:true});
-          input.value='';
-          setAuthMsg('Car bump only. No login attempted.','success');
-        },420);
-        return;
-      }
-      if(typed==='scalpel'||typed==='anatomy'){
-        AUTH_SCALPEL_INPUT_TIMER=window.setTimeout(function(){
-          var current=normEmail(input.value);
-          if(current!=='scalpel'&&current!=='anatomy')return;
-          triggerScalpelLoginEasterEgg({toastLabel:'Anatomy assist unlocked',reset:true});
-          input.value='';
-          setAuthMsg('Scalpel split only. No login attempted.','success');
-        },420);
-        return;
-      }
-      if(typed==='haad'){
-        AUTH_HAAD_INPUT_TIMER=window.setTimeout(function(){
-          if(normEmail(input.value)!=='haad')return;
-          triggerHaadHeavyLoginEasterEgg({toastLabel:'Haad assist unlocked',reset:true});
-          input.value='';
-          setAuthMsg('Haad preview only. No login attempted.','success');
-        },420);
-        return;
-      }
-      if(typed==='boxer'){
-        AUTH_BOXER_INPUT_TIMER=window.setTimeout(function(){
-          if(normEmail(input.value)!=='boxer')return;
-          triggerBoxerLoginEasterEgg({toastLabel:'Boxer unlocked',reset:true});
-          input.value='';
-          setAuthMsg('Boxer preview only. No login attempted.','success');
-        },420);
-        return;
-      }
-      if(typed==='kayak'){
-        input.value='';
-        triggerKayakLoginEasterEgg({reset:true});
-        setAuthMsg('Kayak preview only. No login attempted.','success');
-        return;
-      }
-      if(typed==='minecraft'||typed==='mine'){
-        AUTH_MINECRAFT_INPUT_TIMER=window.setTimeout(function(){
-          var current=normEmail(input.value);
-          if(current!=='minecraft'&&current!=='mine')return;
-          triggerMinecraftLoginEasterEgg({toastLabel:'Minecraft login unlocked',reset:true});
-          input.value='';
-          setAuthMsg('Minecraft preview only. No login attempted.','success');
-        },420);
-        return;
-      }
-      if(typed==='disney'||typed==='studyhub'){
-        AUTH_DISNEY_INPUT_TIMER=window.setTimeout(function(){
-          var current=normEmail(input.value);
-          if(current!=='disney'&&current!=='studyhub')return;
-          triggerDisneyLoginEasterEgg({toastLabel:'Study Hub star unlocked',reset:true});
-          input.value='';
-          setAuthMsg('Study Hub star preview only. No login attempted.','success');
-        },420);
-        return;
-      }
-      if(typed==='woody'||typed==='lasso'){
-        AUTH_WOODY_INPUT_TIMER=window.setTimeout(function(){
-          var current=normEmail(input.value);
-          if(current!=='woody'&&current!=='lasso')return;
-          triggerWoodyLoginEasterEgg({toastLabel:'Lasso login unlocked',reset:true});
-          input.value='';
-          setAuthMsg('Lasso preview only. No login attempted.','success');
-        },420);
-        return;
-      }
-      if(typed==='dolly'){
-        AUTH_DOLLY_INPUT_TIMER=window.setTimeout(function(){
-          if(normEmail(input.value)!=='dolly')return;
-          triggerDavidDollyLoginEasterEgg({toastLabel:'Dolly call unlocked',reset:true});
-          input.value='';
-          setAuthMsg('Dolly call preview only. No login attempted.','success');
-        },420);
-        return;
-      }
-      if(typed==='willard'){
-        AUTH_WILLARD_INPUT_TIMER=window.setTimeout(function(){
-          if(normEmail(input.value)!=='willard')return;
-          triggerRachaelWillardLoginEasterEgg({toastLabel:'Willard call unlocked',reset:true});
-          input.value='';
-          setAuthMsg('Willard call preview only. No login attempted.','success');
-        },420);
-        return;
-      }
-      if(typed==='knock'){
-        AUTH_KNOCK_INPUT_TIMER=window.setTimeout(function(){
-          if(normEmail(input.value)!=='knock')return;
-          triggerDavidDoorPartyLoginEasterEgg({toastLabel:'Knock knock unlocked',reset:true});
-          input.value='';
-          setAuthMsg('Knock preview only. No login attempted.','success');
-        },420);
-        return;
-      }
-      if(typed==='gravity')triggerAuthGravity();
-    });
-    renderLoginQuote(new Date());
+    input.addEventListener('input',syncJeevalPasswordField);
     syncJeevalPasswordField();
     requestAnimationFrame(fitAuthLoginToViewport);
-    setTimeout(function(){input.focus()},120);
+    input.focus();
   }
 }
 function syncJeevalPasswordField(){
@@ -4882,121 +4758,11 @@ function setupAdmin(){
 }
 function tryAuthLogin(ev){
   ev.preventDefault();
+  if(enforceSiteClosure())return;
   var input=document.getElementById('authEmail');
   var btn=document.querySelector('.auth-btn');
   var email=normEmail(input&&input.value);
   var passwordInput=document.getElementById('authPassword');
-  if(email==='gravity'){
-    triggerAuthGravity();
-    return;
-  }
-  if(email==='cat'){
-    triggerCatLoginGrab({toastLabel:'Cat paw unlocked',reset:true});
-    if(input)input.value='';
-    setAuthMsg('Paw grab only. No login attempted.','success');
-    return;
-  }
-  if(email==='spiderman'||email==='spider-man'){
-    triggerSpiderManEasterEgg({toastLabel:'Web-slinger unlocked'});
-    if(input)input.value='';
-    setAuthMsg('Web-swing only. No login attempted.','success');
-    return;
-  }
-  if(email==='thanos'){
-    triggerThanosSnapEasterEgg({toastLabel:'Thanos snap unlocked'});
-    if(input)input.value='';
-    setAuthMsg('Perfectly balanced. No login attempted.','success');
-    return;
-  }
-  if(email==='jaws'){
-    triggerJawsLoginEasterEgg({toastLabel:'Jaws unlocked',reset:true});
-    if(input)input.value='';
-    setAuthMsg('Jaws preview only. No login attempted.','success');
-    return;
-  }
-  if(email==='rocket'){
-    if(input)input.value='';
-    triggerRocketLogin({});
-    return;
-  }
-  if(email==='origami'){
-    triggerOrigamiLoginExit({toastLabel:'Origami flight unlocked'});
-    if(input)input.value='';
-    setAuthMsg('Origami flight only. No login attempted.','success');
-    return;
-  }
-  if(email==='trojan'||email==='odyssey'){
-    triggerTrojanHorseEasterEgg({toastLabel:'Trojan horse unlocked'});
-    if(input)input.value='';
-    setAuthMsg('Trojan horse only. No login attempted.','success');
-    return;
-  }
-  if(email==='car'){
-    triggerCarLoginEasterEgg({toastLabel:'Car assist unlocked',reset:true});
-    if(input)input.value='';
-    setAuthMsg('Car bump only. No login attempted.','success');
-    return;
-  }
-  if(email==='scalpel'||email==='anatomy'){
-    triggerScalpelLoginEasterEgg({toastLabel:'Anatomy assist unlocked',reset:true});
-    if(input)input.value='';
-    setAuthMsg('Scalpel split only. No login attempted.','success');
-    return;
-  }
-  if(email==='haad'){
-    triggerHaadHeavyLoginEasterEgg({toastLabel:'Haad assist unlocked',reset:true});
-    if(input)input.value='';
-    setAuthMsg('Haad preview only. No login attempted.','success');
-    return;
-  }
-  if(email==='boxer'){
-    triggerBoxerLoginEasterEgg({toastLabel:'Boxer unlocked',reset:true});
-    if(input)input.value='';
-    setAuthMsg('Boxer preview only. No login attempted.','success');
-    return;
-  }
-  if(email==='kayak'){
-    triggerKayakLoginEasterEgg({reset:true});
-    if(input)input.value='';
-    setAuthMsg('Kayak preview only. No login attempted.','success');
-    return;
-  }
-  if(email==='minecraft'||email==='mine'){
-    triggerMinecraftLoginEasterEgg({toastLabel:'Minecraft login unlocked',reset:true});
-    if(input)input.value='';
-    setAuthMsg('Minecraft preview only. No login attempted.','success');
-    return;
-  }
-  if(email==='disney'||email==='studyhub'){
-    triggerDisneyLoginEasterEgg({toastLabel:'Study Hub star unlocked',reset:true});
-    if(input)input.value='';
-    setAuthMsg('Study Hub star preview only. No login attempted.','success');
-    return;
-  }
-  if(email==='woody'||email==='lasso'){
-    triggerWoodyLoginEasterEgg({toastLabel:'Lasso login unlocked',reset:true});
-    if(input)input.value='';
-    setAuthMsg('Lasso preview only. No login attempted.','success');
-    return;
-  }
-  if(email==='dolly'){
-    triggerDavidDollyLoginEasterEgg({toastLabel:'Dolly call unlocked',reset:true});
-    if(input)input.value='';
-    setAuthMsg('Dolly call preview only. No login attempted.','success');
-    return;
-  }
-  if(email==='willard'){
-    triggerRachaelWillardLoginEasterEgg({toastLabel:'Willard call unlocked',reset:true});
-    if(input)input.value='';
-    setAuthMsg('Willard call preview only. No login attempted.','success');
-    return;
-  }
-  if(email==='knock'){
-    triggerDavidDoorPartyLoginEasterEgg({toastLabel:'Knock knock unlocked',reset:true});
-    if(input)input.value='';
-    setAuthMsg('Knock preview only. No login attempted.','success');
-    return;
-  }
   if(!/@une\.edu$/i.test(email)){
     setAuthMsg('A UNE account is needed to access this site. Please use your @une.edu email.','error');
     return;
@@ -5094,239 +4860,6 @@ function pickAuthLoginEffectForUser(user){
   return pickTrackedAuthLoginEffect(user);
 }
 function playRandomLoginEffect(user){
-  if(shouldForceKayakLogin(user)){
-    AUTH_SELECTED_LOGIN_EFFECT=null;
-    setAuthMsg('Verified. Kayak crossing incoming...','success');
-    preloadLoginEffectAssets('kayak');
-    triggerKayakLoginEasterEgg({
-      loginMode:true,
-      onComplete:function(){playWelcome(user);}
-    });
-    return;
-  }
-  if(shouldForceDavidDoorPartyLogin(user)){
-    AUTH_SELECTED_LOGIN_EFFECT=null;
-    setAuthMsg('Verified. Someone is knocking...','success');
-    preloadLoginEffectAssets('davidDoorParty');
-    triggerDavidDoorPartyLoginEasterEgg({
-      loginMode:true,
-      toastLabel:false,
-      onComplete:function(){playWelcome(user);}
-    });
-    return;
-  }
-  if(shouldForceRachaelWillardLogin(user)){
-    AUTH_SELECTED_LOGIN_EFFECT=null;
-    setAuthMsg('Verified. Willard call incoming...','success');
-    preloadLoginEffectAssets('rachaelWillard');
-    triggerRachaelWillardLoginEasterEgg({
-      loginMode:true,
-      toastLabel:false,
-      onComplete:function(){playWelcome(user);}
-    });
-    return;
-  }
-  if(shouldForceDavidHeavyLogin(user)){
-    AUTH_SELECTED_LOGIN_EFFECT=null;
-    setAuthMsg('Verified. Balancing the login card...','success');
-    preloadLoginEffectAssets('davidHeavy');
-    triggerDavidHeavyLoginEasterEgg({
-      loginMode:true,
-      toastLabel:false,
-      onComplete:function(){playWelcome(user);}
-    });
-    return;
-  }
-  if(shouldForceHaadHeavyLogin(user)){
-    AUTH_SELECTED_LOGIN_EFFECT=null;
-    setAuthMsg('Verified. Haad has the corner...','success');
-    preloadLoginEffectAssets('haadHeavy');
-    triggerHaadHeavyLoginEasterEgg({
-      loginMode:true,
-      toastLabel:false,
-      onComplete:function(){playWelcome(user);}
-    });
-    return;
-  }
-  if(shouldForceOmairaCallLogin(user)){
-    AUTH_SELECTED_LOGIN_EFFECT=null;
-    setAuthMsg('Verified. Incoming call...','success');
-    preloadLoginEffectAssets('omairaCall');
-    triggerOmairaCallLoginEasterEgg({
-      loginMode:true,
-      toastLabel:false,
-      onComplete:function(){playWelcome(user);}
-    });
-    return;
-  }
-  var choice=pickAuthLoginEffectForUser(user);
-  AUTH_SELECTED_LOGIN_EFFECT=null;
-  preloadLoginEffectAssets(choice);
-  if(choice==='gravity'){
-    setAuthMsg('Verified. Gravity mode engaged...','success');
-    writeLastLogin(user.email);
-    triggerAuthGravity({
-      loginMode:true,
-      onComplete:unlockApp
-    });
-    return;
-  }
-  if(choice==='cat'){
-    setAuthMsg('Verified. Cat assist incoming...','success');
-    triggerCatLoginGrab({
-      loginMode:true,
-      toastLabel:'Cat assist unlocked',
-      onComplete:function(){playWelcome(user);}
-    });
-    return;
-  }
-  if(choice==='rocket'){
-    triggerRocketLogin({onComplete:function(){playWelcome(user);}});
-    return;
-  }
-  if(choice==='origami'){
-    setAuthMsg('Verified. Folding your pass...','success');
-    triggerOrigamiLoginExit({
-      onComplete:function(){playWelcome(user);}
-    });
-    return;
-  }
-  if(choice==='pawprints'){
-    setAuthMsg('Verified. Paw prints incoming...','success');
-    triggerPawPrintEasterEgg({toastLabel:'Paw prints unlocked'});
-    window.setTimeout(function(){playWelcome(user);},1500);
-    return;
-  }
-  if(choice==='spiderman'){
-    setAuthMsg('Verified. Web-slinger assist incoming...','success');
-    triggerSpiderManEasterEgg({
-      toastLabel:'Web-slinger unlocked',
-      onComplete:function(){playWelcome(user);}
-    });
-    return;
-  }
-  if(choice==='thanos'){
-    setAuthMsg('Verified. Snap transition incoming...','success');
-    triggerThanosSnapEasterEgg({
-      loginMode:true,
-      toastLabel:'Thanos snap unlocked',
-      onComplete:function(){playWelcome(user);}
-    });
-    return;
-  }
-  if(choice==='jaws'){
-    setAuthMsg('Verified. Jaws assist incoming...','success');
-    triggerJawsLoginEasterEgg({
-      loginMode:true,
-      toastLabel:'Jaws unlocked',
-      onComplete:function(){playWelcome(user);}
-    });
-    return;
-  }
-  if(choice==='trojan'){
-    setAuthMsg('Verified. Trojan horse incoming...','success');
-    triggerTrojanHorseEasterEgg({
-      loginMode:true,
-      toastLabel:'Trojan horse unlocked',
-      onComplete:function(){playWelcome(user);}
-    });
-    return;
-  }
-  if(choice==='car'){
-    setAuthMsg('Verified. Car assist incoming...','success');
-    triggerCarLoginEasterEgg({
-      loginMode:true,
-      toastLabel:'Car assist unlocked',
-      onComplete:function(){playWelcome(user);}
-    });
-    return;
-  }
-  if(choice==='scalpel'){
-    setAuthMsg('Verified. Anatomy assist incoming...','success');
-    triggerScalpelLoginEasterEgg({
-      loginMode:true,
-      toastLabel:'Anatomy assist unlocked',
-      onComplete:function(){playWelcome(user);}
-    });
-    return;
-  }
-  if(choice==='boxer'){
-    setAuthMsg('Verified. Boxer transition incoming...','success');
-    triggerBoxerLoginEasterEgg({
-      loginMode:true,
-      toastLabel:'Boxer unlocked',
-      onComplete:function(){playWelcome(user);}
-    });
-    return;
-  }
-  if(choice==='kayak'){
-    triggerKayakLoginEasterEgg({loginMode:true,onComplete:function(){playWelcome(user);}});
-    return;
-  }
-  if(choice==='minecraft'){
-    setAuthMsg('Verified. Minecraft mining your way in...','success');
-    triggerMinecraftLoginEasterEgg({
-      loginMode:true,
-      toastLabel:'Minecraft login unlocked',
-      onComplete:function(){playWelcome(user);}
-    });
-    return;
-  }
-  if(choice==='disney'){
-    setAuthMsg('Verified. Study Hub star incoming...','success');
-    triggerDisneyLoginEasterEgg({
-      loginMode:true,
-      toastLabel:'Study Hub star unlocked',
-      onComplete:function(){playWelcome(user);}
-    });
-    return;
-  }
-  if(choice==='woody'){
-    setAuthMsg('Verified. Lasso assist incoming...','success');
-    triggerWoodyLoginEasterEgg({
-      loginMode:true,
-      toastLabel:'Lasso login unlocked',
-      onComplete:function(){playWelcome(user);}
-    });
-    return;
-  }
-  if(choice==='omairaCall'){
-    setAuthMsg('Verified. Incoming call...','success');
-    triggerOmairaCallLoginEasterEgg({
-      loginMode:true,
-      toastLabel:false,
-      onComplete:function(){playWelcome(user);}
-    });
-    return;
-  }
-  if(choice==='davidDolly'){
-    setAuthMsg('Verified. Dolly call incoming...','success');
-    triggerDavidDollyLoginEasterEgg({
-      loginMode:true,
-      toastLabel:false,
-      onComplete:function(){playWelcome(user);}
-    });
-    return;
-  }
-  if(choice==='davidHeavy'){
-    setAuthMsg('Verified. Balancing the login card...','success');
-    triggerDavidHeavyLoginEasterEgg({
-      loginMode:true,
-      toastLabel:false,
-      onComplete:function(){playWelcome(user);}
-    });
-    return;
-  }
-  if(choice==='haadHeavy'){
-    setAuthMsg('Verified. Haad has the corner...','success');
-    triggerHaadHeavyLoginEasterEgg({
-      loginMode:true,
-      toastLabel:false,
-      onComplete:function(){playWelcome(user);}
-    });
-    return;
-  }
-  setAuthMsg('Verified. Preparing your welcome screen...','success');
   playWelcome(user);
 }
 function cloneGravityElement(el){
@@ -5863,60 +5396,24 @@ function renderSpecialWelcome(user){
   return chosen;
 }
 function playWelcome(user){
-  var overlay=document.getElementById('authOverlay');
-  var nameEl=document.getElementById('authWelcomeName');
-  var textEl=document.getElementById('authWelcomeText');
-  var subEl=document.getElementById('authWelcomeSub');
-  var now=new Date();
-  applyDynamicTheme(now);
-  var greeting=pickGreeting(now);
-  var reminder=getExamReminder(now);
-  if(nameEl)nameEl.textContent=user.name||nameFromEmail(user.email);
-  if(textEl)textEl.textContent=greeting.lead;
-  var special=renderSpecialWelcome(user);
-  if(subEl)subEl.textContent=reminder?reminder.welcomeSub:greeting.sub;
-  renderWelcomeMeta(user,now);
-  if(overlay)overlay.classList.add('welcome-state');
+  if(enforceSiteClosure())return;
   writeLastLogin(user.email);
-  setTimeout(unlockApp,(special&&special.unlockDelay)||3200);
-}
-function migrationDismissalKey(){
-  var email=AUTH_STATE.user?normEmail(AUTH_STATE.user.email):'';
-  return 'study-hub-migration-dismissed:'+email;
+  unlockApp();
 }
 function syncMigrationBanner(){
   var banner=document.getElementById('migrationBanner');
-  var details=document.getElementById('migrationDetails');
-  var readMore=document.getElementById('migrationReadMore');
-  if(!banner)return;
-  var email=AUTH_STATE.user?normEmail(AUTH_STATE.user.email):'';
-  var dismissed=false;
-  try{dismissed=sessionStorage.getItem(migrationDismissalKey())==='1'}catch(err){}
-  banner.hidden=!email||email==='jmehta@une.edu'||dismissed;
-  if(details)details.hidden=true;
-  if(readMore){readMore.textContent='Read More';readMore.setAttribute('aria-expanded','false')}
-}
-function toggleMigrationDetails(){
-  var details=document.getElementById('migrationDetails');
-  var button=document.getElementById('migrationReadMore');
-  if(!details||!button)return;
-  details.hidden=!details.hidden;
-  button.textContent=details.hidden?'Read More':'Show Less';
-  button.setAttribute('aria-expanded',details.hidden?'false':'true');
-}
-function dismissMigrationBanner(){
-  var banner=document.getElementById('migrationBanner');
-  if(banner)banner.hidden=true;
-  try{sessionStorage.setItem(migrationDismissalKey(),'1')}catch(err){}
+  if(banner)banner.hidden=!AUTH_STATE.user;
+  var dialog=document.getElementById('migrationDialog');
+  if(AUTH_STATE.user&&dialog&&!dialog.open)dialog.showModal();
 }
 function logoutApp(){
-  try{sessionStorage.removeItem(migrationDismissalKey())}catch(err){}
   clearRememberedAuth();
   AUTH_STATE.user=null;
   AUTH_STATE.admin=false;
   location.reload();
 }
 function unlockApp(){
+  if(enforceSiteClosure())return;
   var overlay=document.getElementById('authOverlay');
   document.body.classList.remove('auth-locked');
   syncQuizBuilderAccess();
@@ -5927,10 +5424,10 @@ function unlockApp(){
   rMN();
   syncAdminControls();
   if(!overlay)return;
-  overlay.classList.add('hidden');
-  setTimeout(function(){if(overlay&&overlay.parentNode)overlay.parentNode.removeChild(overlay)},850);
+  overlay.remove();
 }
 function openAdminModal(){
+  if(enforceSiteClosure())return;
   var modal=document.getElementById('adminModal');
   if(!modal)return;
   modal.classList.add('open');
@@ -5968,6 +5465,7 @@ function syncAdminControls(){
 }
 function verifyAdminLogin(ev){
   ev.preventDefault();
+  if(enforceSiteClosure())return;
   var email=normEmail(document.getElementById('adminEmail').value);
   var password=document.getElementById('adminPassword').value;
   if(email!==normEmail(ADMIN_ACCOUNT.email)||password!==ADMIN_ACCOUNT.password){
@@ -6004,6 +5502,7 @@ function handleAdminCreateUser(ev){
   setAdminMsg('Approved access saved for '+name+' ('+email+').','success');
 }
 function continueAsAdmin(){
+  if(enforceSiteClosure())return;
   AUTH_STATE.admin=true;
   AUTH_STATE.user={email:ADMIN_ACCOUNT.email,name:AUTH_SEED_USERS[ADMIN_ACCOUNT.email].name||ADMIN_ACCOUNT.name};
   closeAdminModal();
@@ -8029,8 +7528,6 @@ setupAuth();
 setupAuthExpiryWatcher();
 setupAdmin();
 syncAdminControls();
-setupEasterEggs();
-setupSecretsModal();
 setupMediaModal();
 document.addEventListener('click',function(ev){
   var dock=document.getElementById('themeDock');
